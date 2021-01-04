@@ -1,17 +1,18 @@
 from py2neo import Graph, Node
 
 from knowledge_graph import mitre_attack_metagraph
-from reports_crawler import mitre_attack
+from reports_crawler.mitre_attack import *
 
 def drop_all(graph):
     graph.run('match (n) detach delete n')
 
 if __name__ == '__main__':
 
-    # graph = Graph(host='localhost', auth=('neo4j', '950727'))
+    graph = Graph(host='localhost', auth=('neo4j', '950727'))
     # mitre_attack_metagraph.create_metagraph(graph)
 
-    mitre_attack.crawl_techniques()
+    # techniques_csv(crawl_techniques())
+    techniques_neo4j(graph, crawl_techniques())
 
 
 

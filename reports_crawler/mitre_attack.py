@@ -1,6 +1,18 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas
+from py2neo import Graph, Subgraph, Node, Relationship
+
+def techniques_csv(url_name_description_list):
+    df = pandas.DataFrame(url_name_description_list, columns=['url', 'name', 'description'])
+    df.to_csv('./mitre_techniques.csv', sep='#')
+
+def techniques_neo4j(graph, url_name_description_list):
+    techniques_nodes_list = []
+    for url_name_description in url_name_description_list:
+        techniques_nodes = Node(url_name_description[0], name=url_name_description[1], description=url_name_description[2])
+        techniques_nodes_list.append(techniques_nodes)
+    graph.create(Subgraph(nodes=techniques_nodes_list))
 
 def crawl_techniques():
     url = 'https://attack.mitre.org/techniques/enterprise/'
@@ -30,5 +42,6 @@ def crawl_techniques():
         url_name_description_list.append(url_name_description)
         print(url_name_description)
 
-    df = pandas.DataFrame(url_name_description_list, columns=['url', 'name', 'description'])
-    df.to_csv('./mitre_techniques.csv', sep='#')
+    return url_name_description_list
+
+
