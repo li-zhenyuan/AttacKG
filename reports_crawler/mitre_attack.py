@@ -1,7 +1,8 @@
-import requests
 from bs4 import BeautifulSoup
-import pandas
 from py2neo import Graph, Subgraph, Node, Relationship
+import pandas
+import requests
+import re
 
 def techniques_csv(url_name_description_list):
     df = pandas.DataFrame(url_name_description_list, columns=['url', 'name', 'description'])
@@ -19,8 +20,9 @@ def crawl_techniques():
     html = requests.get(url)
     # print(html.text)
 
-    url_name_description_list = []
     soup = BeautifulSoup(html.text, 'html.parser')
+
+    url_name_description_list = []
 
     table = soup.find('table', {'class':'table-techniques'})
     table_body = table.find('tbody')
@@ -45,3 +47,55 @@ def crawl_techniques():
     return url_name_description_list
 
 
+# ====== modularize ======
+
+class Mitre_Attack_Crawler:
+
+    # {span-id: reference-url}
+    reference_span_dict = {}
+
+    def span_analysis(self, soup):
+        spans_soup = soup.find_all('span', {'id':re.compile(r".*")})
+        for span in spans_soup:
+            id = span.get('id')
+            try:
+                href = span.find('a', {'href':re.compile(r".*")}).get('href')
+                self.reference_span_dict[id] = href
+            except:
+                continue
+
+
+    def table_analysis(self, table_soup):
+        table_head = []
+        table_content = []
+        table_content_links = []
+
+        # parse table headers
+        table_heads_soup = table_soup.find_all('th')
+        for table_head_soup in table_heads_soup:
+            table_head.append(table_head_soup.get_text().strip())
+
+        # parse table content and the links in content
+        rows_soup = table_soup.find_all('tr')
+        for row in rows_soup:
+            row_content = []
+            row_content_links = []
+            cells_soup = row.find_all('td')
+            for cell in cells_soup:
+                row_content.append(cell.get_text().strip())
+
+        return table_head, table_content
+
+    def crawl_groups(self, url):
+        if re.search('attack.mitre.org/groups/.+', url,flags=re.I) == None:
+            raise Exception("%s is not a attack groups url!" % url)
+
+        html = requests.get(url)
+        soup = BeautifulSoup(html.text, 'html.parser')
+
+        # self.span_analysis(soup)
+
+        table_soup_list = soup.find_all('table', {'class':re.compile(r".*")})
+        for table_soup in table_soup_list:
+            print(table_soup.get('class'))
+            self.table_analysis(table_soup)
