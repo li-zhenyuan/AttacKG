@@ -15,8 +15,8 @@ if __name__ == '__main__':
     # techniques_neo4j(graph, crawl_techniques())
 
     url = 'https://attack.mitre.org/groups/G0050/'
-    crawler = Mitre_Attack_Crawler()
-    crawler.crawl_groups(url)
+    crawler = Mitre_Attack_Crawler(graph, url)
+    crawler.crawl_groups()
 
 
 
