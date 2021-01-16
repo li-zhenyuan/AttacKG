@@ -9,61 +9,42 @@ def techniques_csv(url_name_description_list):
     df = pandas.DataFrame(url_name_description_list, columns=['url', 'name', 'description'])
     df.to_csv('./mitre_techniques.csv', sep='#')
 
-def techniques_neo4j(graph, url_name_description_list):
-    techniques_nodes_list = []
-    for url_name_description in url_name_description_list:
-        techniques_nodes = Node('Techniques', id=url_name_description[0], name=url_name_description[1], description=url_name_description[2])
-        techniques_nodes_list.append(techniques_nodes)
-    graph.create(Subgraph(nodes=techniques_nodes_list))
-
-def crawl_techniques():
-    url = 'https://attack.mitre.org/techniques/enterprise/'
-    html = requests.get(url)
-    # print(html.text)
-
-    soup = BeautifulSoup(html.text, 'html.parser')
-
-    url_name_description_list = []
-
-    table = soup.find('table', {'class':'table-techniques'})
-    table_body = table.find('tbody')
-
-    rows = table_body.find_all('tr')
-    for row in rows:
-        cells = row.find_all('td')
-        # print(cells)
-
-        url = cells[len(cells)-3].find('a')['href']
-        # id = cells[len(cells)-3].find('a').get_text()
-        name = cells[len(cells)-2].find('a').get_text().strip()
-        description = cells[len(cells)-1].get_text().strip()
-
-        # ToDo: techniques_crossrefs = cells[len(cells)-1].find_all('a')['href']
-
-        url_name_description = [url, name, description]
-        url_name_description_list.append(url_name_description)
-        print(url_name_description)
-
-    return url_name_description_list
-
-
 # ====== modularize ======
 
 class Mitre_Attack_Crawler:
 
     graph = 0
     trans = 0
+    cypher = 0
     url = ""
     root_url = ""
+    html = ""
 
     # {span-id: reference-url}
     reference_span_dict = {}
 
     def __init__(self, graph, url):
         self.graph = graph
+        # self.cypher = graph.cypher
+        self.trans = self.graph # ToDo: replace graph with trans for better performance
         self.url = url
+        self.root_url = 'attack.mitre.org'
 
-        self.root_url = urlparse(url).netloc
+        parse_result = urlparse(url)
+        # offline
+        if parse_result.netloc == '':
+            web = open(url, 'r')
+            self.html = web.read()
+            web.close()
+        # online
+        else:
+            self.html = requests.get(self.url).text
+
+        # self.trans = self.graph.begin()
+
+    def __del__(self):
+        # self.trans.commit()
+        pass
 
     def span_analysis(self, soup):
         spans_soup = soup.find_all('span', {'id':re.compile(r".*")})
@@ -103,13 +84,22 @@ class Mitre_Attack_Crawler:
 
         return table_head, table_content, table_content_links
 
+    # def find_or_create_node(self, label, **properties):
+    #     node = self.graph.nodes.match(label, **properties).first()
+    #
+    #     if node == None:
+    #         node = Node(label, **properties)
+    #         self.trans.create(node)
+    #
+    #     return node
+
     def find_or_create_node(self, label, **properties):
-        node = self.graph.nodes.match(label, **properties).first()
+        p_string = ""
+        for k,v in properties.items():
+            p_string += '%s: "%s"' % (k, v)
+        cypher = "MERGE (n:%s {%s}) RETURN n LIMIT 1" % (label, p_string)
 
-        if node == None:
-            node = Node(label, **properties)
-            self.trans.create(node)
-
+        node = self.graph.run(cypher).data()[0]
         return node
 
     def is_internal_url(self, url):
@@ -118,20 +108,80 @@ class Mitre_Attack_Crawler:
         except:
             return True
 
-    def connect_groups_techniques(self, group_id, content, links):
-        self.trans = self.graph.begin()
+    def crawl_techniques(self):
+        # url = 'https://attack.mitre.org/techniques/enterprise/'
+        # html = requests.get(url)
+        # print(html.text)
 
+        soup = BeautifulSoup(self.html, 'html.parser')
+
+        url_name_description_list = []
+
+        table = soup.find('table', {'class': 'table-techniques'})
+        table_body = table.find('tbody')
+
+        rows = table_body.find_all('tr')
+        for row in rows:
+            cells = row.find_all('td')
+            # print(cells)
+
+            url = cells[len(cells) - 3].find('a')['href']
+            # id = cells[len(cells)-3].find('a').get_text()
+            name = cells[len(cells) - 2].find('a').get_text().strip()
+            description = cells[len(cells) - 1].get_text().strip()
+
+            # ToDo: techniques_crossrefs = cells[len(cells)-1].find_all('a')['href']
+
+            url_name_description = [url, name, description]
+            url_name_description_list.append(url_name_description)
+            print(url_name_description)
+
+        return url_name_description_list
+
+    def techniques_neo4j(self, url_name_description_list):
+        # techniques_nodes_list = []
+        for url_name_description in url_name_description_list:
+            techniques_nodes = Node('Techniques', id=url_name_description[0], name=url_name_description[1],
+                                    description=url_name_description[2])
+            self.trans.create(techniques_nodes)
+        #     techniques_nodes_list.append(techniques_nodes)
+        # graph.create(Subgraph(nodes=techniques_nodes_list))
+
+    def crawl_groups(self):
+        # if re.search('attack.mitre.org/groups/.+', self.url, flags=re.I) == None:
+        #     raise Exception("%s is not a attack groups url!" % self.url)
+
+        # ToDo: get group_id automatically
+        # group_id = re.findall(r"/groups/.+$", self.url, flags=re.I)[0]
+        group_id = "/groups/G0050/"
+
+        soup = BeautifulSoup(self.html, 'html.parser')
+        # self.span_analysis(soup)
+
+        table_soup_list = soup.find_all('table', {'class':re.compile(r".*")})
+        parsed_table_list = []
+
+        for table_soup in table_soup_list:
+            print(table_soup.get('class'))
+            head, content, links = self.table_analysis(table_soup)
+            parsed_table_list.append((head, content, links))
+
+        self.connect_groups_techniques(group_id, parsed_table_list[1][1], parsed_table_list[1][2])
+
+    def connect_groups_techniques(self, group_id, content, links):
         # group_node = self.find_or_create_node("Groups", id=group_id)
         # TODO: Define function to add nodes and relationships.
         # group_node = self.graph.nodes.match("Groups", id=group_id).first()
         # if group_node == None:
-        group_node = Node("Groups", id=group_id)
-        self.trans.create(group_node)
+        # group_node = Node("Groups", id=group_id)
+        group_node = self.find_or_create_node("Groups", id=group_id)
+        # self.trans.create(group_node)
 
         for i in range(1, len(content)):
             techniques_url = links[i][-2][-1]
             techniques_id = re.search('/techniques/.+', techniques_url, flags=re.I)[0]
-            techniques_node = self.graph.nodes.match("Techniques", id=techniques_id).first()
+            # techniques_node = self.graph.nodes.match("Techniques", id=techniques_id).first()
+            techniques_node = self.find_or_create_node("Techniques", id=techniques_id)
 
             operation = content[i][-1]
             group_techniques = Relationship(group_node, "used", techniques_node, operation=operation)
@@ -145,26 +195,3 @@ class Mitre_Attack_Crawler:
                 techniques_reference = Relationship(techniques_node, 'refer', reference_node)
                 self.trans.create(group_reference)
                 self.trans.create(techniques_reference)
-
-        self.trans.commit()
-
-    def crawl_groups(self):
-        if re.search('attack.mitre.org/groups/.+', self.url, flags=re.I) == None:
-            raise Exception("%s is not a attack groups url!" % self.url)
-
-        group_id = re.findall(r"/groups/.+$", self.url, flags=re.I)[0]
-
-        html = requests.get(self.url)
-        soup = BeautifulSoup(html.text, 'html.parser')
-
-        # self.span_analysis(soup)
-
-        table_soup_list = soup.find_all('table', {'class':re.compile(r".*")})
-        parsed_table_list = []
-
-        for table_soup in table_soup_list:
-            print(table_soup.get('class'))
-            head, content, links = self.table_analysis(table_soup)
-            parsed_table_list.append((head, content, links))
-
-        self.connect_groups_techniques(group_id, parsed_table_list[1][1], parsed_table_list[1][2])
