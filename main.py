@@ -12,9 +12,9 @@ if __name__ == '__main__':
     # mitre_attack_metagraph.create_metagraph(graph)
 
     # techniques_csv(crawl_techniques())
-    # techniques_local_url = '/mnt/c/Users/wan/Documents/AttacKG/data/html/Techniques-Enterprise.html'
-    # crawler = Mitre_Attack_Crawler(graph, techniques_local_url)
-    # crawler.techniques_neo4j(crawler.crawl_techniques())
+    techniques_local_url = '/mnt/c/Users/wan/Documents/AttacKG/data/html/Techniques-Enterprise.html'
+    crawler = Mitre_Attack_Crawler(graph, techniques_local_url)
+    crawler.techniques_neo4j(crawler.crawl_techniques())
 
     url = 'https://attack.mitre.org/groups/G0050/'
     local_url = '/mnt/c/Users/wan/Documents/AttacKG/data/html/Groups-APT32.html'

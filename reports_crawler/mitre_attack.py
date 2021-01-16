@@ -99,7 +99,7 @@ class Mitre_Attack_Crawler:
             p_string += '%s: "%s"' % (k, v)
         cypher = "MERGE (n:%s {%s}) RETURN n LIMIT 1" % (label, p_string)
 
-        node = self.graph.run(cypher).data()[0]
+        node = self.graph.run(cypher).data()[0]['n']
         return node
 
     def is_internal_url(self, url):
@@ -141,7 +141,8 @@ class Mitre_Attack_Crawler:
     def techniques_neo4j(self, url_name_description_list):
         # techniques_nodes_list = []
         for url_name_description in url_name_description_list:
-            techniques_nodes = Node('Techniques', id=url_name_description[0], name=url_name_description[1],
+            uid = urlparse(url_name_description[0]).path
+            techniques_nodes = Node('Techniques', id=uid, name=url_name_description[1],
                                     description=url_name_description[2])
             self.trans.create(techniques_nodes)
         #     techniques_nodes_list.append(techniques_nodes)
@@ -187,11 +188,11 @@ class Mitre_Attack_Crawler:
             group_techniques = Relationship(group_node, "used", techniques_node, operation=operation)
             self.trans.create(group_techniques)
 
-            for link in links[i]:
+            for link in links[i][-1]:
                 if not self.is_internal_url(link):
                     reference_node = self.find_or_create_node("Reference", url=link)
 
-                group_reference = Relationship(group_node, 'refer', reference_node)
-                techniques_reference = Relationship(techniques_node, 'refer', reference_node)
-                self.trans.create(group_reference)
-                self.trans.create(techniques_reference)
+                    group_reference = Relationship(group_node, 'refer', reference_node)
+                    techniques_reference = Relationship(techniques_node, 'refer', reference_node)
+                    self.trans.create(group_reference)
+                    self.trans.create(techniques_reference)
