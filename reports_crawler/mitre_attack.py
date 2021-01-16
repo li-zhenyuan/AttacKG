@@ -5,11 +5,13 @@ import pandas
 import requests
 import re
 
+
 def techniques_csv(url_name_description_list):
     df = pandas.DataFrame(url_name_description_list, columns=['url', 'name', 'description'])
     df.to_csv('./mitre_techniques.csv', sep='#')
 
 # ====== modularize ======
+
 
 class Mitre_Attack_Crawler:
 
