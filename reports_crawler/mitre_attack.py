@@ -4,14 +4,48 @@ from urllib.parse import urlparse
 import pandas
 import requests
 import re
+import os
 
 
 def techniques_csv(url_name_description_list):
     df = pandas.DataFrame(url_name_description_list, columns=['url', 'name', 'description'])
     df.to_csv('./mitre_techniques.csv', sep='#')
 
-# ====== modularize ======
 
+def get_all_reference_nodes(graph):
+    # cypher = "MATCH (n:References) RETURN n"
+    # reference_nodes = graph.run(cypher).data()
+
+    reference_nodes = graph.nodes.match("Reference")
+
+    # node_matcher = NodeMatcher(graph)
+    # reference_nodes = node_matcher.match("References")
+
+    return reference_nodes
+
+
+def rename_reference_nodes(graph, node):
+    if str(node.labels) != ":Reference":
+        raise Exception("%s is not a reference node!" % node.label)
+
+    u = urlparse(node["url"])
+    file_name = os.path.split(u.path)[1]
+
+    group_names = ""
+    techniques_names = ""
+    relationship_matcher = RelationshipMatcher(graph)
+    relationships = relationship_matcher.match((None,node))
+    for relationship in relationships:
+        n = relationship.start_node
+        if str(n.labels) == ":Groups":
+            group_names += n["id"]
+        elif str(n.labels) == ":Techniques":
+            techniques_names += n["id"]
+
+    return group_names + "#" + techniques_names + "#" + file_name # ToDo: the new name is too long!
+
+
+# ====== modularize ======
 
 class Mitre_Attack_Crawler:
 

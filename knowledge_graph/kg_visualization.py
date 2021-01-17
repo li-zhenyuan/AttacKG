@@ -42,4 +42,5 @@ def draw_dotgraph_from_relations(relations, graph_path="./dot"):
         dot.edge(start_id, end_id)
 
     dot.format = "pdf"
+    dot.engine = 'neato'
     dot.render(graph_path)

@@ -31,8 +31,16 @@ def draw():
     kg_visualization.draw_dotgraph_from_relations(relations, '/mnt/c/Users/wan/Documents/AttacKG/data/graph/G0050')
 
 
+def downloader():
+    reference_nodes = get_all_reference_nodes(graph)
+    for reference_node in reference_nodes:
+        name = rename_reference_nodes(graph, reference_node)
+        print(len(name))
+
+
+
 if __name__ == '__main__':
-    draw()
+    downloader()
 
 
 
