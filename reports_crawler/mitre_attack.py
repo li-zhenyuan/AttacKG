@@ -31,18 +31,21 @@ def rename_reference_nodes(graph, node):
     u = urlparse(node["url"])
     file_name = os.path.split(u.path)[1]
 
-    group_names = ""
-    techniques_names = ""
-    relationship_matcher = RelationshipMatcher(graph)
-    relationships = relationship_matcher.match((None,node))
-    for relationship in relationships:
-        n = relationship.start_node
-        if str(n.labels) == ":Groups":
-            group_names += n["id"]
-        elif str(n.labels) == ":Techniques":
-            techniques_names += n["id"]
+    return file_name
 
-    return group_names + "#" + techniques_names + "#" + file_name # ToDo: the new name is too long!
+    # ToDo: the new name is too long!
+    # group_names = ""
+    # techniques_names = ""
+    # relationship_matcher = RelationshipMatcher(graph)
+    # relationships = relationship_matcher.match((None,node))
+    # for relationship in relationships:
+    #     n = relationship.start_node
+    #     if str(n.labels) == ":Groups":
+    #         group_names += n["id"]
+    #     elif str(n.labels) == ":Techniques":
+    #         techniques_names += n["id"]
+    #
+    # return group_names + "#" + techniques_names + "#" + file_name
 
 
 # ====== modularize ======

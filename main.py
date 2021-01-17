@@ -2,6 +2,7 @@ from py2neo import Graph, Node
 
 from knowledge_graph import mitre_attack_metagraph, kg_visualization
 from reports_crawler.mitre_attack import *
+from reports_crawler.reports_downloader import *
 
 graph = Graph(host='localhost', auth=('neo4j', 'academy-neptune-book-manila-spring-2014'))
 
@@ -34,9 +35,11 @@ def draw():
 def downloader():
     reference_nodes = get_all_reference_nodes(graph)
     for reference_node in reference_nodes:
+        url = reference_node["url"]
+        path = '/mnt/c/Users/wan/Documents/AttacKG/data/cti/'
         name = rename_reference_nodes(graph, reference_node)
-        print(len(name))
-
+        # print(len(name))
+        download_from_url(url, path+name)
 
 
 if __name__ == '__main__':
