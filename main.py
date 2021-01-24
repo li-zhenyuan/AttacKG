@@ -3,6 +3,7 @@ from py2neo import Graph, Node
 from knowledge_graph import mitre_attack_metagraph, kg_visualization
 from reports_crawler.mitre_attack import *
 from reports_crawler.reports_downloader import *
+from NLP.extract_text_from_file import *
 
 graph = Graph(host='localhost', auth=('neo4j', 'academy-neptune-book-manila-spring-2014'))
 
@@ -42,8 +43,11 @@ def downloader():
         download_from_url(url, path+name)
 
 
+def extractor():
+    read_pdf("/mnt/c/Users/wan/Documents/AttacKG/data/cti/Cybereason Labs Analysis Operation Cobalt Kitty.pdf")
+
 if __name__ == '__main__':
-    downloader()
+    extractor()
 
 
 
