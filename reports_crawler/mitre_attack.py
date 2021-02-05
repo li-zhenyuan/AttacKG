@@ -6,6 +6,10 @@ import requests
 import re
 import os
 
+# ToDo：potential improvement
+#     url = 'https://attack.mitre.org/groups/G0050/'
+#     data = pandas.read_html(url, attrs={'id':'v-tabContent'})
+#     print(data)
 
 def techniques_csv(url_name_description_list):
     df = pandas.DataFrame(url_name_description_list, columns=['url', 'name', 'description'])
