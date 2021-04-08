@@ -77,13 +77,11 @@ graph [
   node [
     id 15
     label "/techniques/T1595/001"
-    labl "Scanning IP Blocks"
     types "sub_technique"
   ]
   node [
     id 16
     label "/techniques/T1595/002"
-    labl "Vulnerability Scanning"
     types "sub_technique"
   ]
   node [
@@ -94,25 +92,21 @@ graph [
   node [
     id 18
     label "/techniques/T1592/001"
-    labl "Hardware"
     types "sub_technique"
   ]
   node [
     id 19
     label "/techniques/T1592/002"
-    labl "Software"
     types "sub_technique"
   ]
   node [
     id 20
     label "/techniques/T1592/003"
-    labl "Firmware"
     types "sub_technique"
   ]
   node [
     id 21
     label "/techniques/T1592/004"
-    labl "Client Configurations"
     types "sub_technique"
   ]
   node [
@@ -123,19 +117,16 @@ graph [
   node [
     id 23
     label "/techniques/T1589/001"
-    labl "Credentials"
     types "sub_technique"
   ]
   node [
     id 24
     label "/techniques/T1589/002"
-    labl "Email Addresses"
     types "sub_technique"
   ]
   node [
     id 25
     label "/techniques/T1589/003"
-    labl "Employee Names"
     types "sub_technique"
   ]
   node [
@@ -146,37 +137,31 @@ graph [
   node [
     id 27
     label "/techniques/T1590/001"
-    labl "Domain Properties"
     types "sub_technique"
   ]
   node [
     id 28
     label "/techniques/T1590/002"
-    labl "DNS"
     types "sub_technique"
   ]
   node [
     id 29
     label "/techniques/T1590/003"
-    labl "Network Trust Dependencies"
     types "sub_technique"
   ]
   node [
     id 30
     label "/techniques/T1590/004"
-    labl "Network Topology"
     types "sub_technique"
   ]
   node [
     id 31
     label "/techniques/T1590/005"
-    labl "IP Addresses"
     types "sub_technique"
   ]
   node [
     id 32
     label "/techniques/T1590/006"
-    labl "Network Security Appliances"
     types "sub_technique"
   ]
   node [
@@ -187,25 +172,21 @@ graph [
   node [
     id 34
     label "/techniques/T1591/002"
-    labl "Business Relationships"
     types "sub_technique"
   ]
   node [
     id 35
     label "/techniques/T1591/001"
-    labl "Determine Physical Locations"
     types "sub_technique"
   ]
   node [
     id 36
     label "/techniques/T1591/003"
-    labl "Identify Business Tempo"
     types "sub_technique"
   ]
   node [
     id 37
     label "/techniques/T1591/004"
-    labl "Identify Roles"
     types "sub_technique"
   ]
   node [
@@ -216,19 +197,16 @@ graph [
   node [
     id 39
     label "/techniques/T1598/001"
-    labl "Spearphishing Service"
     types "sub_technique"
   ]
   node [
     id 40
     label "/techniques/T1598/002"
-    labl "Spearphishing Attachment"
     types "sub_technique"
   ]
   node [
     id 41
     label "/techniques/T1598/003"
-    labl "Spearphishing Link"
     types "sub_technique"
   ]
   node [
@@ -239,13 +217,11 @@ graph [
   node [
     id 43
     label "/techniques/T1597/001"
-    labl "Threat Intel Vendors"
     types "sub_technique"
   ]
   node [
     id 44
     label "/techniques/T1597/002"
-    labl "Purchase Technical Data"
     types "sub_technique"
   ]
   node [
@@ -256,31 +232,26 @@ graph [
   node [
     id 46
     label "/techniques/T1596/002"
-    labl "WHOIS"
     types "sub_technique"
   ]
   node [
     id 47
     label "/techniques/T1596/001"
-    labl "DNS/Passive DNS"
     types "sub_technique"
   ]
   node [
     id 48
     label "/techniques/T1596/003"
-    labl "Digital Certificates"
     types "sub_technique"
   ]
   node [
     id 49
     label "/techniques/T1596/004"
-    labl "CDNs"
     types "sub_technique"
   ]
   node [
     id 50
     label "/techniques/T1596/005"
-    labl "Scan Databases"
     types "sub_technique"
   ]
   node [
@@ -291,19 +262,17 @@ graph [
   node [
     id 52
     label "/techniques/T1593/001"
-    labl "Social Media"
     types "sub_technique"
   ]
   node [
     id 53
     label "/techniques/T1593/002"
-    labl "Search Engines"
     types "sub_technique"
   ]
   node [
     id 54
     label "/techniques/T1594"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 55
@@ -313,37 +282,31 @@ graph [
   node [
     id 56
     label "/techniques/T1583/001"
-    labl "Domains"
     types "sub_technique"
   ]
   node [
     id 57
     label "/techniques/T1583/002"
-    labl "DNS Server"
     types "sub_technique"
   ]
   node [
     id 58
     label "/techniques/T1583/003"
-    labl "Virtual Private Server"
     types "sub_technique"
   ]
   node [
     id 59
     label "/techniques/T1583/004"
-    labl "Server"
     types "sub_technique"
   ]
   node [
     id 60
     label "/techniques/T1583/005"
-    labl "Botnet"
     types "sub_technique"
   ]
   node [
     id 61
     label "/techniques/T1583/006"
-    labl "Web Services"
     types "sub_technique"
   ]
   node [
@@ -354,13 +317,11 @@ graph [
   node [
     id 63
     label "/techniques/T1586/001"
-    labl "Social Media Accounts"
     types "sub_technique"
   ]
   node [
     id 64
     label "/techniques/T1586/002"
-    labl "Email Accounts"
     types "sub_technique"
   ]
   node [
@@ -371,37 +332,31 @@ graph [
   node [
     id 66
     label "/techniques/T1584/001"
-    labl "Domains"
     types "sub_technique"
   ]
   node [
     id 67
     label "/techniques/T1584/002"
-    labl "DNS Server"
     types "sub_technique"
   ]
   node [
     id 68
     label "/techniques/T1584/003"
-    labl "Virtual Private Server"
     types "sub_technique"
   ]
   node [
     id 69
     label "/techniques/T1584/004"
-    labl "Server"
     types "sub_technique"
   ]
   node [
     id 70
     label "/techniques/T1584/005"
-    labl "Botnet"
     types "sub_technique"
   ]
   node [
     id 71
     label "/techniques/T1584/006"
-    labl "Web Services"
     types "sub_technique"
   ]
   node [
@@ -412,25 +367,21 @@ graph [
   node [
     id 73
     label "/techniques/T1587/001"
-    labl "Malware"
     types "sub_technique"
   ]
   node [
     id 74
     label "/techniques/T1587/002"
-    labl "Code Signing Certificates"
     types "sub_technique"
   ]
   node [
     id 75
     label "/techniques/T1587/003"
-    labl "Digital Certificates"
     types "sub_technique"
   ]
   node [
     id 76
     label "/techniques/T1587/004"
-    labl "Exploits"
     types "sub_technique"
   ]
   node [
@@ -441,13 +392,11 @@ graph [
   node [
     id 78
     label "/techniques/T1585/001"
-    labl "Social Media Accounts"
     types "sub_technique"
   ]
   node [
     id 79
     label "/techniques/T1585/002"
-    labl "Email Accounts"
     types "sub_technique"
   ]
   node [
@@ -458,58 +407,52 @@ graph [
   node [
     id 81
     label "/techniques/T1588/001"
-    labl "Malware"
     types "sub_technique"
   ]
   node [
     id 82
     label "/techniques/T1588/002"
-    labl "Tool"
     types "sub_technique"
   ]
   node [
     id 83
     label "/techniques/T1588/003"
-    labl "Code Signing Certificates"
     types "sub_technique"
   ]
   node [
     id 84
     label "/techniques/T1588/004"
-    labl "Digital Certificates"
     types "sub_technique"
   ]
   node [
     id 85
     label "/techniques/T1588/005"
-    labl "Exploits"
     types "sub_technique"
   ]
   node [
     id 86
     label "/techniques/T1588/006"
-    labl "Vulnerabilities"
     types "sub_technique"
   ]
   node [
     id 87
     label "/techniques/T1189"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 88
     label "/techniques/T1190"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 89
     label "/techniques/T1133"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 90
     label "/techniques/T1200"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 91
@@ -519,25 +462,22 @@ graph [
   node [
     id 92
     label "/techniques/T1566/001"
-    labl "Spearphishing Attachment"
     types "sub_technique"
   ]
   node [
     id 93
     label "/techniques/T1566/002"
-    labl "Spearphishing Link"
     types "sub_technique"
   ]
   node [
     id 94
     label "/techniques/T1566/003"
-    labl "Spearphishing via Service"
     types "sub_technique"
   ]
   node [
     id 95
     label "/techniques/T1091"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 96
@@ -547,25 +487,22 @@ graph [
   node [
     id 97
     label "/techniques/T1195/001"
-    labl "Compromise Software Dependencies and Development Tools"
     types "sub_technique"
   ]
   node [
     id 98
     label "/techniques/T1195/002"
-    labl "Compromise Software Supply Chain"
     types "sub_technique"
   ]
   node [
     id 99
     label "/techniques/T1195/003"
-    labl "Compromise Hardware Supply Chain"
     types "sub_technique"
   ]
   node [
     id 100
     label "/techniques/T1199"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 101
@@ -575,25 +512,21 @@ graph [
   node [
     id 102
     label "/techniques/T1078/001"
-    labl "Default Accounts"
     types "sub_technique"
   ]
   node [
     id 103
     label "/techniques/T1078/002"
-    labl "Domain Accounts"
     types "sub_technique"
   ]
   node [
     id 104
     label "/techniques/T1078/003"
-    labl "Local Accounts"
     types "sub_technique"
   ]
   node [
     id 105
     label "/techniques/T1078/004"
-    labl "Cloud Accounts"
     types "sub_technique"
   ]
   node [
@@ -604,55 +537,47 @@ graph [
   node [
     id 107
     label "/techniques/T1059/001"
-    labl "PowerShell"
     types "sub_technique"
   ]
   node [
     id 108
     label "/techniques/T1059/002"
-    labl "AppleScript"
     types "sub_technique"
   ]
   node [
     id 109
     label "/techniques/T1059/003"
-    labl "Windows Command Shell"
     types "sub_technique"
   ]
   node [
     id 110
     label "/techniques/T1059/004"
-    labl "Unix Shell"
     types "sub_technique"
   ]
   node [
     id 111
     label "/techniques/T1059/005"
-    labl "Visual Basic"
     types "sub_technique"
   ]
   node [
     id 112
     label "/techniques/T1059/006"
-    labl "Python"
     types "sub_technique"
   ]
   node [
     id 113
     label "/techniques/T1059/007"
-    labl "JavaScript/JScript"
     types "sub_technique"
   ]
   node [
     id 114
     label "/techniques/T1059/008"
-    labl "Network Device CLI"
     types "sub_technique"
   ]
   node [
     id 115
     label "/techniques/T1203"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 116
@@ -662,19 +587,17 @@ graph [
   node [
     id 117
     label "/techniques/T1559/001"
-    labl "Component Object Model"
     types "sub_technique"
   ]
   node [
     id 118
     label "/techniques/T1559/002"
-    labl "Dynamic Data Exchange"
     types "sub_technique"
   ]
   node [
     id 119
     label "/techniques/T1106"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 120
@@ -684,48 +607,42 @@ graph [
   node [
     id 121
     label "/techniques/T1053/002"
-    labl "At (Windows)"
     types "sub_technique"
   ]
   node [
     id 122
     label "/techniques/T1053/005"
-    labl "Scheduled Task"
     types "sub_technique"
   ]
   node [
     id 123
     label "/techniques/T1053/001"
-    labl "At (Linux)"
     types "sub_technique"
   ]
   node [
     id 124
     label "/techniques/T1053/004"
-    labl "Launchd"
     types "sub_technique"
   ]
   node [
     id 125
     label "/techniques/T1053/003"
-    labl "Cron"
     types "sub_technique"
   ]
   node [
     id 126
     label "/techniques/T1053/006"
-    labl "Systemd Timers"
     types "sub_technique"
   ]
   node [
     id 127
     label "/techniques/T1129"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 128
     label "/techniques/T1072"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 129
@@ -735,13 +652,11 @@ graph [
   node [
     id 130
     label "/techniques/T1569/001"
-    labl "Launchctl"
     types "sub_technique"
   ]
   node [
     id 131
     label "/techniques/T1569/002"
-    labl "Service Execution"
     types "sub_technique"
   ]
   node [
@@ -752,19 +667,17 @@ graph [
   node [
     id 133
     label "/techniques/T1204/001"
-    labl "Malicious Link"
     types "sub_technique"
   ]
   node [
     id 134
     label "/techniques/T1204/002"
-    labl "Malicious File"
     types "sub_technique"
   ]
   node [
     id 135
     label "/techniques/T1047"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 136
@@ -774,31 +687,27 @@ graph [
   node [
     id 137
     label "/techniques/T1098/002"
-    labl "Exchange Email Delegate Permissions"
     types "sub_technique"
   ]
   node [
     id 138
     label "/techniques/T1098/003"
-    labl "Add Office 365 Global Administrator Role"
     types "sub_technique"
   ]
   node [
     id 139
     label "/techniques/T1098/004"
-    labl "SSH Authorized Keys"
     types "sub_technique"
   ]
   node [
     id 140
     label "/techniques/T1098/001"
-    labl "Additional Cloud Credentials"
     types "sub_technique"
   ]
   node [
     id 141
     label "/techniques/T1197"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 142
@@ -808,73 +717,61 @@ graph [
   node [
     id 143
     label "/techniques/T1547/001"
-    labl "Registry Run Keys / Startup Folder"
     types "sub_technique"
   ]
   node [
     id 144
     label "/techniques/T1547/002"
-    labl "Authentication Package"
     types "sub_technique"
   ]
   node [
     id 145
     label "/techniques/T1547/003"
-    labl "Time Providers"
     types "sub_technique"
   ]
   node [
     id 146
     label "/techniques/T1547/004"
-    labl "Winlogon Helper DLL"
     types "sub_technique"
   ]
   node [
     id 147
     label "/techniques/T1547/005"
-    labl "Security Support Provider"
     types "sub_technique"
   ]
   node [
     id 148
     label "/techniques/T1547/006"
-    labl "Kernel Modules and Extensions"
     types "sub_technique"
   ]
   node [
     id 149
     label "/techniques/T1547/007"
-    labl "Re-opened Applications"
     types "sub_technique"
   ]
   node [
     id 150
     label "/techniques/T1547/008"
-    labl "LSASS Driver"
     types "sub_technique"
   ]
   node [
     id 151
     label "/techniques/T1547/009"
-    labl "Shortcut Modification"
     types "sub_technique"
   ]
   node [
     id 152
     label "/techniques/T1547/010"
-    labl "Port Monitors"
     types "sub_technique"
   ]
   node [
     id 153
     label "/techniques/T1547/011"
-    labl "Plist Modification"
     types "sub_technique"
   ]
   node [
     id 154
     label "/techniques/T1547/012"
-    labl "Print Processors"
     types "sub_technique"
   ]
   node [
@@ -885,42 +782,37 @@ graph [
   node [
     id 156
     label "/techniques/T1037/001"
-    labl "Logon Script (Windows)"
     types "sub_technique"
   ]
   node [
     id 157
     label "/techniques/T1037/002"
-    labl "Logon Script (Mac)"
     types "sub_technique"
   ]
   node [
     id 158
     label "/techniques/T1037/003"
-    labl "Network Logon Script"
     types "sub_technique"
   ]
   node [
     id 159
     label "/techniques/T1037/004"
-    labl "Rc.common"
     types "sub_technique"
   ]
   node [
     id 160
     label "/techniques/T1037/005"
-    labl "Startup Items"
     types "sub_technique"
   ]
   node [
     id 161
     label "/techniques/T1176"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 162
     label "/techniques/T1554"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 163
@@ -930,19 +822,16 @@ graph [
   node [
     id 164
     label "/techniques/T1136/001"
-    labl "Local Account"
     types "sub_technique"
   ]
   node [
     id 165
     label "/techniques/T1136/002"
-    labl "Domain Account"
     types "sub_technique"
   ]
   node [
     id 166
     label "/techniques/T1136/003"
-    labl "Cloud Account"
     types "sub_technique"
   ]
   node [
@@ -953,25 +842,21 @@ graph [
   node [
     id 168
     label "/techniques/T1543/001"
-    labl "Launch Agent"
     types "sub_technique"
   ]
   node [
     id 169
     label "/techniques/T1543/002"
-    labl "Systemd Service"
     types "sub_technique"
   ]
   node [
     id 170
     label "/techniques/T1543/003"
-    labl "Windows Service"
     types "sub_technique"
   ]
   node [
     id 171
     label "/techniques/T1543/004"
-    labl "Launch Daemon"
     types "sub_technique"
   ]
   node [
@@ -982,91 +867,76 @@ graph [
   node [
     id 173
     label "/techniques/T1546/001"
-    labl "Change Default File Association"
     types "sub_technique"
   ]
   node [
     id 174
     label "/techniques/T1546/002"
-    labl "Screensaver"
     types "sub_technique"
   ]
   node [
     id 175
     label "/techniques/T1546/003"
-    labl "Windows Management Instrumentation Event Subscription"
     types "sub_technique"
   ]
   node [
     id 176
     label "/techniques/T1546/004"
-    labl ".bash_profile and .bashrc"
     types "sub_technique"
   ]
   node [
     id 177
     label "/techniques/T1546/005"
-    labl "Trap"
     types "sub_technique"
   ]
   node [
     id 178
     label "/techniques/T1546/006"
-    labl "LC_LOAD_DYLIB Addition"
     types "sub_technique"
   ]
   node [
     id 179
     label "/techniques/T1546/007"
-    labl "Netsh Helper DLL"
     types "sub_technique"
   ]
   node [
     id 180
     label "/techniques/T1546/008"
-    labl "Accessibility Features"
     types "sub_technique"
   ]
   node [
     id 181
     label "/techniques/T1546/009"
-    labl "AppCert DLLs"
     types "sub_technique"
   ]
   node [
     id 182
     label "/techniques/T1546/010"
-    labl "AppInit DLLs"
     types "sub_technique"
   ]
   node [
     id 183
     label "/techniques/T1546/011"
-    labl "Application Shimming"
     types "sub_technique"
   ]
   node [
     id 184
     label "/techniques/T1546/012"
-    labl "Image File Execution Options Injection"
     types "sub_technique"
   ]
   node [
     id 185
     label "/techniques/T1546/013"
-    labl "PowerShell Profile"
     types "sub_technique"
   ]
   node [
     id 186
     label "/techniques/T1546/014"
-    labl "Emond"
     types "sub_technique"
   ]
   node [
     id 187
     label "/techniques/T1546/015"
-    labl "Component Object Model Hijacking"
     types "sub_technique"
   ]
   node [
@@ -1077,73 +947,62 @@ graph [
   node [
     id 189
     label "/techniques/T1574/010"
-    labl "Services File Permissions Weakness"
     types "sub_technique"
   ]
   node [
     id 190
     label "/techniques/T1574/005"
-    labl "Executable Installer File Permissions Weakness"
     types "sub_technique"
   ]
   node [
     id 191
     label "/techniques/T1574/011"
-    labl "Services Registry Permissions Weakness"
     types "sub_technique"
   ]
   node [
     id 192
     label "/techniques/T1574/009"
-    labl "Path Interception by Unquoted Path"
     types "sub_technique"
   ]
   node [
     id 193
     label "/techniques/T1574/007"
-    labl "Path Interception by PATH Environment Variable"
     types "sub_technique"
   ]
   node [
     id 194
     label "/techniques/T1574/008"
-    labl "Path Interception by Search Order Hijacking"
     types "sub_technique"
   ]
   node [
     id 195
     label "/techniques/T1574/001"
-    labl "DLL Search Order Hijacking"
     types "sub_technique"
   ]
   node [
     id 196
     label "/techniques/T1574/002"
-    labl "DLL Side-Loading"
     types "sub_technique"
   ]
   node [
     id 197
     label "/techniques/T1574/006"
-    labl "LD_PRELOAD"
     types "sub_technique"
   ]
   node [
     id 198
     label "/techniques/T1574/004"
-    labl "Dylib Hijacking"
     types "sub_technique"
   ]
   node [
     id 199
     label "/techniques/T1574/012"
-    labl "COR_PROFILER"
     types "sub_technique"
   ]
   node [
     id 200
     label "/techniques/T1525"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 201
@@ -1153,37 +1012,31 @@ graph [
   node [
     id 202
     label "/techniques/T1137/006"
-    labl "Add-ins"
     types "sub_technique"
   ]
   node [
     id 203
     label "/techniques/T1137/001"
-    labl "Office Template Macros"
     types "sub_technique"
   ]
   node [
     id 204
     label "/techniques/T1137/003"
-    labl "Outlook Forms"
     types "sub_technique"
   ]
   node [
     id 205
     label "/techniques/T1137/005"
-    labl "Outlook Rules"
     types "sub_technique"
   ]
   node [
     id 206
     label "/techniques/T1137/004"
-    labl "Outlook Home Page"
     types "sub_technique"
   ]
   node [
     id 207
     label "/techniques/T1137/002"
-    labl "Office Test"
     types "sub_technique"
   ]
   node [
@@ -1194,31 +1047,26 @@ graph [
   node [
     id 209
     label "/techniques/T1542/001"
-    labl "System Firmware"
     types "sub_technique"
   ]
   node [
     id 210
     label "/techniques/T1542/002"
-    labl "Component Firmware"
     types "sub_technique"
   ]
   node [
     id 211
     label "/techniques/T1542/003"
-    labl "Bootkit"
     types "sub_technique"
   ]
   node [
     id 212
     label "/techniques/T1542/004"
-    labl "ROMMONkit"
     types "sub_technique"
   ]
   node [
     id 213
     label "/techniques/T1542/005"
-    labl "TFTP Boot"
     types "sub_technique"
   ]
   node [
@@ -1229,19 +1077,16 @@ graph [
   node [
     id 215
     label "/techniques/T1505/001"
-    labl "SQL Stored Procedures"
     types "sub_technique"
   ]
   node [
     id 216
     label "/techniques/T1505/002"
-    labl "Transport Agent"
     types "sub_technique"
   ]
   node [
     id 217
     label "/techniques/T1505/003"
-    labl "Web Shell"
     types "sub_technique"
   ]
   node [
@@ -1252,7 +1097,6 @@ graph [
   node [
     id 219
     label "/techniques/T1205/001"
-    labl "Port Knocking"
     types "sub_technique"
   ]
   node [
@@ -1263,25 +1107,21 @@ graph [
   node [
     id 221
     label "/techniques/T1548/001"
-    labl "Setuid and Setgid"
     types "sub_technique"
   ]
   node [
     id 222
     label "/techniques/T1548/002"
-    labl "Bypass User Account Control"
     types "sub_technique"
   ]
   node [
     id 223
     label "/techniques/T1548/003"
-    labl "Sudo and Sudo Caching"
     types "sub_technique"
   ]
   node [
     id 224
     label "/techniques/T1548/004"
-    labl "Elevated Execution with Prompt"
     types "sub_technique"
   ]
   node [
@@ -1292,31 +1132,26 @@ graph [
   node [
     id 226
     label "/techniques/T1134/001"
-    labl "Token Impersonation/Theft"
     types "sub_technique"
   ]
   node [
     id 227
     label "/techniques/T1134/002"
-    labl "Create Process with Token"
     types "sub_technique"
   ]
   node [
     id 228
     label "/techniques/T1134/003"
-    labl "Make and Impersonate Token"
     types "sub_technique"
   ]
   node [
     id 229
     label "/techniques/T1134/004"
-    labl "Parent PID Spoofing"
     types "sub_technique"
   ]
   node [
     id 230
     label "/techniques/T1134/005"
-    labl "SID-History Injection"
     types "sub_technique"
   ]
   node [
@@ -1327,19 +1162,17 @@ graph [
   node [
     id 232
     label "/techniques/T1484/001"
-    labl "Group Policy Modification"
     types "sub_technique"
   ]
   node [
     id 233
     label "/techniques/T1484/002"
-    labl "Domain Trust Modification"
     types "sub_technique"
   ]
   node [
     id 234
     label "/techniques/T1068"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 235
@@ -1349,78 +1182,67 @@ graph [
   node [
     id 236
     label "/techniques/T1055/001"
-    labl "Dynamic-link Library Injection"
     types "sub_technique"
   ]
   node [
     id 237
     label "/techniques/T1055/002"
-    labl "Portable Executable Injection"
     types "sub_technique"
   ]
   node [
     id 238
     label "/techniques/T1055/003"
-    labl "Thread Execution Hijacking"
     types "sub_technique"
   ]
   node [
     id 239
     label "/techniques/T1055/004"
-    labl "Asynchronous Procedure Call"
     types "sub_technique"
   ]
   node [
     id 240
     label "/techniques/T1055/005"
-    labl "Thread Local Storage"
     types "sub_technique"
   ]
   node [
     id 241
     label "/techniques/T1055/008"
-    labl "Ptrace System Calls"
     types "sub_technique"
   ]
   node [
     id 242
     label "/techniques/T1055/009"
-    labl "Proc Memory"
     types "sub_technique"
   ]
   node [
     id 243
     label "/techniques/T1055/011"
-    labl "Extra Window Memory Injection"
     types "sub_technique"
   ]
   node [
     id 244
     label "/techniques/T1055/013"
-    labl "Process Doppelg&#228;nging"
     types "sub_technique"
   ]
   node [
     id 245
     label "/techniques/T1055/012"
-    labl "Process Hollowing"
     types "sub_technique"
   ]
   node [
     id 246
     label "/techniques/T1055/014"
-    labl "VDSO Hijacking"
     types "sub_technique"
   ]
   node [
     id 247
     label "/techniques/T1140"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 248
     label "/techniques/T1006"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 249
@@ -1430,13 +1252,12 @@ graph [
   node [
     id 250
     label "/techniques/T1480/001"
-    labl "Environmental Keying"
     types "sub_technique"
   ]
   node [
     id 251
     label "/techniques/T1211"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 252
@@ -1446,13 +1267,11 @@ graph [
   node [
     id 253
     label "/techniques/T1222/001"
-    labl "Windows File and Directory Permissions Modification"
     types "sub_technique"
   ]
   node [
     id 254
     label "/techniques/T1222/002"
-    labl "Linux and Mac File and Directory Permissions Modification"
     types "sub_technique"
   ]
   node [
@@ -1463,43 +1282,36 @@ graph [
   node [
     id 256
     label "/techniques/T1564/001"
-    labl "Hidden Files and Directories"
     types "sub_technique"
   ]
   node [
     id 257
     label "/techniques/T1564/002"
-    labl "Hidden Users"
     types "sub_technique"
   ]
   node [
     id 258
     label "/techniques/T1564/003"
-    labl "Hidden Window"
     types "sub_technique"
   ]
   node [
     id 259
     label "/techniques/T1564/004"
-    labl "NTFS File Attributes"
     types "sub_technique"
   ]
   node [
     id 260
     label "/techniques/T1564/005"
-    labl "Hidden File System"
     types "sub_technique"
   ]
   node [
     id 261
     label "/techniques/T1564/006"
-    labl "Run Virtual Instance"
     types "sub_technique"
   ]
   node [
     id 262
     label "/techniques/T1564/007"
-    labl "VBA Stomping"
     types "sub_technique"
   ]
   node [
@@ -1510,43 +1322,36 @@ graph [
   node [
     id 264
     label "/techniques/T1562/001"
-    labl "Disable or Modify Tools"
     types "sub_technique"
   ]
   node [
     id 265
     label "/techniques/T1562/002"
-    labl "Disable Windows Event Logging"
     types "sub_technique"
   ]
   node [
     id 266
     label "/techniques/T1562/003"
-    labl "Impair Command History Logging"
     types "sub_technique"
   ]
   node [
     id 267
     label "/techniques/T1562/004"
-    labl "Disable or Modify System Firewall"
     types "sub_technique"
   ]
   node [
     id 268
     label "/techniques/T1562/006"
-    labl "Indicator Blocking"
     types "sub_technique"
   ]
   node [
     id 269
     label "/techniques/T1562/007"
-    labl "Disable or Modify Cloud Firewall"
     types "sub_technique"
   ]
   node [
     id 270
     label "/techniques/T1562/008"
-    labl "Disable Cloud Logs"
     types "sub_technique"
   ]
   node [
@@ -1557,43 +1362,37 @@ graph [
   node [
     id 272
     label "/techniques/T1070/001"
-    labl "Clear Windows Event Logs"
     types "sub_technique"
   ]
   node [
     id 273
     label "/techniques/T1070/002"
-    labl "Clear Linux or Mac System Logs"
     types "sub_technique"
   ]
   node [
     id 274
     label "/techniques/T1070/003"
-    labl "Clear Command History"
     types "sub_technique"
   ]
   node [
     id 275
     label "/techniques/T1070/004"
-    labl "File Deletion"
     types "sub_technique"
   ]
   node [
     id 276
     label "/techniques/T1070/005"
-    labl "Network Share Connection Removal"
     types "sub_technique"
   ]
   node [
     id 277
     label "/techniques/T1070/006"
-    labl "Timestomp"
     types "sub_technique"
   ]
   node [
     id 278
     label "/techniques/T1202"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 279
@@ -1603,37 +1402,31 @@ graph [
   node [
     id 280
     label "/techniques/T1036/001"
-    labl "Invalid Code Signature"
     types "sub_technique"
   ]
   node [
     id 281
     label "/techniques/T1036/002"
-    labl "Right-to-Left Override"
     types "sub_technique"
   ]
   node [
     id 282
     label "/techniques/T1036/003"
-    labl "Rename System Utilities"
     types "sub_technique"
   ]
   node [
     id 283
     label "/techniques/T1036/004"
-    labl "Masquerade Task or Service"
     types "sub_technique"
   ]
   node [
     id 284
     label "/techniques/T1036/005"
-    labl "Match Legitimate Name or Location"
     types "sub_technique"
   ]
   node [
     id 285
     label "/techniques/T1036/006"
-    labl "Space after Filename"
     types "sub_technique"
   ]
   node [
@@ -1644,25 +1437,21 @@ graph [
   node [
     id 287
     label "/techniques/T1556/001"
-    labl "Domain Controller Authentication"
     types "sub_technique"
   ]
   node [
     id 288
     label "/techniques/T1556/002"
-    labl "Password Filter DLL"
     types "sub_technique"
   ]
   node [
     id 289
     label "/techniques/T1556/003"
-    labl "Pluggable Authentication Modules"
     types "sub_technique"
   ]
   node [
     id 290
     label "/techniques/T1556/004"
-    labl "Network Device Authentication"
     types "sub_technique"
   ]
   node [
@@ -1673,31 +1462,27 @@ graph [
   node [
     id 292
     label "/techniques/T1578/001"
-    labl "Create Snapshot"
     types "sub_technique"
   ]
   node [
     id 293
     label "/techniques/T1578/002"
-    labl "Create Cloud Instance"
     types "sub_technique"
   ]
   node [
     id 294
     label "/techniques/T1578/003"
-    labl "Delete Cloud Instance"
     types "sub_technique"
   ]
   node [
     id 295
     label "/techniques/T1578/004"
-    labl "Revert Cloud Instance"
     types "sub_technique"
   ]
   node [
     id 296
     label "/techniques/T1112"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 297
@@ -1707,13 +1492,11 @@ graph [
   node [
     id 298
     label "/techniques/T1601/001"
-    labl "Patch System Image"
     types "sub_technique"
   ]
   node [
     id 299
     label "/techniques/T1601/002"
-    labl "Downgrade System Image"
     types "sub_technique"
   ]
   node [
@@ -1724,7 +1507,6 @@ graph [
   node [
     id 301
     label "/techniques/T1599/001"
-    labl "Network Address Translation Traversal"
     types "sub_technique"
   ]
   node [
@@ -1735,42 +1517,37 @@ graph [
   node [
     id 303
     label "/techniques/T1027/001"
-    labl "Binary Padding"
     types "sub_technique"
   ]
   node [
     id 304
     label "/techniques/T1027/002"
-    labl "Software Packing"
     types "sub_technique"
   ]
   node [
     id 305
     label "/techniques/T1027/003"
-    labl "Steganography"
     types "sub_technique"
   ]
   node [
     id 306
     label "/techniques/T1027/004"
-    labl "Compile After Delivery"
     types "sub_technique"
   ]
   node [
     id 307
     label "/techniques/T1027/005"
-    labl "Indicator Removal from Tools"
     types "sub_technique"
   ]
   node [
     id 308
     label "/techniques/T1207"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 309
     label "/techniques/T1014"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 310
@@ -1780,67 +1557,56 @@ graph [
   node [
     id 311
     label "/techniques/T1218/011"
-    labl "Rundll32"
     types "sub_technique"
   ]
   node [
     id 312
     label "/techniques/T1218/001"
-    labl "Compiled HTML File"
     types "sub_technique"
   ]
   node [
     id 313
     label "/techniques/T1218/002"
-    labl "Control Panel"
     types "sub_technique"
   ]
   node [
     id 314
     label "/techniques/T1218/003"
-    labl "CMSTP"
     types "sub_technique"
   ]
   node [
     id 315
     label "/techniques/T1218/004"
-    labl "InstallUtil"
     types "sub_technique"
   ]
   node [
     id 316
     label "/techniques/T1218/005"
-    labl "Mshta"
     types "sub_technique"
   ]
   node [
     id 317
     label "/techniques/T1218/009"
-    labl "Regsvcs/Regasm"
     types "sub_technique"
   ]
   node [
     id 318
     label "/techniques/T1218/010"
-    labl "Regsvr32"
     types "sub_technique"
   ]
   node [
     id 319
     label "/techniques/T1218/007"
-    labl "Msiexec"
     types "sub_technique"
   ]
   node [
     id 320
     label "/techniques/T1218/008"
-    labl "Odbcconf"
     types "sub_technique"
   ]
   node [
     id 321
     label "/techniques/T1218/012"
-    labl "Verclsid"
     types "sub_technique"
   ]
   node [
@@ -1851,7 +1617,6 @@ graph [
   node [
     id 323
     label "/techniques/T1216/001"
-    labl "PubPrn"
     types "sub_technique"
   ]
   node [
@@ -1862,31 +1627,27 @@ graph [
   node [
     id 325
     label "/techniques/T1553/001"
-    labl "Gatekeeper Bypass"
     types "sub_technique"
   ]
   node [
     id 326
     label "/techniques/T1553/002"
-    labl "Code Signing"
     types "sub_technique"
   ]
   node [
     id 327
     label "/techniques/T1553/003"
-    labl "SIP and Trust Provider Hijacking"
     types "sub_technique"
   ]
   node [
     id 328
     label "/techniques/T1553/004"
-    labl "Install Root Certificate"
     types "sub_technique"
   ]
   node [
     id 329
     label "/techniques/T1221"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 330
@@ -1896,13 +1657,12 @@ graph [
   node [
     id 331
     label "/techniques/T1127/001"
-    labl "MSBuild"
     types "sub_technique"
   ]
   node [
     id 332
     label "/techniques/T1535"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 333
@@ -1912,25 +1672,21 @@ graph [
   node [
     id 334
     label "/techniques/T1550/002"
-    labl "Pass the Hash"
     types "sub_technique"
   ]
   node [
     id 335
     label "/techniques/T1550/003"
-    labl "Pass the Ticket"
     types "sub_technique"
   ]
   node [
     id 336
     label "/techniques/T1550/001"
-    labl "Application Access Token"
     types "sub_technique"
   ]
   node [
     id 337
     label "/techniques/T1550/004"
-    labl "Web Session Cookie"
     types "sub_technique"
   ]
   node [
@@ -1941,19 +1697,16 @@ graph [
   node [
     id 339
     label "/techniques/T1497/001"
-    labl "System Checks"
     types "sub_technique"
   ]
   node [
     id 340
     label "/techniques/T1497/002"
-    labl "User Activity Based Checks"
     types "sub_technique"
   ]
   node [
     id 341
     label "/techniques/T1497/003"
-    labl "Time Based Evasion"
     types "sub_technique"
   ]
   node [
@@ -1964,19 +1717,17 @@ graph [
   node [
     id 343
     label "/techniques/T1600/001"
-    labl "Reduce Key Space"
     types "sub_technique"
   ]
   node [
     id 344
     label "/techniques/T1600/002"
-    labl "Disable Crypto Hardware"
     types "sub_technique"
   ]
   node [
     id 345
     label "/techniques/T1220"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 346
@@ -1986,25 +1737,21 @@ graph [
   node [
     id 347
     label "/techniques/T1110/001"
-    labl "Password Guessing"
     types "sub_technique"
   ]
   node [
     id 348
     label "/techniques/T1110/002"
-    labl "Password Cracking"
     types "sub_technique"
   ]
   node [
     id 349
     label "/techniques/T1110/003"
-    labl "Password Spraying"
     types "sub_technique"
   ]
   node [
     id 350
     label "/techniques/T1110/004"
-    labl "Credential Stuffing"
     types "sub_technique"
   ]
   node [
@@ -2015,30 +1762,27 @@ graph [
   node [
     id 352
     label "/techniques/T1555/001"
-    labl "Keychain"
     types "sub_technique"
   ]
   node [
     id 353
     label "/techniques/T1555/002"
-    labl "Securityd Memory"
     types "sub_technique"
   ]
   node [
     id 354
     label "/techniques/T1555/003"
-    labl "Credentials from Web Browsers"
     types "sub_technique"
   ]
   node [
     id 355
     label "/techniques/T1212"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 356
     label "/techniques/T1187"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 357
@@ -2048,13 +1792,11 @@ graph [
   node [
     id 358
     label "/techniques/T1606/001"
-    labl "Web Cookies"
     types "sub_technique"
   ]
   node [
     id 359
     label "/techniques/T1606/002"
-    labl "SAML Tokens"
     types "sub_technique"
   ]
   node [
@@ -2065,25 +1807,21 @@ graph [
   node [
     id 361
     label "/techniques/T1056/001"
-    labl "Keylogging"
     types "sub_technique"
   ]
   node [
     id 362
     label "/techniques/T1056/002"
-    labl "GUI Input Capture"
     types "sub_technique"
   ]
   node [
     id 363
     label "/techniques/T1056/003"
-    labl "Web Portal Capture"
     types "sub_technique"
   ]
   node [
     id 364
     label "/techniques/T1056/004"
-    labl "Credential API Hooking"
     types "sub_technique"
   ]
   node [
@@ -2094,19 +1832,17 @@ graph [
   node [
     id 366
     label "/techniques/T1557/001"
-    labl "LLMNR/NBT-NS Poisoning and SMB Relay"
     types "sub_technique"
   ]
   node [
     id 367
     label "/techniques/T1557/002"
-    labl "ARP Cache Poisoning"
     types "sub_technique"
   ]
   node [
     id 368
     label "/techniques/T1040"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 369
@@ -2116,55 +1852,47 @@ graph [
   node [
     id 370
     label "/techniques/T1003/001"
-    labl "LSASS Memory"
     types "sub_technique"
   ]
   node [
     id 371
     label "/techniques/T1003/002"
-    labl "Security Account Manager"
     types "sub_technique"
   ]
   node [
     id 372
     label "/techniques/T1003/003"
-    labl "NTDS"
     types "sub_technique"
   ]
   node [
     id 373
     label "/techniques/T1003/006"
-    labl "DCSync"
     types "sub_technique"
   ]
   node [
     id 374
     label "/techniques/T1003/007"
-    labl "Proc Filesystem"
     types "sub_technique"
   ]
   node [
     id 375
     label "/techniques/T1003/008"
-    labl "/etc/passwd and /etc/shadow"
     types "sub_technique"
   ]
   node [
     id 376
     label "/techniques/T1003/005"
-    labl "Cached Domain Credentials"
     types "sub_technique"
   ]
   node [
     id 377
     label "/techniques/T1003/004"
-    labl "LSA Secrets"
     types "sub_technique"
   ]
   node [
     id 378
     label "/techniques/T1528"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 379
@@ -2174,36 +1902,32 @@ graph [
   node [
     id 380
     label "/techniques/T1558/001"
-    labl "Golden Ticket"
     types "sub_technique"
   ]
   node [
     id 381
     label "/techniques/T1558/002"
-    labl "Silver Ticket"
     types "sub_technique"
   ]
   node [
     id 382
     label "/techniques/T1558/003"
-    labl "Kerberoasting"
     types "sub_technique"
   ]
   node [
     id 383
     label "/techniques/T1558/004"
-    labl "AS-REP Roasting"
     types "sub_technique"
   ]
   node [
     id 384
     label "/techniques/T1539"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 385
     label "/techniques/T1111"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 386
@@ -2213,37 +1937,31 @@ graph [
   node [
     id 387
     label "/techniques/T1552/001"
-    labl "Credentials In Files"
     types "sub_technique"
   ]
   node [
     id 388
     label "/techniques/T1552/002"
-    labl "Credentials in Registry"
     types "sub_technique"
   ]
   node [
     id 389
     label "/techniques/T1552/003"
-    labl "Bash History"
     types "sub_technique"
   ]
   node [
     id 390
     label "/techniques/T1552/004"
-    labl "Private Keys"
     types "sub_technique"
   ]
   node [
     id 391
     label "/techniques/T1552/005"
-    labl "Cloud Instance Metadata API"
     types "sub_technique"
   ]
   node [
     id 392
     label "/techniques/T1552/006"
-    labl "Group Policy Preferences"
     types "sub_technique"
   ]
   node [
@@ -2254,81 +1972,77 @@ graph [
   node [
     id 394
     label "/techniques/T1087/001"
-    labl "Local Account"
     types "sub_technique"
   ]
   node [
     id 395
     label "/techniques/T1087/002"
-    labl "Domain Account"
     types "sub_technique"
   ]
   node [
     id 396
     label "/techniques/T1087/003"
-    labl "Email Account"
     types "sub_technique"
   ]
   node [
     id 397
     label "/techniques/T1087/004"
-    labl "Cloud Account"
     types "sub_technique"
   ]
   node [
     id 398
     label "/techniques/T1010"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 399
     label "/techniques/T1217"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 400
     label "/techniques/T1580"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 401
     label "/techniques/T1538"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 402
     label "/techniques/T1526"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 403
     label "/techniques/T1482"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 404
     label "/techniques/T1083"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 405
     label "/techniques/T1046"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 406
     label "/techniques/T1135"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 407
     label "/techniques/T1201"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 408
     label "/techniques/T1120"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 409
@@ -2338,35 +2052,32 @@ graph [
   node [
     id 410
     label "/techniques/T1069/002"
-    labl "Domain Groups"
     types "sub_technique"
   ]
   node [
     id 411
     label "/techniques/T1069/003"
-    labl "Cloud Groups"
     types "sub_technique"
   ]
   node [
     id 412
     label "/techniques/T1069/001"
-    labl "Local Groups"
     types "sub_technique"
   ]
   node [
     id 413
     label "/techniques/T1057"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 414
     label "/techniques/T1012"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 415
     label "/techniques/T1018"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 416
@@ -2376,53 +2087,52 @@ graph [
   node [
     id 417
     label "/techniques/T1518/001"
-    labl "Security Software Discovery"
     types "sub_technique"
   ]
   node [
     id 418
     label "/techniques/T1082"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 419
     label "/techniques/T1016"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 420
     label "/techniques/T1049"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 421
     label "/techniques/T1033"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 422
     label "/techniques/T1007"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 423
     label "/techniques/T1124"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 424
     label "/techniques/T1210"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 425
     label "/techniques/T1534"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 426
     label "/techniques/T1570"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 427
@@ -2432,13 +2142,11 @@ graph [
   node [
     id 428
     label "/techniques/T1563/001"
-    labl "SSH Hijacking"
     types "sub_technique"
   ]
   node [
     id 429
     label "/techniques/T1563/002"
-    labl "RDP Hijacking"
     types "sub_technique"
   ]
   node [
@@ -2449,43 +2157,37 @@ graph [
   node [
     id 431
     label "/techniques/T1021/001"
-    labl "Remote Desktop Protocol"
     types "sub_technique"
   ]
   node [
     id 432
     label "/techniques/T1021/002"
-    labl "SMB/Windows Admin Shares"
     types "sub_technique"
   ]
   node [
     id 433
     label "/techniques/T1021/003"
-    labl "Distributed Component Object Model"
     types "sub_technique"
   ]
   node [
     id 434
     label "/techniques/T1021/004"
-    labl "SSH"
     types "sub_technique"
   ]
   node [
     id 435
     label "/techniques/T1021/005"
-    labl "VNC"
     types "sub_technique"
   ]
   node [
     id 436
     label "/techniques/T1021/006"
-    labl "Windows Remote Management"
     types "sub_technique"
   ]
   node [
     id 437
     label "/techniques/T1080"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 438
@@ -2495,40 +2197,37 @@ graph [
   node [
     id 439
     label "/techniques/T1560/001"
-    labl "Archive via Utility"
     types "sub_technique"
   ]
   node [
     id 440
     label "/techniques/T1560/002"
-    labl "Archive via Library"
     types "sub_technique"
   ]
   node [
     id 441
     label "/techniques/T1560/003"
-    labl "Archive via Custom Method"
     types "sub_technique"
   ]
   node [
     id 442
     label "/techniques/T1123"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 443
     label "/techniques/T1119"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 444
     label "/techniques/T1115"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 445
     label "/techniques/T1530"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 446
@@ -2538,13 +2237,11 @@ graph [
   node [
     id 447
     label "/techniques/T1602/001"
-    labl "SNMP (MIB Dump)"
     types "sub_technique"
   ]
   node [
     id 448
     label "/techniques/T1602/002"
-    labl "Network Device Configuration Dump"
     types "sub_technique"
   ]
   node [
@@ -2555,29 +2252,27 @@ graph [
   node [
     id 450
     label "/techniques/T1213/001"
-    labl "Confluence"
     types "sub_technique"
   ]
   node [
     id 451
     label "/techniques/T1213/002"
-    labl "Sharepoint"
     types "sub_technique"
   ]
   node [
     id 452
     label "/techniques/T1005"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 453
     label "/techniques/T1039"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 454
     label "/techniques/T1025"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 455
@@ -2587,13 +2282,11 @@ graph [
   node [
     id 456
     label "/techniques/T1074/001"
-    labl "Local Data Staging"
     types "sub_technique"
   ]
   node [
     id 457
     label "/techniques/T1074/002"
-    labl "Remote Data Staging"
     types "sub_technique"
   ]
   node [
@@ -2604,35 +2297,32 @@ graph [
   node [
     id 459
     label "/techniques/T1114/001"
-    labl "Local Email Collection"
     types "sub_technique"
   ]
   node [
     id 460
     label "/techniques/T1114/002"
-    labl "Remote Email Collection"
     types "sub_technique"
   ]
   node [
     id 461
     label "/techniques/T1114/003"
-    labl "Email Forwarding Rule"
     types "sub_technique"
   ]
   node [
     id 462
     label "/techniques/T1185"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 463
     label "/techniques/T1113"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 464
     label "/techniques/T1125"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 465
@@ -2642,31 +2332,27 @@ graph [
   node [
     id 466
     label "/techniques/T1071/001"
-    labl "Web Protocols"
     types "sub_technique"
   ]
   node [
     id 467
     label "/techniques/T1071/002"
-    labl "File Transfer Protocols"
     types "sub_technique"
   ]
   node [
     id 468
     label "/techniques/T1071/003"
-    labl "Mail Protocols"
     types "sub_technique"
   ]
   node [
     id 469
     label "/techniques/T1071/004"
-    labl "DNS"
     types "sub_technique"
   ]
   node [
     id 470
     label "/techniques/T1092"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 471
@@ -2676,13 +2362,11 @@ graph [
   node [
     id 472
     label "/techniques/T1132/001"
-    labl "Standard Encoding"
     types "sub_technique"
   ]
   node [
     id 473
     label "/techniques/T1132/002"
-    labl "Non-Standard Encoding"
     types "sub_technique"
   ]
   node [
@@ -2693,19 +2377,16 @@ graph [
   node [
     id 475
     label "/techniques/T1001/001"
-    labl "Junk Data"
     types "sub_technique"
   ]
   node [
     id 476
     label "/techniques/T1001/002"
-    labl "Steganography"
     types "sub_technique"
   ]
   node [
     id 477
     label "/techniques/T1001/003"
-    labl "Protocol Impersonation"
     types "sub_technique"
   ]
   node [
@@ -2716,19 +2397,16 @@ graph [
   node [
     id 479
     label "/techniques/T1568/002"
-    labl "Domain Generation Algorithms"
     types "sub_technique"
   ]
   node [
     id 480
     label "/techniques/T1568/001"
-    labl "Fast Flux DNS"
     types "sub_technique"
   ]
   node [
     id 481
     label "/techniques/T1568/003"
-    labl "DNS Calculation"
     types "sub_technique"
   ]
   node [
@@ -2739,44 +2417,42 @@ graph [
   node [
     id 483
     label "/techniques/T1573/001"
-    labl "Symmetric Cryptography"
     types "sub_technique"
   ]
   node [
     id 484
     label "/techniques/T1573/002"
-    labl "Asymmetric Cryptography"
     types "sub_technique"
   ]
   node [
     id 485
     label "/techniques/T1008"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 486
     label "/techniques/T1105"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 487
     label "/techniques/T1104"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 488
     label "/techniques/T1095"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 489
     label "/techniques/T1571"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 490
     label "/techniques/T1572"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 491
@@ -2786,31 +2462,27 @@ graph [
   node [
     id 492
     label "/techniques/T1090/001"
-    labl "Internal Proxy"
     types "sub_technique"
   ]
   node [
     id 493
     label "/techniques/T1090/002"
-    labl "External Proxy"
     types "sub_technique"
   ]
   node [
     id 494
     label "/techniques/T1090/003"
-    labl "Multi-hop Proxy"
     types "sub_technique"
   ]
   node [
     id 495
     label "/techniques/T1090/004"
-    labl "Domain Fronting"
     types "sub_technique"
   ]
   node [
     id 496
     label "/techniques/T1219"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 497
@@ -2820,19 +2492,16 @@ graph [
   node [
     id 498
     label "/techniques/T1102/001"
-    labl "Dead Drop Resolver"
     types "sub_technique"
   ]
   node [
     id 499
     label "/techniques/T1102/002"
-    labl "Bidirectional Communication"
     types "sub_technique"
   ]
   node [
     id 500
     label "/techniques/T1102/003"
-    labl "One-Way Communication"
     types "sub_technique"
   ]
   node [
@@ -2843,13 +2512,12 @@ graph [
   node [
     id 502
     label "/techniques/T1020/001"
-    labl "Traffic Duplication"
     types "sub_technique"
   ]
   node [
     id 503
     label "/techniques/T1030"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 504
@@ -2859,25 +2527,22 @@ graph [
   node [
     id 505
     label "/techniques/T1048/001"
-    labl "Exfiltration Over Symmetric Encrypted Non-C2 Protocol"
     types "sub_technique"
   ]
   node [
     id 506
     label "/techniques/T1048/002"
-    labl "Exfiltration Over Asymmetric Encrypted Non-C2 Protocol"
     types "sub_technique"
   ]
   node [
     id 507
     label "/techniques/T1048/003"
-    labl "Exfiltration Over Unencrypted/Obfuscated Non-C2 Protocol"
     types "sub_technique"
   ]
   node [
     id 508
     label "/techniques/T1041"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 509
@@ -2887,7 +2552,6 @@ graph [
   node [
     id 510
     label "/techniques/T1011/001"
-    labl "Exfiltration Over Bluetooth"
     types "sub_technique"
   ]
   node [
@@ -2898,7 +2562,6 @@ graph [
   node [
     id 512
     label "/techniques/T1052/001"
-    labl "Exfiltration over USB"
     types "sub_technique"
   ]
   node [
@@ -2909,39 +2572,37 @@ graph [
   node [
     id 514
     label "/techniques/T1567/001"
-    labl "Exfiltration to Code Repository"
     types "sub_technique"
   ]
   node [
     id 515
     label "/techniques/T1567/002"
-    labl "Exfiltration to Cloud Storage"
     types "sub_technique"
   ]
   node [
     id 516
     label "/techniques/T1029"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 517
     label "/techniques/T1537"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 518
     label "/techniques/T1531"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 519
     label "/techniques/T1485"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 520
     label "/techniques/T1486"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 521
@@ -2951,19 +2612,16 @@ graph [
   node [
     id 522
     label "/techniques/T1565/001"
-    labl "Stored Data Manipulation"
     types "sub_technique"
   ]
   node [
     id 523
     label "/techniques/T1565/002"
-    labl "Transmitted Data Manipulation"
     types "sub_technique"
   ]
   node [
     id 524
     label "/techniques/T1565/003"
-    labl "Runtime Data Manipulation"
     types "sub_technique"
   ]
   node [
@@ -2974,13 +2632,11 @@ graph [
   node [
     id 526
     label "/techniques/T1491/001"
-    labl "Internal Defacement"
     types "sub_technique"
   ]
   node [
     id 527
     label "/techniques/T1491/002"
-    labl "External Defacement"
     types "sub_technique"
   ]
   node [
@@ -2991,13 +2647,11 @@ graph [
   node [
     id 529
     label "/techniques/T1561/001"
-    labl "Disk Content Wipe"
     types "sub_technique"
   ]
   node [
     id 530
     label "/techniques/T1561/002"
-    labl "Disk Structure Wipe"
     types "sub_technique"
   ]
   node [
@@ -3008,36 +2662,32 @@ graph [
   node [
     id 532
     label "/techniques/T1499/001"
-    labl "OS Exhaustion Flood"
     types "sub_technique"
   ]
   node [
     id 533
     label "/techniques/T1499/002"
-    labl "Service Exhaustion Flood"
     types "sub_technique"
   ]
   node [
     id 534
     label "/techniques/T1499/003"
-    labl "Application Exhaustion Flood"
     types "sub_technique"
   ]
   node [
     id 535
     label "/techniques/T1499/004"
-    labl "Application or System Exploitation"
     types "sub_technique"
   ]
   node [
     id 536
     label "/techniques/T1495"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 537
     label "/techniques/T1490"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 538
@@ -3047,29 +2697,27 @@ graph [
   node [
     id 539
     label "/techniques/T1498/001"
-    labl "Direct Network Flood"
     types "sub_technique"
   ]
   node [
     id 540
     label "/techniques/T1498/002"
-    labl "Reflection Amplification"
     types "sub_technique"
   ]
   node [
     id 541
     label "/techniques/T1496"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 542
     label "/techniques/T1489"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 543
     label "/techniques/T1529"
-    types "super_technique"
+    types "technique"
   ]
   node [
     id 544
