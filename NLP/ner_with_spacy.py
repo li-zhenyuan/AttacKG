@@ -1,7 +1,9 @@
 import spacy
 from spacy.training import Example
+from spacy import displacy
 import random
 import json
+
 
 def read_data_jsonl():
     labeled_data = []
@@ -66,8 +68,14 @@ class spacy_ner:
         self.nlp.to_disk(self.model_location)
         print("---Save Model to %s!---" % self.model_location)
 
+    def test_model(self):
+        example = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+        doc = self.nlp(example)
+        displacy.render(doc, style='ent')
+
 
 if __name__ == '__main__':
     sn = spacy_ner()
     sn.convert_jsonl_spacy(read_data_jsonl())
     sn.spacy_training()
+    sn.test_model()
