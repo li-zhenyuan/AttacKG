@@ -1,4 +1,5 @@
 import spacy
+from spacy.training import Example
 import random
 import json
 
@@ -33,20 +34,23 @@ with open(r"/home/zhenyuan/AttacKG/NLP/Doccano/admin.jsonl", "r") as read_file:
         data = json.loads(line)
         labeled_data.append(data)
 
-spacy_data = []
+nlp = spacy.blank("en")
+
+spacy_data = [] # v3.0
 for entry in labeled_data:
     entities = []
     for e in entry['label']:
         entities.append((e[0], e[1], e[2]))
-    spacy_entry = (entry['data'], {"entities": entities})
-    spacy_data.append(spacy_entry)
+    # spacy_entry = (entry['data'], {"entities": entities})
+    # spacy_data.append(spacy_entry)
+    spacy_data.append(Example.from_dict(nlp.make_doc(entry['data']), {"entities": entities}))
 
+nlp.initialize(lambda: spacy_data)
 # split training and testing set
-training_set = spacy_data[0:19]
-testing_set = spacy_data[20:-1]
+# training_set = spacy_data[0:19]
+# testing_set = spacy_data[20:-1]
 
 # Start training
-nlp = spacy.blank("en")
 ner = nlp.add_pipe("ner")
 ner.add_label("NetLoc")
 ner.add_label("APTFamily")
@@ -65,16 +69,16 @@ nlp.begin_training()
 
 # Loop
 for itn in range(4):
-    random.shuffle(training_set)
-    losses = ()
+    random.shuffle(spacy_data)
+    # losses = ()
 
     # Batch the examples
-    for batch in spacy.util.minibatch(training_set, size=2):
-        texts = [data for text, entities in batch]
-        annotations = [entities for text, entities in batch]
+    for batch in spacy.util.minibatch(spacy_data, size=2):
+        # texts = [data for text, entities in batch]
+        # annotations = [entities for text, entities in batch]
 
         # Update the model
-        nlp.update((texts, annotations), losses=losses, drop=0.3)
-        print(losses)
+        nlp.update(batch)
+        # print(losses)
 
-nlp.to_disk("cti.model")
+nlp.to_disk("/home/zhenyuan/AttacKG/NLP/cti.model")
