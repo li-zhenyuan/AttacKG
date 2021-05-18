@@ -3,82 +3,71 @@ from spacy.training import Example
 import random
 import json
 
-labeled_data = []
-spacy_data = []
+def read_data_jsonl():
+    labeled_data = []
+    with open(r"/home/zhenyuan/AttacKG/NLP/Doccano/admin.jsonl", "r") as read_file:
+        for line in read_file:
+            data = json.loads(line)
+            labeled_data.append(data)
 
-# Data Preparation
-# with open(r"/home/zhenyuan/AttacKG/NLP/Doccano/admin.jsonl", "r") as read_file:
-#     for line in read_file:
-#         data = json.loads(line)
-#         labeled_data.append(data)
-#         if "label" in line:
-#             data["entities"] = data.pop("label")
-#         else:
-#             data["entities"] = []
-#
-#         tmp_ents = []
-#         for e in data["entities"]:
-#             #             if e[2] in ['APTFamily', 'ExeFile', 'ScriptsFile']
-#             tmp_ents.append({"start": e[0], "end": e[1], "label": e[2]})
-#
-#             data["entities"] = tmp_ents
-#
-#         if len(data["data"]) > 5:
-#             spacy_line = json.dumps({"entities": data["entities"], "text": data["data"]})
-#             spacy_data.append(spacy_line)
-#             print(spacy_line)
+    print('---Read Labeled Data(%d)!---' % len(labeled_data))
+    return labeled_data
 
-labeled_data = []
-with open(r"/home/zhenyuan/AttacKG/NLP/Doccano/admin.jsonl", "r") as read_file:
-    for line in read_file:
-        data = json.loads(line)
-        labeled_data.append(data)
 
-nlp = spacy.blank("en")
+class spacy_ner:
 
-spacy_data = [] # v3.0
-for entry in labeled_data:
-    entities = []
-    for e in entry['label']:
-        entities.append((e[0], e[1], e[2]))
-    # spacy_entry = (entry['data'], {"entities": entities})
-    # spacy_data.append(spacy_entry)
-    spacy_data.append(Example.from_dict(nlp.make_doc(entry['data']), {"entities": entities}))
+    nlp = spacy.blank("en")
+    spacy_data = []
+    model_location = "/home/zhenyuan/AttacKG/NLP/cti.model"
 
-nlp.initialize(lambda: spacy_data)
-# split training and testing set
-# training_set = spacy_data[0:19]
-# testing_set = spacy_data[20:-1]
+    def convert_jsonl_spacy(self, labeled_data):
+        for entry in labeled_data:
+            entities = []
+            for e in entry['label']:
+                entities.append((e[0], e[1], e[2]))
+            self.spacy_data.append(Example.from_dict(self.nlp.make_doc(entry['data']), {"entities": entities}))
 
-# Start training
-ner = nlp.add_pipe("ner")
-ner.add_label("NetLoc")
-ner.add_label("APTFamily")
-ner.add_label("ExeFile")
-ner.add_label("ScriptsFile")
-ner.add_label("DocumentFile")
-ner.add_label("E-mail")
-ner.add_label("Registry")
-ner.add_label("File")
-ner.add_label("Vulnerability")
-ner.add_label("C2C")
-ner.add_label("SensInfo")
-ner.add_label("Service")
+        self.nlp.initialize(lambda: self.spacy_data)
+    # split training and testing set
+    # training_set = spacy_data[0:19]
+    # testing_set = spacy_data[20:-1]
 
-nlp.begin_training()
+    def spacy_training(self):
+        # Start training
+        print("---Start Training!---")
 
-# Loop
-for itn in range(4):
-    random.shuffle(spacy_data)
-    # losses = ()
+        ner = self.nlp.add_pipe("ner")
+        ner.add_label("NetLoc")
+        ner.add_label("APTFamily")
+        ner.add_label("ExeFile")
+        ner.add_label("ScriptsFile")
+        ner.add_label("DocumentFile")
+        ner.add_label("E-mail")
+        ner.add_label("Registry")
+        ner.add_label("File")
+        ner.add_label("Vulnerability")
+        ner.add_label("C2C")
+        ner.add_label("SensInfo")
+        ner.add_label("Service")
 
-    # Batch the examples
-    for batch in spacy.util.minibatch(spacy_data, size=2):
-        # texts = [data for text, entities in batch]
-        # annotations = [entities for text, entities in batch]
+        self.nlp.begin_training()
 
-        # Update the model
-        nlp.update(batch)
-        # print(losses)
+        # Loop
+        for itn in range(4):
+            random.shuffle(self.spacy_data)
+            # losses = ()
 
-nlp.to_disk("/home/zhenyuan/AttacKG/NLP/cti.model")
+            # Batch the examples
+            for batch in spacy.util.minibatch(self.spacy_data, size=2):
+                # Update the model
+                self.nlp.update(batch)
+                # print(losses)
+
+        self.nlp.to_disk(self.model_location)
+        print("---Save Model to %s!---" % self.model_location)
+
+
+if __name__ == '__main__':
+    sn = spacy_ner()
+    sn.convert_jsonl_spacy(read_data_jsonl())
+    sn.spacy_training()
