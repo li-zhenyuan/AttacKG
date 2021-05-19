@@ -1,7 +1,7 @@
 # AttacKG: Practical CTI Report Parsing & Threat Intelligence KG Building
 Building a Knowledge Graph for cyber attack with information extracted from Cyber Threat Intelligence reports.
 
-![overview](Paper/images/overview.png)
+![overview](Paper/images/Overview.png)
 
 ## S1: Crawler Mitre Cross-reference
 `Mitre_TTPs/mitre_attack_retrieve.ipynb`
