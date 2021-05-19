@@ -4,6 +4,10 @@ from spacy import displacy
 import random
 import json
 
+# https://medium.com/@justindavies/training-spacy-ner-models-with-doccano-8d8203e29bfa
+# https://itnext.io/nlp-named-entity-recognition-ner-with-spacy-and-python-dabaf843cab2
+# https://support.prodi.gy/t/updating-training-pipline-of-ner-from-spacy-2-to-spacy-3/3592
+# https://spacy.io/api/example
 
 def read_data_jsonl():
     labeled_data = []
