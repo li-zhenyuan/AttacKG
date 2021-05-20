@@ -55,15 +55,15 @@ class IoC_identifier:
     def batch_IoC_identify_from_file(self, in_file, out_file):
         with open(in_file, "r") as read_file, open(out_file, "w") as write_file:
             for line in read_file:
-                if re.match("[/techniques/T.*]", line) == None:
-                    continue
-                else:
-                    output = self.IoC_identify(line)
-                    write_file.write(output + "\n")
+                # if re.match("[/techniques/T.*]", line) == None:
+                #     continue
+                # else:
+                output = self.IoC_identify(line)
+                write_file.write(output + "\n")
 
 
 if __name__ == '__main__':
     ii = IoC_identifier()
     # ii.write_IoC_regex()
     # ii.IoC_identify("APT29 has exploited CVE-2019-19781 for Citrix, CVE-2019-11510 for Pulse Secure VPNs, CVE-2018-13379 for FortiGate VPNs, and CVE-2019-9670 in Zimbra software to gain access.")
-    ii.batch_IoC_identify_from_file(r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples.txt", r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_labeledWithRegex.txt")
+    ii.batch_IoC_identify_from_file(r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_withoutTechniqueLabel.txt", r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_labeledWithRegex.txt")
