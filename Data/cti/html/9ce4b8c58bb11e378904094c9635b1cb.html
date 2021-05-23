@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="Active Directory Federation Services in Azure" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/deployment/how-to-connect-fed-azure-adfs" />
+			<meta property="og:description" content="In this document you will learn how to deploy AD FS in Azure for high availablity." />
+		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
+		<meta property="og:image:alt" content="Microsoft Logo" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="author" content="billmath" />
+<meta name="breadcrumb_path" content="/windows-server/breadcrumbs/toc.json" />
+<meta name="depot_name" content="MSDN.WindowsServerDocs-pr" />
+<meta name="description" content="In this document you will learn how to deploy AD FS in Azure for high availablity." />
+<meta name="document_id" content="2ac8cd29-26cd-47da-5b3e-d58ba7c4a20c" />
+<meta name="document_version_independent_id" content="ae9587c8-0822-f5af-98ef-5386c4f17e58" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/windowsserverdocs-pr/blob/8c9348ecfaa6130c67a67672de0aff779bf56491/WindowsServerDocs/identity/ad-fs/deployment/how-to-connect-fed-azure-adfs.md" />
+<meta name="locale" content="en-us" />
+<meta name="manager" content="mtillman" />
+<meta name="ms.assetid" content="692a188c-badc-44aa-ba86-71c0e8074510" />
+<meta name="ms.author" content="billmath" />
+<meta name="ms.date" content="10/28/2018" />
+<meta name="ms.prod" content="windows-server" />
+<meta name="ms.technology" content="ad-fs" />
+<meta name="ms.topic" content="how-to" />
+<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/windowsserverdocs-pr/blob/live/WindowsServerDocs/identity/ad-fs/deployment/how-to-connect-fed-azure-adfs.md" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="WindowsServerDocs-pr" />
+<meta name="search.ms_product" content="MSDN" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="updated_at" content="2021-01-06 06:33 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="../../toc.json" />
+<meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/MSDN.WindowsServerDocs-pr/{branchName}{pdfName}" />
+<meta name="word_count" content="3401" />
+
+
+<link href="https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/deployment/how-to-connect-fed-azure-adfs" rel="canonical">
+	<title>Active Directory Federation Services in Azure | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: true,
+			hasGithubIssues: true,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'GitHub',
+			feedbackGitHubRepo: 'MicrosoftDocs/windowsserverdocs',
+			feedbackProductUrl: 'https://windowsserver.uservoice.com/forums/295047-general-feedback',
+			contentGitUrl: 'https://github.com/MicrosoftDocs/windowsserverdocs/blob/master/WindowsServerDocs/identity/ad-fs/deployment/how-to-connect-fed-azure-adfs.md',
+			extendBreadcrumb: true,
+			isEditDisplayable: true,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+			contributors: [
+						{ name: "billmath", url: "https://github.com/billmath" },
+						{ name: "eross-msft", url: "https://github.com/eross-msft" },
+						{ name: "DCtheGeek", url: "https://github.com/DCtheGeek" },
+						{ name: "garrett-wood", url: "https://github.com/garrett-wood" },
+						{ name: "zhvolosh", url: "https://github.com/zhvolosh" },
+						{ name: "v-thepet", url: "https://github.com/v-thepet" },
+						{ name: "iangpgh", url: "https://github.com/iangpgh" },
+						{ name: "v-kents", url: "https://github.com/v-kents" },
+						{ name: "DennisLee-DennisLee", url: "https://github.com/DennisLee-DennisLee" }
+],
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="is-hidden"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+							<li id="feedback-section-link">
+								<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments" title="Send feedback about this page">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-comment-lines"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
+								</a>
+							</li>
+								<li id="contenteditbtn">
+									<a href="https://github.com/MicrosoftDocs/windowsserverdocs/blob/master/WindowsServerDocs/identity/ad-fs/deployment/how-to-connect-fed-azure-adfs.md" class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit" data-original_content_git_url="https://github.com/MicrosoftDocs/windowsserverdocs-pr/blob/live/WindowsServerDocs/identity/ad-fs/deployment/how-to-connect-fed-azure-adfs.md" data-original_content_git_url_template="{repo}/blob/{branch}/WindowsServerDocs/identity/ad-fs/deployment/how-to-connect-fed-azure-adfs.md" data-pr_repo="" data-pr_branch="">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-edit-outline"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
+								</a>
+							</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="deploying-active-directory-federation-services-in-azure">Deploying Active Directory Federation Services in Azure</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2018-10-28T00:00:00.000Z" data-article-date-source="ms.date">10/28/2018</time>
+							</li>
+									<li class="readingTime">17 minutes to read</li>
+								<li class="contributors-holder">
+									<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
+														<li class="facepile-item">
+															<a href="https://github.com/billmath" title="billmath" aria-label="billmathGithub profile" data-src="https://github.com/billmath.png?size=32" data-contributor-name="billmath" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/billmath.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">b</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/eross-msft" title="eross-msft" aria-label="eross-msftGithub profile" data-src="https://github.com/eross-msft.png?size=32" data-contributor-name="eross-msft" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/eross-msft.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">e</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/DCtheGeek" title="DCtheGeek" aria-label="DCtheGeekGithub profile" data-src="https://github.com/DCtheGeek.png?size=32" data-contributor-name="DCtheGeek" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/DCtheGeek.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">D</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/garrett-wood" title="garrett-wood" aria-label="garrett-woodGithub profile" data-src="https://github.com/garrett-wood.png?size=32" data-contributor-name="garrett-wood" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/garrett-wood.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">g</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/zhvolosh" title="zhvolosh" aria-label="zhvoloshGithub profile" data-src="https://github.com/zhvolosh.png?size=32" data-contributor-name="zhvolosh" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/zhvolosh.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">z</span>
+															</a>
+														</li>
+											<li class="facepile-item">
+													<button aria-label="View all contributors" class="facepile-item-more" title="View all contributors">
+														<div class="facepile-item-coin" aria-hidden="true">
+															<span class="facepile-item-coin-text" aria-hidden="true">
+																+4
+															</span>
+														</div>
+													</button>
+											</li>
+									</ul>
+								</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p>AD FS provides simplified, secured identity federation and Web single sign-on (SSO) capabilities. Federation with Azure AD or O365 enables users to authenticate using on-premises credentials and access all resources in cloud. As a result, it becomes important to have a highly available AD FS infrastructure to ensure access to resources both on-premises and in the cloud. Deploying AD FS in Azure can help achieve the high availability required with minimal efforts.
+There are several advantages of deploying AD FS in Azure, a few of them are listed below:</p>
+<ul>
+<li><strong>High Availability</strong> - With the power of Azure Availability Sets, you ensure a highly available infrastructure.</li>
+<li><strong>Easy to Scale</strong> – Need more performance? Easily migrate to more powerful machines by just a few clicks in Azure</li>
+<li><strong>Cross-Geo Redundancy</strong> – With Azure Geo Redundancy you can be assured that your infrastructure is highly available across the globe</li>
+<li><strong>Easy to Manage</strong> – With highly simplified management options in Azure portal, managing your infrastructure is very easy and hassle-free</li>
+</ul>
+<h2 id="design-principles">Design principles</h2>
+<p><img src="media/how-to-connect-fed-azure-adfs/deployment.png" alt="Deployment design" data-linktype="relative-path"/></p>
+<p>The diagram above shows the recommended basic topology to start deploying your AD FS infrastructure in Azure. The principles behind the various components of the topology are listed below:</p>
+<ul>
+<li><strong>DC / ADFS Servers</strong>: If you have fewer than 1,000 users you can simply install AD FS role on your domain controllers. If you do not want any performance impact on the domain controllers or if you have more than 1,000 users, then deploy AD FS on separate servers.</li>
+<li><strong>WAP Server</strong> – it is necessary to deploy Web Application Proxy servers, so that users can reach the AD FS when they are not on the company network also.</li>
+<li><strong>DMZ</strong>: The Web Application Proxy servers will be placed in the DMZ and ONLY TCP/443 access is allowed between the DMZ and the internal subnet.</li>
+<li><strong>Load Balancers</strong>: To ensure high availability of AD FS and Web Application Proxy servers, we recommend using an internal load balancer for AD FS servers and Azure Load Balancer for Web Application Proxy servers.</li>
+<li><strong>Availability Sets</strong>: To provide redundancy to your AD FS deployment, it is recommended that you group two or more virtual machines in an Availability Set for similar workloads. This configuration ensures that during either a planned or unplanned maintenance event, at least one virtual machine will be available</li>
+<li><strong>Storage Accounts</strong>: It is recommended to have two storage accounts. Having a single storage account can lead to creation of a single point of failure and can cause the deployment to become unavailable in an unlikely scenario where the storage account goes down. Two storage accounts will help associate one storage account for each fault line.</li>
+<li><strong>Network segregation</strong>:  Web Application Proxy servers should be deployed in a separate DMZ network. You can divide one virtual network into two subnets and then deploy the Web Application Proxy server(s) in an isolated subnet. You can simply configure the network security group settings for each subnet and allow only required communication between the two subnets. More details are given per deployment scenario below</li>
+</ul>
+<h2 id="steps-to-deploy-ad-fs-in-azure">Steps to deploy AD FS in Azure</h2>
+<p>The steps mentioned in this section outline the guide to deploy the below depicted AD FS infrastructure in Azure.</p>
+<h3 id="1-deploying-the-network">1. Deploying the network</h3>
+<p>As outlined above, you can either create two subnets in a single virtual network or else create two completely different virtual networks (VNet). This article will focus on deploying a single virtual network and divide it into two subnets. This is currently an easier approach as two separate VNets would require a VNet to VNet gateway for communications.</p>
+<p><strong>1.1 Create virtual network</strong></p>
+<p><img src="media/how-to-connect-fed-azure-adfs/deploynetwork1.png" alt="Create virtual network" data-linktype="relative-path"/></p>
+<p>In the Azure portal, select virtual network and you can deploy the virtual network and one subnet immediately with just one click. INT subnet is also defined and is ready now for VMs to be added.
+The next step is to add another subnet to the network, i.e. the DMZ subnet. To create the DMZ subnet, simply</p>
+<ul>
+<li>Select the newly created network</li>
+<li>In the properties select subnet</li>
+<li>In the subnet panel click on the add button</li>
+<li>Provide the subnet name and address space information to create the subnet</li>
+</ul>
+<p><img src="media/how-to-connect-fed-azure-adfs/deploynetwork2.png" alt="Subnet" data-linktype="relative-path"/></p>
+<p><img src="media/how-to-connect-fed-azure-adfs/deploynetwork3.png" alt="Subnet DMZ" data-linktype="relative-path"/></p>
+<p><strong>1.2. Creating the network security groups</strong></p>
+<p>A Network security group (NSG) contains a list of Access Control List (ACL) rules that allow or deny network traffic to your VM instances in a Virtual Network. NSGs can be associated with either subnets or individual VM instances within that subnet. When an NSG is associated with a subnet, the ACL rules apply to all the VM instances in that subnet.
+For the purpose of this guidance, we will create two NSGs: one each for an internal network and a DMZ. They will be labeled NSG_INT and NSG_DMZ respectively.</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/creatensg1.png" alt="Create NSG" data-linktype="relative-path"/></p>
+<p>After the NSG is created, there will be 0 inbound and 0 outbound rules. Once the roles on the respective servers are installed and functional, then the inbound and outbound rules can be made according to the desired level of security.</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/nsgint1.png" alt="Initialize NSG" data-linktype="relative-path"/></p>
+<p>After the NSGs are created, associate NSG_INT with subnet INT and NSG_DMZ with subnet DMZ. An example screenshot is given below:</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/nsgconfigure1.png" alt="NSG configure" data-linktype="relative-path"/></p>
+<ul>
+<li>Click on Subnets to open the panel for subnets</li>
+<li>Select the subnet to associate with the NSG</li>
+</ul>
+<p>After configuration, the panel for Subnets should look like below:</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/nsgconfigure2.png" alt="Subnets after NSG" data-linktype="relative-path"/></p>
+<p><strong>1.3. Create Connection to on-premises</strong></p>
+<p>We will need a connection to on-premises in order to deploy the domain controller (DC) in azure. Azure offers various connectivity options to connect your on-premises infrastructure to your Azure infrastructure.</p>
+<ul>
+<li>Point-to-site</li>
+<li>Virtual Network Site-to-site</li>
+<li>ExpressRoute</li>
+</ul>
+<p>It is recommended to use ExpressRoute. ExpressRoute lets you create private connections between Azure datacenters and infrastructure that's on your premises or in a co-location environment. ExpressRoute connections do not go over the public Internet. They offer more reliability, faster speeds, lower latencies and higher security than typical connections over the Internet.
+While it is recommended to use ExpressRoute, you may choose any connection method best suited for your organization. To learn more about ExpressRoute and the various connectivity options using ExpressRoute, read <a href="/en-us/azure/expressroute/expressroute-introduction" data-linktype="absolute-path">ExpressRoute technical overview</a>.</p>
+<h3 id="2-create-storage-accounts">2. Create storage accounts</h3>
+<p>In order to maintain high availability and avoid dependence on a single storage account, you can create two storage accounts. Divide the machines in each availability set into two groups and then assign each group a separate storage account.</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/storageaccount1.png" alt="Create storage accounts" data-linktype="relative-path"/></p>
+<h3 id="3-create-availability-sets">3. Create availability sets</h3>
+<p>For each role (DC/AD FS and WAP), create availability sets that will contain 2 machines each at the minimum. This will help achieve higher availability for each role.
+While creating the availability sets, it is essential to decide on the following:</p>
+<ul>
+<li><strong>Fault Domains</strong>: Virtual machines in the same fault domain share the same power source and physical network switch. A minimum of 2 fault domains are recommended. The default value is 3 and you can leave it as is for the purpose of this deployment</li>
+<li><strong>Update domains</strong>: Machines belonging to the same update domain are restarted together during an update. You want to have minimum of 2 update domains. The default value is 5 and you can leave it as is for the purpose of this deployment</li>
+</ul>
+<p><img src="media/how-to-connect-fed-azure-adfs/availabilityset1.png" alt="Availability sets" data-linktype="relative-path"/></p>
+<p>Create the following availability sets</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Availability Set</th>
+<th style="text-align: center;">Role</th>
+<th style="text-align: center;">Fault domains</th>
+<th style="text-align: left;">Update domains</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">contosodcset</td>
+<td style="text-align: center;">DC/ADFS</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr>
+<td style="text-align: center;">contosowapset</td>
+<td style="text-align: center;">WAP</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: left;">5</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-deploy-virtual-machines">4. Deploy virtual machines</h3>
+<p>The next step is to deploy virtual machines that will host the different roles in your infrastructure. A minimum of two machines are recommended in each availability set. Create four virtual machines for the basic deployment.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Machine</th>
+<th style="text-align: center;">Role</th>
+<th style="text-align: center;">Subnet</th>
+<th style="text-align: center;">Availability set</th>
+<th style="text-align: center;">Storage account</th>
+<th style="text-align: center;">IP Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">contosodc1</td>
+<td style="text-align: center;">DC/ADFS</td>
+<td style="text-align: center;">INT</td>
+<td style="text-align: center;">contosodcset</td>
+<td style="text-align: center;">contososac1</td>
+<td style="text-align: center;">Static</td>
+</tr>
+<tr>
+<td style="text-align: center;">contosodc2</td>
+<td style="text-align: center;">DC/ADFS</td>
+<td style="text-align: center;">INT</td>
+<td style="text-align: center;">contosodcset</td>
+<td style="text-align: center;">contososac2</td>
+<td style="text-align: center;">Static</td>
+</tr>
+<tr>
+<td style="text-align: center;">contosowap1</td>
+<td style="text-align: center;">WAP</td>
+<td style="text-align: center;">DMZ</td>
+<td style="text-align: center;">contosowapset</td>
+<td style="text-align: center;">contososac1</td>
+<td style="text-align: center;">Static</td>
+</tr>
+<tr>
+<td style="text-align: center;">contosowap2</td>
+<td style="text-align: center;">WAP</td>
+<td style="text-align: center;">DMZ</td>
+<td style="text-align: center;">contosowapset</td>
+<td style="text-align: center;">contososac2</td>
+<td style="text-align: center;">Static</td>
+</tr>
+</tbody>
+</table>
+<p>As you might have noticed, no NSG has been specified. This is because azure lets you use NSG at the subnet level. Then, you can control machine network traffic by using the individual NSG associated with either the subnet or else the NIC object. Read more on <a href="/en-us/azure/virtual-network/tutorial-filter-network-traffic" data-linktype="absolute-path">What is a Network Security Group (NSG)</a>.
+Static IP address is recommended if you are managing the DNS. You can use Azure DNS and instead in the DNS records for your domain, refer to the new machines by their Azure FQDNs.
+Your virtual machine pane should look like below after the deployment is completed:</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/virtualmachinesdeployed_noadfs.png" alt="Virtual Machines deployed" data-linktype="relative-path"/></p>
+<h3 id="5-configuring-the-domain-controller--ad-fs-servers">5. Configuring the domain controller / AD FS servers</h3>
+<p>In order to authenticate any incoming request, AD FS will need to contact the domain controller. To save the costly trip from Azure to on-premises DC for authentication, it is recommended to deploy a replica of the domain controller in Azure. In order to attain high availability, it is recommended to create an availability set of at-least 2 domain controllers.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Domain controller</th>
+<th style="text-align: center;">Role</th>
+<th style="text-align: center;">Storage account</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">contosodc1</td>
+<td style="text-align: center;">Replica</td>
+<td style="text-align: center;">contososac1</td>
+</tr>
+<tr>
+<td style="text-align: center;">contosodc2</td>
+<td style="text-align: center;">Replica</td>
+<td style="text-align: center;">contososac2</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Promote the two servers as replica domain controllers with DNS</li>
+<li>Configure the AD FS servers by installing the AD FS role using the server manager.</li>
+</ul>
+<h3 id="6-deploying-internal-load-balancer-ilb">6. Deploying Internal Load Balancer (ILB)</h3>
+<p><strong>6.1. Create the ILB</strong></p>
+<p>To deploy an ILB, select Load Balancers in the Azure portal and click on add (+).</p>
+<div class="NOTE">
+<p>Note</p>
+<p>if you do not see <strong>Load Balancers</strong> in your menu, click <strong>Browse</strong> in the lower left of the portal and scroll until you see <strong>Load Balancers</strong>.  Then click the yellow star to add it to your menu. Now select the new load balancer icon to open the panel to begin configuration of the load balancer.</p>
+</div>
+<p><img src="media/how-to-connect-fed-azure-adfs/browseloadbalancer.png" alt="Browse load balancer" data-linktype="relative-path"/></p>
+<ul>
+<li><strong>Name</strong>: Give any suitable name to the load balancer</li>
+<li><strong>Scheme</strong>: Since this load balancer will be placed in front of the AD FS servers and is meant for internal network connections ONLY, select &quot;Internal&quot;</li>
+<li><strong>Virtual Network</strong>: Choose the virtual network where you are deploying your AD FS</li>
+<li><strong>Subnet</strong>: Choose the internal subnet here</li>
+<li><strong>IP Address assignment</strong>: Static</li>
+</ul>
+<p><img src="media/how-to-connect-fed-azure-adfs/ilbdeployment1.png" alt="Internal load balancer" data-linktype="relative-path"/></p>
+<p>After you click create and the ILB is deployed, you should see it in the list of load balancers:</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/ilbdeployment2.png" alt="Load balancers after ILB" data-linktype="relative-path"/></p>
+<p>Next step is to configure the backend pool and the backend probe.</p>
+<p><strong>6.2. Configure ILB backend pool</strong></p>
+<p>Select the newly created ILB in the Load Balancers panel. It will open the settings panel.</p>
+<ol>
+<li>Select backend pools from the settings panel</li>
+<li>In the add backend pool panel, click on add virtual machine</li>
+<li>You will be presented with a panel where you can choose availability set</li>
+<li>Choose the AD FS availability set</li>
+</ol>
+<p><img src="media/how-to-connect-fed-azure-adfs/ilbdeployment3.png" alt="Configure ILB backend pool" data-linktype="relative-path"/></p>
+<p><strong>6.3. Configuring probe</strong></p>
+<p>In the ILB settings panel, select Health probes.</p>
+<ol>
+<li>Click on add</li>
+<li>Provide details for probe
+a. <strong>Name</strong>: Probe name
+b. <strong>Protocol</strong>: HTTP
+c. <strong>Port</strong>: 80 (HTTP)
+d. <strong>Path</strong>: /adfs/probe
+e. <strong>Interval</strong>: 5 (default value) – this is the interval at which ILB will probe the machines in the backend pool
+f. <strong>Unhealthy threshold limit</strong>: 2 (default value) – this is the threshold of consecutive probe failures after which ILB will declare a machine in the backend pool non-responsive and stop sending traffic to it.</li>
+</ol>
+<p>We are using the /adfs/probe endpoint that was created explictly for health checks in an AD FS environment where a full HTTPS path check cannot happen.  This is substantially better than a basic port 443 check, which does not accurately reflect the status of a modern AD FS deployment.  More information on this can be found at <a href="https://blogs.technet.microsoft.com/applicationproxyblog/2014/10/17/hardware-load-balancer-health-checks-and-web-application-proxy-ad-fs-2012-r2/" data-linktype="external">https://blogs.technet.microsoft.com/applicationproxyblog/2014/10/17/hardware-load-balancer-health-checks-and-web-application-proxy-ad-fs-2012-r2/</a>.</p>
+<p><strong>6.4. Create load balancing rules</strong></p>
+<p>In order to effectively balance the traffic, the ILB should be configured with load balancing rules. In order to create a load balancing rule,</p>
+<ol>
+<li>Select Load balancing rule from the settings panel of the ILB</li>
+<li>Click on Add in the Load balancing rule panel</li>
+<li>In the Add load balancing rule panel
+a. <strong>Name</strong>: Provide a name for the rule
+b. <strong>Protocol</strong>: Select TCP
+c. <strong>Port</strong>: 443
+d. <strong>Backend port</strong>: 443
+e. <strong>Backend pool</strong>: Select the pool you created for the AD FS cluster earlier
+f. <strong>Probe</strong>: Select the probe created for AD FS servers earlier</li>
+</ol>
+<p><img src="media/how-to-connect-fed-azure-adfs/ilbdeployment5.png" alt="Configure ILB balancing rules" data-linktype="relative-path"/></p>
+<p><strong>6.5. Update DNS with ILB</strong></p>
+<p>Using your internal DNS server, create an A record for the ILB. The A record should be for the federation service with the IP address pointing to the IP address of the ILB. For example, if the ILB IP address is 10.3.0.8 and the federation service installed is fs.contoso.com, then create an A record for fs.contoso.com pointing to 10.3.0.8.
+This will ensure that all data trasmitted to fs.contoso.com end up at the ILB and are appropriately routed.</p>
+<div class="WARNING">
+<p>Warning</p>
+<p>If you are using the WID (Windows Internal Database) for your AD FS database, this value should instead be temporarily set to point to your primary AD FS server or the Web Application Proxy will fail enrollement. After you have successfully enrolled all Web Appplication Proxy servers, change this DNS entry to point to the load balancer.</p>
+</div>
+<div class="NOTE">
+<p>Note</p>
+<p>If your deployment is also using IPv6, be sure to create a corresponding AAAA record.</p>
+</div>
+<h3 id="7-configuring-the-web-application-proxy-server">7. Configuring the Web Application Proxy server</h3>
+<p><strong>7.1. Configuring the Web Application Proxy servers to reach AD FS servers</strong></p>
+<p>In order to ensure that Web Application Proxy servers are able to reach the AD FS servers behind the ILB, create a record in the %systemroot%\system32\drivers\etc\hosts for the ILB. Note that the distinguished name (DN) should be the federation service name, for example fs.contoso.com. And the IP entry should be that of the ILB's IP address (10.3.0.8 as in the example).</p>
+<div class="WARNING">
+<p>Warning</p>
+<p>If you are using the WID (Windows Internal Database) for your AD FS database, this value should instead be temporarily set to point to your primary AD FS server, or the Web Application Proxy will fail enrollement. After you have successfully enrolled all Web Appplication Proxy servers, change this DNS entry to point to the load balancer.</p>
+</div>
+<p><strong>7.2. Installing the Web Application Proxy role</strong></p>
+<p>After you ensure that Web Application Proxy servers are able to reach the AD FS servers behind ILB, you can next install the Web Application Proxy servers.
+Web Application Proxy servers need not be joined to the domain. Install the Web Application Proxy roles on the two Web Application Proxy servers by selecting the Remote Access role. The server manager will guide you to complete the WAP installation.
+For more information on how to deploy WAP, read <a href="/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/dn383662(v=ws.11)" data-linktype="absolute-path">Install and Configure the Web Application Proxy Server</a>.</p>
+<h3 id="8--deploying-the-internet-facing-public-load-balancer">8.  Deploying the Internet Facing (Public) Load Balancer</h3>
+<p><strong>8.1.  Create Internet Facing (Public) Load Balancer</strong></p>
+<p>In the Azure portal, select Load balancers and then click on Add. In the Create load balancer panel, enter the following information</p>
+<ol>
+<li><strong>Name</strong>: Name for the load balancer</li>
+<li><strong>Scheme</strong>: Public – this option tells Azure that this load balancer will need a public address.</li>
+<li><strong>IP Address</strong>: Create a new IP address (dynamic)</li>
+</ol>
+<p><img src="media/how-to-connect-fed-azure-adfs/elbdeployment1.png" alt="Internet facing load balancer" data-linktype="relative-path"/></p>
+<p>After deployment, the load balancer will appear in the Load balancers list.</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/elbdeployment2.png" alt="Load balancer list" data-linktype="relative-path"/></p>
+<p><strong>8.2. Assign a DNS label to the public IP</strong></p>
+<p>Click on the newly created load balancer entry in the Load balancers panel to bring up the panel for configuration. Follow below steps to configure the DNS label for the public IP:</p>
+<ol>
+<li>Click on the public IP address. This will open the panel for the public IP and its settings</li>
+<li>Click on Configuration</li>
+<li>Provide a DNS label. This will become the public DNS label that you can access from anywhere, for example contosofs.westus.cloudapp.azure.com. You can add an entry in the external DNS for the federation service (like fs.contoso.com) that resolves to the DNS label of the external load balancer (contosofs.westus.cloudapp.azure.com).</li>
+</ol>
+<p><img src="media/how-to-connect-fed-azure-adfs/elbdeployment3.png" alt="Configure internet facing load balancer" data-linktype="relative-path"/></p>
+<p><img src="media/how-to-connect-fed-azure-adfs/elbdeployment4.png" alt="Configure internet facing load balancer (DNS)" data-linktype="relative-path"/></p>
+<p><strong>8.3. Configure backend pool for Internet Facing (Public) Load Balancer</strong></p>
+<p>Follow the same steps as in creating the internal load balancer, to configure the backend pool for Internet Facing (Public) Load Balancer as the availability set for the WAP servers. For example, contosowapset.</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/elbdeployment5.png" alt="Configure backend pool of Internet Facing Load Balancer" data-linktype="relative-path"/></p>
+<p><strong>8.4. Configure probe</strong></p>
+<p>Follow the same steps as in configuring the internal load balancer  to configure the probe for the backend pool of WAP servers.</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/elbdeployment6.png" alt="Configure probe of Internet Facing Load Balancer" data-linktype="relative-path"/></p>
+<p><strong>8.5. Create load balancing rule(s)</strong></p>
+<p>Follow the same steps as in ILB to configure the load balancing rule for TCP 443.</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/elbdeployment7.png" alt="Configure balancing rules of Internet Facing Load Balancer" data-linktype="relative-path"/></p>
+<h3 id="9-securing-the-network">9. Securing the network</h3>
+<p><strong>9.1. Securing the internal subnet</strong></p>
+<p>Overall, you need the following rules to efficiently secure your internal subnet (in the order as listed below)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: center;">Flow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">AllowHTTPSFromDMZ</td>
+<td style="text-align: left;">Allow the HTTPS communication from DMZ</td>
+<td style="text-align: center;">Inbound</td>
+</tr>
+<tr>
+<td style="text-align: left;">DenyInternetOutbound</td>
+<td style="text-align: left;">No access to internet</td>
+<td style="text-align: center;">Outbound</td>
+</tr>
+</tbody>
+</table>
+<p><img src="media/how-to-connect-fed-azure-adfs/nsg_int.png" alt="INT access rules (inbound)" data-linktype="relative-path"/></p>
+<p><strong>9.2. Securing the DMZ subnet</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Rule</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: center;">Flow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">AllowHTTPSFromInternet</td>
+<td style="text-align: left;">Allow HTTPS from internet to the DMZ</td>
+<td style="text-align: center;">Inbound</td>
+</tr>
+<tr>
+<td style="text-align: left;">DenyInternetOutbound</td>
+<td style="text-align: left;">Anything except HTTPS to internet is blocked</td>
+<td style="text-align: center;">Outbound</td>
+</tr>
+</tbody>
+</table>
+<p><img src="media/how-to-connect-fed-azure-adfs/nsg_dmz.png" alt="EXT access rules (inbound)" data-linktype="relative-path"/></p>
+<div class="NOTE">
+<p>Note</p>
+<p>If client user certificate authentication (clientTLS authentication using X.509 user certificates) is required, then AD FS requires TCP port 49443 to be enabled for inbound access.</p>
+</div>
+<h3 id="10-test-the-ad-fs-sign-in">10. Test the AD FS sign-in</h3>
+<p>The easiest way is to test AD FS is by using the IdpInitiatedSignon.aspx page. In order to be able to do that, it is required to enable the IdpInitiatedSignOn on the AD FS properties. Follow the steps below to verify your AD FS setup</p>
+<ol>
+<li>Run the below cmdlet on the AD FS server, using PowerShell, to set it to enabled.
+Set-AdfsProperties -EnableIdPInitiatedSignonPage $true</li>
+<li>From any external machine, access https://adfs-server.contoso.com/adfs/ls/IdpInitiatedSignon.aspx.</li>
+<li>You should see the AD FS page like below:</li>
+</ol>
+<p><img src="media/how-to-connect-fed-azure-adfs/test1.png" alt="Test login page" data-linktype="relative-path"/></p>
+<p>On successful sign-in, it will provide you with a success message as shown below:</p>
+<p><img src="media/how-to-connect-fed-azure-adfs/test2.png" alt="Test success" data-linktype="relative-path"/></p>
+<h2 id="template-for-deploying-ad-fs-in-azure">Template for deploying AD FS in Azure</h2>
+<p>The template deploys a 6 machine setup, 2 each for Domain Controllers, AD FS and WAP.</p>
+<p><a href="https://github.com/paulomarquesc/adfs-6vms-regular-template-based" data-linktype="external">AD FS in Azure Deployment Template</a></p>
+<p>You can use an existing virtual network or create a new VNET while deploying this template. The various parameters available for customizing the deployment are listed below with the description of usage of the parameter in the deployment process.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Location</td>
+<td style="text-align: left;">The region to deploy the resources into, e.g. East US.</td>
+</tr>
+<tr>
+<td style="text-align: left;">StorageAccountType</td>
+<td style="text-align: left;">The type of the Storage Account created</td>
+</tr>
+<tr>
+<td style="text-align: left;">VirtualNetworkUsage</td>
+<td style="text-align: left;">Indicates if a new virtual network will be created or use an existing one</td>
+</tr>
+<tr>
+<td style="text-align: left;">VirtualNetworkName</td>
+<td style="text-align: left;">The name of the Virtual Network to Create, mandatory on both existing or new virtual network usage</td>
+</tr>
+<tr>
+<td style="text-align: left;">VirtualNetworkResourceGroupName</td>
+<td style="text-align: left;">Specifies the name of the resource group where the existing virtual network resides. When using an existing virtual network, this becomes a mandatory parameter so the deployment can find the ID of the existing virtual network</td>
+</tr>
+<tr>
+<td style="text-align: left;">VirtualNetworkAddressRange</td>
+<td style="text-align: left;">The address range of the new VNET, mandatory if creating a new virtual network</td>
+</tr>
+<tr>
+<td style="text-align: left;">InternalSubnetName</td>
+<td style="text-align: left;">The name of the internal subnet, mandatory on both virtual network usage options (new or existing)</td>
+</tr>
+<tr>
+<td style="text-align: left;">InternalSubnetAddressRange</td>
+<td style="text-align: left;">The address range of the internal subnet, which contains the Domain Controllers and ADFS servers, mandatory if creating a new virtual network.</td>
+</tr>
+<tr>
+<td style="text-align: left;">DMZSubnetAddressRange</td>
+<td style="text-align: left;">The address range of the dmz subnet, which contains the Windows application proxy servers, mandatory if creating a new virtual network.</td>
+</tr>
+<tr>
+<td style="text-align: left;">DMZSubnetName</td>
+<td style="text-align: left;">The name of the internal subnet, mandatory on both virtual network usage options (new or existing).</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADDC01NICIPAddress</td>
+<td style="text-align: left;">The internal IP address of the first Domain Controller, this IP address will be statically assigned to the DC and must be a valid ip address within the Internal subnet</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADDC02NICIPAddress</td>
+<td style="text-align: left;">The internal IP address of the second Domain Controller, this IP address will be statically assigned to the DC and must be a valid ip address within the Internal subnet</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADFS01NICIPAddress</td>
+<td style="text-align: left;">The internal IP address of the first ADFS server, this IP address will be statically assigned to the ADFS server and must be a valid ip address within the Internal subnet</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADFS02NICIPAddress</td>
+<td style="text-align: left;">The internal IP address of the second ADFS server, this IP address will be statically assigned to the ADFS server and must be a valid ip address within the Internal subnet</td>
+</tr>
+<tr>
+<td style="text-align: left;">WAP01NICIPAddress</td>
+<td style="text-align: left;">The internal IP address of the first WAP server, this IP address will be statically assigned to the WAP server and must be a valid ip address within the DMZ subnet</td>
+</tr>
+<tr>
+<td style="text-align: left;">WAP02NICIPAddress</td>
+<td style="text-align: left;">The internal IP address of the second WAP server, this IP address will be statically assigned to the WAP server and must be a valid ip address within the DMZ subnet</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADFSLoadBalancerPrivateIPAddress</td>
+<td style="text-align: left;">The internal IP address of the ADFS load balancer, this IP address will be statically assigned to the load balancer and must be a valid ip address within the Internal subnet</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADDCVMNamePrefix</td>
+<td style="text-align: left;">Virtual Machine name prefix for Domain Controllers</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADFSVMNamePrefix</td>
+<td style="text-align: left;">Virtual Machine name prefix for ADFS servers</td>
+</tr>
+<tr>
+<td style="text-align: left;">WAPVMNamePrefix</td>
+<td style="text-align: left;">Virtual Machine name prefix for WAP servers</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADDCVMSize</td>
+<td style="text-align: left;">The vm size of the Domain Controllers</td>
+</tr>
+<tr>
+<td style="text-align: left;">ADFSVMSize</td>
+<td style="text-align: left;">The vm size of the ADFS servers</td>
+</tr>
+<tr>
+<td style="text-align: left;">WAPVMSize</td>
+<td style="text-align: left;">The vm size of the WAP servers</td>
+</tr>
+<tr>
+<td style="text-align: left;">AdminUserName</td>
+<td style="text-align: left;">The name of the local Administrator of the virtual machines</td>
+</tr>
+<tr>
+<td style="text-align: left;">AdminPassword</td>
+<td style="text-align: left;">The password for the local Administrator account of the virtual machines</td>
+</tr>
+</tbody>
+</table>
+<h2 id="additional-resources">Additional resources</h2>
+<ul>
+<li><a href="https://aka.ms/Azure/Availability" data-linktype="external">Availability Sets</a></li>
+<li><a href="/en-us/azure/load-balancer/load-balancer-overview" data-linktype="absolute-path">Azure Load Balancer</a></li>
+<li><a href="/en-us/azure/load-balancer/quickstart-load-balancer-standard-internal-powershell" data-linktype="absolute-path">Internal Load Balancer</a></li>
+<li><a href="/en-us/azure/load-balancer/quickstart-load-balancer-standard-public-powershell" data-linktype="absolute-path">Internet Facing Load Balancer</a></li>
+<li><a href="https://aka.ms/Azure/Storage" data-linktype="external">Storage Accounts</a></li>
+<li><a href="/en-us/azure/virtual-network/virtual-networks-overview" data-linktype="absolute-path">Azure Virtual Networks</a></li>
+<li><a href="/en-us/archive/blogs/tangent_thoughts/qrg-quick-reference-guide-active-directory-federation-services" data-linktype="absolute-path">AD FS and Web Application Proxy Links</a></li>
+</ul>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li><a href="/en-us/azure/active-directory/hybrid/whatis-hybrid-identity" data-linktype="absolute-path">Integrating your on-premises identities with Azure Active Directory</a></li>
+<li><a href="/en-us/azure/active-directory/hybrid/how-to-connect-fed-whatis" data-linktype="absolute-path">Configuring and managing your AD FS using Azure AD Connect</a></li>
+<li><a href="active-directory-adfs-in-azure-with-azure-traffic-manager" data-linktype="relative-path">High availability cross-geographic AD FS deployment in Azure with Azure Traffic Manager</a></li>
+</ul>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+								<div class="is-hidden-desktop border-top has-margin-top-large has-padding-top-large binary-rating-holder">
+									
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small font-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>									</div>
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+<section class="feedback-section position-relative" data-bi-name="feedback-section">
+
+    <h2 id="feedback" class="title is-3 has-margin-top-large">Feedback</h2>
+
+    <div class="alert choose-feedback-type">
+        <p aria-hidden="true" id="send-feedback-about">Submit and view feedback for</p>
+
+        <div class="choose-feedback-buttons margin-top-xs">
+                <a class="button has-external-link-indicator feedback-type-product has-margin-bottom-small" aria-label="Send feedback about this product" href="https://windowsserver.uservoice.com/forums/295047-general-feedback" data-bi-name="product-feedback">
+                    <span>This product</span>
+                </a>
+
+			<a class="button feedback-type-product has-margin-bottom-small github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
+				<span aria-hidden="true" class="docon docon-brand-github has-padding-right-extra-small"></span>
+				<span>This page</span>
+			</a>
+        </div>
+    </div>
+
+    <div class="action-container display-flex justify-content-flex-end has-margin-top-small has-margin-bottom-small">
+        <a class="view-on-github has-external-link-indicator" data-bi-name="view-on-github" href="https://github.com/MicrosoftDocs/windowsserverdocs/issues">
+            <span aria-hidden="true" class="docon docon-brand-github"></span>
+            <span>View all page feedback</span>
+        </a>
+    </div>
+</section>
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+								
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

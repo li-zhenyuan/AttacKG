@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="Group Policy Basics - Part 1: Understanding the Structure of a Group Policy Object" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/archive/blogs/musings_of_a_technical_tam/group-policy-basics-part-1-understanding-the-structure-of-a-group-policy-object" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="archived_blog_id" content="393" />
+<meta name="archived_blog_orig_url" content="https://blogs.technet.microsoft.com/musings_of_a_technical_tam" />
+<meta name="archived_blog_post_author" content="srachui" />
+<meta name="archived_blog_post_author_email" content="srachui@hotmail.com" />
+<meta name="archived_blog_post_id" content="15" />
+<meta name="author" content="kexugit" />
+<meta name="breadcrumb_path" content="/archive/blogs/bread/toc.json" />
+<meta name="depot_name" content="MSDN.blogs-archive" />
+<meta name="document_id" content="1a21b269-487f-ce1a-2d53-20378c7e641c" />
+<meta name="document_version_independent_id" content="2d6f3092-bc47-6739-fae9-2f2f85870594" />
+<meta name="gitcommit" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr/commit/eb642dd1044ee615fc8ffa1cc1145e8bc3944da4?path=/blogs-archive/musings_of_a_technical_tam/group-policy-basics-part-1-understanding-the-structure-of-a-group-policy-object.md&amp;_a=contents" />
+<meta name="is_archived" content="true" />
+<meta name="locale" content="en-us" />
+<meta name="ms.author" content="Archiveddocs" />
+<meta name="ms.date" content="02/13/2012" />
+<meta name="ms.topic" content="Archived" />
+<meta name="original_content_git_url" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr?path=/blogs-archive/musings_of_a_technical_tam/group-policy-basics-part-1-understanding-the-structure-of-a-group-policy-object.md&amp;version=GBlive&amp;_a=contents" />
+<meta name="ROBOTS" content="NOINDEX,NOFOLLOW" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="blogs-archive" />
+<meta name="search.ms_product" content="MSDN" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="uhfHeaderId" content="MSDocsHeader-Archive" />
+<meta name="updated_at" content="2020-02-07 07:49 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="toc.json" />
+<meta name="word_count" content="2234" />
+
+
+	<meta name="scope" content="Blogs" />
+<link href="https://docs.microsoft.com/en-us/archive/blogs/musings_of_a_technical_tam/group-policy-basics-part-1-understanding-the-structure-of-a-group-policy-object" rel="canonical">
+	<title>Group Policy Basics - Part 1: Understanding the Structure of a Group Policy Object | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: false,
+			hasGithubIssues: false,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr?path=/blogs-archive/musings_of_a_technical_tam/group-policy-basics-part-1-understanding-the-structure-of-a-group-policy-object.md&version=GBlive&_a=contents',
+			extendBreadcrumb: false,
+			isEditDisplayable: false,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="nav-bar border-top is-hidden-mobile"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="group-policy-basics---part-1-understanding-the-structure-of-a-group-policy-object">Group Policy Basics - Part 1: Understanding the Structure of a Group Policy Object</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2012-02-13T00:00:00.000Z" data-article-date-source="ms.date">02/13/2012</time>
+							</li>
+									<li class="readingTime">11 minutes to read</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p>As a Windows administrator, you almost certainly have used Group Policies to control the settings deployed to the clients of your Active Directory infrastructure.  But with Group Policies getting such heavy use, not as many administrators fully understand how Group Policy Objects (GPOs) are structured.  In this post, I will discuss the structure of GPOs in order to help bring greater understanding to this topic.  When you're troubleshooting Group Policies in your environment, it's helpful to understand how they're structured, and hopefully this post will clear up a bit of that mystery.</p>
+<p>Group Policy Objects are actually composed of two parts, the Group Policy Container (GPC) which exists in Active Directory and the Group Policy Template (GPT) where the actual content of your GPOs resides.  A third component, known as Client-Side Extensions (CSEs) can be found on client devices and are necessary for them to properly process the Group Policies assigned to them.</p>
+<p>Before we go through these individual pieces, take a look at how GPOs show up when viewed through the Group Policy Management Console (GPMC).</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/7563.GPMC-GPO%20Container.png" alt="" data-linktype="external"/></a></p>
+<p>In the early days of Active Directory, the only real way to get to a GPO is to open the location where it was linked (a domain, organizational unit, or site).  This made it appear that the GPOs existed at those place in the directory when they were actually only linked to those locations so that their settings would apply to the specified objects they contained (such as the computer objects within a particular OU).  With the GPMC, it's much clearer to see that GPOs do not reside at these different points of the directory but instead exist separately and are only linked to these different levels.</p>
+<p>To see an example of where a GPO is linked, you can check the Scope tab of your selected GPO within the GPMC, as shown below.</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/1447.GPMC-Links.png" alt="" data-linktype="external"/></a></p>
+<p>You can see from this picture that the GPO I created named <em>Event Log Size</em> is linked to the Workstations OU within the W2K8Forest domain.  You can further see that the link is enabled (meaning the policy will apply), but it is not enforced (meaning that the policy can be blocked if the administrator of the Workstations OU wishes to prevent the policy applying).</p>
+<p>But even the GPMC's view of where GPOs reside is a bit misleading as there really is no Group Policy Object container in Active Directory.  Instead, the actual structure of the GPO is laid out as follows.</p>
+<p><em>Group Policy Container (GPC)</em></p>
+<p>The first piece of the GPO, while not within a container called Group Plicy Objects, is still found within Active Directory.  In order to see it, there are several options.  The most common is to use Active Directory Users and Computers.  If you choose this tool, you'll need to take the following steps to see the appropriate folder:</p>
+<ol>
+<li>Open <strong>Active Directory Users and Computers</strong> (you can do this by typing DSA.MSC at <strong>Start/Run</strong>)</li>
+<li>Select <strong>View</strong> from the menu bar and ensure <strong>Advanced Features</strong> is selected (if not, select it)</li>
+<li>Expand the <strong>System</strong> container and navigate to the <strong>Policies</strong> container</li>
+</ol>
+<p>If you don't enable Advanced Features, you won't see the System container.  But after this is enabled, you should have a screen similar to the one below:</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/5001.GPC-Default.png" alt="" data-linktype="external"/></a></p>
+<p>Notice that there are two containers, each with a string of numbers.  Each of these represents a different GPO (the string of numbers is the Globally Unique Identifier, or GUID, of each GPO).  Within each of these containers you'll see a Machine and User container.  These contain specific information related to the User and Machine nodes of the GPO itself (as you might expect, the Machine node refers to computer settings and the User node refers to user settings).</p>
+<p>Another tool that you can use to view these folders is LDP.  To use LDP to see these folders, take the following steps:</p>
+<ol>
+<li>Start LDP by typing LDP.EXE at <strong>Start/Run</strong></li>
+<li>Select <strong>Connections</strong> from the menu bar and select <strong>Connect...</strong> to connect to the Domain Controller of your choice.  Select <strong>OK</strong>
+<ol>
+<li>enter the fully qualified domain name of the Domain Controller</li>
+<li>enter port 389 since you're doing an LDAP query</li>
+</ol>
+</li>
+<li>Select <strong>Connections</strong> again and choose <strong>Bind...</strong>
+<ol>
+<li>Make sure you are binding to the directory with an account that has sufficient permissions to do an LDAP query</li>
+</ol>
+</li>
+<li>Select <strong>View</strong> and choose <strong>Tree</strong>.  Enter the distinguished name of your domain (for example: <em>dc=W2K8Forest,dc=com</em>).  Select <strong>OK</strong></li>
+<li>In the left-hand column, expand the directory tree and navigate to Policies under the System container</li>
+</ol>
+<p>There is one big difference when using LDP, which becomes immediately obvious after selecting one of the GPO nodes.  When you double-click it, you will suddenly see a great deal of information in the right-hand pane.  This is the critical directory information that client machines use when processing GPOs.  These settings allow clients to understand where the content of the policy is, which Client-Side Extensions will be needed to process the GPO content, etc.</p>
+<p>Here is a screenshot of what you'll see within the LDP window:</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/6281.LDP-GPO.png" alt="" data-linktype="external"/></a></p>
+<p>Looking at the details of our selected GPO, there are several attributes which are of special interest to us:</p>
+<ul>
+<li><em><strong>displayName</strong></em>: This attribute is the human-friendly name of your GPO</li>
+<li><em><strong>gPCFileSysPath</strong></em>: This attribute points clients to the location where the GPO content can be found.  Collectively, this is known as the Group Policy Template, which is housed in a share known as SYSVOL</li>
+<li><em><strong>gPCMachineExtensionNames</strong></em>: Here is the list of Client-Side Extensions (CSEs) that will be needed by the client in order to process all of the machine-side settings configured for this GPO</li>
+<li><em><strong>gPCUserExtensionNames</strong></em>: This attribute contains the list of CSEs that will be needed to process the user-side settings.  As there are no user-side settings configured in this GPO, the attribute is not populated (and thus not displayed)</li>
+</ul>
+<p>Another important attribute is gPLink and while it's not found as part of the GPO itself, you can find this attribute everywhere that the GPO is linked.  This allows objects within these other containers to know that there is a GPO it needs to process.  In the screenshot below, you can see that the gPLink attribute points to a single GPO found within the policies container of the system partition:</p>
+<p><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/0675.LDP-gPLink.png" alt="" data-linktype="external"/></p>
+<p>So now we've seen the Active Directory portion of the Group Policy object.  It contains settings so that the client can learn which GPOs it must process, which tools it will need to process them, and how to locate the GPO contents in order to process.  Now that we've seen the first part, let's take a look at how and where the GPO content itself is stored.</p>
+<p><em>Group Policy Template (GPT)</em></p>
+<p>The Group Policy Template is where the meat of the GPO resides.  By way of comparison, think of how Active Directory represents a computer object.  It lists all the relevant attributes of the computer, but the object in Active Directory is not the computer itself.  In a similar way, the portion of the GPO in Active Directory merely represents the attributes relevant to the GPO content.  The content itself is known as the Group Policy Template, or GPT, and it resides in a share known as SYSVOL.  This share, like the portion of the GPO stored in Active Directory, is replicated to every DC in the domain.  This way, when a client queries for the GPOs it needs to process, it can locate the contents of those GPOs on the same (in most cases) DC where it's conducting the query.</p>
+<p><em><strong>NOTE: The only exception to this rule is cross-domain GPOs where a GPO is defined in another domain, but is linked in such a way that clients from neighboring domains need to apply them (a Site-level GPO is an example, since Active Directory Sites can span multiple domains). In the case of a cross-domain GPO, the client will need to pull content from a DC in the neighboring domain which can be a very slow process. For this reason, cross-domain GPOs are not generally recommended.</strong></em></p>
+<p>To see the content of your GPOs, you'll want to look at the SYSVOL share on one of your DCs.  You can find the SYSVOL share by navigating to %windir%/sysvol/sysvol (yes, there is a shared SYSVOL folder within a parent SYSVOL folder).  The actual sysvol share is set to <strong>\\&lt;servername&gt;\sysvol</strong>  Within this folder, you will see the same list of GPOs that appear within Active Directory's System/Policies container.  These folders are where the actual settings of your GPO are contained.  Depending on the number of settings you've put in place, there will be more or less present in each folder.  Regardless, you are guaranteed to have at least the following folders/files within each of your GPOs:</p>
+<ul>
+<li>%windir%
+<ul>
+<li>sysvol
+<ul>
+<li>sysvol (<em>shared as <strong>\\servername\sysvol</strong></em>)
+<ul>
+<li>&lt;domain name&gt;
+<ul>
+<li>Policies</li>
+<li>scripts</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Within the policies folder, you'll find the various GPOs and their configured settings.  Again, the following folders/files are guaranteed to be present for every GPO in your domain:</p>
+<ul>
+<li>Policies
+<ul>
+<li>&lt;GPO GUID&gt;
+<ul>
+<li>Machine (<em>folder containing the computer-side settings of the GPO</em>)</li>
+<li>User (<em>folder containing the user-side settings of the GPO</em>)</li>
+<li>GPT.INI (<em>file containing the GPO's configuration settings</em>)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Depending on what you've configured, the Machine and User folders may or may not contain additional content.  As an illustration, lets take a look at the contents of a GPO I've configured to set the various Event Logs on my clients to their maximum size.  First, here is the Group Policy Management Editor showing the settings I've configured.  This is the tool you'll be working with when you configure the settings for your own environment.</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/4101.GPMC-EventLogSize.png" alt="" data-linktype="external"/></a></p>
+<p>If you need to know how to launch this tool, you do so from within the Group Policy Management Console by right-clicking your GPO and selecting <strong>Edit...</strong> as shown below.</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/4456.GPMC-Edit.png" alt="" data-linktype="external"/></a></p>
+<p>So now that you understand how to make these changes, what does the GPT look like once you've made them?  Below is a series of screenshots to answer that question.</p>
+<p>First, here is the file structure of the GPT, showing the GPO I've edited with its top level folders visible in the right-hand pane</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/0184.GPT-1.png" alt="" data-linktype="external"/></a></p>
+<p>You'll notice the file called GPT (it's actually <strong>GPT.INI</strong>, though the screenshot hides the file extension).  This file contains the configuration settings for this GPO, which includes its current version number (which is updated every time a change to the GPO is made) and the default GPO display name (which is the same for every GPO you create, so don't worry that it's not the name you gave it in the GPMC).  Here is how that file looks (<strong>NOTE: You can open GPT.INI with Notepad, but make sure you don't accidentally save it as a .txt file or it will impact your GPOs ability to do its job</strong>)</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/7043.GPT-INI.png" alt="" data-linktype="external"/></a></p>
+<p>To see the actual settings we've configured for this GPO, we need to expand the Machine folder (because this is a computer-side setting), which reveals the following:</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/4214.GPT-2.png" alt="" data-linktype="external"/></a></p>
+<p>You'll notice that there is a folder called <strong>SecEdit</strong>, which contains the security-specific settings of this GPO.  The file within the SecEdit folder is <strong>GptTmpl.inf</strong>.  It's this file that contains the specific information that your client needs to configure its settings.  Because we've configured this GPO so that its Event Logs are set at the maximum size, we would expect that this file would contain information directing the client to make this change.  By opening the file we can see that its contents do exactly as we would expect, as shown below (<strong>NOTE: you can edit it with Notepad, but make sure you don't accidentally save it [or <em>GPT.INI</em>] as a .txt file after looking at it!</strong> ).</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/prod.evol.blogs.technet.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/00/92/66/6685.GptTmpl.png" alt="" data-linktype="external"/></a></p>
+<p>We can see from this picture that GptTmpl.inf has clear instructions for our client machine to set its Application, Security and System Event Logs to their maximum size.</p>
+<p>As I said earlier, there can be numerous different settings in the GPT file structure depending on how you've configured your GPO.  Other possible folders and files that might appear include:</p>
+<ul>
+<li>Scripts folder - This folder can contain information on which scripts to run, or may include the scripts themselves.  The possible types of scripts include:
+<ul>
+<li>Startup/Shutdown: applies to Computers</li>
+<li>Logon/Logoff: applies to Users</li>
+</ul>
+</li>
+<li>Applications folder - if you've published or advertised software through a GPO, this folder will contain an advertisement file (.aas file extension) notifying clients of the software being made available</li>
+<li>Adm folder - Older GPO versions had Administrative Templates stored within the GPT on each Domain Controller.  These templates were actually copied from client machines into the SYSVOL share of the Domain Controller.  Starting with Vista, GPOs no longer do this (though if you edit a GPO with an pre-Vista OS, it will still behave this way).  GPOs now leverage ADMX files that are stored in a Central Store on client machines (typically c:\windows\policydefinitions) instead of the GPT.  But given that many older devices are still out there, you may see this folder in your GPT.</li>
+<li>Documents and Settings folder - this folder contains any Folder Redirectoin settings configured by the GPO.</li>
+<li>IEAK folder - this user-side folder contains settings related to Internet Explorer Maintenance.</li>
+<li>Registry.pol - this file contains the registry settings the GPO has been configured to apply.  This file also contains any Software Restriction Policy settings that have been configured.</li>
+</ul>
+<p>In part 2 of this series, we'll look at details of GPO processing, with an emphasis on Client-Side Extensions (CSEs).  We'll also discuss how GPOs are replicated, and how a client knows it's getting the latest version of its GPO (including knowing whether the GPC and GPC are synchronized with each other).</p>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

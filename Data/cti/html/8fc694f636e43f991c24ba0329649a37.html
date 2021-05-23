@@ -1,0 +1,631 @@
+
+
+<!DOCTYPE html>
+<html class="no-js" lang="en" dir="ltr">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Man-in-the-Middle (MITM) Attacks: Techniques and Prevention</title>
+
+
+            <meta property="og:url" content="https://www.rapid7.com/fundamentals/man-in-the-middle-attacks/" />
+        <link rel="canonical" href="https://www.rapid7.com/fundamentals/man-in-the-middle-attacks/"  />
+        <link rel="alternate" href="https://www.rapid7.com/de/Cybersecurity-Grundlagen/man-in-the-middle-attacks/" hreflang="de" />
+        <link rel="alternate" href="https://www.rapid7.com/fundamentals/man-in-the-middle-attacks/" hreflang="en" />
+        <link rel="alternate" href="https://www.rapid7.com/ja/fundamentals/man-in-the-middle-mitm-attacks/" hreflang="ja" />
+
+    
+    <meta name="robots" content="index, follow" />
+    <meta name="title" content="Man-in-the-Middle (MITM) Attacks: Techniques and Prevention" />
+    <meta name="description" content="How do man-in-the-middle (MITM) attacks work? What are the various techniques? How to prevent a man-in-the-middle attack? Find out here." />
+    <meta property="og:title" content="Man-in-the-Middle (MITM) Attacks: Techniques and Prevention" />
+    <meta property="og:image" content="https://www.rapid7.com/globalassets/rapid7-og.jpg" />
+    <meta name="twitter:image" content="https://www.rapid7.com/globalassets/rapid7-og.jpg" />
+    <meta name="twitter:title" content="Man-in-the-Middle (MITM) Attacks: Techniques and Prevention">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:site_name" content="Rapid7" />
+    <meta property="og:description" content="How do man-in-the-middle (MITM) attacks work? What are the various techniques? How to prevent a man-in-the-middle attack? Find out here." />
+    <link rel="stylesheet" href="/includes/css/all.min.css?cb=1621536567851">
+
+
+
+
+    <script>
+        var gIp = {"countryIsoCode":"SG","subdivisionIsoCode":null,"continentIsoCode":"AS"};
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+'conversionType': 'secondary',                    });
+        window.dataLayer.push({ 'auth': false });
+         window.dataLayer.push({ 'ip': '122.11.202.14' });
+        window.dataLayer.push({ 'isTrialUser': false, 'isCustomer': false });
+    </script>
+
+    <!-- Optimizely -->
+    <script src="https://cdn.optimizely.com/js/10801744121.js"></script>
+
+
+    
+    <script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-WBTPTVC');</script>
+    
+
+    <link rel="icon" type="image/x-icon" href="/includes/img/favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:800,900|Roboto:300,400,700|Noto+Sans+JP">
+    <script src="/includes/js/jquery.min.js"></script>
+    <script src="/includes/js/populateCountryState.js"></script>
+    <script src="//information.rapid7.com/js/forms2/js/forms2.min.js"></script>
+    
+    
+
+</head>
+<body id="internal" class="pg-id-26717 internal">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WBTPTVC" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
+    
+
+    <div id="gdprAlert" class="overlay" style="display:none;">
+        <div class="gdpr-modal">
+            <div>
+                <h2>Quick Cookie Notification</h2>
+                <p>This site uses cookies, including for analytics, personalization, and advertising purposes. For more information or to change your cookie settings, <a href="/privacy-policy/tracking-technologies/" target="_blank" rel="noopener">click here</a>. <br /><br />If you continue to browse this site without changing your cookie settings, you agree to this use.</p>
+                <button class="button mdBtn blue" id="gdprClose">I AGREE, LET’S GO!</button>
+                <hr>
+                <div class="fineprint">
+                    <p class="fineprint">View <a href="/privacy-policy/tracking-technologies/" target="_blank" rel="noopener">Cookie Policy</a> for full details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="__"></div>
+    <!--[if lte IE 9]>
+    <div id="ie-conditional"><spa>Your IE browser is out of date - Upgrade to the latest version of IE or Chrome for an optimal website experience.</span> <a href="https://support.microsoft.com/en-us/help/17621/internet-explorer-downloads" title="Upgrade IE Now" class="button smBtn darkClear" target="_blank">Upgrade IE Now</a>
+    <button class="close-button" type="button" id="closeIEBar">
+        <img src="../includes/img/close_white.svg">
+    </button>
+    </div>
+    <![endif]-->
+
+    
+
+
+<div class="off-canvas-wrapper">
+    <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+        
+        <div id="r7-global-nav">
+            <header class="r7-nav mobile"><section class="search-bar search-bar--mobile hide animate-out"><form action="/search"><div class="container flex flex-jc-c flex-ai-c"><div class="search-content flex flex-jc-fs flex-ai-c"><i class="r7-icon r7-icon-search-magnify"></i><input type="search" class="search-input" name="q" placeholder="Search all the things!"/><input type="submit" class="search-submit button blue" value="Search"/><a id="btnSearchCloseMobile" class="search-close"><i class="r7-icon r7-icon-delete-x"></i></a></div></div></form></section><div class="search-overlay search-overlay--mobile overlay "></div><nav class="main-nav "><div class="container flex flex-jc-sb flex-ai-c"><div class="flex flex-jc-c flex-ai-c"><a class="main-nav__toggle"><i class="r7-icon text-white"></i></a></div><a class="main-nav__logo flex flex-jc-c flex-ai-c text-center" href="https://www.rapid7.com/" target=""><img src="/Areas/Docs/includes/img/r7-nav/Rapid7_logo.svg" alt="Rapid7 Home"/></a><a class="search flex flex-jc-c flex-ai-c"><i class="r7-icon r7-icon-search-magnify text-white"></i></a></div><div class="main-nav__links flex flex-jc-c"><ul><li class="main-nav__link dropdown  "><a class="dropdown-trigger has-toggle" href="/products/">Products</a><div class="dropdown-content two-col"><ul class="dropdown-menu"><li class="dropdown-title">Insight Solutions</li><li class="dropdown-item"><a href="/products/insightidr/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightIDR<div class="dropdown-category">User Behavior Analytics &amp; SIEM</div></div></a></li><li class="dropdown-item"><a href="/products/insightvm/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightVM<div class="dropdown-category">Vulnerability Management</div></div></a></li><li class="dropdown-item"><a href="/products/insightappsec/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightAppSec<div class="dropdown-category">Dynamic Application Security Testing</div></div></a></li><li class="dropdown-item"><a href="/products/insightconnect/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightConnect<div class="dropdown-category">Orchestration &amp; Automation</div></div></a></li><li class="dropdown-item"><a href="/products/insightops/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightOps<div class="dropdown-category">Log Management</div></div></a></li><li class="dropdown-item"><a href="/products/divvycloud/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">DivvyCloud by Rapid7<div class="dropdown-category">Continuous Security and Compliance for Cloud</div></div></a></li></ul><ul class="dropdown-menu"><li class="dropdown-title">More Solutions</li><li class="dropdown-item"><a href="/products/metasploit/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">Metasploit<div class="dropdown-category">Penetration Testing</div></div></a></li><li class="dropdown-item"><a href="/products/nexpose/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">Nexpose<div class="dropdown-category">Vulnerability Management On-Premises</div></div></a></li><li class="dropdown-item"><a href="/products/appspider/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">AppSpider<div class="dropdown-category">Application Security On-Premises</div></div></a></li><li class="dropdown-item"><a href="/products/tcell/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">tCell by Rapid7<div class="dropdown-category">Application Monitoring &amp; Protection</div></div></a></li></ul><div class="dropdown-view-all flex flex-jc-sb flex-ai-c"><a href="/products/insight-platform/">Insight Cloud</a><a href="/try/insight/" class="button blue">Free Trial</a></div></div></li><li class="main-nav__link dropdown  "><a class="dropdown-trigger has-toggle" href="/link/b31eac7d81bd40dfb53072d78419edf9.aspx">Services</a><div class="dropdown-content true"><ul class="dropdown-menu"><li class="dropdown-title">SERVICES</li><li class="dropdown-item"><a href="/services/managed-services/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-diamond-person.svg&#x27;)"></div><div class="dropdown-text">Managed Services<div class="dropdown-category">OPERATIONS, ASSESSMENTS &amp; REPORTING</div></div></a></li><li class="dropdown-item"><a href="/services/security-consulting/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-shield.svg&#x27;)"></div><div class="dropdown-text">Security Consulting<div class="dropdown-category">ASSESSMENT, TESTING &amp; RESPONSE</div></div></a></li><li class="dropdown-item"><a href="/services/product-consulting/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">Product Consulting<div class="dropdown-category">QUICK-START &amp; CONFIGURATION</div></div></a></li><li class="dropdown-item"><a href="/services/training-certification/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-book-open.svg&#x27;)"></div><div class="dropdown-text">Training &amp; Certification<div class="dropdown-category">SKILLS &amp; ADVANCEMENT</div></div></a></li><li class="dropdown-item"><a href="/services/support-and-customer-success/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/user-customer-service-call.svg&#x27;)"></div><div class="dropdown-text">Customer Success<div class="dropdown-category">ONE-STOP SUPPORT CENTER</div></div></a></li><li class="dropdown-item"><a href="/services/premium-support/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/premium-support-icon.svg&#x27;)"></div><div class="dropdown-text">Premium Support<div class="dropdown-category">PRIORITY HELP &amp; FASTER SOLUTIONS</div></div></a></li></ul></div></li><li class="main-nav__link dropdown  "><a class="dropdown-trigger has-toggle" href="/link/f117b4878e8740d3a1f3de71a891cba5.aspx">Support &amp; Resources</a><div class="dropdown-content two-col"><ul class="dropdown-menu"><li class="dropdown-title">SUPPORT</li><li class="dropdown-item"><a href="/for-customers/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-monitor.svg&#x27;)"></div><div class="dropdown-text">Support Portal<div class="dropdown-category">CONTACT CUSTOMER SUPPORT</div></div></a></li><li class="dropdown-item"><a href="https://docs.rapid7.com/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-notes.svg&#x27;)"></div><div class="dropdown-text">Product Documentation<div class="dropdown-category">EXPLORE PRODUCT GUIDES</div></div></a></li><li class="dropdown-item"><a href="https://docs.rapid7.com/release-notes/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">Release Notes<div class="dropdown-category">DISCOVER THE LATEST PRODUCT UPDATES</div></div></a></li><li class="dropdown-item"><a href="/contact/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-envelope-email-checked-okay.svg&#x27;)"></div><div class="dropdown-text">Contact Us<div class="dropdown-category">TALK TO SALES</div></div></a></li></ul><ul class="dropdown-menu"><li class="dropdown-title">RESOURCES</li><li class="dropdown-item"><a href="/fundamentals/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-book-open.svg&#x27;)"></div><div class="dropdown-text">Fundamentals<div class="dropdown-category">FOUNDATIONAL SECURITY KNOWLEDGE</div></div></a></li><li class="dropdown-item"><a href="/blog/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-signal-wifi.svg&#x27;)"></div><div class="dropdown-text">Blog<div class="dropdown-category">THE LATEST INDUSTRY NEWS AND SECURITY EXPERTISE</div></div></a></li><li class="dropdown-item"><a href="/resources/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-note-authenticate.svg&#x27;)"></div><div class="dropdown-text">Resources Library<div class="dropdown-category">E-BOOKS, WHITE PAPERS, VIDEOS &amp; BRIEFS</div></div></a></li><li class="dropdown-item"><a href="https://extensions.rapid7.com/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-plug-outlet-collection.svg&#x27;)"></div><div class="dropdown-text">Extensions Library<div class="dropdown-category">PLUGINS, INTEGRATIONS &amp; DEVELOPER COMMUNITY</div></div></a></li><li class="dropdown-item"><a href="/partners/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-partners.svg&#x27;)"></div><div class="dropdown-text">Partners<div class="dropdown-category">RAPID7 PARTNER ECOSYSTEM</div></div></a></li><li class="dropdown-item"><a href="/about/events-webcasts/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-community-users.svg&#x27;)"></div><div class="dropdown-text">Webcasts &amp; Events<div class="dropdown-category">UPCOMING OPPORTUNITIES TO CONNECT WITH US</div></div></a></li><li class="dropdown-item"><a href="/db/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-vulnerability.svg&#x27;)"></div><div class="dropdown-text">Vulnerability &amp; Exploit Database<div class="dropdown-category">SEARCH THE LATEST SECURITY RESEARCH</div></div></a></li></ul></div></li><li class="main-nav__link   "><a class="" href="/research/">Research</a></li><li class="main-nav__link main-nav__link--sep"><a href="https://insight.rapid7.com/saml/SSO" class="has-icon"><img src="/Areas/Docs/includes/img/r7-nav/icon-lock.svg"/> Sign In</a></li></ul></div></nav><nav class="sub-nav container flex flex-ai-c"><div class="sub-nav__title"><a href="#__">Man-in-the-Middle (MITM) Attacks</a></div><a class="button solidYellow" href="/try/insight/">Try Now</a></nav></header><div class="dropdown-overlay overlay false"></div><header class="r7-nav"><nav class="main-nav"><div class="container flex flex-jc-sb flex-ai-c"><div class="main-nav__logo"><a class="flex" href="https://www.rapid7.com/" target=""><img src="/Areas/Docs/includes/img/r7-nav/Rapid7_logo.svg" alt="Rapid7 Home"/></a></div><div class="main-nav__links flex flex-jc-c"><ul><li class="main-nav__link dropdown  "><a class="dropdown-trigger has-toggle" href="/products/">Products</a><div class="dropdown-content two-col"><ul class="dropdown-menu"><li class="dropdown-title">Insight Solutions</li><li class="dropdown-item"><a href="/products/insightidr/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightIDR<div class="dropdown-category">User Behavior Analytics &amp; SIEM</div></div></a></li><li class="dropdown-item"><a href="/products/insightvm/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightVM<div class="dropdown-category">Vulnerability Management</div></div></a></li><li class="dropdown-item"><a href="/products/insightappsec/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightAppSec<div class="dropdown-category">Dynamic Application Security Testing</div></div></a></li><li class="dropdown-item"><a href="/products/insightconnect/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightConnect<div class="dropdown-category">Orchestration &amp; Automation</div></div></a></li><li class="dropdown-item"><a href="/products/insightops/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">InsightOps<div class="dropdown-category">Log Management</div></div></a></li><li class="dropdown-item"><a href="/products/divvycloud/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;/Areas/Docs/includes/img/r7-nav/icon-cloud.svg&#x27;)"></div><div class="dropdown-text">DivvyCloud by Rapid7<div class="dropdown-category">Continuous Security and Compliance for Cloud</div></div></a></li></ul><ul class="dropdown-menu"><li class="dropdown-title">More Solutions</li><li class="dropdown-item"><a href="/products/metasploit/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">Metasploit<div class="dropdown-category">Penetration Testing</div></div></a></li><li class="dropdown-item"><a href="/products/nexpose/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">Nexpose<div class="dropdown-category">Vulnerability Management On-Premises</div></div></a></li><li class="dropdown-item"><a href="/products/appspider/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">AppSpider<div class="dropdown-category">Application Security On-Premises</div></div></a></li><li class="dropdown-item"><a href="/products/tcell/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">tCell by Rapid7<div class="dropdown-category">Application Monitoring &amp; Protection</div></div></a></li></ul><div class="dropdown-view-all flex flex-jc-sb flex-ai-c"><a href="/products/insight-platform/">Insight Cloud</a><a href="/try/insight/" class="button blue">Free Trial</a></div></div></li><li class="main-nav__link dropdown  "><a class="dropdown-trigger has-toggle" href="/link/b31eac7d81bd40dfb53072d78419edf9.aspx">Services</a><div class="dropdown-content true"><ul class="dropdown-menu"><li class="dropdown-title">SERVICES</li><li class="dropdown-item"><a href="/services/managed-services/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-diamond-person.svg&#x27;)"></div><div class="dropdown-text">Managed Services<div class="dropdown-category">OPERATIONS, ASSESSMENTS &amp; REPORTING</div></div></a></li><li class="dropdown-item"><a href="/services/security-consulting/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-shield.svg&#x27;)"></div><div class="dropdown-text">Security Consulting<div class="dropdown-category">ASSESSMENT, TESTING &amp; RESPONSE</div></div></a></li><li class="dropdown-item"><a href="/services/product-consulting/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">Product Consulting<div class="dropdown-category">QUICK-START &amp; CONFIGURATION</div></div></a></li><li class="dropdown-item"><a href="/services/training-certification/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-book-open.svg&#x27;)"></div><div class="dropdown-text">Training &amp; Certification<div class="dropdown-category">SKILLS &amp; ADVANCEMENT</div></div></a></li><li class="dropdown-item"><a href="/services/support-and-customer-success/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/user-customer-service-call.svg&#x27;)"></div><div class="dropdown-text">Customer Success<div class="dropdown-category">ONE-STOP SUPPORT CENTER</div></div></a></li><li class="dropdown-item"><a href="/services/premium-support/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/premium-support-icon.svg&#x27;)"></div><div class="dropdown-text">Premium Support<div class="dropdown-category">PRIORITY HELP &amp; FASTER SOLUTIONS</div></div></a></li></ul></div></li><li class="main-nav__link dropdown  "><a class="dropdown-trigger has-toggle" href="/link/f117b4878e8740d3a1f3de71a891cba5.aspx">Support &amp; Resources</a><div class="dropdown-content two-col"><ul class="dropdown-menu"><li class="dropdown-title">SUPPORT</li><li class="dropdown-item"><a href="/for-customers/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-monitor.svg&#x27;)"></div><div class="dropdown-text">Support Portal<div class="dropdown-category">CONTACT CUSTOMER SUPPORT</div></div></a></li><li class="dropdown-item"><a href="https://docs.rapid7.com/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-notes.svg&#x27;)"></div><div class="dropdown-text">Product Documentation<div class="dropdown-category">EXPLORE PRODUCT GUIDES</div></div></a></li><li class="dropdown-item"><a href="https://docs.rapid7.com/release-notes/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-report.svg&#x27;)"></div><div class="dropdown-text">Release Notes<div class="dropdown-category">DISCOVER THE LATEST PRODUCT UPDATES</div></div></a></li><li class="dropdown-item"><a href="/contact/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-envelope-email-checked-okay.svg&#x27;)"></div><div class="dropdown-text">Contact Us<div class="dropdown-category">TALK TO SALES</div></div></a></li></ul><ul class="dropdown-menu"><li class="dropdown-title">RESOURCES</li><li class="dropdown-item"><a href="/fundamentals/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-book-open.svg&#x27;)"></div><div class="dropdown-text">Fundamentals<div class="dropdown-category">FOUNDATIONAL SECURITY KNOWLEDGE</div></div></a></li><li class="dropdown-item"><a href="/blog/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-signal-wifi.svg&#x27;)"></div><div class="dropdown-text">Blog<div class="dropdown-category">THE LATEST INDUSTRY NEWS AND SECURITY EXPERTISE</div></div></a></li><li class="dropdown-item"><a href="/resources/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-note-authenticate.svg&#x27;)"></div><div class="dropdown-text">Resources Library<div class="dropdown-category">E-BOOKS, WHITE PAPERS, VIDEOS &amp; BRIEFS</div></div></a></li><li class="dropdown-item"><a href="https://extensions.rapid7.com/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-plug-outlet-collection.svg&#x27;)"></div><div class="dropdown-text">Extensions Library<div class="dropdown-category">PLUGINS, INTEGRATIONS &amp; DEVELOPER COMMUNITY</div></div></a></li><li class="dropdown-item"><a href="/partners/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-partners.svg&#x27;)"></div><div class="dropdown-text">Partners<div class="dropdown-category">RAPID7 PARTNER ECOSYSTEM</div></div></a></li><li class="dropdown-item"><a href="/about/events-webcasts/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-community-users.svg&#x27;)"></div><div class="dropdown-text">Webcasts &amp; Events<div class="dropdown-category">UPCOMING OPPORTUNITIES TO CONNECT WITH US</div></div></a></li><li class="dropdown-item"><a href="/db/" class="has-icon"><div class="dropdown-icon" style="background-image:url(&#x27;https://www.rapid7.com/globalassets/_icons/global-nav/icon-vulnerability.svg&#x27;)"></div><div class="dropdown-text">Vulnerability &amp; Exploit Database<div class="dropdown-category">SEARCH THE LATEST SECURITY RESEARCH</div></div></a></li></ul></div></li><li class="main-nav__link   "><a class="" href="/research/">Research</a></li></ul></div><div class="main-nav__utility"><ul><li class="language dropdown "><a href="#" class="dropdown-trigger has-toggle">en</a><div class="dropdown-content right-align"><ul class="dropdown-menu"><li class="dropdown-item selected"><a href="#">English</a></li><li class="dropdown-item "><a href="/de/Cybersecurity-Grundlagen/man-in-the-middle-attacks/">Deutsch</a></li><li class="dropdown-item "><a href="/ja/fundamentals/man-in-the-middle-mitm-attacks/">日本語</a></li></ul></div></li><li class="signin"><a href="https://insight.rapid7.com/saml/SSO"><img src="/Areas/Docs/includes/img/r7-nav/icon-lock.svg"/>Sign In</a></li></ul></div></div></nav><section class="search-bar hide"><div class="container flex flex-jc-c flex-ai-c"><form action="/search" class="search-content flex flex-jc-c flex-ai-c"><i class="r7-icon r7-icon-search-magnify"></i><input type="search" class="search-input" name="q" placeholder="Search all the things!"/><input type="submit" class="search-submit button blue" value="Search"/><a class="search-close"><i class="r7-icon r7-icon-delete-x"></i></a></form></div></section><div class="search-overlay overlay "></div><nav class="sub-nav sub-nav--no-items"><div class="container flex flex-jc-sb"><a class="logo circle-button" href="https://www.rapid7.com/"><img src="/Areas/Docs/includes/img/r7-nav/Rapid7_logo-short.svg" alt="Rapid7 logo"/></a><div class="sub-nav__links flex"><ul class="flex flex-ai-c"><li class="sub-nav__title"><a href="#__">Man-in-the-Middle (MITM) Attacks</a></li></ul></div><div class="sub-nav__utility"><a class="search"><i class="r7-icon r7-icon-search-magnify"></i></a><a class="button solidYellow" href="/try/insight/">Try Now</a><a class="to-top circle-button"><i class="r7-icon r7-icon-arrow-chevron-up-solid"></i></a></div></div></nav></header>
+        </div>
+
+        <div class="off-canvas-content" data-off-canvas-content>
+            <div id="menuOverlay" class="reveal-overlay"></div>
+
+        <section class="longHero" >
+                    <div class="breadcrumbs__wrapper ">
+            <div class="breadcrumbs__content">
+                <ul class="breadcrumbs">
+                    <li><a href="/">Home</a></li>
+                                <li><a href="/fundamentals/">Fundamentals</a></li>
+            <li>Man-in-the-Middle (MITM) Attacks</li>
+
+                </ul>
+            </div>
+        </div>
+
+
+                <div class="overlayText">
+                    <div class="grid-container">
+                        <div class="grid-x grid-padding-x">
+                            <div class="longHero__content medium-10 medium-offset-1 large-8 large-offset-2 cell">
+
+                                <h1>
+                                    Man-in-the-Middle (MITM) Attacks
+                                </h1>
+                                    <h2 class="subtitle">
+                                        MITM Techniques, Detection, and Best Practices for Prevention
+                                    </h2>
+                                
+                                
+                            </div>
+                            
+
+                        </div>
+                    </div>
+                </div>
+
+            
+        </section>
+            
+
+
+<div class="pageContent">
+    
+
+
+
+        <!-- Intro Block -->
+        <section class="pageBlock bgWhite">
+            <div class="grid-container">
+                <div class="grid-x grid-padding-x">
+                    <div class="small-10 small-offset-1 large-8 large-offset-2 cell wrapper">
+                        <h2>What is a man-in-the-middle (MiTM) attack?</h2>
+<p>Man-in-the-middle attacks (MITM) are a <a href="/fundamentals/types-of-attacks/">common type of cybersecurity attack</a> that allows attackers to eavesdrop on the communication between two targets. The attack takes place in between two legitimately communicating hosts, allowing the attacker to &ldquo;listen&rdquo; to a conversation they should normally not be able to listen to, hence the name &ldquo;man-in-the-middle.&rdquo;</p>
+<p>Here&rsquo;s an analogy: Alice and Bob are having a conversation; Eve wants to eavesdrop on the conversation but also remain transparent. Eve could tell Alice that she was Bob and tell Bob that she was Alice. This would lead Alice to believe she&rsquo;s speaking to Bob, while actually revealing her part of the conversation to Eve. Eve could then gather information from this, alter the response,&nbsp; and pass the message along to Bob (who thinks he&rsquo;s talking to Alice). As a result, Eve is able to transparently hijack their conversation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content w/ Sidebar -->
+        <section class="pageBlock bgGrayLight" >
+            <div class="grid-container">
+                <div class="grid-x grid-padding-x">
+
+                        <div class="small-10 small-offset-1 medium-4 medium-offset-1 xlarge-3 xlarge-offset-2 cell wrapper">
+                            <div data-sticky-container>
+  <div class="sticky" data-sticky data-btm-anchor="bottomMarker:bottom" data-margin-top="5" data-top-anchor="topMarker:top">
+<div id="knowledge_center_detail">
+<div id="sidebar" style="padding-top: 0;">
+<div class="sidebarmenu">
+<div class="chapter">Fundamentals</div>
+<h2>Types of Attacks</h2>
+Select Section
+<ul>
+<li><a href="/fundamentals/types-of-attacks/"> Common Types of Cybersecurity Attacks
+ </a></li>
+<li><a href="/fundamentals/phishing-attacks/"> Phishing Attacks: A Deep Dive with Prevention Tips</a></li>
+<li><a href="/fundamentals/sql-injection-attacks/"> SQL Injection Attacks (SQLi) </a></li>
+<li><a href="/fundamentals/cross-site-scripting/"> Cross-Site Scripting (XSS) Explained and Preventing XSS Attacks </a></li>
+<li><a href="/fundamentals/man-in-the-middle-attacks/"> Man-in-the-Middle (MITM) Attacks </a></li>
+<li><a href="/fundamentals/malware-attacks/"> Malware Attacks: Examined and Best Practices </a></li>
+<li><a href="/fundamentals/denial-of-service-attacks/"> Denial-of-Service Attacks </a></li>
+<li><a href="/fundamentals/spear-phishing-attacks/"> Spear Phishing Attacks </a></li>
+<li><a href="/fundamentals/whaling-phishing-attacks/"> Whaling Phishing Attacks </a></li>
+<li><a href="/fundamentals/brute-force-and-dictionary-attacks/"> Brute-Force and Dictionary Attacks </a></li>
+<li><a href="/fundamentals/spoofing-attacks/"> Spoofing Attacks </a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+var url = window.location.pathname;
+ $(".sidebarmenu a").each(function () {
+ $(this).toggleClass('active',(url===$(this).attr("href")))
+ });
+</script>
+                        </div>
+                        <div class="small-10 small-offset-1 medium-6 medium-offset-0 large-5 large-offset-1 end cell wrapper">
+                            <!-- Side Dark CTA -->
+                            <h2 id="topMarker">Types of man-in-the-middle attacks</h2>
+<p><strong>Rogue Access Point</strong><strong>&nbsp;</strong></p>
+<p>Devices equipped with wireless cards will often try to auto-connect to the access point that is emitting the strongest signal. Attackers can set up their own wireless access point and trick nearby devices to join its domain. All of the victim&rsquo;s network traffic can now be manipulated by the attacker. This is dangerous because the attacker does not even have to be on a trusted network to do this&mdash;the attacker simply needs a close enough physical proximity.</p>
+<p><strong>ARP Spoofing</strong></p>
+<p>ARP is the Address Resolution Protocol. It is used to resolve IP addresses to physical MAC (media access control) addresses in a local area network. When a host needs to talk to a host with a given IP address, it references the ARP cache to resolve the IP address to a MAC address. If the address is not known, a request is made asking for the MAC address of the device with the IP address.</p>
+<p>An attacker wishing to pose as another host could respond to requests it should not be responding to with its own MAC address. With some precisely placed packets, an attacker can sniff the private traffic between two hosts. Valuable information can be extracted from the traffic, such as the exchange of session tokens, yielding full access to application accounts that the attacker should not be able to access.</p>
+<p><strong>mDNS Spoofing</strong></p>
+<p>Multicast DNS is similar to DNS, but it&rsquo;s done on a local area network (LAN) using broadcast like ARP. This makes it a perfect target for spoofing attacks. The local name resolution system is supposed to make the configuration of network devices extremely simple. Users don&rsquo;t have to know exactly which addresses their devices should be communicating with; they let the system resolve it for them. Devices such as TVs, printers, and entertainment systems make use of this protocol since they are typically on trusted networks. When an app needs to know the address of a certain device, such as tv.local, an attacker can easily respond to that request with fake data, instructing it to resolve to an address it has control over. Since devices keep a local cache of addresses, the victim will now see the attacker&rsquo;s device as trusted for a duration of time.</p>
+<p><strong>DNS Spoofing</strong><strong>&nbsp;</strong></p>
+<p>Similar to the way ARP resolves IP addresses to MAC addresses on a LAN, DNS resolves domain names to IP addresses. When using a DNS spoofing attack, the attacker attempts to introduce corrupt DNS cache information to a host in an attempt to access another host using their domain name, such as www.onlinebanking.com. This leads to the victim sending sensitive information to a malicious host, with the belief they are sending information to a trusted source. An attacker who has already spoofed an IP address could have a much easier time spoofing DNS simply by resolving the address of a DNS server to the attacker&rsquo;s address.</p>
+<h2>Man-in-the-middle attack&nbsp;techniques</h2>
+<p><strong>Sniffing</strong></p>
+<p>Attackers use packet capture tools to inspect packets at a low level. Using specific wireless devices that are allowed to be put into monitoring or promiscuous mode can allow an attacker to see packets that are not intended for it to see, such as packets addressed to other hosts.</p>
+<p><strong>Packet Injection</strong></p>
+<p>An attacker can also leverage their device&rsquo;s monitoring mode to inject malicious packets into data communication streams. The packets can blend in with valid data communication streams, appearing to be part of the communication, but malicious in nature. Packet injection usually involves first sniffing to determine how and when to craft and send packets.</p>
+<p><strong>Session Hijacking</strong></p>
+<p>Most web applications use a login mechanism that generates a temporary session token to use for future requests to avoid requiring the user to type a password at every page. An attacker can sniff sensitive traffic to identify the session token for a user and use it to make requests as the user. The attacker does not need to spoof once he has a session token.</p>
+<p><strong>SSL Stripping</strong></p>
+<p>Since using HTTPS is a common safeguard against ARP or DNS spoofing, attackers use SSL stripping to intercept packets and alter their HTTPS-based address requests to go to their HTTP equivalent endpoint, forcing the host to make requests to the server unencrypted. Sensitive information can be leaked in plain text.</p>
+<h2>How to detect a man-in-the-middle attack</h2>
+<p>Detecting a Man-in-the-middle attack can be difficult without taking the proper steps. If you aren't actively searching to determine if your communications have been intercepted, a Man-in-the-middle attack can potentially go unnoticed until it's too late. Checking for proper page authentication and implementing some sort of tamper detection are typically the key methods to detect a possible attack, but these procedures might require extra forensic analysis after-the-fact.&nbsp;</p>
+<p>It's important to&nbsp;take precautionary measures to prevent MITM attacks before they occur, rather than attempting to detect them while they are actively occurring. Being aware of your browsing practices and recognizing potentially harmful areas can be essential to maintaining a secure network. Below, we have included five of the best practices to prevent MITM attacks from compromising your communications.</p>
+<h2>Best practices to prevent man-in-the-middle attacks</h2>
+<p><strong>Strong WEP/WAP Encryption on Access Points</strong></p>
+<p>Having a strong encryption mechanism on wireless access points prevents unwanted users from joining your network just by being nearby. A weak encryption mechanism can allow an attacker to <a href="/resources/testing-user-credentials-in-metasploit/" target="_blank" rel="noopener">brute-force</a> his way into a network and begin man-in-the-middle attacking. The stronger the encryption implementation, the safer.</p>
+<p><strong>Strong Router Login Credentials&nbsp;</strong></p>
+<p>It&rsquo;s essential to make sure your default router login is changed. Not just your Wi-Fi password, but your router login credentials. If an attacker finds your router login credentials, they can change your DNS servers to their malicious servers. Or even worse, infect your router with malicious software.</p>
+<p><strong>Virtual Private Network</strong></p>
+<p>VPNs can be used to create a secure environment for sensitive information within a local area network. They use key-based encryption to create a subnet for secure communication. This way, even if an attacker happens to get on a network that is shared, he will not be able to decipher the traffic in the VPN.</p>
+<p><strong>Force HTTPS</strong></p>
+<p>HTTPS can be used to securely communicate over HTTP using public-private key exchange. This prevents an attacker from having any use of the data he may be sniffing. Websites should only use HTTPS and not provide HTTP alternatives. Users can install browser plugins to enforce always using HTTPS on requests.</p>
+<p><strong>Public Key Pair Based Authentication</strong></p>
+<p id="bottomMarker">Man-in-the-middle attacks typically involve spoofing something or another. Public key pair based authentication like RSA can be used in various layers of the stack to help ensure whether the things you are communicating with are actually the things you want to be communicating with.</p>
+<div id="next-previous">
+<div class="grid-x grid-padding-x">
+<div class="large-6 cell"><a class="prev-link" href="/fundamentals/cross-site-scripting/"> <img class="prev-img" alt="previous-page.png" /> Cross-Site Scripting (XSS) Explanation and Prevention </a></div>
+<div class="large-6 cell end"><a class="next-link" href="/fundamentals/malware-attacks/"> Malware Attacks: Examined and Best Practices <img class="next-img" alt="next-page.png" /> </a></div>
+</div>
+</div>
+                        </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    <!-- CTA area -->
+    
+
+</div>
+
+
+
+<footer >
+
+        <section class="search-scroll">
+            <div class="grid-container">
+                <div class="grid-x grid-padding-x">
+                    <div class="medium-5 medium-offset-1 cell footer__search">
+                        <form action="/search/">
+                            <input class="sb-search-input" placeholder="Search all the things" type="search" value="" name="q" id="search">
+                            <input class="sb-search-submit" type="submit" value="">
+                        </form>
+                    </div>
+                    <div class="medium-5 cell footer__scroll">
+                        <a href="#__" class="smooth">
+                            <span>BACK TO TOP</span>
+                            <img class="lazy" data-src="/includes/img/up-arrow-lightgray.png" src="/includes/img/placeholder-transparent.png" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid-container">
+            <section class="footer__links grid-x grid-padding-x">
+                <div class="medium-10 medium-offset-1 cell footer__links-wrapper">
+                    <div class="footer__links-col">
+                        <div class="footer__links-section footer__contact">
+                            <a href="/">
+                                <img alt="Rapid7 logo" class="logo lazy" data-src="/includes/img/Rapid7_logo.svg" src="/includes/img/placeholder-transparent.png" />
+                            </a>
+                                            <div class="footer__links-title">CUSTOMER SUPPORT</div>
+                <a class="link" href="tel:1-866-390-8113">+1-866-390-8113 (Toll Free)</a>
+                <div class="footer__links-title">SALES SUPPORT</div>
+                <a class="link" href="tel:866-772-7437">+1-866-772-7437 (Toll Free)</a>
+
+                                <div class="footer__breach">
+                                    <div class="footer__breach-title">Need immediate help with a breach?</div>
+                                    <div class="footer__breach-contact">
+                                        <div class="footer__breach-icon"></div>
+                                        <div class="footer__breach-phone"><a href="tel:18447274347">+1-844-727-4347</a></div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="footer__links-section footer__solutions">
+                                            <div class="footer__links-title">SOLUTIONS</div>
+                <a class="link" href="https://www.rapid7.com/solutions">All Solutions</a>
+                <a class="link" href="https://www.rapid7.com/solutions/industry">Industry Solutions</a>
+                <a class="link" href="https://www.rapid7.com/solutions/compliance/">Compliance Solutions</a>
+
+                        </div>
+                    </div>
+                    <div class="footer__links-col">
+                        <div class="footer__links-section footer__support">
+                                            <div class="footer__links-title">SUPPORT & RESOURCES</div>
+                <a class="link" href="https://www.rapid7.com/for-customers">Product Support</a>
+                <a class="link" href="https://www.rapid7.com/resources">Resource Library</a>
+                <a class="link" href="https://www.rapid7.com/about/customers">Customer Stories</a>
+                <a class="link" href="https://www.rapid7.com/about/events-webcasts">Events & Webcasts</a>
+                <a class="link" href="https://www.rapid7.com/services/training-certification">Training & Certification</a>
+                <a class="link" href="https://www.rapid7.com/fundamentals">IT & Security Fundamentals</a>
+                <a class="link" href="https://www.rapid7.com/db">Vulnerability & Exploit Database</a>
+
+                        </div>
+                        <div class="footer__links-section footer__about">
+                                            <div class="footer__links-title">ABOUT US</div>
+                <a class="link" href="https://www.rapid7.com/about/company">Company</a>
+                <a class="link" href="https://www.rapid7.com/about/leadership">Leadership</a>
+                <a class="link" href="https://www.rapid7.com/about/news">News & Press Releases</a>
+                <a class="link" href="https://www.rapid7.com/about/customers">Customers</a>
+                <a class="link" href="https://www.rapid7.com/about/public-policy">Public Policy</a>
+                <a class="link" href="https://www.rapid7.com/open-source/">Open Source</a>
+                <a class="link" href="https://investors.rapid7.com/">Investors</a>
+
+                        </div>
+                    </div>
+
+                    <div class="footer__links-col">
+                        <div class="footer__links-section footer__connect">
+                                            <div class="footer__links-title">CONNECT WITH US</div>
+                <a class="link" href="https://www.rapid7.com/contact">Contact</a>
+                <a class="link" href="https://blog.rapid7.com/">Blog</a>
+                <a class="link" href="https://support.rapid7.com/">Support Login</a>
+                <a class="link" href="https://www.rapid7.com/careers">Careers</a>
+
+                            <div class="footer__links-social">
+                                <a class="linkedin" href="https://www.linkedin.com/company/39624" target="_blank"></a>
+                                <a class="twitter" href="https://twitter.com/Rapid7" target="_blank"></a>
+                                <a class="facebook" href="https://www.facebook.com/rapid7" target="_blank"></a>
+                                <a class="instagram" href="https://www.instagram.com/rapid7/" target="_blank"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    <section class="footer__legal">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x">
+                <div class="medium-10 medium-offset-1 cell">
+                    <div class="footer__legal-copyright">&copy; Rapid7</div>
+
+                            <div class="footer__legal-link"><a href="https://www.rapid7.com/legal">Legal Terms</a></div>
+&nbsp; | &nbsp;                            <div class="footer__legal-link"><a href="https://www.rapid7.com/privacy-policy">Privacy Policy</a></div>
+&nbsp; | &nbsp;                            <div class="footer__legal-link"><a href="https://www.rapid7.com/export-notice">Export Notice</a></div>
+&nbsp; | &nbsp;                            <div class="footer__legal-link"><a href="https://www.rapid7.com/trust">Trust</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- *************************** sticky contact us modal *************************** -->
+        <section class="contact-sticky">
+            <div class="grid-container">
+                <div class="grid-x grid-padding-x expanded">
+                    <div id="stickyButtons" class="cell driftInit">
+                        <div class="chatBtn show-if-chat-online" id="stickyChat">
+                            <a class="gray button">Chat</a>
+                        </div>
+                        <div class="contactBtn" data-open="stickyContact">
+                            <a id="sticky_contact_btn" class="gray button">
+                                Contact Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <div class="reveal light hasSidebar" id="stickyContact" data-reveal>
+            <section class="contactForm">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x">
+                        <div class="large-9 cell">
+                            <form id="contactModal" class="formBlock freemail">
+                                <div id="intro" class="grid-x grid-padding-x">
+                                    <div id="thankyouText" style="display: none;" class="messageBox green">
+                                        <div class="medium-12 cell">
+                                            <h4><span class="success">Success!</span> Thank you for submission. We will be in touch shortly.</h4>
+                                        </div>
+                                    </div>
+                                    <div id="errorText" style="display: none;" class="messageBox red">
+                                        <div class="medium-12 cell">
+                                            <h4><span class="error">Oops!</span> There was a problem in submission. Please <a href="/contact/" title="Visit our Contact Us Page">contact us</a>.</h4>
+                                        </div>
+                                    </div>
+                                    <div class="cell medium-12 cell">
+                                        <h2>Contact Us</h2>
+                                        <p id="fieldInstruction" class="">We're happy to answer any questions you may have about Rapid7</p>
+                                    </div>
+                                </div>
+                                <fieldset>
+                                    <dl class="clearfix expand">
+                                        <dd>
+                                            <select name="contactType" id="contactType" tabindex="21" class="normalSelect dropdownSelect">
+                                                <option value="0">Reason for Contact</option>
+                                                    <option value="3557252">General</option>
+                                                    <option value="3557253">Demo Request</option>
+                                                    <option value="3557256">Pricing</option>
+                                                    <option value="3557257">Professional Services</option>
+                                                    <option value="3557359">Request for Proposal</option>
+                                            </select>
+                                        </dd>
+                                    </dl>
+                                    <dl class="clearfix expand" id="productNameParent" style="display: none;">
+                                        <dd>
+                                            <select name="productName" id="productName" tabindex="22" class="normalSelect dropdownSelect">
+                                                <option value="0">Select Product</option>
+                                                <option value="3558027">Metasploit</option>
+                                                <option value="8209765">InsightIDR</option>
+                                                <option value="11407979">InsightVM</option>
+                                                <option value="10417511">InsightOps</option>
+                                                <option value="18912840">InsightAppSec</option>
+                                                <option value="1550853">Nexpose</option>
+                                            </select>
+                                        </dd>
+                                    </dl>
+                                    <dl class="">
+                                        <dd>
+                                            <label for="firstName">First Name</label>
+                                            <input id="firstName" type="text" name="firstName" tabindex="23" />
+                                        </dd>
+                                    </dl>
+                                    <dl class="">
+                                        <dd>
+                                            <label for="lastName">Last Name</label>
+                                            <input id="lastName" type="text" name="lastName" tabindex="24" />
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dd>
+                                            <label for="jobTitle">Job Title</label>
+                                            <input id="jobTitle" type="text" name="jobTitle" tabindex="25" />
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dd>
+                                            <label for="companyName">Company</label>
+                                            <input id="companyName" type="text" name="companyName" tabindex="26" />
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dd>
+                                            <label for="email">Email</label>
+                                            <input id="email" type="text" tabindex="27" name="email" />
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dd>
+                                            <div class="intl-phone">
+                                                <label for="phone">Phone</label>
+                                                <div class="flag-container">
+                                                    <div class="selected-flag">
+                                                        <div class="iti-flag"></div>
+                                                    </div>
+                                                    <ul class="country-list"></ul>
+                                                </div>
+                                                <input id="phone" type="text" name="phone" tabindex="28" />
+                                            </div>
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dd>
+                                            <label for="country">Country</label>
+                                            <select name="country" id="country" tabindex="29" class="form_SelectInstruction normalSelect country_select" onchange='updateCountryData("#contactModal")'></select>
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dd>
+                                            <label for="state">State</label>
+                                            <select name="state" id="state" tabindex="30" class="form_SelectInstruction normalSelect dropdownSelect"></select>
+                                        </dd>
+                                    </dl>
+                                    <dl class="expand checkboxContainer" id="optout" style="display: none;">
+                                        <dd>
+                                            <input id="explicitOptOutAlt" type="checkbox" class="r7-check">
+                                            <label for="explicitOptOutAlt">I do not want to receive emails regarding Rapid7's products and services.</label>
+                                        </dd>
+                                        <p class="disc">
+                                            <p>Issues with this page? Please email <a href="mailto:info@rapid7.com">info@rapid7.com</a>. Please see updated <a href="/link/678c9fbe33a749f8b614a7be0e36e7ee.aspx">Privacy Policy</a></p>
+                                        </p>
+                                    </dl>
+                                    <dl class="expand" id="consultant" style="display: none;">
+                                        <input id="consultantFieldAlt" type="checkbox" class="r7-check">
+                                        <label for="consultantFieldAlt">I am a consultant, partner, or reseller.</label>
+                                    </dl>
+                                    <dl class="expand">
+                                        <button id="submit" class="submit button blue mdBtn" tabindex="31">Submit</button>
+                                    </dl>
+                                    <input type="hidden" id="formName" value="ContactModal">
+                                    <input type="hidden" id="contactUsFormURL" value="https://www.rapid7.com/fundamentals/man-in-the-middle-attacks/">
+                                    <input type="hidden" id="landorExpand" value="land">
+                                </fieldset>
+
+                            </form>
+                        </div>
+                        <div class="large-3 cell sidebar">
+                            <img alt="Rapid7 logo" class="logo lazy" data-src="/includes/img/logo-black.png" src="/includes/img/placeholder-transparent.png" />
+                            <h3>General:</h3>
+                            <p><a href="mailto:info@rapid7.com">info@rapid7.com</a></p>
+                            <h3>Sales: </h3>
+                            <p>
+                                <a href="tel:1-866-772-7437">+1-866-772-7437</a><br />
+                                <a href="mailto:sales@rapid7.com">sales@rapid7.com</a>
+                            </p>
+                            <h3>Support:</h3>
+                            <p>
+                                <a href="tel:1-866-390-8113">+1&ndash;866&ndash;390&ndash;8113 (toll free)</a><br />
+                                <a href="mailto:support@rapid7.com">support@rapid7.com</a>
+                            </p>
+                            <h3>Incident Response:</h3>
+                            <p><a href="tel:1-844-787-4937">1-844-727-4347</a></p>
+                            <p><a href="/contact/" class="view_more">More Contact Info</a></p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            <button class="close-button" data-close="" aria-label="Close reveal" type="button"></button>
+        </div>
+        <!-- *************************** end sticky contact us modal *************************** -->
+</footer>
+
+
+
+
+
+
+            <!-- *************************** navigation close module *************************** -->
+        </div><!-- off-canvas-content -->
+    </div><!-- off-canvas-wrapper-inner -->
+</div><!-- off-canvas-wrapper -->
+
+
+    <!-- scripts -->
+    <!--[if lte IE 11]>
+    <script src="https://polyfill.io/v2/polyfill.min.js?features=IntersectionObserver"></script>
+    <![endif]-->
+    <script src="/includes/js/all.min.js?cb=1621536567851"></script>
+    
+    
+
+    <script></script>
+
+
+
+
+
+    <style>
+    .prev-img {
+        display: block;
+        width: 44px;
+        height: 44px;
+        margin-right: 20px;
+        border: none;
+        content: url("https://www.rapid7.com/includes/img/back-arrow.svg");
+
+    }
+
+    .next-img {
+        display: block;
+        width: 44px;
+        height: 44px;
+        margin-left: 20px;
+        content: url("https://www.rapid7.com/includes/img/back-arrow.svg");
+        transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+        border: none;
+    }
+
+    .large-6.cell a {
+        display: flex;
+        align-items: center;
+        background: #fefefe;
+        padding: 15px 20px;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+        color: #3B454A;
+    }
+
+    .large-6.cell a:hover {
+        background: #595959;
+        color: #fefefe;
+    }
+
+    a:hover .prev-img {
+        content: url("https://www.rapid7.com/includes/img/back-arrow-hover.svg");
+    }
+
+    a:hover .next-img {
+        content: url("https://www.rapid7.com/includes/img/back-arrow-hover.svg");
+        transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+    }
+
+    .large-6.cell a.prev-link {
+        justify-content: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .large-6.cell a.next-link {
+        justify-content: space-between;
+    }
+</style>
+    <!-- end scripts -->
+
+</body>
+</html>

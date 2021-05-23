@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<!--[if !(IE 6) | !(IE 7) | !(IE 8)  ]><!-->
+<html lang="en-US" class="no-js">
+<!--<![endif]-->
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+<meta name="theme-color" content="#5891e8" /> <link rel="profile" href="https://gmpg.org/xfn/11" />
+<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+<link rel="alternate" hreflang="en" href="https://www.adlice.com/userland-rootkits-part-1-iat-hooks/" />
+<link rel="alternate" hreflang="fr" href="https://www.adlice.com/fr/userland-rootkits-part-1-iat-hooks/" />
+
+<title>Userland Rootkits, Part 1 | IAT hooks • Adlice Software</title><link rel="stylesheet" href="https://www.adlice.com/wp-content/cache/min/1/e499a8378d7e2bbe877463bead03da89.css" media="all" data-minify="1" />
+<meta name="description" content="Userland Rootkits explained. This is the first part of this rootkit writing tutorial and covers IAT hooks in userland." />
+<link rel="canonical" href="https://www.adlice.com/userland-rootkits-part-1-iat-hooks/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Userland Rootkits, Part 1 | IAT hooks • Adlice Software" />
+<meta property="og:description" content="Userland Rootkits explained. This is the first part of this rootkit writing tutorial and covers IAT hooks in userland." />
+<meta property="og:url" content="https://www.adlice.com/userland-rootkits-part-1-iat-hooks/" />
+<meta property="og:site_name" content="Adlice Software" />
+<meta property="article:publisher" content="https://www.facebook.com/RogueKiller" />
+<meta property="article:published_time" content="2014-10-15T07:28:15+00:00" />
+<meta property="article:modified_time" content="2020-09-16T09:34:42+00:00" />
+<meta property="og:image" content="https://www.adlice.com/wp-content/uploads/2016/06/g_-_-x-_-_-_65550x20150813112350_0.jpg" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="853" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@AdliceSoftware" />
+<meta name="twitter:site" content="@AdliceSoftware" />
+<meta name="twitter:label1" content="Written by">
+<meta name="twitter:data1" content="tigzy">
+<meta name="twitter:label2" content="Est. reading time">
+<meta name="twitter:data2" content="3 minutes">
+<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.adlice.com/#organization","name":"Adlice Software","url":"https://www.adlice.com/","sameAs":["https://www.facebook.com/RogueKiller","https://fr.linkedin.com/company/adlice-software","https://www.youtube.com/channel/UC4CQ-gIZMGWxl-auf0QqYhQ","https://twitter.com/AdliceSoftware"],"logo":{"@type":"ImageObject","@id":"https://www.adlice.com/#logo","inLanguage":"en-US","url":"https://www.adlice.com/wp-content/uploads/2020/05/B1rTNpTG_400x40_10.png","contentUrl":"https://www.adlice.com/wp-content/uploads/2020/05/B1rTNpTG_400x40_10.png","width":276,"height":276,"caption":"Adlice Software"},"image":{"@id":"https://www.adlice.com/#logo"}},{"@type":"WebSite","@id":"https://www.adlice.com/#website","url":"https://www.adlice.com/","name":"Adlice Software","description":"Anti-malware and analysis tools","publisher":{"@id":"https://www.adlice.com/#organization"},"potentialAction":[{"@type":"SearchAction","target":"https://www.adlice.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#primaryimage","inLanguage":"en-US","url":"https://www.adlice.com/wp-content/uploads/2016/06/g_-_-x-_-_-_65550x20150813112350_0.jpg","contentUrl":"https://www.adlice.com/wp-content/uploads/2016/06/g_-_-x-_-_-_65550x20150813112350_0.jpg","width":1280,"height":853},{"@type":"WebPage","@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#webpage","url":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/","name":"Userland Rootkits, Part 1 | IAT hooks \u2022 Adlice Software","isPartOf":{"@id":"https://www.adlice.com/#website"},"primaryImageOfPage":{"@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#primaryimage"},"datePublished":"2014-10-15T07:28:15+00:00","dateModified":"2020-09-16T09:34:42+00:00","description":"Userland Rootkits explained. This is the first part of this rootkit writing tutorial and covers IAT hooks in userland.","breadcrumb":{"@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://www.adlice.com/userland-rootkits-part-1-iat-hooks/"]}]},{"@type":"BreadcrumbList","@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://www.adlice.com/","url":"https://www.adlice.com/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/","url":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/","name":"Userland Rootkits: Part 1, IAT hooks"}}]},{"@type":"Article","@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#article","isPartOf":{"@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#webpage"},"author":{"@id":"https://www.adlice.com/#/schema/person/a02b30804320a4059d268dc2567a307d"},"headline":"Userland Rootkits: Part 1, IAT hooks","datePublished":"2014-10-15T07:28:15+00:00","dateModified":"2020-09-16T09:34:42+00:00","mainEntityOfPage":{"@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#webpage"},"commentCount":19,"publisher":{"@id":"https://www.adlice.com/#organization"},"image":{"@id":"https://www.adlice.com/userland-rootkits-part-1-iat-hooks/#primaryimage"},"keywords":"analysis,anti-rootkit,antivirus,hook,iat,injection,patch,payload,research,rootkit,userland","articleSection":"Analysis,Tutorial","inLanguage":"en-US"},{"@type":"Person","@id":"https://www.adlice.com/#/schema/person/a02b30804320a4059d268dc2567a307d","name":"tigzy","image":{"@type":"ImageObject","@id":"https://www.adlice.com/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/6103628bb88962fb43fcc7f688cf0481?s=96&d=mm&r=g","contentUrl":"https://secure.gravatar.com/avatar/6103628bb88962fb43fcc7f688cf0481?s=96&d=mm&r=g","caption":"tigzy"},"description":"Founder and owner of Adlice Software, Tigzy started as lead developer on the popular Anti-malware called RogueKiller. Involved in all the Adlice projects as lead developer, Tigzy is also doing research and reverse engineering as well as writing blog posts."}]}</script>
+
+<link rel='dns-prefetch' href='//cdnjs.cloudflare.com' />
+<link rel='dns-prefetch' href='//www.googletagmanager.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//pagead2.googlesyndication.com' />
+<link rel='dns-prefetch' href='//googleads.g.doubleclick.net' />
+<link rel='dns-prefetch' href='//adservice.google.com' />
+<link rel='dns-prefetch' href='//adservice.google.ca.' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="Adlice Software &raquo; Feed" href="https://www.adlice.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Adlice Software &raquo; Comments Feed" href="https://www.adlice.com/comments/feed/" />
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='dt-web-fonts-css' href='https://fonts.googleapis.com/css?family=Roboto:400,500,600,700%7COpen+Sans:400,600,700%7CAbril+Fatface:400,600,700&#038;display=swap' type='text/css' media='all' />
+<style id='dt-main-inline-css' type='text/css'>
+body #load {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  z-index: 9901;
+  opacity: 1;
+  visibility: visible;
+  transition: all .35s ease-out;
+}
+.load-wrap {
+  width: 100%;
+  height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  text-align: center;
+}
+.load-wrap > svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+#load {
+  background-color: #ffffff;
+}
+.uil-default rect:not(.bk) {
+  fill: #1e73be;
+}
+.uil-ring > path {
+  fill: #1e73be;
+}
+.ring-loader .circle {
+  fill: #1e73be;
+}
+.ring-loader .moving-circle {
+  fill: #1e73be;
+}
+.uil-hourglass .glass {
+  stroke: #1e73be;
+}
+.uil-hourglass .sand {
+  fill: #1e73be;
+}
+.spinner-loader .load-wrap {
+  background-image: url("data:image/svg+xml,%3Csvg width='75px' height='75px' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid' class='uil-default'%3E%3Crect x='0' y='0' width='100' height='100' fill='none' class='bk'%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(0 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(30 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.08333333333333333s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(60 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.16666666666666666s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(90 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.25s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(120 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.3333333333333333s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(150 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.4166666666666667s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(180 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(210 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5833333333333334s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(240 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.6666666666666666s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(270 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.75s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(300 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.8333333333333334s' repeatCount='indefinite'/%3E%3C/rect%3E%3Crect  x='46.5' y='40' width='7' height='20' rx='5' ry='5' fill='%231e73be' transform='rotate(330 50 50) translate(0 -30)'%3E  %3Canimate attributeName='opacity' from='1' to='0' dur='1s' begin='0.9166666666666666s' repeatCount='indefinite'/%3E%3C/rect%3E%3C/svg%3E");
+}
+.ring-loader .load-wrap {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='72' height='72' fill='%231e73be'%3E   %3Cpath opacity='.25' d='M16 0 A16 16 0 0 0 16 32 A16 16 0 0 0 16 0 M16 4 A12 12 0 0 1 16 28 A12 12 0 0 1 16 4'/%3E   %3Cpath d='M16 0 A16 16 0 0 1 32 16 L28 16 A12 12 0 0 0 16 4z'%3E     %3CanimateTransform attributeName='transform' type='rotate' from='0 16 16' to='360 16 16' dur='0.8s' repeatCount='indefinite' /%3E   %3C/path%3E %3C/svg%3E");
+}
+.hourglass-loader .load-wrap {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='72' height='72' fill='%231e73be'%3E   %3Cpath transform='translate(2)' d='M0 12 V20 H4 V12z'%3E      %3Canimate attributeName='d' values='M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z' dur='1.2s' repeatCount='indefinite' begin='0' keytimes='0;.2;.5;1' keySplines='0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8' calcMode='spline'  /%3E   %3C/path%3E   %3Cpath transform='translate(8)' d='M0 12 V20 H4 V12z'%3E     %3Canimate attributeName='d' values='M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z' dur='1.2s' repeatCount='indefinite' begin='0.2' keytimes='0;.2;.5;1' keySplines='0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8' calcMode='spline'  /%3E   %3C/path%3E   %3Cpath transform='translate(14)' d='M0 12 V20 H4 V12z'%3E     %3Canimate attributeName='d' values='M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z' dur='1.2s' repeatCount='indefinite' begin='0.4' keytimes='0;.2;.5;1' keySplines='0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8' calcMode='spline' /%3E   %3C/path%3E   %3Cpath transform='translate(20)' d='M0 12 V20 H4 V12z'%3E     %3Canimate attributeName='d' values='M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z' dur='1.2s' repeatCount='indefinite' begin='0.6' keytimes='0;.2;.5;1' keySplines='0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8' calcMode='spline' /%3E   %3C/path%3E   %3Cpath transform='translate(26)' d='M0 12 V20 H4 V12z'%3E     %3Canimate attributeName='d' values='M0 12 V20 H4 V12z; M0 4 V28 H4 V4z; M0 12 V20 H4 V12z; M0 12 V20 H4 V12z' dur='1.2s' repeatCount='indefinite' begin='0.8' keytimes='0;.2;.5;1' keySplines='0.2 0.2 0.4 0.8;0.2 0.6 0.4 0.8;0.2 0.8 0.4 0.8' calcMode='spline' /%3E   %3C/path%3E %3C/svg%3E");
+}
+
+</style>
+<style id='rocket-lazyload-inline-css' type='text/css'>
+.rll-youtube-player{position:relative;padding-bottom:56.23%;height:0;overflow:hidden;max-width:100%;}.rll-youtube-player iframe{position:absolute;top:0;left:0;width:100%;height:100%;z-index:100;background:0 0}.rll-youtube-player img{bottom:0;display:block;left:0;margin:auto;max-width:100%;width:100%;position:absolute;right:0;top:0;border:none;height:auto;cursor:pointer;-webkit-transition:.4s all;-moz-transition:.4s all;transition:.4s all}.rll-youtube-player img:hover{-webkit-filter:brightness(75%)}.rll-youtube-player .play{height:72px;width:72px;left:50%;top:50%;margin-left:-36px;margin-top:-36px;position:absolute;background:url(https://www.adlice.com/wp-content/plugins/wp-rocket/assets/img/youtube.png) no-repeat;cursor:pointer}.wp-has-aspect-ratio .rll-youtube-player{position:absolute;padding-bottom:0;width:100%;height:100%;top:0;bottom:0;left:0;right:0}
+</style>
+<script type='text/javascript' src='https://www.adlice.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' id='wpml-cookie-js-extra'>
+/* <![CDATA[ */
+var wpml_cookies = {"_icl_current_language":{"value":"en","expires":1,"path":"\/"}};
+var wpml_cookies = {"_icl_current_language":{"value":"en","expires":1,"path":"\/"}};
+/* ]]> */
+</script>
+<script data-no-minify="1" type='text/javascript' src='https://www.adlice.com/wp-content/cache/busting/1/gtm-51bb9cbadaf10229e94b9fd813dc5af6.js' id='google_gtagjs-js' async></script>
+<script type='text/javascript' id='google_gtagjs-js-after'>
+window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("set", "developer_id.dZTNiMT", true);
+gtag("config", "UA-67095700-1", {"anonymize_ip":true});
+</script>
+<script type='text/javascript' id='dt-above-fold-js-extra'>
+/* <![CDATA[ */
+var dtLocal = {"themeUrl":"https:\/\/www.adlice.com\/wp-content\/themes\/dt-the7","passText":"To view this protected post, enter the password below:","moreButtonText":{"loading":"Loading...","loadMore":"Load more"},"postID":"243","ajaxurl":"https:\/\/www.adlice.com\/wp-admin\/admin-ajax.php","REST":{"baseUrl":"https:\/\/www.adlice.com\/wp-json\/the7\/v1","endpoints":{"sendMail":"\/send-mail"}},"contactMessages":{"required":"One or more fields have an error. Please check and try again.","terms":"Please accept the privacy policy.","fillTheCaptchaError":"Please, fill the captcha."},"captchaSiteKey":"","ajaxNonce":"e7960e49af","pageData":"","themeSettings":{"smoothScroll":"off","lazyLoading":false,"accentColor":{"mode":"solid","color":"#5891e8"},"desktopHeader":{"height":120},"ToggleCaptionEnabled":"disabled","ToggleCaption":"Navigation","floatingHeader":{"showAfter":94,"showMenu":true,"height":56,"logo":{"showLogo":true,"html":"","url":"https:\/\/www.adlice.com\/"}},"topLine":{"floatingTopLine":{"logo":{"showLogo":false,"html":""}}},"mobileHeader":{"firstSwitchPoint":990,"secondSwitchPoint":500,"firstSwitchPointHeight":70,"secondSwitchPointHeight":56,"mobileToggleCaptionEnabled":"disabled","mobileToggleCaption":"Menu"},"stickyMobileHeaderFirstSwitch":{"logo":{"html":"<img class=\" preload-me\" src=\"https:\/\/www.adlice.com\/wp-content\/uploads\/2016\/06\/logo.png\" srcset=\"https:\/\/www.adlice.com\/wp-content\/uploads\/2016\/06\/logo.png 312w, https:\/\/www.adlice.com\/wp-content\/uploads\/2016\/06\/logo.png 312w\" width=\"312\" height=\"48\"   sizes=\"312px\" alt=\"Adlice Software\" \/>"}},"stickyMobileHeaderSecondSwitch":{"logo":{"html":""}},"content":{"textColor":"#787d85","headerColor":"#3b3f4a"},"sidebar":{"switchPoint":970},"boxedWidth":"1280px","stripes":{"stripe1":{"textColor":"#787d85","headerColor":"#3b3f4a"},"stripe2":{"textColor":"#8b9199","headerColor":"#ffffff"},"stripe3":{"textColor":"#ffffff","headerColor":"#ffffff"}}}};
+var dtShare = {"shareButtonText":{"facebook":"Share on Facebook","twitter":"Tweet","pinterest":"Pin it","linkedin":"Share on Linkedin","whatsapp":"Share on Whatsapp"},"overlayOpacity":"85"};
+/* ]]> */
+</script>
+<script type='text/javascript' id='sib-front-js-js-extra'>
+/* <![CDATA[ */
+var sibErrMsg = {"invalidMail":"Please fill out valid email address","requiredField":"Please fill out required fields","invalidDateFormat":"Please fill out valid date format","invalidSMSFormat":"Please fill out valid phone number"};
+var ajax_sib_front_object = {"ajax_url":"https:\/\/www.adlice.com\/wp-admin\/admin-ajax.php","ajax_nonce":"d7f471f0fc","flag_url":"https:\/\/www.adlice.com\/wp-content\/plugins\/mailin\/img\/flags\/"};
+/* ]]> */
+</script>
+<link rel="https://api.w.org/" href="https://www.adlice.com/wp-json/" /><link rel="alternate" type="application/json" href="https://www.adlice.com/wp-json/wp/v2/posts/243" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.adlice.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.adlice.com/wp-includes/wlwmanifest.xml" />
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel='shortlink' href='https://www.adlice.com/?p=243' />
+<meta name="generator" content="WPML ver:4.2.1 stt:1,4;" />
+<style type="text/css">.eafl-disclaimer-small { font-size: 0.8em; }
+.eafl-disclaimer-smaller { font-size: 0.6em; }</style><meta name="generator" content="Site Kit by Google 1.31.0" />
+<style></style>
+<meta name="generator" content="Powered by Visual Composer Website Builder - fast and easy-to-use drag and drop visual editor for WordPress." /><!--[if IE 7]>
+<link rel="stylesheet" href="https://www.adlice.com/wp-content/plugins/wp-review-pro/assets/css/wp-review-ie7.css">
+<![endif]-->
+<link rel="preload" as="font" href="https://www.adlice.com/wp-content/themes/dt-the7/fonts/FontAwesome/webfonts/fa-solid-900.woff2" crossorigin>
+<link rel="preload" as="font" href="https://www.adlice.com/wp-content/uploads/visualcomposer-assets/sharedLibraries/iconpicker/dist/fonts/fa-brands-400.woff2" crossorigin>
+<style type="text/css">
+				#wp-admin-bar-pvc-post-views .pvc-graph-container { padding-top: 6px; padding-bottom: 6px; position: relative; display: block; height: 100%; box-sizing: border-box; }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph {
+					display: inline-block;
+					width: 1px;
+					margin-right: 1px;
+					background-color: #ccc;
+					vertical-align: baseline;
+				}
+				#wp-admin-bar-pvc-post-views .pvc-line-graph:hover { background-color: #eee; }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-0 { height: 1% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-1 { height: 5% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-2 { height: 10% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-3 { height: 15% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-4 { height: 20% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-5 { height: 25% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-6 { height: 30% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-7 { height: 35% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-8 { height: 40% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-9 { height: 45% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-10 { height: 50% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-11 { height: 55% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-12 { height: 60% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-13 { height: 65% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-14 { height: 70% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-15 { height: 75% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-16 { height: 80% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-17 { height: 85% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-18 { height: 90% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-19 { height: 95% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-20 { height: 100% }
+			</style>
+<link rel="icon" href="https://www.adlice.com/wp-content/uploads/2020/05/B1rTNpTG_400x40_10-65x65.png" sizes="32x32" />
+<link rel="icon" href="https://www.adlice.com/wp-content/uploads/2020/05/B1rTNpTG_400x40_10.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://www.adlice.com/wp-content/uploads/2020/05/B1rTNpTG_400x40_10.png" />
+<meta name="msapplication-TileImage" content="https://www.adlice.com/wp-content/uploads/2020/05/B1rTNpTG_400x40_10.png" />
+
+<noscript><style id="rocket-lazyload-nojs-css">.rll-youtube-player, [data-lazy-src]{display:none !important;}</style></noscript></head>
+<body id="the7-body" class="post-template-default single single-post postid-243 single-format-standard wp-embed-responsive vcwb no-comments dt-responsive-on right-mobile-menu-close-icon ouside-menu-close-icon mobile-hamburger-close-bg-enable mobile-hamburger-close-bg-hover-enable  fade-medium-mobile-menu-close-icon fade-medium-menu-close-icon srcset-enabled btn-flat custom-btn-color custom-btn-hover-color phantom-slide phantom-disable-decoration phantom-custom-logo-on floating-mobile-menu-icon mobile-hide-sidebar top-header first-switch-logo-left first-switch-menu-right second-switch-logo-left second-switch-menu-right right-mobile-menu layzr-loading-on dt-wpml popup-message-style dt-fa-compatibility the7-ver-9.9.2.1">
+
+<div id="load" class="ring-loader">
+<div class="load-wrap"></div>
+</div>
+<div id="page">
+<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+<div class="masthead classic-header left bg-behind-menu widgets full-height shadow-mobile-header-decoration small-mobile-menu-icon mobile-menu-icon-bg-on mobile-menu-icon-hover-bg-on dt-parent-menu-clickable show-sub-menu-on-hover show-mobile-logo" role="banner">
+<div class="top-bar full-width-line top-bar-empty">
+<div class="top-bar-bg"></div>
+<div class="mini-widgets left-widgets"></div><div class="mini-widgets right-widgets"></div></div>
+<header class="header-bar">
+<div class="branding">
+<div id="site-title" class="assistive-text">Adlice Software</div>
+<div id="site-description" class="assistive-text">Anti-malware and analysis tools</div>
+<a class="" href="https://www.adlice.com/"><img class=" preload-me" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20312%2048'%3E%3C/svg%3E" data-lazy-srcset="https://www.adlice.com/wp-content/uploads/2016/06/logo.png 312w, https://www.adlice.com/wp-content/uploads/2016/06/logo.png 312w" width="312" height="48" data-lazy-sizes="312px" alt="Adlice Software" data-lazy-src="https://www.adlice.com/wp-content/uploads/2016/06/logo.png" /><noscript><img class=" preload-me" src="https://www.adlice.com/wp-content/uploads/2016/06/logo.png" srcset="https://www.adlice.com/wp-content/uploads/2016/06/logo.png 312w, https://www.adlice.com/wp-content/uploads/2016/06/logo.png 312w" width="312" height="48"   sizes="312px" alt="Adlice Software" /></noscript></a><div class="mini-widgets"></div><div class="mini-widgets"><div class="text-area hide-on-desktop hide-on-first-switch near-logo-second-switch"><p>Adlice Software</p>
+</div></div></div>
+<nav class="navigation">
+<ul id="primary-menu" class="main-nav underline-decoration l-to-r-line outside-item-remove-margin" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-847 first has-children" role="presentation"><a href='https://www.adlice.com/blog/' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Blog</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-848 act first" role="presentation"><a href='https://www.adlice.com/category/analysis/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw far fa-eye" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Analysis</span></span></a></li> <li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-849 act" role="presentation"><a href='https://www.adlice.com/category/tutorial/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw far fa-file-alt" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Tutorials</span></span></a></li> <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-850" role="presentation"><a href='https://www.adlice.com/category/guide/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-info-circle" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Removal Guides</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-has-children menu-item-4197 has-children dt-mega-menu mega-auto-width mega-column-4" role="presentation"><a href='https://www.adlice.com/' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Products</span></span></a><div class="dt-mega-menu-wrap"><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3957 first has-children no-link dt-mega-parent wf-1-4" role="presentation"><a href='#' class='not-clickable-item mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw icomoon-the7-font-the7-home-022" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">For Home</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3779 first" role="presentation"><a href='https://www.adlice.com/roguekiller/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-user-shield" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Anti Malware</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3806" role="presentation"><a href='https://www.adlice.com/ucheck/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw dt-icon-the7-refresh-07" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3857" role="presentation"><a href='https://www.adlice.com/diag/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fab fa-searchengin" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice Diag</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3959 has-children no-link dt-mega-parent wf-1-4" role="presentation"><a href='#' class='not-clickable-item mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-flask" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">For Researchers</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3889 first" role="presentation"><a href='https://www.adlice.com/roguekillerpe/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-bolt" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice PEViewer</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3872" role="presentation"><a href='https://www.adlice.com/yaraeditor/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-laptop-code" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">YaraEditor</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3909" role="presentation"><a href='https://www.adlice.com/diffview/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-clipboard-list" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">DiffView</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3958 has-children no-link dt-mega-parent wf-1-4" role="presentation"><a href='#' class='not-clickable-item mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-building" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">For Business</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4024 first" role="presentation"><a href='https://www.adlice.com/roguekiller/technician/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-user-shield" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4101" role="presentation"><a href='https://www.adlice.com/diag/technician/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fab fa-searchengin" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice Diag Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4063" role="presentation"><a href='https://www.adlice.com/ucheck/technician/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw dt-icon-the7-refresh-07" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3930" role="presentation"><a href='https://www.adlice.com/mrf/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-globe" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">MRF</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4166" role="presentation"><a href='https://www.adlice.com/yaraeditorweb/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-globe" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">YaraEditor (Web)</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3778" role="presentation"><a href='https://www.adlice.com/crashdumpextractor/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-bug" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">CrashDumpExtractor (CDE)</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-4117 has-children no-link dt-mega-parent wf-1-4" role="presentation"><a href='#' class='not-clickable-item mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-code" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Command Line</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4094 first" role="presentation"><a href='https://www.adlice.com/roguekiller/cmd/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-laptop-code" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Command Line</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4116" role="presentation"><a href='https://www.adlice.com/ucheck/cmd/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-laptop-code" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck Command Line</span></span></a></li> </ul></li> </ul></div></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-852" role="presentation"><a href='https://shop.adlice.com/' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Shop</span></span></a></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-2360 has-children" role="presentation"><a href='http://adlice.com/docs' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Documentation</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2359 first" role="presentation"><a href='https://www.adlice.com/docs/roguekiller/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Anti-Malware</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-4032" role="presentation"><a href='https://www.adlice.com/docs/roguekiller/premium/technician/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2420" role="presentation"><a href='https://www.adlice.com/docs/roguekillercmd/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKillerCMD</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2508" role="presentation"><a href='https://www.adlice.com/docs/ucheck/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-4031" role="presentation"><a href='https://www.adlice.com/docs/ucheck/premium/technician/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3758" role="presentation"><a href='https://www.adlice.com/docs/ucheckcmd/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheckCMD</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2357" role="presentation"><a href='https://www.adlice.com/docs/diag/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice Diag</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-4033" role="presentation"><a href='https://www.adlice.com/docs/diag/premium/technician/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice Diag Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2358" role="presentation"><a href='https://www.adlice.com/docs/cde/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">CrashDumpExtractor (CDE)</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3873" role="presentation"><a href='https://www.adlice.com/docs/roguekillerpe/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice PEViewer</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3366" role="presentation"><a href='https://www.adlice.com/docs/yaraeditor/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">YaraEditor</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3268" role="presentation"><a href='https://www.adlice.com/docs/yaraeditorweb/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">YaraEditor (Web)</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3759" role="presentation"><a href='https://www.adlice.com/docs/diffview/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">DiffView</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3760" role="presentation"><a href='https://www.adlice.com/docs/mrf/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">MRF</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3960 has-children" role="presentation"><a href='#' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Support</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-857 first" role="presentation"><a href='http://forum.adlice.com/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-comments" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Forum</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-859" role="presentation"><a href='https://www.adlice.com/contact/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw icomoon-the7-font-the7-mail-02" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Contact</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-858 has-children" role="presentation"><a href='#' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Company</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3449 first" role="presentation"><a href='https://www.adlice.com/about/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw icomoon-the7-font-the7-phone-05" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">About Us</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-1335" role="presentation"><a href='https://www.adlice.com/global-eula/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw far fa-file" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">EULA</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1001" role="presentation"><a href='https://www.adlice.com/partnership/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-users" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Partnership</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-860" role="presentation"><a href='https://www.adlice.com/donate/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fab fa-paypal" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Donate</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4203" role="presentation"><a href='https://www.adlice.com/detections/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-bug" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Detections</span></span></a></li> </ul></li> </ul>
+<div class="mini-widgets"><a href="https://shop.adlice.com/my-account/" class="mini-contacts multipurpose_1 show-on-desktop near-logo-first-switch in-menu-second-switch"><i class="fa-fw icomoon-the7-font-the7-login-04"></i>My Account</a><div class="mini-search show-on-desktop near-logo-first-switch near-logo-second-switch popup-search custom-icon"><form class="searchform mini-widget-searchform" role="search" method="get" action="https://www.adlice.com/">
+<div class="screen-reader-text">Search:</div>
+<a href="" class="submit text-disable"><i class=" mw-icon the7-mw-icon-search-bold"></i></a>
+<div class="popup-search-wrap">
+<input type="text" class="field searchform-s" name="s" value="" placeholder="Type and hit enter …" title="Search form" />
+<a href="" class="search-icon"><i class="the7-mw-icon-search-bold"></i></a>
+</div>
+<input type="hidden" name="lang" value="en" /> <input type="submit" class="assistive-text searchsubmit" value="Go!" />
+</form>
+</div><div class="mini-wpml show-on-desktop near-logo-first-switch in-menu-second-switch">
+<div class="wpml-ls-statics-shortcode_actions wpml-ls wpml-ls-legacy-dropdown js-wpml-ls-legacy-dropdown" id="lang_sel">
+<ul>
+<li tabindex="0" class="wpml-ls-slot-shortcode_actions wpml-ls-item wpml-ls-item-en wpml-ls-current-language wpml-ls-first-item wpml-ls-item-legacy-dropdown">
+<a href="#" class="js-wpml-ls-item-toggle wpml-ls-item-toggle lang_sel_sel icl-en"><img class="wpml-ls-flag iclflag" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="en" title="English" data-lazy-src="https://www.adlice.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.png"><noscript><img class="wpml-ls-flag iclflag" src="https://www.adlice.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.png" alt="en" title="English"></noscript><span class="wpml-ls-native icl_lang_sel_native">English</span></a>
+<ul class="wpml-ls-sub-menu">
+<li class="icl-fr wpml-ls-slot-shortcode_actions wpml-ls-item wpml-ls-item-fr wpml-ls-last-item">
+<a href="https://www.adlice.com/fr/userland-rootkits-part-1-iat-hooks/" class="wpml-ls-link"><img class="wpml-ls-flag iclflag" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="fr" title="Français" data-lazy-src="https://www.adlice.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/fr.png"><noscript><img class="wpml-ls-flag iclflag" src="https://www.adlice.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/fr.png" alt="fr" title="Français"></noscript><span class="wpml-ls-native icl_lang_sel_native">Français</span></a>
+</li>
+</ul>
+</li>
+</ul>
+</div></div></div>
+</nav>
+</header>
+</div>
+<div class="dt-mobile-header mobile-menu-show-divider">
+<div class="dt-close-mobile-menu-icon"><div class="close-line-wrap"><span class="close-line"></span><span class="close-line"></span><span class="close-line"></span></div></div> <ul id="mobile-menu" class="mobile-main-nav" role="menubar">
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-847 first has-children" role="presentation"><a href='https://www.adlice.com/blog/' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Blog</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-848 act first" role="presentation"><a href='https://www.adlice.com/category/analysis/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw far fa-eye" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Analysis</span></span></a></li> <li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-849 act" role="presentation"><a href='https://www.adlice.com/category/tutorial/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw far fa-file-alt" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Tutorials</span></span></a></li> <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-850" role="presentation"><a href='https://www.adlice.com/category/guide/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-info-circle" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Removal Guides</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-has-children menu-item-4197 has-children dt-mega-menu mega-auto-width mega-column-4" role="presentation"><a href='https://www.adlice.com/' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Products</span></span></a><div class="dt-mega-menu-wrap"><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3957 first has-children no-link dt-mega-parent wf-1-4" role="presentation"><a href='#' class='not-clickable-item mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw icomoon-the7-font-the7-home-022" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">For Home</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3779 first" role="presentation"><a href='https://www.adlice.com/roguekiller/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-user-shield" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Anti Malware</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3806" role="presentation"><a href='https://www.adlice.com/ucheck/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw dt-icon-the7-refresh-07" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3857" role="presentation"><a href='https://www.adlice.com/diag/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fab fa-searchengin" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice Diag</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3959 has-children no-link dt-mega-parent wf-1-4" role="presentation"><a href='#' class='not-clickable-item mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-flask" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">For Researchers</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3889 first" role="presentation"><a href='https://www.adlice.com/roguekillerpe/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-bolt" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice PEViewer</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3872" role="presentation"><a href='https://www.adlice.com/yaraeditor/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-laptop-code" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">YaraEditor</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3909" role="presentation"><a href='https://www.adlice.com/diffview/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-clipboard-list" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">DiffView</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3958 has-children no-link dt-mega-parent wf-1-4" role="presentation"><a href='#' class='not-clickable-item mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-building" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">For Business</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4024 first" role="presentation"><a href='https://www.adlice.com/roguekiller/technician/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-user-shield" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4101" role="presentation"><a href='https://www.adlice.com/diag/technician/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fab fa-searchengin" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice Diag Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4063" role="presentation"><a href='https://www.adlice.com/ucheck/technician/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw dt-icon-the7-refresh-07" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3930" role="presentation"><a href='https://www.adlice.com/mrf/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-globe" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">MRF</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4166" role="presentation"><a href='https://www.adlice.com/yaraeditorweb/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-globe" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">YaraEditor (Web)</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3778" role="presentation"><a href='https://www.adlice.com/crashdumpextractor/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-bug" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">CrashDumpExtractor (CDE)</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-4117 has-children no-link dt-mega-parent wf-1-4" role="presentation"><a href='#' class='not-clickable-item mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-code" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Command Line</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4094 first" role="presentation"><a href='https://www.adlice.com/roguekiller/cmd/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-laptop-code" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Command Line</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4116" role="presentation"><a href='https://www.adlice.com/ucheck/cmd/' class=' mega-menu-img mega-menu-img-left' data-level='3' role="menuitem"><i class="fa-fw fas fa-laptop-code" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck Command Line</span></span></a></li> </ul></li> </ul></div></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-852" role="presentation"><a href='https://shop.adlice.com/' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Shop</span></span></a></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-2360 has-children" role="presentation"><a href='http://adlice.com/docs' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Documentation</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2359 first" role="presentation"><a href='https://www.adlice.com/docs/roguekiller/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Anti-Malware</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-4032" role="presentation"><a href='https://www.adlice.com/docs/roguekiller/premium/technician/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKiller Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2420" role="presentation"><a href='https://www.adlice.com/docs/roguekillercmd/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">RogueKillerCMD</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2508" role="presentation"><a href='https://www.adlice.com/docs/ucheck/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-4031" role="presentation"><a href='https://www.adlice.com/docs/ucheck/premium/technician/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheck Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3758" role="presentation"><a href='https://www.adlice.com/docs/ucheckcmd/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">UCheckCMD</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2357" role="presentation"><a href='https://www.adlice.com/docs/diag/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice Diag</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-4033" role="presentation"><a href='https://www.adlice.com/docs/diag/premium/technician/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice Diag Technician</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-2358" role="presentation"><a href='https://www.adlice.com/docs/cde/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">CrashDumpExtractor (CDE)</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3873" role="presentation"><a href='https://www.adlice.com/docs/roguekillerpe/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Adlice PEViewer</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3366" role="presentation"><a href='https://www.adlice.com/docs/yaraeditor/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">YaraEditor</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3268" role="presentation"><a href='https://www.adlice.com/docs/yaraeditorweb/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">YaraEditor (Web)</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3759" role="presentation"><a href='https://www.adlice.com/docs/diffview/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">DiffView</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-docs menu-item-3760" role="presentation"><a href='https://www.adlice.com/docs/mrf/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-book-open" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">MRF</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3960 has-children" role="presentation"><a href='#' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Support</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-857 first" role="presentation"><a href='http://forum.adlice.com/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-comments" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Forum</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-859" role="presentation"><a href='https://www.adlice.com/contact/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw icomoon-the7-font-the7-mail-02" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Contact</span></span></a></li> </ul></li> <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-858 has-children" role="presentation"><a href='#' data-level='1' role="menuitem"><span class="menu-item-text"><span class="menu-text">Company</span></span></a><ul class="sub-nav hover-style-bg" role="menubar"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3449 first" role="presentation"><a href='https://www.adlice.com/about/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw icomoon-the7-font-the7-phone-05" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">About Us</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-1335" role="presentation"><a href='https://www.adlice.com/global-eula/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw far fa-file" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">EULA</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1001" role="presentation"><a href='https://www.adlice.com/partnership/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-users" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Partnership</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-860" role="presentation"><a href='https://www.adlice.com/donate/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fab fa-paypal" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Donate</span></span></a></li> <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4203" role="presentation"><a href='https://www.adlice.com/detections/' class=' mega-menu-img mega-menu-img-left' data-level='2' role="menuitem"><i class="fa-fw fas fa-bug" style="margin: 0px 6px 0px 0px;"></i><span class="menu-item-text"><span class="menu-text">Detections</span></span></a></li> </ul></li> </ul>
+<div class='mobile-mini-widgets-in-menu'></div>
+</div>
+<div class="page-title title-left solid-bg">
+<div class="wf-wrap">
+<div class="page-title-head hgroup"><h1 class="entry-title">Userland Rootkits: Part 1, IAT hooks</h1></div><div class="page-title-breadcrumbs"><div class="assistive-text">You are here:</div><ol class="breadcrumbs text-small" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="https://www.adlice.com/" title=""><span itemprop="name">Home</span></a><meta itemprop="position" content="1" /></li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><a itemprop="item" href="https://www.adlice.com/category/analysis/" title=""><span itemprop="name">Analysis</span></a><meta itemprop="position" content="2" /></li><li class="current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><span itemprop="name">Userland Rootkits: Part 1, IAT&hellip;</span><meta itemprop="position" content="3" /></li></ol></div> </div>
+</div>
+<div id="main" class="sidebar-right sidebar-divider-vertical">
+<div class="main-gradient"></div>
+<div class="wf-wrap">
+<div class="wf-container-main">
+<div id="content" class="content" role="main">
+<article id="post-243" class="post-243 post type-post status-publish format-standard has-post-thumbnail category-analysis category-tutorial tag-analysis tag-anti-rootkit tag-antivirus tag-hook tag-iat tag-injection tag-patch tag-payload tag-research tag-rootkit tag-userland category-36 category-84 description-off">
+<div class="post-thumbnail"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%201280%20640&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2016/06/g_-_-x-_-_-_65550x20150813112350_0-1280x640.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2016/06/g_-_-x-_-_-_65550x20150813112350_0-1280x640.jpg 1280w" width="1280" height="640" title="g_-_-x-_-_-_65550x20150813112350_0" alt="" /></div><div class="entry-content"><div id="review" class="review-wrapper wp-review-243 wp-review-star-type delay-animation wp-review-box-full-width">
+<div class="user-review-area visitors-review-area">
+<div class="wp-review-user-rating wp-review-user-rating-star"><div class="review-total-star " data-post-id="243" data-token="43e44bfc2c">
+<div class="wp-review-loading-msg"><span class="animate-spin mts-icon-loader"></span>Sending</div>
+<div class="review-result-wrapper">
+<span data-input-value="1" title="1/5"><i class="mts-icon-star"></i></span>
+<span data-input-value="2" title="2/5"><i class="mts-icon-star"></i></span>
+<span data-input-value="3" title="3/5"><i class="mts-icon-star"></i></span>
+<span data-input-value="4" title="4/5"><i class="mts-icon-star"></i></span>
+<span data-input-value="5" title="5/5"><i class="mts-icon-star"></i></span>
+<div class="review-result" style="width:90%;">
+<i class="mts-icon-star"></i>
+<i class="mts-icon-star"></i>
+<i class="mts-icon-star"></i>
+<i class="mts-icon-star"></i>
+<i class="mts-icon-star"></i>
+</div>
+</div>
+<input type="hidden" class="wp-review-user-rating-val" name="wp-review-user-rating-val" value="4.5" />
+<input type="hidden" class="wp-review-user-rating-nonce" value="43e44bfc2c" />
+<input type="hidden" class="wp-review-user-rating-postid" value="243" />
+</div>
+<style type="text/css">
+	.wp-review-243 .review-result-wrapper .review-result i { color: #fff; opacity: 1; filter: alpha(opacity=100); }
+	.wp-review-243 .review-result-wrapper i { color: #fff; opacity: 0.50; filter: alpha(opacity=50); }
+	.wp-review-243 .mts-user-review-star-container .selected i, .wp-review-243 .user-review-area .review-result i, .wp-review-comment-field .review-result i, .wp-review-comment-rating .review-result i { color: #fff; opacity: 1; filter: alpha(opacity=100); }
+</style>
+</div> <div class="user-total-wrapper">
+<span class="user-review-title">User Rating</span>
+<span class="review-total-box">
+<span class="wp-review-user-rating-total">4.5</span>
+<small>(<span class="wp-review-user-rating-counter">14</span> votes)</small>
+</span>
+</div>
+</div>
+</div>
+<style type="text/css">
+	.wp-review-243.review-wrapper { width: 100%; float: left }
+	.wp-review-243.review-wrapper, .wp-review-243 .review-title, .wp-review-243 .review-desc p, .wp-review-243 .reviewed-item p  { color: #fff;}
+	.wp-review-243 .review-links a { color: #fff;}
+	.wp-review-243 .review-links a:hover { color: #fff;}
+	.wp-review-243 .review-list li, .wp-review-243.review-wrapper{ background: #1e73be;}
+	.wp-review-243 .review-title, .wp-review-243 .review-list li:nth-child(2n){background: #1e73be;}
+	.wp-review-243.review-wrapper, .wp-review-243 .review-title, .wp-review-243 .review-list li, .wp-review-243 .review-list li:last-child, .wp-review-243 .user-review-area, .wp-review-243 .reviewed-item {border-color: #1e73be;}
+</style>
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Review",
+    "itemReviewed": {
+        "@type": "Thing",
+        "name": "Userland Rootkits: Part 1, IAT hooks"
+    },
+    "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "0.0",
+        "bestRating": 5
+    },
+    "author": {
+        "@type": "Person",
+        "name": "tigzy"
+    },
+    "reviewBody": ""
+}
+</script>
+<p>This is the first part of this series about <strong>Userland rootkits</strong>, I wanted to write on it and demonstrate how some rootkits do to <strong>hide files</strong> by using IAT hooks.</p>
+<p><strong>This post is about a classic trick</strong>, known for decades. Malware specialists may know this already, so this is mostly an introduction for whom willing to learn the theory of rootkits, and have a demonstration. Call that beginners if you want 🙂</p>
+<h4 class="has-accent-color has-text-color"><br>Import Address Table (IAT)</h4>
+<p><a href="http://win32assembly.programminghorizon.com/pe-tut6.html"><strong>The IAT table</strong></a> is a pointer table that <strong>holds the address in memory (within the DLL that hosts it) for every function</strong> needed by a program.</p>
+<p><strong>Example:</strong> Let&#8217;s say you write a program able to enumerate files in a folder. You&#8217;ll probably need <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364418%28v=vs.85%29.aspx">FindFirstFile</a>/<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364428%28v=vs.85%29.aspx">FindNextFile</a>, so when you compile it, the compiler will look for address of those functions in kernel32.dll, and add the corresponding entries into your program&#8217;s import address table =&gt; kernel32.dll (FindFirstFile::0xAAAAAAAA, FindNextFile:0xBBBBBBBB).</p>
+<p>So when your program will call the functions, it will look into the table and directly jump at the address given by the table. If one is able to rewrite that address in the table (dynamically), it will be able to <strong>redirect the execution flow to a function (with same prototype) that will filters the results</strong>, and possibly modify them before returning to the caller.</p>
+<p><strong>IAT patching can be used by malware or legit software to do many things, keylogging, protection, theft of credit cards,&#8230; Many (in)famous malware are using it, like Zeus trojan, Stuxnet, &#8230;</strong><br>&nbsp;<br><a href="https://www.adlice.com/wp-content/uploads/2016/06/iattable.png"><img class="alignnone size-full wp-image-246" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20380%20202'%3E%3C/svg%3E" alt="iattable" width="380" height="202" data-lazy-srcset="https://www.adlice.com/wp-content/uploads/2016/06/iattable.png 380w, https://www.adlice.com/wp-content/uploads/2016/06/iattable-300x159.png 300w" data-lazy-sizes="(max-width: 380px) 100vw, 380px" data-lazy-src="https://www.adlice.com/wp-content/uploads/2016/06/iattable.png" /><noscript><img class="alignnone size-full wp-image-246" src="https://www.adlice.com/wp-content/uploads/2016/06/iattable.png" alt="iattable" width="380" height="202" srcset="https://www.adlice.com/wp-content/uploads/2016/06/iattable.png 380w, https://www.adlice.com/wp-content/uploads/2016/06/iattable-300x159.png 300w" sizes="(max-width: 380px) 100vw, 380px" /></noscript></a></p>
+<h4 class="has-accent-color has-text-color"><br>Practical case: File hider</h4>
+<p>We&#8217;ll study how to detour IAT table of a proces to hide a file. <strong>Disclaimer: This is not a tutorial to make a rootkit, but a practical case for educational purpose only.</strong> Anyway, this is covered for decades on other websites&#8230;</p>
+<p>This rootkit is made in 2 steps:</p>
+<ul><li>1. Make a DLL responsible for IAT patching, and installing filters (the payload).</li><li>2. Make an injector, that will create a new thread (in a target process) for the DLL entrypoint (not covered here).</li></ul>
+<figure class="wp-block-image alignnone"><a href="https://www.adlice.com/wp-content/uploads/2016/06/Capture1-1.png"><img width="648" height="218" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20648%20218'%3E%3C/svg%3E" alt="Injection of the DLL into explorer.exe" class="wp-image-244" data-lazy-srcset="https://www.adlice.com/wp-content/uploads/2016/06/Capture1-1.png 648w, https://www.adlice.com/wp-content/uploads/2016/06/Capture1-1-300x101.png 300w" data-lazy-sizes="(max-width: 648px) 100vw, 648px" data-lazy-src="https://www.adlice.com/wp-content/uploads/2016/06/Capture1-1.png" /><noscript><img width="648" height="218" src="https://www.adlice.com/wp-content/uploads/2016/06/Capture1-1.png" alt="Injection of the DLL into explorer.exe" class="wp-image-244" srcset="https://www.adlice.com/wp-content/uploads/2016/06/Capture1-1.png 648w, https://www.adlice.com/wp-content/uploads/2016/06/Capture1-1-300x101.png 300w" sizes="(max-width: 648px) 100vw, 648px" /></noscript></a><figcaption>Injection of the DLL into explorer.exe</figcaption></figure>
+<p><br> <br>I&#8217;ll not show you the entire code, and especially how to inject the DLL and patch the table. I&#8217;ll just write the hooking filter function. We want to intercept directory enumeration, <strong>so we will hook the functions <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364418%28v=vs.85%29.aspx">FindFirstFile</a>/<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364428%28v=vs.85%29.aspx">FindNextFile</a></strong>. As we want this to be spectacular (!) <strong>we will hook into explorer.exe</strong>, because this is the process responsible for showing folders content to the user.</p>
+<pre class="wp-block-code"><code>HANDLE WINAPI MyFindFirstFileW(LPCTSTR lpFileName, LPWIN32_FIND_DATA lpFindFileData )
+{
+    HANDLE ret = FindFirstFileW(lpFileName,lpFindFileData);
+
+    TCHAR msg&#91;MAX_PATH];
+    swprintf_s(msg, L"FindFirstFileW : %s\n", lpFindFileData-&amp;gt;cFileName);
+    OutputDebugString( msg );
+
+    if(!_wcsicmp(lpFindFileData-&amp;gt;cFileName, L"_root_"))
+    {
+        swprintf_s(msg, L"Protected file : %s, hiding...\n", lpFindFileData-&amp;gt;cFileName);
+        OutputDebugString( msg );
+        FindNextFileW(ret,lpFindFileData);
+    }
+    return ret;
+}
+
+BOOL WINAPI MyFindNextFileW(HANDLE hFindFile,LPWIN32_FIND_DATA lpFindFileData)
+{
+    TCHAR msg&#91;MAX_PATH];
+    if(FindNextFileW(hFindFile,lpFindFileData))
+    {
+        if(!_wcsicmp(lpFindFileData-&amp;gt;cFileName, L"_root_"))
+        {
+            swprintf_s(msg, L"Protected file : %s, hiding...\n", lpFindFileData-&amp;gt;cFileName);
+            OutputDebugString( msg );
+            if(FindNextFileW(hFindFile,lpFindFileData))
+                return 1;
+            return 0;
+        }       
+        swprintf_s(msg, L"FindNextFileW : %s\n", lpFindFileData-&amp;gt;cFileName);
+        OutputDebugString( msg );
+        return 1;
+    }
+    return 0;
+}
+</code></pre>
+<p><br><strong>The code is self explaining. We filter calls to FindFirstFile/FindNextFile</strong>, and we compare the file names to a hard coded string. If there&#8217;s a match, <strong>we hide that entry by calling the API another time</strong> (we simply &#8220;jump&#8221; over the entry). As a result, the file will not be seen by the user.<br> </p>
+<figure class="wp-block-image alignnone"><a href="https://www.adlice.com/wp-content/uploads/2016/06/Capture2-1.png"><img width="605" height="329" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20605%20329'%3E%3C/svg%3E" alt="Debug output of the rootkit, showing hidden file" class="wp-image-245" data-lazy-srcset="https://www.adlice.com/wp-content/uploads/2016/06/Capture2-1.png 605w, https://www.adlice.com/wp-content/uploads/2016/06/Capture2-1-300x163.png 300w" data-lazy-sizes="(max-width: 605px) 100vw, 605px" data-lazy-src="https://www.adlice.com/wp-content/uploads/2016/06/Capture2-1.png" /><noscript><img width="605" height="329" src="https://www.adlice.com/wp-content/uploads/2016/06/Capture2-1.png" alt="Debug output of the rootkit, showing hidden file" class="wp-image-245" srcset="https://www.adlice.com/wp-content/uploads/2016/06/Capture2-1.png 605w, https://www.adlice.com/wp-content/uploads/2016/06/Capture2-1-300x163.png 300w" sizes="(max-width: 605px) 100vw, 605px" /></noscript></a><figcaption>Debug output of the rootkit, showing hidden file</figcaption></figure>
+<p>&nbsp;<br><strong>A demo of the rootkit is available here: </strong></p>
+<figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper">
+<div class="rll-youtube-player" data-src="https://www.youtube.com/embed/vVFHYD0ImMY" data-id="vVFHYD0ImMY" data-query="feature=oembed"></div><noscript><iframe title="IAT hook demo file hider" width="1200" height="675" src="https://www.youtube.com/embed/vVFHYD0ImMY?feature=oembed" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></noscript>
+</div></figure>
+<h4 class="has-accent-color has-text-color"><br>Detection/Removal</h4>
+<p>To detect IAT hooks, simply <strong>parse the PE structure of all modules of the targeted process</strong>. Then look at the import tables, and <strong>check if their addresses are inside the owning module</strong>.</p>
+<p>To remove a IAT hook, you can <strong>look at the EAT (Export Address Table) of the original module</strong>, and restore the IAT address with the entry of the EAT.</p>
+<h4 class="has-accent-color has-text-color"><br>Useful links</h4>
+<p>&#8211; <a href="https://msdn.microsoft.com/en-us/magazine/cc301808.aspx">An In-Depth Look into the Win32 Portable Executable File.</a><br>&#8211; <a href="http://win32assembly.programminghorizon.com/pe-tut6.html">Iczelion Tutorial 6: Import Table</a></p>
+</div><div class="post-meta wf-mobile-collapsed"><div class="entry-meta"><span class="category-link">Categories:&nbsp;<a href="https://www.adlice.com/category/analysis/">Analysis</a>, <a href="https://www.adlice.com/category/tutorial/">Tutorial</a></span><a class="author vcard" href="https://www.adlice.com/author/tigzy/" title="View all posts by tigzy" rel="author">By <span class="fn">tigzy</span></a><a href="https://www.adlice.com/2014/10/15/" title="7:28 am" class="data-link" rel="bookmark"><time class="entry-date updated" datetime="2014-10-15T07:28:15+00:00">October 15, 2014</time></a><div class="post-views" style="display: inline"><span class="post-views-count"> 17495 views</span></div></div><div class="entry-tags">Tags:&nbsp;<a href="https://www.adlice.com/tag/analysis/" rel="tag">analysis</a><a href="https://www.adlice.com/tag/anti-rootkit/" rel="tag">anti-rootkit</a><a href="https://www.adlice.com/tag/antivirus/" rel="tag">antivirus</a><a href="https://www.adlice.com/tag/hook/" rel="tag">hook</a><a href="https://www.adlice.com/tag/iat/" rel="tag">iat</a><a href="https://www.adlice.com/tag/injection/" rel="tag">injection</a><a href="https://www.adlice.com/tag/patch/" rel="tag">patch</a><a href="https://www.adlice.com/tag/payload/" rel="tag">payload</a><a href="https://www.adlice.com/tag/research/" rel="tag">research</a><a href="https://www.adlice.com/tag/rootkit/" rel="tag">rootkit</a><a href="https://www.adlice.com/tag/userland/" rel="tag">userland</a></div></div><div class="single-share-box">
+<div class="share-link-description">Share this post</div>
+<div class="share-buttons">
+<a class="facebook" href="https://www.facebook.com/sharer.php?u=https%3A%2F%2Fwww.adlice.com%2Fuserland-rootkits-part-1-iat-hooks%2F&#038;t=Userland+Rootkits%3A+Part+1%2C+IAT+hooks" title="Facebook" target="_blank"><span class="soc-font-icon"></span><span class="social-text">Share on Facebook</span><span class="screen-reader-text">Share on Facebook</span></a>
+<a class="twitter" href="https://twitter.com/share?url=https%3A%2F%2Fwww.adlice.com%2Fuserland-rootkits-part-1-iat-hooks%2F&#038;text=Userland+Rootkits%3A+Part+1%2C+IAT+hooks" title="Twitter" target="_blank"><span class="soc-font-icon"></span><span class="social-text">Tweet</span><span class="screen-reader-text">Share on Twitter</span></a>
+<a class="pinterest pinit-marklet" href="//pinterest.com/pin/create/button/" title="Pinterest" target="_blank" data-pin-config="above" data-pin-do="buttonBookmark"><span class="soc-font-icon"></span><span class="social-text">Pin it</span><span class="screen-reader-text">Share on Pinterest</span></a>
+<a class="linkedin" href="https://www.linkedin.com/shareArticle?mini=true&#038;url=https%3A%2F%2Fwww.adlice.com%2Fuserland-rootkits-part-1-iat-hooks%2F&#038;title=Userland%20Rootkits%3A%20Part%201%2C%20IAT%20hooks&#038;summary=&#038;source=Adlice%20Software" title="LinkedIn" target="_blank"><span class="soc-font-icon"></span><span class="social-text">Share on LinkedIn</span><span class="screen-reader-text">Share on LinkedIn</span></a>
+</div>
+</div> <div class="author-info entry-author">
+<div class="author-avatar round-images"><img alt='' src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2080%2080'%3E%3C/svg%3E" data-lazy-srcset='https://secure.gravatar.com/avatar/6103628bb88962fb43fcc7f688cf0481?s=160&#038;d=mm&#038;r=g 2x' class='avatar avatar-80 photo' height='80' width='80' data-lazy-src="https://secure.gravatar.com/avatar/6103628bb88962fb43fcc7f688cf0481?s=80&#038;d=mm&#038;r=g" /><noscript><img alt='' src='https://secure.gravatar.com/avatar/6103628bb88962fb43fcc7f688cf0481?s=80&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/6103628bb88962fb43fcc7f688cf0481?s=160&#038;d=mm&#038;r=g 2x' class='avatar avatar-80 photo' height='80' width='80' /></noscript></div> <div class="author-description">
+<h4><span class="author-heading">Author:</span>&nbsp;tigzy</h4>
+<p class="author-bio">Founder and owner of Adlice Software, Tigzy started as lead developer on the popular Anti-malware called RogueKiller. Involved in all the Adlice projects as lead developer, Tigzy is also doing research and reverse engineering as well as writing blog posts.</p>
+</div>
+</div>
+<nav class="navigation post-navigation" role="navigation"><h2 class="screen-reader-text">Post navigation</h2><div class="nav-links"><a class="nav-previous" href="https://www.adlice.com/remove-poweliks/" rel="prev"><i class="icomoon-the7-font-the7-arrow-29-3" aria-hidden="true"></i><span class="meta-nav" aria-hidden="true">Previous</span><span class="screen-reader-text">Previous post:</span><span class="post-title h4-size">How to Remove Poweliks (Guide)</span></a><a class="nav-next" href="https://www.adlice.com/remove-zeus/" rel="next"><i class="icomoon-the7-font-the7-arrow-29-2" aria-hidden="true"></i><span class="meta-nav" aria-hidden="true">Next</span><span class="screen-reader-text">Next post:</span><span class="post-title h4-size">How to Remove Zeus (Guide)</span></a></div></nav><div class="single-related-posts"><h3>Related Posts</h3><section class="items-grid"><div class=" related-item"><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/darknet-explained/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%20110%2080&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2017/11/onion-647525_1920-110x80.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2017/11/onion-647525_1920-110x80.jpg 110w, https://www.adlice.com/wp-content/uploads/2017/11/onion-647525_1920-220x160.jpg 220w" width="110" height="80" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/darknet-explained/">What happens on the Darknet ?</a><br /><time class="text-secondary" datetime="2017-11-16T15:43:02+00:00">November 16, 2017</time></div></article></div><div class=" related-item"><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/hacker-tool-mimikatz/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%20110%2080&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2017/10/mimikatz2-110x80.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2017/10/mimikatz2-110x80.jpg 110w, https://www.adlice.com/wp-content/uploads/2017/10/mimikatz2-220x160.jpg 220w" width="110" height="80" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/hacker-tool-mimikatz/">How to Hack with Mimikatz: Tutorial</a><br /><time class="text-secondary" datetime="2017-10-27T08:52:05+00:00">October 27, 2017</time></div></article></div><div class=" related-item"><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-code-signing/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%20110%2080&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2017/06/digisig-110x80.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2017/06/digisig-110x80.jpg 110w, https://www.adlice.com/wp-content/uploads/2017/06/digisig-220x160.jpg 220w" width="110" height="80" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-code-signing/">What is Code Signing?</a><br /><time class="text-secondary" datetime="2017-06-12T10:21:41+00:00">June 12, 2017</time></div></article></div><div class=" related-item"><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/catch-malware-with-your-own-honeypot-v2/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%20110%2080&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2016/06/Capture21-2-110x80.png" data-srcset="https://www.adlice.com/wp-content/uploads/2016/06/Capture21-2-110x80.png 110w, https://www.adlice.com/wp-content/uploads/2016/06/Capture21-2-220x160.png 220w" width="110" height="80" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/catch-malware-with-your-own-honeypot-v2/">How to setup your malware honeypot (V2)</a><br /><time class="text-secondary" datetime="2017-05-24T15:40:09+00:00">May 24, 2017</time></div></article></div><div class=" related-item"><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/cuckoo-sandbox-customization-v2/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%20110%2080&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2017/05/rk_cuckoo-110x80.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2017/05/rk_cuckoo-110x80.jpg 110w, https://www.adlice.com/wp-content/uploads/2017/05/rk_cuckoo-220x160.jpg 220w" width="110" height="80" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/cuckoo-sandbox-customization-v2/">Cuckoo Sandbox Customization (V2)</a><br /><time class="text-secondary" datetime="2017-05-19T13:00:26+00:00">May 19, 2017</time></div></article></div><div class=" related-item"><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/macro-malware-the-biggest-online-threat/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%20110%2080&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2017/01/enable-macro-110x80.png" data-srcset="https://www.adlice.com/wp-content/uploads/2017/01/enable-macro-110x80.png 110w, https://www.adlice.com/wp-content/uploads/2017/01/enable-macro-220x160.png 220w" width="110" height="80" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/macro-malware-the-biggest-online-threat/">Macro malware, the biggest online threat</a><br /><time class="text-secondary" datetime="2017-01-31T13:02:15+00:00">January 31, 2017</time></div></article></div></section></div>
+</article>
+</div>
+<aside id="sidebar" class="sidebar">
+<div class="sidebar-content">
+<section id="presscore-blog-posts-2" class="widget widget_presscore-blog-posts"><div class="widget-title">Latest News</div><ul class="recent-posts round-images"><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/ucheck-pup-protection/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/10/door-1587863_1920-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/10/door-1587863_1920-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/10/door-1587863_1920-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/ucheck-pup-protection/">Introducing: UCheck PUP Protection</a><br /><time datetime="2020-10-28T16:53:15+00:00">October 28, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/roguekiller-data-leak-protection/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/10/data-theft-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/10/data-theft-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/10/data-theft-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/roguekiller-data-leak-protection/">Introducing: RogueKiller Data Leak Protection</a><br /><time datetime="2020-10-23T12:14:36+00:00">October 23, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-a-worm/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/10/worm-computer-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/10/worm-computer-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/10/worm-computer-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-a-worm/">What is a Worm ? How to Remove ?</a><br /><time datetime="2020-10-09T09:32:21+00:00">October 9, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-a-trojan/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/10/trojan-1700378_1920-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/10/trojan-1700378_1920-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/10/trojan-1700378_1920-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-a-trojan/">What is a Trojan ? How to Remove ?</a><br /><time datetime="2020-10-02T11:20:26+00:00">October 2, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-an-adware/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/08/pop-up-ads-4007115_1920-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/08/pop-up-ads-4007115_1920-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/08/pop-up-ads-4007115_1920-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-an-adware/">What is an Adware ? How to Remove ?</a><br /><time datetime="2020-08-20T10:06:16+00:00">August 20, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-a-virus/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/07/corona-4938929_1920-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/07/corona-4938929_1920-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/07/corona-4938929_1920-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-a-virus/">What is a Virus ? How to Remove ?</a><br /><time datetime="2020-07-31T07:09:23+00:00">July 31, 2020</time></div></article></li></ul></section><section id="presscore-blog-posts-3" class="widget widget_presscore-blog-posts"><div class="widget-title">Latest Removal Guides</div><ul class="recent-posts round-images"><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-a-worm/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/10/worm-computer-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/10/worm-computer-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/10/worm-computer-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-a-worm/">What is a Worm ? How to Remove ?</a><br /><time datetime="2020-10-09T09:32:21+00:00">October 9, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-a-trojan/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/10/trojan-1700378_1920-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/10/trojan-1700378_1920-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/10/trojan-1700378_1920-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-a-trojan/">What is a Trojan ? How to Remove ?</a><br /><time datetime="2020-10-02T11:20:26+00:00">October 2, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-an-adware/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/08/pop-up-ads-4007115_1920-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/08/pop-up-ads-4007115_1920-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/08/pop-up-ads-4007115_1920-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-an-adware/">What is an Adware ? How to Remove ?</a><br /><time datetime="2020-08-20T10:06:16+00:00">August 20, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/what-is-a-virus/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2020/07/corona-4938929_1920-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2020/07/corona-4938929_1920-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2020/07/corona-4938929_1920-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/what-is-a-virus/">What is a Virus ? How to Remove ?</a><br /><time datetime="2020-07-31T07:09:23+00:00">July 31, 2020</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/avoid-being-hacked-ultimate-guide/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2019/10/padlock-428549_1920-40x40.jpg" data-srcset="https://www.adlice.com/wp-content/uploads/2019/10/padlock-428549_1920-40x40.jpg 40w, https://www.adlice.com/wp-content/uploads/2019/10/padlock-428549_1920-80x80.jpg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/avoid-being-hacked-ultimate-guide/">How to Avoid Being Hacked: The Ultimate Guide</a><br /><time datetime="2019-10-30T10:23:25+00:00">October 30, 2019</time></div></article></li><li><article class="post-format-standard"><div class="mini-post-img"><a class="alignleft post-rollover layzr-bg" href="https://www.adlice.com/remove-pum/" aria-label="Post image"><img class="preload-me lazy-load" src="data:image/svg+xml,%3Csvg%20xmlns%3D&#39;http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg&#39;%20viewBox%3D&#39;0%200%2040%2040&#39;%2F%3E" data-src="https://www.adlice.com/wp-content/uploads/2014/02/Yellow-1940x1940-e1503055871510-40x40.jpeg" data-srcset="https://www.adlice.com/wp-content/uploads/2014/02/Yellow-1940x1940-e1503055871510-40x40.jpeg 40w, https://www.adlice.com/wp-content/uploads/2014/02/Yellow-1940x1940-e1503055871510-80x80.jpeg 80w" width="40" height="40" alt="" /></a></div><div class="post-content"><a href="https://www.adlice.com/remove-pum/">How to Remove Potentially Unwanted Modification (PUM) ?</a><br /><time datetime="2015-11-09T08:02:04+00:00">November 9, 2015</time></div></article></li></ul></section><section id="sib_subscribe_form-2" class="widget widget_sib_subscribe_form"><div class="widget-title">Subscribe to Newsletter</div> <form id="sib_signup_form_1" method="post" class="sib_signup_form">
+<div class="sib_loader" style="display:none;"><img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="loader" data-lazy-src="https://www.adlice.com/wp-includes/images/spinner.gif"><noscript><img
+							src="https://www.adlice.com/wp-includes/images/spinner.gif" alt="loader"></noscript></div>
+<input type="hidden" name="sib_form_action" value="subscribe_form_submit">
+<input type="hidden" name="sib_form_id" value="1">
+<input type="hidden" name="sib_form_alert_notice" value="">
+<input type="hidden" name="sib_security" value="d7f471f0fc">
+<div class="sib_signup_box_inside_1">
+<div style="/*display:none*/" class="sib_msg_disp">
+</div>
+<p class="sib-email-area">
+<label class="sib-email-area">Email Address*</label>
+<input type="email" class="sib-email-area" name="email" required="required">
+</p>
+<p class="sib-NOM-area">
+<label class="sib-NOM-area">NAME</label>
+<input type="text" class="sib-NOM-area" name="NOM">
+</p>
+<p class="sib-LANGUE-area">
+<label class="sib-LANGUE-area">LANGUAGE</label>
+<select class="sib-LANGUE-area" name="LANGUE">
+<option value="English">English</option>
+<option value="Français">French</option>
+</select>
+</p>
+<p>
+<input type="submit" class="sib-default-btn" value="Subscribe">
+</p> </div>
+</form>
+<style>
+				form#sib_signup_form_1 {
+    padding: 5px;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+form#sib_signup_form_1 input[type=text],form#sib_signup_form_1 input[type=email], form#sib_signup_form_1 select {
+    width: 100%;
+    border: 1px solid #bbb;
+    height: auto;
+    margin: 5px 0 0 0;
+}
+form#sib_signup_form_1 .sib-default-btn {
+    margin: 5px 0;
+    padding: 6px 12px;
+    color:#fff;
+    background-color: #333;
+    border-color: #2E2E2E;
+    font-size: 14px;
+    font-weight:400;
+    line-height: 1.4285;
+    text-align: center;
+    cursor: pointer;
+    vertical-align: middle;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    white-space: normal;
+    border:1px solid transparent;
+    border-radius: 3px;
+}
+form#sib_signup_form_1 .sib-default-btn:hover {
+    background-color: #444;
+}
+form#sib_signup_form_1 p{
+    margin: 10px 0 0 0;
+}form#sib_signup_form_1 p.sib-alert-message {
+    padding: 6px 12px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+form#sib_signup_form_1 p.sib-alert-message-error {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}
+form#sib_signup_form_1 p.sib-alert-message-success {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    color: #3c763d;
+}
+form#sib_signup_form_1 p.sib-alert-message-warning {
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
+}			</style>
+</section> </div>
+</aside>
+</div>
+</div>
+</div>
+
+<footer id="footer" class="footer solid-bg">
+<div class="wf-wrap">
+<div class="wf-container-footer">
+<div class="wf-container">
+<section id="presscore-custom-menu-one-2" class="widget widget_presscore-custom-menu-one wf-cell wf-1-4"><div class="widget-title">Company</div><ul class="custom-menu dividers-on show-arrow"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3952 first"><a href="https://www.adlice.com/about/">About Us</a></li><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3953"><a href="https://www.adlice.com/blog/">Blog</a></li><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-3951"><a href="https://www.adlice.com/global-eula/">End-User License Agreement</a></li></ul></section><section id="presscore-custom-menu-one-3" class="widget widget_presscore-custom-menu-one wf-cell wf-1-4"><div class="widget-title">Help</div><ul class="custom-menu dividers-on show-arrow"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3945 first"><a href="https://forum.adlice.com/">Forum</a></li><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3946"><a href="https://www.adlice.com/contact/">Contact</a></li><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3947"><a href="https://www.adlice.com/docs/">Documentation</a></li></ul></section><section id="presscore-contact-info-widget-2" class="widget widget_presscore-contact-info-widget wf-cell wf-1-4"><div class="widget-title">Social</div><div class="widget-info">Follow us on social networks.</div><div class="soc-ico"><p class="assistive-text">Find us on:</p><a title="Facebook page opens in new window" href="https://www.facebook.com/RogueKiller/" target="_blank" class="facebook"><span class="soc-font-icon"></span><span class="screen-reader-text">Facebook page opens in new window</span></a><a title="Twitter page opens in new window" href="https://twitter.com/adlicesoftware" target="_blank" class="twitter"><span class="soc-font-icon"></span><span class="screen-reader-text">Twitter page opens in new window</span></a><a title="YouTube page opens in new window" href="https://www.youtube.com/channel/UC4CQ-gIZMGWxl-auf0QqYhQ" target="_blank" class="you-tube"><span class="soc-font-icon"></span><span class="screen-reader-text">YouTube page opens in new window</span></a><a title="Linkedin page opens in new window" href="https://fr.linkedin.com/company/adlice-software" target="_blank" class="linkedin"><span class="soc-font-icon"></span><span class="screen-reader-text">Linkedin page opens in new window</span></a><a title="Github page opens in new window" href="https://github.com/AdliceSoftware" target="_blank" class="github"><span class="soc-font-icon"></span><span class="screen-reader-text">Github page opens in new window</span></a></div></section><section id="icl_lang_sel_widget-2" class="widget widget_icl_lang_sel_widget wf-cell wf-1-4">
+<div class="lang_sel_list_vertical wpml-ls-sidebars-sidebar_2 wpml-ls wpml-ls-legacy-list-vertical" id="lang_sel_list">
+<ul>
+<li class="icl-en wpml-ls-slot-sidebar_2 wpml-ls-item wpml-ls-item-en wpml-ls-current-language wpml-ls-first-item wpml-ls-item-legacy-list-vertical">
+<a href="https://www.adlice.com/userland-rootkits-part-1-iat-hooks/" class="wpml-ls-link"><img class="wpml-ls-flag iclflag" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="en" title="English" data-lazy-src="https://www.adlice.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.png"><noscript><img class="wpml-ls-flag iclflag" src="https://www.adlice.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/en.png" alt="en" title="English"></noscript><span class="wpml-ls-native icl_lang_sel_native">English</span></a>
+</li>
+<li class="icl-fr wpml-ls-slot-sidebar_2 wpml-ls-item wpml-ls-item-fr wpml-ls-last-item wpml-ls-item-legacy-list-vertical">
+<a href="https://www.adlice.com/fr/userland-rootkits-part-1-iat-hooks/" class="wpml-ls-link"><img class="wpml-ls-flag iclflag" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="fr" title="Français" data-lazy-src="https://www.adlice.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/fr.png"><noscript><img class="wpml-ls-flag iclflag" src="https://www.adlice.com/wp-content/plugins/sitepress-multilingual-cms/res/flags/fr.png" alt="fr" title="Français"></noscript><span class="wpml-ls-native icl_lang_sel_native">Français</span></a>
+</li>
+</ul>
+</div></section> </div>
+</div>
+</div>
+
+<div id="bottom-bar" class="logo-left" role="contentinfo">
+<div class="wf-wrap">
+<div class="wf-container-bottom">
+<div class="wf-float-left">
+Copyright @ 2010 - 2020 <a href="https://adlice.com"><strong>Adlice Software</strong></a> - All Rights Reserved
+</div>
+<div class="wf-float-right">
+</div>
+</div>
+</div>
+</div>
+</footer>
+<a href="#" class="scroll-top"><span class="screen-reader-text">Go to Top</span></a>
+</div>
+<!--googleoff: all--><div id="cookie-law-info-bar" data-nosnippet="true"><span>This website uses cookies to improve your experience. We'll assume you're ok with this, but you can opt-out if you wish. <a role='button' tabindex='0' class="medium cli-plugin-button cli-plugin-main-button cli_settings_button" style="margin:5px 20px 5px 20px;">Cookie settings</a><a role='button' tabindex='0' data-cli_action="accept" id="cookie_action_close_header" class="medium cli-plugin-button cli-plugin-main-button cookie_action_close_header cli_action_button" style="display:inline-block;  margin:5px; ">ACCEPT</a></span></div><div id="cookie-law-info-again" style="display:none;" data-nosnippet="true"><span id="cookie_hdr_showagain">Privacy & Cookies Policy</span></div><div class="cli-modal" data-nosnippet="true" id="cliSettingsPopup" tabindex="-1" role="dialog" aria-labelledby="cliSettingsPopup" aria-hidden="true">
+<div class="cli-modal-dialog" role="document">
+<div class="cli-modal-content cli-bar-popup">
+<button type="button" class="cli-modal-close" id="cliModalClose">
+<svg class="" viewBox="0 0 24 24"><path d="M19 6.41l-1.41-1.41-5.59 5.59-5.59-5.59-1.41 1.41 5.59 5.59-5.59 5.59 1.41 1.41 5.59-5.59 5.59 5.59 1.41-1.41-5.59-5.59z"></path><path d="M0 0h24v24h-24z" fill="none"></path></svg>
+<span class="wt-cli-sr-only">Close</span>
+</button>
+<div class="cli-modal-body">
+<div class="cli-container-fluid cli-tab-container">
+<div class="cli-row">
+<div class="cli-col-12 cli-align-items-stretch cli-px-0">
+<div class="cli-privacy-overview">
+<h4>Privacy Overview</h4> <div class="cli-privacy-content">
+<div class="cli-privacy-content-text">This website uses cookies to improve your experience while you navigate through the website. Out of these cookies, the cookies that are categorized as necessary are stored on your browser as they are essential for the working of basic functionalities of the website. We also use third-party cookies that help us analyze and understand how you use this website. These cookies will be stored in your browser only with your consent. You also have the option to opt-out of these cookies. But opting out of some of these cookies may have an effect on your browsing experience.</div>
+</div>
+<a class="cli-privacy-readmore" aria-label="Show more" tabindex="0" role="button" data-readmore-text="Show more" data-readless-text="Show less"></a> </div>
+</div>
+<div class="cli-col-12 cli-align-items-stretch cli-px-0 cli-tab-section-container">
+<div class="cli-tab-section">
+<div class="cli-tab-header">
+<a role="button" tabindex="0" class="cli-nav-link cli-settings-mobile" data-target="necessary" data-toggle="cli-toggle-tab">
+Necessary </a>
+<div class="wt-cli-necessary-checkbox">
+<input type="checkbox" class="cli-user-preference-checkbox" id="wt-cli-checkbox-necessary" data-id="checkbox-necessary" checked="checked" />
+<label class="form-check-label" for="wt-cli-checkbox-necessary">Necessary</label>
+</div>
+<span class="cli-necessary-caption">Always Enabled</span> </div>
+<div class="cli-tab-content">
+<div class="cli-tab-pane cli-fade" data-id="necessary">
+<p>Necessary cookies are absolutely essential for the website to function properly. This category only includes cookies that ensures basic functionalities and security features of the website. These cookies do not store any personal information.</p>
+</div>
+</div>
+</div>
+<div class="cli-tab-section">
+<div class="cli-tab-header">
+<a role="button" tabindex="0" class="cli-nav-link cli-settings-mobile" data-target="non-necessary" data-toggle="cli-toggle-tab">
+Non-necessary </a>
+<div class="cli-switch">
+<input type="checkbox" id="wt-cli-checkbox-non-necessary" class="cli-user-preference-checkbox" data-id="checkbox-non-necessary" checked='checked' />
+<label for="wt-cli-checkbox-non-necessary" class="cli-slider" data-cli-enable="Enabled" data-cli-disable="Disabled"><span class="wt-cli-sr-only">Non-necessary</span></label>
+</div> </div>
+<div class="cli-tab-content">
+<div class="cli-tab-pane cli-fade" data-id="non-necessary">
+<p>Any cookies that may not be particularly necessary for the website to function and is used specifically to collect user personal data via analytics, ads, other embedded contents are termed as non-necessary cookies. It is mandatory to procure user consent prior to running these cookies on your website.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cli-modal-footer">
+<div class="wt-cli-element cli-container-fluid cli-tab-container">
+<div class="cli-row">
+<div class="cli-col-12 cli-align-items-stretch cli-px-0">
+<div class="cli-tab-footer wt-cli-privacy-overview-actions">
+<a id="wt-cli-privacy-save-btn" role="button" tabindex="0" data-cli-action="accept" class="wt-cli-privacy-btn cli_setting_save_button wt-cli-privacy-accept-btn cli-btn">SAVE & ACCEPT</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cli-modal-backdrop cli-fade cli-settings-overlay"></div>
+<div class="cli-modal-backdrop cli-fade cli-popupbar-overlay"></div>
+<!--googleon: all-->
+<script type='text/javascript' id='eafl-public-js-extra'>
+/* <![CDATA[ */
+var eafl_public = {"home_url":"https:\/\/www.adlice.com\/","ajax_url":"https:\/\/www.adlice.com\/wp-admin\/admin-ajax.php","nonce":"1fdc45932f"};
+/* ]]> */
+</script>
+<script type='text/javascript' id='post-views-counter-frontend-js-extra'>
+/* <![CDATA[ */
+var pvcArgsFrontend = {"mode":"ajax","requestURL":"https:\/\/www.adlice.com\/wp-content\/plugins\/post-views-counter\/includes\/ajax.php","postID":"243","nonce":"6e6016921f"};
+/* ]]> */
+</script>
+<script>window.lazyLoadOptions={elements_selector:"img[data-lazy-src],.rocket-lazyload,iframe[data-lazy-src]",data_src:"lazy-src",data_srcset:"lazy-srcset",data_sizes:"lazy-sizes",class_loading:"lazyloading",class_loaded:"lazyloaded",threshold:300,callback_loaded:function(element){if(element.tagName==="IFRAME"&&element.dataset.rocketLazyload=="fitvidscompatible"){if(element.classList.contains("lazyloaded")){if(typeof window.jQuery!="undefined"){if(jQuery.fn.fitVids){jQuery(element).parent().fitVids()}}}}}};window.addEventListener('LazyLoad::Initialized',function(e){var lazyLoadInstance=e.detail.instance;if(window.MutationObserver){var observer=new MutationObserver(function(mutations){var image_count=0;var iframe_count=0;var rocketlazy_count=0;mutations.forEach(function(mutation){for(i=0;i<mutation.addedNodes.length;i++){if(typeof mutation.addedNodes[i].getElementsByTagName!=='function'){continue}
+if(typeof mutation.addedNodes[i].getElementsByClassName!=='function'){continue}
+images=mutation.addedNodes[i].getElementsByTagName('img');is_image=mutation.addedNodes[i].tagName=="IMG";iframes=mutation.addedNodes[i].getElementsByTagName('iframe');is_iframe=mutation.addedNodes[i].tagName=="IFRAME";rocket_lazy=mutation.addedNodes[i].getElementsByClassName('rocket-lazyload');image_count+=images.length;iframe_count+=iframes.length;rocketlazy_count+=rocket_lazy.length;if(is_image){image_count+=1}
+if(is_iframe){iframe_count+=1}}});if(image_count>0||iframe_count>0||rocketlazy_count>0){lazyLoadInstance.update()}});var b=document.getElementsByTagName("body")[0];var config={childList:!0,subtree:!0};observer.observe(b,config)}},!1)</script><script data-no-minify="1" async src="https://www.adlice.com/wp-content/plugins/wp-rocket/assets/js/lazyload/16.1/lazyload.min.js"></script>
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="pswp__bg"></div>
+<div class="pswp__scroll-wrap">
+<div class="pswp__container">
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+<div class="pswp__item"></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class="pswp__top-bar">
+<div class="pswp__counter"></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)" aria-label="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title="Share" aria-label="Share"></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen" aria-label="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out" aria-label="Zoom in/out"></button>
+<div class="pswp__preloader">
+<div class="pswp__preloader__icn">
+<div class="pswp__preloader__cut">
+<div class="pswp__preloader__donut"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class="pswp__share-tooltip"></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)" aria-label="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)" aria-label="Next (arrow right)">
+</button>
+<div class="pswp__caption">
+<div class="pswp__caption__center"></div>
+</div>
+</div>
+</div>
+</div>
+<script src="https://www.adlice.com/wp-content/cache/min/1/09c288a85ce9dbe8df7794e7cdbdf06b.js" data-minify="1" defer></script></body>
+</html>

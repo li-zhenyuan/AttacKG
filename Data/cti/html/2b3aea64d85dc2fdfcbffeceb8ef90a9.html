@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie10 lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie10 lt-ie9" lang="en"> <![endif]-->
+<!--[if IE 9]>         <html class="no-js lt-ie10" lang="en"> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!-- JavaScript & DHTML Code Copyright &copy; 1998-2019, PaperThin, Inc. All Rights Reserved. --> <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,user-scalable=yes,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="cleartype" content="on">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="description" content="This paper focuses on using the built-in tools already available in the Microsoft Windows operating system (OS). Central event log collection requires a Windows Server operating system version 2003 R2 or above. Many commercially available tools exist for central event log collection. Using a Windows Server 2008 R2 or above server version is recommended. There are no additional licensing costs for using the event log collection feature. The cost of using this feature is based on the amount of additional storage hardware needed to support the amount of log data collected. This factor is dependent on the number of workstations within the local log collection network.">
+<meta name="keywords" content="Windows,Intrusion Detection and Prevention">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/" />
+<link rel="schema.DCTERMS" href="http://purl.org/dc/terms/" />
+<meta name="DC.title" lang="en" content="Spotting the Adversary with Windows Event Log Monitoring">
+<meta name="DC.keywords" content="Windows,Intrusion Detection and Prevention">
+<meta name="DC.description" content="This paper focuses on using the built-in tools already available in the Microsoft Windows operating system (OS). Central event log collection requires a Windows Server operating system version 2003 R2 or above. Many commercially available tools exist for central event log collection. Using a Windows Server 2008 R2 or above server version is recommended. There are no additional licensing costs for using the event log collection feature. The cost of using this feature is based on the amount of additional storage hardware needed to support the amount of log data collected. This factor is dependent on the number of workstations within the local log collection network.">
+<meta name="DC.publisher" content="NSA/IAD">
+<meta name="DC.Publisher.Address" content="iad_ccc@nsa.gov">
+<meta name="DC.Date.Created" scheme="DCTERMS.W3CDTF" content="07 August 2015">
+<meta name="DC.Date.LastModified" scheme="DCTERMS.W3CDTF" content="29 January 2016">
+<meta name="DC.type" scheme="DCTERMS.DCMIType" content="Text">
+<meta name="DC.format" scheme="DCTERMS.IMT" content="text/html">
+<meta name="DC.language" scheme="DCTERMS:RFC1766" content="en">
+<meta name="DC.Identifier" scheme="DCTERMS.URI" content="https://www.iad.gov/iad/library/reports/spotting-the-adversary-with-windows-event-log-monitoring.cfm">
+<meta name="DC.relation" content="https://www.iad.gov">
+<meta name="DC.rights" content="https://www.iad.gov/help/terms.cfm">
+<title>Spotting the Adversary with Windows Event Log Monitoring</title> <style id="cs_antiClickjack">body{display:none !important;position:absolute !important;top:-5000px !important;}</style><script type="text/javascript">(function(){var chk=0;try{if(self!==top){var ts=top.document.location.href.split('/');var ws=window.document.location.href.split('/');if(ts.length<3||ws.length<3)chk=1;else if(ts[2]!==ws[2])chk=2;else if(ts[0]!==ws[0])chk=3;}}catch(e){chk=4;}if(chk===0){var stb=document.getElementById("cs_antiClickjack");stb.parentNode.removeChild(stb);}else{top.location = self.location}})();</script> <script>
+var jsDlgLoader = '/iad/library/reports/loader.cfm';
+var jsSiteResourceLoader = '/iad/cs-resources.cfm?r=';
+var jsSiteResourceSettings = {canCombine: false, canMinify: false};
+</script>
+<!-- beg (1) PrimaryResources -->
+<script type="text/javascript" src="/ADF/thirdParty/jquery/jquery-1.12.js"></script><script type="text/javascript" src="/commonspot/javascript/browser-all.js"></script>
+<!-- end (1) PrimaryResources -->
+<!-- beg (2) SecondaryResources -->
+<!-- end (2) SecondaryResources -->
+<!-- beg (3) StyleTags -->
+<link rel="stylesheet" href="/iaarchive/style/iad.css" type="text/css" />
+<!-- end (3) StyleTags -->
+<!-- beg (4) JavaScript -->
+<script type="text/javascript">
+<!--
+var gMenuControlID = 0;
+var menus_included = 0;
+var jsSiteID = 1;
+var jsSubSiteID = 29;
+var js_gvPageID = 40305;
+var jsPageID = 40305;
+var jsPageSetID = 0;
+var jsPageType = 0;
+var jsSiteSecurityCreateControls = 0;
+var jsShowRejectForApprover = 0;
+// -->
+</script><script>
+var jsDlgLoader = '/iad/library/reports/loader.cfm';
+var jsSiteResourceLoader = '/iad/cs-resources.cfm?r=';
+var jsSiteResourceSettings = {canCombine: false, canMinify: false};
+</script>
+<!-- end (4) JavaScript -->
+<!-- beg (5) CustomHead -->
+<link href="/iaarchive/style/style.css" rel="stylesheet" media="all" />
+<link rel="Shortcut Icon" href="/iaarchive//favicon.ico" type="image/x-icon" />
+<link rel="Shortcut Icon" href="/iaarchive//favicon.ico" type="image/ico" />
+<script src="/iaarchive/javascript/modernizr.min.js" ></script>
+<script src="/iaarchive/javascript/main.js"></script>
+<!--[if (gte IE 6)&(lte IE 8)]>
+<script src="/iaarchive/javascript/respond.min.js"></script>
+<![endif]-->
+<!-- end (5) CustomHead -->
+<!-- beg (6) TertiaryResources -->
+<!-- end (6) TertiaryResources -->
+<!-- beg (7) authormode_inlinestyles -->
+<link rel="stylesheet" type="text/css" href="/commonspot/commonspot.css" id="cs_maincss">
+<!-- end (7) authormode_inlinestyles -->
+</head><body id="LibraryDetail"><span role="navigation" aria-label="Top of page" id="__topdoc__"></span>
+<div class="visuallyhidden skipNav mobileOn"><p><a href="#jumpTarget">Skip Site Navigation</a></p><p><a id="" class="expanded " href="javascript:toggleNavDrawer()" title="Show / Hide Navigation Panel">Show / Hide Navigation Panel</a></p><p><a href="javascript:formFocus()">Site Search</a></p></div>
+<nav role="navigation" aria-label="Site Navigation for Mobile Devices" aria-labelledby="navheading">
+<h2 class="visuallyhidden2 mobileOn" id="navheading">Site Navigation for Mobile Devices</h2>
+<div id="navDrawer" class="mobileOn collapsed">
+<div class="barWrapper">
+<div id="navTable" class="widthConstraint clearfix">
+<div id="cs_control_23932" class="cs_control CS_Element_Tree">
+<ul class="mainCategory clearfix" id="utilityTab">
+<li>
+</li>
+</ul>
+</div>
+<div id="loginBlock" class="loggedOut">
+<ul class="mainCategory" id="pkiTab">
+<li class="loginReg"><a href="/iaarchive/login.cfm" class="categoryLink" id="PKICACLink"><span class="textbacker">PKI/CAC Login</span></a></li>
+</ul>
+<ul class="mainCategory" id="registerTab">
+<li class="loginReg"><a href="/iaarchive/register.cfm" class="categoryLink" id="RegisterLink"><span class="textbacker">Register</span></a></li>
+</ul>
+</div>
+<ul class="mainCategory" id="homeTab" style="clear:left;">
+<li><a	href="/iaarchive/index.cfm"
+class="categoryLink inactiveTopLink homeLink"
+title="Home">Home</a>
+</li>
+</ul>
+<ul class="mainCategory" id="libraryTab">
+<li><a href="/iaarchive/library/index.cfm" class="categoryLink">Library</a>
+<a 	class="expander"
+id="libraryNavExpander"
+href="javascript:toggleMenu('libraryNavDrawer','libraryNavExpander')"
+title="Toggle Library Menu Open/Closed"
+><span class="buttonLook">
+<img
+src="/iaarchive/templates/images/plus-shadow.png"
+class="plusSign"
+alt="+"
+/>
+<img
+src="/iaarchive/templates/images/minus-shadow.png"
+class="minusSign"
+alt="&ndash;"
+/>
+<span class="visuallyhidden2">Toggle Library Menu Open/Closed</span>
+</span>
+</a>
+<div id="libraryNavDrawer" class="collapsed">
+<div id="libraryNavMobile" class="menu">
+<div class="subNavWrapper">
+<div id="cs_control_5461" class="cs_control CS_Element_Tree">
+<div class="subNavGroup">
+<div class="subNavLinks">
+<ul class="subNavListBlock">
+<li><a
+href="/iaarchive/library/ia-advisories-alerts/index.cfm"
+class="">IA Advisories & Alerts</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/index.cfm"
+class="">IA Guidance</a></li>
+<ul class="secondarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/ia-solutions-for-classified/index.cfm"
+class="">IA Solutions for Classified</a></li>
+<ul class="tertiarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/ia-solutions-for-classified/algorithm-guidance/index.cfm"
+class="">Algorithm Guidance</a></li>
+</ul>
+<li><a
+href="/iaarchive/library/ia-guidance/ia-standards/index.cfm"
+class="">IA Standards</a></li>
+<ul class="tertiarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/ia-standards/cgs/index.cfm"
+class="">Community Gold Standard</a></li>
+</ul>
+<li><a
+href="/iaarchive/library/ia-guidance/secure-architecture/index.cfm"
+class="">Secure Architecture</a></li>
+</ul>
+<ul class="secondarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/index.cfm"
+class="">Security Configuration Guidance</a></li>
+<ul class="tertiarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/applications/index.cfm"
+class="">Applications</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/industrial-control-systems/index.cfm"
+class="">Industrial Control Systems</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/networks/index.cfm"
+class="">Networks</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/operating-systems/index.cfm"
+class="">Operating Systems</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/secure-implementation/index.cfm"
+class="secureSection">Secure Implementation<span class="visuallyhidden2"> (requires login)</span></a></li>
+</ul>
+<li><a
+href="/iaarchive/library/ia-guidance/security-tips/index.cfm"
+class="">Security Tips</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/tech-briefs/index.cfm"
+class="">Tech Briefs</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/archive/index.cfm"
+class="">Guidance Archive</a></li>
+</ul>
+<li><a
+href="/iaarchive/library/ias/index.cfm"
+class="">Information Assurance Symposium</a></li>
+<li><a
+href="/iaarchive/library/reports/index.cfm"
+class="">Reports</a></li>
+<li><a
+href="/iaarchive/library/supporting-documents/index.cfm"
+class="">Supporting Documents</a></li>
+<ul class="secondarySubNavList">
+<li><a
+href="/iaarchive/library/supporting-documents/brochures/index.cfm"
+class="">Brochures</a></li>
+<li><a
+href="/iaarchive/library/supporting-documents/faq/index.cfm"
+class="">FAQs</a></li>
+<li><a
+href="/iaarchive/library/supporting-documents/forms-templates/index.cfm"
+class="">Forms & Templates</a></li>
+</ul>
+<li><a
+href="/iaarchive/library/tools/index.cfm"
+class="secureSection">Tools<span class="visuallyhidden2"> (requires login)</span></a></li>
+<li><a
+href="/iaarchive/library/index.cfm"
+class="moreLink">All Library Collections</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+<ul class="mainCategory" id="helpTab">
+<li><a href="/iaarchive/help/index.cfm" class="categoryLink">Help</a>
+<a 	class="expander"
+id="helpNavExpander"
+href="javascript:toggleMenu('helpNavDrawer','helpNavExpander')"
+title="Toggle Help Menu Open/Closed"
+><span class="buttonLook">
+<img
+src="/iaarchive/templates/images/plus-shadow.png"
+class="plusSign"
+alt="+"
+/>
+<img
+src="/iaarchive/templates/images/minus-shadow.png"
+class="minusSign"
+alt="&ndash;"
+/>
+<span class="visuallyhidden2">Toggle Help Menu Open/Closed</span>
+</span>
+</a>
+<div id="helpNavDrawer" class="collapsed">
+<div id="helpNavMobile" class="menu">
+<div class="subNavWrapper">
+<div id="cs_control_5464" class="cs_control CS_Element_Tree">
+<div class="subNavGroup">
+<div class="subNavLinks">
+<ul class="subNavListBlock">
+<li><a
+href="/iaarchive/help/certificates.cfm"
+class="">Certificates</a></li>
+<li><a
+href="/iaarchive/help/terms.cfm"
+class="">Terms of Use</a></li>
+<li><a
+href="/iaarchive/help/site/index.cfm"
+class="">Site Index</a></li>
+<ul class="secondarySubNavList">
+<li><a
+href="/iaarchive/help/site/category-browser.cfm"
+class="">Category Browser</a></li>
+</ul>
+<li><a
+href="/iaarchive/help/faq/index.cfm"
+class="">Frequently Asked Questions</a></li>
+<ul class="secondarySubNavList">
+<li><a
+href="/iaarchive/help/faq/access.cfm"
+class="">Common Site Certificate Access Errors</a></li>
+<li><a
+href="/iaarchive/help/faq/information-for-business.cfm"
+class="">Information for Business</a></li>
+<li><a
+href="/iaarchive/help/faq/information-for-it-professionals.cfm"
+class="">Information for IT Staff, Decision Makers, and Developers</a></li>
+</ul>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</nav>
+<section>
+<div id="mainWrapper" class="expanded-main">
+<header role="banner">
+<div id="banner" class="section clearfix">
+<div class="bgOverlay fullRow">
+<span class="topAnchor"><a id="top"></a></span>
+<script language="javascript">
+<!--
+function get_browser_info(){
+var ua=navigator.userAgent,tem,M=ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+if(/trident/i.test(M[1])){
+tem=/\brv[ :]+(\d+)/g.exec(ua) || [];
+return {name:'IE',version:(tem[1]||'')};
+}
+if(M[1]==='Chrome'){
+tem=ua.match(/\bOPR\/(\d+)/)
+if(tem!=null)   {return {name:'Opera', version:tem[1]};}
+}
+M=M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+if((tem=ua.match(/version\/(\d+)/i))!=null) {M.splice(1,1,tem[1]);}
+return {
+name: M[0],
+version: M[1]
+};
+}
+var browser=get_browser_info();
+var userMessages_text = '';
+if ((browser.name == 'IE' || browser.name == 'MSIE') && browser.version < 9) {
+userMessages_text = '<div class="userMessages"><p class="errorMsgTop">You are using an outdated browser. Please upgrade your browser to improve your experience.</p></div>';
+}
+if ((browser.name == 'IE' || browser.name == 'MSIE') && browser.version == 9) {
+userMessages_text = '<div class="userMessages"><p class="errorMsgTop">You are using IE9. Please turn off Compatibility View, if in use.</p></div>';
+}
+document.write(userMessages_text);
+//-->
+</script>
+<noscript>
+<div class="userMessages">
+<p>You have Javascript disabled. This site requires JavaScript to
+be enabled for site navigation.<br />To navigate to other pages with
+JavaScript disabled use the <a href="/iaarchive/help/site/" style="text-decoration:underline;"><strong>Site Map</strong></a>.</p>
+</div>
+</noscript>
+<div class="bannerWrapper widthConstraint clearfix">
+<div class="visuallyhidden skipNav mobileOff"><p><a href="#jumpTarget">Skip Site Navigation</a></p><p><a href="javascript:formFocus()">Site Search</a></p></div>
+<span class="mobileOff welcome">
+</span>
+<div class="insideBannerWrapper">
+<div id="branding" class="columnUnit width_7span">
+<span class="mobileOn welcome">
+</span>
+<div id="navButtons" class="mobileOn">
+<div id="menuButton">
+<a id="navDrawerButton" class="expanded " href="javascript:toggleNavDrawer()" title="Show / Hide Navigation Panel">
+<span class="barMimic">—</span><span class="barMimic">—</span><span class="barMimic">—</span>
+<div style="text-indent:-9999px;line-height:.5">Show / Hide Navigation Panel</div>
+</a>
+</div>
+</div>
+<h1><a href="/iaarchive/library/index.cfm" id="homelink" title="Home"><!--
+--><img id="imageIADLogo" alt="NSA" aria-hidden="true" src="/iaarchive/templates/images/NSA-CSS-logo.png" />
+<!--
+--><h1 id="imageIADLogo" >National Security Agency | Central Security Service<br />
+Defending our Nation. Securing the Future.</h1><!--
+--></h1>
+</div>
+<div id="searchDrawer" class="columnUnit width_5span" valign="top">
+<div class="utilityLinks mobileOff">
+<span class="utilityLinksRight">
+<div id="cs_control_23901" class="cs_control CS_Element_Tree">
+<a
+href="http://www.nsa.gov/"
+class=""
+title="NSA.gov"
+target="_blank"
+>NSA.gov</a>
+<a
+href="/iaarchive/help/ia-sites-and-related-links.cfm"
+class=""
+title="More IA Sites"
+>More IA Sites</a>
+</div>
+</span>
+<div class="clearfix"></div>
+</div>
+<form class="" role="search" id="search" action="/iaarchive/search.cfm" method="get">
+<span class="visuallyhidden2"><label for="searchValue">Search</label></span>
+<input
+type="text"
+name="criteria"
+id="searchValue"
+maxlength="100"
+placeholder="Search"
+/>
+<button id="searchButton" type="submit" title="Search"><img
+src="/iaarchive/templates/images/search-icon-64.png"
+alt="Search" />
+<span class="visuallyhidden2">Search</span>
+</button>
+</form>
+</div>
+</div>
+</div>
+<div class="mobileOff">
+<nav role="navigation" aria-label="Site Navigation for Desktop Computer" aria-labelledby="navheading">
+<h2 class="visuallyhidden2" id="navheading">Site Navigation for Desktop Computer</h2>
+<div id="navDrawer">
+<div class="barWrapper">
+<div id="navTable" class="widthConstraint clearfix"><!--
+--><ul class="mainCategory" id="libraryTab">
+<li id="activeTab"><a href="#libraryMenu" class="categoryLink">Library</a>
+<div id="libraryNav" class="menu collapsed">
+<div class="subNavWrapper clearfix">
+<div id="cs_control_5334" class="CS_Element_Schedule"> <div  title="" id="CS_Element_containerLibrary0"> <div id="cs_control_5339" class="CS_Element_Schedule"> <div  title="" id="CS_Element_40305_5339">
+<div class="columnUnit width_12span">
+<script type="text/javascript">
+if ( ! (jQuery('script[src="/iad/javascript/pods-equal-heights.js"]').length > 0) ) {
+document.write('<script src="/iad/javascript/pods-equal-heights.js"><\/script>');
+}
+if ( ! (jQuery('script[src="/iad/javascript/column-config-call.js"]').length > 0) ) {
+document.write('<script src="/iad/javascript/column-config-call.js"><\/script>');
+}
+</script>
+<div class="columnUnit width_3span">
+</div>
+<div class="columnUnit width_3span">
+<div id="cs_control_5342" class="cs_control CS_Element_Tree">
+<div class="subNavGroup">
+<div class="subNavLinks">
+<ul class="subNavListBlock">
+<li><a
+href="/iaarchive/library/index.cfm"
+class="moreLink">All Library Collections</a>
+</li>
+<li><a
+href="/iaarchive/library/ia-advisories-alerts/index.cfm"
+class="">IA Advisories & Alerts</a>
+</li>
+<li><a
+href="/iaarchive/library/ia-guidance/index.cfm"
+class="">IA Guidance</a>
+</li>
+<ul class="secondarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/ia-solutions-for-classified/index.cfm"
+class="">IA Solutions for Classified</a></li>
+<ul class="tertiarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/ia-solutions-for-classified/algorithm-guidance/index.cfm"
+class="">Algorithm Guidance</a></li>
+</ul>
+<li><a
+href="/iaarchive/library/ia-guidance/ia-standards/index.cfm"
+class="">IA Standards</a></li>
+<ul class="tertiarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/ia-standards/cgs/index.cfm"
+class="">Community Gold Standard</a></li>
+</ul>
+<li><a
+href="/iaarchive/library/ia-guidance/secure-architecture/index.cfm"
+class="">Secure Architecture</a></li>
+</ul>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="columnUnit width_3span">
+<div id="cs_control_5343" class="cs_control CS_Element_Tree">
+<div class="subNavGroup">
+<div class="subNavLinks">
+<ul class="subNavListBlock">
+<li><a
+href="/iaarchive/library/ia-guidance/index.cfm"
+class="">IA Guidance (cont.)</a>
+</li>
+<ul class="secondarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/index.cfm"
+class="">Security Configuration Guidance</a></li>
+<ul class="tertiarySubNavList">
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/applications/index.cfm"
+class="">Applications</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/industrial-control-systems/index.cfm"
+class="">Industrial Control Systems</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/networks/index.cfm"
+class="">Networks</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/operating-systems/index.cfm"
+class="">Operating Systems</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/security-configuration/secure-implementation/index.cfm"
+class="secureSection">Secure Implementation<span class="visuallyhidden2"> (requires login)</span></a></li>
+</ul>
+<li><a
+href="/iaarchive/library/ia-guidance/security-tips/index.cfm"
+class="">Security Tips</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/tech-briefs/index.cfm"
+class="">Tech Briefs</a></li>
+<li><a
+href="/iaarchive/library/ia-guidance/archive/index.cfm"
+class="">Guidance Archive</a></li>
+</ul>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="columnUnit width_3span">
+<div id="cs_control_5344" class="cs_control CS_Element_Tree">
+<div class="subNavGroup">
+<div class="subNavLinks">
+<ul class="subNavListBlock">
+<li><a
+href="/iaarchive/library/ias/index.cfm"
+class="">Information Assurance Symposium</a>
+</li>
+<li><a
+href="/iaarchive/library/reports/index.cfm"
+class="">Reports</a>
+</li>
+<li><a
+href="/iaarchive/library/supporting-documents/index.cfm"
+class="">Supporting Documents</a>
+</li>
+<ul class="secondarySubNavList">
+<li><a
+href="/iaarchive/library/supporting-documents/brochures/index.cfm"
+class="">Brochures</a></li>
+<li><a
+href="/iaarchive/library/supporting-documents/faq/index.cfm"
+class="">FAQs</a></li>
+<li><a
+href="/iaarchive/library/supporting-documents/forms-templates/index.cfm"
+class="">Forms & Templates</a></li>
+</ul>
+<li><a
+href="/iaarchive/library/tools/index.cfm"
+class="secureSection">Tools<span class="visuallyhidden2"> (requires login)</span></a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="clearfix" style="height:1px;width:100%;clear:both"> </div>
+</div>
+</div> </div>  <div id="cs_control_5399" class="cs_control CS_Element_Tree">
+<div class="subNavGroup">
+<div class="subNavLinks">
+<div class="subNavExtras">
+<p class="helpLinksIntro">Looking for something else?</p>
+<ul>
+</ul>
+</div>
+</div>
+</div>
+</div>  </div> </div>
+</div>
+</div>
+</li><!--
+--></ul><!--
+--><!--
+--><!--
+--><ul class="mainCategory" id="helpTab">
+<li id="inactiveTab"><a href="#helpMenu" class="categoryLink">Help</a>
+<div id="helpNav" class="menu collapsed">
+<div class="subNavWrapper clearfix">
+<div id="cs_control_5352" class="CS_Element_Schedule"> <div  title="" id="CS_Element_containerHelp0">
+<div class="columnUnit width_12span">
+<script type="text/javascript">
+if ( ! (jQuery('script[src="/iad/javascript/pods-equal-heights.js"]').length > 0) ) {
+document.write('<script src="/iad/javascript/pods-equal-heights.js"><\/script>');
+}
+if ( ! (jQuery('script[src="/iad/javascript/column-config-call.js"]').length > 0) ) {
+document.write('<script src="/iad/javascript/column-config-call.js"><\/script>');
+}
+</script>
+<div class="columnUnit width_4span">
+</div>
+<div class="columnUnit width_8span">
+<div id="cs_control_11384" class="cs_control CS_Element_Textblock">
+<div class="landingBlock">
+<div class="blockLiner">
+<div class="clearfix"><h1>How do I …</h1>
+<ul>
+<li>
+<a href="https://www.nsa.gov/about/contact-us/#subject:cyber-requirements">NSA Cybersecurity Requirement Center?</a>
+</li>
+<li>
+<a id="CP___PAGEID=17170,/iad/register.cfm,1|" href="/iaarchive/register.cfm">Register for an account?</a>
+</li>
+<li>
+<a id="CP___PAGEID=16789,/iad/help/terms.cfm,6|" href="/iaarchive/help/terms.cfm">Download documents?</a>
+</li>
+<li>
+<a id="CP___PAGEID=16732,/iad/help/certificates.cfm,6|" href="/iaarchive/help/certificates.cfm">Obtain a DoD/CAC Certificate?</a>
+</li>
+</ul></div>
+<p class="buttonBlockFullWidth"><a class="buttonLook Default moreLink" href="/iaarchive/help/faq/index.cfm"
+>More<span class="visuallyhidden2"> Frequently Asked Questions</span></a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="clearfix" style="height:1px;width:100%;clear:both"> </div>
+</div>
+</div> </div>
+</div>
+</div>
+</li><!--
+--></ul>
+<div class="loginBlock">
+<ul class="mainCategory" id="registerTab">
+<li class="loginReg"><a	href="/iaarchive/register.cfm"
+class="categoryLink"
+id="RegisterLink"><span class="textbacker">Register</span></a></li><!--
+--></ul>
+<ul class="mainCategory" id="pkiTab">
+<li class="loginReg"><a	href="/iaarchive/login.cfm"
+class="categoryLink"
+id="PKICACLink"><span class="textbacker">Login</span></a></li><!--
+--></ul>
+</div>
+</div>
+</div>
+</div>
+</nav>
+</div>
+</div>
+</div>
+<!-- MAINTENANCE OUTAGE MESSAGES BEGIN-->
+<!--    MAINTENANCE OUTAGE MESSAGES END-->
+</header>
+<div class="contentContainer">
+<div class="bgOverlay">
+<section role="navigation" aria-labelledby="breadcrumbBlock">
+<div class="section" id="breadcrumbBlock">
+<div class="widthConstraint clearfix">
+<div class="columnUnit width_12span breadcrumbList">  <div id="cs_control_1594" class="cs_control CS_Element_LinkBar">
+<a href="/iaarchive/index.cfm" class="homeLink" title="Home"><img class="homeImg" src="/iaarchive/templates/images/breadcrumb-home-icon.png" alt="Home" /></a>
+<span class="divider">›</span>
+<a href="/iaarchive/library/">Library Archive</a>
+<span class="divider">›</span>
+<a href="/iaarchive/library/reports/">Reports</a>
+<span class="divider">›</span>
+<span class="currentPage">Spotting the Adversary with Windows Event Log Monitoring</span>
+</div> </div>
+</div>
+</div>
+</section>
+<section>
+<div class="section" id="middleBlock">
+<div class="widthConstraint clearfix"><span class="skipnavAnchor"><a id="jumpTarget" tabindex="-1"></a></span>
+<div id="mainContentBlock" class="columnUnit width_8span" role="main">
+<div id="cs_control_1620" class="CS_Element_Schedule"><div  title="" id="CS_Element_MainContentContainer"><div id="cs_control_1883" class="cs_control CS_Element_CustomCF"><div id="CS_CCF_40305_1883">
+<span id="LibraryDetail">
+<article role="article" itemscope="itemscope" itemtype="http://schema.org/Book">
+<meta itemprop="url" content="http://authoring.iad.gov/iad/iad/library/reports/spotting-the-adversary-with-windows-event-log-monitoring.cfm"/>
+<meta itemprop="publisher" content="NSA/IAD"/>
+<h1 itemprop="name"><span class="skipnavAnchor"><a id="jumpTarget" tabindex="-1"></a></span>Spotting the Adversary with Windows Event Log Monitoring (version 2)</h1>
+<div class="downloadBlock clearfix">
+<p>
+<span class="labelLook">To access: </span><span class="group">
+<a
+href="/iaarchive/customcf/openAttachment.cfm?FilePath=/iad/library/ia-guidance/security-configuration/applications/assets/public/upload/Spotting-the-Adversary-with-Windows-Event-Log-Monitoring.pdf&WpKes=aF6woL7fQp3dJiNKNzedg2SexEt8Jwg8bMTxEH"
+target="_blank"
+title="Click to get file: Spotting the Adversary with Windows Event Log Monitoring (2)"
+class="buttonLook"
+><span class="textbacker">Get File<span class="visuallyhidden2">: Spotting the Adversary with Windows Event Log Monitoring (2)</span></span></a>
+</span>
+</p>
+</div>
+<div class="metadataBlock">
+<p>
+<span class="labelTextGroup">
+<span class="metaAbstract">Abstract:</span>
+<span class="metadataBlockText" itemprop="description">This paper focuses on using the built-in tools already available in the Microsoft Windows operating system (OS). Central event log collection requires a Windows Server operating system version 2003 R2 or above. Many commercially available tools exist for central event log collection. Using a Windows Server 2008 R2 or above server version is recommended. There are no additional licensing costs for using the event log collection feature. The cost of using this feature is based on the amount of additional storage hardware needed to support the amount of log data collected. This factor is dependent on the number of workstations within the local log collection network.</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaDatePublished">Date Published:</span>
+<span class="metadataBlockText" itemprop="datePublished">07 August 2015</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaDateReviewed">Last Reviewed:</span>
+<span class="metadataBlockText">16 July 2015</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaVersion">Version:</span>
+<span class="metadataBlockText" itemprop="version">2</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaIdentifier">Identifier:</span>
+<span class="metadataBlockText" itemprop="alternateName">TSA-13-1004-SG</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaCreator">Creator:</span>
+<span class="metadataBlockText"
+itemprop="creator"><a href='/iaarchive/search.cfm?criteria=creator:Network Components and Applications Division'></a>
+</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaDissemination">Dissemination Control:</span>
+<span class="metadataBlockText">N/A</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaLength">Length:</span>
+<span class="metadataBlockText" itemprop="numberOfPages">54 page(s)</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaFileFormat">Format:</span>
+<span class="metadataBlockText">pdf</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaType">Type:</span>
+<span class="metadataBlockText" itemprop="genre">
+<a href="/iaarchive/search.cfm?byType=Reference/Overview">Reference/Overview</a>;
+<a href="/iaarchive/search.cfm?byType=Report">Report</a>
+</span>
+</span>
+</p>
+<p>
+<span class="labelTextGroup">
+<span class="metaTags">Tags:</span>
+<span class="metadataBlockText" itemprop="keywords">
+<a href='/iaarchive/search.cfm?criteria=keywords:"Application Whitelisting"'>Application Whitelisting</a>;
+<a href='/iaarchive/search.cfm?criteria=keywords:"Authentication"'>Authentication</a>;
+<a href='/iaarchive/search.cfm?criteria=keywords:"Event Logging"'>Event Logging</a>;
+<a href='/iaarchive/search.cfm?criteria=keywords:"Intrusion Detection and Prevention"'>Intrusion Detection and Prevention</a>;
+<a href='/iaarchive/search.cfm?criteria=keywords:"Man in the Middle - MITM"'>Man in the Middle - MITM</a>;
+<a href='/iaarchive/search.cfm?criteria=keywords:"Pass-the-Hash - PtH"'>Pass-the-Hash - PtH</a>;
+<a href='/iaarchive/search.cfm?criteria=keywords:"Windows"'>Windows</a>
+</span>
+</span>
+</p>
+</div>
+<div style="clear:both"></div>
+</article>
+</span>
+</div></div></div></div>
+</div>
+<div class="columnUnit width_4span" id="relatedBlock">
+<div id="cs_control_1672" class="CS_Element_Schedule"><div  title="" id="CS_Element_rightColumnContainer">
+<aside role="complementary">
+</aside>
+<aside role="complementary">
+<div class="sideBox">
+<h2>Have Questions?</h2>
+<ul class="helpItems">
+<li class="bullet_faq"><a href="/iaarchive/help/faq/index.cfm">Frequently Asked Questions</a></li>
+<li class="bullet_siteIndex"><a href="/iaarchive/help/site/index.cfm">Site Index</a></li>
+<li class="bullet_emailHelp">
+<a href="mailto:cybersecurity_requests@nsa.gov">E-mail: Cybersecurity Requirements</a>
+</li>
+</ul>
+</div>
+</aside>
+</div></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<a href="#top" id="gototop"><span class="upArrow"></span><br/>Top</a>
+<noscript>
+<div class="footerTopLink"><a href="#top">Top of Page</a></div>
+</noscript>
+</div>
+<footer role="contentinfo">
+<div class="section" id="footer">
+<div id="footerRow01">
+<div class="bgOverlay">
+<div class="widthConstraint clearfix">
+<h2 class="visuallyhidden2">Supplemental Navigation</h2>
+<div class="columnUnit width_12span">
+<div id="cs_control_1650" class="CS_Element_Schedule"> <div  title="" id="CS_Element_footerContent1container">
+<div class="columnUnit width_12span">
+<script type="text/javascript">
+if ( ! (jQuery('script[src="/iad/javascript/pods-equal-heights.js"]').length > 0) ) {
+document.write('<script src="/iad/javascript/pods-equal-heights.js"><\/script>');
+}
+if ( ! (jQuery('script[src="/iad/javascript/column-config-call.js"]').length > 0) ) {
+document.write('<script src="/iad/javascript/column-config-call.js"><\/script>');
+}
+</script>
+<div class="columnUnit width_2span">
+</div>
+<div class="columnUnit  width_2span">
+<a name="HowDoI" id="HowDoI"></a><a name="CP_JUMP_13985" id="CP_JUMP_13985"></a><div id="cs_control_13985" class="cs_control CS_Element_Textblock"> <div class="CS_Textblock_Text"><h2 class="footerHead">NSA Resources</h2>
+<ul class="footerList">
+<li class="ApplyCareer">
+<a href="http://www.intelligencecareers.gov/nsa">Apply for a Career Now</a>
+</li>
+<li>
+<a href="https://www.nsa.gov/terms-of-use.shtml##access">Accessibility</a>
+</li>
+<li>
+<a href="https://www.nsa.gov/about/civil-liberties/">Civil Liberties &amp; Privacy</a>
+</li>
+<li>
+<a href="https://www.nsa.gov/about/diversity/no-fear/">No FEAR Act</a>
+</li>
+<li>
+<a href="https://www.nsa.gov/resources/everyone/foia/">Freedom of Information Act</a>
+</li>
+<li>
+<a href="https://www.nsa.gov/about/oig/">Inspector General</a>
+</li>
+<li>
+<a href="https://www.nsa.gov/terms-of-use.shtml##terms">Terms of Use</a>
+</li>
+<li>
+<a href="https://www.nsa.gov/terms-of-use.shtml##privacy">Web Privacy &amp; Security</a>
+</li>
+</ul></div> </div>
+</div>
+<div class="columnUnit  width_2span">
+<a name="informationFor" id="informationFor"></a><a name="CP_JUMP_13986" id="CP_JUMP_13986"></a><div id="cs_control_13986" class="cs_control CS_Element_Textblock"> <div class="CS_Textblock_Text"><h2 class="footerHead">External Resources</h2>
+<ul class="footerList">
+<li>
+<a href="http://www.defense.gov/">Defense.gov</a>
+</li>
+<li>
+<a href="https://www.dni.gov">DNI.gov</a>
+</li>
+<li>
+<a href="http://icontherecord.tumblr.com/">IC on the Record</a>
+</li>
+<li>
+<a href="https://www.intelligence.gov">Intelligence.gov</a>
+</li>
+<li>
+<a href="https://www.usa.gov">USA.gov</a>
+</li>
+</ul>
+<br>
+<br></div> </div>
+</div>
+<div class="columnUnit  width_2span">
+<a name="HelpReference" id="HelpReference"></a><a name="CP_JUMP_13987" id="CP_JUMP_13987"></a><div id="cs_control_13987" class="cs_control CS_Element_Textblock"> <div class="CS_Textblock_Text"><h2 class="footerHead">Learn about our seals</h2>
+<p>
+<img width="50" height="50" title="NSA Seal" alt="NSA Seal" src="/iaarchive/images/footerNSASeal.png" border="0" vspace="0" hspace="0"> 
+<a id="https://www.nsa.gov/about/cryptologic-heritage/center-cryptologic-history/insignia/#css" onmouseover="return self.status='https://www.nsa.gov/about/cryptologic-heritage/center-cryptologic-history/insignia/#css'" href="https://www.nsa.gov/about/cryptologic-heritage/center-cryptologic-history/insignia/#css"></a>
+<a href="https://www.nsa.gov/about/cryptologic-heritage/center-cryptologic-history/insignia/#css">
+<img width="50" height="50" title="CSS Seal" alt="CSS Seal" src="/iaarchive/images/footerCSSSeal_1.png" border="0" vspace="0" hspace="0">
+</a></p>
+<br>
+<br>
+<br></div> </div>
+</div>
+<div class="columnUnit  width_4span">
+<a name="Sites" id="Sites"></a><a name="CP_JUMP_13988" id="CP_JUMP_13988"></a><div id="cs_control_13988" class="cs_control CS_Element_Textblock"> <div class="CS_Textblock_Text"><h2 class="footerHead">Follow Us</h2>
+<ul class="footerList">
+<li>
+<a href="http://www.twitter.com/nsagov">
+<img width="30" height="30" title="Twitter" class="icotwitter" alt="Twitter" src="/iaarchive/images/twitterIcon.png" border="0" vspace="0" hspace="0" valign="top">
+</a>
+</li>
+<li>
+<a href="https://www.facebook.com/NSAUSGOV/">
+<img width="25" height="19" title="Facebook" class="icofacebook" alt="Facebook" src="/iaarchive/images/facebook-Icon.png" border="0" vspace="0" hspace="0" valign="top">
+</a>
+</li>
+<li>
+<a href="https://www.youtube.com/channel/UCXfnaN5jl0RPR1dirFTOZ3A">
+<img width="25" height="19" title="You Tube" class="icoyoutube" alt="YouTube" src="/iaarchive/images/youtube.png" border="0" vspace="0" hspace="0" valign="top">
+</a>
+</li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br></div> </div>
+</div>
+<div class="clearfix" style="height:1px;width:100%;clear:both"> </div>
+</div>
+</div> </div>
+</div>
+</div>
+</div>
+</div>
+<div id="footerRow02">
+<div class="bgOverlay">
+<div class="widthConstraint clearfix">
+<div class="columnUnit width_12span">
+<div id="cs_control_1654" class="CS_Element_Schedule"> <div  title="" id="CS_Element_footerContent5container">
+<div class="columnUnit width_12span">
+<div class="clearfix" style="height:1px;width:100%;clear:both"> </div>
+</div>
+</div> </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</footer>
+</div>
+</section>
+<!-- beg (1) PrimaryResources -->
+<script type="text/javascript" src="/commonspot/javascript/lightbox/overrides.js"></script><script type="text/javascript" src="/commonspot/javascript/lightbox/window_ref.js"></script><script type="text/javascript" src="/commonspot/pagemode/always-include-common.js"></script><script type="text/javascript" src="/commonspot/pagemode/always-include-moz.js"></script>
+<!-- end (1) PrimaryResources -->
+<!-- beg (2) SecondaryResources -->
+<!-- end (2) SecondaryResources -->
+<!-- beg (3) CustomFoot -->
+<!-- end (3) CustomFoot -->
+<!-- beg (4) TertiaryResources -->
+<!-- end (4) TertiaryResources -->
+<script type="text/javascript">
+<!--
+var jsPageContributeMode = 'read';
+var jsPageSessionContributeMode = 'read';
+
+var jsPageAuthorMode = 0;
+var jsPageEditMode = 0;
+
+
+if(!commonspot)
+	var commonspot = {};
+commonspot.csPage = {};
+
+
+	commonspot.csPage.url = '/iad/library/reports/spotting-the-adversary-with-windows-event-log-monitoring.cfm';
+
+
+commonspot.csPage.id = 40305;
+
+commonspot.csPage.siteRoot = '/iad/';
+commonspot.csPage.subsiteRoot = '/iad/library/reports/';
+
+
+// -->
+</script>
+<script type="text/javascript">
+<!--
+	if (typeof parent.commonspot == 'undefined' || typeof parent.commonspot.lview == 'undefined' || typeof parent.commonspot.lightbox == 'undefined')
+		loadNonDashboardFiles();
+	else if (parent.commonspot && typeof newWindow == 'undefined')
+	{
+		var arrFiles = 
+				[
+					{fileName: '/commonspot/javascript/lightbox/overrides.js', fileType: 'script', fileID: 'cs_overrides'},
+					{fileName: '/commonspot/javascript/lightbox/window_ref.js', fileType: 'script', fileID: 'cs_windowref'}
+				];
+		
+		loadDashboardFiles(arrFiles);
+	}
+//-->
+</script>
+</body></html>

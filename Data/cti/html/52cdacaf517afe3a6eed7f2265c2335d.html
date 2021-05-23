@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<!--[if !IE]>      <html class="no-js non-ie" lang="en"> <![endif]-->
+<!--[if IE 7 ]>	   <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>	   <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>	   <html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+<title>Intercepting Password Changes With Function Hooking | clymb3r</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="https://clymb3r.wordpress.com/xmlrpc.php" />
+
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s2.wp.com' />
+<link rel='dns-prefetch' href='//s1.wp.com' />
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//s.pubmine.com' />
+<link rel='dns-prefetch' href='//x.bidswitch.net' />
+<link rel='dns-prefetch' href='//static.criteo.net' />
+<link rel='dns-prefetch' href='//ib.adnxs.com' />
+<link rel='dns-prefetch' href='//aax.amazon-adsystem.com' />
+<link rel='dns-prefetch' href='//bidder.criteo.com' />
+<link rel='dns-prefetch' href='//cas.criteo.com' />
+<link rel='dns-prefetch' href='//gum.criteo.com' />
+<link rel='dns-prefetch' href='//ads.pubmatic.com' />
+<link rel='dns-prefetch' href='//gads.pubmatic.com' />
+<link rel='dns-prefetch' href='//tpc.googlesyndication.com' />
+<link rel='dns-prefetch' href='//ad.doubleclick.net' />
+<link rel='dns-prefetch' href='//googleads.g.doubleclick.net' />
+<link rel='dns-prefetch' href='//www.googletagservices.com' />
+<link rel='dns-prefetch' href='//cdn.switchadhub.com' />
+<link rel='dns-prefetch' href='//delivery.g.switchadhub.com' />
+<link rel='dns-prefetch' href='//delivery.swid.switchadhub.com' />
+<link rel='dns-prefetch' href='//a.teads.tv' />
+<link rel='dns-prefetch' href='//prebid.media.net' />
+<link rel='dns-prefetch' href='//adserver-us.adtech.advertising.com' />
+<link rel='dns-prefetch' href='//fastlane.rubiconproject.com' />
+<link rel='dns-prefetch' href='//prebid-server.rubiconproject.com' />
+<link rel='dns-prefetch' href='//hb-api.omnitagjs.com' />
+<link rel='dns-prefetch' href='//mtrx.go.sonobi.com' />
+<link rel='dns-prefetch' href='//apex.go.sonobi.com' />
+<link rel='dns-prefetch' href='//u.openx.net' />
+<link rel="alternate" type="application/rss+xml" title="clymb3r &raquo; Feed" href="https://clymb3r.wordpress.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="clymb3r &raquo; Comments Feed" href="https://clymb3r.wordpress.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="clymb3r &raquo; Intercepting Password Changes With Function&nbsp;Hooking Comments Feed" href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/feed/" />
+	<script type="text/javascript">
+		/* <![CDATA[ */
+		function addLoadEvent(func) {
+			var oldonload = window.onload;
+			if (typeof window.onload != 'function') {
+				window.onload = func;
+			} else {
+				window.onload = function () {
+					oldonload();
+					func();
+				}
+			}
+		}
+		/* ]]> */
+	</script>
+			<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/72x72\/","ext":".png","svgUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/s0.wp.com\/wp-includes\/js\/wp-emoji-release.min.js?m=1612197847h&ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='all-css-0-1' href='https://s1.wp.com/_static/??-eJydkt1OwzAMhV+I1BQ20C4Qz5I0JnjNn+JkVd8etxOiMDEmbqIc53x27ASmrIYUK8YKoansm6PIMOUhBcWBPM4/VDcw38EGMz65LzAVqy2D88lof+HdlPA0IsMRa9bDqFZ1Yf/0uibSYHFyUhBO/X2373ZgGnm71F8TmKLLDFxnjzckWqlNfT2nVpUrZP+bouhK0fEv+KbzpQeJh6zr4ghoSaPHILZr2PkVjMkFmZWsgVpQ9V3Ay8mdw5CbAbHnFJlO+PfVJrIOKwM2OU0joQxmgoohe13xht4cJiVjkVGk+E2oN6+pXEMLLj9Jtg7EtZEL9Bpe+qf+sHt43D8fjh9mMgXq?cssminify=yes' type='text/css' media='all' />
+<style id='wp-block-library-inline-css'>
+.has-text-align-justify {
+	text-align:justify;
+}
+</style>
+<style id='jetpack-global-styles-frontend-style-inline-css'>
+:root { --font-headings: unset; --font-base: unset; --font-headings-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; --font-base-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;}
+</style>
+<link rel='stylesheet' id='all-css-2-1' href='https://s1.wp.com/_static/??-eJxti0EKgCAQAD+ULUaJl+gtJqbG6opr9P3o0CHqNAzMwFmEpdxcbpAOUfDwMTMU4iY2NLECB1Nj9g97y9zB/8Vko0GB5Oktn6kFlxxDGMEjrQbvYEmzVHIclNZy2i9lFDfR?cssminify=yes' type='text/css' media='all' />
+<script id='wpcom-actionbar-placeholder-js-extra'>
+var actionbardata = {"siteID":"49341841","siteName":"clymb3r","siteURL":"http:\/\/clymb3r.wordpress.com","icon":"<img alt='' src='https:\/\/s2.wp.com\/i\/logo\/wpcom-gray-white.png' class='avatar avatar-50' height='50' width='50' \/>","canManageOptions":"","canCustomizeSite":"","isFollowing":"","themeSlug":"pub\/responsive","signupURL":"https:\/\/wordpress.com\/start\/","loginURL":"https:\/\/wordpress.com\/log-in?redirect_to=https%3A%2F%2Fclymb3r.wordpress.com%2F2013%2F09%2F15%2Fintercepting-password-changes-with-function-hooking%2F&signup_flow=account","themeURL":"","xhrURL":"https:\/\/clymb3r.wordpress.com\/wp-admin\/admin-ajax.php","nonce":"a09c78b47f","isSingular":"1","isFolded":"","isLoggedIn":"","isMobile":"","subscribeNonce":"<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"0dfde1206f\" \/>","referer":"https:\/\/clymb3r.wordpress.com\/2013\/09\/15\/intercepting-password-changes-with-function-hooking\/","canFollow":"1","feedID":"9535929","statusMessage":"","customizeLink":"https:\/\/clymb3r.wordpress.com\/wp-admin\/customize.php?url=https%3A%2F%2Fclymb3r.wordpress.com%2F2013%2F09%2F15%2Fintercepting-password-changes-with-function-hooking%2F","postID":"126","shortlink":"https:\/\/wp.me\/p3l249-22","canEditPost":"","editLink":"https:\/\/wordpress.com\/post\/clymb3r.wordpress.com\/126","statsLink":"https:\/\/wordpress.com\/stats\/post\/126\/clymb3r.wordpress.com","i18n":{"view":"View site","follow":"Follow","following":"Following","edit":"Edit","login":"Log in","signup":"Sign up","customize":"Customize","report":"Report this content","themeInfo":"Get theme: Responsive","shortlink":"Copy shortlink","copied":"Copied","followedText":"New posts from this site will now appear in your <a href=\"https:\/\/wordpress.com\/read\">Reader<\/a>","foldBar":"Collapse this bar","unfoldBar":"Expand this bar","editSubs":"Manage subscriptions","viewReader":"View site in Reader","viewReadPost":"View post in Reader","subscribe":"Sign me up","enterEmail":"Enter your email address","followers":"","alreadyUser":"Already have a WordPress.com account? <a href=\"https:\/\/wordpress.com\/log-in?redirect_to=https%3A%2F%2Fclymb3r.wordpress.com%2F2013%2F09%2F15%2Fintercepting-password-changes-with-function-hooking%2F&signup_flow=account\">Log in now.<\/a>","stats":"Stats"}};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s1.wp.com/_static/??-eJyFzk0KwkAMBeALOR1KocWFeJb+xJqhk4xJRq2nt4pKdeMqhPc9En9JrmcyIPNBfWK1CKrtCEXQjf9OI3c4gcsKsgAyh3Tgt0PqpzyAPmA4ZZD5NYqI9Be5iKO0Bmu8uiyTuSR8nX8zO8Lyr0+58wKamBTP8Gx8Nhd5ACG8yVLex11Zl01VVnWzDXe3ml6Z'></script>
+<script type='text/javascript'>
+	window.addEventListener( 'DOMContentLoaded', function() {
+		rltInitialize( {"token":null,"iframeOrigins":["https:\/\/widgets.wp.com"]} );
+	} );
+</script>
+<link rel='stylesheet' id='all-css-0-2' href='https://s0.wp.com/wp-content/mu-plugins/highlander-comments/style.css?m=1530132353h&cssminify=yes' type='text/css' media='all' />
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='highlander-comments-ie7-css'  href='https://s2.wp.com/wp-content/mu-plugins/highlander-comments/style-ie7.css?m=1351637563h&#038;ver=20110606' media='all' />
+<![endif]-->
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://clymb3r.wordpress.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://s1.wp.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress.com" />
+<link rel="canonical" href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/" />
+<link rel='shortlink' href='https://wp.me/p3l249-22' />
+<link rel="alternate" type="application/json+oembed" href="https://public-api.wordpress.com/oembed/?format=json&amp;url=https%3A%2F%2Fclymb3r.wordpress.com%2F2013%2F09%2F15%2Fintercepting-password-changes-with-function-hooking%2F&amp;for=wpcom-auto-discovery" /><link rel="alternate" type="application/xml+oembed" href="https://public-api.wordpress.com/oembed/?format=xml&amp;url=https%3A%2F%2Fclymb3r.wordpress.com%2F2013%2F09%2F15%2Fintercepting-password-changes-with-function-hooking%2F&amp;for=wpcom-auto-discovery" />
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Intercepting Password Changes With Function Hooking" />
+<meta property="og:url" content="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/" />
+<meta property="og:description" content="Last week, Mubix published a malicious Windows password filter DLL ( The idea is simple, by installing this password filter, he can intercept the clear text credential whenever a user changes their…" />
+<meta property="article:published_time" content="2013-09-15T16:44:43+00:00" />
+<meta property="article:modified_time" content="2013-09-15T16:44:43+00:00" />
+<meta property="og:site_name" content="clymb3r" />
+<meta property="og:image" content="https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png?w=300" />
+<meta property="og:image:width" content="300" />
+<meta property="og:image:height" content="110" />
+<meta property="og:image:alt" content="Disassembly of PasswordChangeNotify after being hooked. The instructions after jmp rax disassemble incorrectly after hooking, but all the code after the hook is intact." />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:site" content="@wordpressdotcom" />
+<meta name="twitter:text:title" content="Intercepting Password Changes With Function&nbsp;Hooking" />
+<meta name="twitter:image" content="https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png?w=144" />
+<meta name="twitter:image:alt" content="Disassembly of PasswordChangeNotify after being hooked. The instructions after jmp rax disassemble incorrectly after hooking, but all the code after the hook is intact." />
+<meta name="twitter:card" content="summary" />
+<meta property="fb:app_id" content="249643311490" />
+<meta property="article:publisher" content="https://www.facebook.com/WordPresscom" />
+
+<!-- End Jetpack Open Graph Tags -->
+<link rel="shortcut icon" type="image/x-icon" href="https://s1.wp.com/i/favicon.ico" sizes="16x16 24x24 32x32 48x48" />
+<link rel="icon" type="image/x-icon" href="https://s1.wp.com/i/favicon.ico" sizes="16x16 24x24 32x32 48x48" />
+<link rel="apple-touch-icon" href="https://s2.wp.com/i/webclip.png" />
+<link rel='openid.server' href='https://clymb3r.wordpress.com/?openidserver=1' />
+<link rel='openid.delegate' href='https://clymb3r.wordpress.com/' />
+<link rel="search" type="application/opensearchdescription+xml" href="https://clymb3r.wordpress.com/osd.xml" title="clymb3r" />
+<link rel="search" type="application/opensearchdescription+xml" href="https://s1.wp.com/opensearch.xml" title="WordPress.com" />
+<meta name="theme-color" content="#efefef" />
+		<style type="text/css">
+			.recentcomments a {
+				display: inline !important;
+				padding: 0 !important;
+				margin: 0 !important;
+			}
+
+			table.recentcommentsavatartop img.avatar, table.recentcommentsavatarend img.avatar {
+				border: 0px;
+				margin: 0;
+			}
+
+			table.recentcommentsavatartop a, table.recentcommentsavatarend a {
+				border: 0px !important;
+				background-color: transparent !important;
+			}
+
+			td.recentcommentsavatarend, td.recentcommentsavatartop {
+				padding: 0px 0px 1px 0px;
+				margin: 0px;
+			}
+
+			td.recentcommentstextend {
+				border: none !important;
+				padding: 0px 0px 2px 10px;
+			}
+
+			.rtl td.recentcommentstextend {
+				padding: 0px 10px 2px 0px;
+			}
+
+			td.recentcommentstexttop {
+				border: none;
+				padding: 0px 0px 0px 10px;
+			}
+
+			.rtl td.recentcommentstexttop {
+				padding: 0px 10px 0px 0px;
+			}
+		</style>
+		<meta name="application-name" content="clymb3r" /><meta name="msapplication-window" content="width=device-width;height=device-height" /><meta name="msapplication-tooltip" content="Hacking and general mayhem" /><meta name="msapplication-task" content="name=Subscribe;action-uri=https://clymb3r.wordpress.com/feed/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=Sign up for a free blog;action-uri=http://wordpress.com/signup/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Support;action-uri=http://support.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Forums;action-uri=http://forums.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="description" content="Last week, Mubix published a malicious Windows password filter DLL (http://carnal0wnage.attackresearch.com/2013/09/stealing-passwords-every-time-they.html). The idea is simple, by installing this password filter, he can intercept the clear text credential whenever a user changes their password. There are two caveats with installing this password filter: You must restart the computer for it to take affect It will show&hellip;" />
+		<script type="text/javascript">
+
+			window.doNotSellCallback = function() {
+
+				var linkElements = [
+					'a[href="https://wordpress.com/?ref=footer_blog"]',
+					'a[href="https://wordpress.com/?ref=footer_website"]',
+					'a[href="https://wordpress.com/?ref=vertical_footer"]',
+					'a[href^="https://wordpress.com/?ref=footer_segment_"]',
+				].join(',');
+
+				var dnsLink = document.createElement( 'a' );
+				dnsLink.href = 'https://wordpress.com/advertising-program-optout';
+				dnsLink.classList.add( 'do-not-sell-link' );
+				dnsLink.rel = 'nofollow';
+				dnsLink.style.marginLeft = '0.5em';
+				dnsLink.textContent = 'Do Not Sell My Personal Information';
+
+				var creditLinks = document.querySelectorAll( linkElements );
+
+				if ( 0 === creditLinks.length ) {
+					return false;
+				}
+
+				Array.prototype.forEach.call( creditLinks, function( el ) {
+					el.insertAdjacentElement( 'afterend', dnsLink );
+				});
+
+				return true;
+			};
+
+		</script>
+				<script type="text/javascript">
+		function __ATA_CC() {var v = document.cookie.match('(^|;) ?personalized-ads-consent=([^;]*)(;|$)');return v ? 1 : 0;}
+		var __ATA_PP = { 'pt': 1, 'ht': 0, 'tn': 'responsive', 'amp': false, 'consent': __ATA_CC(), 'gdpr_applies': false, 'ad': { 'label': { 'text': 'Advertisements' }, 'reportAd': { 'text': 'Report this ad' } }, 'siteid': 8982, 'blogid': 49341841 };
+		var __ATA = __ATA || {};
+		__ATA.cmd = __ATA.cmd || [];
+		__ATA.criteo = __ATA.criteo || {};
+		__ATA.criteo.cmd = __ATA.criteo.cmd || [];
+		</script>
+		<script type="text/javascript">
+		(function(){var g=Date.now||function(){return+new Date};function h(a,b){a:{for(var c=a.length,d="string"==typeof a?a.split(""):a,e=0;e<c;e++)if(e in d&&b.call(void 0,d[e],e,a)){b=e;break a}b=-1}return 0>b?null:"string"==typeof a?a.charAt(b):a[b]};function k(a,b,c){c=null!=c?"="+encodeURIComponent(String(c)):"";if(b+=c){c=a.indexOf("#");0>c&&(c=a.length);var d=a.indexOf("?");if(0>d||d>c){d=c;var e=""}else e=a.substring(d+1,c);a=[a.substr(0,d),e,a.substr(c)];c=a[1];a[1]=b?c?c+"&"+b:b:c;a=a[0]+(a[1]?"?"+a[1]:"")+a[2]}return a};var l=0;function m(a,b){var c=document.createElement("script");c.src=a;c.onload=function(){b&&b(void 0)};c.onerror=function(){b&&b("error")};a=document.getElementsByTagName("head");var d;a&&0!==a.length?d=a[0]:d=document.documentElement;d.appendChild(c)}function n(a){var b=void 0===b?document.cookie:b;return(b=h(b.split("; "),function(c){return-1!=c.indexOf(a+"=")}))?b.split("=")[1]:""}function p(a){return"string"==typeof a&&0<a.length}
+		function r(a,b,c){b=void 0===b?"":b;c=void 0===c?".":c;var d=[];Object.keys(a).forEach(function(e){var f=a[e],q=typeof f;"object"==q&&null!=f||"function"==q?d.push(r(f,b+e+c)):null!==f&&void 0!==f&&(e=encodeURIComponent(b+e),d.push(e+"="+encodeURIComponent(f)))});return d.filter(p).join("&")}function t(a,b){a||((window.__ATA||{}).config=b.c,m(b.url))}var u=Math.floor(1E13*Math.random()),v=window.__ATA||{};window.__ATA=v;window.__ATA.cmd=v.cmd||[];v.rid=u;v.createdAt=g();var w=window.__ATA||{},x="s.pubmine.com";
+		w&&w.serverDomain&&(x=w.serverDomain);var y="//"+x+"/conf",z=window.top===window,A=window.__ATA_PP&&window.__ATA_PP.gdpr_applies,B="boolean"===typeof A?Number(A):null,C=window.__ATA_PP||null,D=z?document.referrer?document.referrer:null:null,E=z?window.location.href:document.referrer?document.referrer:null,F,G=n("__ATA_tuuid");F=G?G:null;var H=window.innerWidth+"x"+window.innerHeight,I=n("usprivacy"),J=r({gdpr:B,pp:C,rid:u,src:D,ref:E,tuuid:F,vp:H,us_privacy:I?I:null},"",".");
+		(function(a){var b=void 0===b?"cb":b;l++;var c="callback__"+g().toString(36)+"_"+l.toString(36);a=k(a,b,c);window[c]=function(d){t(void 0,d)};m(a,function(d){d&&t(d)})})(y+"?"+J);}).call(this);
+		</script><link rel="amphtml" href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/amp/">		<link rel="stylesheet" id="custom-css-css" type="text/css" href="https://s0.wp.com/?custom-css=1&#038;csblog=3l249&#038;cscache=6&#038;csrev=19" />
+		<script type="text/javascript">
+	window.google_analytics_uacct = "UA-52447-2";
+</script>
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-52447-2']);
+	_gaq.push(['_gat._anonymizeIp']);
+	_gaq.push(['_setDomainName', 'wordpress.com']);
+	_gaq.push(['_initData']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+	})();
+</script>
+</head>
+
+<body class="post-template-default single single-post postid-126 single-format-standard customizer-styles-applied highlander-enabled highlander-light">
+
+<div id="container" class="hfeed">
+
+	<div id="header">
+
+		
+	
+		<div id="logo">
+				<a href="https://clymb3r.wordpress.com/" class="site-logo-link" rel="home" itemprop="url"></a>			<span class="site-name site-title"><a href="https://clymb3r.wordpress.com/" title="clymb3r" rel="home">clymb3r</a></span>
+			<span class="site-description">Hacking and general mayhem</span>
+		</div>
+
+	
+	
+			<nav role="navigation" class="site-navigation main-navigation">
+			<h1 class="assistive-text">Menu</h1>
+			<div class="assistive-text skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
+
+			<ul class="menu">
+<li ><a href="https://clymb3r.wordpress.com/">Home</a></li><li class="page_item page-item-1"><a href="https://clymb3r.wordpress.com/about/">About</a></li>
+<li class="page_item page-item-7"><a href="https://clymb3r.wordpress.com/tools/">Tools</a></li>
+</ul>
+		</nav><!-- .site-navigation .main-navigation -->
+	
+	
+	</div><!-- end of #header -->
+
+	<div id="wrapper" class="clearfix">
+		<div id="content" class="grid col-620">
+
+
+		
+			<div class="breadcrumb-list"><a href="https://clymb3r.wordpress.com/">Home</a> <span class="chevron">&#8250;</span> <a href="https://clymb3r.wordpress.com/category/hacking/">Hacking</a> <span class="chevron">&#8250;</span> <span class="breadcrumb-current">Intercepting Password Changes With Function&nbsp;Hooking</span></div>
+			<div id="post-126" class="post-126 post type-post status-publish format-standard hentry category-hacking category-powershell tag-function-hooking tag-invoke-reflectivepeinjection tag-windows">
+				<h1 class="post-title">Intercepting Password Changes With Function&nbsp;Hooking</h1>
+
+				<div class="post-meta">
+					<span class="meta-prep meta-prep-author posted">Posted on </span><a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/" title="8:44 am" rel="bookmark"><span class="timestamp">September 15, 2013</span></a><span class="byline"> by </span><span class="author vcard"><a class="url fn n" href="https://clymb3r.wordpress.com/author/clymb3r/" title="View all posts by clymb3r">clymb3r</a></span>
+											<span class="comments-link">
+							<span class="mdash">&mdash;</span>
+							<a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/#comments">7 Comments</a>						</span>
+									</div><!-- end of .post-meta -->
+
+				<div class="post-entry">
+					<p>Last week, Mubix published a malicious Windows password filter DLL (<a title="http://carnal0wnage.attackresearch.com/2013/09/stealing-passwords-every-time-they.html" href="http://carnal0wnage.attackresearch.com/2013/09/stealing-passwords-every-time-they.html">http://carnal0wnage.attackresearch.com/2013/09/stealing-passwords-every-time-they.html</a>). The idea is simple, by installing this password filter, he can intercept the clear text credential whenever a user changes their password. There are two caveats with installing this password filter:</p>
+<ol>
+<li>You must restart the computer for it to take affect</li>
+<li>It will show up as an autorun and a loaded DLL in lsass.exe which may be noticed</li>
+</ol>
+<p>I’ve been playing around with function hooks lately and thought this would be a great demonstration of their usefulness. The idea is that you hook the PasswordChangeNotify function in the default Windows password filter (rassfm.dll). Anytime PasswordChangeNotify is called, it will be rerouted to my malicious PasswordChangeNotify function, which will write the password to disk and return execution back to the original PasswordChangeNotify function.</p>
+<p>To do this, I will write the function hooking code in a DLL and reflectively inject the DLL in to lsass.exe using Invoke-ReflectivePEInjection. The benefit to this approach is that no binaries are written to disk, no suspicious DLL’s are loaded in lsass, no registry changes are made, and no reboot is required.</p>
+<p>Since I know not everybody is familiar with writing a function hook, I’ll explain the code (which can be found here: <a title="https://github.com/clymb3r/Misc-Windows-Hacking/tree/master/HookPasswordChange" href="https://github.com/clymb3r/Misc-Windows-Hacking/tree/master/HookPasswordChange">https://github.com/clymb3r/Misc-Windows-Hacking/tree/master/HookPasswordChange</a>):</p>
+<ul>
+<li>Invoke-ReflectivePEInjection is used to inject the malicious hooking DLL in to lsass.</li>
+</ul>
+<p style="padding-left:30px;">.\Invoke-ReflectivePEInjection –pepath .\HookPasswordChange.dll –procname lsass</p>
+<ul>
+<li>Invoke-ReflectivePEInjection calls the function VoidFunc in the reflectively loaded DLL, which installs the function hook. The function hook overwrites the first 12 bytes of PasswordChangeNotify with instructions to jump to another location.</li>
+</ul>
+<p style="padding-left:30px;">The hook also allocates some RWX memory that holds byte code that returns execution flow to rassfm!PasswordChangeNotify (more on this later).</p>
+<ul>
+<li>Rassfm!PasswordChangeNotify is called; it immediately executes the following assembly which diverts execution to my malicious PasswordChangeNotifyHook function.</li>
+</ul>
+<div data-shortcode="caption" id="attachment_145" style="width: 310px" class="wp-caption alignnone"><a href="https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png"><img loading="lazy" aria-describedby="caption-attachment-145" data-attachment-id="145" data-permalink="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/passwordchangenotifyafterhook/" data-orig-file="https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png" data-orig-size="1334,491" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="PasswordChangeNotify After Hooking" data-image-description="" data-medium-file="https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png?w=300" data-large-file="https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png?w=605" class="size-medium wp-image-145" alt="Disassembly of PasswordChangeNotify after being hooked. The instructions after jmp rax disassemble incorrectly after hooking, but all the code after the hook is intact." src="https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png?w=300&#038;h=110" width="300" height="110" srcset="https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png?w=300&amp;h=110 300w, https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png?w=598&amp;h=220 598w, https://clymb3r.files.wordpress.com/2013/09/passwordchangenotifyafterhook.png?w=150&amp;h=55 150w" sizes="(max-width: 300px) 100vw, 300px" /></a><p id="caption-attachment-145" class="wp-caption-text">Disassembly of PasswordChangeNotify after being hooked. The instructions after jmp rax disassemble incorrectly after hooking, but all the code after the hook is intact.</p></div>
+<ul>
+<li>PasswordChangeNotifyHook is a function written in c++, and it takes the same parameters as rassfm!PasswordChangeNotify function. This function takes the username and password and writes it to disk (or does something else that you program such as sending the output to a web site).</li>
+<li>Now it is time to return execution flow back to the real PasswordChangeNotify. PasswordChangeNotifyHook casts the memory address of the RWX memory allocated earlier to be a function pointer to a function with the same signature as rassfm!PasswordChangeNotify and calls this function pointer.</li>
+<li>The RWX memory contains the first 3 instructions (15 bytes worth of byte code) that we overwrote in rassfm!PasswordChangeNotify. Now that those instructions have been executed, load the memory address of PasswordChangeNotify+0xf to the EAX and jump to it. Execution flow has now been successfully returned to rassfm!PasswordChangeNotify.</li>
+</ul>
+<div data-shortcode="caption" id="attachment_144" style="width: 310px" class="wp-caption alignnone"><a href="https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png"><img loading="lazy" aria-describedby="caption-attachment-144" data-attachment-id="144" data-permalink="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/returntochangepasswordnotifycode/" data-orig-file="https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png" data-orig-size="1310,178" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="ReturnToPasswordChangeNotifyCode" data-image-description="" data-medium-file="https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png?w=300" data-large-file="https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png?w=605" class="size-medium wp-image-144" alt="Disassembly of the RWX memory I allocate which ends up returning execution to PasswordChangeNotify." src="https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png?w=300&#038;h=40" width="300" height="40" srcset="https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png?w=294&amp;h=40 294w, https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png?w=589&amp;h=80 589w, https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png?w=150&amp;h=20 150w, https://clymb3r.files.wordpress.com/2013/09/returntochangepasswordnotifycode.png?w=300&amp;h=41 300w" sizes="(max-width: 300px) 100vw, 300px" /></a><p id="caption-attachment-144" class="wp-caption-text">Disassembly of the RWX memory I allocate which ends up returning execution to PasswordChangeNotify.</p></div>
+<p>Originally I wanted to write inline asm in the PasswordChangeNotifyHook function to return control flow to rassfm!PasswordChangeNotify but unfortunately Visual Studio doesn’t support inline asm for x64 or Itanium, only x86. This is why I had to allocate RWX memory to put the byte code in and trigger it by calling a function pointer.</p>
+<p>Note that this is a proof of concept. I have tested it on Windows Server 2012 but it should work on 2008R2 as well. The code can be found at: <a title="https://github.com/clymb3r/Misc-Windows-Hacking/tree/master/HookPasswordChange" href="https://github.com/clymb3r/Misc-Windows-Hacking/tree/master/HookPasswordChange">https://github.com/clymb3r/Misc-Windows-Hacking/tree/master/HookPasswordChange</a>.</p>
+<p>The Invoke-ReflectivePEInjection script which is used to load the hook DLL can be found at: <a title="https://github.com/clymb3r/PowerShell/tree/master/Invoke-ReflectivePEInjection" href="https://github.com/clymb3r/PowerShell/tree/master/Invoke-ReflectivePEInjection">https://github.com/clymb3r/PowerShell/tree/master/Invoke-ReflectivePEInjection</a>.</p>
+<div id="atatags-370373-60a9b9393945a">
+        <script type="text/javascript">
+            __ATA.cmd.push(function() {
+                __ATA.initVideoSlot('atatags-370373-60a9b9393945a', {
+                    sectionId: '370373',
+                    format: 'inread'
+                });
+            });
+        </script>
+    </div>			<div id="atatags-26942-60a9b9393949b"></div>
+			
+			<script>
+				__ATA.cmd.push(function() {
+					__ATA.initDynamicSlot({
+						id: 'atatags-26942-60a9b9393949b',
+						location: 120,
+						formFactor: '001',
+						label: {
+							text: 'Advertisements',
+						},
+						creative: {
+							reportAd: {
+								text: 'Report this ad',
+							},
+							privacySettings: {
+								text: 'Privacy',
+								
+							}
+						}
+					});
+				});
+			</script><div id="jp-post-flair" class="sharedaddy sd-like-enabled sd-sharing-enabled"><div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow noopener noreferrer" data-shared="sharing-twitter-126" class="share-twitter sd-button share-icon" href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/?share=twitter" target="_blank" title="Click to share on Twitter"><span>Twitter</span></a></li><li class="share-facebook"><a rel="nofollow noopener noreferrer" data-shared="sharing-facebook-126" class="share-facebook sd-button share-icon" href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/?share=facebook" target="_blank" title="Click to share on Facebook"><span>Facebook</span></a></li><li class="share-end"></li></ul></div></div></div><div class='sharedaddy sd-block sd-like jetpack-likes-widget-wrapper jetpack-likes-widget-unloaded' id='like-post-wrapper-49341841-126-60a9b9393c1bb' data-src='//widgets.wp.com/likes/index.html?ver=20210413#blog_id=49341841&amp;post_id=126&amp;origin=clymb3r.wordpress.com&amp;obj_id=49341841-126-60a9b9393c1bb' data-name='like-post-frame-49341841-126-60a9b9393c1bb'><h3 class='sd-title'>Like this:</h3><div class='likes-widget-placeholder post-likes-widget-placeholder' style='height: 55px;'><span class='button'><span>Like</span></span> <span class="loading">Loading...</span></div><span class='sd-text-color'></span><a class='sd-link-color'></a></div></div>
+					
+									</div><!-- end of .post-entry -->
+
+				<div class="navigation">
+					<div class="previous">&#8249; <a href="https://clymb3r.wordpress.com/2013/09/07/avoiding-powershell-command-injection-unicode-issues/" rel="prev">Avoiding PowerShell Command Injection &amp; Unicode&nbsp;Issues</a></div>
+					<div class="next"><a href="https://clymb3r.wordpress.com/2013/11/03/powershell-and-token-impersonation/" rel="next">PowerShell and Token&nbsp;Impersonation</a> &#8250;</div>
+				</div><!-- end of .navigation -->
+
+				<div class="post-data">
+					Tagged with: <a href="https://clymb3r.wordpress.com/tag/function-hooking/" rel="tag">Function Hooking</a>, <a href="https://clymb3r.wordpress.com/tag/invoke-reflectivepeinjection/" rel="tag">Invoke-ReflectivePEInjection</a>, <a href="https://clymb3r.wordpress.com/tag/windows/" rel="tag">Windows</a><br />					Posted in <a href="https://clymb3r.wordpress.com/category/hacking/" rel="category tag">Hacking</a>, <a href="https://clymb3r.wordpress.com/category/powershell/" rel="category tag">PowerShell</a>				</div><!-- end of .post-data -->
+
+							</div><!-- end of #post-126 -->
+
+			
+
+	<h6 id="comments">
+		7 comments on &ldquo;<span>Intercepting Password Changes With Function&nbsp;Hooking</span>&rdquo;	</h6>
+
+	
+	<ol class="commentlist">
+				<li class="comment even thread-even depth-1 parent highlander-comment" id="comment-116">
+				<div id="div-comment-116" class="comment-body">
+				<div class="comment-author vcard">
+			<img alt='' src='https://i0.wp.com/lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?resize=60%2C60&#038;ssl=1' class='avatar avatar-60' height='60' width='60' />			<cite class="fn"><a href='https://plus.google.com/110841751782594987167' rel='external nofollow ugc' class='url'>glitch zerzeroseven</a></cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata">
+			<a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/#comment-116">September 16, 2013 at 11:43 am</a>		</div>
+
+		<p>Awesome post!  Few questions about function hooking:</p>
+<p>Without doing an Internet search, how can you tell that “rassfm” is the dll that contains PasswordChangeNotify?<br />
+How can you tell that you overwrote 3 instructions? (when you did mov rax, ADDRESS and jmp rax) – that looks like just 2 instructions<br />
+The first VirtualProtect, you allocated 50 bytes and the second time you called it you allocated 100?</p>
+
+		<div class="reply"><a class='comment-reply-link' href='/2013/09/15/intercepting-password-changes-with-function-hooking/?replytocom=116#respond' onclick='return addComment.moveForm("div-comment-116", "116", "respond", "126")'>Reply</a></div>
+				</div>
+				<ul class="children">
+		<li class="comment byuser comment-author-clymb3r bypostauthor odd alt depth-2 highlander-comment" id="comment-117">
+				<div id="div-comment-117" class="comment-body">
+				<div class="comment-author vcard">
+			<img alt='' src='https://1.gravatar.com/avatar/ab172b7f6e43b439ff649b5cee071e23?s=60&#038;d=https%3A%2F%2Fs0.wp.com%2Fi%2Fmu.gif&#038;r=G' class='avatar avatar-60' height='60' width='60' />			<cite class="fn"><a href='https://clymb3r.wordpress.com' rel='external nofollow ugc' class='url'>clymb3r</a></cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata">
+			<a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/#comment-117">September 17, 2013 at 8:28 am</a>		</div>
+
+		<p>1.)    To find the Windows defaults, I looked up the registry key that contains the password reset libraries to load (Mubix has this key on his blog, and MSFT documents it). I ran dumpbin /exports c:\windows\system32\rassfm.dll to list the exported functions in rassfm.dll, and PasswordChangeNotify was exported so I can hook it.<br />
+2.)    Only write 2 instructions, but what you need to look at is how many bytes you are writing in to memory. I am writing a total of 12 bytes to memory for my 2 instructions. 12 bytes overwrites the first 2 instructions in PasswordChangeNotify, plus part of the third. You can see the instruction sizes if you attach a debugger in windbg and disassemble the code.<br />
+3.)    When you call VirtualAlloc/VirtualProtect it does it on a per-page level which is like 2k in Windows, so those sizes (50, 100, whatever) are kinda arbitrary and don’t really matter. I’m allocating more space than I’m using (I write like 20 bytes to memory).</p>
+
+		<div class="reply"><a class='comment-reply-link' href='/2013/09/15/intercepting-password-changes-with-function-hooking/?replytocom=117#respond' onclick='return addComment.moveForm("div-comment-117", "117", "respond", "126")'>Reply</a></div>
+				</div>
+				</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+		<li class="comment even thread-odd thread-alt depth-1 highlander-comment" id="comment-118">
+				<div id="div-comment-118" class="comment-body">
+				<div class="comment-author vcard">
+			<img alt='' src='https://2.gravatar.com/avatar/eb08403944827bf4e66e21dce9708b1a?s=60&#038;d=https%3A%2F%2Fs0.wp.com%2Fi%2Fmu.gif&#038;r=G' class='avatar avatar-60' height='60' width='60' />			<cite class="fn"><a href='http://gravatar.com/msbhanage' rel='external nofollow ugc' class='url'>Mangesh Bhanage</a></cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata">
+			<a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/#comment-118">September 19, 2013 at 10:40 pm</a>		</div>
+
+		<p>Hi</p>
+<p>I am Mangesh I want password filter to implement at our setup. Below is the configuration of the system. Currently Password filter not working.</p>
+<p>I am using Windows Server 2008 R2 64 bit.<br />
+I copy all four files in Windows\SysWow64 folder which is available in the below link </p>
+<p><a href="https://github.com/clymb3r/Misc-Windows-Hacking/tree/master/HookPasswordChange/Release" rel="nofollow ugc">https://github.com/clymb3r/Misc-Windows-Hacking/tree/master/HookPasswordChange/Release</a></p>
+<p>Also make the entry in Registry<br />
+I)   [HKLM]\SYSTEM\CurrentControlSet\Control\Lsa\Notification Packages\HookPasswordChange</p>
+<p>I also make log file in c:\windows\Temp\logFile.txt and c:\windows\Temp\passwords.txt</p>
+<p>currently registry only one value is present which is HookPasswordChange</p>
+<p>Please tell me is there any configuration is pending from my side. If you have any document regarding how to configure above password filter please share it to me.</p>
+<p>I am very thankful to you if you are share the procedure how to configure the password filter.</p>
+<p>Regards,</p>
+<p>Mangesh Bhanage</p>
+
+		<div class="reply"><a class='comment-reply-link' href='/2013/09/15/intercepting-password-changes-with-function-hooking/?replytocom=118#respond' onclick='return addComment.moveForm("div-comment-118", "118", "respond", "126")'>Reply</a></div>
+				</div>
+				</li><!-- #comment-## -->
+		<li class="comment byuser comment-author-clymb3r bypostauthor odd alt thread-even depth-1 highlander-comment" id="comment-136">
+				<div id="div-comment-136" class="comment-body">
+				<div class="comment-author vcard">
+			<img alt='' src='https://1.gravatar.com/avatar/ab172b7f6e43b439ff649b5cee071e23?s=60&#038;d=https%3A%2F%2Fs0.wp.com%2Fi%2Fmu.gif&#038;r=G' class='avatar avatar-60' height='60' width='60' />			<cite class="fn"><a href='https://clymb3r.wordpress.com' rel='external nofollow ugc' class='url'>clymb3r</a></cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata">
+			<a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/#comment-136">October 4, 2013 at 7:35 am</a>		</div>
+
+		<p>It sounds like you want to implement a legitimate password filter. This is a tutorial on maliciously hijacking an existing password filter using function hooking. If you want to learn how to build real password filters your best bet is probably MSDN. I have no experience doing such a thing.</p>
+
+		<div class="reply"><a class='comment-reply-link' href='/2013/09/15/intercepting-password-changes-with-function-hooking/?replytocom=136#respond' onclick='return addComment.moveForm("div-comment-136", "136", "respond", "126")'>Reply</a></div>
+				</div>
+				</li><!-- #comment-## -->
+		<li class="comment even thread-odd thread-alt depth-1 parent highlander-comment" id="comment-163">
+				<div id="div-comment-163" class="comment-body">
+				<div class="comment-author vcard">
+			<img alt='' src='https://0.gravatar.com/avatar/683f7fcd7ab09eaca7034282aca93760?s=60&#038;d=https%3A%2F%2Fs0.wp.com%2Fi%2Fmu.gif&#038;r=G' class='avatar avatar-60' height='60' width='60' />			<cite class="fn">J</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata">
+			<a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/#comment-163">November 13, 2013 at 4:56 pm</a>		</div>
+
+		<p>This is awesome and it works very well, however the servers we go against don&#8217;t have the rassfm, only scecli. Do you have a a c++ program for that dll?</p>
+
+		<div class="reply"><a class='comment-reply-link' href='/2013/09/15/intercepting-password-changes-with-function-hooking/?replytocom=163#respond' onclick='return addComment.moveForm("div-comment-163", "163", "respond", "126")'>Reply</a></div>
+				</div>
+				<ul class="children">
+		<li class="comment byuser comment-author-clymb3r bypostauthor odd alt depth-2 parent highlander-comment" id="comment-164">
+				<div id="div-comment-164" class="comment-body">
+				<div class="comment-author vcard">
+			<img alt='' src='https://1.gravatar.com/avatar/ab172b7f6e43b439ff649b5cee071e23?s=60&#038;d=https%3A%2F%2Fs0.wp.com%2Fi%2Fmu.gif&#038;r=G' class='avatar avatar-60' height='60' width='60' />			<cite class="fn"><a href='https://clymb3r.wordpress.com' rel='external nofollow ugc' class='url'>clymb3r</a></cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata">
+			<a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/#comment-164">November 15, 2013 at 6:05 pm</a>		</div>
+
+		<p>Sorry, I missed this message. I don&#8217;t have c++ for that DLL. What version of Windows are you running on? I just did this for Windows server 2012 as a proof-of-concept, but I&#8217;m thinking about making a better more universal LSASS function hook.</p>
+
+		<div class="reply"><a class='comment-reply-link' href='/2013/09/15/intercepting-password-changes-with-function-hooking/?replytocom=164#respond' onclick='return addComment.moveForm("div-comment-164", "164", "respond", "126")'>Reply</a></div>
+				</div>
+				<ul class="children">
+		<li class="comment even depth-3 highlander-comment" id="comment-165">
+				<div id="div-comment-165" class="comment-body">
+				<div class="comment-author vcard">
+			<img alt='' src='https://0.gravatar.com/avatar/683f7fcd7ab09eaca7034282aca93760?s=60&#038;d=https%3A%2F%2Fs0.wp.com%2Fi%2Fmu.gif&#038;r=G' class='avatar avatar-60' height='60' width='60' />			<cite class="fn">J</cite> <span class="says">says:</span>		</div>
+		
+		<div class="comment-meta commentmetadata">
+			<a href="https://clymb3r.wordpress.com/2013/09/15/intercepting-password-changes-with-function-hooking/#comment-165">November 15, 2013 at 7:44 pm</a>		</div>
+
+		<p>Server 2008 R2. It works great with my servers, just what I want to put it on won&#8217;t have that rassfm dll <img width='16' height='16' class='wp-smiley emoji' draggable='false' alt=':/' src='https://s1.wp.com/wp-content/mu-plugins/wpcom-smileys/uneasy.svg' style='height: 1em; max-height: 1em;' /> I was also leaning more towards a better solution, but I&#8217;m just not sure how much time I want to invest.</p>
+
+		
+				</div>
+				</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+	</ol>
+
+	
+
+	
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2013/09/15/intercepting-password-changes-with-function-hooking/#respond" style="display:none;">Cancel reply</a></small></h3>		<form action="https://clymb3r.wordpress.com/wp-comments-post.php" method="post" id="commentform" class="comment-form">
+														
+
+
+						<input type="hidden" id="highlander_comment_nonce" name="highlander_comment_nonce" value="a24c1ed278" /><input type="hidden" name="_wp_http_referer" value="/2013/09/15/intercepting-password-changes-with-function-hooking/" />
+<input type="hidden" name="hc_post_as" id="hc_post_as" value="guest" />
+
+<div class="comment-form-field comment-textarea">
+	<label for="comment">Enter your comment here...</label>
+	<div id="comment-form-comment"><textarea id="comment" name="comment" title="Enter your comment here..."></textarea></div>
+</div>
+
+<div id="comment-form-identity" class="comment_registration">
+	<div id="comment-form-nascar">
+		<p>Please log in using one of these methods to post your comment:</p>
+		<ul>
+			<li>
+				<a href="#comment-form-load-service:WordPress.com" id="postas-wordpress" class="nascar-signin-link"
+                   title="Login via WordPress.com">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#0087be" d="M12.158 12.786l-2.698 7.84c.806.236 1.657.365 2.54.365 1.047 0 2.05-.18 2.986-.51-.024-.037-.046-.078-.065-.123l-2.762-7.57zM3.008 12c0 3.56 2.07 6.634 5.068 8.092L3.788 8.342c-.5 1.117-.78 2.354-.78 3.658zm15.06-.454c0-1.112-.398-1.88-.74-2.48-.456-.74-.883-1.368-.883-2.11 0-.825.627-1.595 1.51-1.595.04 0 .078.006.116.008-1.598-1.464-3.73-2.36-6.07-2.36-3.14 0-5.904 1.613-7.512 4.053.21.008.41.012.58.012.94 0 2.395-.114 2.395-.114.484-.028.54.684.057.74 0 0-.487.058-1.03.086l3.275 9.74 1.968-5.902-1.4-3.838c-.485-.028-.944-.085-.944-.085-.486-.03-.43-.77.056-.742 0 0 1.484.114 2.368.114.94 0 2.397-.114 2.397-.114.486-.028.543.684.058.74 0 0-.488.058-1.03.086l3.25 9.665.897-2.997c.456-1.17.684-2.137.684-2.907zm1.82-3.86c.04.286.06.593.06.924 0 .912-.17 1.938-.683 3.22l-2.746 7.94c2.672-1.558 4.47-4.454 4.47-7.77 0-1.564-.4-3.033-1.1-4.314zM12 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></g></svg>				</a>
+			</li>
+			<li>
+			<iframe id="googleplus-sign-in" name="googleplus-sign-in" src="https://public-api.wordpress.com/connect/?googleplus-sign-in=https%3A%2F%2Fclymb3r.wordpress.com&#038;color_scheme=light" width="24" height="24" scrolling="no" allowtransparency="true" seamless="seamless" frameborder="0"></iframe>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Twitter" id="postas-twitter" class="nascar-signin-link"
+                   title="Login via Twitter">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#1DA1F2" d="M22.23 5.924c-.736.326-1.527.547-2.357.646.847-.508 1.498-1.312 1.804-2.27-.793.47-1.67.812-2.606.996C18.325 4.498 17.258 4 16.078 4c-2.266 0-4.103 1.837-4.103 4.103 0 .322.036.635.106.935-3.41-.17-6.433-1.804-8.457-4.287-.353.607-.556 1.312-.556 2.064 0 1.424.724 2.68 1.825 3.415-.673-.022-1.305-.207-1.86-.514v.052c0 1.988 1.415 3.647 3.293 4.023-.344.095-.707.145-1.08.145-.265 0-.522-.026-.773-.074.522 1.63 2.038 2.817 3.833 2.85-1.404 1.1-3.174 1.757-5.096 1.757-.332 0-.66-.02-.98-.057 1.816 1.164 3.973 1.843 6.29 1.843 7.547 0 11.675-6.252 11.675-11.675 0-.178-.004-.355-.012-.53.802-.578 1.497-1.3 2.047-2.124z"/></g></svg>				</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Facebook" id="postas-facebook" class="nascar-signin-link"
+                   title="Login via Facebook">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#3B5998" d="M20.007 3H3.993C3.445 3 3 3.445 3 3.993v16.013c0 .55.445.994.993.994h8.62v-6.97H10.27V11.31h2.346V9.31c0-2.325 1.42-3.59 3.494-3.59.993 0 1.847.073 2.096.106v2.43h-1.438c-1.128 0-1.346.537-1.346 1.324v1.734h2.69l-.35 2.717h-2.34V21h4.587c.548 0 .993-.445.993-.993V3.993c0-.548-.445-.993-.993-.993z"/></g></svg>				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div id="comment-form-guest" class="comment-form-service selected">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+<a href="https://gravatar.com/site/signup/" target="_blank">				<img src="https://s0.wp.com/i/mu.gif" alt="Gravatar" width="25" class="no-grav" />
+</a>			</div>
+
+				<div class="comment-form-fields">
+				<div class="comment-form-field comment-form-email">
+					<label for="email">Email <span class="nopublish">(Address never made public)</span></label>
+					<div class="comment-form-input"><input id="email" name="email" type="email" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-author">
+					<label for="author">Name</label>
+					<div class="comment-form-input"><input id="author" name="author" type="text" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-url">
+					<label for="url">Website</label>
+					<div class="comment-form-input"><input id="url" name="url" type="url" value="" /></div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<div id="comment-form-wordpress" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://s0.wp.com/i/mu.gif" alt="WordPress.com Logo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="wp_avatar" id="wordpress-avatar" class="comment-meta-wordpress" value="" />
+				<input type="hidden" name="wp_user_id" id="wordpress-user_id" class="comment-meta-wordpress" value="" />
+				<input type="hidden" name="wp_access_token" id="wordpress-access_token" class="comment-meta-wordpress" value="" />
+						<p class="comment-form-posting-as pa-wordpress">
+			<strong></strong>
+			You are commenting using your WordPress.com account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'wordpress' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#0087be" d="M12.158 12.786l-2.698 7.84c.806.236 1.657.365 2.54.365 1.047 0 2.05-.18 2.986-.51-.024-.037-.046-.078-.065-.123l-2.762-7.57zM3.008 12c0 3.56 2.07 6.634 5.068 8.092L3.788 8.342c-.5 1.117-.78 2.354-.78 3.658zm15.06-.454c0-1.112-.398-1.88-.74-2.48-.456-.74-.883-1.368-.883-2.11 0-.825.627-1.595 1.51-1.595.04 0 .078.006.116.008-1.598-1.464-3.73-2.36-6.07-2.36-3.14 0-5.904 1.613-7.512 4.053.21.008.41.012.58.012.94 0 2.395-.114 2.395-.114.484-.028.54.684.057.74 0 0-.487.058-1.03.086l3.275 9.74 1.968-5.902-1.4-3.838c-.485-.028-.944-.085-.944-.085-.486-.03-.43-.77.056-.742 0 0 1.484.114 2.368.114.94 0 2.397-.114 2.397-.114.486-.028.543.684.058.74 0 0-.488.058-1.03.086l3.25 9.665.897-2.997c.456-1.17.684-2.137.684-2.907zm1.82-3.86c.04.286.06.593.06.924 0 .912-.17 1.938-.683 3.22l-2.746 7.94c2.672-1.558 4.47-4.454 4.47-7.77 0-1.564-.4-3.033-1.1-4.314zM12 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-googleplus" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://s0.wp.com/i/mu.gif" alt="Google photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="googleplus_avatar" id="googleplus-avatar" class="comment-meta-googleplus" value="" />
+				<input type="hidden" name="googleplus_user_id" id="googleplus-user_id" class="comment-meta-googleplus" value="" />
+				<input type="hidden" name="googleplus_access_token" id="googleplus-access_token" class="comment-meta-googleplus" value="" />
+						<p class="comment-form-posting-as pa-googleplus">
+			<strong></strong>
+			You are commenting using your Google account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'googleplus' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" x="0px" y="0px" viewBox="0 0 60 60" ><path fill="#519bf7" d="M56.3,30c0,-1.6 -0.2,-3.4 -0.6,-5h-3.1H42.2H30v10.6h14.8C44,39.3 42,42 39.1,43.9l8.8,6.8C53,46 56.3,39 56.3,30z" /><path fill="#3db366" d="M30,57.5c6.7,0 13.1,-2.4 17.9,-6.8l-8.8,-6.8c-2.5,1.6 -5.6,2.4 -9.1,2.4c-7.2,0 -13.3,-4.7 -15.4,-11.2l-9.3,7.1C9.8,51.3 19.1,57.5 30,57.5z" /><path fill="#fdc600" d="M5.3,42.2l9.3,-7.1c-0.5,-1.6 -0.8,-3.3 -0.8,-5.1s0.3,-3.5 0.8,-5.1l-9.3,-7.1C3.5,21.5 2.5,25.6 2.5,30S3.5,38.5 5.3,42.2z" /><path fill="#f15b44" d="M40.1,17.4l8,-8C43.3,5.1 37,2.5 30,2.5C19.1,2.5 9.8,8.7 5.3,17.8l9.3,7.1c2.1,-6.5 8.2,-11.1 15.4,-11.1C33.9,13.7 37.4,15.1 40.1,17.4z" /></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-twitter" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://s0.wp.com/i/mu.gif" alt="Twitter picture" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="twitter_avatar" id="twitter-avatar" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_user_id" id="twitter-user_id" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_access_token" id="twitter-access_token" class="comment-meta-twitter" value="" />
+						<p class="comment-form-posting-as pa-twitter">
+			<strong></strong>
+			You are commenting using your Twitter account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'twitter' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#1DA1F2" d="M22.23 5.924c-.736.326-1.527.547-2.357.646.847-.508 1.498-1.312 1.804-2.27-.793.47-1.67.812-2.606.996C18.325 4.498 17.258 4 16.078 4c-2.266 0-4.103 1.837-4.103 4.103 0 .322.036.635.106.935-3.41-.17-6.433-1.804-8.457-4.287-.353.607-.556 1.312-.556 2.064 0 1.424.724 2.68 1.825 3.415-.673-.022-1.305-.207-1.86-.514v.052c0 1.988 1.415 3.647 3.293 4.023-.344.095-.707.145-1.08.145-.265 0-.522-.026-.773-.074.522 1.63 2.038 2.817 3.833 2.85-1.404 1.1-3.174 1.757-5.096 1.757-.332 0-.66-.02-.98-.057 1.816 1.164 3.973 1.843 6.29 1.843 7.547 0 11.675-6.252 11.675-11.675 0-.178-.004-.355-.012-.53.802-.578 1.497-1.3 2.047-2.124z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-facebook" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://s0.wp.com/i/mu.gif" alt="Facebook photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="fb_avatar" id="facebook-avatar" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_user_id" id="facebook-user_id" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_access_token" id="facebook-access_token" class="comment-meta-facebook" value="" />
+						<p class="comment-form-posting-as pa-facebook">
+			<strong></strong>
+			You are commenting using your Facebook account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'facebook' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#3B5998" d="M20.007 3H3.993C3.445 3 3 3.445 3 3.993v16.013c0 .55.445.994.993.994h8.62v-6.97H10.27V11.31h2.346V9.31c0-2.325 1.42-3.59 3.494-3.59.993 0 1.847.073 2.096.106v2.43h-1.438c-1.128 0-1.346.537-1.346 1.324v1.734h2.69l-.35 2.717h-2.34V21h4.587c.548 0 .993-.445.993-.993V3.993c0-.548-.445-.993-.993-.993z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+
+	<div id="comment-form-load-service" class="comment-form-service">
+		<div class="comment-form-posting-as-cancel"><a href="javascript:HighlanderComments.cancelExternalWindow();">Cancel</a></div>
+		<p>Connecting to %s</p>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+var highlander_expando_javascript = function () {
+
+	function hide( sel ) {
+		var el = document.querySelector( sel );
+		if ( el ) {
+			el.style.setProperty( 'display', 'none' );
+		}
+	}
+
+	function show( sel ) {
+		var el = document.querySelector( sel );
+		if ( el ) {
+			el.style.removeProperty( 'display' );
+		}
+	}
+
+	var input = document.createElement( 'input' );
+	var comment = document.querySelector( '#comment' );
+
+	if ( input && comment && 'placeholder' in input ) {
+		var label = document.querySelector( '.comment-textarea label' );
+		if ( label ) {
+			var text = label.textContent;
+			label.parentNode.removeChild( label );
+			comment.setAttribute( 'placeholder', text );
+		}
+	}
+
+	// Expando Mode: start small, then auto-resize on first click + text length
+	hide( '#comment-form-identity' );
+	hide( '#comment-form-subscribe' );
+	hide( '#commentform .form-submit' );
+
+	if ( comment ) {
+		comment.style.height = '10px';
+
+		var handler = function () {
+			comment.style.height = HighlanderComments.initialHeight + 'px';
+			show( '#comment-form-identity' );
+			show( '#comment-form-subscribe' );
+			show( '#commentform .form-submit' );
+			HighlanderComments.resizeCallback();
+
+			comment.removeEventListener( 'focus', handler );
+		};
+
+		comment.addEventListener( 'focus', handler );
+	}
+}
+
+if ( document.readyState !== 'loading' ) {
+	highlander_expando_javascript();
+} else {
+	if ( typeof window.jQuery === 'function' ) {
+		// Use jQuery's `ready` if available.
+		// This solves some scheduling issues between this script and the main highlander script.
+		jQuery( document ).ready( highlander_expando_javascript );
+	} else {
+		// If not available, add a vanilla event listener.
+		document.addEventListener( 'DOMContentLoaded', highlander_expando_javascript );
+	}
+}
+
+</script>
+
+<div id="comment-form-subscribe">
+	<p class="comment-subscription-form"><input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;"/> <label class="subscribe-label" id="subscribe-label" for="subscribe" style="display: inline;">Notify me of new comments via email.</label></p><p class="post-subscription-form"><input type="checkbox" name="subscribe_blog" id="subscribe_blog" value="subscribe" style="width: auto;"/> <label class="subscribe-label" id="subscribe-blog-label" for="subscribe_blog"  style="display: inline;">Notify me of new posts via email.</label></p></div>
+
+						<p class="form-submit">
+				<input name="submit" type="submit" id="comment-submit" value="Post Comment" />
+				<input type='hidden' name='comment_post_ID' value='126' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+			</p>
+			<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="6a917c5ea5" /></p>
+<input type="hidden" name="genseq" value="1621735737" />
+<input type="hidden" id="ak_js" name="ak_js" value="178"/><textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100" style="display: none !important;"></textarea>		</form>
+	</div><!-- #respond -->
+	<div style="clear: both"></div>
+		
+		
+
+		</div><!-- end of #content -->
+
+
+		<div id="widgets" class="grid col-300 fit">
+		
+							<div class="widget-wrapper">
+					<div class="widget-title">In Archive</div>
+					<ul>
+							<li><a href='https://clymb3r.wordpress.com/2014/06/'>June 2014</a></li>
+	<li><a href='https://clymb3r.wordpress.com/2013/11/'>November 2013</a></li>
+	<li><a href='https://clymb3r.wordpress.com/2013/09/'>September 2013</a></li>
+	<li><a href='https://clymb3r.wordpress.com/2013/06/'>June 2013</a></li>
+	<li><a href='https://clymb3r.wordpress.com/2013/05/'>May 2013</a></li>
+	<li><a href='https://clymb3r.wordpress.com/2013/04/'>April 2013</a></li>
+					</ul>
+				</div><!-- end of .widget-wrapper -->
+			
+		</div><!-- end of #widgets -->
+	</div><!-- end of #wrapper -->
+
+</div><!-- end of #container -->
+
+<div id="footer" class="clearfix">
+
+	<div id="footer-wrapper">
+
+		<div class="grid col-940">
+
+		<div class="grid col-540">
+				</div><!-- end of col-540 -->
+
+		
+		</div><!-- end of col-940 -->
+		
+	
+		<div class="grid col-300 copyright">
+			&copy; 2021 <a href="https://clymb3r.wordpress.com/" title="clymb3r">clymb3r</a>
+		</div><!-- end of .copyright -->
+
+		<div class="grid col-300 scroll-top"><a href="#scroll-top" title="scroll to top">&uarr;</a></div>
+
+		<div class="grid col-300 fit powered">
+						<a href="https://wordpress.com/?ref=footer_website" rel="nofollow">Create a free website or blog at WordPress.com.</a>
+			
+					</div><!-- end .powered -->
+
+	</div><!-- end #footer-wrapper -->
+
+</div><!-- end #footer -->
+
+<!--  -->
+<script src='//0.gravatar.com/js/gprofiles.js?ver=202120y' id='grofiles-cards-js'></script>
+<script id='wpgroho-js-extra'>
+var WPGroHo = {"my_hash":""};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s1.wp.com/wp-content/mu-plugins/gravatar-hovercards/wpgroho.js?m=1610363240h'></script>
+
+	<script>
+		// Initialize and attach hovercards to all gravatars
+		( function() {
+			function init() {
+				if ( typeof Gravatar === 'undefined' ) {
+					return;
+				}
+
+				if ( typeof Gravatar.init !== 'function' ) {
+					return;
+				}
+
+				Gravatar.profile_cb = function ( hash, id ) {
+					WPGroHo.syncProfileData( hash, id );
+				};
+
+				Gravatar.my_hash = WPGroHo.my_hash;
+				Gravatar.init( 'body', '#wp-admin-bar-my-account' );
+			}
+
+			if ( document.readyState !== 'loading' ) {
+				init();
+			} else {
+				document.addEventListener( 'DOMContentLoaded', init );
+			}
+		} )();
+	</script>
+
+		<div style="display:none">
+	<div class="grofile-hash-map-8f566429dfb92d8a65374a3795244a29">
+	</div>
+	<div class="grofile-hash-map-ab172b7f6e43b439ff649b5cee071e23">
+	</div>
+	<div class="grofile-hash-map-eb08403944827bf4e66e21dce9708b1a">
+	</div>
+	<div class="grofile-hash-map-683f7fcd7ab09eaca7034282aca93760">
+	</div>
+	</div>
+<script id='highlander-comments-js-extra'>
+var HighlanderComments = {"loggingInText":"Logging In\u2026","submittingText":"Posting Comment\u2026","postCommentText":"Post Comment","connectingToText":"Connecting to %s","commentingAsText":"%1$s: You are commenting using your %2$s account.","logoutText":"Log Out","loginText":"Log In","connectURL":"https:\/\/clymb3r.wordpress.com\/public.api\/connect\/?action=request","logoutURL":"https:\/\/clymb3r.wordpress.com\/wp-login.php?action=logout&_wpnonce=605197e367","homeURL":"https:\/\/clymb3r.wordpress.com\/","postID":"126","gravDefault":"blank","enterACommentError":"Please enter a comment","enterEmailError":"Please enter your email address here","invalidEmailError":"Invalid email address","enterAuthorError":"Please enter your name here","gravatarFromEmail":"This picture will show whenever you leave a comment. Click to customize it.","logInToExternalAccount":"Log in to use details from one of these accounts.","change":"Change","changeAccount":"Change Account","comment_registration":"1","userIsLoggedIn":"","isJetpack":"","text_direction":"ltr"};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s0.wp.com/_static/??/wp-content/js/jquery/jquery.autoresize.js,/wp-content/mu-plugins/highlander-comments/script.js?m=1573483029j'></script>
+		<!-- CCPA [start] -->
+		<script type="text/javascript">
+			( function () {
+
+				var setupPrivacy = function() {
+
+					// Minimal Mozilla Cookie library
+					// https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie/Simple_document.cookie_framework
+					var cookieLib = window.cookieLib = {getItem:function(e){return e&&decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(e).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1"))||null},setItem:function(e,o,n,t,r,i){if(!e||/^(?:expires|max\-age|path|domain|secure)$/i.test(e))return!1;var c="";if(n)switch(n.constructor){case Number:c=n===1/0?"; expires=Fri, 31 Dec 9999 23:59:59 GMT":"; max-age="+n;break;case String:c="; expires="+n;break;case Date:c="; expires="+n.toUTCString()}return"rootDomain"!==r&&".rootDomain"!==r||(r=(".rootDomain"===r?".":"")+document.location.hostname.split(".").slice(-2).join(".")),document.cookie=encodeURIComponent(e)+"="+encodeURIComponent(o)+c+(r?"; domain="+r:"")+(t?"; path="+t:"")+(i?"; secure":""),!0}};
+
+					// Implement IAB USP API.
+					window.__uspapi = function( command, version, callback ) {
+
+						if ( typeof callback !== 'function' ) {
+							return;
+						}
+
+						if ( command !== 'getUSPData' || version !== 1 ) {
+							callback( null, false );
+							return;
+						}
+
+						// Check for GPC.
+						if ( navigator.globalPrivacyControl ) {
+							callback( { version: 1, uspString: '1YYN' }, true );
+							return;
+						}
+
+						// Check for cookie.
+						var consent = cookieLib.getItem( 'usprivacy' );
+
+						if ( null === consent ) {
+							callback( null, false );
+							return;
+						}
+
+						callback( { version: 1, uspString: consent }, true );
+					};
+
+					// Initialization.
+					document.addEventListener( 'DOMContentLoaded', function() {
+
+						var setDefaultOptInCookie = function() {
+							var value = '1YNN';
+							var domain = '.wordpress.com' === location.hostname.slice( -14 ) ? '.rootDomain' : location.hostname;
+							cookieLib.setItem( 'usprivacy', value, 365 * 24 * 60 * 60, '/', domain );
+						};
+
+						var setCcpaAppliesCookie = function( value ) {
+							var domain = '.wordpress.com' === location.hostname.slice( -14 ) ? '.rootDomain' : location.hostname;
+							cookieLib.setItem( 'ccpa_applies', value, 24 * 60 * 60, '/', domain );
+						}
+
+						var maybeCallDoNotSellCallback = function() {
+							if ( 'function' === typeof window.doNotSellCallback ) {
+								return window.doNotSellCallback();
+							}
+
+							return false;
+						}
+
+						var usprivacyCookie = cookieLib.getItem( 'usprivacy' );
+
+						if ( null !== usprivacyCookie ) {
+							maybeCallDoNotSellCallback();
+							return;
+						}
+
+						var ccpaCookie = cookieLib.getItem( 'ccpa_applies' );
+
+						if ( null === ccpaCookie ) {
+
+							var request = new XMLHttpRequest();
+							request.open( 'GET', 'https://public-api.wordpress.com/geo/', true );
+
+							request.onreadystatechange = function () {
+								if ( 4 === this.readyState ) {
+									if ( 200 === this.status ) {
+
+										var data = JSON.parse( this.response );
+										var ccpa_applies = data['region'] && data['region'].toLowerCase() === 'california';
+
+										setCcpaAppliesCookie( ccpa_applies );
+
+										if ( ccpa_applies ) {
+											if ( maybeCallDoNotSellCallback() ) {
+												setDefaultOptInCookie();
+											}
+										}
+									} else {
+										setCcpaAppliesCookie( true );
+										if ( maybeCallDoNotSellCallback() ) {
+											setDefaultOptInCookie();
+										}
+									}
+								}
+							};
+
+							request.send();
+						} else {
+							if ( ccpaCookie === 'true' ) {
+								if ( maybeCallDoNotSellCallback() ) {
+									setDefaultOptInCookie();
+								}
+							}
+						}
+					} );
+				};
+
+				if ( window.defQueue && defQueue.isLOHP && defQueue.isLOHP === 2020 ) {
+					defQueue.items.push( setupPrivacy );
+				} else {
+					setupPrivacy();
+				}
+
+			} )();
+		</script>
+
+		<!-- CCPA [end] -->
+					<script type="text/javascript">
+			( function( $ ) {
+				$( document.body ).on( 'post-load', function () {
+					if ( typeof __ATA.insertInlineAds === 'function' ) {
+						__ATA.insertInlineAds();
+					}
+				} );
+			} )( jQuery );
+			</script>
+<script>
+window.addEventListener( "load", function( event ) {
+	var link = document.createElement( "link" );
+	link.href = "https://s0.wp.com/wp-content/mu-plugins/actionbar/actionbar.css?v=20201002";
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.head.appendChild( link );
+
+	var script = document.createElement( "script" );
+	script.src = "https://s0.wp.com/wp-content/mu-plugins/actionbar/actionbar.js?v=20201002";
+	script.defer = true;
+	document.body.appendChild( script );
+} );
+</script>
+
+	
+		<div
+			class="jp-carousel-wrap jp-carousel-transitions"
+			itemscope
+			itemtype="https://schema.org/ImageGallery"
+			style="display: none;">
+			<div class="jp-carousel-overlay"></div>
+			<div class="jp-carousel"></div>
+			<div class="jp-carousel-fadeaway"></div>
+			<div class="jp-carousel-info">
+				<div class="jp-carousel-photo-info">
+					<h2 class="jp-carousel-caption" itemprop="caption description"></h2>
+				</div>
+				<div class="jp-carousel-info-columns">
+					<div class="jp-carousel-left-column-wrapper">
+						<div class="jp-carousel-titleanddesc"></div>
+						<!-- Intentional duplicate -->
+						<div class="jp-carousel-photo-info">
+							<h2 class="jp-carousel-caption" itemprop="caption description"></h2>
+						</div>
+													<div id="jp-carousel-comment-form-container">
+																											<div id="jp-carousel-comment-form-commenting-as">
+											<p id="jp-carousel-commenting-as">
+												You must be <a href="#" class="jp-carousel-comment-login">logged in</a> to post a comment.											</p>
+										</div>
+																								</div>
+							<div class="jp-carousel-comments"></div>
+							<div id="jp-carousel-comments-loading">
+								<span>Loading Comments...</span>
+							</div>
+											</div>
+					<div class="jp-carousel-image-meta">
+						<div class="jp-carousel-buttons">
+														<a class="jp-carousel-commentlink" href="#">Comment</a>
+																				</div>
+						<ul class="jp-carousel-image-exif" style="display: none;"></ul>
+						<a class="jp-carousel-image-download" style="display: none;"></a>
+						<div class="jp-carousel-image-map" style="display: none;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="jp-carousel-next-button" style="display: none;">
+				<span></span>
+			</div>
+			<div class="jp-carousel-previous-button" style="display: none;">
+				<span></span>
+			</div>
+			<div class="jp-carousel-close-hint"><span>&times;</span></div>
+		</div>
+
+		
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/clymb3r.wordpress.com\/2013\/09\/15\/intercepting-password-changes-with-function-hooking\/":126};
+	</script>
+				<div class="widget widget_eu_cookie_law_widget">
+<div
+	class="hide-on-button ads-active"
+	data-hide-timeout="30"
+	data-consent-expiration="180"
+	id="eu-cookie-law"
+>
+	<form method="post">
+		<input type="submit" value="Close and accept" class="accept" />
+
+		Privacy &amp; Cookies: This site uses cookies. By continuing to use this website, you agree to their use. <br />
+To find out more, including how to control cookies, see here:
+				<a href="https://automattic.com/cookies" rel="nofollow">
+			Cookie Policy		</a>
+ </form>
+</div>
+</div><link rel='stylesheet' id='all-css-0-3' href='https://s0.wp.com/wp-content/mu-plugins/carousel/jetpack-carousel.css?m=1620034463h&cssminify=yes' type='text/css' media='all' />
+<script id='jetpack-carousel-js-extra'>
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"en","ajaxurl":"https:\/\/clymb3r.wordpress.com\/wp-admin\/admin-ajax.php","nonce":"1adfd72456","display_exif":"1","display_comments":"1","display_geo":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"Comment","post_comment":"Post Comment","write_comment":"Write a Comment...","loading_comments":"Loading Comments...","download_original":"View full size <span class=\"photo-size\">{0}<span class=\"photo-size-times\">\u00d7<\/span>{1}<\/span>","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","copyright":"Copyright","comment_registration":"1","require_name_email":"0","login_url":"https:\/\/clymb3r.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Fclymb3r.wordpress.com%2F2013%2F09%2F15%2Fintercepting-password-changes-with-function-hooking%2F","blog_id":"49341841","meta_data":["camera","aperture","shutter_speed","focal_length","copyright"],"stats_query_args":"blog=49341841&v=wpcom&tz=-8&user_id=0&subd=clymb3r","is_public":"1"};
+</script>
+<script id='sharing-js-js-extra'>
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s1.wp.com/_static/??-eJyNUdtOwzAM/SFSjyEue0B8CkpTb3UbJyFOWsbXYyQqoJrKnhzb5+LYMCfjYigYCgwCHU7kML03g9zA39bwVjGfv0NDYSKc/4UNWJJ1o8ko9IFrOFeTfD1REPA0ooCSKvY2dB7zAqbgfO20qeIuMitR5ZI/N0xhrVh6ZIWm2oJaphiEJvxi/mRGXKZU5GqqsPXeqG/dmH+m7oRFAKt240hovJ2hICdvC67qGzq201+Z1mZgKwWzvkzJukK5tA9NkVvsLq3il6izOVZBD8s5lsLWICMJYzF3zQ5e1ROOMfMVHmZOeqVVusFLUYo5eksZpLeZwmmJSnrh59uH/e7wdLjfPw6fYRkAig=='></script>
+<script type='text/javascript'>
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-twitter' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-twitter' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-facebook' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-facebook' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+						return false;
+					}
+				} );
+			} )();
+</script>
+<script type="text/javascript">
+// <![CDATA[
+(function() {
+try{
+  if ( window.external &&'msIsSiteMode' in window.external) {
+    if (window.external.msIsSiteMode()) {
+      var jl = document.createElement('script');
+      jl.type='text/javascript';
+      jl.async=true;
+      jl.src='/wp-content/plugins/ie-sitemode/custom-jumplist.php';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(jl, s);
+    }
+  }
+}catch(e){}
+})();
+// ]]>
+</script>	<iframe src='https://widgets.wp.com/likes/master.html?ver=20210413#ver=20210413&amp;origin=https://clymb3r.wordpress.com' scrolling='no' id='likes-master' name='likes-master' style='display:none;'></iframe>
+	<div id='likes-other-gravatars'>
+		<div class="likes-text">
+			<span>%d</span> bloggers like this:		</div>
+		<ul class="wpl-avatars sd-like-gravatars"></ul>
+	</div>
+	
+		<script src="//stats.wp.com/w.js?61" defer></script> <script type="text/javascript">
+_tkq = window._tkq || [];
+_stq = window._stq || [];
+_tkq.push(['storeContext', {'blog_id':'49341841','blog_tz':'-8','user_lang':'en','blog_lang':'en','user_id':'0'}]);
+_stq.push(['view', {'blog':'49341841','v':'wpcom','tz':'-8','user_id':'0','post':'126','subd':'clymb3r'}]);
+_stq.push(['extra', {'crypt':'UE5XaGUuOTlwaD85flAmcm1mcmZsaDhkV11YdWtpP0NsWnVkPS9sL0ViLndld3BsSjRjQ2xTcExndVh0cnUmRDBUJS9rVnxRXTVdVVBdfnRtVy5FbzlPU1RtQS1yVyUwLnh6JUxXOFdhLV9iSk9TYTZCZ3lOfn50eHRPTm5zUEFRSkxqcTk0U3A9by1VYjg5Zy1IeExubzB5dHVSZnF8SX5oNms/eDNqY2NVVD1teEQ/PywvN1A0d1hEMUhDc3YsY1B3QUxUUnpMZX5CZn5uVSw9R3ksVmZ0WGM1VUtobXF2cWdFaVAxQW5lem5rajFHTi9rV0N0eHQ0VWlqW3ZbK3d6XXRQazBjdDN3LFFtZG85YWxVSHBvZzdDd0ZsRzVkRWVrMXA1RkwsZGNZ'}]);
+_stq.push([ 'clickTrackerInit', '49341841', '126' ]);
+	</script>
+<noscript><img src="https://pixel.wp.com/b.gif?v=noscript" style="height:1px;width:1px;overflow:hidden;position:absolute;bottom:1px;" alt="" /></noscript>
+<script>
+if ( 'object' === typeof wpcom_mobile_user_agent_info ) {
+
+	wpcom_mobile_user_agent_info.init();
+	var mobileStatsQueryString = "";
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedPlatformName )
+		mobileStatsQueryString += "&x_" + 'mobile_platforms' + '=' + wpcom_mobile_user_agent_info.matchedPlatformName;
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedUserAgentName )
+		mobileStatsQueryString += "&x_" + 'mobile_devices' + '=' + wpcom_mobile_user_agent_info.matchedUserAgentName;
+	
+	if( wpcom_mobile_user_agent_info.isIPad() )
+		mobileStatsQueryString += "&x_" + 'ipad_views' + '=' + 'views';
+
+	if( "" != mobileStatsQueryString ) {
+		new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?v=wpcom-no-pv' + mobileStatsQueryString + '&baba=' + Math.random();
+	}
+	
+}
+</script></body>
+</html>

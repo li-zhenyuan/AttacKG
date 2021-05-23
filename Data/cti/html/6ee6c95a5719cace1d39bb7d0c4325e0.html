@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+<!-- Jetpack Site Verification Tags -->
+<meta name="google-site-verification" content="UA-71314509-1" />
+
+	<!-- This site is optimized with the Yoast SEO plugin v16.2 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Password Spraying &amp; Other Fun with RPCCLIENT - Black Hills Information Security</title>
+	<link rel="canonical" href="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Password Spraying &amp; Other Fun with RPCCLIENT - Black Hills Information Security" />
+	<meta property="og:description" content="Joff Thyer // &nbsp; Many of us in the penetration testing community ar​e used to scenarios whereby we land a targeted phishing campaign within a Windows enterprise environment and have that wonderful access into the world of Windows command line networking tools.&nbsp;&nbsp;&nbsp; You get your shell and before you know it, you are ready to [&hellip;]" />
+	<meta property="og:url" content="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/" />
+	<meta property="og:site_name" content="Black Hills Information Security" />
+	<meta property="article:publisher" content="https://www.facebook.com/BlackHillsInfoSec/" />
+	<meta property="article:author" content="https://www.facebook.com/BlackHillsInfoSec/" />
+	<meta property="article:published_time" content="2015-10-30T20:25:57+00:00" />
+	<meta property="article:modified_time" content="2020-02-12T22:03:02+00:00" />
+	<meta property="og:image" content="https://static.wixstatic.com/media/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png/v1/fill/w_514,h_88,al_c,lg_1/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:creator" content="@bhinfosecurity" />
+	<meta name="twitter:site" content="@bhinfosecurity" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="BHIS">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="5 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.blackhillsinfosec.com/#organization","name":"Black Hills Information Security","url":"https://www.blackhillsinfosec.com/","sameAs":["https://www.facebook.com/BlackHillsInfoSec/","https://www.linkedin.com/company/black-hills-information-security","https://twitter.com/bhinfosecurity"],"logo":{"@type":"ImageObject","@id":"https://www.blackhillsinfosec.com/#logo","inLanguage":"en-US","url":"https://www.blackhillsinfosec.com/wp-content/uploads/2017/03/BHIS_l.jpg","contentUrl":"https://www.blackhillsinfosec.com/wp-content/uploads/2017/03/BHIS_l.jpg","width":300,"height":300,"caption":"Black Hills Information Security"},"image":{"@id":"https://www.blackhillsinfosec.com/#logo"}},{"@type":"WebSite","@id":"https://www.blackhillsinfosec.com/#website","url":"https://www.blackhillsinfosec.com/","name":"Black Hills Information Security","description":"Penetration testing for Fortune 50 companies since 2008.","publisher":{"@id":"https://www.blackhillsinfosec.com/#organization"},"potentialAction":[{"@type":"SearchAction","target":"https://www.blackhillsinfosec.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#primaryimage","inLanguage":"en-US","url":"https://static.wixstatic.com/media/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png/v1/fill/w_514,h_88,al_c,lg_1/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png","contentUrl":"https://static.wixstatic.com/media/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png/v1/fill/w_514,h_88,al_c,lg_1/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png"},{"@type":"WebPage","@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#webpage","url":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/","name":"Password Spraying & Other Fun with RPCCLIENT - Black Hills Information Security","isPartOf":{"@id":"https://www.blackhillsinfosec.com/#website"},"primaryImageOfPage":{"@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#primaryimage"},"datePublished":"2015-10-30T20:25:57+00:00","dateModified":"2020-02-12T22:03:02+00:00","breadcrumb":{"@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/"]}]},{"@type":"BreadcrumbList","@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://www.blackhillsinfosec.com/","url":"https://www.blackhillsinfosec.com/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://www.blackhillsinfosec.com/blog/","url":"https://www.blackhillsinfosec.com/blog/","name":"Blog"}},{"@type":"ListItem","position":3,"item":{"@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#webpage"}}]},{"@type":"Article","@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#article","isPartOf":{"@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#webpage"},"author":{"@id":"https://www.blackhillsinfosec.com/#/schema/person/9c1634d287f42657e9fbfb42836911fb"},"headline":"Password Spraying &#038; Other Fun with RPCCLIENT","datePublished":"2015-10-30T20:25:57+00:00","dateModified":"2020-02-12T22:03:02+00:00","mainEntityOfPage":{"@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#webpage"},"publisher":{"@id":"https://www.blackhillsinfosec.com/#organization"},"image":{"@id":"https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#primaryimage"},"keywords":["password spraying","RPCCLINET"],"articleSection":["Password Spray","Red Team"],"inLanguage":"en-US"},{"@type":"Person","@id":"https://www.blackhillsinfosec.com/#/schema/person/9c1634d287f42657e9fbfb42836911fb","name":"BHIS","sameAs":["https://www.facebook.com/BlackHillsInfoSec/","https://twitter.com/bhinfosecurity"]}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+	    <style id="tf_lazy_style">
+		[data-tf-src]{opacity:0}.tf_svg_lazy{transition:filter .3s linear!important;filter:blur(25px);opacity:1;transform:translateZ(0)}.tf_svg_lazy_loaded{filter:blur(0)}.module[data-lazy],.module[data-lazy] .ui,.module_row[data-lazy]:not(.tb_first),.module_row[data-lazy]:not(.tb_first)>.row_inner,.module_row:not(.tb_first) .module_column[data-lazy],.module_subrow[data-lazy]>.subrow_inner{background-image:none!important}
+	    </style>
+	    <noscript><style>[data-tf-src]{display:none!important}.tf_svg_lazy{filter:none!important;opacity:1!important}</style></noscript>
+	    	    <style id="tf_lazy_common">
+							/*chrome bug,prevent run transition on the page loading*/
+				body:not(.page-loaded),body:not(.page-loaded) #header,body:not(.page-loaded) a,body:not(.page-loaded) img,body:not(.page-loaded) figure,body:not(.page-loaded) div,body:not(.page-loaded) i,body:not(.page-loaded) li,body:not(.page-loaded) span,body:not(.page-loaded) ul{animation:none!important;transition:none!important}body:not(.page-loaded) #main-nav li .sub-menu{display:none}
+				img{max-width:100%;height:auto}
+						.tf_fa{display:inline-block;width:1em;height:1em;stroke-width:0;stroke:currentColor;overflow:visible;fill:currentColor;pointer-events:none;vertical-align:middle}#tf_svg symbol{overflow:visible}.tf_lazy{position:relative;visibility:visible;display:block;opacity:.3}.wow .tf_lazy{visibility:hidden;opacity:1;position:static;display:inline}div.tf_audio_lazy audio{visibility:hidden;height:0;display:inline}.mejs-container{visibility:visible}.tf_iframe_lazy{transition:opacity .3s ease-in-out;min-height:10px}.tf_carousel .swiper-wrapper{display:flex}.tf_carousel .swiper-slide{flex-shrink:0;opacity:0}.tf_carousel .tf_lazy{contain:none}.swiper-wrapper>br,.tf_lazy.swiper-wrapper .tf_lazy:after,.tf_lazy.swiper-wrapper .tf_lazy:before{display:none}.tf_lazy:after,.tf_lazy:before{content:'';display:inline-block;position:absolute;width:10px!important;height:10px!important;margin:0 3px;top:50%!important;right:50%!important;left:auto!important;border-radius:100%;background-color:currentColor;visibility:visible;animation:tf-hrz-loader infinite .75s cubic-bezier(.2,.68,.18,1.08)}.tf_lazy:after{width:6px!important;height:6px!important;right:auto!important;left:50%!important;margin-top:3px;animation-delay:-.4s}@keyframes tf-hrz-loader{0%{transform:scale(1);opacity:1}50%{transform:scale(.1);opacity:.6}100%{transform:scale(1);opacity:1}}.tf_lazy_lightbox{position:fixed;background:rgba(11,11,11,.8);color:#ccc;top:0;left:0;display:flex;align-items:center;justify-content:center;z-index:999}.tf_lazy_lightbox .tf_lazy:after,.tf_lazy_lightbox .tf_lazy:before{background:#fff}.tf_video_lazy video{width:100%;height:100%;position:static;object-fit:cover}
+		</style>
+			<noscript><style>body:not(.page-loaded) #main-nav li .sub-menu{display:block}</style></noscript>
+    
+
+<link href="//www.blackhillsinfosec.com/wp-content/uploads/2016/03/BHIS-favicon.png" rel="shortcut icon" /> 	    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+		<link rel="dns-prefetch" href="//www.google-analytics.com"/>
+	<link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/uploads/themify-css/concate/1558612931/themify-concate-2750168142.min.css" as="style"><link id="themify_concate-css" rel="stylesheet" href="https://www.blackhillsinfosec.com/wp-content/uploads/themify-css/concate/1558612931/themify-concate-2750168142.min.css"><link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/uploads/themify-css/concate/1558612931/themify-mobile-472224222.min.css" as="style" media="screen and (max-width:900px)"><link id="themify_mobile_concate-css" rel="stylesheet" href="https://www.blackhillsinfosec.com/wp-content/uploads/themify-css/concate/1558612931/themify-mobile-472224222.min.css" media="screen and (max-width:900px)"><link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/media-queries.min.css?ver=5.2.4" media="screen and (max-width:1200px)" as="style"><link id="themify-media-queries-css" rel="stylesheet" href="https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/media-queries.min.css?ver=5.2.4" media="screen and (max-width:1200px)"><link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/plugins/simple-banner/simple-banner.css?ver=2.10.0" as="style" /><link rel='stylesheet' id='simple-banner-style-css'  href='https://www.blackhillsinfosec.com/wp-content/plugins/simple-banner/simple-banner.css?ver=2.10.0' media='all' />
+<link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/plugins/jetpack/_inc/social-logos/social-logos.min.css?ver=9.6.1" as="style" /><link rel='stylesheet' id='social-logos-css'  href='https://www.blackhillsinfosec.com/wp-content/plugins/jetpack/_inc/social-logos/social-logos.min.css?ver=9.6.1' media='all' />
+<link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/plugins/jetpack/css/jetpack.css?ver=9.6.1" as="style" /><link rel='stylesheet' id='jetpack_css-css'  href='https://www.blackhillsinfosec.com/wp-content/plugins/jetpack/css/jetpack.css?ver=9.6.1' media='all' />
+<script id='jetpack_related-posts-js-extra'>
+var related_posts_js_options = {"post_heading":"h4"};
+</script>
+<script src='https://www.blackhillsinfosec.com/wp-content/plugins/jetpack/_inc/build/related-posts/related-posts.min.js?ver=20210219' id='jetpack_related-posts-js'></script>
+<script src='https://www.blackhillsinfosec.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script id='simple-banner-script-js-extra'>
+var scriptParams = {"version":"2.10.0","hide_simple_banner":"no","simple_banner_position":"","header_margin":"","header_padding":"","simple_banner_text":"Attend Way West Wild West Hackin' Fest Conference (Hybrid), June 16-18 | <a href=\"https:\/\/wildwesthackinfest.com\/way-west\/\">Learn More<\/a>","pro_version_enabled":"","disabled_on_current_page":"","debug_mode":"","id":"4645","disabled_pages_array":[],"post_object":[{"ID":4645,"post_author":"2","post_date":"2015-10-30 14:25:57","post_date_gmt":"2015-10-30 20:25:57","post_content":"<!-- wp:paragraph -->\n<p><a href=\"http:\/\/www.blackhillsinfosec.com\/?team=joff-thyer\">Joff Thyer<\/a> \/\/ &nbsp; <\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:block {\"ref\":14831} \/-->\n\n<!-- wp:paragraph -->\n<p>Many of us in the penetration testing community ar\u200be used to scenarios whereby we land a targeted phishing campaign within a Windows enterprise environment and have that wonderful access into the world of Windows command line networking tools.&nbsp;&nbsp;&nbsp; You get your shell and before you know it, you are ready to run all your favorite enumeration commands.&nbsp;&nbsp; These are things like: <\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:list -->\n<ul><li>C:\\&gt; NET VIEW \/DOMAIN<\/li><li>C:\\&gt; NET GROUP \"Domain Administrators\" \/DOMAIN<\/li><\/ul>\n<!-- \/wp:list -->\n\n<!-- wp:paragraph -->\n<p>and so on.&nbsp;&nbsp; Not to mention that you often have all of the wealth of Metasploit post exploitation modules, and the many wonders of various PowerShell tools such as Veil, and PowerShell Empire.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Imagine a world where all you have is a Linux host available on an internal network with no backdoor shell access to any existing Windows system.&nbsp;&nbsp;&nbsp; Imagine that world wherein you are effectively segmented away from the rest of the network and cannot even capture useful network traffic using interception techniques such as Ettercap.&nbsp;&nbsp; This was indeed the case for me recently whereby all I could do was SSH into a single Linux host I controlled.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>After having not been in this situation in some time, I paused a moment before recalling the wonderful world of Samba. &nbsp; In particular there are two excellent, and useful programs in the Samba suite namely \"rpcclient\", and its friend \"smbclient\".&nbsp;&nbsp; Also, let us not forget our favorite DNS utility called \"dig\".<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>My first task was to use available reconnaissance to make informed guesses as to what the internal domain name was likely to be. &nbsp; There are a few different methods to think about here but the first thing was to play with \"dig\" to determine DNS information of use.&nbsp;&nbsp;&nbsp; I can try to look up the Windows global catalog record, and authoritative domain server records to determine domain controller addresses.&nbsp;&nbsp; Examples as follows:<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png\/v1\/fill\/w_514,h_88,al_c,lg_1\/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>\u200bThis will only give me answers if I have predicted or determined the correct \"domain.corp\" name.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Now, luckily for me I had access to internal Nessus vulnerability report data and had determined that SMB NULL sessions were permitted to some hosts.&nbsp;&nbsp; I matched up the data to my dig results and determined that the NULL sessions were actually corresponding to domain controller addresses.&nbsp;&nbsp; My next task was to try and enumerate user and group information from the domain controllers with \"rpcclient\" only available to me.&nbsp;&nbsp; I quickly determined by using the \"man\" page that rpcclient could indeed perform an anonymous bind as follows:\u200b<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_207e5e2483584b1b8bf80512e29ab1d5.png\/v1\/fill\/w_473,h_60,al_c,lg_1\/75fce7_207e5e2483584b1b8bf80512e29ab1d5.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>\u200bwhereby 10.10.10.10 was the chosen address of the domain controller I could anonymously bind to.&nbsp;&nbsp; After that command was run, \"rpcclient\" will give you the most excellent \"rpcclient&gt; \" prompt.&nbsp;&nbsp; At this point in time, if you can use anonymous sessions, then there are some very useful commands within the tool.&nbsp;<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>1. Enumerate Domain Users<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_9cef94efce284b7fa13b8ba027921217.png\/v1\/fill\/w_451,h_160,al_c,lg_1\/75fce7_9cef94efce284b7fa13b8ba027921217.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>2. Enumerate Domain Groups<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_7bc38d3a1b324b528af9cc799951ede8.png\/v1\/fill\/w_822,h_213,al_c,lg_1\/75fce7_7bc38d3a1b324b528af9cc799951ede8.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>3.&nbsp;Query Group Information and Group Membership<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_fc0bb82c8d96477998ed256e5131e3d7.png\/v1\/fill\/w_836,h_288,al_c,lg_1\/75fce7_fc0bb82c8d96477998ed256e5131e3d7.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>4. Query Specific User Information (including computers) by RID.\u200b<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_bdaf96e0a9ff43638864720996002d4f.png\/v1\/fill\/w_634,h_497,al_c,lg_1\/75fce7_bdaf96e0a9ff43638864720996002d4f.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>So in working with these basic commands, I was able to survey the landscape of Windows domain user, and group information pretty thoroughly.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Another technique often used during a penetration test is called \"Password Spraying\".&nbsp; This is a particularly effective technique whereby given a list of domain users, and knowledge of very common password use, the tester attempts to perform a login for every user in the list. &nbsp; The technique is very effective given that you deliberately limit the list of passwords to try to a small number. &nbsp; In fact a single password per spraying attempt is advisable for the sole reason that you really do not want to lock accounts.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Before password spraying, it is very useful to determine the Windows domain password policy using a command such as \"NET ACCOUNTS \/DOMAIN\" in the Windows world.&nbsp;&nbsp; However given that we don't have a Windows shell available to us, rpcclient gives us the following options.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_3d956930e8ad4ded89ee06340ac5eec3.png\/v1\/fill\/w_767,h_382,al_c,lg_1\/75fce7_3d956930e8ad4ded89ee06340ac5eec3.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>\u200bAt least we are able to determine the crucial information about the password length.&nbsp; After I write this, I will probably work out how to decode the password properties and match them back to the appropriate information but I have not yet done that task.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>In order to perform a password spray attack, the next step is to pick a common password (such as \"Autumn2015\") and work out our technique on how to spray using \"rpcclient\".&nbsp;&nbsp; Conveniently, \"rpcclient\" allows us to specify some commands on the command line which is very handy.&nbsp;&nbsp;&nbsp; The follow two examples show a successful logon versus a failed logon.&nbsp; (password of \"bbb\" is the correct logon)<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_cff2707518bc4c63ad21108fa252f8fb.png\/v1\/fill\/w_833,h_203,al_c,lg_1\/75fce7_cff2707518bc4c63ad21108fa252f8fb.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>In these examples, we specifically told \"rpcclient\" to run two commands, these being \"getusername\" and then \"quit\" to exit out of the client.&nbsp;&nbsp; Now we have all of the ingredients to perform a password spraying attack.&nbsp;&nbsp; All we need is a bourne\/bash shell loop and we are off to the races.&nbsp;&nbsp; Example of a simple shell script or command line to spray given that the \"enumdomusers\" output is in the \"domain-users.txt\" file would be as follows.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_033724d7e49640daaa8f28bc29885a03.png\/v1\/fill\/w_605,h_167,al_c,lg_1\/75fce7_033724d7e49640daaa8f28bc29885a03.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>You know that you are successful when you see the string \"Authority\" appear in the output.&nbsp;&nbsp; Lack of success for each user is going to be the \"NT_STATUS_LOGON_FAILURE\" message.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>If you begin to get the \"ACCOUNT_LOCKED\" failure you should immediately stop your spray because you have likely sprayed too many times in a short period of time.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Assuming you have gained access to a credential, one of the additional nice things you can do is explore the SYSVOL using the \"smbclient\" program.&nbsp;&nbsp; The syntax is as follows.<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https:\/\/static.wixstatic.com\/media\/75fce7_1679fd2ca2154d4b84b286773d38adfa.png\/v1\/fill\/w_820,h_266,al_c,lg_1\/75fce7_1679fd2ca2154d4b84b286773d38adfa.png\" alt=\"\"\/><\/figure>\n<!-- \/wp:image -->\n\n<!-- wp:paragraph -->\n<p>\u200bI highly recommend getting familiar with the UNIX Samba suite and in particular these tools.&nbsp;&nbsp; They quite literally saved by bacon over the past week and you could well be in the same boat needing these fun tools in your future also.\u200b<\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p><strong><em>Join the BHIS Blog Mailing List \u2013 get notified when we post new blogs, webcasts, and podcasts.<\/em><\/strong><\/p>\n<!-- \/wp:paragraph -->\n\n<!-- wp:jetpack\/subscriptions {\"showSubscribersTotal\":true} -->\n<div class=\"wp-block-jetpack-subscriptions\">[jetpack_subscription_form show_only_email_and_button=\"true\" custom_background_button_color=\"undefined\" custom_text_button_color=\"undefined\" submit_button_text=\"Subscribe\" submit_button_classes=\"undefined\" show_subscribers_total=\"true\" ]<\/div>\n<!-- \/wp:jetpack\/subscriptions -->\n\n<!-- wp:themify-builder\/canvas \/-->","post_title":"Password Spraying & Other Fun with RPCCLIENT","post_excerpt":"","post_status":"publish","comment_status":"closed","ping_status":"closed","post_password":"","post_name":"password-spraying-other-fun-with-rpcclient","to_ping":"","pinged":"","post_modified":"2020-02-12 15:03:02","post_modified_gmt":"2020-02-12 22:03:02","post_content_filtered":"","post_parent":0,"guid":"http:\/\/45.33.121.90\/?p=4645","menu_order":0,"post_type":"post","post_mime_type":"","comment_count":"1","filter":"raw"}],"is_current_page_a_post":"1","disabled_on_posts":"","simple_banner_font_size":"","simple_banner_color":"#EA803D","simple_banner_text_color":"#FFFFFF","simple_banner_link_color":"#FCEFE7","simple_banner_close_color":"","simple_banner_custom_css":"","simple_banner_scrolling_custom_css":"","simple_banner_text_custom_css":"","simple_banner_button_css":"","site_custom_css":"","keep_site_custom_css":"","site_custom_js":"","keep_site_custom_js":"","wp_body_open_enabled":"","wp_body_open":"1","close_button_enabled":"","close_button_expiration":"","close_button_cookie_set":""};
+</script>
+<script src='https://www.blackhillsinfosec.com/wp-content/plugins/simple-banner/simple-banner.js?ver=2.10.0' id='simple-banner-script-js'></script>
+<link rel="https://api.w.org/" href="https://www.blackhillsinfosec.com/wp-json/" /><link rel="alternate" type="application/json" href="https://www.blackhillsinfosec.com/wp-json/wp/v2/posts/4645" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.blackhillsinfosec.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.blackhillsinfosec.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel='shortlink' href='https://wp.me/p7lxjP-1cV' />
+<link rel="alternate" type="application/json+oembed" href="https://www.blackhillsinfosec.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.blackhillsinfosec.com%2Fpassword-spraying-other-fun-with-rpcclient%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://www.blackhillsinfosec.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.blackhillsinfosec.com%2Fpassword-spraying-other-fun-with-rpcclient%2F&#038;format=xml" />
+<script type="text/javascript"><!--
+function powerpress_pinw(pinw_url){window.open(pinw_url, 'PowerPressPlayer','toolbar=0,status=0,resizable=1,width=460,height=320');	return false;}
+//-->
+</script>
+<style type="text/css" media="screen">.simple-banner{background:#EA803D;}</style><style type="text/css" media="screen">.simple-banner .simple-banner-text{color:#FFFFFF;}</style><style type="text/css" media="screen">.simple-banner .simple-banner-text a{color:#FCEFE7;}</style><style id="simple-banner-site-custom-css-dummy" type="text/css" media="screen"></style><script id="simple-banner-site-custom-js-dummy" type="text/javascript"></script><style type='text/css'>img#wpstats{display:none}</style>
+		
+	<style>
+	@keyframes themifyAnimatedBG {
+		0% { background-color: #7b9696; }
+100% { background-color: #accfce; }
+50% { background-color: #9cbfbe; }
+33.333333333333% { background-color: #7b9696; }
+25% { background-color: #9cbfbe; }
+
+	}
+	#footerwrap,.module_row.animated-bg {
+		animation:themifyAnimatedBG 25000ms infinite alternate
+	}
+	</style>
+	<meta name="google-site-verification" content="ueddAh3nsIqRBBatvaFPh1zNFyiivlUoewlBM_t8grE" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+<script>
+/** This JavaScript snippet is here for compatibility with the old Wix-style links.
+ *  It works in conjunction with the Redirection plugin to divert all old links to
+ *  their new homes. */
+if(window.location.hash.lastIndexOf('!', 1) == 1) {window.location = window.location.href.replace('#!', '?redirect-');}
+</script>
+<title> Black Hills Information Security </title>
+<meta property ="og:title" />
+<meta name="twitter:title"/>
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@bhinfosecurity">
+<meta name="twitter:title" >
+<meta name="twitter:description">
+<meta name="twitter:image">
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-71314509-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-71314509-1');
+</script>
+<script>
+jQuery(window).load(function(){
+	var $ = jQuery;
+	Themify.LoadAsync( 'https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js', function(){
+		var $body = $('body');
+		$( '.tilt-3d' ).each( function(){
+			var $panel = $( this );
+			var $pContent = $('.module-text', $panel),
+				$img = $('.module-image', $panel);
+
+			function initTilt() {
+				TweenMax.set([$pContent, $img], { transformStyle: "preserve-3d" });
+
+				$body.mousemove(function(e) {
+					var sxPos = ( e.pageX - $panel.offset().left ) / $panel.width() * 100 - 100;
+					var syPos = ( e.pageY - $panel.offset().top ) / $panel.height() * 100 - 100;
+					TweenMax.to($pContent, 2, {
+						rotationY: 0.03 * sxPos,
+						rotationX: -0.03 * syPos,
+						transformPerspective: 500,
+						transformOrigin: "center center -400",
+						ease: Expo.easeOut
+					});
+					TweenMax.to($img, 2, {
+						rotationY: 0.03 * sxPos,
+						rotationX: -0.03 * syPos,
+						transformPerspective: 500,
+						transformOrigin: "center center -200",
+						ease: Expo.easeOut
+					});
+				});
+			};
+
+			initTilt();
+		} );
+
+	} );
+});
+</script><style id="tb_inline_styles">.tb_animation_on{overflow-x:hidden}.themify_builder .wow{visibility:hidden;animation-fill-mode:both}.themify_builder .tf_lax_done{transition-duration:.8s;transition-timing-function:cubic-bezier(.165,.84,.44,1)}.wow.tf_lax_done{animation-fill-mode:backwards}[data-sticky-active].tb_sticky_scroll_active{z-index:1}[data-sticky-active].tb_sticky_scroll_active .hide-on-stick{display:none}@media screen and (min-width:1281px){.hide-desktop{width:0!important;height:0!important;padding:0!important;visibility:hidden!important;margin:0!important;display:table-column!important}}@media screen and (min-width:769px) and (max-width:1280px){.hide-tablet_landscape{width:0!important;height:0!important;padding:0!important;visibility:hidden!important;margin:0!important;display:table-column!important}}@media screen and (min-width:681px) and (max-width:768px){.hide-tablet{width:0!important;height:0!important;padding:0!important;visibility:hidden!important;margin:0!important;display:table-column!important}}@media screen and (max-width:680px){.hide-mobile{width:0!important;height:0!important;padding:0!important;visibility:hidden!important;margin:0!important;display:table-column!important}}</style><noscript><style>.themify_builder .wow,.wow .tf_lazy{visibility:visible!important}</style></noscript>			<style type="text/css" id="wp-custom-css">
+				/*
+Welcome to Custom CSS!
+
+To learn how this works, see http://wp.me/PEmnE-Bt
+*/
+pre {
+	width: 550px;
+	min-width: 120px;
+	padding: 1em;
+	background-color: #f2f2f2;
+	overflow: auto;
+	font-size: 12px;
+	line-height: 1.4em;
+	border: 1px solid #808080;
+	border-radius: .5em;
+}			</style>
+		</head>
+
+<body class="post-template-default single single-post postid-4645 single-format-standard skin-default default_width sidebar1 no-home fixed-header-enabled tb_animation_on">
+<div id="pagewrap" class="hfeed site">
+
+	<div id="headerwrap">
+
+		
+		<header id="header" class="pagewidth tf_clearfix" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
+
+        	
+			<div class="logo-wrap">
+				<div id="site-logo"><a href="https://www.blackhillsinfosec.com" title="Black Hills Information Security"><img decoding="async" data-tf-not-load="1" src="https://www.blackhillsinfosec.com/wp-content/uploads/2016/03/BHIS-logo-web.png" alt="Black Hills Information Security" title="BHIS &#8211; logo &#8211; web" width="275" height="25" class="site-logo-image"></a></div><div id="site-description" class="site-description"><span>Penetration testing for Fortune 50 companies since 2008.</span></div>			</div>
+
+			<a id="menu-icon" href="#mobile-menu"><span class="menu-icon-inner"></span></a>
+			<div id="mobile-menu" class="tf_scrollbar sidemenu sidemenu-off">
+
+				
+				<div class="social-widget">
+				    	    <div class="rss"><a href="https://www.blackhillsinfosec.com/feed/"><span class="screen-reader-text">RSS</span></a></div>
+	    				</div>
+				<!-- /.social-widget -->
+
+				<div id="searchform-wrap">
+									</div>
+				<!-- /searchform-wrap -->
+
+				<nav id="main-nav-wrap" itemscope="itemscope" itemtype="https://schema.org/SiteNavigationElement">
+					<ul id="main-nav" class="main-nav tf_clearfix tf_box"><li id="menu-item-8364" class="menu-item-page-7696 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-8364"><a href="https://www.blackhillsinfosec.com/who-we-are/">About Us<span class="child-arrow closed"></span></a>
+<ul class="sub-menu">
+	<li id="menu-item-5456" class="menu-item-page-4411 menu-item menu-item-type-post_type menu-item-object-page menu-item-5456 menu-page-4411-parent-8364"><a href="https://www.blackhillsinfosec.com/about/security-analysts/">Testers</a></li>
+	<li id="menu-item-5454" class="menu-item-page-4527 menu-item menu-item-type-post_type menu-item-object-page menu-item-5454 menu-page-4527-parent-8364"><a href="https://www.blackhillsinfosec.com/about/admin-staff/">Admin</a></li>
+	<li id="menu-item-18728" class="menu-item-page-18725 menu-item menu-item-type-post_type menu-item-object-page menu-item-18728 menu-page-18725-parent-8364"><a href="https://www.blackhillsinfosec.com/about/soc-team/">SOC Team</a></li>
+	<li id="menu-item-5452" class="menu-item-page-5031 menu-item menu-item-type-post_type menu-item-object-page menu-item-5452 menu-page-5031-parent-8364"><a href="https://www.blackhillsinfosec.com/about/bountyhunters/">Partners</a></li>
+	<li id="menu-item-5580" class="menu-item-page-4530 menu-item menu-item-type-post_type menu-item-object-page menu-item-5580 menu-page-4530-parent-8364"><a href="https://www.blackhillsinfosec.com/about/interns/">Interns</a></li>
+</ul>
+</li>
+<li id="menu-item-4745" class="menu-item-page-4743 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-4745"><a href="https://www.blackhillsinfosec.com/contact-us/">Contact<span class="child-arrow closed"></span></a>
+<ul class="sub-menu">
+	<li id="menu-item-9120" class="menu-item-custom-9120 menu-item menu-item-type-custom menu-item-object-custom menu-item-9120 menu-custom-9120-parent-4745"><a href="https://www.blackhillsinfosec.com/contact-us/">Contact Us</a></li>
+	<li id="menu-item-18232" class="menu-item-page-4409 menu-item menu-item-type-post_type menu-item-object-page menu-item-18232 menu-page-4409-parent-4745"><a href="https://www.blackhillsinfosec.com/sign-up/">Email Sign-Up</a></li>
+</ul>
+</li>
+<li id="menu-item-17556" class="menu-item-custom-17556 menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-17556"><a href="#">Services<span class="child-arrow closed"></span></a>
+<ul class="sub-menu">
+	<li id="menu-item-4586" class="menu-item-custom-4586 menu-item menu-item-type-custom menu-item-object-custom menu-item-4586 menu-custom-4586-parent-17556"><a href="https://www.blackhillsinfosec.com/?page_id=4426">Penetration Testing</a></li>
+	<li id="menu-item-17753" class="menu-item-custom-17753 menu-item menu-item-type-custom menu-item-object-custom menu-item-17753 menu-custom-17753-parent-17556"><a href="https://www.blackhillsinfosec.com/services/active-soc/">Active SOC</a></li>
+	<li id="menu-item-15922" class="menu-item-page-15857 menu-item menu-item-type-post_type menu-item-object-page menu-item-15922 menu-page-15857-parent-17556"><a href="https://www.blackhillsinfosec.com/services/blue-team-services/">Blue Team Services</a></li>
+	<li id="menu-item-15184" class="menu-item-page-15163 menu-item menu-item-type-post_type menu-item-object-page menu-item-15184 menu-page-15163-parent-17556"><a href="https://www.blackhillsinfosec.com/services/htoc/">Hunt Team (HTOC)</a></li>
+	<li id="menu-item-15179" class="menu-item-page-15175 menu-item menu-item-type-post_type menu-item-object-page menu-item-15179 menu-page-15175-parent-17556"><a href="https://www.blackhillsinfosec.com/services/cyber-range/">Cyber Range</a></li>
+</ul>
+</li>
+<li id="menu-item-4433" class="menu-item-page-4415 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-4433"><a href="https://www.blackhillsinfosec.com/projects/">Projects/Tools<span class="child-arrow closed"></span></a>
+<ul class="sub-menu">
+	<li id="menu-item-4587" class="menu-item-custom-4587 menu-item menu-item-type-custom menu-item-object-custom menu-item-4587 menu-custom-4587-parent-4433"><a href="https://www.blackhillsinfosec.com/?page_id=4415">All Tools</a></li>
+	<li id="menu-item-17750" class="menu-item-custom-17750 menu-item menu-item-type-custom menu-item-object-custom menu-item-17750 menu-custom-17750-parent-4433"><a href="https://www.activecountermeasures.com/free-tools/rita/">RITA</a></li>
+	<li id="menu-item-15545" class="menu-item-page-12595 menu-item menu-item-type-post_type menu-item-object-page menu-item-15545 menu-page-12595-parent-4433"><a href="https://www.blackhillsinfosec.com/projects/backdoorsandbreaches/">Backdoors &#038; Breaches</a></li>
+	<li id="menu-item-4435" class="menu-item-page-4421 menu-item menu-item-type-post_type menu-item-object-page menu-item-4435 menu-page-4421-parent-4433"><a href="https://www.blackhillsinfosec.com/projects/books/">Books</a></li>
+</ul>
+</li>
+<li id="menu-item-4442" class="menu-item-page-2156 menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-4442"><a href="https://www.blackhillsinfosec.com/blog/">Learn<span class="child-arrow closed"></span></a>
+<ul class="sub-menu">
+	<li id="menu-item-17749" class="menu-item-page-2156 menu-item menu-item-type-post_type menu-item-object-page menu-item-17749 menu-page-2156-parent-4442"><a href="https://www.blackhillsinfosec.com/blog/">Blog</a></li>
+	<li id="menu-item-4434" class="menu-item-page-4424 menu-item menu-item-type-post_type menu-item-object-page menu-item-4434 menu-page-4424-parent-4442"><a href="https://www.blackhillsinfosec.com/blog/webcasts/">Webcasts</a></li>
+	<li id="menu-item-8776" class="menu-item-page-8760 menu-item menu-item-type-post_type menu-item-object-page menu-item-8776 menu-page-8760-parent-4442"><a href="https://www.blackhillsinfosec.com/podcasts/">Podcasts</a></li>
+	<li id="menu-item-15853" class="menu-item-custom-15853 menu-item menu-item-type-custom menu-item-object-custom menu-item-15853 menu-custom-15853-parent-4442"><a href="https://wildwesthackinfest.com/training/">Training</a></li>
+</ul>
+</li>
+</ul>					<!-- /#main-nav -->
+				</nav>
+
+				<a id="menu-icon-close" href="#"></a>
+
+				
+			</div>
+			<!-- /#mobile-menu -->
+
+			
+		</header>
+		<!-- /#header -->
+
+        
+	</div>
+	<!-- /#headerwrap -->
+
+	<div id="body" class="tf_clearfix">
+
+		<!-- layout -->
+<div id="layout" class="pagewidth tf_clearfix">
+            <main id="content" class="tf_clearfix">
+	    <article id="post-4645" class="post tf_clearfix post-4645 type-post status-publish format-standard hentry category-password-spray category-red-team tag-password-spraying tag-rpcclinet has-post-title has-post-date has-post-category has-post-tag has-post-comment no-post-author ">
+	
+	
+			<div class="post-date-wrap">
+			<time datetime="2015-10-30" class="post-date entry-date updated">
+				<span class="day">30</span>
+				<span class="month">Oct</span>
+				<span class="year">2015</span>
+			</time>
+		</div>
+	
+	<div class="post-content">
+
+					<p class="post-meta entry-meta">
+
+									
+				<span class="post-category"><a href="https://www.blackhillsinfosec.com/category/red-team/password-spray/" rel="tag" class="term-password-spray">Password Spray</a>, <a href="https://www.blackhillsinfosec.com/category/red-team/" rel="tag" class="term-red-team">Red Team</a></span>
+									 <span class="post-tag"><a href="https://www.blackhillsinfosec.com/tag/password-spraying/" rel="tag">password spraying</a>, <a href="https://www.blackhillsinfosec.com/tag/rpcclinet/" rel="tag">RPCCLINET</a></span>				
+							</p>
+		
+		<h1 class="post-title entry-title"><a href="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/">Password Spraying &#038; Other Fun with RPCCLIENT</a></h1>
+			<div class="entry-content">
+
+	    				<p><a href="http://www.blackhillsinfosec.com/?team=joff-thyer">Joff Thyer</a> // &nbsp; </p>
+
+
+
+<p style="background-color:#ea803d;color:#ffffff" class="has-text-color has-background"><strong><em>ADVISORY: The techniques and tools referenced within this blog post may be outdated and do not apply to current situations. However, there is still potential for this blog entry to be used as an opportunity to learn and to possibly update or integrate into modern tools and techniques.</em> </strong></p>
+
+
+
+<p>Many of us in the penetration testing community ar​e used to scenarios whereby we land a targeted phishing campaign within a Windows enterprise environment and have that wonderful access into the world of Windows command line networking tools.&nbsp;&nbsp;&nbsp; You get your shell and before you know it, you are ready to run all your favorite enumeration commands.&nbsp;&nbsp; These are things like: </p>
+
+
+
+<ul><li>C:\&gt; NET VIEW /DOMAIN</li><li>C:\&gt; NET GROUP &#8220;Domain Administrators&#8221; /DOMAIN</li></ul>
+
+
+
+<p>and so on.&nbsp;&nbsp; Not to mention that you often have all of the wealth of Metasploit post exploitation modules, and the many wonders of various PowerShell tools such as Veil, and PowerShell Empire.</p>
+
+
+
+<p>Imagine a world where all you have is a Linux host available on an internal network with no backdoor shell access to any existing Windows system.&nbsp;&nbsp;&nbsp; Imagine that world wherein you are effectively segmented away from the rest of the network and cannot even capture useful network traffic using interception techniques such as Ettercap.&nbsp;&nbsp; This was indeed the case for me recently whereby all I could do was SSH into a single Linux host I controlled.</p>
+
+
+
+<p>After having not been in this situation in some time, I paused a moment before recalling the wonderful world of Samba. &nbsp; In particular there are two excellent, and useful programs in the Samba suite namely &#8220;rpcclient&#8221;, and its friend &#8220;smbclient&#8221;.&nbsp;&nbsp; Also, let us not forget our favorite DNS utility called &#8220;dig&#8221;.</p>
+
+
+
+<p>My first task was to use available reconnaissance to make informed guesses as to what the internal domain name was likely to be. &nbsp; There are a few different methods to think about here but the first thing was to play with &#8220;dig&#8221; to determine DNS information of use.&nbsp;&nbsp;&nbsp; I can try to look up the Windows global catalog record, and authoritative domain server records to determine domain controller addresses.&nbsp;&nbsp; Examples as follows:</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" data-tf-not-load="1" width="514" height="88" src="https://static.wixstatic.com/media/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png/v1/fill/w_514,h_88,al_c,lg_1/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png" alt=""/></figure>
+
+
+
+<p>​This will only give me answers if I have predicted or determined the correct &#8220;domain.corp&#8221; name.</p>
+
+
+
+<p>Now, luckily for me I had access to internal Nessus vulnerability report data and had determined that SMB NULL sessions were permitted to some hosts.&nbsp;&nbsp; I matched up the data to my dig results and determined that the NULL sessions were actually corresponding to domain controller addresses.&nbsp;&nbsp; My next task was to try and enumerate user and group information from the domain controllers with &#8220;rpcclient&#8221; only available to me.&nbsp;&nbsp; I quickly determined by using the &#8220;man&#8221; page that rpcclient could indeed perform an anonymous bind as follows:​</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" width="473" height="60" src="https://static.wixstatic.com/media/75fce7_207e5e2483584b1b8bf80512e29ab1d5.png/v1/fill/w_473,h_60,al_c,lg_1/75fce7_207e5e2483584b1b8bf80512e29ab1d5.png" alt=""/></figure>
+
+
+
+<p>​whereby 10.10.10.10 was the chosen address of the domain controller I could anonymously bind to.&nbsp;&nbsp; After that command was run, &#8220;rpcclient&#8221; will give you the most excellent &#8220;rpcclient&gt; &#8221; prompt.&nbsp;&nbsp; At this point in time, if you can use anonymous sessions, then there are some very useful commands within the tool.&nbsp;</p>
+
+
+
+<p>1. Enumerate Domain Users</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" width="451" height="160" src="https://static.wixstatic.com/media/75fce7_9cef94efce284b7fa13b8ba027921217.png/v1/fill/w_451,h_160,al_c,lg_1/75fce7_9cef94efce284b7fa13b8ba027921217.png" alt=""/></figure>
+
+
+
+<p>2. Enumerate Domain Groups</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" width="822" height="213" src="https://static.wixstatic.com/media/75fce7_7bc38d3a1b324b528af9cc799951ede8.png/v1/fill/w_822,h_213,al_c,lg_1/75fce7_7bc38d3a1b324b528af9cc799951ede8.png" alt=""/></figure>
+
+
+
+<p>3.&nbsp;Query Group Information and Group Membership</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" width="836" height="288" src="https://static.wixstatic.com/media/75fce7_fc0bb82c8d96477998ed256e5131e3d7.png/v1/fill/w_836,h_288,al_c,lg_1/75fce7_fc0bb82c8d96477998ed256e5131e3d7.png" alt=""/></figure>
+
+
+
+<p>4. Query Specific User Information (including computers) by RID.​</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" data-lazy="1" class="tf_svg_lazy" width="634" height="497" src="https://static.wixstatic.com/media/75fce7_bdaf96e0a9ff43638864720996002d4f.png/v1/fill/w_634,h_497,al_c,lg_1/75fce7_bdaf96e0a9ff43638864720996002d4f.png" alt=""/></figure>
+
+
+
+<p>So in working with these basic commands, I was able to survey the landscape of Windows domain user, and group information pretty thoroughly.</p>
+
+
+
+<p>Another technique often used during a penetration test is called &#8220;Password Spraying&#8221;.&nbsp; This is a particularly effective technique whereby given a list of domain users, and knowledge of very common password use, the tester attempts to perform a login for every user in the list. &nbsp; The technique is very effective given that you deliberately limit the list of passwords to try to a small number. &nbsp; In fact a single password per spraying attempt is advisable for the sole reason that you really do not want to lock accounts.</p>
+
+
+
+<p>Before password spraying, it is very useful to determine the Windows domain password policy using a command such as &#8220;NET ACCOUNTS /DOMAIN&#8221; in the Windows world.&nbsp;&nbsp; However given that we don&#8217;t have a Windows shell available to us, rpcclient gives us the following options.</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" data-lazy="1" class="tf_svg_lazy" width="767" height="382" src="https://static.wixstatic.com/media/75fce7_3d956930e8ad4ded89ee06340ac5eec3.png/v1/fill/w_767,h_382,al_c,lg_1/75fce7_3d956930e8ad4ded89ee06340ac5eec3.png" alt=""/></figure>
+
+
+
+<p>​At least we are able to determine the crucial information about the password length.&nbsp; After I write this, I will probably work out how to decode the password properties and match them back to the appropriate information but I have not yet done that task.</p>
+
+
+
+<p>In order to perform a password spray attack, the next step is to pick a common password (such as &#8220;Autumn2015&#8221;) and work out our technique on how to spray using &#8220;rpcclient&#8221;.&nbsp;&nbsp; Conveniently, &#8220;rpcclient&#8221; allows us to specify some commands on the command line which is very handy.&nbsp;&nbsp;&nbsp; The follow two examples show a successful logon versus a failed logon.&nbsp; (password of &#8220;bbb&#8221; is the correct logon)</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" data-lazy="1" class="tf_svg_lazy" width="833" height="203" src="https://static.wixstatic.com/media/75fce7_cff2707518bc4c63ad21108fa252f8fb.png/v1/fill/w_833,h_203,al_c,lg_1/75fce7_cff2707518bc4c63ad21108fa252f8fb.png" alt=""/></figure>
+
+
+
+<p>In these examples, we specifically told &#8220;rpcclient&#8221; to run two commands, these being &#8220;getusername&#8221; and then &#8220;quit&#8221; to exit out of the client.&nbsp;&nbsp; Now we have all of the ingredients to perform a password spraying attack.&nbsp;&nbsp; All we need is a bourne/bash shell loop and we are off to the races.&nbsp;&nbsp; Example of a simple shell script or command line to spray given that the &#8220;enumdomusers&#8221; output is in the &#8220;domain-users.txt&#8221; file would be as follows.</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" data-lazy="1" class="tf_svg_lazy" width="605" height="167" src="https://static.wixstatic.com/media/75fce7_033724d7e49640daaa8f28bc29885a03.png/v1/fill/w_605,h_167,al_c,lg_1/75fce7_033724d7e49640daaa8f28bc29885a03.png" alt=""/></figure>
+
+
+
+<p>You know that you are successful when you see the string &#8220;Authority&#8221; appear in the output.&nbsp;&nbsp; Lack of success for each user is going to be the &#8220;NT_STATUS_LOGON_FAILURE&#8221; message.</p>
+
+
+
+<p>If you begin to get the &#8220;ACCOUNT_LOCKED&#8221; failure you should immediately stop your spray because you have likely sprayed too many times in a short period of time.</p>
+
+
+
+<p>Assuming you have gained access to a credential, one of the additional nice things you can do is explore the SYSVOL using the &#8220;smbclient&#8221; program.&nbsp;&nbsp; The syntax is as follows.</p>
+
+
+
+<figure class="wp-block-image"><img decoding="async" loading="lazy" data-lazy="1" class="tf_svg_lazy" width="820" height="266" src="https://static.wixstatic.com/media/75fce7_1679fd2ca2154d4b84b286773d38adfa.png/v1/fill/w_820,h_266,al_c,lg_1/75fce7_1679fd2ca2154d4b84b286773d38adfa.png" alt=""/></figure>
+
+
+
+<p>​I highly recommend getting familiar with the UNIX Samba suite and in particular these tools.&nbsp;&nbsp; They quite literally saved by bacon over the past week and you could well be in the same boat needing these fun tools in your future also.​</p>
+
+
+
+<p><strong><em>Join the BHIS Blog Mailing List – get notified when we post new blogs, webcasts, and podcasts.</em></strong></p>
+
+
+
+<div class="wp-block-jetpack-subscriptions"><div class="jetpack_subscription_widget">            <form action="#" method="post" accept-charset="utf-8" id="subscribe-blog-536">
+									<div class="jetpack-subscribe-count">
+						<p>
+						Join 3,381 other subscribers						</p>
+					</div>
+					                    <p id="subscribe-email">
+                        <label id="jetpack-subscribe-label"
+                               class="screen-reader-text"
+                               for="subscribe-field-536">
+							Email Address                        </label>
+                        <input type="email" name="email" required="required"
+                        			                                                value=""
+                            id="subscribe-field-536"
+                            placeholder="Email Address"
+                        />
+                    </p>
+
+					<p id="subscribe-submit"
+											>
+                        <input type="hidden" name="action" value="subscribe"/>
+                        <input type="hidden" name="source" value="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/"/>
+                        <input type="hidden" name="sub-type" value="widget"/>
+                        <input type="hidden" name="redirect_fragment" value="536"/>
+						                        <button type="submit"
+	                        	                            class="undefined"
+                            		                    			                    style="margin-left: 0px;"
+		                    	                        name="jetpack_subscriptions_widget"
+	                    >
+	                        Subscribe                        </button>
+                    </p>
+				            </form>
+		
+</div></div>
+
+<!--themify_builder_content-->
+<div id="themify_builder_content-4645" data-postid="4645" class="themify_builder_content themify_builder_content-4645 themify_builder tf_clear">
+    </div>
+<!--/themify_builder_content--><div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow noopener noreferrer" data-shared="sharing-twitter-4645" class="share-twitter sd-button share-icon no-text" href="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/?share=twitter" target="_blank" title="Click to share on Twitter"><span></span><span class="sharing-screen-reader-text">Click to share on Twitter (Opens in new window)</span></a></li><li class="share-linkedin"><a rel="nofollow noopener noreferrer" data-shared="sharing-linkedin-4645" class="share-linkedin sd-button share-icon no-text" href="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/?share=linkedin" target="_blank" title="Click to share on LinkedIn"><span></span><span class="sharing-screen-reader-text">Click to share on LinkedIn (Opens in new window)</span></a></li><li class="share-facebook"><a rel="nofollow noopener noreferrer" data-shared="sharing-facebook-4645" class="share-facebook sd-button share-icon no-text" href="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/?share=facebook" target="_blank" title="Click to share on Facebook"><span></span><span class="sharing-screen-reader-text">Click to share on Facebook (Opens in new window)</span></a></li><li class="share-print"><a rel="nofollow noopener noreferrer" data-shared="" class="share-print sd-button share-icon no-text" href="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/#print" target="_blank" title="Click to print"><span></span><span class="sharing-screen-reader-text">Click to print (Opens in new window)</span></a></li><li class="share-end"></li></ul></div></div></div>
+<div id='jp-relatedposts' class='jp-relatedposts' >
+	<h3 class="jp-relatedposts-headline"><em>Related</em></h3>
+</div>
+	    
+	</div><!-- /.entry-content -->
+	
+
+	</div>
+	<!-- /.post-content -->
+	
+</article>
+<!-- /.post -->
+
+		<div class="post-nav tf_clearfix">
+			<span class="prev"><a href="https://www.blackhillsinfosec.com/modifying-metasploit-x64-template-for-av-evasion/" rel="prev"><span class="arrow"></span> Modifying Metasploit x64 template for AV evasion</a></span><span class="next"><a href="https://www.blackhillsinfosec.com/how-compliance-compromises-happen-or-the-most-boring-article-title-in-the-history-of-all-the-internet/" rel="next"><span class="arrow"></span> How Compliance Compromises Happen. (Or, The Most Boring Article Title in the History of All the  Internet…)</a></span>		</div>
+		<!-- /.post-nav -->
+
+		    
+		<div id="comments" class="commentwrap tf_clearfix">
+
+		    
+		    						    			<h4 class="comment-title">1 Comment</h4>
+
+			    
+			<ol class="commentlist">
+					<li id="comment-1744" class="comment even thread-even depth-1">
+	    <p class="comment-author">
+				<cite><svg  aria-label="Bookmark" role="img" class="tf_fa tf-far-bookmark"><use href="#tf-far-bookmark"></use></svg>Antoine</cite>
+		<br/>
+		<small class="comment-time">
+		    January 26, 2017		    @
+		    1:23 am		</small>
+	    </p>
+	    <div class="commententry">
+				<p>Hi,</p>
+<p>Excellent post, as usual ! 🙂 </p>
+<p>I have a (dumb) questioh though: let&#8217;s say you have found some credentials using password spraying, how can you spawn a windows shell from your linux host ? What exactly do you use (command, tool, &#8230;) ? What needs to be open on the Windows host/server to be able to connect to it ?</p>
+	    </div>
+	    <p class="reply">
+			    </p>
+	    </li><!-- #comment-## -->
+			</ol>
+
+			    
+					    		    		</div>
+		<!-- /.commentwrap -->
+	    
+	            </main>
+	    
+    <aside id="sidebar" itemscope="itemscope" itemtype="https://schema.org/WPSidebar">
+
+            
+            <div id="themify-social-links-1007" class="widget themify-social-links"><h4 class="widgettitle">Follow Us</h4><ul class="social-links horizontal">
+							<li class="social-link-item facebook font-icon icon-medium">
+								<a href="https://www.facebook.com/BlackHillsInfoSec" aria-label="facebook" ><i style="color: #000000;"><svg  aria-label="Facebook" role="img" class="tf_fa tf-fab-facebook-square"><use href="#tf-fab-facebook-square"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item twitter font-icon icon-medium">
+								<a href="http://twitter.com/BHinfoSecurity" aria-label="twitter" ><i style="color: #000000;"><svg  aria-label="Twitter" role="img" class="tf_fa tf-fab-twitter-square"><use href="#tf-fab-twitter-square"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item linkedin font-icon icon-medium">
+								<a href="http://www.linkedin.com/company/black-hills-information-security" aria-label="linkedin" ><i style="color: #000000;"><svg  aria-label="LinkedIn" role="img" class="tf_fa tf-fab-linkedin-square"><use href="#tf-fab-linkedin-square"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item youtube font-icon icon-medium">
+								<a href="https://www.youtube.com/channel/UCJ2U9Dq9NckqHMbcUupgF0A?nohtml5=False" aria-label="youtube" ><i style="color: #000000;"><svg  aria-label="YouTube" role="img" class="tf_fa tf-fab-youtube-square"><use href="#tf-fab-youtube-square"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item itunes font-icon icon-medium">
+								<a href="https://itunes.apple.com/us/podcast/black-hills-information-security/id1410835265?mt=2" aria-label="itunes" ><i style="color: #000000;"><svg  aria-label="iTunes" role="img" class="tf_fa tf-fas-podcast"><use href="#tf-fas-podcast"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item stitcher font-icon icon-medium">
+								<a href="https://www.stitcher.com/podcast/black-hills-information-security" aria-label="stitcher" ><i style="color: #000000;"><svg  aria-label="Stitcher" role="img" class="tf_fa tf-fas-microphone"><use href="#tf-fas-microphone"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item --></ul></div><div id="media_image-2" class="widget widget_media_image"><a href="https://www.blackhillsinfosec.com/30-things-to-get-you-started/"><img decoding="async" loading="lazy" data-lazy="1" width="300" height="300" src="https://www.blackhillsinfosec.com/wp-content/uploads/2018/05/start-here-widget-300x300.png" class="tf_svg_lazy image wp-image-8600 attachment-medium size-medium" alt="" style="max-width: 100%; height: auto;" srcset="https://www.blackhillsinfosec.com/wp-content/uploads/2018/05/start-here-widget-300x300.png 300w, https://www.blackhillsinfosec.com/wp-content/uploads/2018/05/start-here-widget-150x150.png 150w, https://www.blackhillsinfosec.com/wp-content/uploads/2018/05/start-here-widget-978x978.png 978w, https://www.blackhillsinfosec.com/wp-content/uploads/2018/05/start-here-widget-221x221.png 221w, https://www.blackhillsinfosec.com/wp-content/uploads/2018/05/start-here-widget.png 350w" sizes="(max-width: 300px) 100vw, 300px" /></a></div><div id="search-3" class="widget widget_search"><h4 class="widgettitle">Looking For Something?</h4><form method="get" id="searchform" action="https://www.blackhillsinfosec.com/">
+
+	<i class="icon-search"></i>
+
+	<input type="text" name="s" id="s" title="Search" value="" />
+
+</form></div><div id="blog_subscription-2" class="widget widget_blog_subscription jetpack_subscription_widget"><h4 class="widgettitle">Subscribe to the BHIS blog</h4>
+            <form action="#" method="post" accept-charset="utf-8" id="subscribe-blog-blog_subscription-2">
+				                    <div id="subscribe-text"><p>Don't get left in the dark! Enter your email address and every time a post goes live you'll get an instant notification! We'll also add you to our webcast list, so you won't miss our occasional emails about upcoming events! (We promise, we're not spammy!)</p>
+</div>                    <p id="subscribe-email">
+                        <label id="jetpack-subscribe-label"
+                               class="screen-reader-text"
+                               for="subscribe-field-blog_subscription-2">
+							Email Address                        </label>
+                        <input type="email" name="email" required="required"
+                        			                                                value=""
+                            id="subscribe-field-blog_subscription-2"
+                            placeholder="Email Address"
+                        />
+                    </p>
+
+					<p id="subscribe-submit"
+											>
+                        <input type="hidden" name="action" value="subscribe"/>
+                        <input type="hidden" name="source" value="https://www.blackhillsinfosec.com/password-spraying-other-fun-with-rpcclient/"/>
+                        <input type="hidden" name="sub-type" value="widget"/>
+                        <input type="hidden" name="redirect_fragment" value="blog_subscription-2"/>
+						                        <button type="submit"
+	                        		                    	                        name="jetpack_subscriptions_widget"
+	                    >
+	                        Subscribe                        </button>
+                    </p>
+				            </form>
+		
+</div><div id="themify-list-categories-2" class="widget list-categories"><h4 class="widgettitle">Browse by category</h4><select  name='cat' id='themify-list-categories-2-cats' class='postform' >
+	<option value='-1'>Select Category</option>
+	<option class="level-0" value="1456">Backdoors &amp; Breaches&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="994">Blue Team&nbsp;&nbsp;(67)</option>
+	<option class="level-0" value="1003">Blue Team Tools&nbsp;&nbsp;(29)</option>
+	<option class="level-0" value="1001">C2&nbsp;&nbsp;(26)</option>
+	<option class="level-0" value="1308">DNSTAP&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="1008">External/Internal&nbsp;&nbsp;(44)</option>
+	<option class="level-0" value="1095">Finding&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="993">Fun &amp; Games&nbsp;&nbsp;(52)</option>
+	<option class="level-0" value="991">General InfoSec Tips &amp; Tricks&nbsp;&nbsp;(38)</option>
+	<option class="level-0" value="1377">Hardware Hacking&nbsp;&nbsp;(15)</option>
+	<option class="level-0" value="28">How-To&nbsp;&nbsp;(175)</option>
+	<option class="level-0" value="1004">Hunt Teaming&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="252">Informational&nbsp;&nbsp;(203)</option>
+	<option class="level-0" value="990">InfoSec 101&nbsp;&nbsp;(145)</option>
+	<option class="level-0" value="1018">InfoSec 201&nbsp;&nbsp;(28)</option>
+	<option class="level-0" value="1019">InfoSec 301&nbsp;&nbsp;(8)</option>
+	<option class="level-0" value="1281">LLMNR&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="1011">Mobile&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="4">News&nbsp;&nbsp;(49)</option>
+	<option class="level-0" value="1078">Password Cracking&nbsp;&nbsp;(10)</option>
+	<option class="level-0" value="1012">Password Spray&nbsp;&nbsp;(12)</option>
+	<option class="level-0" value="1006">Phishing&nbsp;&nbsp;(14)</option>
+	<option class="level-0" value="999">Physical&nbsp;&nbsp;(8)</option>
+	<option class="level-0" value="1109">Podcasts&nbsp;&nbsp;(90)</option>
+	<option class="level-0" value="1007">Recon&nbsp;&nbsp;(11)</option>
+	<option class="level-0" value="998">Red Team&nbsp;&nbsp;(176)</option>
+	<option class="level-0" value="1002">Red Team Tools&nbsp;&nbsp;(74)</option>
+	<option class="level-0" value="1010">Social Engineering&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="1009">Web App&nbsp;&nbsp;(14)</option>
+	<option class="level-0" value="421">Webcasts&nbsp;&nbsp;(109)</option>
+	<option class="level-0" value="1005">Wireless&nbsp;&nbsp;(8)</option>
+</select>
+		
+			<script type='text/javascript'>
+			/* <![CDATA[ */
+				function onCatChange() {
+					var dropdown = document.getElementById('themify-list-categories-2-cats'),
+						catSelected = dropdown.options[dropdown.selectedIndex].value;
+					if ( catSelected > 0 ) {
+						location.href = "https://www.blackhillsinfosec.com/?cat="+catSelected;
+					}
+				}
+				document.getElementById('themify-list-categories-2-cats').onchange = onCatChange;
+			/* ]]> */
+			</script>
+		
+		</div><div id="themify-feature-posts-1004" class="widget feature-posts"><h4 class="widgettitle">Recent Posts</h4><ul class="feature-posts-list"><li><a href="https://www.blackhillsinfosec.com/webcast-your-free-and-open-source-edr-options/"><img decoding="async" loading="lazy" data-lazy="1" src="https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00536_05192021_WebcastOpenSourceEDR-1024x576-50x50.jpg" width="50" height="50" class="tf_svg_lazy post-img wp-post-image wp-image-18929" title="00536_05192021_WebcastOpenSourceEDR" alt="00536_05192021_WebcastOpenSourceEDR" srcset="https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00536_05192021_WebcastOpenSourceEDR-1024x576-50x50.jpg 50w, https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00536_05192021_WebcastOpenSourceEDR-150x150.jpg 150w, https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00536_05192021_WebcastOpenSourceEDR-1024x576-978x978.jpg 978w, https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00536_05192021_WebcastOpenSourceEDR-1024x576-221x221.jpg 221w" sizes="(max-width: 50px) 100vw, 50px" /></a><a href="https://www.blackhillsinfosec.com/webcast-your-free-and-open-source-edr-options/" class="feature-posts-title">Webcast: Your Free and Open Source EDR Options!</a> <br /><span class="post-excerpt">There has been a huge explosion of different free and</span></li><li><a href="https://www.blackhillsinfosec.com/using-sdr-to-build-a-trunk-tracker-police-fire-and-ems-scanner/"><img decoding="async" loading="lazy" data-lazy="1" src="https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00532_05042021_UsingSDRBuildTrunkTracker-1024x576-50x50.jpg" width="50" height="50" class="tf_svg_lazy post-img wp-post-image wp-image-18877" title="00532_05042021_UsingSDRBuildTrunkTracker" alt="00532_05042021_UsingSDRBuildTrunkTracker" srcset="https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00532_05042021_UsingSDRBuildTrunkTracker-1024x576-50x50.jpg 50w, https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00532_05042021_UsingSDRBuildTrunkTracker-150x150.jpg 150w, https://www.blackhillsinfosec.com/wp-content/uploads/2021/05/00532_05042021_UsingSDRBuildTrunkTracker-1024x576-221x221.jpg 221w" sizes="(max-width: 50px) 100vw, 50px" /></a><a href="https://www.blackhillsinfosec.com/using-sdr-to-build-a-trunk-tracker-police-fire-and-ems-scanner/" class="feature-posts-title">Using SDR to Build a Trunk Tracker &#8211; Police, Fire, and EMS Scanner</a> <br /><span class="post-excerpt">Ray Felch // Introduction&nbsp; Recently, I came</span></li><li><a href="https://www.blackhillsinfosec.com/talkin-about-infosec-news-5-10-2021/"></a><a href="https://www.blackhillsinfosec.com/talkin-about-infosec-news-5-10-2021/" class="feature-posts-title">Talkin’ About Infosec News – 5/10/2021</a> <br /><span class="post-excerpt">Originally Aired on May 10, 2021 Articles discussed in</span></li></ul></div><div id="tag_cloud-2" class="widget widget_tag_cloud"><h4 class="widgettitle">Browse by topic</h4><div class="tagcloud"><a href="https://www.blackhillsinfosec.com/tag/active-directory/" class="tag-cloud-link tag-link-862 tag-link-position-1" style="font-size: 8.9090909090909pt;" aria-label="Active Directory (7 items)">Active Directory</a>
+<a href="https://www.blackhillsinfosec.com/tag/adhd/" class="tag-cloud-link tag-link-439 tag-link-position-2" style="font-size: 10.727272727273pt;" aria-label="ADHD (9 items)">ADHD</a>
+<a href="https://www.blackhillsinfosec.com/tag/anti-virus/" class="tag-cloud-link tag-link-163 tag-link-position-3" style="font-size: 13.454545454545pt;" aria-label="anti-virus (13 items)">anti-virus</a>
+<a href="https://www.blackhillsinfosec.com/tag/attack-tactics/" class="tag-cloud-link tag-link-1108 tag-link-position-4" style="font-size: 10.727272727273pt;" aria-label="Attack Tactics (9 items)">Attack Tactics</a>
+<a href="https://www.blackhillsinfosec.com/tag/av/" class="tag-cloud-link tag-link-53 tag-link-position-5" style="font-size: 12.181818181818pt;" aria-label="AV (11 items)">AV</a>
+<a href="https://www.blackhillsinfosec.com/tag/blue-team/" class="tag-cloud-link tag-link-44 tag-link-position-6" style="font-size: 18pt;" aria-label="Blue Team (24 items)">Blue Team</a>
+<a href="https://www.blackhillsinfosec.com/tag/bypassing-av/" class="tag-cloud-link tag-link-205 tag-link-position-7" style="font-size: 8.9090909090909pt;" aria-label="bypassing AV (7 items)">bypassing AV</a>
+<a href="https://www.blackhillsinfosec.com/tag/c2/" class="tag-cloud-link tag-link-166 tag-link-position-8" style="font-size: 14.909090909091pt;" aria-label="C2 (16 items)">C2</a>
+<a href="https://www.blackhillsinfosec.com/tag/cloud/" class="tag-cloud-link tag-link-280 tag-link-position-9" style="font-size: 8pt;" aria-label="cloud (6 items)">cloud</a>
+<a href="https://www.blackhillsinfosec.com/tag/command-and-control/" class="tag-cloud-link tag-link-742 tag-link-position-10" style="font-size: 8.9090909090909pt;" aria-label="command and control (7 items)">command and control</a>
+<a href="https://www.blackhillsinfosec.com/tag/hardware-hacking/" class="tag-cloud-link tag-link-398 tag-link-position-11" style="font-size: 8.9090909090909pt;" aria-label="hardware hacking (7 items)">hardware hacking</a>
+<a href="https://www.blackhillsinfosec.com/tag/hashcat/" class="tag-cloud-link tag-link-794 tag-link-position-12" style="font-size: 8.9090909090909pt;" aria-label="Hashcat (7 items)">Hashcat</a>
+<a href="https://www.blackhillsinfosec.com/tag/infosec/" class="tag-cloud-link tag-link-130 tag-link-position-13" style="font-size: 12.727272727273pt;" aria-label="infosec (12 items)">infosec</a>
+<a href="https://www.blackhillsinfosec.com/tag/john-strand/" class="tag-cloud-link tag-link-133 tag-link-position-14" style="font-size: 20.909090909091pt;" aria-label="john strand (35 items)">john strand</a>
+<a href="https://www.blackhillsinfosec.com/tag/jordan-drysdale/" class="tag-cloud-link tag-link-1283 tag-link-position-15" style="font-size: 13.454545454545pt;" aria-label="Jordan Drysdale (13 items)">Jordan Drysdale</a>
+<a href="https://www.blackhillsinfosec.com/tag/kent-ickler/" class="tag-cloud-link tag-link-1287 tag-link-position-16" style="font-size: 11.454545454545pt;" aria-label="Kent Ickler (10 items)">Kent Ickler</a>
+<a href="https://www.blackhillsinfosec.com/tag/linux/" class="tag-cloud-link tag-link-107 tag-link-position-17" style="font-size: 11.454545454545pt;" aria-label="Linux (10 items)">Linux</a>
+<a href="https://www.blackhillsinfosec.com/tag/llmnr/" class="tag-cloud-link tag-link-1106 tag-link-position-18" style="font-size: 8.9090909090909pt;" aria-label="LLMNR (7 items)">LLMNR</a>
+<a href="https://www.blackhillsinfosec.com/tag/mailsniper/" class="tag-cloud-link tag-link-504 tag-link-position-19" style="font-size: 10.727272727273pt;" aria-label="MailSniper (9 items)">MailSniper</a>
+<a href="https://www.blackhillsinfosec.com/tag/microsoft/" class="tag-cloud-link tag-link-318 tag-link-position-20" style="font-size: 13.454545454545pt;" aria-label="Microsoft (13 items)">Microsoft</a>
+<a href="https://www.blackhillsinfosec.com/tag/nessus/" class="tag-cloud-link tag-link-49 tag-link-position-21" style="font-size: 9.8181818181818pt;" aria-label="Nessus (8 items)">Nessus</a>
+<a href="https://www.blackhillsinfosec.com/tag/nmap/" class="tag-cloud-link tag-link-263 tag-link-position-22" style="font-size: 8pt;" aria-label="Nmap (6 items)">Nmap</a>
+<a href="https://www.blackhillsinfosec.com/tag/password-cracking/" class="tag-cloud-link tag-link-795 tag-link-position-23" style="font-size: 8.9090909090909pt;" aria-label="Password cracking (7 items)">Password cracking</a>
+<a href="https://www.blackhillsinfosec.com/tag/password-policy/" class="tag-cloud-link tag-link-671 tag-link-position-24" style="font-size: 8.9090909090909pt;" aria-label="password policy (7 items)">password policy</a>
+<a href="https://www.blackhillsinfosec.com/tag/passwords/" class="tag-cloud-link tag-link-72 tag-link-position-25" style="font-size: 14.909090909091pt;" aria-label="passwords (16 items)">passwords</a>
+<a href="https://www.blackhillsinfosec.com/tag/password-spraying/" class="tag-cloud-link tag-link-57 tag-link-position-26" style="font-size: 11.454545454545pt;" aria-label="password spraying (10 items)">password spraying</a>
+<a href="https://www.blackhillsinfosec.com/tag/pen-testing/" class="tag-cloud-link tag-link-102 tag-link-position-27" style="font-size: 17.636363636364pt;" aria-label="pen-testing (23 items)">pen-testing</a>
+<a href="https://www.blackhillsinfosec.com/tag/penetration-testing/" class="tag-cloud-link tag-link-101 tag-link-position-28" style="font-size: 15.818181818182pt;" aria-label="penetration testing (18 items)">penetration testing</a>
+<a href="https://www.blackhillsinfosec.com/tag/pentest/" class="tag-cloud-link tag-link-114 tag-link-position-29" style="font-size: 12.727272727273pt;" aria-label="pentest (12 items)">pentest</a>
+<a href="https://www.blackhillsinfosec.com/tag/pentesting/" class="tag-cloud-link tag-link-67 tag-link-position-30" style="font-size: 22pt;" aria-label="Pentesting (41 items)">Pentesting</a>
+<a href="https://www.blackhillsinfosec.com/tag/phishing/" class="tag-cloud-link tag-link-260 tag-link-position-31" style="font-size: 11.454545454545pt;" aria-label="phishing (10 items)">phishing</a>
+<a href="https://www.blackhillsinfosec.com/tag/podcast/" class="tag-cloud-link tag-link-1187 tag-link-position-32" style="font-size: 9.8181818181818pt;" aria-label="podcast (8 items)">podcast</a>
+<a href="https://www.blackhillsinfosec.com/tag/podcasts/" class="tag-cloud-link tag-link-1170 tag-link-position-33" style="font-size: 8.9090909090909pt;" aria-label="Podcasts (7 items)">Podcasts</a>
+<a href="https://www.blackhillsinfosec.com/tag/powershell/" class="tag-cloud-link tag-link-240 tag-link-position-34" style="font-size: 18pt;" aria-label="PowerShell (24 items)">PowerShell</a>
+<a href="https://www.blackhillsinfosec.com/tag/python/" class="tag-cloud-link tag-link-687 tag-link-position-35" style="font-size: 8.9090909090909pt;" aria-label="Python (7 items)">Python</a>
+<a href="https://www.blackhillsinfosec.com/tag/raymond-felch/" class="tag-cloud-link tag-link-1373 tag-link-position-36" style="font-size: 9.8181818181818pt;" aria-label="Raymond Felch (8 items)">Raymond Felch</a>
+<a href="https://www.blackhillsinfosec.com/tag/red-team/" class="tag-cloud-link tag-link-43 tag-link-position-37" style="font-size: 20.363636363636pt;" aria-label="Red Team (33 items)">Red Team</a>
+<a href="https://www.blackhillsinfosec.com/tag/red-teaming/" class="tag-cloud-link tag-link-273 tag-link-position-38" style="font-size: 10.727272727273pt;" aria-label="red teaming (9 items)">red teaming</a>
+<a href="https://www.blackhillsinfosec.com/tag/rita/" class="tag-cloud-link tag-link-156 tag-link-position-39" style="font-size: 9.8181818181818pt;" aria-label="RITA (8 items)">RITA</a>
+<a href="https://www.blackhillsinfosec.com/tag/social-engineering/" class="tag-cloud-link tag-link-261 tag-link-position-40" style="font-size: 8.9090909090909pt;" aria-label="social engineering (7 items)">social engineering</a>
+<a href="https://www.blackhillsinfosec.com/tag/sysmon/" class="tag-cloud-link tag-link-811 tag-link-position-41" style="font-size: 9.8181818181818pt;" aria-label="Sysmon (8 items)">Sysmon</a>
+<a href="https://www.blackhillsinfosec.com/tag/tools/" class="tag-cloud-link tag-link-221 tag-link-position-42" style="font-size: 12.181818181818pt;" aria-label="tools (11 items)">tools</a>
+<a href="https://www.blackhillsinfosec.com/tag/webcast/" class="tag-cloud-link tag-link-604 tag-link-position-43" style="font-size: 21.090909090909pt;" aria-label="webcast (36 items)">webcast</a>
+<a href="https://www.blackhillsinfosec.com/tag/webcasts/" class="tag-cloud-link tag-link-664 tag-link-position-44" style="font-size: 16.181818181818pt;" aria-label="webcasts (19 items)">webcasts</a>
+<a href="https://www.blackhillsinfosec.com/tag/windows/" class="tag-cloud-link tag-link-411 tag-link-position-45" style="font-size: 10.727272727273pt;" aria-label="Windows (9 items)">Windows</a></div>
+</div><div id="archives-3" class="widget widget_archive"><h4 class="widgettitle">Archives</h4>		<label class="screen-reader-text" for="archives-dropdown-3">Archives</label>
+		<select id="archives-dropdown-3" name="archive-dropdown">
+			
+			<option value="">Select Month</option>
+				<option value='https://www.blackhillsinfosec.com/2021/05/'> May 2021 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2021/04/'> April 2021 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2021/03/'> March 2021 &nbsp;(11)</option>
+	<option value='https://www.blackhillsinfosec.com/2021/02/'> February 2021 &nbsp;(5)</option>
+	<option value='https://www.blackhillsinfosec.com/2021/01/'> January 2021 &nbsp;(5)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/12/'> December 2020 &nbsp;(10)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/11/'> November 2020 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/10/'> October 2020 &nbsp;(4)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/09/'> September 2020 &nbsp;(3)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/08/'> August 2020 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/07/'> July 2020 &nbsp;(5)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/06/'> June 2020 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/05/'> May 2020 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/04/'> April 2020 &nbsp;(9)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/03/'> March 2020 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/02/'> February 2020 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2020/01/'> January 2020 &nbsp;(7)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/12/'> December 2019 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/11/'> November 2019 &nbsp;(4)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/10/'> October 2019 &nbsp;(7)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/09/'> September 2019 &nbsp;(5)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/08/'> August 2019 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/07/'> July 2019 &nbsp;(2)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/06/'> June 2019 &nbsp;(5)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/05/'> May 2019 &nbsp;(7)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/04/'> April 2019 &nbsp;(1)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/03/'> March 2019 &nbsp;(7)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/02/'> February 2019 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2019/01/'> January 2019 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/12/'> December 2018 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/11/'> November 2018 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/10/'> October 2018 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/09/'> September 2018 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/08/'> August 2018 &nbsp;(11)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/07/'> July 2018 &nbsp;(12)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/06/'> June 2018 &nbsp;(13)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/05/'> May 2018 &nbsp;(10)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/04/'> April 2018 &nbsp;(9)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/03/'> March 2018 &nbsp;(10)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/02/'> February 2018 &nbsp;(9)</option>
+	<option value='https://www.blackhillsinfosec.com/2018/01/'> January 2018 &nbsp;(7)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/12/'> December 2017 &nbsp;(7)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/11/'> November 2017 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/10/'> October 2017 &nbsp;(9)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/09/'> September 2017 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/08/'> August 2017 &nbsp;(10)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/07/'> July 2017 &nbsp;(9)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/06/'> June 2017 &nbsp;(7)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/05/'> May 2017 &nbsp;(6)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/04/'> April 2017 &nbsp;(9)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/03/'> March 2017 &nbsp;(13)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/02/'> February 2017 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2017/01/'> January 2017 &nbsp;(12)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/12/'> December 2016 &nbsp;(10)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/11/'> November 2016 &nbsp;(15)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/10/'> October 2016 &nbsp;(11)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/09/'> September 2016 &nbsp;(12)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/08/'> August 2016 &nbsp;(13)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/07/'> July 2016 &nbsp;(12)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/06/'> June 2016 &nbsp;(12)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/05/'> May 2016 &nbsp;(11)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/04/'> April 2016 &nbsp;(12)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/03/'> March 2016 &nbsp;(12)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/02/'> February 2016 &nbsp;(10)</option>
+	<option value='https://www.blackhillsinfosec.com/2016/01/'> January 2016 &nbsp;(8)</option>
+	<option value='https://www.blackhillsinfosec.com/2015/12/'> December 2015 &nbsp;(5)</option>
+	<option value='https://www.blackhillsinfosec.com/2015/11/'> November 2015 &nbsp;(2)</option>
+	<option value='https://www.blackhillsinfosec.com/2015/10/'> October 2015 &nbsp;(2)</option>
+	<option value='https://www.blackhillsinfosec.com/2015/07/'> July 2015 &nbsp;(1)</option>
+	<option value='https://www.blackhillsinfosec.com/2015/06/'> June 2015 &nbsp;(1)</option>
+	<option value='https://www.blackhillsinfosec.com/2015/04/'> April 2015 &nbsp;(1)</option>
+	<option value='https://www.blackhillsinfosec.com/2015/03/'> March 2015 &nbsp;(1)</option>
+
+		</select>
+
+<script>
+/* <![CDATA[ */
+(function() {
+	var dropdown = document.getElementById( "archives-dropdown-3" );
+	function onSelectChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value !== '' ) {
+			document.location.href = this.options[ this.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onSelectChange;
+})();
+/* ]]> */
+</script>
+			</div>
+            
+    </aside>
+    <!-- /#sidebar -->
+
+    </div>
+<!-- /#layout -->
+
+	    </div>
+	<!-- /body -->
+
+	<div id="footerwrap">
+
+		<div id="footer-inner">
+
+						<footer id="footer" class="pagewidth" itemscope="itemscope" itemtype="https://schema.org/WPFooter">
+				
+				<div class="back-top tf_clearfix">
+					<div class="arrow-up">
+						<a href="#header"></a>
+					</div>
+				</div>
+
+				<div class="footer-logo-wrapper tf_clearfix">
+					<div id="footer-logo"><a href="https://www.blackhillsinfosec.com" title="Black Hills Information Security"><span>Black Hills Information Security</span></a></div>					<!-- /footer-logo -->
+
+					<div class="footer-text tf_clearfix">
+						<div class="one"><font face="open sans"><p>115 W. Hudson St. Spearfish, SD 57783  |  701-484-BHIS<BR> &copy; 2008
+<p></font></div>						<div class="two"> </div>					</div>
+					<!-- /footer-text -->
+				</div>
+				<!-- /.footer-logo-wrapper -->
+
+									<div class="footer-social-widgets">
+						<div id="themify-social-links-1006" class="widget themify-social-links"><strong class="widgettitle">Links</strong><ul class="social-links horizontal">
+							<li class="social-link-item facebook font-icon icon-medium">
+								<a href="https://www.facebook.com/BlackHillsInfoSec" aria-label="facebook" ><i style="color: #000000;"><svg  aria-label="Facebook" role="img" class="tf_fa tf-fab-facebook-square"><use href="#tf-fab-facebook-square"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item twitter font-icon icon-medium">
+								<a href="http://twitter.com/BHinfoSecurity" aria-label="twitter" ><i style="color: #000000;"><svg  aria-label="Twitter" role="img" class="tf_fa tf-fab-twitter-square"><use href="#tf-fab-twitter-square"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item linkedin font-icon icon-medium">
+								<a href="http://www.linkedin.com/company/black-hills-information-security" aria-label="linkedin" ><i style="color: #000000;"><svg  aria-label="LinkedIn" role="img" class="tf_fa tf-fab-linkedin-square"><use href="#tf-fab-linkedin-square"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item youtube font-icon icon-medium">
+								<a href="https://www.youtube.com/channel/UCJ2U9Dq9NckqHMbcUupgF0A?nohtml5=False" aria-label="youtube" ><i style="color: #000000;"><svg  aria-label="YouTube" role="img" class="tf_fa tf-fab-youtube-square"><use href="#tf-fab-youtube-square"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item itunes font-icon icon-medium">
+								<a href="https://itunes.apple.com/us/podcast/black-hills-information-security/id1410835265?mt=2" aria-label="itunes" ><i style="color: #000000;"><svg  aria-label="iTunes" role="img" class="tf_fa tf-fas-podcast"><use href="#tf-fas-podcast"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item -->
+							<li class="social-link-item stitcher font-icon icon-medium">
+								<a href="https://www.stitcher.com/podcast/black-hills-information-security" aria-label="stitcher" ><i style="color: #000000;"><svg  aria-label="Stitcher" role="img" class="tf_fa tf-fas-microphone"><use href="#tf-fas-microphone"></use></svg></i>  </a>
+							</li>
+							<!-- /themify-link-item --></ul></div><div id="search-4" class="widget widget_search"><strong class="widgettitle">Search the site</strong><form method="get" id="searchform" action="https://www.blackhillsinfosec.com/">
+
+	<i class="icon-search"></i>
+
+	<input type="text" name="s" id="s" title="Search" value="" />
+
+</form></div>					</div>
+					<!-- /.footer-social-widgets -->
+				
+				<div class="footer-nav-wrap tf_clearfix">
+									</div>
+				<!-- /.footer-nav-wrap -->
+
+				
+	<div class="footer-widgets tf_clearfix">
+
+								<div class="col3-1 first">
+							</div>
+								<div class="col3-1 ">
+							</div>
+								<div class="col3-1 ">
+							</div>
+		
+	</div>
+	<!-- /.footer-widgets -->
+
+
+							</footer>
+			<!-- /#footer -->
+			
+		</div>
+		<!-- /.footer-inner -->
+
+	</div>
+	<!-- /#footerwrap -->
+
+</div>
+<!-- /#pagewrap -->
+
+<!-- SCHEMA BEGIN --><script type="application/ld+json">[{"@context":"https:\/\/schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/www.blackhillsinfosec.com\/password-spraying-other-fun-with-rpcclient\/"},"headline":"Password Spraying &#038; Other Fun with RPCCLIENT","datePublished":"2015-10-30T14:25:57-06:00","dateModified":"2015-10-30T14:25:57-06:00","author":{"@type":"Person","name":"BHIS"},"publisher":{"@type":"Organization","name":"","logo":{"@type":"ImageObject","url":"","width":0,"height":0}},"description":"Joff Thyer \/\/ &nbsp; Many of us in the penetration testing community ar\u200be used to scenarios whereby we land a targeted phishing campaign within a Windows enterprise environment and have that wonderful access into the world of Windows command line networking tools.&nbsp;&nbsp;&nbsp; You get your shell and before you know it, you are ready to [&hellip;]","comment":[{"@type":"Comment","author":{"@type":"Person","name":"Antoine"},"text":"Hi,\r\n\r\nExcellent post, as usual ! :) \r\n\r\nI have a (dumb) questioh though: let's say you have found some credentials using password spraying, how can you spawn a windows shell from your linux host ? What exactly do you use (command, tool, ...) ? What needs to be open on the Windows host\/server to be able to connect to it ?"}],"commentCount":1}]</script><!-- /SCHEMA END --><!-- wp_footer -->
+
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/www.blackhillsinfosec.com\/password-spraying-other-fun-with-rpcclient\/":4645};
+	</script>
+							<!--googleoff:all-->
+			<!--noindex-->
+			<script type="text/template" id="tf_vars">
+				var tbLocalScript = {"builder_url":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder","css_module_url":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/css/modules/","js_module_url":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/","js_modules":{"fwr":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/fullwidthRows.min.js","bgs":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/backgroundSlider.min.js","fwv":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/fullwidthvideo.min.js","feature":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/feature.min.js","parallax":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/parallax.min.js","bgzs":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/bgzoom_scroll.min.js","bgzoom":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/bgzoom.min.js","gallery":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/gallery.min.js","menu":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/menu.min.js","read":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/readMore.min.js","sticky":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/sticky.min.js","alert":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/alert.min.js","tab":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/tab.min.js","accordion":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/accordion.min.js","oc":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/overlay-content.min.js","video":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/modules/video.min.js","sh":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/themify-builder/js/themify.scroll-highlight.min.js"},"breakpoints":{"tablet_landscape":[769,1280],"tablet":[681,768],"mobile":680},"fullwidth_support":"1","addons":[]};
+var themifyScript = {"lightboxContext":"#pagewrap","sticky_header":"","chart":{"trackColor":"#f2f2f2","scaleColor":false,"lineCap":"butt","rotate":0,"size":170,"lineWidth":22,"animate":2000}};
+var themify_vars = {"version":"5.2.1","url":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify","wp":"5.7.2","ajax_url":"https://www.blackhillsinfosec.com/wp-admin/admin-ajax.php","includesURL":"https://www.blackhillsinfosec.com/wp-includes/","emailSub":"Check this out!","lightbox":{"i18n":{"tCounter":"%curr% of %total%"}},"s_v":"5.3.7","a_v":"3.6.2","i_v":"4.1.4","js_modules":{"fxh":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/fixedheader.min.js","lb":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/lightbox.min.js","gal":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/themify.gallery.min.js","sw":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/swiper/swiper.min.js","tc":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/themify.carousel.min.js","map":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/map.min.js","img":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/jquery.imagesloaded.min.js","at":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/autoTiles.min.js","iso":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/isotop.min.js","inf":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/infinite.min.js","lax":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/lax.min.js","video":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/video-player.min.js","audio":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/audio-player.min.js","side":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/themify.sidemenu.min.js","edge":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/edge.Menu.min.js","wow":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/tf_wow.min.js","share":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/sharer.min.js","mega":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/megamenu.js","drop":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/themify.dropdown.min.js","wc":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/wc.min.js"},"css_modules":{"sw":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/css/swiper/swiper.min.css","an":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/css/animate.min.css","video":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/css/modules/video.min.css","audio":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/css/modules/audio.min.css","drop":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/css/modules/dropdown.min.css","lb":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/css/lightbox.min.css"},"is_min":"1","wp_embed":"https://www.blackhillsinfosec.com/wp-includes/js/wp-embed.min.js","theme_js":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/js/themify.script.min.js","theme_v":"5.2.4","theme_url":"https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate","menu_point":"900","done":{"tb_parallax":true}};			</script>
+			<!--/noindex-->
+			<!--googleon:all-->
+			<script nomodule defer src="https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/fallback.min.js"></script>
+			<link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/plugins/jetpack/_inc/blocks/subscriptions/view.css?ver=9.6.1" as="style" /><link rel='stylesheet' id='jetpack-block-subscriptions-css'  href='https://www.blackhillsinfosec.com/wp-content/plugins/jetpack/_inc/blocks/subscriptions/view.css?ver=9.6.1' media='all' />
+<script defer="defer" src='https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/main.min.js?ver=5.2.1' id='themify-main-script-js'></script>
+<script id='sharing-js-js-extra'>
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+</script>
+<script src='https://www.blackhillsinfosec.com/wp-content/plugins/jetpack/_inc/build/sharedaddy/sharing.min.js?ver=9.6.1' id='sharing-js-js'></script>
+<script id='sharing-js-js-after'>
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-twitter' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-twitter' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-linkedin' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-linkedin' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomlinkedin', 'menubar=1,resizable=1,width=580,height=450' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-facebook' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-facebook' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+						return false;
+					}
+				} );
+			} )();
+</script>
+<svg id="tf_svg" style="display:none"><defs><symbol id="tf-far-bookmark" viewBox="0 0 24 32"><path d="M21 0q1.25 0 2.125.875T24 3v29l-12-7-12 7V3Q0 1.75.875.875T3 0h18zm0 26.75V3.375Q21 3 20.625 3H3.375Q3 3 3 3.375V26.75l9-5.25z"></path></symbol><symbol id="tf-fab-facebook-square" viewBox="0 0 32 32"><path d="M28 5v22q0 1.25-.875 2.125T25 30h-5.313V18.937h3.75l.563-4.25h-4.313v-2.688q0-.688.125-1.094t.625-.688 1.313-.281H24v-3.75q-1.313-.188-3.25-.188-2.5 0-3.969 1.469t-1.469 4.094v3.125h-3.813v4.25h3.813v11.063H2.999q-1.25 0-2.125-.875t-.875-2.125v-22q0-1.25.875-2.125t2.125-.875h22q1.25 0 2.125.875t.875 2.125z"></path></symbol><symbol id="tf-fab-twitter-square" viewBox="0 0 32 32"><path d="M25 2q1.25 0 2.125.875T28 5v22q0 1.25-.875 2.125T25 30H3q-1.25 0-2.125-.875T0 27V5q0-1.25.875-2.125T3 2h22zm-3.062 9.938q1.188-.875 2.063-2.125-1.188.5-2.375.625 1.313-.813 1.813-2.25-1.25.75-2.625 1-1.188-1.313-2.938-1.313-1.938 0-3.188 1.5t-.813 3.563q-5.188-.313-8.5-4.313-.563.938-.563 2.063 0 .625.25 1.281t.688 1.219.938.938q-1-.063-1.875-.563v.063q0 1.5.938 2.625t2.375 1.438q-.875.188-1.875.063.375 1.25 1.438 2.031t2.375.781q-2.25 1.75-5.063 1.75-.563 0-1-.063 2.875 1.875 6.313 1.875 3.563 0 6.313-1.813t4.031-4.438 1.281-5.438v-.5z"></path></symbol><symbol id="tf-fab-linkedin-square" viewBox="0 0 32 32"><path d="M26 2q.813 0 1.406.594T28 4v24q0 .813-.594 1.406T26 30H2q-.813 0-1.406-.594T0 28V4q0-.813.594-1.406T2 2h24zM8.438 26h.063V12.625H4.313V26h4.125zM6.375 10.813q1 0 1.719-.719t.719-1.688-.719-1.688-1.719-.719-1.688.719-.688 1.688.688 1.688 1.688.719zM24 26v-7.313q0-1.5-.188-2.563t-.688-1.969-1.531-1.375-2.531-.469q-1.438 0-2.469.625t-1.469 1.5h-.063v-1.813h-4v13.375h4.188v-6.625q0-1.563.5-2.5t1.938-.938q.75 0 1.25.313t.656.938.219 1.094.063 1.219v6.5H24z"></path></symbol><symbol id="tf-fab-youtube-square" viewBox="0 0 32 32"><path d="M11.688 12.625L17.626 16l-5.938 3.375v-6.75zM28 5v22q0 1.25-.875 2.125T25 30H3q-1.25 0-2.125-.875T0 27V5q0-1.25.875-2.125T3 2h22q1.25 0 2.125.875T28 5zm-2.625 11q0-3.688-.5-5.5-.375-1.625-2-2-.75-.25-2.969-.375T15.812 8h-1.813q-7.125 0-8.875.5-1.625.375-2 2-.25.813-.375 2.188t-.125 2.375v.938q0 3.75.5 5.5.375 1.625 2 2 .75.25 2.969.375t4.094.125H14q7.125 0 8.875-.5 1.625-.438 2-2 .25-.75.375-2.125t.125-2.375v-1z"></path></symbol><symbol id="tf-fas-podcast" viewBox="0 0 28 32"><path d="M16.688 30.563q-.375 1.438-2.688 1.438t-2.688-1.438q-.438-1.563-.875-4.219t-.438-4.094q0-2.75 4-2.75t4 2.75q0 1.438-.438 4.094t-.875 4.219zm-6.875-12.5q.313.313-.063.563-.875.625-1.313 1.563-.25.5-.563.125-2.875-2.688-2.875-6.563 0-3.813 2.719-6.469t6.531-2.531q3.563.125 6.125 2.656t2.625 6.094q.125 4.063-2.875 6.813-.313.375-.563-.125-.438-.938-1.313-1.563-.375-.25-.063-.563 1.813-1.813 1.813-4.313 0-2.563-1.844-4.344T13.748 7.75q-2.313.125-3.969 1.781T7.998 13.5q-.125 2.688 1.813 4.563zM14 0q5.813 0 9.906 4.094T28 14q0 4.125-2.188 7.5t-5.688 5.063q-.188.125-.375 0t-.125-.375q.25-1.688.313-2.938 2.313-1.5 3.688-3.938T25 13.999q0-1.813-.563-3.469t-1.594-3.031-2.375-2.375-3.031-1.563-3.438-.563q-4.563 0-7.781 3.219t-3.219 7.719q0 2.813 1.313 5.25t3.563 3.938q.188.125.188.313.063 1.188.313 2.75.063.25-.125.375t-.375 0q-3.563-1.688-5.719-5.063t-2.156-7.5q0-5.813 4.094-9.906t9.906-4.094zm0 10q1.688 0 2.844 1.156T18 14t-1.156 2.844T14 18t-2.844-1.156T10 14t1.156-2.844T14 10z"></path></symbol><symbol id="tf-fas-microphone" viewBox="0 0 22 32"><path d="M11 22q-2.5 0-4.25-1.75T5 16V6q0-2.5 1.75-4.25T11 0t4.25 1.75T17 6v10q0 2.5-1.75 4.25T11 22zm10-10q.438 0 .719.281T22 13v3q0 4.125-2.719 7.219T12.5 26.875V29H16q.438 0 .719.281T17 30v1q0 .438-.281.719T16 32H6q-.438 0-.719-.281T5 31v-1q0-.438.281-.719T6 29h3.5v-2.125q-4.063-.563-6.781-3.844T0 15.5V13q0-.438.281-.719T1 12h1q.438 0 .719.281T3 13v2.625q0 3.188 2.063 5.625t5.125 2.688q3.563.375 6.188-2.031t2.625-5.906v-3q0-.438.281-.719t.719-.281h1z"></path></symbol><style id="tf_fonts_style">.tf_fa.tf-far-bookmark{width:0.75em}.tf_fa.tf-fas-podcast{width:0.875em}.tf_fa.tf-fas-microphone{width:0.6875em}</style></defs></svg>			<link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/js/themify.script.min.js?ver=5.2.4" as="script"/> 
+						<link rel="prefetch" href="https://www.blackhillsinfosec.com/wp-content/themes/themify-corporate/themify/js/modules/jquery.imagesloaded.min.js?ver=4.1.4" as="script"/> 
+						<link rel="preload" href="https://www.blackhillsinfosec.com/wp-content/uploads/2016/03/BHIS-logo-web.png" as="image"/> 
+						<link rel="preload" href="https://static.wixstatic.com/media/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png/v1/fill/w_514,h_88,al_c,lg_1/75fce7_8d6c45e999f54191ba72e1ffa78f0160.png" as="image"/> 
+			
+
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:400,300,600,700%7CCopse:400&display=swap"/><link id="themify-google-fonts-css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7COpen+Sans:400,300,600,700%7CCopse:400&display=swap"/><script src='https://stats.wp.com/e-202120.js' defer></script>
+<script>
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:9.6.1',blog:'108567321',post:'4645',tz:'-6',srv:'www.blackhillsinfosec.com'} ]);
+	_stq.push([ 'clickTrackerInit', '108567321', '4645' ]);
+</script>
+
+</body>
+</html>

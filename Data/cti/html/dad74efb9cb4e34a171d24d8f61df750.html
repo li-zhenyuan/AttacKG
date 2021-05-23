@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><title>OWASP Top Ten Web Application Security Risks | OWASP</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The OWASP Top 10 is the reference standard for the most critical web application security risks. Adopting the OWASP Top 10 is perhaps the most effective first step towards changing your software development culture focused on producing secure code.">
+<meta property="og:description" content="The OWASP Top 10 is the reference standard for the most critical web application security risks. Adopting the OWASP Top 10 is perhaps the most effective first step towards changing your software development culture focused on producing secure code.">
+<meta propery="og:title" content="OWASP Top Ten | OWASP Foundation">
+<meta property="og:url" content="https://owasp.org/www-project-top-ten/">
+<meta property="og:locale" content="en_US">
+
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://owasp.org/www--site-theme/favicon.ico" />
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<script src="/cdn-cgi/apps/head/y6Eaq1GuWIsvmc2nXbGNpGVEQKw.js"></script><link rel="canonical" href="https://owasp.org/www-project-top-ten/" />
+
+
+
+
+<script src="https://owasp.org/www--site-theme/assets/js/js.cookie.js"></script>
+<script>
+  if(Cookies.get('cookies-ok') == 'true' && window.ga === undefined)
+  {
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-4531126-1', 'auto');
+    ga('send', 'pageview');
+  }
+  else if (Cookies.get('cookies-ok') == 'true')
+  {
+    ga('send', 'pageview');
+  }
+
+  function handleOutboundLinkClicks(event) {
+    var href = '';
+    if(event.target.href == undefined)
+      href = event.target.parentElement.href;
+    else
+      href = event.target.href
+  if(Cookies.get('cookies-ok') == 'true'){  
+    
+    ga('send', 'event', {
+      eventCategory: 'Outbound Link',
+      eventAction: 'click',
+      eventLabel: href,
+      transport: 'beacon'
+    });
+  }
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<link rel="stylesheet" href="https://owasp.org/www--site-theme/assets/css/styles.css">
+<link rel="shortcut icon" type="images/x-icon" href="https://owasp.org/www--site-theme/favicon.ico">
+<script src="https://owasp.org/www--site-theme/assets/js/jquery-3.4.1.min.js"></script>
+<script src="https://owasp.org/www--site-theme/assets/js/util.js"></script>
+<script src="https://owasp.org/www--site-theme/assets/js/yaml.min.js"></script>
+<script src="https://owasp.org/www--site-theme/assets/js/luxon.min.js"></script>
+<script src="https://owasp.org/www--site-theme/assets/js/kjua.min.js"></script>
+
+<script type="text/javascript">
+      $(function(){
+        var baseurl = "https://github.com/OWASP/www-project-top-ten/blob/master/";
+        var path = "index.md";
+        $('.repo').html('<a href=' + baseurl + path + '><div class="reset-3c756112--menuItemIcon-206eb252" style="float: left;"><svg preserveAspectRatio="xMidYMid meet" height="1em" width="1em" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 438.549 438.549" stroke="none" class="icon-7f6730be--text-3f89f380"><g><path d="M409.132 114.573c-19.608-33.596-46.205-60.194-79.798-79.8-33.598-19.607-70.277-29.408-110.063-29.408-39.781 0-76.472 9.804-110.063 29.408-33.596 19.605-60.192 46.204-79.8 79.8C9.803 148.168 0 184.854 0 224.63c0 47.78 13.94 90.745 41.827 128.906 27.884 38.164 63.906 64.572 108.063 79.227 5.14.954 8.945.283 11.419-1.996 2.475-2.282 3.711-5.14 3.711-8.562 0-.571-.049-5.708-.144-15.417a2549.81 2549.81 0 0 1-.144-25.406l-6.567 1.136c-4.187.767-9.469 1.092-15.846 1-6.374-.089-12.991-.757-19.842-1.999-6.854-1.231-13.229-4.086-19.13-8.559-5.898-4.473-10.085-10.328-12.56-17.556l-2.855-6.57c-1.903-4.374-4.899-9.233-8.992-14.559-4.093-5.331-8.232-8.945-12.419-10.848l-1.999-1.431c-1.332-.951-2.568-2.098-3.711-3.429-1.142-1.331-1.997-2.663-2.568-3.997-.572-1.335-.098-2.43 1.427-3.289 1.525-.859 4.281-1.276 8.28-1.276l5.708.853c3.807.763 8.516 3.042 14.133 6.851 5.614 3.806 10.229 8.754 13.846 14.842 4.38 7.806 9.657 13.754 15.846 17.847 6.184 4.093 12.419 6.136 18.699 6.136 6.28 0 11.704-.476 16.274-1.423 4.565-.952 8.848-2.383 12.847-4.285 1.713-12.758 6.377-22.559 13.988-29.41-10.848-1.14-20.601-2.857-29.264-5.14-8.658-2.286-17.605-5.996-26.835-11.14-9.235-5.137-16.896-11.516-22.985-19.126-6.09-7.614-11.088-17.61-14.987-29.979-3.901-12.374-5.852-26.648-5.852-42.826 0-23.035 7.52-42.637 22.557-58.817-7.044-17.318-6.379-36.732 1.997-58.24 5.52-1.715 13.706-.428 24.554 3.853 10.85 4.283 18.794 7.952 23.84 10.994 5.046 3.041 9.089 5.618 12.135 7.708 17.705-4.947 35.976-7.421 54.818-7.421s37.117 2.474 54.823 7.421l10.849-6.849c7.419-4.57 16.18-8.758 26.262-12.565 10.088-3.805 17.802-4.853 23.134-3.138 8.562 21.509 9.325 40.922 2.279 58.24 15.036 16.18 22.559 35.787 22.559 58.817 0 16.178-1.958 30.497-5.853 42.966-3.9 12.471-8.941 22.457-15.125 29.979-6.191 7.521-13.901 13.85-23.131 18.986-9.232 5.14-18.182 8.85-26.84 11.136-8.662 2.286-18.415 4.004-29.263 5.146 9.894 8.562 14.842 22.077 14.842 40.539v60.237c0 3.422 1.19 6.279 3.572 8.562 2.379 2.279 6.136 2.95 11.276 1.995 44.163-14.653 80.185-41.062 108.068-79.226 27.88-38.161 41.825-81.126 41.825-128.906-.01-39.771-9.818-76.454-29.414-110.049z"></path></g></svg><span style="padding-left:8px;">Edit on GitHub</span></div></a>');
+      });
+    </script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+</head>
+<body class="base-grid col-sidebar">
+<div id="blocker"></div>
+<noscript>For full functionality of this site it is necessary to enable JavaScript. Here are the <a href="https://www.enable-javascript.com/"> instructions how to enable JavaScript in your web browser</a>.</noscript>
+<header role="banner">
+<div id="banner" class="notice" aria-label="announcement">
+</div>
+<style>
+  #banner img {
+    max-width: 30em;
+  }
+
+  @media (max-width: 1131px) {
+    #banner img {
+      max-width: 30em;
+    }
+  }
+
+  @media (max-width: 800px) {
+    #banner img {
+      max-width: 20em;
+    }
+  }
+
+  @media (max-width: 600px) {
+    #banner img {
+      max-width: 20em;
+    }
+  }
+
+  @media (max-width: 450px) {
+    #banner img {
+      max-width: 250px;
+    }
+  }
+</style>
+<script type="text/javascript">
+  $(function () {
+    var bannerdata = [];
+    banneryaml = YAML.load('https://owasp.org/www-project-top-ten/assets/sitedata/banner-data.yml');
+    $.each(banneryaml, function (index) {
+      bannerdata.push(this);
+    });
+
+    if (bannerdata.length > 0) {
+      var htmlstring = "";
+      var usebanner = null;
+      var defbanner = null;
+      var checkdate = new Date(); //local time but who cares about the time?
+      bannerdata.forEach(data => {
+        if (data.start) {
+          var start = data.start;
+
+          if (data.start <= checkdate) {
+            if (data.end) {
+
+              var end = data.end;
+              if (checkdate < end) {
+                usebanner = data;
+              }
+            }
+            else
+              usebanner = data;
+          }
+        }
+        else {
+          defbanner = data;
+        }
+      });
+
+      if (defbanner && !usebanner)
+        usebanner = defbanner;
+      if (usebanner) {
+        htmlstring = usebanner.text;
+        htmlstring += "<a href='#' id='close-banner' aria-label='close announcement' style='float:right;'><i class='fa fa-times'></i></a>";
+
+        $("#banner").html(htmlstring);
+        $("#banner").removeClass("notice");
+        $("#banner").addClass(usebanner.type);
+
+        $("#close-banner").click(function() {
+          $(this).closest("#banner").remove();
+            Cookies.set('banner-seen', 'true', { expires: 7 });
+        });
+      }
+    }
+  });
+</script>
+<div class="header-wrapper" aria-label="main navigation">
+<nav class="alt-nav">
+<a href="#" class="menu-toggler" aria-hidden="true">
+<i class="fa fa-bars"></i>
+</a>
+<a href="https://owasp.org/" class="alt-logo" aria-label="go to homepage">
+<img src="https://owasp.org/assets/images/logo.png" alt="OWASP logo">
+</a>
+<div id="overlay" class="remove-el">
+</div>
+
+</nav>
+<nav class="top-nav" role="navigation" aria-label="primary navigation">
+<a href="https://owasp.org/" class="desktop-logo" aria-label="go to homepage">
+<img src="https://owasp.org/assets/images/logo.png" alt="">
+</a>
+
+<div class="interactive-wrapper">
+<form role="search" method="get" action="https://owasp.org/search">
+<div class='search-div'>
+<input id="searchString" name="searchString" class="search-bar" type="search" placeholder="Search OWASP.org" required="true">
+<button id="search-button" type="submit" class="fa fa-search">
+
+</button>
+</div>
+</form>
+<div class="nav-button" aria-label="donate to or join OWASP">
+<a href="https://owasp.org/donate?reponame=www-project-top-ten&title=OWASP+Top+Ten" class="cta-button green">Donate</a>
+<a href="https://owasp.org/membership" class="cta-button">Join</a>
+</div>
+</div>
+</nav>
+<div id='disclaimer-container'>
+<div id="disclaimer">
+<p>This website uses cookies to analyze our traffic and only share that information with our analytics partners.</p><a class="disclaimerOK">Accept</a>
+</div>
+<div id="close-disclaimer">x</div>
+</div>
+</div>
+<div class="mobile" style="width:100%;margin:auto;">
+<div style="float:left;width:50%;margin:auto;padding-left:25%;"><a href="https://owasp.org/donate?reponame=www-project-top-ten&title=OWASP+Top+Ten" class="cta-button green">Donate</a></div>
+<div style="float:right;width:50%;margin:auto;padding-right:25%"><a href="https://owasp.org/membership" class="cta-button">Join</a></div>
+</div>
+<script type="text/javascript">
+  $(function(){
+      
+      url = $(location).attr('href');
+      if(url.includes('www2'))
+      {
+        url = url.replace(/www2./, '');
+        $(location).attr('href',url);
+        return;
+      }
+    // this works to get data from a json file NOT in data
+      $.getJSON("https://owasp.org/www--site-theme/assets/sitedata/menus.json", function(data) {
+         var listr = "<ul aria-label='header menu'>";
+         
+         var mlistr = "<ul class='mobile-menu hide-el' role='navigation' aria-label='mobile primary navigation'>";
+
+          mlistr += "<li><a href='#' class='menu-toggler' aria-hidden='true'><i class='fa fa-times'></i></a></li>";
+          mlistr += "<li>";
+          mlistr += "<form role='search' method='get' action='https://owasp.org/search'>";   
+          mlistr += "<div class='search-div'>";
+          mlistr += "<input id='searchString' aria-label='search input' name='searchString' class='search-bar' type='search' placeholder='Search OWASP.org' required='true'>";
+          mlistr += "<button id='search-button' aria-label='search button' type='submit' class='fa fa-search' style='padding-left: 8px;'></button></div></form>";
+          mlistr += "</li>";
+          $.each(data.menus, function (ndx, menu){
+              listr += "<li><a href='" + menu.url + "'>" + menu.title + "</a>";
+
+              if(!menu.items)
+              {
+                  mlistr += "<li><a href='" + menu.url + "'>" + menu.title + "</a>";
+              }
+              
+              if(menu.items){
+                  listr += "<ul class='dropdown-menu'>";
+                  mlistr += "<button class='accordion'>" + menu.title + "</button>";
+                  mlistr += "<div class='panel'>";
+                  mlistr += "<ul>";
+                $.each(menu.items, function(ndx, item){
+                
+                  if(item.separator)
+                  {
+                      listr += "<li class='separator'>";
+                      mlistr += "<li class='separator'>";
+                  }
+                  else
+                  {
+                      listr += "<li>";
+                      mlistr += "<li>";
+                  }
+                  listr += "<a href='" + item.url + "'";
+                  mlistr += "<a href='" + item.url + "'";
+                  if(item.opentab)
+                  {
+                    listr += " target='_blank' rel='noopener noreferrer'";
+                    mlistr += " target='_blank' rel='noopener noreferrer'";
+                  }
+
+                  listr += ">" + item.title + "</a></li>";
+                  mlistr += ">" + item.title + "</a></li>";
+                });
+                listr += "</ul>";
+                mlistr += "</ul>";
+                mlistr += "</div>"
+              }
+              
+              listr += "</li>";
+              mlistr += "</li>";
+          });
+          listr += "</ul>";
+          mlistr += "<li><a href='https://owasp.org/donate'>MAKE A DONATION</a></li>";
+          mlistr += "<li><a href='https://owasp.org/membership'>BECOME A MEMBER</a></li>";
+          mlistr += "<li><a href='https://owasp.org/sitemap'>SITEMAP</a></li>";
+          mlistr += "</ul>";
+          
+          $('.desktop-logo').after(listr);
+          $('#overlay').after(mlistr);
+
+          $(".accordion").click(function () {
+              $(this).toggleClass("active");
+              if($(this).next('.panel').css('display') == 'block'){
+                $(this).next('.panel').css('display', 'none');
+              }
+              else {
+                $(this).next('.panel').css('display', 'block');
+              }
+            });
+            $(".menu-toggler").click(function() {
+              $(".mobile-menu").toggleClass('hide-el');
+            });
+      });
+    });
+  </script>
+</header>
+<main role="main">
+<div class="main-wrapper">
+<nav class="sub-nav" role="navigation" aria-label="navigate page tabs">
+<ul role="tablist">
+<li>
+<a href="#div-main" id="main-link" class="tab-link current" role="tab" aria-selected="true" aria-controls="main">Main</a>
+</li>
+<li>
+<a href="#div-translation_efforts" id="translation_efforts-link" class="tab-link" role="tab" aria-selected="false" aria-controls="translation_efforts">Translation Efforts</a>
+</li>
+<li>
+<a href="#div-sponsors" id="sponsors-link" class="tab-link" role="tab" aria-selected="false" aria-controls="sponsors">Sponsors</a>
+</li>
+<li>
+<a href="#div-data_2020" id="data_2020-link" class="tab-link" role="tab" aria-selected="false" aria-controls="data_2020">Data 2020</a>
+</li>
+</ul>
+</nav>
+<script type='text/javascript'>
+  $(function() {
+    if(window.location.href.indexOf('#') != -1)
+     {
+        divid = window.location.href.substring(window.location.href.indexOf('#'))
+        secid = divid;
+        if(divid.indexOf('div-') >= 0)
+        {
+          $('.tab-link').each(function () {
+            divid = '#sec-' + $(this).attr('id').toLowerCase().replace('-link', '');
+            $(divid).addClass('tab-hidden'); 
+            $(this).removeClass('current');
+          });
+
+          secid = secid.replace('div-', 'sec-');
+          $(secid).removeClass('tab-hidden');
+          linkid = "#" + secid.substring(secid.indexOf('-') + 1) + "-link";
+          $(linkid).addClass('current'); 
+          
+        }
+        
+     }
+  });
+
+  $('.tab-link').click(function (e) {
+    e.preventDefault();
+    
+    $('.tab-link').each(function () {
+      $(this).removeClass('current');
+      divid = '#sec-' + $(this).attr('id').toLowerCase().replace('-link', '');
+      $(divid).addClass('tab-hidden'); 
+    });
+
+     divid = '#sec-' + $(this).attr('id').toLowerCase().replace('-link', '');
+     $(this).addClass('current');
+     $(divid).removeClass('tab-hidden');
+     return false;
+  });
+</script>
+<h1 class="page-title">OWASP Top Ten</h1>
+<div id="main" class="page-body tab" role="tabpanel" aria-labelledby="main-link" tabindex="0">
+<section id='sec-main' class='page-body'>
+<p>The OWASP Top 10 is a standard awareness document for developers and web application security. It represents a broad consensus about the most critical security risks to web applications.</p>
+<p class="callout-mono right">Globally recognized by developers as the first step towards more secure coding.</p>
+<p>Companies should adopt this document and start the process of ensuring that their web applications minimize these risks. Using the OWASP Top 10 is perhaps the most effective first step towards changing the software development culture within your organization into one that produces more secure code.<br />
+<br /></p>
+<h2 id="top-10-web-application-security-risks">Top 10 Web Application Security Risks</h2>
+<p><a href="/www-project-top-ten/2017/A1_2017-Injection"><strong>A1:2017-Injection</strong></a>: Injection flaws, such as SQL, NoSQL, OS, and LDAP injection, occur when untrusted data is sent to an interpreter as part of a command or query. The attacker’s hostile data can trick the interpreter into executing unintended commands or accessing data without proper authorization.<br /></p>
+<p><a href="/www-project-top-ten/2017/A2_2017-Broken_Authentication"><strong>A2:2017-Broken Authentication</strong></a>: Application functions related to authentication and session management are often implemented incorrectly, allowing attackers to compromise passwords, keys, or session tokens, or to exploit other implementation flaws to assume other users’ identities temporarily or permanently.<br /></p>
+<p><a href="/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure"><strong>A3:2017-Sensitive Data Exposure</strong></a>: Many web applications and APIs do not properly protect sensitive data, such as financial, healthcare, and PII. Attackers may steal or modify such weakly protected data to conduct credit card fraud, identity theft, or other crimes. Sensitive data may be compromised without extra protection, such as encryption at rest or in transit, and requires special precautions when exchanged with the browser.<br /></p>
+<p><a href="/www-project-top-ten/2017/A4_2017-XML_External_Entities_(XXE)"><strong>A4:2017-XML External Entities (XXE)</strong></a>: Many older or poorly configured XML processors evaluate external entity references within XML documents. External entities can be used to disclose internal files using the file URI handler, internal file shares, internal port scanning, remote code execution, and denial of service attacks.<br /></p>
+<p><a href="/www-project-top-ten/2017/A5_2017-Broken_Access_Control"><strong>A5:2017-Broken Access Control</strong></a>: Restrictions on what authenticated users are allowed to do are often not properly enforced. Attackers can exploit these flaws to access unauthorized functionality and/or data, such as access other users’ accounts, view sensitive files, modify other users’ data, change access rights, etc.<br /></p>
+<p><a href="/www-project-top-ten/2017/A6_2017-Security_Misconfiguration"><strong>A6:2017-Security Misconfiguration</strong></a>: Security misconfiguration is the most commonly seen issue. This is commonly a result of insecure default configurations, incomplete or ad hoc configurations, open cloud storage, misconfigured HTTP headers, and verbose error messages containing sensitive information. Not only must all operating systems, frameworks, libraries, and applications be securely configured, but they must be patched/upgraded in a timely fashion.<br /></p>
+<p><a href="/www-project-top-ten/2017/A7_2017-Cross-Site_Scripting_(XSS)"><strong>A7:2017-Cross-Site Scripting XSS</strong></a>: XSS flaws occur whenever an application includes untrusted data in a new web page without proper validation or escaping, or updates an existing web page with user-supplied data using a browser API that can create HTML or JavaScript. XSS allows attackers to execute scripts in the victim’s browser which can hijack user sessions, deface web sites, or redirect the user to malicious sites.<br /></p>
+<p><a href="/www-project-top-ten/2017/A8_2017-Insecure_Deserialization"><strong>A8:2017-Insecure Deserialization</strong></a>: Insecure deserialization often leads to remote code execution. Even if deserialization flaws do not result in remote code execution, they can be used to perform attacks, including replay attacks, injection attacks, and privilege escalation attacks.<br /></p>
+<p><a href="/www-project-top-ten/2017/A9_2017-Using_Components_with_Known_Vulnerabilities"><strong>A9:2017-Using Components with Known Vulnerabilities</strong></a>: Components, such as libraries, frameworks, and other software modules, run with the same privileges as the application. If a vulnerable component is exploited, such an attack can facilitate serious data loss or server takeover. Applications and APIs using components with known vulnerabilities may undermine application defenses and enable various attacks and impacts.<br /></p>
+<p><a href="/www-project-top-ten/2017/A10_2017-Insufficient_Logging%2526Monitoring"><strong>A10:2017-Insufficient Logging &amp; Monitoring</strong></a>: Insufficient logging and monitoring, coupled with missing or ineffective integration with incident response, allows attackers to further attack systems, maintain persistence, pivot to more systems, and tamper, extract, or destroy data. Most breach studies show time to detect a breach is over 200 days, typically detected by external parties rather than internal processes or monitoring.<br /></p>
+</section>
+<section id='sec-translation_efforts' class='page-body tab-hidden'>
+<hr />
+<h1 id="translation-efforts">Translation Efforts</h1>
+<p>Efforts have been made in numerous languages to translate the OWASP Top 10 - 2017. If you are interested in helping, please contact the members of the team for the language you are interested in contributing to, or if you don’t see your language listed (neither here nor at <a href="https://github.com/OWASP/Top10/issues?utf8=%E2%9C%93&amp;q=is%3Aissue">github</a>), please email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="28475f495b58055c47585c4d466844415b5c5b06475f495b5806475a4f">[email&#160;protected]</a> to let us know that you want to help and we’ll form a volunteer group for your language.
+We have compiled this <a href="https://github.com/OWASP/Top10/blob/master/2017/translations/README.TRANSLATIONS">README.TRANSLATIONS</a> with some hints to help you with your translation.</p>
+<h3 id="2017-completed-translations">2017 Completed Translations:</h3>
+<ul>
+<li><b>Chinese:</b> <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP_Top_10_2017_%E4%B8%AD%E6%96%87%E7%89%88v1.3.pdf">OWASP Top 10-2017 - 中文版（PDF)</a><br />
+<ul>
+<li>项目组长：<a href="https://wiki.owasp.org/index.php/User:Jie_Wang">王颉</a>（<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a1d6c0cfc6cbe1ced6c0d2d18fced3c68fc2cf">[email&#160;protected]</a>）</li>
+<li>翻译人员：陈亮、王厚奎、王颉、王文君、王晓飞、吴楠、徐瑞祝、夏天泽、杨璐、张剑钟、赵学文（排名不分先后，按姓氏拼音排列）</li>
+<li>审查人员：Rip、包悦忠、李旭勤、杨天识、张家银（排名不分先后，按姓氏拼音排列）</li>
+<li>汇编人员：赵学文</li>
+</ul>
+</li>
+<li><b>French:</b> <a href="https://github.com/OWASP/Top10/tree/master/2017/fr">OWASP Top 10 2017 in French (Git/Markdown)</a></li>
+<li><b>German:</b> <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP_Top_10-2017_de_V1.0.pdf">OWASP Top 10 2017 in German V1.0 (Pdf)</a> <a href="2017/de/">(web pages)</a><br />compiled by Christian Dresen, Alexios Fakos, Louisa Frick, Torsten Gigler, Tobias Glemser, Dr. Frank Gut, Dr. Ingo Hanke, Dr. Thomas Herzog, Dr. Markus Koegel, Sebastian Klipper, Jens Liebau, Ralf Reinhardt, Martin Riedel, Michael Schaefer</li>
+<li><b>Hebrew:</b> <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP-Top-10-2017-he.pdf">OWASP Top 10-2017 - Hebrew (PDF)</a>  <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP-Top-10-2017-he.pptx">(PPTX)</a><br />translated by Eyal Estrin (Twitter: @eyalestrin) and Omer Levi Hevroni (Twitter: @omerlh).</li>
+<li><b>Japanese:</b> <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP_Top_10-2017%28ja%29.pdf">OWASP Top 10-2017 - 日本語版 (PDF)</a><br /> translated and reviewed by Akitsugu ITO, Albert Hsieh, Chie TAZAWA, Hideko IGARASHI, Hiroshi TOKUMARU, Naoto KATSUMI, Riotaro OKADA, Robert DRACEA, Satoru TAKAHASHI, Sen UENO, Shoichi NAKATA, Takanori NAKANOWATARI ,Takanori ANDO, Tomohiro SANAE.</li>
+<li><b>Korean:</b> <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP_Top_10-2017-ko.pdf">OWASP Top 10-2017 - 한글 (PDF)</a>  <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP_Top_10-2017-ko.pptx">(PPTX)</a><br /> 번역 프로젝트 관리 및 감수 : 박형근(Hyungkeun Park) / 감수(ㄱㄴㄷ순) : 강용석(YongSeok Kang), 박창렴(Park Changryum), 조민재(Johnny Cho) / 편집 및 감수 : 신상원(Shin Sangwon) / 번역(ㄱㄴㄷ순) : 김영하(Youngha Kim), 박상영(Sangyoung Park), 이민욱(MinWook Lee), 정초아(JUNG CHOAH), 조광렬(CHO KWANG YULL), 최한동(Handong Choi)</li>
+<li><b>Portuguese:</b> <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP_Top_10-2017-pt_pt.pdf">OWASP Top 10 2017 - Portuguese (PDF)</a> <a href="https://github.com/OWASP/Top10/raw/master/2017/OWASP%20Top%2010-2017-pt_pt.odp">(ODP)</a><br /> translated by Anabela Nogueira, Carlos Serrão, Guillaume Lopes, João Pinto, João Samouco, Kembolle A. Oliveira, Paulo A. Silva, Ricardo Mourato, Rui Silva, Sérgio Domingues, Tiago Reis, Vítor Magano.</li>
+<li><b>Russian:</b> <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP Top 10-2017-ru.pdf">OWASP Top 10-2017 - на русском языке (PDF)</a><br /> translated and reviewed by JZDLin (<a href="https://github.com/JZDLin">@JZDLin</a>), Oleksii Skachkov (<a href="https://github.com/hamster4n">@hamster4n</a>), Ivan Kochurkin (<a href="https://github.com/KvanTTT">@KvanTTT</a>) and <a href="https://wiki.owasp.org/index.php/User:Taras_Ivashchenko">Taras Ivashchenko</a></li>
+<li><b>Spanish:</b> <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP-Top-10-2017-es.pdf">OWASP Top 10-2017 - Español (PDF)</a><br />
+<ul>
+<li><a href="https://wiki.owasp.org/index.php/User:Gerardo_Canedo">Gerardo Canedo</a>（<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d89fbdaab9aabcb7f69bb9b6bdbcb798b7afb9aba8f6b7aabf">[email&#160;protected]</a> - [Twitter: @GerardoMCanedo])</li>
+<li><a href="https://wiki.owasp.org/index.php/User:Cristian_Borghello">Cristian Borghello</a>（<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6e2d1c071d1a070f00402c011c09060b0202012e01190f1d1e40011c09">[email&#160;protected]</a> - [Twitter: @seguinfo])</li>
+</ul>
+</li>
+</ul>
+<h2 id="historic">Historic:</h2>
+<h3 id="2017-release-candidate-translation-teams">2017 Release Candidate Translation Teams:</h3>
+<ul>
+<li>Azerbaijanian: Rashad Aliyev (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="097b687a61686d496865606c7f2760676f66">[email&#160;protected]</a>)
+</li>
+<li>Chinese RC2:Rip、包悦忠、李旭勤、王颉、王厚奎、吴楠、徐瑞祝、夏天泽、张家银、张剑钟、赵学文(排名不分先后，按姓氏拼音排列) <a href="https://www.owasp.org/images/d/d6/OWASP_Top_10_2017%EF%BC%88RC2%EF%BC%89%E4%B8%AD%E6%96%87%E7%89%88%EF%BC%88%E5%8F%91%E5%B8%83%E7%89%88%EF%BC%89.pdf">OWASP Top10 2017 RC2 - Chinese PDF</a></li>
+<li>French: Ludovic Petit: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bef2cbdad1c8d7dd90eedbcad7cafed1c9dfcdce90d1ccd9">[email&#160;protected]</a>, Sébastien Gioria: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86d5e3e4e7f5f2efe3e8a8c1efe9f4efe7c6e9f1e7f5f6a8e9f4">[email&#160;protected]</a>g.</li>
+<li>Others to be listed.</li>
+</ul>
+<h3 id="2013-completed-translations">2013 Completed Translations:</h3>
+<ul>
+<li>Arabic: <a href="https://www.owasp.org/images/6/6a/OWASP_TOP_10_2013_Arabic.pdf">OWASP Top 10 2013 - Arabic PDF</a><br />Translated by: Mohannad Shahat: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6c2103040d02020d08423f040d040d182c031b0d1f1c42031e0b">[email&#160;protected]</a>, Fahad: @SecurityArk, Abdulellah Alsaheel: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="adcede83deccc5c8c8c1edcac0ccc4c183cec2c0">[email&#160;protected]</a>, Khalifa Alshamsi: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b9f2d1ca888f8881f9ded4d8d0d597dad6d4">[email&#160;protected]</a> and Sabri(KING SABRI): <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="90fbf9fef7bee3f1f2e2f9d0f7fdf1f9fcbef3fffd">[email&#160;protected]</a>, Mohammed Aldossary: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="294446414844444c4d0748454d465a5a485b5069465e485a5907465b4e">[email&#160;protected]</a></li>
+<li>Chinese 2013：中文版2013 <a href="https://www.owasp.org/images/5/51/OWASP_Top_10_2013-Chinese-V1.2.pdf">OWASP Top 10 2013 - Chinese (PDF)</a>.<br />项目组长： Rip、王颉， 参与人员： 陈亮、 顾庆林、 胡晓斌、 李建蒙、 王文君、 杨天识、 张在峰</li>
+<li>Czech 2013: <a href="https://www.owasp.org/images/f/f3/OWASP_Top_10_-_2013_Final_-_Czech_V1.1.pdf">OWASP Top 10 2013 - Czech (PDF)</a> <a href="https://www.owasp.org/images/0/02/OWASP_Top_10_-_2013_Final_-_Czech_V1.1.pptx">OWASP Top 10 2013 - Czech (PPTX)</a><br />CSIRT.CZ - CZ.NIC, z.s.p.o. (.cz domain registry): Petr Zavodsky: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="44342130366a3e25322b20372f3d042b332537346a2b3623">[email&#160;protected]</a>, Vaclav Klimes, Zuzana Duracinska, Michal Prokop, Edvard Rejthar, Pavel Basta</li>
+<li>French 2013: <a href="https://torage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owasptop10/OWASP%20Top%2010%20-%202013%20-%20French.pdf">OWASP Top 10 2013 - French PDF</a><br />Ludovic Petit: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a162f3e352c3339740a3f2e332e1a352d3b292a7435283d">[email&#160;protected]</a>, Sébastien Gioria: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5a093f383b292e333f34741d333528333b1a352d3b292a7435283d">[email&#160;protected]</a>, Erwan Abgrall: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5037643c643422393d10373d31393c7e333f3d">[email&#160;protected]</a>, Benjamin Avet: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fb999e95919a969295d59a8d9e8fbb9c969a9297d5989496">[email&#160;protected]</a>, Jocelyn Aubert: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8c2c7cbcdc4d1c686c9ddcacddadce8c7dfc9dbd886c7dacf">[email&#160;protected]</a>, Damien Azambour: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dabebbb7b3bfb4f4bba0bbb7b8b5afa8bd9ab5adbba9aaf4b5a8bd">[email&#160;protected]</a>, Aline Barthelemy: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="56373a3f383378343724223e333a333b2f163024783734347835393b">[email&#160;protected]</a>, Moulay Abdsamad Belghiti: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1273707661737f73763c70777e757a7b667b52757f737b7e3c717d7f">[email&#160;protected]</a>, Gregory Blanc: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="761104131119040f58141a17181536111b171f1a5815191b">[email&#160;protected]</a>, Clément Capel: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="41222d242c242f356f222031242d013227336f222e2c">[email&#160;protected]</a>, Etienne Capgras: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4702332e2229292269242637203526340734282b3224282a692135">[email&#160;protected]</a>, Julien Cayssol: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="462c332a2f2328062737313c6825292b">[email&#160;protected]</a>, Antonio Fontes: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c7a6a9b3a8a9aea8e9a1a8a9b3a2b487a8b0a6b4b7e9a8b5a0">[email&#160;protected]</a>, Ely de Travieso: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f4b1988dda9091808695829d91879bb49b83958784da9b8693">[email&#160;protected]</a>, Nicolas Grégoire: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a3cdcac0cccfc2d08dc4d1c6c4cccad1c6e3c2c4c2d1d1ca8dc5d1">[email&#160;protected]</a>, Valérie Lasserre: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7107101d140318145f1d1002021403031431161c095f1703">[email&#160;protected]</a>, Antoine Laureau: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="06676872696f6863286a67737463677346697167757628697461">[email&#160;protected]</a>, Guillaume Lopes: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="177b786772643970627e7b7b76627a725771657272397165">[email&#160;protected]</a>, Gilles Morain: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9afdf3f6f6ffe9b4f7f5e8fbf3f4dafdf7fbf3f6b4f9f5f7">[email&#160;protected]</a>, Christophe Pekar: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a7c4cfd5ced4d3c8d7cfc289d7c2ccc6d5e7c8d0c6d4d789c8d5c0">[email&#160;protected]</a>, Olivier Perret: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ef9f8a9d9d8a9b9caf899d8a8ac1899d">[email&#160;protected]</a>, Michel Prunet: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0865616b606d6426787a7d666d7c48677f697b7826677a6f">[email&#160;protected]</a>, Olivier Revollat: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b0c2d5c6dfdcdcd1c4f0d7ddd1d9dc9ed3dfdd">[email&#160;protected]</a>, Aymeric Tabourin: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aecfd7c3cbdcc7cd80dacfccc1dbdcc7c0eec1dccfc0c9cb80cdc1c3">[email&#160;protected]</a></li>
+<li>German 2013: <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASP_Top_10_2013_DE_Version_1_0.pdf">OWASP Top 10 2013 - German PDF</a><br /><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8efae1febfbecee1f9effdfea0eaeb">[email&#160;protected]</a> which is Frank Dölitzscher, Torsten Gigler, Tobias Glemser, Dr. Ingo Hanke, Thomas Herzog, <a href="https://wiki.owasp.org/index.php/User:Kai_Jendrian">Kai Jendrian</a>, <a href="https://wiki.owasp.org/index.php/User:Ralf_Reinhardt">Ralf Reinhardt</a>, Michael Schäfer</li>
+<li>Hebrew 2013: <a href="https://wiki.owasp.org/index.php/OWASP_Top10_Hebrew">OWASP Top 10 2013 - Hebrew</a> <a href="https://www.owasp.org/images/1/1b/OWASP_Top_10_2013-Hebrew.pdf">PDF</a><br />Translated by: Or Katz, Eyal Estrin, Oran Yitzhak, Dan Peled, Shay Sivan.</li>
+<li>Italian 2013: <a href="https://www.owasp.org/images/c/c9/OWASP_Top_10_-_2013_-_Italiano.pdf">OWASP Top 10 2013 - Italian PDF</a><br />Translated by: Michele Saporito: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1c71326f7d6c736e7568732b5c7b717d7570327f7371">[email&#160;protected]</a>, Paolo Perego: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5b2f333e282b6b353c3e1b342c3a282b7534293c">[email&#160;protected]</a>, Matteo Meucci: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="472a2633332228692a223224242e07283026343769283520">[email&#160;protected]</a>, Sara Gallo: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="acdfcddecd82cbcdc0c0c3eccbc1cdc5c082cfc3c1">[email&#160;protected]</a>, Alessandro Guido: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84e5e8e1fcc4f7e1e7f1f6edf0fde5e0e0ede7f0e1e0aae7ebe9">[email&#160;protected]</a>, Mirko Guido Spezie: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ce1e5fee7e3cce8edf5f9a2e5f8">[email&#160;protected]</a>, Giuseppe Di Cesare: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="07606e72746277776229636e64627466756247666b6e6462296e73">[email&#160;protected]</a>, Paco Schiaffella: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="deadbdb6b7bfb8b8bbb2b2bf9eb9b3bfb7b2f0bdb1b3">[email&#160;protected]</a>, Gianluca Grasso: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcbbb5bdb2b8b3a99cbbb1bdb5b0f2bfb3b1">[email&#160;protected]</a>, Alessio D’Ospina: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="02636e6771716b6d666d7142656f636b6e2c616d6f">[email&#160;protected]</a>, Loredana Mancini: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86eae9f4e3e2e7e8e7a8ebe7e8e5efe8efc6e4f3f5efe8e3f5f5abe3a8eff2">[email&#160;protected]</a>, Alessio Petracca: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b6d7dad3c5c5dfd998c6d3c2c4d7d5d5d7f6d1dbd7dfda98d5d9db">[email&#160;protected]</a>, Giuseppe Trotta: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583f312d2c2a372c2c39183f35393134763b3735">[email&#160;protected]</a>, Simone Onofri: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="98ebf1f5f7f6fdb6f7f6f7feeaf1d8fff5f9f1f4b6fbf7f5">[email&#160;protected]</a>, Francesco Cossu: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d454c404f584e46485f6d4a404c4441034e4240">[email&#160;protected]</a>, Marco Lancini: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9af7fbe8f9f5b4f6fbf4f9f3f4f3b4f7f6dafdf7fbf3f6b4f9f5f7">[email&#160;protected]</a>, Stefano Zanero: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dfa5beb1baadb09fbab3baabf1afb0b3b6b2b6f1b6ab">[email&#160;protected]</a>, Giovanni Schmid: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="73141a1c05121d1d1a5d00101b1e1a17331d125d1a1012015d101d015d1a07">[email&#160;protected]</a>, Igor Falcomata’: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="610a0e03002112080a1413041b1b004f0e1306">[email&#160;protected]</a></li>
+<li>Japanese 2013: <a href="https://www.owasp.org/images/7/79/OWASP_Top_10_2013_JPN.pdf">OWASP Top 10 2013 - Japanese PDF</a><br />Translated by: Chia-Lung Hsieh: ryusuke.tw(at)gmail.com, Reviewed by: Hiroshi Tokumaru, Takanori Nakanowatari</li>
+<li>Korean 2013: <a href="https://www.owasp.org/images/2/2c/OWASP_Top_10_-_2013_Final_-_Korean.pdf">OWASP Top 10 2013 - Korean PDF</a> (이름가나다순)<br />김병효:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d3b1aabca6bdb4bbaabcfdb8babe93bca4b2a0a3fdbca1b4">[email&#160;protected]</a>, 김지원:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="167c7f617978387d7f7b567961776566387964387d64">[email&#160;protected]</a>, 김효근:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d2b9b3a6a7a0bb92b9b3a6a7a0bbfcb9a0">[email&#160;protected]</a>, 박정훈:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d9a1bcb5b0b6b799beb4b8b0b5f7bab6b4">[email&#160;protected]</a>, 성영모:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e57415b40494341005d4b4140496e41594f5d5e00415c00455c">[email&#160;protected]</a>, 성윤기:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6c15190209421f19020b2c031b0d1f1c42031e0b">[email&#160;protected]</a>, 송보영:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="80e2eff9eff5eee7aef3efeee7c0eff7e1f3f0aeeff2aeebf2">[email&#160;protected]</a>, 송창기:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1d7b7c7e69726f2a5d737c6b786f337e7270">[email&#160;protected]</a>, 유정호:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7512071c051d1c064242351218141c195b161a18">[email&#160;protected]</a>, 장상민:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3043515e575d595e1e5a515e57705f475143401e5f421e5b42">[email&#160;protected]</a>, 전영재:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cbb2a4bea5aca1aaaee5a1aea4a58ba4bcaab8bbe5a4b9ac">[email&#160;protected]</a>, 정가람:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="037764606271716c7743646e626a6f2d606c6e">[email&#160;protected]</a>, 정홍순:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4d27253e7a7f750d2a202c2421632e2220">[email&#160;protected]</a>, 조민재:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="264c494e48485f08454e4966495147555608495441">[email&#160;protected]</a>,허성무:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b22383822263b272e252e3f0b2c262a222765282426">[email&#160;protected]</a></li>
+<li>Brazilian Portuguese 2013: <a href="https://torage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owasptop10/OWASP_Top_10_-_2013_Brazilian_Portuguese.pdf">OWASP Top 10 2013 - Brazilian Portuguese PDF</a><br />Translated by: Carlos Serrão, Marcio Machry, Ícaro Evangelista de Torres, Carlo Marcelo Revoredo da Silva, Luiz Vieira, Suely Ramalho de Mello, Jorge Olímpia, Daniel Quintão, Mauro Risonho de Paula Assumpção, Marcelo Lopes, Caio Dias, Rodrigo Gularte</li>
+<li>Spanish 2013: <a href="https://www.owasp.org/images/5/5f/OWASP_Top_10_-_2013_Final_-_Espa%C3%B1ol.pdf">OWASP Top 10 2013 - Spanish PDF</a><br />Gerardo Canedo: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f99e9c8b988b9d96d79a98979c9d96b9968e988a89d7968b9e">[email&#160;protected]</a>, Jorge Correa: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aac0cbc9c5d8d8cfcbc7eacdc7cbc3c684c9c5c7">[email&#160;protected]</a>, Fabien Spychiger: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d7b1b6b5beb2b9f9a4a7aeb4bfbeb0b2a597b3a5b2b6babbb6b5f9b9b2a3">[email&#160;protected]</a>, Alberto Hill: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="88e9e4eaedfafce7a6ece9e6e1ede4a6e0e1e4e4c8efe5e9e1e4a6ebe7e5">[email&#160;protected]</a>, Johnatan Stanley: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b3d9dcdbddd2c7d2ddc0c7f3d4ded2dadf9dd0dcde">[email&#160;protected]</a>, Maximiliano Alonzo: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="036e626f6c6d796c43776a612d606c6e2d767a">[email&#160;protected]</a>, Mateo Martinez: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0e636f7a6b6120636f7c7a67606b744e61796f7d7e20617c69">[email&#160;protected]</a>, David Montero: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="690d081f000d470406071d0c1b0629061e081a1947061b0e">[email&#160;protected]</a>, Rodrigo Martinez: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5b29343f363a292f1b3d32353c753e3f2e752e22">[email&#160;protected]</a>, Guillermo Skrilec: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6c1d3cfcacac3d4cbc988d5cdd4cfcac3c5e6c9d1c7d5d688c9d4c1">[email&#160;protected]</a>, Felipe Zipitria: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="96f0f3faffe6f3b8ecffe6ffe2e4fff7d6f9e1f7e5e6b8f9e4f1">[email&#160;protected]</a>, Fabien Spychiger: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f59394979c909bdb86858c969d9c929087b59187909498999497db9b9081">[email&#160;protected]</a>, Rafael Gil: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="85f7e4e3e4e0e9abe2ece9e9e4f7eceaf6c5eaf2e4f6f5abeaf7e2">[email&#160;protected]</a>, Christian Lopez: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="096a617b607a7d606867276566796c732764687b7d606749667e687a7927667b6e">[email&#160;protected]</a>, jonathan fernandez <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="563c393837223e37387830332438373832332c666216313b373f3a7835393b">[email&#160;protected]</a>, Paola Rodriguez: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="590938363538060b68192f3c2b303f36373c773a3634">[email&#160;protected]</a>, Hector Aguirre: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="20484543544f520e414e544f4e494f0e41475549525245604f574153500e4f5247">[email&#160;protected]</a>, Roger Carhuatocto: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="295b4a485b415c485d464a5d466940475d40510740474f46">[email&#160;protected]</a>, Juan Carlos Calderon: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="32585d5a5c515140724b535a5d5d1c515d5f">[email&#160;protected]</a>, Marc Rivero López: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4e233c27382b3c2122213e2b340e29232f2722602d2123">[email&#160;protected]</a>, Carlos Allendes: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="95f6f4e7f9fae6bbf4f9f9f0fbf1f0e6d5fae2f4e6e5bbfae7f2">[email&#160;protected]</a>, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b3d7d2dddad6dff3d0d2c1c1d6c1dc9dd0df">[email&#160;protected]</a>: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6b0f0a05020e072b080a19190e1904450807">[email&#160;protected]</a>, Manuel Ramírez: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0a676b647f6f6624786b6763786f7024794a6d676b636624696567">[email&#160;protected]</a>, Marco Miranda: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e38e8291808ccd8e8a91828d8782a38c94829093cd8c9184">[email&#160;protected]</a>, Mauricio D. Papaleo Mayada: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="375a475647565b525877505a565e5b1954585a">[email&#160;protected]</a>, Felipe Sanchez: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0e686b62677e6b207d6f606d666b744e7e6b7c677a6f646b7d676068617c636f7a676d617d206d62">[email&#160;protected]</a>, Juan Manuel Bahamonde: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="305a45515e5d515e45555c1e525158515d5f5e545570575d51595c1e535f5d">[email&#160;protected]</a>, Adrià Massanet: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5d3c392f343c303c2e2e3c3338291d3a303c3431733e3230">[email&#160;protected]</a>, Jorge Correa: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5933383a362b2b3c3834193e34383035773a3634">[email&#160;protected]</a>, Ramiro Pulgar: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a584b47435845045a5f464d4b586a455d4b595a0445584d">[email&#160;protected]</a>, German Alonso Suárez Guerrero: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="086f6d7a656966267b7d697a6d7248677f697b7826677a6f">[email&#160;protected]</a>, Jose A. Guasch: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="305a5157455143535870575d51595c1e535f5d">[email&#160;protected]</a>, Edgar Salazar: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2a4f4e4d4b5804594b464b504b586a455d4b595a0445584d">[email&#160;protected]</a></li>
+<li>Ukrainian 2013: <a href="https://www.owasp.org/images/e/e3/OWASP_Top_10_-_2013_Final_Ukrainian.pdf">OWASP Top 10 2013 - Ukrainian PDF</a><br />Kateryna Ovechenko, Yuriy Fedko, Gleb Paharenko, Yevgeniya Maskayeva, Sergiy Shabashkevich, Bohdan Serednytsky</li>
+</ul>
+<h3 id="2010-completed-translations">2010 Completed Translations:</h3>
+<ul>
+<li>Korean 2010: <a href="https://torage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owasptop10/OWASP%20Top%2010%20-%202010%20Korean.pdf">OWASP Top 10 2010 - Korean PDF</a><br />Hyungkeun Park, (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="90fdf9e2e2fba1d0f7fdf1f9fcbef3fffd">[email&#160;protected]</a>)</li>
+<li>Spanish 2010: <a href="https://torage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owasptop10/OWASP%20Top%2010%20-%202010%20Spanish.pdf">OWASP Top 10 2010 - Spanish PDF</a><br /> Daniel Cabezas Molina, Edgar Sanchez, Juan Carlos Calderon, Jose Antonio Guasch, Paulo Coronado, Rodrigo Marcos, Vicente Aguilera</li>
+<li>French 2010: <a href="https://torage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owasptop10/OWASP%20Top%2010%20-%202010%20French.pdf">OWASP Top 10 2010 - French PDF</a><br /><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e38f96878c958a80cd9386978a97a38c94829093cd8c9184">[email&#160;protected]</a>, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d5e484f4c5e59444843034a44425f444c6d425a4c5e5d03425f4a">[email&#160;protected]</a>, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ffef1ebf0f1f6f0b1f9f0f1ebfaecdff0e8feecefb1f0edf8">[email&#160;protected]</a>, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c2e2922232538622b39293e293838290c233b2d3f3c62233e2b">[email&#160;protected]</a>, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="89c3e6eaece5f0e7a7e8fcebecfbfdc9e6fee8faf9a7e6fbee">[email&#160;protected]</a>, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4500372c266b02243737202430052220282429312a6b262a28">[email&#160;protected]</a>, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e3a4968a8f8f82968e86cdab969a908e828d90a384868e828f978ccd808c8e">[email&#160;protected]</a></li>
+<li>German 2010: <a href="https://wiki.owasp.org/?title=Special:Redirect/file/OWASPTop10_2010_DE_Version_1_0.pdf">OWASP Top 10 2010 - German PDF</a><br /><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7e0a110e4f4e3e11091f0d0e501a1b">[email&#160;protected]</a> which is Frank Dölitzscher, Tobias Glemser, Dr. Ingo Hanke, <a href="https://wiki.owasp.org/index.php/User:Kai_Jendrian">Kai Jendrian</a>, <a href="https://wiki.owasp.org/index.php/https://wiki.owasp.org/index.php/User:Ralf_Reinhardt">Ralf Reinhardt</a>, Michael Schäfer</li>
+<li>Indonesian 2010: <a href="https://torage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owasptop10/OWASP%20Top%2010%20-%202010%20Indonesian.pdf">OWASP Top 10 2010 - Indonesian PDF</a><br />Tedi Heriyanto (coordinator), Lathifah Arief, Tri A Sundara, Zaki Akhmad</li>
+<li>Italian 2010: <a href="https://www.owasp.org/images/f/f9/OWASP_Top_10_-_2010_ITA.pdf">OWASP Top 10 2010 - Italian PDF</a><br />Simone Onofri, Paolo Perego, Massimo Biagiotti, Edoardo Viscosi, Salvatore Fiorillo, Roberto Battistoni, Loredana Mancini, Michele Nesta, Paco Schiaffella, Lucilla Mancini, Gerardo Di Giacomo, Valentino Squilloni</li>
+<li>Japanese 2010: <a href="https://torage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owasptop10/OWASP%20Top%2010%20-%202010%20Japanese-A4.pdf">OWASP Top 10 2010 - Japanese PDF</a><br /><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cba8aea8a2a7e5b8be8ba4bcaab8bbe5a4b9ac">[email&#160;protected]</a>, Dr. Masayuki Hisada, Yoshimasa Kawamoto, Ryusuke Sakamoto, Keisuke Seki, Shin Umemoto, Takashi Arima</li>
+<li>Chinese 2010: <a href="https://www.owasp.org/images/a/a9/OWASP_Top_10_2010_Chinese_V1.0_Released.pdf">OWASP Top 10 2010 - Chinese PDF</a><br />感谢以下为中文版本做出贡献的翻译人员和审核人员: Rip Torn, 钟卫林, 高雯, 王颉, 于振东</li>
+<li>Vietnamese 2010: <a href="torage.googleapis.com/google-code-archive-downloads/v2/code.google.com/owasptop10/OWASPTop%2010%20-%202010%20Vietnamese.pdf">OWASP Top 10 2010 - Vietnamese PDF</a><br />Translation lead by Cecil Su - Translation Team: Dang Hoang Vu, Nguyen Ba Tien, Nguyen Tang Hung, Luong Dieu Phuong, Huynh Thien Tam</li>
+<li>Hebrew 2010: <a href="https://wiki.owasp.org/index.php/OWASP_Top10_Hebrew">OWASP Top 10 Hebrew Project</a> – <a href="https://www.owasp.org/images/c/cd/OWASP_Top_10_Heb.pdf">OWASP Top 10 2010 - Hebrew PDF</a>.<br />Lead by Or Katz, see translation page for list of contributors.</li>
+</ul>
+</section>
+<section id='sec-sponsors' class='page-body tab-hidden'>
+<hr />
+<h2 id="project-sponsors">Project Sponsors</h2>
+<p>The OWASP Top 10 - 2017 project was sponsored by Autodesk. Thanks to <a href="https://www.aspectsecurity.com/" target="_blank">Aspect Security</a> for sponsoring earlier versions.</p>
+<p><img src="assets/images/autodesk.png" alt="Autodesk" /></p>
+</section>
+<section id='sec-data_2020' class='page-body tab-hidden'>
+<hr />
+<h1 id="owasp-top-10-2020-data-analysis-plan">OWASP Top 10 2020 Data Analysis Plan</h1>
+<h2 id="goals">Goals</h2>
+<p>To collect the most comprehensive dataset related to identified application vulnerabilities to-date to enable analysis for the Top 10 and other future research as well. This data should come from a variety of sources; security vendors and consultancies, bug bounties, along with company/organizational contributions. Data will be normalized to allow for level comparison between Human assisted Tooling and Tooling assisted Humans.</p>
+<p><br /></p>
+<h2 id="analysis-infrastructure">Analysis Infrastructure</h2>
+<p>Plan to leverage the OWASP Azure Cloud Infrastructure to collect, analyze, and store the data contributed.</p>
+<p><br /></p>
+<h2 id="contributions">Contributions</h2>
+<p>We plan to support both known and pseudo-anonymous contributions. The preference is for contributions to be known; this immensely helps with the validation/quality/confidence of the data submitted. If the submitter prefers to have their data stored anonymously and even go as far as submitting the data anonymously, then it will have to be classified as “unverified” vs. “verified”.</p>
+<h3 id="verified-data-contribution">Verified Data Contribution</h3>
+<p>Scenario 1: The submitter is known and has agreed to be identified as a contributing party.<br />
+Scenario 2: The submitter is known but would rather not be publicly identified.<br />
+Scenario 3: The submitter is known but does not want it recorded in the dataset.<br /></p>
+<h3 id="unverified-data-contribution">Unverified Data Contribution</h3>
+<p>Scenario 4: The submitter is anonymous. (Should we support?)</p>
+<p>The analysis of the data will be conducted with a careful distinction when the unverified data is part of the dataset that was analyzed.</p>
+<p><br /></p>
+<h2 id="contribution-process">Contribution Process</h2>
+<p>There are a few ways that data can be contributed:</p>
+<ol>
+<li>Email a CSV/Excel file with the dataset(s) to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ec8e9e858d82c28b808d9fac839b8d9f9cc2839e8b">[email&#160;protected]</a></li>
+<li>Upload a CSV/Excel file to a “contribution folder” (coming soon)</li>
+</ol>
+<p>Template examples can be found in GitHub: <a href="https://github.com/OWASP/Top10/tree/master/2021/Data">https://github.com/OWASP/Top10/tree/master/2021/Data</a></p>
+<p><br /></p>
+<h2 id="contribution-period">Contribution Period</h2>
+<p>We plan to accept contributions to the new Top 10 from May to Nov 30, 2020 for data dating from 2017 to current.</p>
+<p><br /></p>
+<h2 id="data-structure">Data Structure</h2>
+<p>The following data elements are <strong>required</strong> or optional. <br />
+The more information provided the more accurate our analysis can be.<br />
+At a bare minimum, we need the time period, total number of applications tested in the dataset, and the list of CWEs and counts of how many applications contained that CWE.<br />
+If at all possible, please provide the additional metadata, because that will greatly help us gain more insights into the current state of testing and vulnerabilities.<br /></p>
+<h3 id="metadata">Metadata</h3>
+<ul>
+<li>Contributor Name (org or anon)<br /></li>
+<li>Contributor Contact Email<br /></li>
+<li><strong>Time period (2019, 2018, 2017)</strong><br /></li>
+<li><strong>Number of applications tested</strong><br /></li>
+<li>Type of testing (TaH, HaT, Tools)<br /></li>
+<li>Primary Language (code)<br /></li>
+<li>Geographic Region (Global, North America, EU, Asia, other)<br /></li>
+<li>Primary Industry (Multiple, Financial, Industrial, Software, ??)<br /></li>
+<li>Whether or not data contains retests or the same applications multiple times (T/F)<br /></li>
+</ul>
+<h3 id="cwe-data">CWE Data</h3>
+<ul>
+<li><strong>A list of CWEs w/ count of applications found to contain that CWE</strong><br /></li>
+</ul>
+<p><em>If at all possible, please provide core CWEs in the data, not CWE categories.</em><br />
+<em>This will help with the analysis, any normalization/aggregation done as a part of this analysis will be well documented.</em></p>
+<h4 id="note">Note:</h4>
+<p>If a contributor has two types of datasets, one from HaT and one from TaH sources, then it is recommended to submit them as two separate datasets.<br />
+<em>HaT = Human assisted Tools (higher volume/frequency, primarily from tooling)</em><br />
+<em>TaH = Tool assisted Human (lower volume/frequency, primarily from human testing)</em><br /></p>
+<p><br /></p>
+<h2 id="survey">Survey</h2>
+<p>Similarly to the Top Ten 2017, we plan to conduct a survey to identify up to two categories of the Top Ten that the community believes are important, but may not be reflected in the data yet. We plan to conduct the survey in May or June 2020, and will be utilizing Google forms in a similar manner as last time. The CWEs on the survey will come from current trending findings, CWEs that are outside the Top Ten in data, and other potential sources.</p>
+<p><br /></p>
+<h2 id="process">Process</h2>
+<p>At a high level, we plan to perform a level of data normalization; however, we will keep a version of the raw data contributed for future analysis. We will analyze the CWE distribution of the datasets and potentially reclassify some CWEs to consolidate them into larger buckets. We will carefully document all normalization actions taken so it is clear what has been done.</p>
+<p>We plan to calculate likelihood following the model we developed in 2017 to determine incidence rate instead of frequency to rate how likely a given app may contain at least one instance of a CWE. This means we aren’t looking for the frequency rate (number of findings) in an app, rather, we are looking for the number of applications that had one or more instances of a CWE. We can calculate the incidence rate based on the total number of applications tested in the dataset compared to how many applications each CWE was found in.</p>
+<p>In addition, we will be developing base CWSS scores for the top 20-30 CWEs and include potential impact into the Top 10 weighting.</p>
+<p>Also, would like to explore additional insights that could be gleaned from the contributed dataset to see what else can be learned that could be of use to the security and development communities.</p>
+</section>
+</div>
+<hr>
+<div class="repo">
+</div>
+<div class="github-buttons">
+<a class="github-button" href="https://github.com/owasp/www-project-top-ten/subscription" data-icon="octicon-eye" data-size="large" data-show-count="true" aria-label="Watch on GitHub">Watch</a>
+<a class="github-button" href="https://github.com/owasp/www-project-top-ten" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star on GitHub">Star</a>
+</div>
+<div class="sidebar" role="complementary">
+<div class='owasp-sidebar-top'>
+<strong>The OWASP<sup>&reg;</sup> Foundation</strong> works to improve the security of software through its community-led open source software projects,
+hundreds of chapters worldwide, tens of thousands of members, and by hosting local and global conferences.
+</div>
+<h3 id="project-information">Project Information</h3>
+<ul>
+<li><a href="https://www.owasptopten.org/">NEW Website</a></li>
+<li><i class="fas fa-flag" style="font-size: 1.2em; color:#2ADA08;"></i><span style="font-size:1.0em;padding-left:12px;">Flagship Project</span></li>
+<li><i class="fas fa-book" style="font-size: 1.2em; color:#233e81;"></i><span style="font-size:1.0em;padding-left:12px;">Documentation</span></li>
+<li><i class="fas fa-toolbox" style="font-size: 1.2em; color:#233e81;"></i><span style="font-size:1.0em;padding-left:12px;">Builder</span></li>
+<li><i class="fas fa-shield-alt" style="font-size: 1.2em; color:#233e81;"></i><span style="font-size:1.0em;padding-left:12px;">Defender</span></li>
+<li><a href="2017">Current Version (2017)</a></li>
+</ul>
+<h3 id="downloads-or-social-links">Downloads or Social Links</h3>
+<ul>
+<li><a href="/www-pdf-archive/OWASP_Top_10-2017_%28en%29.pdf.pdf" target="_blank" rel="noopener">Download</a></li>
+<li><a href="/www-project-top-ten/#div-translation_efforts">Other languages → tab ‘Translation Efforts’</a></li>
+<li><a href="https://twitter.com/owasptop10">Twitter</a></li>
+</ul>
+<h3 id="code-repository">Code Repository</h3>
+<ul>
+<li><a href="https://github.com/OWASP/Top10" target="_blank" rel="noopener">repo</a></li>
+</ul>
+<h3 id="leaders">Leaders</h3>
+<ul>
+<li><a href="/cdn-cgi/l/email-protection#d5a3b4bbb1b0a7b4bf95baa2b4a6a5fbbaa7b2">Andrew van der Stock</a></li>
+<li>Brian Glas</li>
+<li><a href="/cdn-cgi/l/email-protection#244a414d480a57494d504c484d4a41644b534557540a4b5643">Neil Smithline</a></li>
+<li><a href="/cdn-cgi/l/email-protection#0c78637e7f786962226b656b60697e4c637b6d7f7c22637e6b">Torsten Gigler</a></li>
+</ul>
+<div class='owasp-sidebar-bottom'>
+<h3>Upcoming Global Events</h3>
+<div id='global-event-div'>
+</div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/javascript">
+   var events = [];
+   $(function() {
+     eventsyml = YAML.load('https://owasp.org/assets/sitedata/events.yml');
+ 
+     $.each(eventsyml, function (index) {
+        if(this.category == 'Global'){
+               for(e in this.events){
+                 events.push(this.events[e]);
+               }
+           }
+       });
+   
+       if(events.length > 0){
+          var htmlstring = "<ul>";
+          for(evnt in events){
+            if(events[evnt].url)
+               htmlstring += '<li><a href="'+ events[evnt].url 
+             else
+               htmlstring += '<li><a href="https://owasp.org/events/'
+               
+            htmlstring += '" target="_blank rel="noopener">' + events[evnt].name + '</a>';
+            htmlstring += "<ul><li style='list-style-type: circle;margin-top: 0px;padding:0px;margin-left:16px;'>" + events[evnt].dates + "</li></ul></li>";
+          }         
+          htmlstring += "</ul>";
+ 
+          $("#global-event-div").html(htmlstring);
+       }
+    });
+ </script>
+
+</div>
+</div>
+</main>
+<footer>
+<section class="footer-wrapper">
+<section class="social">
+<a href="https://owasp.org/slack/invite" aria-label="slack group" target="_blank" rel="noopener noreferrer"><i class="fa fa-lg fa-slack"></i></a>
+<a href="https://www.facebook.com/OWASPFoundation" aria-label="facebook group" target="_blank" rel="noopener noreferrer"><i class="fa fa-lg fa-facebook-square"></i></a>
+<a href="https://twitter.com/owasp" aria-label="twitter account" target="_blank" rel="noopener noreferrer"><i class="fa fa-lg fa-twitter"></i></a>
+<a href="https://www.linkedin.com/company/owasp/" aria-label="linkedin account" target="_blank" rel="noopener noreferrer"><i class="fa fa-lg fa-linkedin"></i></a>
+<a href="https://www.youtube.com/user/OWASPGLOBAL" aria-label="youtube account" target="_blank" rel="noopener noreferrer"><i class="fa fa-lg fa-youtube-square"></i></a>
+</section>
+<nav class="bot-nav" role="navigation" aria-label="secondary navigation">
+<ul>
+<li><a href="/">HOME</a></li>
+<li><a href="/projects/">PROJECTS</a></li>
+<li><a href="/chapters/">CHAPTERS</a></li>
+<li><a href="/events/">EVENTS</a></li>
+<li><a href="/about/">ABOUT</a></li>
+<li><a href="/www-policy/operational/privacy">PRIVACY</a></li>
+<li><a href="/sitemap/">SITEMAP</a></li>
+<li><a href="/contact/">CONTACT</a></li>
+</ul>
+</nav>
+<p class="disclaimer">
+Open Web Application Security Project, OWASP, Global AppSec, AppSec Days, AppSec California, SnowFROC, LASCON, and the OWASP logo are trademarks of the OWASP Foundation. Unless otherwise specified, all content on the site is Creative Commons Attribution-ShareAlike v4.0 and provided without warranty of service or accuracy. For more information, please refer to our <a href="/www-policy/operational/general-disclaimer.html">General Disclaimer</a>. OWASP does not endorse or recommend commercial products or services, allowing our community to remain vendor neutral with the collective wisdom of the best minds in software security worldwide. Copyright 2021, OWASP Foundation, Inc.
+</p>
+</section>
+<p>
+<hr>
+</p><section class="member">
+<script type="text/javascript">
+        var members = [];
+        $(function() {
+          
+          corp_members = YAML.load('https://owasp.org/assets/sitedata/corp_members.yml');
+          $.each(corp_members, function (index) {
+            members.push(this);
+            });
+            var randomIndexUsed = [];
+            var counter = 0;
+            var numberOfImages = 10;
+            if(members.length > 0)
+            {
+              var htmlstring = "";
+              while (counter < numberOfImages)
+              {
+                  var randomIndex;
+                  var img;
+    
+                  randomIndex = Math.floor(Math.random() * members.length);
+    
+                  if (randomIndexUsed.indexOf(randomIndex) == "-1")
+                  {
+                      counter++;
+                      htmlstring += '<a href="'+ members[randomIndex]["url"] + '" class="alt-member-logo" rel="sponsored noopener noreferrer" target="_blank" onclick="handleOutboundLinkClicks(event);"><img src="https://owasp.org' + members[randomIndex]["image"] + '" alt="image"/></a>';
+                      
+                      randomIndexUsed.push(randomIndex);
+                  }
+              }
+    
+              $("#corp_member_div").html(htmlstring);
+            }
+        });
+      </script>
+<div class="alt-member-wrapper">
+<section class="member-list">
+<h2>A selection of our Corporate Supporters</h2>
+<div id="corp_member_div">
+</div>
+<div class="member-cta">
+<a class="callout-link" href="/supporters">Become a corporate supporter</a>
+</div>
+</section>
+</div>
+</section>
+</footer>
+</body>
+</html>

@@ -1,0 +1,554 @@
+<!DOCTYPE html><!--[if IE 7]>
+<html class="ie ie7" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<!--<![endif]-->
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Mimikatz DCSync Usage, Exploitation, and Detection &#8211; Active Directory Security</title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Feed" href="https://adsecurity.org/?feed=rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Comments Feed" href="https://adsecurity.org/?feed=comments-rss2" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/adsecurity.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://adsecurity.org/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://adsecurity.org/wp-content/themes/graphene/bootstrap/css/bootstrap.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='https://adsecurity.org/wp-content/themes/graphene/fonts/font-awesome/css/font-awesome.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-css'  href='https://adsecurity.org/wp-content/themes/graphene/style.css?ver=2.8.4' type='text/css' media='screen' />
+<link rel='stylesheet' id='graphene-responsive-css'  href='https://adsecurity.org/wp-content/themes/graphene/responsive.css?ver=2.8.4' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-blocks-css'  href='https://adsecurity.org/wp-content/themes/graphene/blocks.css?ver=2.8.4' type='text/css' media='all' />
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/bootstrap/js/bootstrap.min.js?ver=2.8.4' id='bootstrap-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js?ver=2.8.4' id='bootstrap-hover-dropdown-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-submenu/bootstrap-submenu.min.js?ver=2.8.4' id='bootstrap-submenu-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/jquery.infinitescroll.min.js?ver=2.8.4' id='infinite-scroll-js'></script>
+<script type='text/javascript' id='graphene-js-extra'>
+/* <![CDATA[ */
+var grapheneJS = {"siteurl":"https:\/\/adsecurity.org","ajaxurl":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","templateUrl":"https:\/\/adsecurity.org\/wp-content\/themes\/graphene","isSingular":"1","enableStickyMenu":"","shouldShowComments":"1","commentsOrder":"newest","sliderDisable":"","sliderInterval":"7000","infScrollBtnLbl":"Load more","infScrollOn":"","infScrollCommentsOn":"","totalPosts":"1","postsPerPage":"10","isPageNavi":"","infScrollMsgText":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollMsgTextPlural":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollFinishedText":"All loaded!","commentsPerPage":"50","totalComments":"0","infScrollCommentsMsg":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsMsgPlural":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsFinishedMsg":"All comments loaded!","disableLiveSearch":"1","txtNoResult":"No result found.","isMasonry":""};
+/* ]]> */
+</script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/graphene.js?ver=2.8.4' id='graphene-js'></script>
+<link rel="https://api.w.org/" href="https://adsecurity.org/index.php?rest_route=/" /><link rel="alternate" type="application/json" href="https://adsecurity.org/index.php?rest_route=/wp/v2/posts/1729" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://adsecurity.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://adsecurity.org/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel="canonical" href="https://adsecurity.org/?p=1729" />
+<link rel='shortlink' href='https://adsecurity.org/?p=1729' />
+<link rel="alternate" type="application/json+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D1729" />
+<link rel="alternate" type="text/xml+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D1729&#038;format=xml" />
+		<script type="text/javascript">
+			var _statcounter = _statcounter || [];
+			_statcounter.push({"tags": {"author": "SeanMetcalf"}});
+		</script>
+				<script>
+		   WebFontConfig = {
+		      google: { 
+		      	families: ["Lato:400,400i,700,700i&display=swap"]		      }
+		   };
+
+		   (function(d) {
+		      var wf = d.createElement('script'), s = d.scripts[0];
+		      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+		      wf.async = true;
+		      s.parentNode.insertBefore(wf, s);
+		   })(document);
+		</script>
+	<style type="text/css">
+.header_title, .header_title a, .header_title a:visited, .header_title a:hover, .header_desc {color:#000000}.carousel, .carousel .item{height:400px}@media (max-width: 991px) {.carousel, .carousel .item{height:250px}}#header{max-height:198px}@media (min-width: 1200px) {.container {width:1280px}}
+</style>
+		<script type="application/ld+json">{"@context":"http:\/\/schema.org","@type":"Article","mainEntityOfPage":"https:\/\/adsecurity.org\/?p=1729","publisher":{"@type":"Organization","name":"Active Directory Security"},"headline":"Mimikatz DCSync Usage, Exploitation, and Detection","datePublished":"2015-09-25T16:00:48+00:00","dateModified":"2018-05-18T00:43:12+00:00","description":"Note: I presented on this AD persistence method at DerbyCon (2015). A major feature added to Mimkatz in August 2015 is \"DCSync\" which effectively \"impersonates\" a Domain Controller and requests account password data from the targeted Domain Controller. DCSync was written by Benjamin Delpy and Vincent Le Toux. The exploit method prior to DCSync was ...","author":{"@type":"Person","name":"Sean Metcalf"},"image":["https:\/\/adsecurity.org\/wp-content\/uploads\/2015\/09\/Mimikatz-DCSync-UserRights-DCR-KRBTGT-Dump.jpg","https:\/\/adsecurity.org\/wp-content\/uploads\/2015\/09\/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges02.jpg"]}</script>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><meta property="og:type" content="article" />
+<meta property="og:title" content="Mimikatz DCSync Usage, Exploitation, and Detection" />
+<meta property="og:url" content="https://adsecurity.org/?p=1729" />
+<meta property="og:site_name" content="Active Directory Security" />
+<meta property="og:description" content="Note: I presented on this AD persistence method at DerbyCon (2015). A major feature added to Mimkatz in August 2015 is &quot;DCSync&quot; which effectively &quot;impersonates&quot; a Domain Controller and requests account password data from the targeted Domain Controller. DCSync was written by Benjamin Delpy and Vincent Le Toux. The exploit method prior to DCSync was ..." />
+<meta property="og:updated_time" content="2018-05-18T00:43:12+00:00" />
+<meta property="article:modified_time" content="2018-05-18T00:43:12+00:00" />
+<meta property="article:published_time" content="2015-09-25T16:00:48+00:00" />
+<meta property="og:image" content="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges02.jpg" />
+<meta property="og:image:width" content="1002" />
+<meta property="og:image:height" content="474" />
+    </head>
+    <body class="post-template-default single single-post postid-1729 single-format-standard custom-background wp-embed-responsive layout-boxed two_col_left two-columns singular">
+        
+        <div class="container boxed-wrapper">
+            
+                            <div id="top-bar" class="row clearfix top-bar ">
+                    
+                                                    
+                            <div class="col-md-12 top-bar-items">
+                                
+                                                                                                    	<ul class="social-profiles">
+							
+			            <li class="social-profile social-profile-rss">
+			            	<a href="https://adsecurity.org/?feed=rss2" title="Subscribe to Tech, News, and Other Ideations&#039;s RSS feed" id="social-id-1" class="mysocial social-rss">
+			            				                            <i class="fa fa-rss"></i>
+		                        			            	</a>
+			            </li>
+		            
+		    	    </ul>
+                                    
+                                                                    <button type="button" class="search-toggle navbar-toggle collapsed" data-toggle="collapse" data-target="#top_search">
+                                        <span class="sr-only">Toggle search form</span>
+                                        <i class="fa fa-search-plus"></i>
+                                    </button>
+
+                                    <div id="top_search" class="top-search-form">
+                                        <form class="searchform" method="get" action="https://adsecurity.org">
+	<div class="input-group">
+		<div class="form-group live-search-input">
+			<label for="s" class="screen-reader-text">Search for:</label>
+		    <input type="text" id="s" name="s" class="form-control" placeholder="Search">
+		    		</div>
+	    <span class="input-group-btn">
+	    	<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+	    </span>
+    </div>
+    </form>                                                                            </div>
+                                
+                                                            </div>
+
+                        
+                                    </div>
+            
+
+            <div id="header" class="row">
+
+                <img src="https://adsecurity.org/wp-content/themes/graphene/images/headers/fluid.jpg" alt="Active Directory Security" title="Active Directory Security" width="960" height="198" />                
+                                                                </div>
+
+
+                        <nav class="navbar row navbar-inverse">
+
+                <div class="navbar-header align-center">
+                		                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-menu-wrap, #secondary-menu-wrap">
+	                        <span class="sr-only">Toggle navigation</span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                    </button>
+                	                    
+                    
+                                            <p class="header_title">
+                            <a href="https://adsecurity.org" title="Go back to the front page">                                Active Directory Security                            </a>                        </p>
+                    
+                                                    <p class="header_desc">Active Directory &amp; Enterprise Security, Methods to Secure Active Directory, Attack Methods &amp; Effective Defenses, PowerShell, Tech Notes, &amp; Geek Trivia&#8230;</p>
+                                            
+                                    </div>
+
+                                    <div class="collapse navbar-collapse" id="header-menu-wrap">
+
+            			<ul class="nav navbar-nav flip"><li ><a href="https://adsecurity.org/">Home</a></li><li class="menu-item menu-item-8"><a href="https://adsecurity.org/?page_id=8" >About</a></li><li class="menu-item menu-item-41"><a href="https://adsecurity.org/?page_id=41" >AD Resources</a></li><li class="menu-item menu-item-4031"><a href="https://adsecurity.org/?page_id=4031" >Attack Defense &#038; Detection</a></li><li class="menu-item menu-item-293"><a href="https://adsecurity.org/?page_id=293" >Contact</a></li><li class="menu-item menu-item-1821"><a href="https://adsecurity.org/?page_id=1821" >Mimikatz</a></li><li class="menu-item menu-item-1352"><a href="https://adsecurity.org/?page_id=1352" >Presentations</a></li><li class="menu-item menu-item-195"><a href="https://adsecurity.org/?page_id=195" >Schema Versions</a></li><li class="menu-item menu-item-399"><a href="https://adsecurity.org/?page_id=399" >Security Resources</a></li><li class="menu-item menu-item-183"><a href="https://adsecurity.org/?page_id=183" >SPNs</a></li><li class="menu-item menu-item-2532"><a href="https://adsecurity.org/?page_id=2532" >Top Posts</a></li></ul>                        
+            			                        
+                                            </div>
+                
+                                    
+                            </nav>
+
+            
+            <div id="content" class="clearfix hfeed row">
+                
+                    
+                                        
+                    <div id="content-main" class="clearfix content-main col-md-8">
+                    
+	
+		<div class="post-nav post-nav-top clearfix">
+			<p class="previous col-sm-6"><i class="fa fa-arrow-circle-left"></i> <a href="https://adsecurity.org/?p=1772" rel="prev">Sneaky Active Directory Persistence #14: SID History</a></p>			<p class="next-post col-sm-6"><a href="https://adsecurity.org/?p=1785" rel="next">Sneaky Active Directory Persistence #13: DSRM Persistence v2</a> <i class="fa fa-arrow-circle-right"></i></p>					</div>
+		        
+<div id="post-1729" class="clearfix post post-1729 type-post status-publish format-standard hentry category-activedirectorysecurity category-microsoft-security category-security-conference-presentationvideo category-technical-reference tag-dcerpc tag-dcsync tag-dcsyncasuser tag-dcsyncrights tag-detectdcsync tag-domaincontrollerimpersonation tag-drsuapi tag-dsgetncchanges tag-dsinternals tag-gss-api tag-impacket tag-impersonatedc tag-mimikatz tag-mimikatzdcsync tag-replicatingdirectorychanges tag-replicatingdirectorychangesall tag-replicatingdirectorychangesinfilteredset item-wrap">
+		
+	<div class="entry clearfix">
+    	
+                    	<div class="post-date date alpha with-year">
+            <p class="default_date">
+            	<span class="month">Sep</span>
+                <span class="day">25</span>
+                	                <span class="year">2015</span>
+                            </p>
+                    </div>
+            
+		        <h1 class="post-title entry-title">
+			Mimikatz DCSync Usage, Exploitation, and Detection			        </h1>
+		
+			    <ul class="post-meta entry-meta clearfix">
+	    		        <li class="byline">
+	        	By <span class="author"><a href="https://adsecurity.org/?author=2" rel="author">Sean Metcalf</a></span><span class="entry-cat"> in <span class="terms"><a class="term term-category term-565" href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>, <a class="term term-category term-11" href="https://adsecurity.org/?cat=11">Microsoft Security</a>, <a class="term term-category term-234" href="https://adsecurity.org/?cat=234">Security Conference Presentation/Video</a>, <a class="term term-category term-2" href="https://adsecurity.org/?cat=2">Technical Reference</a></span></span>	        </li>
+	        	    </ul>
+    
+				
+				<div class="entry-content clearfix">
+							
+										
+						<p><a href="https://adsecurity.org/?p=1738">Note: I presented on this AD persistence method at DerbyCon (2015).</a></p>
+<p>A major feature added to Mimkatz in August 2015 is &#8220;DCSync&#8221; which effectively &#8220;impersonates&#8221; a Domain Controller and requests account password data from the targeted Domain Controller. DCSync was written by Benjamin Delpy and Vincent Le Toux.</p>
+<p>The exploit method prior to DCSync was to run Mimikatz or Invoke-Mimikatz on a Domain Controller to get the KRBTGT password hash to create Golden Tickets. With Mimikatz&#8217;s DCSync and the appropriate rights, the attacker can pull the password hash, as well as previous password hashes, from a Domain Controller over the network without requiring interactive logon or copying off the Active Directory database file (ntds.dit).</p>
+<p>Special rights are required to run DCSync. Any member of Administrators, Domain Admins, or Enterprise Admins as well as Domain Controller computer accounts are able to run DCSync to pull password data. Note that Read-Only Domain Controllers are not  allowed to pull password data for users by default.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2.jpg"><img loading="lazy" class="alignnone size-full wp-image-1730" src="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2.jpg" alt="Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2" width="691" height="491" srcset="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2.jpg 691w, https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2-300x213.jpg 300w" sizes="(max-width: 691px) 100vw, 691px" /></a></p>
+<p>The credentials section in the graphic above shows the current NTLM hashes as well as the password history. This information can be valuable to an attacker since it can provide password creation strategies for users (if cracked).</p>
+<p><span id="more-1729"></span></p>
+<p><strong>Will&#8217;s post has great information on Red Team usage of Mimikatz DCSync:</strong><br />
+<a href="http://www.harmj0y.net/blog/redteaming/mimikatz-and-dcsync-and-extrasids-oh-my/">Mimikatz and DCSync and ExtraSids, Oh My</a></p>
+<p>&nbsp;</p>
+<h4><b>How DCSync works:</b></h4>
+<ol>
+<li>Discovers Domain Controller in the specified domain name.</li>
+<li>Requests the Domain Controller replicate the user credentials via <a href="https://msdn.microsoft.com/en-us/library/dd207691.aspx">GetNCChanges </a>(leveraging <a href="https://msdn.microsoft.com/en-us/library/cc228086.aspx">Directory Replication Service (DRS) Remote Protocol</a>)</li>
+</ol>
+<p>I have previously done some packet captures for <a href="http://blogs.metcorpconsulting.com/tech/?p=923">Domain Controller replication</a> and identified the intra-DC communication flow regarding how Domain Controllers replicate.</p>
+<p>The Samba Wiki describes the <a href="https://wiki.samba.org/index.php/DRSUAPI">DSGetNCChanges function</a>:</p>
+<p><i>&#8220;The client DC sends a DSGetNCChanges request to the server when the first one wants to get AD objects updates from the second one. The response contains a set of updates that the client has to apply to its NC replica. </i></p>
+<p><i>It is possible that the set of updates is too large for only one response message. In those cases, multiple DSGetNCChanges requests and responses are done. This process is called replication cycle or simply cycle.&#8221;</i></p>
+<p><i>&#8220;When a DC receives a DSReplicaSync Request, then for each DC that it replicates from (stored in RepsFrom data structure) it performs a replication cycle where it behaves like a client and makes DSGetNCChanges requests to that DC. So it gets up-to-date AD objects from each of the DC&#8217;s which it replicates from.&#8221;</i></p>
+<p>From MSDN:</p>
+<blockquote>
+<div id="mainSection">
+<div id="mainBody">
+<div id="collapseableSection" class="section">
+<p>The IDL_DRSGetNCChanges method replicates <a href="https://msdn.microsoft.com/en-us/library/cc228090.aspx#gt_b242435b-73cc-4c4e-95f0-b2a2ff680493">updates</a> from an <a href="https://msdn.microsoft.com/en-us/library/cc228090.aspx#gt_325d116f-cdbe-4dbd-b7e6-769ba75bf210">NC replica</a> on the server.</p>
+<div>
+<pre> ULONG IDL_DRSGetNCChanges(
+   [in, ref] DRS_HANDLE hDrs,
+   [in] DWORD dwInVersion,
+   [in, ref, switch_is(dwInVersion)] 
+     DRS_MSG_GETCHGREQ* pmsgIn,
+   [out, ref] DWORD* pdwOutVersion,
+   [out, ref, switch_is(*pdwOutVersion)] 
+     DRS_MSG_GETCHGREPLY* pmsgOut
+ );
+</pre>
+</div>
+<p><strong>hDrs: </strong>The <a href="https://msdn.microsoft.com/en-us/library/cc228090.aspx#gt_8a7f6700-8311-45bc-af10-82e10accd331">RPC</a> context handle returned by the <a href="https://msdn.microsoft.com/en-us/library/cc228292.aspx">IDL_DRSBind</a> method.</p>
+<p><strong>dwInVersion: </strong>Version of the request message.</p>
+<p><strong>pmsgIn: </strong>A pointer to the request message.</p>
+<p><strong>pdwOutVersion: </strong>A pointer to the version of the response message.</p>
+<p><strong>pmsgOut: </strong>A pointer to the response message.</p>
+<p><strong>Return Values: </strong>0 if successful, otherwise a <a href="https://msdn.microsoft.com/en-us/library/cc228090.aspx#gt_459db7bd-5066-44e3-89c1-f0e4806b7a1b">Windows error code</a>.</p>
+<p><strong>Exceptions Thrown</strong>: This method might throw the following exceptions beyond those thrown by the underlying RPC protocol (as specified in <a href="https://msdn.microsoft.com/en-us/library/cc243560.aspx">[MS-RPCE]</a>): ERROR_INVALID_HANDLE, ERROR_DS_DRS_EXTENSIONS_CHANGED, ERROR_DS_DIFFERENT_REPL_EPOCHS, and  ERROR_INVALID_PARAMETER.</p>
+</div>
+</div>
+</div>
+</blockquote>
+<p>&nbsp;</p>
+<h4><b><span style="text-decoration: underline;">Delegating Rights to Pull Account data:</span></b></h4>
+<p>It is possible to use a regular domain user account to run DCSync. The combination of the following three rights need to be delegated at the domain level in order for the user account to successfully retrieve the password data with DCSync:</p>
+<ul>
+<li>Replicating Directory Changes (<a href="https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc772673(v=ws.10)">DS-Replication-Get-Changes</a>)<br />
+<em>Extended right needed to replicate only those changes from a given NC that are also replicated to the Global Catalog (which excludes secret domain data). This constraint is only meaningful for Domain NCs.</em></li>
+<li>Replicating Directory Changes All (<a href="https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc772673(v=ws.10)">DS-Replication-Get-Changes-All</a>)<br />
+<em>Control access right that allows the replication of all data in a given replication NC, including secret domain data.</em></li>
+<li><em>Replicating Directory Changes In Filtered Set (rare, only required in some environments)</em></li>
+</ul>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-DomainPermissionsConfig.jpg"><img loading="lazy" class="alignnone size-full wp-image-1731" src="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-DomainPermissionsConfig.jpg" alt="Mimikatz-DCSync-UserRights-DCR-DomainPermissionsConfig" width="401" height="376" srcset="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-DomainPermissionsConfig.jpg 401w, https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-DomainPermissionsConfig-300x281.jpg 300w" sizes="(max-width: 401px) 100vw, 401px" /></a></p>
+<p><em>Note that members of the Administrators and Domain Controller groups have these rights by default.</em></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/09/DCSync-ADDomain-DefaultRights.png"><img loading="lazy" class="alignnone wp-image-2876" src="https://adsecurity.org/wp-content/uploads/2015/09/DCSync-ADDomain-DefaultRights.png" alt="DCSync-ADDomain-DefaultRights" width="394" height="298" srcset="https://adsecurity.org/wp-content/uploads/2015/09/DCSync-ADDomain-DefaultRights.png 637w, https://adsecurity.org/wp-content/uploads/2015/09/DCSync-ADDomain-DefaultRights-300x227.png 300w" sizes="(max-width: 394px) 100vw, 394px" /></a></p>
+<h4><span style="text-decoration: underline;"><strong>Pulling Password Data Using DCSync</strong></span></h4>
+<p>Once the account is delegated the ability to replicate objects, the account can run Mimikatz DCSync:</p>
+<blockquote><p>mimikatz &#8220;lsadump::dcsync /domain:rd.adsecurity.org /user:krbtgt&#8221;</p></blockquote>
+<p>&nbsp;</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-KRBTGT-Dump.jpg"><img loading="lazy" class="alignnone size-full wp-image-1926" src="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-KRBTGT-Dump.jpg" alt="Mimikatz-DCSync-UserRights-DCR-KRBTGT-Dump" width="690" height="501" srcset="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-KRBTGT-Dump.jpg 690w, https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-KRBTGT-Dump-300x218.jpg 300w" sizes="(max-width: 690px) 100vw, 690px" /></a><br />
+Targeting an admin account with DCSync can also provide the account&#8217;s password history (in hash format). Since there are LMHashes listed it may be possible to crack these and gain insight into the password strategy the admin uses. This may provide the attacker to guess the next password the admin uses if access is lost.</p>
+<blockquote><p>mimikatz &#8220;lsadump::dcsync /domain:rd.adsecurity.org /user:Administrator&#8221;</p></blockquote>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2-021.jpg"><img loading="lazy" class="alignnone size-full wp-image-1927" src="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2-021.jpg" alt="Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2-02" width="691" height="491" srcset="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2-021.jpg 691w, https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-UserRights-DCR-Administrator-500-Dump2-021-300x213.jpg 300w" sizes="(max-width: 691px) 100vw, 691px" /></a></p>
+<p>&nbsp;</p>
+<h4><span style="text-decoration: underline;"><b>Detecting DCSync usage</b></span></h4>
+<p>While there may be event activity that could be used to identify DCSync usage, the best detection method is through network monitoring.</p>
+<p><strong>Step 1: Identify all Domain Controller IP addresses and add to &#8220;Replication Allow List&#8221;.</strong></p>
+<p><span style="text-decoration: underline;">PowerShell Active Directory module cmdlet:</span></p>
+<blockquote><p>Get-ADDomainController -filter * | select IPv4Address</p></blockquote>
+<p><span style="text-decoration: underline;"><br />
+PowerShell:</span></p>
+<blockquote><p>[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().DomainControllers | select IPAddress</p></blockquote>
+<p><span style="text-decoration: underline;"><br />
+Nslookup (if DC runs DNS):</span></p>
+<blockquote><p>nslookup<br />
+Set type=all<br />
+_ldap._tcp.dc._msdcs.DOMAIN.COM</p></blockquote>
+<p>&nbsp;</p>
+<p><strong>Step 2: Configure IDS to trigger if DsGetNCChange request originates an IP not on the &#8220;Replication Allow List&#8221; (list of DC IPs).</strong></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges.jpg"><img loading="lazy" class="alignnone size-full wp-image-1733" src="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges.jpg" alt="Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges" width="1011" height="383" srcset="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges.jpg 1011w, https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges-300x114.jpg 300w" sizes="(max-width: 1011px) 100vw, 1011px" /></a></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges02.jpg"><img loading="lazy" class="alignnone size-full wp-image-1732" src="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges02.jpg" alt="Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges02" width="1002" height="474" srcset="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges02.jpg 1002w, https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-DCSync-KRBTGT-PacketCapture-DSGetNCChanges02-300x142.jpg 300w" sizes="(max-width: 1002px) 100vw, 1002px" /></a></p>
+<p>There are other tools that perform this same process so it&#8217;s better to focus on detecting the method instead of specific artifacts.</p>
+<p>Other tools that leverage GetNCChanges</p>
+<ul>
+<li>Impacket: <a href="https://github.com/CoreSecurity/impacket">https://github.com/CoreSecurity/impacket</a></li>
+<li>DSInternals: <a href="https://www.dsinternals.com/en/retrieving-active-directory-passwords-remotely/">https://www.dsinternals.com/en/retrieving-active-directory-passwords-remotely/</a></li>
+</ul>
+<p>Note that Full Control rights at the domain provides these rights as well, so limit who has domain-level admin rights.</p>
+<p>&nbsp;</p>
+<h4><span style="text-decoration: underline;"><b>References:</b></span></h4>
+<ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/dd207691.aspx">MSDN GetNCChanges</a></li>
+<li><a href="https://support.microsoft.com/en-us/kb/303972">How to grant the &#8220;Replicating Directory Changes&#8221; permission for the Microsoft Metadirectory Services ADMA service account </a></li>
+<li><a href="https://technet.microsoft.com/en-us/library/Hh296982.aspx">Grant Active Directory Domain Services permissions for profile synchronization in SharePoint Server 2013</a></li>
+<li><a href="http://support.microsoft.com/kb/891995">How to poll for object attribute changes in Active Directory on Windows 2000 and Windows Server 2003  </a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/ms677626%28v=vs.85%29.aspx">Polling for Changes Using the DirSync Control </a></li>
+<li><a href="http://www.harmj0y.net/blog/redteaming/mimikatz-and-dcsync-and-extrasids-oh-my/">Mimikatz and DCSync and ExtraSids, Oh My</a></li>
+</ul>
+<p>&nbsp;</p>
+<div class="tptn_counter" id="tptn_counter_1729">(Visited 100,858 times, 32 visits today)</div>								</div>
+		
+			    <ul class="entry-footer">
+	    		        <li class="post-tags col-sm-8"><i class="fa fa-tags" title="Tags"></i> <span class="terms"><a class="term term-tagpost_tag term-612" href="https://adsecurity.org/?tag=dcerpc">DCE/RPC</a>, <a class="term term-tagpost_tag term-598" href="https://adsecurity.org/?tag=dcsync">DCSync</a>, <a class="term term-tagpost_tag term-605" href="https://adsecurity.org/?tag=dcsyncasuser">DCSyncAsUser</a>, <a class="term term-tagpost_tag term-604" href="https://adsecurity.org/?tag=dcsyncrights">DCSyncRights</a>, <a class="term term-tagpost_tag term-603" href="https://adsecurity.org/?tag=detectdcsync">DetectDCSync</a>, <a class="term term-tagpost_tag term-610" href="https://adsecurity.org/?tag=domaincontrollerimpersonation">DomainControllerImpersonation</a>, <a class="term term-tagpost_tag term-609" href="https://adsecurity.org/?tag=drsuapi">DRSUAPI</a>, <a class="term term-tagpost_tag term-600" href="https://adsecurity.org/?tag=dsgetncchanges">DSGetNCChanges</a>, <a class="term term-tagpost_tag term-602" href="https://adsecurity.org/?tag=dsinternals">DSInternals</a>, <a class="term term-tagpost_tag term-613" href="https://adsecurity.org/?tag=gss-api">GSS-API</a>, <a class="term term-tagpost_tag term-601" href="https://adsecurity.org/?tag=impacket">Impacket</a>, <a class="term term-tagpost_tag term-611" href="https://adsecurity.org/?tag=impersonatedc">ImpersonateDC</a>, <a class="term term-tagpost_tag term-207" href="https://adsecurity.org/?tag=mimikatz">mimikatz</a>, <a class="term term-tagpost_tag term-599" href="https://adsecurity.org/?tag=mimikatzdcsync">MimikatzDCSync</a>, <a class="term term-tagpost_tag term-606" href="https://adsecurity.org/?tag=replicatingdirectorychanges">ReplicatingDirectoryChanges</a>, <a class="term term-tagpost_tag term-607" href="https://adsecurity.org/?tag=replicatingdirectorychangesall">ReplicatingDirectoryChangesALL</a>, <a class="term term-tagpost_tag term-608" href="https://adsecurity.org/?tag=replicatingdirectorychangesinfilteredset">ReplicatingDirectoryChangesInFilteredSet</a></span></li>
+	        	        <li class="addthis col-sm-8"><div class="add-this"></div></li>
+	        	    </ul>
+    	</div>
+
+</div>
+
+    <div class="entry-author">
+        <div class="row">
+            <div class="author-avatar col-sm-3">
+            	<a href="https://adsecurity.org/?author=2" rel="author">
+					<img alt='' src='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=200&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=400&#038;d=mm&#038;r=g 2x' class='avatar avatar-200 photo' height='200' width='200' loading='lazy'/>                </a>
+            </div>
+
+            <div class="author-bio col-sm-9">
+                <h3 class="section-title-sm">Sean Metcalf</h3>
+                <p>I improve security for enterprises around the world working for TrimarcSecurity.com<br />
+Read the About page (top left) for information about me. :)<br />
+https://adsecurity.org/?page_id=8</p>
+    <ul class="author-social">
+    	        
+			        <li><a href="mailto:sean@adsecurity.org"><i class="fa fa-envelope-o"></i></a></li>
+            </ul>
+                </div>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+            
+  
+
+                </div><!-- #content-main -->
+        
+            
+<div id="sidebar1" class="sidebar sidebar-right widget-area col-md-4">
+
+	
+    
+		<div id="recent-posts-4" class="sidebar-wrap widget_recent_entries">
+		<h3>Recent Posts</h3>
+		<ul>
+											<li>
+					<a href="https://adsecurity.org/?p=4367">Attacking Active Directory Group Managed Service Accounts (GMSAs)</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4277">From Azure AD to Active Directory (via Azure) &#8211; An Unanticipated Attack Path</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4211">What is Azure Active Directory?</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4179">Slides Posted for Black Hat USA 2019 Talk: Attacking &#038; Defending the Microsoft Cloud</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4187">AD Reading: Windows Server 2019 Active Directory Features</a>
+									</li>
+					</ul>
+
+		</div><div id="text-3" class="sidebar-wrap widget_text"><h3>Trimarc Active Directory Security Services</h3>			<div class="textwidget">Have concerns about your Active Directory environment?
+
+Trimarc helps enterprises improve their security posture. <p>
+<a href="http://trimarcsecurity.com/security-services">Find out how...</a> 
+TrimarcSecurity.com</div>
+		</div><div id="widget_tptn_pop-4" class="sidebar-wrap tptn_posts_list_widget"><h3>Popular Posts</h3><div class="tptn_posts  tptn_posts_widget tptn_posts_widget4"><ul><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2362"     class="tptn_link"><span class="tptn_title">Attack Methods for Gaining Domain Admin Rights in&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=478"     class="tptn_link"><span class="tptn_title">PowerShell Encoding &#038; Decoding (Base64)</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=483"     class="tptn_link"><span class="tptn_title">Kerberos &#038; KRBTGT: Active Directory&#8217;s&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3377"     class="tptn_link"><span class="tptn_title">Securing Domain Controllers to Improve Active&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2288"     class="tptn_link"><span class="tptn_title">Finding Passwords in SYSVOL &#038; Exploiting Group&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3299"     class="tptn_link"><span class="tptn_title">Securing Windows Workstations: Developing a Secure Baseline</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1684"     class="tptn_link"><span class="tptn_title">The Most Common Active Directory Security Issues and&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2653"     class="tptn_link"><span class="tptn_title">Building an Effective Active Directory Lab&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1729"     class="tptn_link"><span class="tptn_title">Mimikatz DCSync Usage, Exploitation, and Detection</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1790"     class="tptn_link"><span class="tptn_title">Microsoft Local Administrator Password Solution (LAPS)</span></a></span></li></ul><div class="tptn_clear"></div></div></div><div id="categories-4" class="sidebar-wrap widget_categories"><h3>Categories</h3>
+			<ul>
+					<li class="cat-item cat-item-565"><a href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>
+</li>
+	<li class="cat-item cat-item-55"><a href="https://adsecurity.org/?cat=55">Apple Security</a>
+</li>
+	<li class="cat-item cat-item-431"><a href="https://adsecurity.org/?cat=431">Cloud Security</a>
+</li>
+	<li class="cat-item cat-item-17"><a href="https://adsecurity.org/?cat=17">Continuing Education</a>
+</li>
+	<li class="cat-item cat-item-396"><a href="https://adsecurity.org/?cat=396">Entertainment</a>
+</li>
+	<li class="cat-item cat-item-347"><a href="https://adsecurity.org/?cat=347">Exploit</a>
+</li>
+	<li class="cat-item cat-item-1039"><a href="https://adsecurity.org/?cat=1039">Hacking</a>
+</li>
+	<li class="cat-item cat-item-168"><a href="https://adsecurity.org/?cat=168">Hardware Security</a>
+</li>
+	<li class="cat-item cat-item-172"><a href="https://adsecurity.org/?cat=172">Hypervisor Security</a>
+</li>
+	<li class="cat-item cat-item-126"><a href="https://adsecurity.org/?cat=126">Linux/Unix Security</a>
+</li>
+	<li class="cat-item cat-item-343"><a href="https://adsecurity.org/?cat=343">Malware</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://adsecurity.org/?cat=11">Microsoft Security</a>
+</li>
+	<li class="cat-item cat-item-819"><a href="https://adsecurity.org/?cat=819">Mitigation</a>
+</li>
+	<li class="cat-item cat-item-48"><a href="https://adsecurity.org/?cat=48">Network/System Security</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://adsecurity.org/?cat=7">PowerShell</a>
+</li>
+	<li class="cat-item cat-item-698"><a href="https://adsecurity.org/?cat=698">RealWorld</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="https://adsecurity.org/?cat=21">Security</a>
+</li>
+	<li class="cat-item cat-item-234"><a href="https://adsecurity.org/?cat=234">Security Conference Presentation/Video</a>
+</li>
+	<li class="cat-item cat-item-1045"><a href="https://adsecurity.org/?cat=1045">Security Recommendation</a>
+</li>
+	<li class="cat-item cat-item-24"><a href="https://adsecurity.org/?cat=24">Technical Article</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="https://adsecurity.org/?cat=4">Technical Reading</a>
+</li>
+	<li class="cat-item cat-item-2"><a href="https://adsecurity.org/?cat=2">Technical Reference</a>
+</li>
+	<li class="cat-item cat-item-156"><a href="https://adsecurity.org/?cat=156">TheCloud</a>
+</li>
+	<li class="cat-item cat-item-930"><a href="https://adsecurity.org/?cat=930">Vulnerability</a>
+</li>
+			</ul>
+
+			</div><div id="tag_cloud-3" class="sidebar-wrap widget_tag_cloud"><h3>Tags</h3><div class="tagcloud"><a href="https://adsecurity.org/?tag=activedirectory" class="tag-cloud-link tag-link-20 tag-link-position-1" style="font-size: 22pt;" aria-label="ActiveDirectory (52 items)">ActiveDirectory</a>
+<a href="https://adsecurity.org/?tag=active-directory" class="tag-cloud-link tag-link-75 tag-link-position-2" style="font-size: 10.531914893617pt;" aria-label="Active Directory (8 items)">Active Directory</a>
+<a href="https://adsecurity.org/?tag=activedirectoryattack" class="tag-cloud-link tag-link-537 tag-link-position-3" style="font-size: 8pt;" aria-label="ActiveDirectoryAttack (5 items)">ActiveDirectoryAttack</a>
+<a href="https://adsecurity.org/?tag=activedirectorysecurity" class="tag-cloud-link tag-link-113 tag-link-position-4" style="font-size: 13.957446808511pt;" aria-label="ActiveDirectorySecurity (14 items)">ActiveDirectorySecurity</a>
+<a href="https://adsecurity.org/?tag=active-directory-security" class="tag-cloud-link tag-link-976 tag-link-position-5" style="font-size: 9.7872340425532pt;" aria-label="Active Directory Security (7 items)">Active Directory Security</a>
+<a href="https://adsecurity.org/?tag=adreading" class="tag-cloud-link tag-link-5 tag-link-position-6" style="font-size: 13.510638297872pt;" aria-label="ADReading (13 items)">ADReading</a>
+<a href="https://adsecurity.org/?tag=adsecurity" class="tag-cloud-link tag-link-86 tag-link-position-7" style="font-size: 10.531914893617pt;" aria-label="ADSecurity (8 items)">ADSecurity</a>
+<a href="https://adsecurity.org/?tag=ad-security" class="tag-cloud-link tag-link-100 tag-link-position-8" style="font-size: 8pt;" aria-label="AD Security (5 items)">AD Security</a>
+<a href="https://adsecurity.org/?tag=dcsync" class="tag-cloud-link tag-link-598 tag-link-position-9" style="font-size: 10.531914893617pt;" aria-label="DCSync (8 items)">DCSync</a>
+<a href="https://adsecurity.org/?tag=defcon" class="tag-cloud-link tag-link-518 tag-link-position-10" style="font-size: 8pt;" aria-label="DEFCON (5 items)">DEFCON</a>
+<a href="https://adsecurity.org/?tag=domaincontroller" class="tag-cloud-link tag-link-101 tag-link-position-11" style="font-size: 15.446808510638pt;" aria-label="DomainController (18 items)">DomainController</a>
+<a href="https://adsecurity.org/?tag=emet5" class="tag-cloud-link tag-link-338 tag-link-position-12" style="font-size: 8pt;" aria-label="EMET5 (5 items)">EMET5</a>
+<a href="https://adsecurity.org/?tag=goldenticket" class="tag-cloud-link tag-link-303 tag-link-position-13" style="font-size: 11.276595744681pt;" aria-label="GoldenTicket (9 items)">GoldenTicket</a>
+<a href="https://adsecurity.org/?tag=hyperv" class="tag-cloud-link tag-link-3 tag-link-position-14" style="font-size: 8pt;" aria-label="HyperV (5 items)">HyperV</a>
+<a href="https://adsecurity.org/?tag=invoke-mimikatz" class="tag-cloud-link tag-link-336 tag-link-position-15" style="font-size: 10.531914893617pt;" aria-label="Invoke-Mimikatz (8 items)">Invoke-Mimikatz</a>
+<a href="https://adsecurity.org/?tag=kb3011780" class="tag-cloud-link tag-link-337 tag-link-position-16" style="font-size: 9.7872340425532pt;" aria-label="KB3011780 (7 items)">KB3011780</a>
+<a href="https://adsecurity.org/?tag=kdc" class="tag-cloud-link tag-link-80 tag-link-position-17" style="font-size: 8pt;" aria-label="KDC (5 items)">KDC</a>
+<a href="https://adsecurity.org/?tag=kerberos" class="tag-cloud-link tag-link-81 tag-link-position-18" style="font-size: 15.446808510638pt;" aria-label="Kerberos (18 items)">Kerberos</a>
+<a href="https://adsecurity.org/?tag=kerberoshacking" class="tag-cloud-link tag-link-298 tag-link-position-19" style="font-size: 11.872340425532pt;" aria-label="KerberosHacking (10 items)">KerberosHacking</a>
+<a href="https://adsecurity.org/?tag=krbtgt" class="tag-cloud-link tag-link-394 tag-link-position-20" style="font-size: 9.7872340425532pt;" aria-label="KRBTGT (7 items)">KRBTGT</a>
+<a href="https://adsecurity.org/?tag=laps" class="tag-cloud-link tag-link-631 tag-link-position-21" style="font-size: 9.0425531914894pt;" aria-label="LAPS (6 items)">LAPS</a>
+<a href="https://adsecurity.org/?tag=lsass" class="tag-cloud-link tag-link-71 tag-link-position-22" style="font-size: 11.276595744681pt;" aria-label="LSASS (9 items)">LSASS</a>
+<a href="https://adsecurity.org/?tag=mcm" class="tag-cloud-link tag-link-6 tag-link-position-23" style="font-size: 14.255319148936pt;" aria-label="MCM (15 items)">MCM</a>
+<a href="https://adsecurity.org/?tag=microsoftemet" class="tag-cloud-link tag-link-58 tag-link-position-24" style="font-size: 11.276595744681pt;" aria-label="MicrosoftEMET (9 items)">MicrosoftEMET</a>
+<a href="https://adsecurity.org/?tag=microsoftwindows" class="tag-cloud-link tag-link-102 tag-link-position-25" style="font-size: 9.7872340425532pt;" aria-label="MicrosoftWindows (7 items)">MicrosoftWindows</a>
+<a href="https://adsecurity.org/?tag=mimikatz" class="tag-cloud-link tag-link-207 tag-link-position-26" style="font-size: 18.425531914894pt;" aria-label="mimikatz (29 items)">mimikatz</a>
+<a href="https://adsecurity.org/?tag=ms14068" class="tag-cloud-link tag-link-295 tag-link-position-27" style="font-size: 11.276595744681pt;" aria-label="MS14068 (9 items)">MS14068</a>
+<a href="https://adsecurity.org/?tag=passthehash" class="tag-cloud-link tag-link-44 tag-link-position-28" style="font-size: 9.7872340425532pt;" aria-label="PassTheHash (7 items)">PassTheHash</a>
+<a href="https://adsecurity.org/?tag=powershell" class="tag-cloud-link tag-link-575 tag-link-position-29" style="font-size: 18.872340425532pt;" aria-label="PowerShell (31 items)">PowerShell</a>
+<a href="https://adsecurity.org/?tag=powershellcode" class="tag-cloud-link tag-link-22 tag-link-position-30" style="font-size: 15.148936170213pt;" aria-label="PowerShellCode (17 items)">PowerShellCode</a>
+<a href="https://adsecurity.org/?tag=powershellhacking" class="tag-cloud-link tag-link-68 tag-link-position-31" style="font-size: 8pt;" aria-label="PowerShellHacking (5 items)">PowerShellHacking</a>
+<a href="https://adsecurity.org/?tag=powershellv5" class="tag-cloud-link tag-link-69 tag-link-position-32" style="font-size: 8pt;" aria-label="PowerShellv5 (5 items)">PowerShellv5</a>
+<a href="https://adsecurity.org/?tag=powersploit" class="tag-cloud-link tag-link-232 tag-link-position-33" style="font-size: 10.531914893617pt;" aria-label="PowerSploit (8 items)">PowerSploit</a>
+<a href="https://adsecurity.org/?tag=presentation" class="tag-cloud-link tag-link-422 tag-link-position-34" style="font-size: 9.7872340425532pt;" aria-label="Presentation (7 items)">Presentation</a>
+<a href="https://adsecurity.org/?tag=security" class="tag-cloud-link tag-link-576 tag-link-position-35" style="font-size: 8pt;" aria-label="Security (5 items)">Security</a>
+<a href="https://adsecurity.org/?tag=sidhistory" class="tag-cloud-link tag-link-547 tag-link-position-36" style="font-size: 8pt;" aria-label="SIDHistory (5 items)">SIDHistory</a>
+<a href="https://adsecurity.org/?tag=silverticket" class="tag-cloud-link tag-link-304 tag-link-position-37" style="font-size: 11.276595744681pt;" aria-label="SilverTicket (9 items)">SilverTicket</a>
+<a href="https://adsecurity.org/?tag=sneakyadpersistence" class="tag-cloud-link tag-link-596 tag-link-position-38" style="font-size: 9.0425531914894pt;" aria-label="SneakyADPersistence (6 items)">SneakyADPersistence</a>
+<a href="https://adsecurity.org/?tag=spn" class="tag-cloud-link tag-link-294 tag-link-position-39" style="font-size: 9.0425531914894pt;" aria-label="SPN (6 items)">SPN</a>
+<a href="https://adsecurity.org/?tag=tgs" class="tag-cloud-link tag-link-528 tag-link-position-40" style="font-size: 9.0425531914894pt;" aria-label="TGS (6 items)">TGS</a>
+<a href="https://adsecurity.org/?tag=tgt" class="tag-cloud-link tag-link-529 tag-link-position-41" style="font-size: 9.0425531914894pt;" aria-label="TGT (6 items)">TGT</a>
+<a href="https://adsecurity.org/?tag=windows10" class="tag-cloud-link tag-link-494 tag-link-position-42" style="font-size: 10.531914893617pt;" aria-label="Windows10 (8 items)">Windows10</a>
+<a href="https://adsecurity.org/?tag=windowsserver2008r2" class="tag-cloud-link tag-link-46 tag-link-position-43" style="font-size: 9.0425531914894pt;" aria-label="WindowsServer2008R2 (6 items)">WindowsServer2008R2</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012" class="tag-cloud-link tag-link-47 tag-link-position-44" style="font-size: 11.276595744681pt;" aria-label="WindowsServer2012 (9 items)">WindowsServer2012</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012r2" class="tag-cloud-link tag-link-54 tag-link-position-45" style="font-size: 9.7872340425532pt;" aria-label="WindowsServer2012R2 (7 items)">WindowsServer2012R2</a></div>
+</div>    
+        
+    
+</div><!-- #sidebar1 -->        
+        
+    </div><!-- #content -->
+
+
+    
+        
+    <div id="sidebar_bottom" class="sidebar widget-area row footer-widget-col-3">
+                    <div id="text-2" class="sidebar-wrap widget_text col-sm-4"><h3>Copyright</h3>			<div class="textwidget">Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability.
+The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned.
+
+Content Ownership: All content posted here is intellectual work and under the current law, the poster owns the copyright of the article. Terms of Use Copyright © 2011 - 2020.</div>
+		</div>		
+            </div>
+
+	
+
+<div id="footer" class="row default-footer">
+    
+        
+            
+            <div class="copyright-developer">
+                                    <div id="copyright">
+                        <p>Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability. The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned. </p>
+                    </div>
+                
+                                    <div id="developer">
+                        <p>
+                                                        Made with <i class="fa fa-heart"></i> by <a href="https://www.graphene-theme.com/" rel="nofollow">Graphene Themes</a>.                        </p>
+
+                                            </div>
+                            </div>
+
+        
+                
+    </div><!-- #footer -->
+
+
+</div><!-- #container -->
+
+		<!-- Start of StatCounter Code -->
+		<script>
+			<!--
+			var sc_project=10100711;
+			var sc_security="4b306538";
+			      var sc_invisible=1;
+			var scJsHost = (("https:" == document.location.protocol) ?
+				"https://secure." : "http://www.");
+			//-->
+					</script>
+		
+<script type="text/javascript"
+				src="https://secure.statcounter.com/counter/counter.js"
+				async></script>		<noscript><div class="statcounter"><a title="web analytics" href="https://statcounter.com/"><img class="statcounter" src="https://c.statcounter.com/10100711/0/4b306538/1/" alt="web analytics" /></a></div></noscript>
+		<!-- End of StatCounter Code -->
+				<a href="#" id="back-to-top" title="Back to top"><i class="fa fa-chevron-up"></i></a>
+	<script type='text/javascript' id='tptn_tracker-js-extra'>
+/* <![CDATA[ */
+var ajax_tptn_tracker = {"ajax_url":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","top_ten_id":"1729","top_ten_blog_id":"1","activate_counter":"11","top_ten_debug":"0","tptn_rnd":"642174801"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://adsecurity.org/wp-content/plugins/top-10/includes/js/top-10-tracker.min.js?ver=1.0' id='tptn_tracker-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+</body>
+</html>

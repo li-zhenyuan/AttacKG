@@ -1,0 +1,583 @@
+<!DOCTYPE html><!--[if IE 7]>
+<html class="ie ie7" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<!--<![endif]-->
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Cracking Kerberos TGS Tickets Using Kerberoast &#8211; Exploiting Kerberos to Compromise the Active Directory Domain &#8211; Active Directory Security</title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Feed" href="https://adsecurity.org/?feed=rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Comments Feed" href="https://adsecurity.org/?feed=comments-rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Cracking Kerberos TGS Tickets Using Kerberoast &#8211; Exploiting Kerberos to Compromise the Active Directory Domain Comments Feed" href="https://adsecurity.org/?feed=rss2&#038;p=2293" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/adsecurity.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://adsecurity.org/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://adsecurity.org/wp-content/themes/graphene/bootstrap/css/bootstrap.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='https://adsecurity.org/wp-content/themes/graphene/fonts/font-awesome/css/font-awesome.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-css'  href='https://adsecurity.org/wp-content/themes/graphene/style.css?ver=2.8.4' type='text/css' media='screen' />
+<link rel='stylesheet' id='graphene-responsive-css'  href='https://adsecurity.org/wp-content/themes/graphene/responsive.css?ver=2.8.4' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-blocks-css'  href='https://adsecurity.org/wp-content/themes/graphene/blocks.css?ver=2.8.4' type='text/css' media='all' />
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/bootstrap/js/bootstrap.min.js?ver=2.8.4' id='bootstrap-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js?ver=2.8.4' id='bootstrap-hover-dropdown-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-submenu/bootstrap-submenu.min.js?ver=2.8.4' id='bootstrap-submenu-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/jquery.infinitescroll.min.js?ver=2.8.4' id='infinite-scroll-js'></script>
+<script type='text/javascript' id='graphene-js-extra'>
+/* <![CDATA[ */
+var grapheneJS = {"siteurl":"https:\/\/adsecurity.org","ajaxurl":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","templateUrl":"https:\/\/adsecurity.org\/wp-content\/themes\/graphene","isSingular":"1","enableStickyMenu":"","shouldShowComments":"1","commentsOrder":"newest","sliderDisable":"","sliderInterval":"7000","infScrollBtnLbl":"Load more","infScrollOn":"","infScrollCommentsOn":"","totalPosts":"1","postsPerPage":"10","isPageNavi":"","infScrollMsgText":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollMsgTextPlural":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollFinishedText":"All loaded!","commentsPerPage":"50","totalComments":"1","infScrollCommentsMsg":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsMsgPlural":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsFinishedMsg":"All comments loaded!","disableLiveSearch":"1","txtNoResult":"No result found.","isMasonry":""};
+/* ]]> */
+</script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/graphene.js?ver=2.8.4' id='graphene-js'></script>
+<link rel="https://api.w.org/" href="https://adsecurity.org/index.php?rest_route=/" /><link rel="alternate" type="application/json" href="https://adsecurity.org/index.php?rest_route=/wp/v2/posts/2293" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://adsecurity.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://adsecurity.org/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel="canonical" href="https://adsecurity.org/?p=2293" />
+<link rel='shortlink' href='https://adsecurity.org/?p=2293' />
+<link rel="alternate" type="application/json+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D2293" />
+<link rel="alternate" type="text/xml+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D2293&#038;format=xml" />
+		<script type="text/javascript">
+			var _statcounter = _statcounter || [];
+			_statcounter.push({"tags": {"author": "SeanMetcalf"}});
+		</script>
+				<script>
+		   WebFontConfig = {
+		      google: { 
+		      	families: ["Lato:400,400i,700,700i&display=swap"]		      }
+		   };
+
+		   (function(d) {
+		      var wf = d.createElement('script'), s = d.scripts[0];
+		      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+		      wf.async = true;
+		      s.parentNode.insertBefore(wf, s);
+		   })(document);
+		</script>
+	<style type="text/css">
+.header_title, .header_title a, .header_title a:visited, .header_title a:hover, .header_desc {color:#000000}.carousel, .carousel .item{height:400px}@media (max-width: 991px) {.carousel, .carousel .item{height:250px}}#header{max-height:198px}@media (min-width: 1200px) {.container {width:1280px}}
+</style>
+		<script type="application/ld+json">{"@context":"http:\/\/schema.org","@type":"Article","mainEntityOfPage":"https:\/\/adsecurity.org\/?p=2293","publisher":{"@type":"Organization","name":"Active Directory Security"},"headline":"Cracking Kerberos TGS Tickets Using Kerberoast &#8211; Exploiting Kerberos to Compromise the Active Directory Domain","datePublished":"2015-12-31T11:00:04+00:00","dateModified":"2017-04-02T20:32:01+00:00","description":"Microsoft's Kerberos implementation in Active Directory has been targeted over the past couple of years by security researchers and attackers alike. The issues are primarily related to the legacy support in Kerberos when Active Directory was released in the year 2000 with Windows Server 2000. This legacy support is enabled when using Kerberos RC4 encryption ...","author":{"@type":"Person","name":"Sean Metcalf"},"image":["https:\/\/adsecurity.org\/wp-content\/uploads\/2015\/12\/Kerberoast-DefaultDomainControllerPolicy-RC4-Enabled.jpg","https:\/\/adsecurity.org\/wp-content\/uploads\/2015\/12\/Kerberoast-RC4-WireShark-TGSREP-Using-PowerShell.jpg"]}</script>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><meta property="og:type" content="article" />
+<meta property="og:title" content="Cracking Kerberos TGS Tickets Using Kerberoast &#8211; Exploiting Kerberos to Compromise the Active Directory Domain" />
+<meta property="og:url" content="https://adsecurity.org/?p=2293" />
+<meta property="og:site_name" content="Active Directory Security" />
+<meta property="og:description" content="Microsoft&#039;s Kerberos implementation in Active Directory has been targeted over the past couple of years by security researchers and attackers alike. The issues are primarily related to the legacy support in Kerberos when Active Directory was released in the year 2000 with Windows Server 2000. This legacy support is enabled when using Kerberos RC4 encryption ..." />
+<meta property="og:updated_time" content="2017-04-02T20:32:01+00:00" />
+<meta property="article:modified_time" content="2017-04-02T20:32:01+00:00" />
+<meta property="article:published_time" content="2015-12-31T11:00:04+00:00" />
+<meta property="og:image" content="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-RC4-WireShark-TGSREP-Using-PowerShell.jpg" />
+<meta property="og:image:width" content="878" />
+<meta property="og:image:height" content="630" />
+    </head>
+    <body class="post-template-default single single-post postid-2293 single-format-standard custom-background wp-embed-responsive layout-boxed two_col_left two-columns singular">
+        
+        <div class="container boxed-wrapper">
+            
+                            <div id="top-bar" class="row clearfix top-bar ">
+                    
+                                                    
+                            <div class="col-md-12 top-bar-items">
+                                
+                                                                                                    	<ul class="social-profiles">
+							
+			            <li class="social-profile social-profile-rss">
+			            	<a href="https://adsecurity.org/?feed=rss2" title="Subscribe to Tech, News, and Other Ideations&#039;s RSS feed" id="social-id-1" class="mysocial social-rss">
+			            				                            <i class="fa fa-rss"></i>
+		                        			            	</a>
+			            </li>
+		            
+		    	    </ul>
+                                    
+                                                                    <button type="button" class="search-toggle navbar-toggle collapsed" data-toggle="collapse" data-target="#top_search">
+                                        <span class="sr-only">Toggle search form</span>
+                                        <i class="fa fa-search-plus"></i>
+                                    </button>
+
+                                    <div id="top_search" class="top-search-form">
+                                        <form class="searchform" method="get" action="https://adsecurity.org">
+	<div class="input-group">
+		<div class="form-group live-search-input">
+			<label for="s" class="screen-reader-text">Search for:</label>
+		    <input type="text" id="s" name="s" class="form-control" placeholder="Search">
+		    		</div>
+	    <span class="input-group-btn">
+	    	<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+	    </span>
+    </div>
+    </form>                                                                            </div>
+                                
+                                                            </div>
+
+                        
+                                    </div>
+            
+
+            <div id="header" class="row">
+
+                <img src="https://adsecurity.org/wp-content/themes/graphene/images/headers/fluid.jpg" alt="Active Directory Security" title="Active Directory Security" width="960" height="198" />                
+                                                                </div>
+
+
+                        <nav class="navbar row navbar-inverse">
+
+                <div class="navbar-header align-center">
+                		                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-menu-wrap, #secondary-menu-wrap">
+	                        <span class="sr-only">Toggle navigation</span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                    </button>
+                	                    
+                    
+                                            <p class="header_title">
+                            <a href="https://adsecurity.org" title="Go back to the front page">                                Active Directory Security                            </a>                        </p>
+                    
+                                                    <p class="header_desc">Active Directory &amp; Enterprise Security, Methods to Secure Active Directory, Attack Methods &amp; Effective Defenses, PowerShell, Tech Notes, &amp; Geek Trivia&#8230;</p>
+                                            
+                                    </div>
+
+                                    <div class="collapse navbar-collapse" id="header-menu-wrap">
+
+            			<ul class="nav navbar-nav flip"><li ><a href="https://adsecurity.org/">Home</a></li><li class="menu-item menu-item-8"><a href="https://adsecurity.org/?page_id=8" >About</a></li><li class="menu-item menu-item-41"><a href="https://adsecurity.org/?page_id=41" >AD Resources</a></li><li class="menu-item menu-item-4031"><a href="https://adsecurity.org/?page_id=4031" >Attack Defense &#038; Detection</a></li><li class="menu-item menu-item-293"><a href="https://adsecurity.org/?page_id=293" >Contact</a></li><li class="menu-item menu-item-1821"><a href="https://adsecurity.org/?page_id=1821" >Mimikatz</a></li><li class="menu-item menu-item-1352"><a href="https://adsecurity.org/?page_id=1352" >Presentations</a></li><li class="menu-item menu-item-195"><a href="https://adsecurity.org/?page_id=195" >Schema Versions</a></li><li class="menu-item menu-item-399"><a href="https://adsecurity.org/?page_id=399" >Security Resources</a></li><li class="menu-item menu-item-183"><a href="https://adsecurity.org/?page_id=183" >SPNs</a></li><li class="menu-item menu-item-2532"><a href="https://adsecurity.org/?page_id=2532" >Top Posts</a></li></ul>                        
+            			                        
+                                            </div>
+                
+                                    
+                            </nav>
+
+            
+            <div id="content" class="clearfix hfeed row">
+                
+                    
+                                        
+                    <div id="content-main" class="clearfix content-main col-md-8">
+                    
+	
+		<div class="post-nav post-nav-top clearfix">
+			<p class="previous col-sm-6"><i class="fa fa-arrow-circle-left"></i> <a href="https://adsecurity.org/?p=2288" rel="prev">Finding Passwords in SYSVOL &#038; Exploiting Group Policy Preferences</a></p>			<p class="next-post col-sm-6"><a href="https://adsecurity.org/?p=2362" rel="next">Attack Methods for Gaining Domain Admin Rights in Active Directory</a> <i class="fa fa-arrow-circle-right"></i></p>					</div>
+		        
+<div id="post-2293" class="clearfix post post-2293 type-post status-publish format-standard has-post-thumbnail hentry category-activedirectorysecurity category-microsoft-security category-technical-reference tag-activedirectory tag-crackpasswords tag-crackserviceaccountpassword tag-cracktgs tag-diamondpac tag-domaincontroller tag-forgedpac tag-goldenticket tag-kerberoast tag-kerberos tag-kerberossilverticket tag-mimikatz tag-ms14068 tag-mssql tag-powershell tag-python tag-rc4hmacmd5 tag-rc4_hmac_md5 tag-serviceprincipalname tag-silverticket tag-skeletonkey tag-spn tag-spnscanning tag-sql tag-tgs tag-tgscracker tag-tgt item-wrap">
+		
+	<div class="entry clearfix">
+    	
+                    	<div class="post-date date alpha with-year">
+            <p class="default_date">
+            	<span class="month">Dec</span>
+                <span class="day">31</span>
+                	                <span class="year">2015</span>
+                            </p>
+                    </div>
+            
+		        <h1 class="post-title entry-title">
+			Cracking Kerberos TGS Tickets Using Kerberoast &#8211; Exploiting Kerberos to Compromise the Active Directory Domain			        </h1>
+		
+			    <ul class="post-meta entry-meta clearfix">
+	    		        <li class="byline">
+	        	By <span class="author"><a href="https://adsecurity.org/?author=2" rel="author">Sean Metcalf</a></span><span class="entry-cat"> in <span class="terms"><a class="term term-category term-565" href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>, <a class="term term-category term-11" href="https://adsecurity.org/?cat=11">Microsoft Security</a>, <a class="term term-category term-2" href="https://adsecurity.org/?cat=2">Technical Reference</a></span></span>	        </li>
+	        	    </ul>
+    
+				
+				<div class="entry-content clearfix">
+							
+										
+						<p>Microsoft&#8217;s Kerberos implementation in Active Directory has been targeted over the past couple of years by security researchers and attackers alike. The issues are primarily related to the legacy support in Kerberos when Active Directory was released in the year 2000 with Windows Server 2000. This legacy support is enabled when using Kerberos RC4 encryption (RC4_HMAC_MD5) since the NTLM password hash is used extensively with this encryption type.</p>
+<p>There are several Kerberos attacks that take advantage of Microsoft&#8217;s legacy support in Active Directory. When Microsoft released Windows 2000 and Active Directory along with it, they needed to support Windows NT and Windows 95 which meant a wide variety of security (and less secure configurations). This support meant that Microsoft needed to support several different clients and enable them to speak Kerberos. The easy way to do this was to use the NTLM password hash as the Kerberos RC4 encryption private key used to encrypt/sign Kerberos tickets. Once the NTLM password hash is discovered, it can be used in a variety of ways, including re-compromising the Active Directory domain (think Golden Tickets &amp; Silver Tickets).</p>
+<p>RC4 Kerberos encryption is still supported even now, 15 years later. In fact, AES encryption wasn&#8217;t available as an option on Windows until <a href="http://blogs.technet.com/b/ad/archive/2007/11/02/server-2008-and-windows-vista-encryption-better-together.aspx">Windows Vista and Windows Server 2008</a>. While AES Kerberos encryption is now used by default on the newer operating systems, there may still be significant use of RC4 Kerberos encryption on the network, involving some interesting <a href="https://library.netapp.com/ecmdocs/ECMP1610207/html/GUID-5A2660CD-0F92-4A33-ABB7-A73430F03406.html">network devices that have AES Kerberos encryption disabled by default</a>.</p>
+<p>With the introduction of AES as a Kerberos encryption option, <a href="https://www.microsoft.com/security/sir/strategy/default.aspx#!password_hashes">Windows uses AES for hashing</a> which is a break from traditional Windows password hashing methods. This means that while <a href="https://msdn.microsoft.com/en-us/library/cc236715.aspx">Kerberos RC4 encryption leveraged the NTLM password hash as encryption key</a>, Kerberos AES encryption uses the <a href="https://technet.microsoft.com/en-us/library/cc749438(WS.10).aspx">AES hash to encrypt the Kerberos tickets</a>. (in other words, when AES is the Kerberos encryption</p>
+<p>Update:<br />
+Will <a href="https://twitter.com/harmj0y">@harmj0y</a> Schroeder (<a href="http://blog.harmj0y.net/">blog.harmj0y.net</a>) and I spoke at DerbyCon 6 in September, 2016 and <a href="https://adsecurity.org/wp-content/uploads/2016/09/DerbyCon6-2016-AttackingEvilCorp-Anatomy-of-a-Corporate-Hack-Demo-4-kerberoast.mp4">demonstrated how Kerberoast works</a>. The <a href="https://adsecurity.org/wp-content/uploads/2016/09/DerbyCon6-2016-AttackingEvilCorp-Anatomy-of-a-Corporate-Hack-Presented.pdf">slides </a>and <a href="https://youtu.be/nJSMJyRNvlM?t=16">video </a>from our talk are now available. The other demos Will did during the talk are <a href="https://adsecurity.org/?page_id=1352">here</a>.<br />
+All of the slides and most videos of my talks are on the <a href="https://adsecurity.org/?page_id=1352">Presentations page</a>.<br />
+This article describes how Service Principal Names work and how to use Kerberoast to crack passwords offline. Will also posted on how to <a href="https://www.harmj0y.net/blog/powershell/kerberoasting-without-mimikatz/">Kerberoast without using Mimikatz</a>.</p>
+<p>&nbsp;</p>
+<p><strong>Active Directory Kerberos Attacks:</strong></p>
+<p>There are several different types of Kerberos attacks ranging from recon (SPN Scanning), to offline service account password cracking (Kerberoast), to persistence (Silver &amp; Golden Tickets).</p>
+<p>Here are the most popular AD Kerberos attacks:</p>
+<ul>
+<li><a href="https://adsecurity.org/?p=1508">SPN Scanning</a> &#8211; finding services by requesting service principal names of a specific SPN class/type.</li>
+<li><a href="https://adsecurity.org/?p=2011">Silver Ticket </a>&#8211; forged Kerberos TGS service ticket</li>
+<li><a href="https://adsecurity.org/?p=1640">Golden Ticket </a>&#8211; forged Kerberos TGT authentication ticket</li>
+<li><a href="https://adsecurity.org/?p=676">MS14-068 Forged PAC Exploit</a> &#8211; exploitation of the Kerberos vulnerability on Domain Controllers.</li>
+<li><a href="https://www.blackhat.com/docs/eu-15/materials/eu-15-Beery-Watching-The-Watchdog-Protecting-Kerberos-Authentication-With-Network-Monitoring-wp.pdf">Diamond PAC</a> &#8211; blended attack type using elements of the Golden Ticket and the MS14-068 forged PAC.</li>
+<li><a href="https://adsecurity.org/?p=1255">Skeleton Key In-memory Malware</a> &#8211; malware &#8220;patches&#8221; the LSASS authentication process in-memory on Domain Controllers to enable a second, valid &#8220;skeleton key&#8221; password with which can be used to authenticate any domain account.</li>
+</ul>
+<p>This post covers another type of Kerberos attack that involves Kerberos TGS service ticket cracking using Kerberoast. This information is based on the <a href="https://adsecurity.org/?page_id=1352">presentations </a><a href="https://adsecurity.org/?page_id=1352">I gave at several security conferences in 2015 (BSides, Shakacon, Black Hat, DEF CON, &amp; DerbyCon)</a> and Tim Medin&#8217;s DerbyCon &#8220;Attacking Microsoft Kerberos Kicking the Guard Dog of Hades&#8221; presentation in 2014 (<a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">slides</a> &amp; <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be">video</a>) where he released the <a href="https://github.com/nidem/kerberoast">Kerberoast Python TGS cracker</a>.</p>
+<p>&nbsp;</p>
+<p><span id="more-2293"></span></p>
+<p><strong>SPN Scanning</strong></p>
+<p>Traditionally, attackers have performed recon using network port scanning, though this is usually not required on modern networks thanks to use of Active Directory and Kerberos. I have previously written about &#8220;<a href="https://adsecurity.org/?p=230">SPN Scanning</a>&#8221; for recon which involves<a href="https://adsecurity.org/?p=1508"> requesting specific Service Principal Name (SPN) types from a Domain Controller </a>(requires a user or computer account). For the attacker, one of the most useful SPN types to scan for is &#8220;SQL&#8221; to discover all SQL servers registered in Active Directory. All service types that leverage Kerberos authentication have SPNs registered in Active Directory since SPNs are required for Kerberos to work. First, let&#8217;s review how Kerberos works.</p>
+<p>I maintain a <a href="https://adsecurity.org/?page_id=183">Service Principal Name (SPN) directory</a> with the most common SPNs and what they are used for.</p>
+<p><span style="text-decoration: underline;">SPN Scanning for Services</span></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServices.png" rel="attachment wp-att-2295"><img loading="lazy" class="alignnone size-full wp-image-2295" src="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServices.png" alt="SPNScanningforServices" width="728" height="186" srcset="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServices.png 728w, https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServices-300x77.png 300w" sizes="(max-width: 728px) 100vw, 728px" /></a></p>
+<p><span style="text-decoration: underline;">SPN Scanning for Service Accounts</span></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServiceAccounts.png" rel="attachment wp-att-2296"><img loading="lazy" class="alignnone size-full wp-image-2296" src="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServiceAccounts.png" alt="SPNScanningforServiceAccounts" width="883" height="125" srcset="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServiceAccounts.png 883w, https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServiceAccounts-300x42.png 300w, https://adsecurity.org/wp-content/uploads/2015/12/SPNScanningforServiceAccounts-768x109.png 768w" sizes="(max-width: 883px) 100vw, 883px" /></a></p>
+<p>Once the attacker has a list of Service Principal Names (SPNs) associated with service accounts, these SPNs can be used to request Kerberos TGS service tickets useful for offline TGS password cracking.</p>
+<p>Note: Both of these screenshots are from PowerShell functions I wrote to perform SPN Scanning in my <a href="https://github.com/PyroTek3/PowerShell-AD-Recon">GitHub repository</a>.</p>
+<p>If you have the Active Directory PowerShell module installed, you can easily find all SPNs of a specific type with Get-ADObject</p>
+<div>
+<p><i>get-adobject -filter {serviceprincipalname -like &#8220;*sql*&#8221;} -prop serviceprincipalname</i></p>
+</div>
+<p>The AD PowerShell module quickly installs on Windows Server 2008R2 and newer:<br />
+<i>import-module servermanager ; add-windowsfeature RSAT-AD-PowerShell</i></p>
+<p>&nbsp;</p>
+<p><strong>Kerberos Overview &amp; Communication Process:</strong></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms.png"><img loading="lazy" class="alignnone wp-image-1516" src="https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms.png" alt="Visio-KerberosComms" width="948" height="473" srcset="https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms.png 1197w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms-300x150.png 300w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms-1024x511.png 1024w" sizes="(max-width: 948px) 100vw, 948px" /></a></p>
+<p>User logs on with username &amp; password.</p>
+<p>1a. Password converted to NTLM hash, a timestamp is encrypted with the hash and sent to the KDC as an authenticator in the authentication ticket (TGT) request (AS-REQ).<br />
+1b. The Domain Controller (KDC) checks user information (logon restrictions, group membership, etc) &amp; creates Ticket-Granting Ticket (TGT).</p>
+<p>2. The TGT is encrypted, signed, &amp; delivered to the user (AS-REP). <i>Only the Kerberos service (KRBTGT) in the domain can open and read TGT data.</i></p>
+<p>3. The User presents the TGT to the DC when requesting a Ticket Granting Service (TGS) ticket (TGS-REQ). The DC opens the TGT &amp; validates PAC checksum – If the DC can open the ticket &amp; the checksum check out, TGT = valid. The data in the TGT is effectively copied to create the TGS ticket.</p>
+<p>4. The TGS is encrypted using the target service accounts’ NTLM password hash and sent to the user (TGS-REP).</p>
+<p>5.The user connects to the server hosting the service on the appropriate port &amp; presents the TGS (AP-REQ). The service opens the TGS ticket using its NTLM password hash.</p>
+<p>6. If mutual authentication is required by the client (think MS15-011: the Group Policy patch from February that added UNC hardening).</p>
+<p>Unless PAC validation is required (rare), the service accepts all data in the TGS ticket with no communication to the DC.</p>
+<p>&nbsp;</p>
+<p><strong>Cracking Service Account Passwords with Kerberoast:</strong></p>
+<p>Kerberoast can be an effective method for extracting service account credentials from Active Directory as a regular user without sending any packets to the target system. This attack is effective since people tend to create poor passwords. The reason why this attack is successful is that most service account passwords are the same length as the domain password minimum (often 10 or 12 characters long) meaning that even brute force cracking doesn&#8217;t likely take longer than the password maximum password age (expiration). Most service accounts don&#8217;t have passwords set to expire, so it&#8217;s likely the same password will be in effect for months if not years. Furthermore, most service accounts are over-permissioned and are often members of Domain Admins providing full admin rights to Active Directory (even when the service account only needs to modify an attribute on certain object types or admin rights on specific servers).</p>
+<p>The most effective mitigation of this attack is ensuring service account passwords are longer than 25 characters.<br />
+<a href="https://technet.microsoft.com/en-us/library/dd560633%28v=ws.10%29.aspx">Managed Service Accounts</a> and <a href="http://blogs.technet.com/b/askpfeplat/archive/2012/12/17/windows-server-2012-group-managed-service-accounts.aspx">Group Managed Service Accounts</a> are a good method to ensure that service account passwords are long, complex, and change regularly. A third party product that provides password vaulting is also a solid solution for managing service account passwords.</p>
+<p>Note: This attack will not be successful when targeting services hosted by the Windows system since these services are mapped to the computer account in Active Directory which has an associated 128 character password which won&#8217;t be cracked anytime soon.</p>
+<p>This attack involves requesting a Kerberos service ticket(s) (TGS) for the Service Principal Name (SPN) of the target service account. This request uses a valid domain user&#8217;s authentication ticket (TGT) to request one or several service tickets for a target service running on a server. The Domain Controller doesn&#8217;t track if the user ever actually connects to these resources (or even if the user has access). The Domain Controller looks up the SPN in Active Directory and encrypts the ticket using the service account associated with the SPN in order for the service to validate user access. The encryption type of the requested Kerberos service ticket is RC4_HMAC_MD5 which means the service account&#8217;s NTLM password hash is used to encrypt the service ticket. This means that Kerberoast can attempt to open the Kerberos ticket by trying different NTLM hashes and when the ticket is successfully opened, the correct service account password is discovered.</p>
+<p><em><strong>No elevated rights are required to get the service tickets and no traffic is sent to the target.</strong></em></p>
+<p>Tim Medin released the <a href="https://github.com/nidem/kerberoast">Kerberoast Python TGS cracker</a> and discussed <a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">these methods at DerbyCon 2014</a>.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-Kerberos-Arch.png" rel="attachment wp-att-2240"><img loading="lazy" class="alignnone size-full wp-image-2240" src="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-Kerberos-Arch.png" alt="Kerberoast-Kerberos-Arch" width="573" height="286" srcset="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-Kerberos-Arch.png 573w, https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-Kerberos-Arch-300x150.png 300w" sizes="(max-width: 573px) 100vw, 573px" /></a></p>
+<p>An attacker can crack service account passwords without ever getting admin access to the server or the network. The attacker gets a foothold on a computer &amp; Requests TGS tickets for several services with service accounts. Exports the TGS tickets from memory, saves them to files, &amp; uploads to a website or webservice (Google Drive). An attacker owned computer on the internet grabs these files &amp; runs Kerberoast against them until it identifies the correct NTLM password hash that will open one. Success in opening a TGS means the service account password was found!</p>
+<p>Note that this attack can also work by sniffing network traffic and grabbing Kerberos TGS tickets encrypted using RC4_HMAC_MD5 off the wire.</p>
+<p>I&#8217;ll walk through this attack using a PowerShell script I wrote called <a href="https://github.com/PyroTek3/PowerShell-AD-Recon/">Discover-PSMSSQLServers.ps1</a>. This script discovers all the SQL servers in the domain/forest and identifies the associated service account. If it has a domain user account, it is very likely the associated password is not very strong, so that account is targeted.</p>
+<p><strong>1. SPN scan for SQL servers with service accounts.</strong></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning.png" rel="attachment wp-att-2241"><img loading="lazy" class="alignnone size-full wp-image-2241" src="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning.png" alt="SPNScanning" width="728" height="186" srcset="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning.png 728w, https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning-300x77.png 300w" sizes="(max-width: 728px) 100vw, 728px" /></a><a href="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning-2.png" rel="attachment wp-att-2242"><img loading="lazy" class="alignnone size-full wp-image-2242" src="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning-2.png" alt="SPNScanning-2" width="883" height="125" srcset="https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning-2.png 883w, https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning-2-300x42.png 300w, https://adsecurity.org/wp-content/uploads/2015/12/SPNScanning-2-768x109.png 768w" sizes="(max-width: 883px) 100vw, 883px" /></a></p>
+<p><strong>2. After identifying the target, we use PowerShell to request the service ticket for this Service Principal Name (SPN).</strong><br />
+<em>Note that the service ticket requested has the RC4 encryption type.</em></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-01.jpg" rel="attachment wp-att-2236"><img loading="lazy" class="alignnone size-full wp-image-2236" src="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-01.jpg" alt="Kerberoast-01" width="665" height="474" srcset="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-01.jpg 665w, https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-01-300x214.jpg 300w" sizes="(max-width: 665px) 100vw, 665px" /></a></p>
+<p>Looking at a packet capture, we can see the Kerberos communication and note that the ticket is RC4-HMAC-MD5.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-04.jpg" rel="attachment wp-att-2239"><img loading="lazy" class="alignnone wp-image-2239" src="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-04.jpg" alt="Kerberoast-04" width="614" height="321" srcset="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-04.jpg 844w, https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-04-300x157.jpg 300w, https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-04-768x401.jpg 768w" sizes="(max-width: 614px) 100vw, 614px" /></a></p>
+<p><strong>3. Once the ticket is is received by the client, we can use <a href="https://adsecurity.org/?p=2207">Mimikatz </a>(or other) to export all Kerberos tickets in the user&#8217;s memory space without elevated rights.</strong></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-02.jpg" rel="attachment wp-att-2237"><img loading="lazy" class="alignnone size-full wp-image-2237" src="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-02.jpg" alt="Kerberoast-02" width="654" height="169" srcset="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-02.jpg 654w, https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-02-300x78.jpg 300w" sizes="(max-width: 654px) 100vw, 654px" /></a></p>
+<p><strong>4. After exporting the service ticket to a file, that file can be sent to our attacker machine running Kali Linux with Kerberoast. Depending on our wordlist file, we may be able to crack the service account&#8217;s password associated with the ticket (file).</strong></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-03.jpg" rel="attachment wp-att-2238"><img loading="lazy" class="alignnone size-full wp-image-2238" src="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-03.jpg" alt="Kerberoast-03" width="666" height="56" srcset="https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-03.jpg 666w, https://adsecurity.org/wp-content/uploads/2015/12/Kerberoast-03-300x25.jpg 300w" sizes="(max-width: 666px) 100vw, 666px" /></a></p>
+<p>The attacker now knows the service account username and password valid on a server (or servers) and likely has administrator rights.</p>
+<p>Since service accounts are typically over-permissioned in many enterprises, often with weak passwords, this is an easy way for an attacker to go from domain user to domain admin.</p>
+<p>&nbsp;</p>
+<p><strong>Mitigation:</strong></p>
+<p>Ensure all service accounts (user accounts with Service Principal Names) have long, complex passwords greater than 25 characters, preferably 30 or more. This makes cracking these password far more difficult. Service Accounts with elevated AD permissions should be the focus on ensuring they have long, complex passwords. Ensure all Service Account passwords are changed regularly (at least once a year). If possible use <a href="https://technet.microsoft.com/en-us/library/hh831782%28v=ws.11%29.aspx?f=255&amp;MSPPError=-2147217396">group managed service accounts</a> which have random, complex passwords (&gt;100 characters) and are managed automatically by Active Directory.</p>
+<p>&nbsp;</p>
+<p><strong>Detection:</strong></p>
+<p>Detection is a lot tougher since requesting service tickets (Kerberos TGS tickets) happens all the time when users need to access resources.<br />
+Looking for TGS-REQ packets with RC4 encryption is probably the best method, though false positives are likely.<br />
+Monitoring for numerous Kerberos service ticket requests in Active Directory is possible by enabling Kerberos service ticket request monitoring (&#8220;Audit Kerberos Service Ticket Operations&#8221;) and searching for users with excessive 4769 events (Eventid <a href="https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/event.aspx?eventid=4769">4769</a> &#8220;A Kerberos service ticket was requested&#8221;).</p>
+<p>&nbsp;</p>
+<p><strong>References:</strong></p>
+<ul>
+<li><a href="https://adsecurity.org/?page_id=1352">Sean Metcalf&#8217;s Presentations on Active Directory Security</a></li>
+<li><a href="https://github.com/nidem/kerberoast">Kerberoast (GitHub)</a></li>
+<li>Tim Medin&#8217;s DerbyCon &#8220;Attacking Microsoft Kerberos Kicking the Guard Dog of Hades&#8221; presentation in 2014 (<a href="https://files.sans.org/summit/hackfest2014/PDFs/Kicking%20the%20Guard%20Dog%20of%20Hades%20-%20Attacking%20Microsoft%20Kerberos%20%20-%20Tim%20Medin(1).pdf">slides</a> &amp; <a href="https://www.youtube.com/watch?v=PUyhlN-E5MU&amp;feature=youtu.be">video</a>).</li>
+<li><a href="https://github.com/PyroTek3/PowerShell-AD-Recon">My GitHub repository</a></li>
+</ul>
+<p>&nbsp;</p>
+<div class="tptn_counter" id="tptn_counter_2293">(Visited 77,503 times, 13 visits today)</div>								</div>
+		
+			    <ul class="entry-footer">
+	    		        <li class="post-tags col-sm-8"><i class="fa fa-tags" title="Tags"></i> <span class="terms"><a class="term term-tagpost_tag term-20" href="https://adsecurity.org/?tag=activedirectory">ActiveDirectory</a>, <a class="term term-tagpost_tag term-736" href="https://adsecurity.org/?tag=crackpasswords">CrackPasswords</a>, <a class="term term-tagpost_tag term-738" href="https://adsecurity.org/?tag=crackserviceaccountpassword">CrackServiceAccountPassword</a>, <a class="term term-tagpost_tag term-737" href="https://adsecurity.org/?tag=cracktgs">CrackTGS</a>, <a class="term term-tagpost_tag term-735" href="https://adsecurity.org/?tag=diamondpac">DiamondPAC</a>, <a class="term term-tagpost_tag term-101" href="https://adsecurity.org/?tag=domaincontroller">DomainController</a>, <a class="term term-tagpost_tag term-734" href="https://adsecurity.org/?tag=forgedpac">ForgedPAC</a>, <a class="term term-tagpost_tag term-303" href="https://adsecurity.org/?tag=goldenticket">GoldenTicket</a>, <a class="term term-tagpost_tag term-673" href="https://adsecurity.org/?tag=kerberoast">Kerberoast</a>, <a class="term term-tagpost_tag term-81" href="https://adsecurity.org/?tag=kerberos">Kerberos</a>, <a class="term term-tagpost_tag term-206" href="https://adsecurity.org/?tag=kerberossilverticket">KerberosSilverTicket</a>, <a class="term term-tagpost_tag term-207" href="https://adsecurity.org/?tag=mimikatz">mimikatz</a>, <a class="term term-tagpost_tag term-295" href="https://adsecurity.org/?tag=ms14068">MS14068</a>, <a class="term term-tagpost_tag term-140" href="https://adsecurity.org/?tag=mssql">MSSQL</a>, <a class="term term-tagpost_tag term-575" href="https://adsecurity.org/?tag=powershell">PowerShell</a>, <a class="term term-tagpost_tag term-740" href="https://adsecurity.org/?tag=python">Python</a>, <a class="term term-tagpost_tag term-741" href="https://adsecurity.org/?tag=rc4hmacmd5">RC4HMACMD5</a>, <a class="term term-tagpost_tag term-708" href="https://adsecurity.org/?tag=rc4_hmac_md5">RC4_HMAC_MD5</a>, <a class="term term-tagpost_tag term-83" href="https://adsecurity.org/?tag=serviceprincipalname">ServicePrincipalName</a>, <a class="term term-tagpost_tag term-304" href="https://adsecurity.org/?tag=silverticket">SilverTicket</a>, <a class="term term-tagpost_tag term-414" href="https://adsecurity.org/?tag=skeletonkey">SkeletonKey</a>, <a class="term term-tagpost_tag term-294" href="https://adsecurity.org/?tag=spn">SPN</a>, <a class="term term-tagpost_tag term-471" href="https://adsecurity.org/?tag=spnscanning">SPNScanning</a>, <a class="term term-tagpost_tag term-732" href="https://adsecurity.org/?tag=sql">SQL</a>, <a class="term term-tagpost_tag term-528" href="https://adsecurity.org/?tag=tgs">TGS</a>, <a class="term term-tagpost_tag term-739" href="https://adsecurity.org/?tag=tgscracker">TGSCracker</a>, <a class="term term-tagpost_tag term-529" href="https://adsecurity.org/?tag=tgt">TGT</a></span></li>
+	        	        <li class="addthis col-sm-8"><div class="add-this"></div></li>
+	        	    </ul>
+    	</div>
+
+</div>
+
+    <div class="entry-author">
+        <div class="row">
+            <div class="author-avatar col-sm-3">
+            	<a href="https://adsecurity.org/?author=2" rel="author">
+					<img alt='' src='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=200&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=400&#038;d=mm&#038;r=g 2x' class='avatar avatar-200 photo' height='200' width='200' loading='lazy'/>                </a>
+            </div>
+
+            <div class="author-bio col-sm-9">
+                <h3 class="section-title-sm">Sean Metcalf</h3>
+                <p>I improve security for enterprises around the world working for TrimarcSecurity.com<br />
+Read the About page (top left) for information about me. :)<br />
+https://adsecurity.org/?page_id=8</p>
+    <ul class="author-social">
+    	        
+			        <li><a href="mailto:sean@adsecurity.org"><i class="fa fa-envelope-o"></i></a></li>
+            </ul>
+                </div>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+<div id="comments" class="clearfix no-ping">
+        	<h4 class="comments current">
+            <i class="fa fa-comments-o"></i> 1 comment        </h4>
+	        
+    
+	
+	    <div class="comments-list-wrapper">
+        <ol class="clearfix comments-list" id="comments_list">
+            		<li id="comment-9827" class="comment even thread-even depth-1 comment">
+			<div class="row">
+								
+											
+				<div class="comment-wrap col-md-12">
+					
+                        <ul class="comment-meta">
+                <li class="comment-avatar"><img alt='' src='https://secure.gravatar.com/avatar/b94d9cb39fdb23c4d78ba35b35ba9c4e?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/b94d9cb39fdb23c4d78ba35b35ba9c4e?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' loading='lazy'/></li>
+                <li class="comment-attr"><span class="comment-author">anonymous</span> on <span class="comment-date">January 6, 2016 <span class="time">at 7:50 am</span></span></li>
+                <li class="single-comment-link"><a href="https://adsecurity.org/?p=2293#comment-9827">#</a></li>
+            </ul>
+    
+					<div class="comment-entry">
+												
+													<p>best explanations about kerberos found  on the net<br />
+thanks a lot. 🙂</p>
+												
+											</div>
+				</div>
+			
+							</div>
+	</li><!-- #comment-## -->
+        </ol>
+       	
+            </div>
+        
+        
+    </div>
+
+
+	<div id="respond">
+		<h3 id="reply-title"><i class="fa fa-comment-o"></i> Comments have been disabled.</h3>
+            </div>
+
+
+
+            
+  
+
+                </div><!-- #content-main -->
+        
+            
+<div id="sidebar1" class="sidebar sidebar-right widget-area col-md-4">
+
+	
+    
+		<div id="recent-posts-4" class="sidebar-wrap widget_recent_entries">
+		<h3>Recent Posts</h3>
+		<ul>
+											<li>
+					<a href="https://adsecurity.org/?p=4367">Attacking Active Directory Group Managed Service Accounts (GMSAs)</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4277">From Azure AD to Active Directory (via Azure) &#8211; An Unanticipated Attack Path</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4211">What is Azure Active Directory?</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4179">Slides Posted for Black Hat USA 2019 Talk: Attacking &#038; Defending the Microsoft Cloud</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4187">AD Reading: Windows Server 2019 Active Directory Features</a>
+									</li>
+					</ul>
+
+		</div><div id="text-3" class="sidebar-wrap widget_text"><h3>Trimarc Active Directory Security Services</h3>			<div class="textwidget">Have concerns about your Active Directory environment?
+
+Trimarc helps enterprises improve their security posture. <p>
+<a href="http://trimarcsecurity.com/security-services">Find out how...</a> 
+TrimarcSecurity.com</div>
+		</div><div id="widget_tptn_pop-4" class="sidebar-wrap tptn_posts_list_widget"><h3>Popular Posts</h3><div class="tptn_posts  tptn_posts_widget tptn_posts_widget4"><ul><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2362"     class="tptn_link"><span class="tptn_title">Attack Methods for Gaining Domain Admin Rights in&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=478"     class="tptn_link"><span class="tptn_title">PowerShell Encoding &#038; Decoding (Base64)</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=483"     class="tptn_link"><span class="tptn_title">Kerberos &#038; KRBTGT: Active Directory&#8217;s&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3377"     class="tptn_link"><span class="tptn_title">Securing Domain Controllers to Improve Active&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2288"     class="tptn_link"><span class="tptn_title">Finding Passwords in SYSVOL &#038; Exploiting Group&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3299"     class="tptn_link"><span class="tptn_title">Securing Windows Workstations: Developing a Secure Baseline</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1684"     class="tptn_link"><span class="tptn_title">The Most Common Active Directory Security Issues and&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2653"     class="tptn_link"><span class="tptn_title">Building an Effective Active Directory Lab&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1729"     class="tptn_link"><span class="tptn_title">Mimikatz DCSync Usage, Exploitation, and Detection</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1790"     class="tptn_link"><span class="tptn_title">Microsoft Local Administrator Password Solution (LAPS)</span></a></span></li></ul><div class="tptn_clear"></div></div></div><div id="categories-4" class="sidebar-wrap widget_categories"><h3>Categories</h3>
+			<ul>
+					<li class="cat-item cat-item-565"><a href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>
+</li>
+	<li class="cat-item cat-item-55"><a href="https://adsecurity.org/?cat=55">Apple Security</a>
+</li>
+	<li class="cat-item cat-item-431"><a href="https://adsecurity.org/?cat=431">Cloud Security</a>
+</li>
+	<li class="cat-item cat-item-17"><a href="https://adsecurity.org/?cat=17">Continuing Education</a>
+</li>
+	<li class="cat-item cat-item-396"><a href="https://adsecurity.org/?cat=396">Entertainment</a>
+</li>
+	<li class="cat-item cat-item-347"><a href="https://adsecurity.org/?cat=347">Exploit</a>
+</li>
+	<li class="cat-item cat-item-1039"><a href="https://adsecurity.org/?cat=1039">Hacking</a>
+</li>
+	<li class="cat-item cat-item-168"><a href="https://adsecurity.org/?cat=168">Hardware Security</a>
+</li>
+	<li class="cat-item cat-item-172"><a href="https://adsecurity.org/?cat=172">Hypervisor Security</a>
+</li>
+	<li class="cat-item cat-item-126"><a href="https://adsecurity.org/?cat=126">Linux/Unix Security</a>
+</li>
+	<li class="cat-item cat-item-343"><a href="https://adsecurity.org/?cat=343">Malware</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://adsecurity.org/?cat=11">Microsoft Security</a>
+</li>
+	<li class="cat-item cat-item-819"><a href="https://adsecurity.org/?cat=819">Mitigation</a>
+</li>
+	<li class="cat-item cat-item-48"><a href="https://adsecurity.org/?cat=48">Network/System Security</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://adsecurity.org/?cat=7">PowerShell</a>
+</li>
+	<li class="cat-item cat-item-698"><a href="https://adsecurity.org/?cat=698">RealWorld</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="https://adsecurity.org/?cat=21">Security</a>
+</li>
+	<li class="cat-item cat-item-234"><a href="https://adsecurity.org/?cat=234">Security Conference Presentation/Video</a>
+</li>
+	<li class="cat-item cat-item-1045"><a href="https://adsecurity.org/?cat=1045">Security Recommendation</a>
+</li>
+	<li class="cat-item cat-item-24"><a href="https://adsecurity.org/?cat=24">Technical Article</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="https://adsecurity.org/?cat=4">Technical Reading</a>
+</li>
+	<li class="cat-item cat-item-2"><a href="https://adsecurity.org/?cat=2">Technical Reference</a>
+</li>
+	<li class="cat-item cat-item-156"><a href="https://adsecurity.org/?cat=156">TheCloud</a>
+</li>
+	<li class="cat-item cat-item-930"><a href="https://adsecurity.org/?cat=930">Vulnerability</a>
+</li>
+			</ul>
+
+			</div><div id="tag_cloud-3" class="sidebar-wrap widget_tag_cloud"><h3>Tags</h3><div class="tagcloud"><a href="https://adsecurity.org/?tag=activedirectory" class="tag-cloud-link tag-link-20 tag-link-position-1" style="font-size: 22pt;" aria-label="ActiveDirectory (52 items)">ActiveDirectory</a>
+<a href="https://adsecurity.org/?tag=active-directory" class="tag-cloud-link tag-link-75 tag-link-position-2" style="font-size: 10.531914893617pt;" aria-label="Active Directory (8 items)">Active Directory</a>
+<a href="https://adsecurity.org/?tag=activedirectoryattack" class="tag-cloud-link tag-link-537 tag-link-position-3" style="font-size: 8pt;" aria-label="ActiveDirectoryAttack (5 items)">ActiveDirectoryAttack</a>
+<a href="https://adsecurity.org/?tag=activedirectorysecurity" class="tag-cloud-link tag-link-113 tag-link-position-4" style="font-size: 13.957446808511pt;" aria-label="ActiveDirectorySecurity (14 items)">ActiveDirectorySecurity</a>
+<a href="https://adsecurity.org/?tag=active-directory-security" class="tag-cloud-link tag-link-976 tag-link-position-5" style="font-size: 9.7872340425532pt;" aria-label="Active Directory Security (7 items)">Active Directory Security</a>
+<a href="https://adsecurity.org/?tag=adreading" class="tag-cloud-link tag-link-5 tag-link-position-6" style="font-size: 13.510638297872pt;" aria-label="ADReading (13 items)">ADReading</a>
+<a href="https://adsecurity.org/?tag=adsecurity" class="tag-cloud-link tag-link-86 tag-link-position-7" style="font-size: 10.531914893617pt;" aria-label="ADSecurity (8 items)">ADSecurity</a>
+<a href="https://adsecurity.org/?tag=ad-security" class="tag-cloud-link tag-link-100 tag-link-position-8" style="font-size: 8pt;" aria-label="AD Security (5 items)">AD Security</a>
+<a href="https://adsecurity.org/?tag=dcsync" class="tag-cloud-link tag-link-598 tag-link-position-9" style="font-size: 10.531914893617pt;" aria-label="DCSync (8 items)">DCSync</a>
+<a href="https://adsecurity.org/?tag=defcon" class="tag-cloud-link tag-link-518 tag-link-position-10" style="font-size: 8pt;" aria-label="DEFCON (5 items)">DEFCON</a>
+<a href="https://adsecurity.org/?tag=domaincontroller" class="tag-cloud-link tag-link-101 tag-link-position-11" style="font-size: 15.446808510638pt;" aria-label="DomainController (18 items)">DomainController</a>
+<a href="https://adsecurity.org/?tag=emet5" class="tag-cloud-link tag-link-338 tag-link-position-12" style="font-size: 8pt;" aria-label="EMET5 (5 items)">EMET5</a>
+<a href="https://adsecurity.org/?tag=goldenticket" class="tag-cloud-link tag-link-303 tag-link-position-13" style="font-size: 11.276595744681pt;" aria-label="GoldenTicket (9 items)">GoldenTicket</a>
+<a href="https://adsecurity.org/?tag=hyperv" class="tag-cloud-link tag-link-3 tag-link-position-14" style="font-size: 8pt;" aria-label="HyperV (5 items)">HyperV</a>
+<a href="https://adsecurity.org/?tag=invoke-mimikatz" class="tag-cloud-link tag-link-336 tag-link-position-15" style="font-size: 10.531914893617pt;" aria-label="Invoke-Mimikatz (8 items)">Invoke-Mimikatz</a>
+<a href="https://adsecurity.org/?tag=kb3011780" class="tag-cloud-link tag-link-337 tag-link-position-16" style="font-size: 9.7872340425532pt;" aria-label="KB3011780 (7 items)">KB3011780</a>
+<a href="https://adsecurity.org/?tag=kdc" class="tag-cloud-link tag-link-80 tag-link-position-17" style="font-size: 8pt;" aria-label="KDC (5 items)">KDC</a>
+<a href="https://adsecurity.org/?tag=kerberos" class="tag-cloud-link tag-link-81 tag-link-position-18" style="font-size: 15.446808510638pt;" aria-label="Kerberos (18 items)">Kerberos</a>
+<a href="https://adsecurity.org/?tag=kerberoshacking" class="tag-cloud-link tag-link-298 tag-link-position-19" style="font-size: 11.872340425532pt;" aria-label="KerberosHacking (10 items)">KerberosHacking</a>
+<a href="https://adsecurity.org/?tag=krbtgt" class="tag-cloud-link tag-link-394 tag-link-position-20" style="font-size: 9.7872340425532pt;" aria-label="KRBTGT (7 items)">KRBTGT</a>
+<a href="https://adsecurity.org/?tag=laps" class="tag-cloud-link tag-link-631 tag-link-position-21" style="font-size: 9.0425531914894pt;" aria-label="LAPS (6 items)">LAPS</a>
+<a href="https://adsecurity.org/?tag=lsass" class="tag-cloud-link tag-link-71 tag-link-position-22" style="font-size: 11.276595744681pt;" aria-label="LSASS (9 items)">LSASS</a>
+<a href="https://adsecurity.org/?tag=mcm" class="tag-cloud-link tag-link-6 tag-link-position-23" style="font-size: 14.255319148936pt;" aria-label="MCM (15 items)">MCM</a>
+<a href="https://adsecurity.org/?tag=microsoftemet" class="tag-cloud-link tag-link-58 tag-link-position-24" style="font-size: 11.276595744681pt;" aria-label="MicrosoftEMET (9 items)">MicrosoftEMET</a>
+<a href="https://adsecurity.org/?tag=microsoftwindows" class="tag-cloud-link tag-link-102 tag-link-position-25" style="font-size: 9.7872340425532pt;" aria-label="MicrosoftWindows (7 items)">MicrosoftWindows</a>
+<a href="https://adsecurity.org/?tag=mimikatz" class="tag-cloud-link tag-link-207 tag-link-position-26" style="font-size: 18.425531914894pt;" aria-label="mimikatz (29 items)">mimikatz</a>
+<a href="https://adsecurity.org/?tag=ms14068" class="tag-cloud-link tag-link-295 tag-link-position-27" style="font-size: 11.276595744681pt;" aria-label="MS14068 (9 items)">MS14068</a>
+<a href="https://adsecurity.org/?tag=passthehash" class="tag-cloud-link tag-link-44 tag-link-position-28" style="font-size: 9.7872340425532pt;" aria-label="PassTheHash (7 items)">PassTheHash</a>
+<a href="https://adsecurity.org/?tag=powershell" class="tag-cloud-link tag-link-575 tag-link-position-29" style="font-size: 18.872340425532pt;" aria-label="PowerShell (31 items)">PowerShell</a>
+<a href="https://adsecurity.org/?tag=powershellcode" class="tag-cloud-link tag-link-22 tag-link-position-30" style="font-size: 15.148936170213pt;" aria-label="PowerShellCode (17 items)">PowerShellCode</a>
+<a href="https://adsecurity.org/?tag=powershellhacking" class="tag-cloud-link tag-link-68 tag-link-position-31" style="font-size: 8pt;" aria-label="PowerShellHacking (5 items)">PowerShellHacking</a>
+<a href="https://adsecurity.org/?tag=powershellv5" class="tag-cloud-link tag-link-69 tag-link-position-32" style="font-size: 8pt;" aria-label="PowerShellv5 (5 items)">PowerShellv5</a>
+<a href="https://adsecurity.org/?tag=powersploit" class="tag-cloud-link tag-link-232 tag-link-position-33" style="font-size: 10.531914893617pt;" aria-label="PowerSploit (8 items)">PowerSploit</a>
+<a href="https://adsecurity.org/?tag=presentation" class="tag-cloud-link tag-link-422 tag-link-position-34" style="font-size: 9.7872340425532pt;" aria-label="Presentation (7 items)">Presentation</a>
+<a href="https://adsecurity.org/?tag=security" class="tag-cloud-link tag-link-576 tag-link-position-35" style="font-size: 8pt;" aria-label="Security (5 items)">Security</a>
+<a href="https://adsecurity.org/?tag=sidhistory" class="tag-cloud-link tag-link-547 tag-link-position-36" style="font-size: 8pt;" aria-label="SIDHistory (5 items)">SIDHistory</a>
+<a href="https://adsecurity.org/?tag=silverticket" class="tag-cloud-link tag-link-304 tag-link-position-37" style="font-size: 11.276595744681pt;" aria-label="SilverTicket (9 items)">SilverTicket</a>
+<a href="https://adsecurity.org/?tag=sneakyadpersistence" class="tag-cloud-link tag-link-596 tag-link-position-38" style="font-size: 9.0425531914894pt;" aria-label="SneakyADPersistence (6 items)">SneakyADPersistence</a>
+<a href="https://adsecurity.org/?tag=spn" class="tag-cloud-link tag-link-294 tag-link-position-39" style="font-size: 9.0425531914894pt;" aria-label="SPN (6 items)">SPN</a>
+<a href="https://adsecurity.org/?tag=tgs" class="tag-cloud-link tag-link-528 tag-link-position-40" style="font-size: 9.0425531914894pt;" aria-label="TGS (6 items)">TGS</a>
+<a href="https://adsecurity.org/?tag=tgt" class="tag-cloud-link tag-link-529 tag-link-position-41" style="font-size: 9.0425531914894pt;" aria-label="TGT (6 items)">TGT</a>
+<a href="https://adsecurity.org/?tag=windows10" class="tag-cloud-link tag-link-494 tag-link-position-42" style="font-size: 10.531914893617pt;" aria-label="Windows10 (8 items)">Windows10</a>
+<a href="https://adsecurity.org/?tag=windowsserver2008r2" class="tag-cloud-link tag-link-46 tag-link-position-43" style="font-size: 9.0425531914894pt;" aria-label="WindowsServer2008R2 (6 items)">WindowsServer2008R2</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012" class="tag-cloud-link tag-link-47 tag-link-position-44" style="font-size: 11.276595744681pt;" aria-label="WindowsServer2012 (9 items)">WindowsServer2012</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012r2" class="tag-cloud-link tag-link-54 tag-link-position-45" style="font-size: 9.7872340425532pt;" aria-label="WindowsServer2012R2 (7 items)">WindowsServer2012R2</a></div>
+</div>    
+        
+    
+</div><!-- #sidebar1 -->        
+        
+    </div><!-- #content -->
+
+
+    
+        
+    <div id="sidebar_bottom" class="sidebar widget-area row footer-widget-col-3">
+                    <div id="text-2" class="sidebar-wrap widget_text col-sm-4"><h3>Copyright</h3>			<div class="textwidget">Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability.
+The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned.
+
+Content Ownership: All content posted here is intellectual work and under the current law, the poster owns the copyright of the article. Terms of Use Copyright © 2011 - 2020.</div>
+		</div>		
+            </div>
+
+	
+
+<div id="footer" class="row default-footer">
+    
+        
+            
+            <div class="copyright-developer">
+                                    <div id="copyright">
+                        <p>Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability. The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned. </p>
+                    </div>
+                
+                                    <div id="developer">
+                        <p>
+                                                        Made with <i class="fa fa-heart"></i> by <a href="https://www.graphene-theme.com/" rel="nofollow">Graphene Themes</a>.                        </p>
+
+                                            </div>
+                            </div>
+
+        
+                
+    </div><!-- #footer -->
+
+
+</div><!-- #container -->
+
+		<!-- Start of StatCounter Code -->
+		<script>
+			<!--
+			var sc_project=10100711;
+			var sc_security="4b306538";
+			      var sc_invisible=1;
+			var scJsHost = (("https:" == document.location.protocol) ?
+				"https://secure." : "http://www.");
+			//-->
+					</script>
+		
+<script type="text/javascript"
+				src="https://secure.statcounter.com/counter/counter.js"
+				async></script>		<noscript><div class="statcounter"><a title="web analytics" href="https://statcounter.com/"><img class="statcounter" src="https://c.statcounter.com/10100711/0/4b306538/1/" alt="web analytics" /></a></div></noscript>
+		<!-- End of StatCounter Code -->
+				<a href="#" id="back-to-top" title="Back to top"><i class="fa fa-chevron-up"></i></a>
+	<script type='text/javascript' id='tptn_tracker-js-extra'>
+/* <![CDATA[ */
+var ajax_tptn_tracker = {"ajax_url":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","top_ten_id":"2293","top_ten_blog_id":"1","activate_counter":"11","top_ten_debug":"0","tptn_rnd":"198625692"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://adsecurity.org/wp-content/plugins/top-10/includes/js/top-10-tracker.min.js?ver=1.0' id='tptn_tracker-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+</body>
+</html>

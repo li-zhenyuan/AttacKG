@@ -1,0 +1,1735 @@
+
+<!DOCTYPE html>
+<!--[if lte IE 9]>     <html class="no-js lte-ie9"> <![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="no-js" lang="en" data-swifttype-key="z7tAfLQGir8eCk_QcoZd" data-swiftype-web-name="kroll.com">
+<!--<![endif]-->
+<head>
+    
+    <meta name="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RawPos Malware: Deconstructing an Intruder’s Toolkit</title>
+
+<meta name="description" content="Commonly, network intruders will leverage malware as part of the compromise or network reconnaissance and information gathering phases of their malicious cyber intrusion. Read Kroll whitepaper to know more">
+<meta name="keywords" content="RawPos Malware, Cyber Security, Investigations">
+<meta name="author" content="">
+<meta name="viewport" content="initial-scale=1.0, width=device-width">
+<meta name="google-site-verification" content="pIt8f1KTgQgHucIClrBUunylaM03dEc1RfKe34ks_hM" />
+<meta name="featured_score" class="swiftype" data-type="integer" content="0" />
+
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="canonical" href="https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware" />
+
+<meta property="og:title" content="RawPos Malware: Deconstructing an Intruder’s Toolkit">
+<meta property="og:url" content="https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware">
+<meta property="og:image" content="https://www.kroll.com/-/media/kroll/images/publications/thumbnails/rawpos-malware-deconstructing-an-intruders-toolkit.jpg">
+<meta property="og:description" content="Commonly, network intruders will leverage malware as part of the compromise or network reconnaissance and information gathering phases of their malicious cyber intrusion. Read Kroll whitepaper to know more">
+<meta property="og:site_name" content="Duff &amp; Phelps">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@duffandphelps ‏">
+<meta name="twitter:creator" content="@duffandphelps">
+<meta name="twitter:url" content="https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware">
+<meta name="twitter:title" content="RawPos Malware: Deconstructing an Intruder’s Toolkit">
+<meta name="twitter:description" content="Commonly, network intruders will leverage malware as part of the compromise or network reconnaissance and information gathering phases of their malicious cyber intrusion. Read Kroll whitepaper to know more">
+<meta name="twitter:image" content="https://www.kroll.com/-/media/kroll/images/publications/thumbnails/rawpos-malware-deconstructing-an-intruders-toolkit.jpg">
+<meta name="twitter:image:width" content="">
+<meta name="twitter:image:height" content="">
+    <link rel="stylesheet" href="/assets/css/main.css?10032021">
+    <link rel="stylesheet" href="/assets/css/form.css?updat">
+<link rel="preload" href="https://use.typekit.net/yen0rmi.css" as="font">
+<style>
+@import url("https://p.typekit.net/p.css?s=1&k=yen0rmi&ht=tk&f=19119.19121&a=5373827&app=typekit&e=css");
+
+@font-face {
+font-family:"akzidenz-grotesk";
+src:url("https://use.typekit.net/af/99cda7/000000000000000000013631/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("woff2"),url("https://use.typekit.net/af/99cda7/000000000000000000013631/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("woff"),url("https://use.typekit.net/af/99cda7/000000000000000000013631/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3") format("opentype");
+font-display:swap;font-style:normal;font-weight:300;
+}
+
+@font-face {
+font-family:"akzidenz-grotesk";
+src:url("https://use.typekit.net/af/9d033e/000000000000000000013633/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n5&v=3") format("woff2"),url("https://use.typekit.net/af/9d033e/000000000000000000013633/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n5&v=3") format("woff"),url("https://use.typekit.net/af/9d033e/000000000000000000013633/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n5&v=3") format("opentype");
+font-display:swap;font-style:normal;font-weight:500;
+}
+</style>
+<style>
+p#onetrust-policy-text {font-size: 1.2rem !important;    line-height: 1.6667 !important;
+    font-weight: 300 !important;
+    letter-spacing: 0.5px !important;}
+@media screen and (min-width: 64.0624em) {p#onetrust-policy-text { font-size: 1.2rem !important;}}
+@media screen and (min-width: 64.0624em) {
+p#onetrust-policy-text {
+    font-size: 1.8rem !important;
+}
+}
+@media screen and (min-width: 1025px) {
+#onetrust-banner-sdk #onetrust-accept-btn-handler, #onetrust-banner-sdk #onetrust-reject-all-handler, #onetrust-banner-sdk #onetrust-pc-btn-handler {
+min-width: 10rem !important;
+}
+}
+
+@media screen and (max-width: 1024px) {
+#onetrust-banner-sdk #onetrust-accept-btn-handler, #onetrust-banner-sdk #onetrust-reject-all-handler, #onetrust-banner-sdk #onetrust-pc-btn-handler {
+font-size: 1.2rem !important;
+}
+}
+div.Button.ContactButton { z-index: 0; }
+</style>
+<style>
+.video-text__poster {
+width: 100%;
+height: 100%;
+max-height: 28rem
+}
+
+@media screen and (min-width: 64.0625em) {
+.video-text__poster {
+max-height:42rem
+}
+}
+
+@media screen and (min-width: 48em){
+.video-text__content {
+    min-height: 42rem;
+}
+}
+
+@media screen and (min-width: 48em){
+.video-text__posterWrapper {
+    min-height: 42rem;
+}
+}
+
+.new-news .card-module-4:not(.ContentBlocks-slideFrame) {
+display: flex;
+flex-wrap: wrap;
+}
+@media screen and (min-width: 48em) {
+    .ReportDetails .DetailHeader {
+        margin-left:-6.42202vw
+    }
+}
+</style>
+    <script defer="" src="/assets/js/main.js?02032021"></script>
+    <script defer="" src="/assets/js/forms.js?2310202100"></script>
+    <script defer="" src="/assets/js/db.js?17112020"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.5/es6-shim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fetch-ie8@1.5.0/fetch.min.js"></script>
+    <script src="/assets/js/pearl.js?17112020"></script>
+<script src="/assets/js/vendor/modernizr-custom.js"></script>
+        <script src="/assets/js/vendor/polyfill__v.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-migrate-3.3.1.js"></script>
+        <script>
+            (function () {
+                var fn = function () {
+                    window.APP_ERROR = {
+                        timer: null,
+                        delay: 3e3,
+                        hasError: !1,
+                        errorFn: function (o) { console.error("APP_ERROR", o), window.APP_ERROR.hasError = !0 }
+                    }, window.APP_ERROR.timer = setTimeout(function () {
+                        window.APP_ERROR.hasError
+                            ? [].slice.call(document.querySelectorAll("[data-scroll-item]"))
+                                .forEach(function (o) { o.className += " show" })
+                            : document.documentElement.className += " no-js"
+                    },
+                        window.APP_ERROR.delay), window.addEventListener("error", window.APP_ERROR.errorFn, !1)
+                };
+                fn();
+            })();
+        </script>
+
+        
+
+    <link rel='alternate' hreflang="en" href="//kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware" />
+    <link rel='alternate' hreflang="x-default" href="//kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware" />
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PWHXW75');</script>
+<!-- End Google Tag Manager -->    <script>
+
+var ADV_COOKIE_NAME = "hasConsentForAdvertisement";
+var ADV_COOKIE_TIMEOUT = 33696000000;
+var ADV_DECLINE_COOKIE_NAME = 'hasNoConsentForAdvertisement';
+
+function addAdvCookie() {
+  if (!checkAdvertisementCookie()) {
+    var date = new Date();
+    date.setTime(date.getTime() + ADV_COOKIE_TIMEOUT);
+    document.cookie =
+      ADV_COOKIE_NAME + "=true;expires=" + date.toGMTString() + ";path=/";
+  }
+}
+
+function setAdvDeclineCookie () {
+  var date = new Date()
+  date.setTime(date.getTime() + ADV_COOKIE_TIMEOUT)
+  document.cookie = ADV_DECLINE_COOKIE_NAME + '=true;expires=' + date.toGMTString() + ';path=/'
+}
+
+function removeAdvCookie() {
+  document.cookie =
+    ADV_COOKIE_NAME + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+function removeAdvDeclineCookie() {
+  document.cookie =
+  ADV_DECLINE_COOKIE_NAME + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+var attachRemarketingInBody = function() {
+  if (document.querySelector('html').classList.contains('remarketingtriggered')) return;
+    $('body').prepend('<!-- Global site tag (gtag.js) - Google Ads: 968938677 --> \n\
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-968938677"><\/script>\n\
+<script>\n\
+  window.dataLayer = window.dataLayer || [];\n\
+  function gtag(){dataLayer.push(arguments);}\n\
+  gtag("js", new Date());\n\
+  gtag("config", "AW-968938677");\n\
+<\/script>\n\
+<script type="text/javascript"> _linkedin_partner_id = "654419"; window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || []; window._linkedin_data_partner_ids.push(_linkedin_partner_id); <\/script>\n\
+<script type="text/javascript"> (function(){var s = document.getElementsByTagName("script")[0]; var b = document.createElement("script"); b.type = "text/javascript";b.async = true; b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js"; s.parentNode.insertBefore(b, s);})(); <\/script>\n\
+<noscript> <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=654419&fmt=gif" /> <\/noscript>');
+document.querySelector('html').classList.add('remarketingtriggered');
+}
+
+function checkAdvertisementCookie() {
+  if (document.cookie.indexOf(ADV_COOKIE_NAME + "=true") > -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function checkAdvDeclineCookie() {
+  if (document.cookie.indexOf(ADV_DECLINE_COOKIE_NAME + "=true") > -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function checkHasConsentForAdvertisementCookie() {
+  var result = $("#onetrust-consent-sdk .ot-sdk-column")
+  .find("h3.ot-cat-header:contains('Advertising Cookies')")
+  .closest(".ot-desc-cntr")
+  .find("input[type=checkbox]")
+  .attr("aria-checked") || $("#onetrust-consent-sdk .ot-sdk-column")
+  .find("h3:contains('Advertising Cookies')")
+  .closest(".category-item")
+  .find("input[type=checkbox]")
+  .attr("aria-checked");
+
+    if (result === "false") {
+        if (!checkAdvDeclineCookie()) {
+          setAdvDeclineCookie ();
+        }
+        return false;
+    } else if (result === "true") {
+        return true;
+    } else {
+        return false
+    }
+}
+
+$(window).load(function() {
+  if (checkAdvertisementCookie()) {
+    attachRemarketingInBody();
+  }
+
+  $(document).on('click', '#onetrust-reject-all-handler', function () {
+    setAdvDeclineCookie();
+});
+
+  $(document).on(
+    "click",
+    "#onetrust-accept-btn-handler, #accept-recommended-btn-handler, .save-preference-btn-handler",
+    function() {
+      if (checkHasConsentForAdvertisementCookie()) {
+        if (checkAdvDeclineCookie()) {
+          removeAdvDeclineCookie();
+        }
+        addAdvCookie();
+        attachRemarketingInBody();
+      } else {
+        if (checkAdvertisementCookie()) {
+            removeAdvCookie();
+        }
+      }
+    }
+  );
+});
+
+</script>
+
+    
+    <script defer="" src="/assets/js/tracker.js"></script>
+    <link href="https://vjs.zencdn.net/7.7.5/video-js.css" rel="stylesheet" />
+    <script defer src="https://vjs.zencdn.net/7.7.5/video.js"></script>
+        <script type="application/ld+json">
+        {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.kroll.com/en"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Insights",
+      "item": "https://www.kroll.com/en/insights"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Publications",
+      "item": "https://www.kroll.com/en/insights/publications"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Malware Analysis Report Rawpos Malware",
+      "item": "https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware"
+    }
+  ]
+}
+    </script>
+
+    
+<meta name="VIcurrentDateTime" content="637573319889484179" />
+<script type="text/javascript" src="/layouts/system/VisitorIdentification.js"></script>
+
+</head>
+<body class="">
+    <script>
+if ((window.location.href.indexOf('AADB2C90118') > -1)
+|| (window.location.href.indexOf('AADB2C90077') > -1)
+|| (window.location.href.indexOf('access_token') > -1)) {
+$('body').css('min-height', '100vh')
+$('body').prepend('<div style="width: 500px; max-width:90%;transform: translate(-50%, -50%); left: 50%; top: 50%; position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center"><div style="border: 16px solid #f6f6f7;border-radius: 50%;border-top: 16px solid #43B049;width: 150px;height: 150px;animation: spin 2s linear infinite;display: -ms-flexbox;display: flex;margin: auto;"></div><p style="font-size: 20px; color: rgba(70,86,97); text-align: center;line-height: 1.667;letter-spacing: 0.5px;">Please wait. Working on it!.</p><div><style>#onetrust-consent-sdk, [data-app-tmpl="App"] {display: none;} @keyframes spin { 0% {transform: rotate(0)}100% {transform: rotate(360deg)}}</style>');
+}
+    </script>
+    <object type="image/svg+xml" data="/assets/img/icons.svg?updates" onload="this.parentNode.replaceChild(this.contentDocument.documentElement, this)"></object>
+    <div data-app data-app-tmpl="App" data-app-model='{"basePath":"pages","baseUrl":"","homePath":"home","routeBlacklist":[]}'>
+        
+
+
+    <header class="Header HeaderV2 u-relative kroll" role="banner" data-app-tmpl="Header" data-header data-swiftype-index="false">
+        
+<div class="u-bg-white u-blue-1 sm-hide lg-show">
+    <section class="cf container u-jc-flex-end u-flex familyNavigation">
+        <div class="g-md-col-6 g-lg-col-9">
+            <ul class="u-m-0 u-p-0 u-ls-none u-flex u-jc-flex-end u-ai-center">
+                    <li class="u-mr-36 bold  active-brand ">
+                            <a class=" p-6 u-td-none" href="/en" target="">Kroll</a>
+
+                    </li>
+                    <li class="u-mr-36 bold  ">
+                            <a class=" p-6 u-td-none" href="https://www.duffandphelps.com/" target="_blank">Duff &amp; Phelps</a>
+
+                    </li>
+                    <li class="u-mr-36 bold  ">
+                            <a class=" p-6 u-td-none" href="https://www.krollbusinessservices.com/" target="_blank">Kroll Business Services</a>
+
+                    </li>
+                    <li class="u-mr-36 bold  ">
+                            <a class=" p-6 u-td-none" href="https://careers.kroll.com/" target="_blank">Careers</a>
+
+                    </li>
+                    <li class="u-mr-36 bold  pearl-login">
+                            <a class=" p-6 u-td-none" href="/en/client-login" target="">Client Login</a>
+
+                    </li>
+                                    <li class="CountrySelect-wrapper">
+                        <div class="CountrySelect" data-app-tmpl="CountrySelect">
+                            <div class="CountrySelect-current">
+
+                                <span class="CountrySelect-country p-5 u-absolute u-center-y bold">Global (English)</span>
+                                    <svg class="Icon Icon--chevron u-absolute u-center-y" data-app-tmpl="Icon" style="stroke: #465661">
+                                        <title>Chevron</title>
+                                        <use xlink:href="#chevron"></use>
+                                    </svg>
+                            </div>
+                                <div class="Select Select--align-left Select--alwaysDisplay u-blue-1" data-app-tmpl="Select" data-config='{"version":4,"label":" ","name":"lang",
+                                    "className":"Select","displaySelectedOptionWhenClosed":true,"displaySelectedOptionWhenOpen":true,"multi":false,"filter":{"show":false}}'>
+                                    <div class="Select--js">
+                                        <div class="Select-display" tabindex="0" data-display="">
+                                            <div class="Select-displayInner p-2">
+                                                <span class="Select-display--default" data-display-default=""> </span>
+                                                <span class="Select-display--selected" data-display-selected="">
+                                                    Global (English)
+                                                </span>
+                                            </div>
+
+                                            <svg class="Icon Icon--chevron Select-chevron" data-app-tmpl="Icon">
+                                                <title>chevron</title>
+                                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#chevron"></use>
+                                            </svg>
+                                        </div>
+                                        <div class="Select-content" data-content="">
+                                            <div class="Select-contentInner" data-content-inner="">
+                                                <ul class="Select-options">
+                                                        <li class="Select-item p-6">
+                                                            <a href="//www.kroll.com/en">Global (English)</a>
+                                                        </li>
+                                                        <li class="Select-item p-6">
+                                                            <a href="//www.kroll.com/pt-br">Brazil (Portugu&#233;s)</a>
+                                                        </li>
+                                                        <li class="Select-item p-6">
+                                                            <a href="//www.kroll.com/en-ca">Canada (English)</a>
+                                                        </li>
+                                                        <li class="Select-item p-6">
+                                                            <a href="//www.kroll.com/it-it">Italy (Italiano)</a>
+                                                        </li>
+                                                        <li class="Select-item p-6">
+                                                            <a href="//www.kroll.com/ja-jp">Japan (日本語)</a>
+                                                        </li>
+                                                        <li class="Select-item p-6">
+                                                            <a href="//www.kroll.com/es-mx">Mexico (Espa&#241;ol)</a>
+                                                        </li>
+                                                        <li class="Select-item p-6">
+                                                            <a href="//www.kroll.com/ru-ru">Russia (РУССКИЙ)</a>
+                                                        </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </li>
+                <li class="CountrySelect-wrapper user-info u-ml-36">
+                    <div class="CountrySelect" data-app-tmpl="CountrySelect">
+                        <div class="CountrySelect-current">
+                            <span class="u-absolute u-center-y user-initials"></span>
+                            <span class="CountrySelect-country p-5 u-absolute u-center-y bold user-name" style="left: 5rem"></span>
+                            <svg class="Icon Icon--chevron u-absolute u-center-y" data-app-tmpl="Icon" style="stroke: #465661">
+                                <title>Chevron</title>
+                                <use xlink:href="#chevron"></use>
+                            </svg>
+                        </div>
+                        <div class="Select Select--align-left Select--alwaysDisplay u-blue-1" data-app-tmpl="Select" data-config='{"version":4,"label":" ","name":"lang",
+                                    "className":"Select","displaySelectedOptionWhenClosed":true,"displaySelectedOptionWhenOpen":true,"multi":false,"filter":{"show":false}}'>
+                            <div class="Select--js">
+                                <div class="Select-display" tabindex="0" data-display="">
+                                    <div class="Select-displayInner p-2">
+                                        <span class="Select-display--default" data-display-default=""> </span>
+                                        <span class="Select-display--selected" data-display-selected="">
+                                            Hi There!
+                                        </span>
+                                    </div>
+
+                                    <svg class="Icon Icon--chevron Select-chevron" data-app-tmpl="Icon">
+                                        <title>chevron</title>
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#chevron"></use>
+                                    </svg>
+                                </div>
+                                <div class="Select-content" data-content="">
+                                    <div class="Select-contentInner" data-content-inner="">
+                                        <ul class="Select-options">
+
+                                            <li class="Select-item p-6 logout">
+                                                <a>Logout</a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+
+
+            </ul>
+        </div>
+    </section>
+</div>
+<div class="cf container">
+    <section class="Header-primary u-flex u-fs-0 u-ai-center u-jc-space-between">
+        <button class="lg-hide Button Burger" data-toggle-menu-button>
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <a href="/en" style="z-index:2">
+            <div class="Logo u-m-0">
+                <svg class="Icon Icon--logo sizeupdate" data-app-tmpl="Icon">
+                    <title>Kroll</title>
+                    <use xlink:href="#kroll_logo_small"></use>
+                </svg>
+                <svg class="Icon Icon--logo_tagline sizeupdate" data-app-tmpl="Icon">
+                    <title>Kroll</title>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#kroll_logo_big"></use>
+                </svg>
+            </div>
+        </a>
+        
+            <button class="lg-hide Button contactButtonImplementation" data-contact-button
+                    data-url="/en/contactus">
+                <svg class="Icon Icon--contact" data-app-tmpl="Icon">
+                    <title>Contact</title>
+                    <use xlink:href="#contact"></use>
+                </svg>
+            </button>
+      
+
+        <div class="HeaderV2Nav g-md-col-6 g-lg-col-10 u-relative  hotlines-product">
+                <ul class="u-m-0 u-p-0 u-ls-none u-flex u-ml-42 u-mr-auto">
+                        <li class="u-mr-20 p-8 NavItem u-blue-1" data-nav-item">
+
+<a href="/en/services" class="u-block u-td-none u-uppercase" >                                <b>Services</b>
+</a>                                                            <ul class="NavItem-subnav u-boxShadow-1 u-bg-white u-m-0 u-p-0 u-pt-12 u-pb-12 u-ls-none u-absolute" data-nav-item-subnav>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/services/business-intelligence-and-investigations" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Business Intelligence and Investigations</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/services/compliance-risk-and-diligence" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Compliance Risk and Diligence</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="https://www.duffandphelps.com/services/corporate-finance" class=" u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" target="_blank" >Corporate Finance</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/services/cyber-risk" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Cyber Risk</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/services/government-solutions" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Government Solutions</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/services/cyber-risk/notification-monitoring" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Identity Theft and Breach Notification</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="https://www.krollbusinessservices.com/en" class=" u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" target="_blank" >Kroll Business Services</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/services/restructuring-advisory" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Restructuring Advisory</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/services/security-risk-management" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Security Risk Management</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="https://www.duffandphelps.com/services/valuation" class=" u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" target="_blank" >Valuation Advisory</a>
+                                        </li>
+                                </ul>
+                            <div class="NavItem-marker u-relative"></div>
+                        </li>
+                        <li class="u-mr-20 p-8 NavItem u-blue-1" data-nav-item">
+
+<a href="/en/our-clients" class="u-block u-td-none u-uppercase" >                                <b>Clients</b>
+</a>                                                            <ul class="NavItem-subnav u-boxShadow-1 u-bg-white u-m-0 u-p-0 u-pt-12 u-pb-12 u-ls-none u-absolute" data-nav-item-subnav>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/our-clients/asset-managers" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Asset Managers</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/our-clients/corporates" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Corporates</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/our-clients/financial-institutions" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Financial Institutions</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/our-clients/government-publicly-owned-entities" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Government and Publicly–Owned Entities</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/our-clients/legal-industry" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Legal Industry</a>
+                                        </li>
+                                </ul>
+                            <div class="NavItem-marker u-relative"></div>
+                        </li>
+                        <li class="u-mr-20 p-8 NavItem u-blue-1" data-nav-item">
+
+<a href="/en/insights" class="u-block u-td-none u-uppercase" >                                <b>Insights</b>
+</a>                                                            <ul class="NavItem-subnav u-boxShadow-1 u-bg-white u-m-0 u-p-0 u-pt-12 u-pb-12 u-ls-none u-absolute" data-nav-item-subnav>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/insights/events" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Events</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/insights/publications" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Publications</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/services/compliance-risk-and-diligence/screening-and-due-diligence/due-diligence-wizard-tool" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Due Diligence Wizard Tool</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/insights/webcasts-and-videos" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Webcasts, Videos and Podcasts</a>
+                                        </li>
+                                </ul>
+                            <div class="NavItem-marker u-relative"></div>
+                        </li>
+                        <li class="u-mr-20 p-8 NavItem u-blue-1" data-nav-item">
+
+<a href="/en/about-us" class="u-block u-td-none u-uppercase" >                                <b>About</b>
+</a>                                                            <ul class="NavItem-subnav u-boxShadow-1 u-bg-white u-m-0 u-p-0 u-pt-12 u-pb-12 u-ls-none u-absolute" data-nav-item-subnav>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/about-us/global-locations" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Global Locations</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/about-us/corporate-responsibility" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Corporate Responsibility</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/about-us/kroll-institute" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Kroll Institute</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/industries" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Industries</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/about-us/news" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >News</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/about-us/extraordinary-women-risk-management" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Extraordinary Women in Risk Management</a>
+                                        </li>
+                                </ul>
+                            <div class="NavItem-marker u-relative"></div>
+                        </li>
+                        <li class="u-mr-20 p-8 NavItem u-blue-1" data-nav-item">
+
+<a href="/en/our-team" class="u-block u-td-none u-uppercase" >                                <b>Our Team</b>
+</a>                                                            <ul class="NavItem-subnav u-boxShadow-1 u-bg-white u-m-0 u-p-0 u-pt-12 u-pb-12 u-ls-none u-absolute" data-nav-item-subnav>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/our-team/board-of-directors" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Board of Directors</a>
+                                        </li>
+                                        <li class="NavItem-subnavItem u-blue-1">
+                                            <a href="/en/our-team/leadership-team" class="u-block u-td-none p-6 u-pl-24 u-pr-24 u-pt-12 u-pb-12" >Leadership Team</a>
+                                        </li>
+                                </ul>
+                            <div class="NavItem-marker u-relative"></div>
+                        </li>
+                </ul>
+            <div class="SearchBox u-as-stretch " data-config='{"popular":"/","endpoint":"/","url":"/"}' data-app-tmpl="Search">
+                <div class="SearchBox-wrapper u-relative">
+                    <form method="GET" action="/en/search" data-form>
+                        <input class="SearchInput u-pl-42 u-pr-12 u-resetInput p-6 u-blue-1" placeholder="Search" type="search" name="query" autocomplete="off" data-input>
+                        <button class="SearchInput-label p-6 u-absolute u-center-y u-blue-1 " type="submit" value="Search
+">Search
+</button>
+                        <svg class="Icon Icon--search u-absolute " data-app-tmpl="Icon">
+                            <title>Search</title>
+                            <use xlink:href="#search"></use>
+                        </svg>
+                    </form>
+                </div>
+            </div>
+                <button class="Button ContactButton contactButtonImplementation u-relative u-as-stretch u-flex u-ai-center" data-app-tmpl="ContactButton"
+                        data-url="/en/contactus">
+                    <svg class="Icon Icon--contact" data-app-tmpl="Icon">
+                        <title>Contact</title>
+                        <use xlink:href="#contact"></use>
+                    </svg>
+                    <span class="u-ml-12 p-6">Contact</span>
+                </button>
+                            <div class="Button ContactButton u-relative u-as-stretch u-flex u-ai-center">
+                    <svg class="Icon Icon--phone" data-app-tmpl="Icon">
+                        <title>Phone</title>
+                        <use xlink:href="#phone"></use>
+                    </svg>
+                    <span class="u-ml-12 p-6 u-fw-500">Hotlines</span><a href="/en/hotlines" target="" class="u-faux-link"></a>
+                </div>
+        </div>
+
+    </section>
+</div>
+
+
+
+
+
+
+    </header>
+
+
+<div class="MobileNav" data-menu data-app-tmpl="MobileNav" data-swiftype-index="false">
+    <div class="SearchBox u-as-stretch" data-config='{"popular":"/","endpoint":"/","url":"/"}' data-app-tmpl="Search">
+        <div class="SearchBox-wrapper u-relative">
+            <form method="GET" action="/search" data-form>
+                <input class="SearchInput u-pl-42 u-pr-12 u-resetInput p-6 u-blue-1" placeholder="Search" type="search" name="query" autocomplete="off" data-input>
+                <button class="SearchInput-label p-6 u-absolute u-center-y u-blue-1" type="submit" value="Search">Search</button>
+                <svg class="Icon Icon--search u-absolute" data-app-tmpl="Icon">
+                    <title>Search</title>
+                    <use xlink:href="#search"></use>
+                </svg>
+            </form>
+        </div>
+    </div>
+
+    <nav class="container">
+        <ul class="MobileNav-list u-m-0 u-p-0 u-ls-none">
+            <li class="NavItem p-8 u-blue-1" data-toggle-section>
+                    <b class="u-block u-uppercase">Services </b>
+                    <button class="Button u-absolute">
+                        <svg class="Icon Icon--chevron " data-app-tmpl="Icon">
+                            <title>Chevron</title>
+                            <use xlink:href="#chevron"></use>
+                        </svg>
+                    </button>
+                    <ul class="NavItem-itemSubnav u-ls-none u-p-0 u-m-0">
+
+                        <li class="u-blue-1">
+
+<a href="/en/services" class="u-block u-td-none p-6" >View All </a>
+                        </li>
+
+                            <li class="u-blue-1">
+                                <a href="/en/services/business-intelligence-and-investigations" class="u-block u-td-none p-6" >Business Intelligence and Investigations</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/services/compliance-risk-and-diligence" class="u-block u-td-none p-6" >Compliance Risk and Diligence</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="https://www.duffandphelps.com/services/corporate-finance" class=" u-block u-td-none p-6" target="_blank" >Corporate Finance</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/services/cyber-risk" class="u-block u-td-none p-6" >Cyber Risk</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/services/government-solutions" class="u-block u-td-none p-6" >Government Solutions</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/services/cyber-risk/notification-monitoring" class="u-block u-td-none p-6" >Identity Theft and Breach Notification</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="https://www.krollbusinessservices.com/en" class=" u-block u-td-none p-6" target="_blank" >Kroll Business Services</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/services/restructuring-advisory" class="u-block u-td-none p-6" >Restructuring Advisory</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/services/security-risk-management" class="u-block u-td-none p-6" >Security Risk Management</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="https://www.duffandphelps.com/services/valuation" class=" u-block u-td-none p-6" target="_blank" >Valuation Advisory</a>
+                            </li>
+                    </ul>
+            </li>
+            <li class="NavItem p-8 u-blue-1" data-toggle-section>
+                    <b class="u-block u-uppercase">Clients </b>
+                    <button class="Button u-absolute">
+                        <svg class="Icon Icon--chevron " data-app-tmpl="Icon">
+                            <title>Chevron</title>
+                            <use xlink:href="#chevron"></use>
+                        </svg>
+                    </button>
+                    <ul class="NavItem-itemSubnav u-ls-none u-p-0 u-m-0">
+
+                        <li class="u-blue-1">
+
+<a href="/en/our-clients" class="u-block u-td-none p-6" >View All </a>
+                        </li>
+
+                            <li class="u-blue-1">
+                                <a href="/en/our-clients/asset-managers" class="u-block u-td-none p-6" >Asset Managers</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/our-clients/corporates" class="u-block u-td-none p-6" >Corporates</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/our-clients/financial-institutions" class="u-block u-td-none p-6" >Financial Institutions</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/our-clients/government-publicly-owned-entities" class="u-block u-td-none p-6" >Government and Publicly–Owned Entities</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/our-clients/legal-industry" class="u-block u-td-none p-6" >Legal Industry</a>
+                            </li>
+                    </ul>
+            </li>
+            <li class="NavItem p-8 u-blue-1" data-toggle-section>
+                    <b class="u-block u-uppercase">Insights </b>
+                    <button class="Button u-absolute">
+                        <svg class="Icon Icon--chevron " data-app-tmpl="Icon">
+                            <title>Chevron</title>
+                            <use xlink:href="#chevron"></use>
+                        </svg>
+                    </button>
+                    <ul class="NavItem-itemSubnav u-ls-none u-p-0 u-m-0">
+
+                        <li class="u-blue-1">
+
+<a href="/en/insights" class="u-block u-td-none p-6" >View All </a>
+                        </li>
+
+                            <li class="u-blue-1">
+                                <a href="/en/insights/events" class="u-block u-td-none p-6" >Events</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/insights/publications" class="u-block u-td-none p-6" >Publications</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/services/compliance-risk-and-diligence/screening-and-due-diligence/due-diligence-wizard-tool" class="u-block u-td-none p-6" >Due Diligence Wizard Tool</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/insights/webcasts-and-videos" class="u-block u-td-none p-6" >Webcasts, Videos and Podcasts</a>
+                            </li>
+                    </ul>
+            </li>
+            <li class="NavItem p-8 u-blue-1" data-toggle-section>
+                    <b class="u-block u-uppercase">About </b>
+                    <button class="Button u-absolute">
+                        <svg class="Icon Icon--chevron " data-app-tmpl="Icon">
+                            <title>Chevron</title>
+                            <use xlink:href="#chevron"></use>
+                        </svg>
+                    </button>
+                    <ul class="NavItem-itemSubnav u-ls-none u-p-0 u-m-0">
+
+                        <li class="u-blue-1">
+
+<a href="/en/about-us" class="u-block u-td-none p-6" >View All </a>
+                        </li>
+
+                            <li class="u-blue-1">
+                                <a href="/en/about-us/global-locations" class="u-block u-td-none p-6" >Global Locations</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/about-us/corporate-responsibility" class="u-block u-td-none p-6" >Corporate Responsibility</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/about-us/kroll-institute" class="u-block u-td-none p-6" >Kroll Institute</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/industries" class="u-block u-td-none p-6" >Industries</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/about-us/news" class="u-block u-td-none p-6" >News</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/about-us/extraordinary-women-risk-management" class="u-block u-td-none p-6" >Extraordinary Women in Risk Management</a>
+                            </li>
+                    </ul>
+            </li>
+            <li class="NavItem p-8 u-blue-1" data-toggle-section>
+                    <b class="u-block u-uppercase">Our Team </b>
+                    <button class="Button u-absolute">
+                        <svg class="Icon Icon--chevron " data-app-tmpl="Icon">
+                            <title>Chevron</title>
+                            <use xlink:href="#chevron"></use>
+                        </svg>
+                    </button>
+                    <ul class="NavItem-itemSubnav u-ls-none u-p-0 u-m-0">
+
+                        <li class="u-blue-1">
+
+<a href="/en/our-team" class="u-block u-td-none p-6" >View All </a>
+                        </li>
+
+                            <li class="u-blue-1">
+                                <a href="/en/our-team/board-of-directors" class="u-block u-td-none p-6" >Board of Directors</a>
+                            </li>
+                            <li class="u-blue-1">
+                                <a href="/en/our-team/leadership-team" class="u-block u-td-none p-6" >Leadership Team</a>
+                            </li>
+                    </ul>
+            </li>
+            <li class="cf NavItem NavItem-secondary u-pt-18 u-pb-18">
+                <ul class="u-blue-1 u-m-0 u-p-0 u-ls-none NavItem-utilityLinks">
+                        <li>
+                            <a href="/en" class="p-5 u-td-none" >Kroll</a>
+                        </li>
+                        <li>
+                            <a href="https://www.duffandphelps.com/" class=" p-5 u-td-none" target="_blank" >Duff &amp; Phelps</a>
+                        </li>
+                        <li>
+                            <a href="https://www.krollbusinessservices.com/" class=" p-5 u-td-none" target="_blank" >Kroll Business Services</a>
+                        </li>
+                        <li>
+                            <a href="https://careers.kroll.com/" class=" p-5 u-td-none" target="_blank" >Careers</a>
+                        </li>
+                        <li>
+                            <a href="/en/client-login" class="p-5 u-td-none" >Client Login</a>
+                        </li>
+                </ul>
+                <div class="CountrySelect-wrapper u-pl-24 u-mt-12">
+                    <div class="CountrySelect-Mobile">
+                        <div class="CountrySelect-current">
+                            <div class="Flag Flag--Global">
+                                <div class="Flag-spacer"></div>
+
+
+                                        <img class="Flag-sprite" src="/assets/img/flags.png">
+
+                            </div>
+                            <span class="CountrySelect-country u-blue-1 p-5 u-absolute u-center-y">
+Global (English)                            </span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+
+<input type="hidden" value="" />
+<input type="hidden" value="" />
+<div class="ContactForm u-bg-white u-fixed g-sm-col-6 g-md-col-5-vw g-lg-col-4--wide" data-app-tmpl="ContactForm" data-swiftype-index="false">
+    <button class="Button ContactForm-close p-6" data-close>
+        <svg class="Icon Icon--contact u-mr-12 Icon--strokeWhite" data-app-tmpl="Icon">
+            <title>Send Message</title>
+            <use xlink:href="#contact"></use>
+        </svg>
+        <b id="contact-us-title" data-title="Contact">Contact</b>
+        <svg class="Icon Icon--close u-ml-auto" data-app-tmpl="Icon">
+            <title>Close</title>
+            <use xlink:href="#close"></use>
+        </svg>
+    </button>
+    <form id="contact-us" action="https://s615419487.t.eloqua.com/e/f2" method="post" name="DP-Contact-Us">
+        <input type="hidden" name="elqFormName" value="DP-Contact-Us">
+        <input type="hidden" name="elqSiteId" value="615419487">
+        <input type="hidden" name="elqCampaignId">
+        <input type="hidden" name="browser">
+        <input id="sitecoreContactID1" type="hidden" name="sitecoreContactID1" value="">
+        <input value="" type="hidden" name="send_notification">
+        
+        <div class="ContactForm-wrapper u-absolute">
+            <div id="success-result" class="ContactForm-results u-pl-24 u-pr-24 u-blue-1 u-hide">
+                <div class="ContactForm-contactWrapper">
+
+                    <svg class="Icon Icon--contact " data-app-tmpl="Icon">
+                        <title>Send Message</title>
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#contact"></use>
+                    </svg>
+
+                </div>
+                <div class="h-4 u-m-0 u-mt-12 u-mb-0">Thank you</div>
+                <p class="p-5 u-mt-6">One of our experts will contact you shortly.</p>
+            </div>
+            <div id="error-result" class="ContactForm-results u-pl-24 u-pr-24 u-blue-1 u-hide">
+                <div class="h-4 u-m-0 u-mt-12 u-mb-0">Sorry, something went wrong :( Please try again later!</div>
+                <p class="p-5 u-mt-6">Please try again later!</p>
+            </div>
+
+                <div class="ContactForm-section about-section u-pl-24 u-pr-24 u-blue-1 u-hide">
+                    
+                    <div class="p-4 u-m-0 u-mt-36 u-mb-48 u-uppercase"><b>About you</b></div>
+                        <div class="u-mb-24">
+                            <div id="role-js" class="Select Select--align-left Select--alwaysDisplay" data-app-tmpl="Select"
+                                 data-config='{"version":1,"required":true,"label":"Select Type of Firm","name":"title","options":[{&quot;display&quot;:&quot;a bank&quot;,&quot;value&quot;:&quot;a bank&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;a company&quot;,&quot;value&quot;:&quot;a company&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;a law firm&quot;,&quot;value&quot;:&quot;a law firm&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;a PE / asset manager&quot;,&quot;value&quot;:&quot;a PE / asset manager&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;other&quot;,&quot;value&quot;:&quot;other&quot;,&quot;selected&quot;:false}],"className":"Select","displaySelectedOptionWhenClosed":true,"displaySelectedOptionWhenOpen":true,"multi":false,"filter":{"show":false}}'>
+                                <div class="Select--no-js">
+                                    <label for="role">Select Type of Firm</label>
+                                    <select name="title" id="role" value="">
+                                        <option value="">-</option>
+                                            <option value="a bank" >a bank</option>
+                                            <option value="a company" >a company</option>
+                                            <option value="a law firm" >a law firm</option>
+                                            <option value="a PE / asset manager" >a PE / asset manager</option>
+                                            <option value="other" >other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                </div>
+
+            <div class="ContactForm-section u-pl-24 u-pr-24 u-blue-1">
+                <div class="p-4 u-m-0 u-mt-36 u-mb-48 u-uppercase"><b>Contact details</b></div>
+                <div class="u-mb-42">
+                    <div class="InputText u-relative" data-app-tmpl="InputText">
+                        <label for="first_name" class="InputText-label u-grey-1 u-absolute">
+                            First name
+                            <span class="u-red-1">*</span>
+                        </label>
+                        <input id="first_name" class="InputText-input p-2 u-blue-1 u-resetInput" type="text" name="firstName" required>
+                    </div>
+                </div>
+                <div class="u-mb-42">
+                    <div class="InputText u-relative" data-app-tmpl="InputText">
+                        <label for="last_name" class="InputText-label u-grey-1 u-absolute">
+                            Last name
+                            <span class="u-red-1">*</span>
+                        </label>
+                        <input id="last_name" class="InputText-input p-2 u-blue-1 u-resetInput" type="text" name="lastName" required>
+                    </div>
+                </div>
+                <div class="u-mb-42">
+
+                    <div id="country-js" class="Select Select--align-left Select--alwaysDisplay" data-app-tmpl="Select"
+                         data-config='{"version":3,"required":true,"label":"Select Region <span class=\"u-red-1\">*</span>","name":"issue","options":[],"className":"Select","displaySelectedOptionWhenClosed":true,"displaySelectedOptionWhenOpen":true,"multi":false,"filter":{"show":false}}'>
+                        <div class="Select--no-js">
+                            <label for="country">
+                                Select Region
+                                <span class="u-red-1">*</span>
+                            </label>
+                            <select name="country" id="country" value="" required>
+                                <option value="">-</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="u-mb-42">
+                    <div class="InputText u-relative" data-app-tmpl="InputText">
+                        <label for="company" class="InputText-label u-grey-1 u-absolute">
+                            Company
+                            <span class="u-red-1">*</span>
+                        </label>
+                        <input id="company" class="InputText-input p-2 u-blue-1 u-resetInput" type="text" name="company" required>
+                    </div>
+                </div>
+                <div class="u-mb-42">
+                    <div class="InputText u-relative" data-app-tmpl="InputText">
+                        <label for="phone_number" class="InputText-label u-grey-1 u-absolute">
+                            Phone number
+
+                        </label>
+                        <input id="phone_number" class="InputText-input p-2 u-blue-1 u-resetInput" type="text" name="busPhone">
+                    </div>
+                </div>
+                <div class="u-mb-42">
+                    <div class="InputText u-relative" data-app-tmpl="InputText">
+                        <label for="email" class="InputText-label u-grey-1 u-absolute">
+                            Email
+                            <span class="u-red-1">*</span>
+                        </label>
+                        <input id="email" class="InputText-input p-2 u-blue-1 u-resetInput" type="email" name="emailAddress" required>
+                    </div>
+                </div>
+                    <div class="u-mb-42 issue--selector">
+
+                        <div id="issue-js" class="Select Select--align-left Select--alwaysDisplay" data-app-tmpl="Select"
+                             data-config='{"version":3,"required":true,"label":"Select Issue <span class=\"u-red-1\">*</span>","name":"issue","options":[{&quot;display&quot;:&quot;a valuation &quot;,&quot;value&quot;:&quot;a valuation&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;a dispute or investigation&quot;,&quot;value&quot;:&quot;a dispute or investigation&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;a transaction&quot;,&quot;value&quot;:&quot;a transaction&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;compliance&quot;,&quot;value&quot;:&quot;compliance&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;tax&quot;,&quot;value&quot;:&quot;tax&quot;,&quot;selected&quot;:false},{&quot;display&quot;:&quot;other&quot;,&quot;value&quot;:&quot;other&quot;,&quot;selected&quot;:false}],"className":"Select","displaySelectedOptionWhenClosed":true,"displaySelectedOptionWhenOpen":true,"multi":false,"filter":{"show":false}}'>
+                            <div class="Select--no-js">
+                                <label for="issue">
+                                    Select Issue
+                                    <span class="u-red-1">*</span>
+                                </label>
+                                <select name="issue" id="issue" value="" required>
+                                    <option value="">-</option>
+                                        <option value="a valuation" >a valuation </option>
+                                        <option value="a dispute or investigation" >a dispute or investigation</option>
+                                        <option value="a transaction" >a transaction</option>
+                                        <option value="compliance" >compliance</option>
+                                        <option value="tax" >tax</option>
+                                        <option value="other" >other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                <div class="u-mb-42">
+                    <div class="InputText u-relative" data-app-tmpl="InputText">
+                        <label for="question" class="InputText-label u-grey-1 u-absolute">
+                            Question
+
+                        </label>
+                        <input id="question" class="InputText-input p-2 u-blue-1 u-resetInput" type="text" name="comments1">
+                    </div>
+                </div>
+
+                
+                    <div class="u-m-0 p-7 u-flex">
+                        <div class="ContactForm-newsletter">
+                            <input type="checkbox" value="on" id="newsletterOptIn" name="opt_in">
+                            <label for="newsletterOptIn"></label>
+                        </div>
+                        <span class="u-ml-6">I would like to receive periodic news, reports, and invitations from Kroll, a Duff &amp; Phelps.</span>
+                    </div>
+                <button class="Button Button--primary ContactForm-send p-6 u-mt-24 u-mb-48 u-ml-auto u-mr-auto" data-submit data-lead-score-form="">
+                    <b>Submit</b>
+                    <svg class="Icon Icon--chevron Icon--strokeWhite u-ml-6" data-app-tmpl="Icon">
+                        <title>Chevron</title>
+                        <use xlink:href="#chevron"></use>
+                    </svg>
+                </button>
+                <p class="u-m-0 p-7"></p>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+     var el = document.querySelector('[name="elqFormName"]');
+     var elArray = el.value.split("");
+     if (!(elArray[elArray.length - 1] == '_')) { el.value = el.value + '_'}
+       });
+</script>
+        <main class="Wrapper bookmark-hide" role="main" data-app-tmpl="Wrapper" data-wrapper>
+            
+            <div class="ArticleDetail" data-app-page="ArticleDetail" data-scroll-item>
+                
+
+<div class="ArticleDetail-main u-of-hidden">
+    <article class="u-relative socialBookmarkIconArticle bookmark-side-popup" data-siteinterest="Publications" data-industry="" data-service="Cyber" data-item-id="a3afe718-b7a5-4408-bb67-8182fdd92869" data-card-type="Article" style="">
+        <span class="sm-hide" data-card-title="RawPos Malware: Deconstructing an Intruder&amp;rsquo;s Toolkit">RawPos Malware: Deconstructing an Intruder&amp;rsquo;s Toolkit</span>
+        <span class="sm-hide" data-card-image="/-/media/kroll/images/publications/thumbnails/rawpos-malware-deconstructing-an-intruders-toolkit.jpg"></span>
+        <a class="sm-hide" href="/en/insights/publications/malware-analysis-report-rawpos-malware" data-card-url="/en/insights/publications/malware-analysis-report-rawpos-malware"></a>
+
+        <span class="sm-hide" data-card-category="Publication">Publication</span>
+        <span class="sm-hide" data-card-description=""></span>
+        <div data-bookmark-icon="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="40 155 420 150" class="SocialShare-icon">
+                <path d="M352,48H160a48,48,0,0,0-48,48V464L256,336,400,464V96A48,48,0,0,0,352,48Z"></path>
+            </svg>
+        </div>
+        <p class="p-5 notSignedIn" style=""><a href="#" class="popup-signin">Sign in</a> or <a href="#" class="popup-signup">Create an account</a> to bookmark this page</p>
+        <p class="p-5 signedIn" style=""><span class="u-blue-4">Click here</span> to bookmark this page</p>
+        <p class="p-5 remove-bookmark" style=""><span class="u-blue-4">Click here</span> to remove bookmark</p>
+
+    </article>
+    <header class="ArticleHeader u-mt-30 u-md-mt-54 u-mb-0 u-md-pb-36 u-grey-1" data-app-tmpl="ArticleHeader" data-scroll-item>
+        <div class="cf container">
+            <div class="g-sm-col-6 g-lg-col-7 g-lg-push-2--wide u-blue-1">
+                    <time class="p-6">Thu, Feb 16, 2017</time>
+
+                <style>
+                    .ArticleHeader h1 a {
+                        text-decoration: none;
+                    }
+                </style>
+                <h1 class="h-2 u-m-0 u-mt-18">
+RawPos Malware: Deconstructing an Intruder&rsquo;s Toolkit                </h1>
+                <div class="ArticleHeader-authorsWrapper cf">
+                    <ul class="u-relative u-ls-none u-p-0 u-flex u-ai-flex-start u-mb-0 u-fw-wrap g-sm-col-6 g-lg-col-6-vw" data-authors>
+                            <li class="ArticleHeader-author u-mr-24 u-mb-12 u-relative u-inline-flex u-ai-center">
+                                <div class="u-imgHolder u-fs-0 u-img-br-50">
+                                    <img src="/-/media/kroll/images/headshots/managing-directors/devon-ackerman.jpg?h=520&amp;w=400&amp;la=en&amp;hash=3DEA231914AAB072DDD5A575A63F40AD46FD1366" class="u-img--objectFit u-img-br-50" alt="Devon Ackerman is an Associate Managing Director" title="Devon Ackerman is an Associate Managing Director" />
+                                </div>
+                                <span class="u-ml-12 p-6"><b>Devon Ackerman</b></span>
+                                <a href="/en/our-team/devon-ackerman" target="/en/our-team/devon-ackerman"
+                                   class="u-faux-link" title="Devon Ackerman">DevonAckerman</a>
+                            </li>
+                                            </ul>
+                </div>
+                
+
+
+<div class="SocialShare-wrapper u-flex u-pb-20 u-pt-20">
+    <ul class="u-ls-none u-m-0 u-p-0">
+        <li class="u-inline-block u-mr-24">
+            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware" title="Facebook">
+                <svg class="Icon Icon--facebook-grey Icon--fillGrey SocialShare-icon" data-app-tmpl="Icon">
+                    <title>Facebook</title>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#facebook-grey">
+                        <svg style="clip:rect(0,0,0,0);height:0;width:0;position:absolute;transform:scale(0);" 
+                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <symbol viewBox="0 0 18 15" id="arrow-left" xmlns="http://www.w3.org/2000/svg">
+                            <title>Arrow Left</title>
+                            <path d="M7.071 14.142l1.414-1.415-4.657-4.656H18v-2H3.828l4.657-4.658L7.071 0 1.414 5.656 0 7.071l1.414 1.414z" />
+                            </symbol><symbol viewBox="0 0 18 15" id="arrow-right" xmlns="http://www.w3.org/2000/svg">
+                            <title>Arrow Right</title>
+                            <path d="M10.929 0L9.515 1.413l4.657 4.656H0v2h14.172l-4.657 4.658 1.414 1.414 5.657-5.657L18 7.07l-1.414-1.414z" />
+                                </symbol><symbol viewBox="0 0 19 19" id="calendar" xmlns="http://www.w3.org/2000/svg">
+                            <title>Calendar (Dark)</title><g fill="none" fill-rule="evenodd">
+                            <path stroke="#465661" d="M1.5 3.5h16v14h-16zm-.5 5h17" /><path fill="#465661" d="M5 1h1v5H5zm8 0h1v5h-1z" />
+                                 </g></symbol><symbol id="calendar2" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
+                            <path class="dst0" d="M14 3V1h-2v2H7V1H5v2H1v15h17V3h-4zm2 13H3v-6h13v6zm0-8H3V5h2v2h2V5h5v2h2V5h2v3z" />
+                                     </symbol><symbol viewBox="0 0 8 12" id="chevron" xmlns="http://www.w3.org/2000/svg">
+                            <title>Path 2</title><path d="M1 1l4.943 5.005L1 11.01" />
+                                         </symbol><symbol viewBox="0 0 18 18" id="close" xmlns="http://www.w3.org/2000/svg">
+                            <title>Close</title><path d="M1.929.515L17.485 16.07l-1.414 1.414L.515 1.93z" />
+                            <path d="M.515 16.071L16.07.515l1.414 1.414L1.93 17.485z" /></symbol>
+                        <symbol viewBox="0 0 22 16" id="contact" xmlns="http://www.w3.org/2000/svg">
+                            <title>Send Message</title><path d="M1 1h20v14H1z" /><path d="M1 2.234L10.933 9 21 2" />
+                            </symbol><symbol viewBox="0 0 20 19" id="download" xmlns="http://www.w3.org/2000/svg">
+                            <title>Download vCard</title><path d="M10 0v13M5 9l5 5 5-5M0 18h20" /></symbol>
+                        <symbol viewBox="0 0 18 18" id="facebook" xmlns="http://www.w3.org/2000/svg">
+                            <title>Facebook</title>
+                            <path d="M9.614 18H.994A.993.993 0 0 1 0 17.006V.993C0 .445.445 0 .993 0h16.014c.548 0 .993.445.993.993v16.013a.994.994 0 0 1-.993.994H12.42v-6.97h2.34l.35-2.717h-2.69V6.578c0-.786.218-1.322 1.346-1.322h1.438v-2.43a19.23 19.23 0 0 0-2.096-.107c-2.074 0-3.494 1.266-3.494 3.59v2.004H7.27v2.716h2.345V18z" fill="#FFF" fill-rule="evenodd" />
+                            </symbol><symbol id="facebook-grey" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
+                            <path class="jst0" d="M18 0H1C.5 0 0 .5 0 1v17c0 .6.5 1 1 1h9v-7.4H7.5V8.8H10V6.7c0-2.5 1.5-3.8 3.7-3.8 1 0 1.9.1 2.2.1v2.6h-1.5c-1.2 0-1.4.6-1.4 1.4v1.8h2.8l-.4 2.9H13V19h5c.6 0 1-.5 1-1V1c0-.5-.5-1-1-1z" /></symbol>
+                        <symbol viewBox="0 0 17 15" id="filter" xmlns="http://www.w3.org/2000/svg">
+                            <title>Filter</title><g fill="#465661" fill-rule="evenodd"><path d="M0 13h17v1H0z" />
+                            <circle cx="8.5" cy="13.5" r="1.5" /><path d="M0 7h17v1H0z" /><circle cx="14.5" cy="7.5" r="1.5" />
+                            <path d="M0 1h17v1H0z" /><circle cx="4.5" cy="1.5" r="1.5" /></g></symbol>
+                        <symbol viewBox="0 0 20 20" id="linkedin" xmlns="http://www.w3.org/2000/svg">
+                            <title>Linkedin</title><path d="M2.453.156c1.279 0 2.315 1.008 2.315 2.252 0 1.244-1.036 2.252-2.315 2.252C1.175 4.66.14 3.652.14 2.408.139 1.164 1.175.156 2.453.156zm17.42 10.387c.074.568.102 1.186.102 1.846v7.073h-3.969V13.19c0-1.496-.169-3.42-2.276-3.42-2.138 0-2.464 1.629-2.464 3.311v6.38H7.412V6.59H11.1v1.738h.057c.549-1.014 1.89-1.737 3.89-1.737 3.37 0 4.514 1.526 4.827 3.952zM.138 6.59h4.63v12.871H.138V6.59z" />
+                            </symbol><symbol id="location" viewBox="0 0 14 21" xmlns="http://www.w3.org/2000/svg"><defs />
+                            <title>Location</title><path class="mcls-1" d="M7 0a6.9 6.9 0 0 0-7 6.8 6.4 6.4 0 0 0 .6 2.8L7 21l6.4-11.4a6.4 6.4 0 0 0 .6-2.8A6.9 6.9 0 0 0 7 0zm5.5 9.2L7 19 1.5 9.2A5.4 5.4 0 0 1 1 6.8 5.9 5.9 0 0 1 7 1a5.9 5.9 0 0 1 6 5.8 5.4 5.4 0 0 1-.5 2.4z" />
+                            <path class="mcls-1" d="M7 4a3 3 0 1 0 3 3 3 3 0 0 0-3-3zm0 5a2 2 0 1 1 2-2 2 2 0 0 1-2 2z" /></symbol>
+                        <symbol viewBox="0 0 311.92 33.66" id="logo" xmlns="http://www.w3.org/2000/svg"><title>Duff And Phelps</title>
+                            <path fill="none" d="M-5.93-5.78h323.85v44.6H-5.93z" /><path d="M8.17 1.7c.77 0 1.59-.19 3.36-.19C19.81 1.51 25 7.9 25 16.74c0 7-3 14.75-12.33 14.75-2.1 0-4.47-.42-4.47-4.06zM4 28.18c-.13 3.21-1.38 3.3-4 3.59V33c1.93 0 3.83-.1 5.76-.1s4 .1 6.23.1C27.21 33 29.7 21.23 29.7 16.55 29.7 8.18 23.64 0 12.51 0 9.33 0 6.88.1 5.07.1S1.68.1 0 0v1.23c1.93 0 4-.24 4 4zM37.56 9.39c0-2-2.11-2-3.46-2V6c1.9 0 3.9.08 5.71.08S43.43 6 45.13 6v1.41c-1.5 0-3.26 0-3.26 1.87v15c0 5.08 2.86 7.11 6.72 7.11 7 0 7-6 7-11.53v-6.5c0-5.52-.5-6-3.86-6V6c1.65.06 3.36.11 5 .11 1.4 0 2.76-.05 4.16-.11v1.41c-1.7 0-3 .28-3 3.85v11.2c0 6.34-2.76 11.2-10.08 11.2-6.42 0-10.28-2.71-10.28-9.1zM69 9.83c0-2.1-1.35-2.42-3.71-2.42V6c3.26.06 6.47.11 9.73.11 4.71 0 7.67-.05 10.58-.11l.2 6.07h-1c-.65-3.81-1.65-4.31-6.12-4.31h-5.37v10.4H78c2.51 0 3.61-.06 3.61-3.42h1.3c-.05 1.43-.1 2.93-.1 4.42s0 3 .1 4.58h-1.3c0-3.48-.65-3.81-3.61-3.81h-4.69V28c0 2.92 1.1 3.53 3.46 3.53h1.05V33c-2-.05-4.06-.11-6.77-.11-1.91 0-3.86.06-5.77.11v-1.44c2.36 0 3.71-.33 3.71-2.42zm25.07 0c0-2.1-1.36-2.42-3.71-2.42V6c3.26.06 6.46.11 9.72.11 4.72 0 7.67-.05 10.58-.11l.2 6.07h-1c-.65-3.81-1.66-4.31-6.12-4.31h-5.36v10.4h4.71c2.51 0 3.61-.06 3.61-3.42h1.3c0 1.43-.1 2.93-.1 4.42s0 3 .1 4.58h-1.3c0-3.48-.65-3.81-3.61-3.81h-4.71V28c0 2.92 1.1 3.53 3.46 3.53h1.05V33c-2-.05-4.06-.11-6.77-.11-1.91 0-3.86.06-5.76.11v-1.44c2.35 0 3.71-.33 3.71-2.42z" fill="#465761" />
+                            <path d="M153.77 7.85h.17c2 .8 3.53 2.27 3.53 4.44 0 4-5.38 5.77-11.36 6.1v.09a4.54 4.54 0 0 1 4.24 4.52c0 2.31-2.45 4.92-6.31 7.14a25.31 25.31 0 0 1-13.21 3.4c-8.59 0-13.37-3.83-13.37-9.17s6.36-9.27 11.58-9.92v-.1c-2.67-.57-4.57-2.08-4.57-4.92 0-5.06 8.21-9.27 13.27-9.27a18.32 18.32 0 0 1 5.44 1 57.39 57.39 0 0 0-1.31 6.38l-.16.14-1.46-.14-.17-.14c0-.9 0-3-.32-3.26A8 8 0 0 0 135.34 3c-4.4 0-6.47 2.51-6.47 5.48 0 2.65 2.45 4.54 5.27 4.54a12.35 12.35 0 0 0 2.34-.24l.16.33a15 15 0 0 0-1.14 2.6h-2.44c-4.79 0-10.17 2.6-10.17 7.94 0 2.93 2.82 7.56 10.11 7.56 6.69 0 12.67-3.59 12.67-7.94 0-3-2.94-4-4.57-4-2.88 0-3.92 1.51-4.3 4.4l-.16.14-1.64-.17-.16-.14a28.22 28.22 0 0 0 .66-5.5c5.66-4.31 19.36-1.37 19.36-6.62 0-.8-.66-1.6-2.23-2.22v-.23z" fill="#ee3124" />
+                            <path d="M161.55 0c1.94.1 3.87.1 5.81.1 1.46 0 3-.1 4.77-.1 4.43 0 10.79 2 10.79 9.41a9.5 9.5 0 0 1-9.24 9.46c-.86 0-1.55-.05-2.19-.05v-1.56a9.7 9.7 0 0 0 1.63.09c3.7 0 5.33-4 5.33-7.42 0-6.57-4.17-8.41-7-8.41a11 11 0 0 0-1.89.14v26.71c0 3.31 1.63 3.36 4 3.41V33c-2.11 0-4-.1-5.84-.1-2.06 0-4.08 0-6.23.1v-1.23c2.28 0 3.91-.1 3.91-3.41V5.86c0-3.64-.55-4.63-3.78-4.63zm28.22 9.83c0-2.1-1.36-2.42-3.71-2.42V6c1.9.06 3.86.11 5.77.11s4.11-.05 6-.11v1.41c-2.2 0-3.71.17-3.71 2.42v8.33h13.69V9.83c0-2.26-1.5-2.42-3.71-2.42V6c1.85.06 4 .11 6 .11s3.79-.11 5.69-.11v1.41c-2.35 0-3.71.32-3.71 2.42v19.31c0 2.1 1.35 2.42 3.71 2.42V33c-1.9-.05-3.85-.11-5.76-.11s-4.12.06-6 .11v-1.44c2.21 0 3.71-.17 3.71-2.42v-9.21h-13.66v9.21c0 2.26 1.51 2.42 3.71 2.42V33c-1.85-.05-4-.11-6-.11s-3.86.06-5.77.11v-1.44c2.35 0 3.71-.33 3.71-2.42zM240 33c-3.61-.05-7.18-.11-10.78-.11-3.21 0-6.47.06-9.68.11v-1.44c2.36 0 3.71-.33 3.71-2.42V9.83c0-2.1-1.36-2.42-3.71-2.42V6c2.25.06 4.51.11 6.77.11 4.11 0 8.28-.05 12.34-.11l.3 5.84h-1.05c-.6-3.75-1.46-4.08-6.62-4.08h-3.71v10.4h4.16c2.51 0 3.61-.06 3.61-3.86h1.31c-.05 1.43-.1 2.92-.1 4.41s.05 3 .11 4.58h-1.36c0-3-.65-3.36-3.61-3.36h-4.16V28c0 2.37 1.21 3.25 5.37 3.25 5.06 0 5.42-.72 7.37-4.36h1.25zm9.59-23.17c0-2.1-1.36-2.42-3.71-2.42V6c1.91.06 3.86.11 5.77.11s4.11-.05 6-.11v1.41c-2.21 0-3.71.17-3.71 2.42V28.2c0 2.32.65 3 4.61 3 4.46 0 5.57-.77 7.42-5.24h1.26l-1.51 7c-1.31-.05-7.82-.11-9.28-.11-3.51 0-7 .06-10.53.11v-1.4c2.35 0 3.71-.33 3.71-2.42zm24.41 0c0-2.1-1.35-2.42-3.71-2.42V6c1.91.06 3.86.11 5.77.11 2.26 0 4.51-.11 7.22-.11 4.16 0 7.82 1.88 7.82 7.56 0 6-5.51 8.05-8.77 8.05a6.84 6.84 0 0 1-1.71-.17V20c.2 0 .9.17 1.4.17 4 0 4.46-3.54 4.46-5.84 0-4.81-2.31-6.89-6.12-6.89a9.83 9.83 0 0 0-2.05.17v21.53c0 2.1 1.35 2.42 3.71 2.42V33c-1.85-.05-4-.11-6-.11s-3.86.06-5.77.11v-1.44c2.35 0 3.71-.33 3.71-2.42zm22.07 16.5h1.15c1 3.86 2.55 5.9 6.21 5.9a4.37 4.37 0 0 0 4.77-4.58c0-2.26-1.16-3.7-4.52-5.63-5.52-3.14-7-5.24-7-9.54A7.18 7.18 0 0 1 304 5.31c1.91 0 4.26.5 5.92.55l.45 5.4h-1.05c-.56-2.2-1.66-4.52-5-4.52a4.21 4.21 0 0 0-4.32 4.41c0 2.65.76 3.7 5.57 6.29 5.31 2.87 6.32 5.18 6.32 8.66 0 4.41-3.71 7.56-8.88 7.56a13.07 13.07 0 0 1-6.21-1.49z" fill="#465761" />
+                            </symbol><symbol viewBox="0 0 21 20" id="phone" xmlns="http://www.w3.org/2000/svg"><title>Phone</title>
+                            <path d="M6.057 8.539l1.89-1.842.428-.418-.166-.575c-.015-.052-.173-.594-.22-.76-.308-1.08-.455-1.845-.456-2.583 0-.048 0-.095.002-.142l.007-.262-.122-.233a1.484 1.484 0 0 0-.172-.278 1.125 1.125 0 0 0-.628-.407A1.345 1.345 0 0 0 6.263 1H2.12a1.593 1.593 0 0 0-.194.014c-.207.028-.4.099-.59.275a1.02 1.02 0 0 0-.326.645 1.4 1.4 0 0 0-.01.198c.169 5.08 1.745 9.1 4.639 11.872 2.895 2.775 7.015 4.207 12.152 4.207.595.008 1.064-.312 1.191-.877l.046-.106.001-.202.027-3.578.006-.824-.808-.163-3.974-.806-.518-.105-.379.37-1.917 1.869c-2.613-1.55-3.82-2.72-5.409-5.25z" /></symbol>
+                        <symbol viewBox="0 0 17 19" id="play" xmlns="http://www.w3.org/2000/svg"><title>Triangle</title><path d="M17 9.5L0 19V0z" /></symbol>
+                        <symbol viewBox="0 0 20 21" id="print" xmlns="http://www.w3.org/2000/svg"><title>Print</title><g stroke-width="2" stroke="#465661" fill="none" fill-rule="evenodd">
+                            <path stroke-linecap="round" d="M5 7h10V1H5zm0 13h10v-4H5z" /><path d="M4 11h2m2 0h2" /><path stroke-linecap="round" d="M1 16h18V7H1z" /></g></symbol>
+                        <symbol viewBox="0 0 18 18" id="search" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1 1)"><circle cx="6" cy="6" r="6" />
+                            <path d="M9.727 10.706l4.921 4.941" stroke-linecap="square" /></g></symbol><symbol viewBox="0 0 17 14" id="subnav" xmlns="http://www.w3.org/2000/svg">
+                            <title>Sub-services</title><path d="M4 4h13v2H4zM0 0h17v2H0zm4 8h13v2H4zM0 4h2v2H0zm0 4h2v2H0zm4 4h13v2H4zm-4 0h2v2H0z" fill="#EE3124" /></symbol>
+                        <symbol id="tick" viewBox="0 0 19.4 15.1" xmlns="http://www.w3.org/2000/svg"><defs /><title>Tick</title><path class="tcls-1" d="M5.7 15.1L0 9.4 1.4 8l4.3 4.3L18 0l1.4 1.4L5.7 15.1z" /></symbol>
+                        <symbol viewBox="0 0 22 17" id="twitter" xmlns="http://www.w3.org/2000/svg"><title>Twitter</title><path d="M21.708 2.565a8.834 8.834 0 0 1-2.462.646A4.158 4.158 0 0 0 21.132.937a8.802 8.802 0 0 1-2.725.998 4.369 4.369 0 0 0-3.13-1.297c-2.368 0-4.288 1.84-4.288 4.11 0 .322.038.634.11.936-3.565-.172-6.726-1.808-8.84-4.294a3.963 3.963 0 0 0-.582 2.066c0 1.425.759 2.683 1.908 3.42a4.424 4.424 0 0 1-1.943-.514v.051c0 .526.106 1.028.294 1.49.524 1.288 1.703 2.262 3.148 2.541a4.547 4.547 0 0 1-1.132.144c-.275 0-.544-.026-.806-.074.547 1.632 2.13 2.821 4.006 2.854a8.842 8.842 0 0 1-5.327 1.76c-.347 0-.687-.02-1.024-.058a12.543 12.543 0 0 0 6.576 1.846c6.705 0 10.826-4.521 11.912-9.212a11.01 11.01 0 0 0 .28-3.012 8.507 8.507 0 0 0 2.14-2.127" /></symbol>
+                        <symbol viewBox="0 0 23 17" id="youtube" xmlns="http://www.w3.org/2000/svg"><title>Youtube</title><path d="M15.082 8.226l-5.915 3.111-.001-4.789V5.092l2.667 1.413 3.25 1.721zM22.16 4.01s-.214-1.533-.87-2.207c-.833-.884-1.767-.89-2.193-.941C16.03.638 11.433.638 11.433.638h-.01s-4.599 0-7.663.224c-.428.05-1.36.056-2.195.94C.91 2.478.696 4.01.696 4.01s-.22 1.798-.22 3.597v1.685c0 1.8.22 3.6.22 3.6s.214 1.531.869 2.205c.835.886 1.93.857 2.416.95 1.752.17 7.447.223 7.447.223s4.601-.008 7.668-.231c.426-.053 1.36-.056 2.193-.943.656-.674.87-2.205.87-2.205s.22-1.798.22-3.599V7.607c0-1.8-.22-3.598-.22-3.598z" /></symbol></svg>
+                    </use>
+                </svg>
+            </a>
+        </li>
+        <li class="u-inline-block u-mr-24">
+            <a target="_blank" href="https://twitter.com/home?status=https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware" title="Twitter">
+                <svg class="Icon Icon--twitter Icon--fillGrey SocialShare-icon" data-app-tmpl="Icon">
+                    <title>Twitter</title>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#twitter"></use>
+                </svg>
+            </a>
+        </li>
+        <li class="u-inline-block u-mr-24">
+
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware&title=RawPos Malware: Deconstructing an Intruder’s Toolkit&summary=Commonly, network intruders will leverage malware as part of the compromise or network reconnaissance and information gathering phases of their malicious cyber intrusion. Read Kroll whitepaper to know more&source=" title="LinkedIn">
+                <svg class="Icon Icon--linkedin Icon--fillGrey SocialShare-icon" data-app-tmpl="Icon">
+                    <title>LinkedIn</title>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#linkedin"></use>
+                </svg>
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+            </div>
+        </div>
+
+    </header>
+</div>
+
+    <div class="DownloadPDF u-pb-20 u-pt-20 u-bg-grey-4" data-app-tmpl="DownloadPDF" data-scroll-item>
+        <div class="cf container">
+            <div class="g-sm-col-6 g-lg-col-7 g-lg-push-2--wide">
+
+                <a href="/-/media/kroll/pdfs/publications/kroll-malware-analysis-report-rawpos-malware-deconstructing-an-intruders-toolkit.pdf" target="_blank" class="p-6 u-blue-4 u-td-none u-flex u-ai-center wiggle-bottom download-file" title="RawPos Malware: Deconstructing an Intruder’s Toolkit.pdf"  >
+
+                    <svg class="Icon Icon--download u-blue-4 u-mr-12" data-app-tmpl="Icon">
+                        <title>Download vCard</title>
+                        <use xlink:href="#download"></use>
+                    </svg>
+                    <b>RawPos Malware: Deconstructing an Intruder’s Toolkit.pdf <span class="u-textFW-normal">(14.0) MB</span></b>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+<div class="ArticleDetail-main u-of-hidden">
+    <div class="cf container">
+        <div class="g-sm-col-6 g-md-col-7 g-lg-col-6 g-md-push-1--wide g-lg-push-3--wide">
+            <div class="RichText u-bg-white" data-app-tmpl="RichText" data-scroll-item>
+                <div class="RichText-content">
+                    <h2 class="stand-first"></h2>
+                    <div data-swiftype-name="description" data-swiftype-type="text"><p>Over the years, Kroll&rsquo;s Cyber investigators have been engaged by our clients in diverse industries to address a wide range of issues, from breach response to traditional digital forensics, and from identification of custom malicious software (&ldquo;malware&rdquo;) to breach response.<br />
+<br />
+Commonly, network intruders will leverage malware as part of the compromise or network reconnaissance and information gathering phases of their malicious cyber intrusion. Once Kroll&rsquo;s team is engaged, it is common for our investigators to discover fragments of malware remaining in the system&rsquo;s memory (&ldquo;fileless malware&rdquo;) or written to the disk in scattered locations. What begins as a hunt for circumstantial clues evolves into a deep dig to identify and understand the malware capabilities, so that the knowledge gained from the analysis can be used to answer questions that otherwise would often go unresolved in the course of a traditional forensic and incident response scenario.<br />
+<br />
+In 2016, Kroll&rsquo;s Cyber experts had the opportunity to focus on a collection of malware related to the RawPOS family, and Kroll proceeded to identify numerous tools that the attacker(s) had dropped into the enterprise environment in order to expand their foothold, target specific machines, collect additional information about the compromised environment, and prepare that data for exfiltration.<br />
+<br />
+Through the following Report, Kroll is pleased to share the research conducted on the malware and the intruder&rsquo;s toolkit with the greater information security community.</p></div>
+                </div>
+                <span data-swiftype-name="title" data-swiftype-type="string" style="display: none">RawPos Malware: Deconstructing an Intruder&amp;rsquo;s Toolkit</span>
+                <span data-swiftype-name="date" data-swiftype-type="date" style="display: none">2017-02-16T05:00:00.0000000</span>
+                <span data-swiftype-name="url" data-swiftype-type="enum" style="display: none">/en/insights/publications/malware-analysis-report-rawpos-malware</span>
+                <span data-swiftype-name="image" data-swiftype-type="enum" style="display: none">/-/media/kroll/images/publications/thumbnails/rawpos-malware-deconstructing-an-intruders-toolkit.jpg</span>
+                <span data-swiftype-name="asset_type" data-swiftype-type="enum" style="display: none">publication</span>
+                    <span data-swiftype-name="service_ids" data-swiftype-type="enum" style="display: none">{E39587AD-8F0B-4FE2-865F-969BC5501096}</span>
+                    <span data-swiftype-name="service_ids" data-swiftype-type="enum" style="display: none">{01699FB1-A280-41EA-B450-4639512275D3}</span>
+                            </div>
+            
+
+
+<div class="SocialShare-wrapper u-flex u-pb-20 u-pt-20">
+    <ul class="u-ls-none u-m-0 u-p-0">
+        <li class="u-inline-block u-mr-24">
+            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware" title="Facebook">
+                <svg class="Icon Icon--facebook-grey Icon--fillGrey SocialShare-icon" data-app-tmpl="Icon">
+                    <title>Facebook</title>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#facebook-grey">
+                        <svg style="clip:rect(0,0,0,0);height:0;width:0;position:absolute;transform:scale(0);" 
+                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <symbol viewBox="0 0 18 15" id="arrow-left" xmlns="http://www.w3.org/2000/svg">
+                            <title>Arrow Left</title>
+                            <path d="M7.071 14.142l1.414-1.415-4.657-4.656H18v-2H3.828l4.657-4.658L7.071 0 1.414 5.656 0 7.071l1.414 1.414z" />
+                            </symbol><symbol viewBox="0 0 18 15" id="arrow-right" xmlns="http://www.w3.org/2000/svg">
+                            <title>Arrow Right</title>
+                            <path d="M10.929 0L9.515 1.413l4.657 4.656H0v2h14.172l-4.657 4.658 1.414 1.414 5.657-5.657L18 7.07l-1.414-1.414z" />
+                                </symbol><symbol viewBox="0 0 19 19" id="calendar" xmlns="http://www.w3.org/2000/svg">
+                            <title>Calendar (Dark)</title><g fill="none" fill-rule="evenodd">
+                            <path stroke="#465661" d="M1.5 3.5h16v14h-16zm-.5 5h17" /><path fill="#465661" d="M5 1h1v5H5zm8 0h1v5h-1z" />
+                                 </g></symbol><symbol id="calendar2" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
+                            <path class="dst0" d="M14 3V1h-2v2H7V1H5v2H1v15h17V3h-4zm2 13H3v-6h13v6zm0-8H3V5h2v2h2V5h5v2h2V5h2v3z" />
+                                     </symbol><symbol viewBox="0 0 8 12" id="chevron" xmlns="http://www.w3.org/2000/svg">
+                            <title>Path 2</title><path d="M1 1l4.943 5.005L1 11.01" />
+                                         </symbol><symbol viewBox="0 0 18 18" id="close" xmlns="http://www.w3.org/2000/svg">
+                            <title>Close</title><path d="M1.929.515L17.485 16.07l-1.414 1.414L.515 1.93z" />
+                            <path d="M.515 16.071L16.07.515l1.414 1.414L1.93 17.485z" /></symbol>
+                        <symbol viewBox="0 0 22 16" id="contact" xmlns="http://www.w3.org/2000/svg">
+                            <title>Send Message</title><path d="M1 1h20v14H1z" /><path d="M1 2.234L10.933 9 21 2" />
+                            </symbol><symbol viewBox="0 0 20 19" id="download" xmlns="http://www.w3.org/2000/svg">
+                            <title>Download vCard</title><path d="M10 0v13M5 9l5 5 5-5M0 18h20" /></symbol>
+                        <symbol viewBox="0 0 18 18" id="facebook" xmlns="http://www.w3.org/2000/svg">
+                            <title>Facebook</title>
+                            <path d="M9.614 18H.994A.993.993 0 0 1 0 17.006V.993C0 .445.445 0 .993 0h16.014c.548 0 .993.445.993.993v16.013a.994.994 0 0 1-.993.994H12.42v-6.97h2.34l.35-2.717h-2.69V6.578c0-.786.218-1.322 1.346-1.322h1.438v-2.43a19.23 19.23 0 0 0-2.096-.107c-2.074 0-3.494 1.266-3.494 3.59v2.004H7.27v2.716h2.345V18z" fill="#FFF" fill-rule="evenodd" />
+                            </symbol><symbol id="facebook-grey" viewBox="0 0 19 19" xmlns="http://www.w3.org/2000/svg">
+                            <path class="jst0" d="M18 0H1C.5 0 0 .5 0 1v17c0 .6.5 1 1 1h9v-7.4H7.5V8.8H10V6.7c0-2.5 1.5-3.8 3.7-3.8 1 0 1.9.1 2.2.1v2.6h-1.5c-1.2 0-1.4.6-1.4 1.4v1.8h2.8l-.4 2.9H13V19h5c.6 0 1-.5 1-1V1c0-.5-.5-1-1-1z" /></symbol>
+                        <symbol viewBox="0 0 17 15" id="filter" xmlns="http://www.w3.org/2000/svg">
+                            <title>Filter</title><g fill="#465661" fill-rule="evenodd"><path d="M0 13h17v1H0z" />
+                            <circle cx="8.5" cy="13.5" r="1.5" /><path d="M0 7h17v1H0z" /><circle cx="14.5" cy="7.5" r="1.5" />
+                            <path d="M0 1h17v1H0z" /><circle cx="4.5" cy="1.5" r="1.5" /></g></symbol>
+                        <symbol viewBox="0 0 20 20" id="linkedin" xmlns="http://www.w3.org/2000/svg">
+                            <title>Linkedin</title><path d="M2.453.156c1.279 0 2.315 1.008 2.315 2.252 0 1.244-1.036 2.252-2.315 2.252C1.175 4.66.14 3.652.14 2.408.139 1.164 1.175.156 2.453.156zm17.42 10.387c.074.568.102 1.186.102 1.846v7.073h-3.969V13.19c0-1.496-.169-3.42-2.276-3.42-2.138 0-2.464 1.629-2.464 3.311v6.38H7.412V6.59H11.1v1.738h.057c.549-1.014 1.89-1.737 3.89-1.737 3.37 0 4.514 1.526 4.827 3.952zM.138 6.59h4.63v12.871H.138V6.59z" />
+                            </symbol><symbol id="location" viewBox="0 0 14 21" xmlns="http://www.w3.org/2000/svg"><defs />
+                            <title>Location</title><path class="mcls-1" d="M7 0a6.9 6.9 0 0 0-7 6.8 6.4 6.4 0 0 0 .6 2.8L7 21l6.4-11.4a6.4 6.4 0 0 0 .6-2.8A6.9 6.9 0 0 0 7 0zm5.5 9.2L7 19 1.5 9.2A5.4 5.4 0 0 1 1 6.8 5.9 5.9 0 0 1 7 1a5.9 5.9 0 0 1 6 5.8 5.4 5.4 0 0 1-.5 2.4z" />
+                            <path class="mcls-1" d="M7 4a3 3 0 1 0 3 3 3 3 0 0 0-3-3zm0 5a2 2 0 1 1 2-2 2 2 0 0 1-2 2z" /></symbol>
+                        <symbol viewBox="0 0 311.92 33.66" id="logo" xmlns="http://www.w3.org/2000/svg"><title>Duff And Phelps</title>
+                            <path fill="none" d="M-5.93-5.78h323.85v44.6H-5.93z" /><path d="M8.17 1.7c.77 0 1.59-.19 3.36-.19C19.81 1.51 25 7.9 25 16.74c0 7-3 14.75-12.33 14.75-2.1 0-4.47-.42-4.47-4.06zM4 28.18c-.13 3.21-1.38 3.3-4 3.59V33c1.93 0 3.83-.1 5.76-.1s4 .1 6.23.1C27.21 33 29.7 21.23 29.7 16.55 29.7 8.18 23.64 0 12.51 0 9.33 0 6.88.1 5.07.1S1.68.1 0 0v1.23c1.93 0 4-.24 4 4zM37.56 9.39c0-2-2.11-2-3.46-2V6c1.9 0 3.9.08 5.71.08S43.43 6 45.13 6v1.41c-1.5 0-3.26 0-3.26 1.87v15c0 5.08 2.86 7.11 6.72 7.11 7 0 7-6 7-11.53v-6.5c0-5.52-.5-6-3.86-6V6c1.65.06 3.36.11 5 .11 1.4 0 2.76-.05 4.16-.11v1.41c-1.7 0-3 .28-3 3.85v11.2c0 6.34-2.76 11.2-10.08 11.2-6.42 0-10.28-2.71-10.28-9.1zM69 9.83c0-2.1-1.35-2.42-3.71-2.42V6c3.26.06 6.47.11 9.73.11 4.71 0 7.67-.05 10.58-.11l.2 6.07h-1c-.65-3.81-1.65-4.31-6.12-4.31h-5.37v10.4H78c2.51 0 3.61-.06 3.61-3.42h1.3c-.05 1.43-.1 2.93-.1 4.42s0 3 .1 4.58h-1.3c0-3.48-.65-3.81-3.61-3.81h-4.69V28c0 2.92 1.1 3.53 3.46 3.53h1.05V33c-2-.05-4.06-.11-6.77-.11-1.91 0-3.86.06-5.77.11v-1.44c2.36 0 3.71-.33 3.71-2.42zm25.07 0c0-2.1-1.36-2.42-3.71-2.42V6c3.26.06 6.46.11 9.72.11 4.72 0 7.67-.05 10.58-.11l.2 6.07h-1c-.65-3.81-1.66-4.31-6.12-4.31h-5.36v10.4h4.71c2.51 0 3.61-.06 3.61-3.42h1.3c0 1.43-.1 2.93-.1 4.42s0 3 .1 4.58h-1.3c0-3.48-.65-3.81-3.61-3.81h-4.71V28c0 2.92 1.1 3.53 3.46 3.53h1.05V33c-2-.05-4.06-.11-6.77-.11-1.91 0-3.86.06-5.76.11v-1.44c2.35 0 3.71-.33 3.71-2.42z" fill="#465761" />
+                            <path d="M153.77 7.85h.17c2 .8 3.53 2.27 3.53 4.44 0 4-5.38 5.77-11.36 6.1v.09a4.54 4.54 0 0 1 4.24 4.52c0 2.31-2.45 4.92-6.31 7.14a25.31 25.31 0 0 1-13.21 3.4c-8.59 0-13.37-3.83-13.37-9.17s6.36-9.27 11.58-9.92v-.1c-2.67-.57-4.57-2.08-4.57-4.92 0-5.06 8.21-9.27 13.27-9.27a18.32 18.32 0 0 1 5.44 1 57.39 57.39 0 0 0-1.31 6.38l-.16.14-1.46-.14-.17-.14c0-.9 0-3-.32-3.26A8 8 0 0 0 135.34 3c-4.4 0-6.47 2.51-6.47 5.48 0 2.65 2.45 4.54 5.27 4.54a12.35 12.35 0 0 0 2.34-.24l.16.33a15 15 0 0 0-1.14 2.6h-2.44c-4.79 0-10.17 2.6-10.17 7.94 0 2.93 2.82 7.56 10.11 7.56 6.69 0 12.67-3.59 12.67-7.94 0-3-2.94-4-4.57-4-2.88 0-3.92 1.51-4.3 4.4l-.16.14-1.64-.17-.16-.14a28.22 28.22 0 0 0 .66-5.5c5.66-4.31 19.36-1.37 19.36-6.62 0-.8-.66-1.6-2.23-2.22v-.23z" fill="#ee3124" />
+                            <path d="M161.55 0c1.94.1 3.87.1 5.81.1 1.46 0 3-.1 4.77-.1 4.43 0 10.79 2 10.79 9.41a9.5 9.5 0 0 1-9.24 9.46c-.86 0-1.55-.05-2.19-.05v-1.56a9.7 9.7 0 0 0 1.63.09c3.7 0 5.33-4 5.33-7.42 0-6.57-4.17-8.41-7-8.41a11 11 0 0 0-1.89.14v26.71c0 3.31 1.63 3.36 4 3.41V33c-2.11 0-4-.1-5.84-.1-2.06 0-4.08 0-6.23.1v-1.23c2.28 0 3.91-.1 3.91-3.41V5.86c0-3.64-.55-4.63-3.78-4.63zm28.22 9.83c0-2.1-1.36-2.42-3.71-2.42V6c1.9.06 3.86.11 5.77.11s4.11-.05 6-.11v1.41c-2.2 0-3.71.17-3.71 2.42v8.33h13.69V9.83c0-2.26-1.5-2.42-3.71-2.42V6c1.85.06 4 .11 6 .11s3.79-.11 5.69-.11v1.41c-2.35 0-3.71.32-3.71 2.42v19.31c0 2.1 1.35 2.42 3.71 2.42V33c-1.9-.05-3.85-.11-5.76-.11s-4.12.06-6 .11v-1.44c2.21 0 3.71-.17 3.71-2.42v-9.21h-13.66v9.21c0 2.26 1.51 2.42 3.71 2.42V33c-1.85-.05-4-.11-6-.11s-3.86.06-5.77.11v-1.44c2.35 0 3.71-.33 3.71-2.42zM240 33c-3.61-.05-7.18-.11-10.78-.11-3.21 0-6.47.06-9.68.11v-1.44c2.36 0 3.71-.33 3.71-2.42V9.83c0-2.1-1.36-2.42-3.71-2.42V6c2.25.06 4.51.11 6.77.11 4.11 0 8.28-.05 12.34-.11l.3 5.84h-1.05c-.6-3.75-1.46-4.08-6.62-4.08h-3.71v10.4h4.16c2.51 0 3.61-.06 3.61-3.86h1.31c-.05 1.43-.1 2.92-.1 4.41s.05 3 .11 4.58h-1.36c0-3-.65-3.36-3.61-3.36h-4.16V28c0 2.37 1.21 3.25 5.37 3.25 5.06 0 5.42-.72 7.37-4.36h1.25zm9.59-23.17c0-2.1-1.36-2.42-3.71-2.42V6c1.91.06 3.86.11 5.77.11s4.11-.05 6-.11v1.41c-2.21 0-3.71.17-3.71 2.42V28.2c0 2.32.65 3 4.61 3 4.46 0 5.57-.77 7.42-5.24h1.26l-1.51 7c-1.31-.05-7.82-.11-9.28-.11-3.51 0-7 .06-10.53.11v-1.4c2.35 0 3.71-.33 3.71-2.42zm24.41 0c0-2.1-1.35-2.42-3.71-2.42V6c1.91.06 3.86.11 5.77.11 2.26 0 4.51-.11 7.22-.11 4.16 0 7.82 1.88 7.82 7.56 0 6-5.51 8.05-8.77 8.05a6.84 6.84 0 0 1-1.71-.17V20c.2 0 .9.17 1.4.17 4 0 4.46-3.54 4.46-5.84 0-4.81-2.31-6.89-6.12-6.89a9.83 9.83 0 0 0-2.05.17v21.53c0 2.1 1.35 2.42 3.71 2.42V33c-1.85-.05-4-.11-6-.11s-3.86.06-5.77.11v-1.44c2.35 0 3.71-.33 3.71-2.42zm22.07 16.5h1.15c1 3.86 2.55 5.9 6.21 5.9a4.37 4.37 0 0 0 4.77-4.58c0-2.26-1.16-3.7-4.52-5.63-5.52-3.14-7-5.24-7-9.54A7.18 7.18 0 0 1 304 5.31c1.91 0 4.26.5 5.92.55l.45 5.4h-1.05c-.56-2.2-1.66-4.52-5-4.52a4.21 4.21 0 0 0-4.32 4.41c0 2.65.76 3.7 5.57 6.29 5.31 2.87 6.32 5.18 6.32 8.66 0 4.41-3.71 7.56-8.88 7.56a13.07 13.07 0 0 1-6.21-1.49z" fill="#465761" />
+                            </symbol><symbol viewBox="0 0 21 20" id="phone" xmlns="http://www.w3.org/2000/svg"><title>Phone</title>
+                            <path d="M6.057 8.539l1.89-1.842.428-.418-.166-.575c-.015-.052-.173-.594-.22-.76-.308-1.08-.455-1.845-.456-2.583 0-.048 0-.095.002-.142l.007-.262-.122-.233a1.484 1.484 0 0 0-.172-.278 1.125 1.125 0 0 0-.628-.407A1.345 1.345 0 0 0 6.263 1H2.12a1.593 1.593 0 0 0-.194.014c-.207.028-.4.099-.59.275a1.02 1.02 0 0 0-.326.645 1.4 1.4 0 0 0-.01.198c.169 5.08 1.745 9.1 4.639 11.872 2.895 2.775 7.015 4.207 12.152 4.207.595.008 1.064-.312 1.191-.877l.046-.106.001-.202.027-3.578.006-.824-.808-.163-3.974-.806-.518-.105-.379.37-1.917 1.869c-2.613-1.55-3.82-2.72-5.409-5.25z" /></symbol>
+                        <symbol viewBox="0 0 17 19" id="play" xmlns="http://www.w3.org/2000/svg"><title>Triangle</title><path d="M17 9.5L0 19V0z" /></symbol>
+                        <symbol viewBox="0 0 20 21" id="print" xmlns="http://www.w3.org/2000/svg"><title>Print</title><g stroke-width="2" stroke="#465661" fill="none" fill-rule="evenodd">
+                            <path stroke-linecap="round" d="M5 7h10V1H5zm0 13h10v-4H5z" /><path d="M4 11h2m2 0h2" /><path stroke-linecap="round" d="M1 16h18V7H1z" /></g></symbol>
+                        <symbol viewBox="0 0 18 18" id="search" xmlns="http://www.w3.org/2000/svg"><g transform="translate(1 1)"><circle cx="6" cy="6" r="6" />
+                            <path d="M9.727 10.706l4.921 4.941" stroke-linecap="square" /></g></symbol><symbol viewBox="0 0 17 14" id="subnav" xmlns="http://www.w3.org/2000/svg">
+                            <title>Sub-services</title><path d="M4 4h13v2H4zM0 0h17v2H0zm4 8h13v2H4zM0 4h2v2H0zm0 4h2v2H0zm4 4h13v2H4zm-4 0h2v2H0z" fill="#EE3124" /></symbol>
+                        <symbol id="tick" viewBox="0 0 19.4 15.1" xmlns="http://www.w3.org/2000/svg"><defs /><title>Tick</title><path class="tcls-1" d="M5.7 15.1L0 9.4 1.4 8l4.3 4.3L18 0l1.4 1.4L5.7 15.1z" /></symbol>
+                        <symbol viewBox="0 0 22 17" id="twitter" xmlns="http://www.w3.org/2000/svg"><title>Twitter</title><path d="M21.708 2.565a8.834 8.834 0 0 1-2.462.646A4.158 4.158 0 0 0 21.132.937a8.802 8.802 0 0 1-2.725.998 4.369 4.369 0 0 0-3.13-1.297c-2.368 0-4.288 1.84-4.288 4.11 0 .322.038.634.11.936-3.565-.172-6.726-1.808-8.84-4.294a3.963 3.963 0 0 0-.582 2.066c0 1.425.759 2.683 1.908 3.42a4.424 4.424 0 0 1-1.943-.514v.051c0 .526.106 1.028.294 1.49.524 1.288 1.703 2.262 3.148 2.541a4.547 4.547 0 0 1-1.132.144c-.275 0-.544-.026-.806-.074.547 1.632 2.13 2.821 4.006 2.854a8.842 8.842 0 0 1-5.327 1.76c-.347 0-.687-.02-1.024-.058a12.543 12.543 0 0 0 6.576 1.846c6.705 0 10.826-4.521 11.912-9.212a11.01 11.01 0 0 0 .28-3.012 8.507 8.507 0 0 0 2.14-2.127" /></symbol>
+                        <symbol viewBox="0 0 23 17" id="youtube" xmlns="http://www.w3.org/2000/svg"><title>Youtube</title><path d="M15.082 8.226l-5.915 3.111-.001-4.789V5.092l2.667 1.413 3.25 1.721zM22.16 4.01s-.214-1.533-.87-2.207c-.833-.884-1.767-.89-2.193-.941C16.03.638 11.433.638 11.433.638h-.01s-4.599 0-7.663.224c-.428.05-1.36.056-2.195.94C.91 2.478.696 4.01.696 4.01s-.22 1.798-.22 3.597v1.685c0 1.8.22 3.6.22 3.6s.214 1.531.869 2.205c.835.886 1.93.857 2.416.95 1.752.17 7.447.223 7.447.223s4.601-.008 7.668-.231c.426-.053 1.36-.056 2.193-.943.656-.674.87-2.205.87-2.205s.22-1.798.22-3.599V7.607c0-1.8-.22-3.598-.22-3.598z" /></symbol></svg>
+                    </use>
+                </svg>
+            </a>
+        </li>
+        <li class="u-inline-block u-mr-24">
+            <a target="_blank" href="https://twitter.com/home?status=https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware" title="Twitter">
+                <svg class="Icon Icon--twitter Icon--fillGrey SocialShare-icon" data-app-tmpl="Icon">
+                    <title>Twitter</title>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#twitter"></use>
+                </svg>
+            </a>
+        </li>
+        <li class="u-inline-block u-mr-24">
+
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.kroll.com/en/insights/publications/malware-analysis-report-rawpos-malware&title=RawPos Malware: Deconstructing an Intruder’s Toolkit&summary=Commonly, network intruders will leverage malware as part of the compromise or network reconnaissance and information gathering phases of their malicious cyber intrusion. Read Kroll whitepaper to know more&source=" title="LinkedIn">
+                <svg class="Icon Icon--linkedin Icon--fillGrey SocialShare-icon" data-app-tmpl="Icon">
+                    <title>LinkedIn</title>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#linkedin"></use>
+                </svg>
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+            <div class="ServicesDetail-cta u-mb-12 u-flex u-inline-block">
+                <button class="Button ContactButton contactButtonImplementation u-relative u-as-stretch u-flex u-ai-center" data-app-tmpl="ContactButton"
+                        data-url="/en/contactus">
+                    <svg class="Icon Icon--contact " data-app-tmpl="Icon">
+                        <title>Send Message</title>
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#contact"></use>
+                    </svg>
+                    <span class="u-ml-12 p-6">Contact us</span>
+                </button>
+                <button class="Button PrintButton u-relative u-as-stretch u-flex u-ai-center u-blue-1" onclick="window.print()" data-app-tmpl="PrintButton">
+                    <svg class="Icon Icon--print " data-app-tmpl="Icon">
+                        <title>Print</title>
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#print"></use>
+                    </svg>
+                    <span class="u-ml-12 p-6">Print</span>
+                </button>
+            </div>
+        </div>
+    </div>
+        <div class="DownloadPDF u-pb-20 u-pt-20 u-lg-pb-72 u-md-pb-54 show-from-scroll" data-app-tmpl="DownloadPDF" data-scroll-item="">
+            <div class="cf container">
+                <div class="g-sm-col-6 g-md-push-1--wide g-lg-push-3--wide g-lg-col-6">
+                    <a href="/-/media/kroll/pdfs/publications/kroll-malware-analysis-report-rawpos-malware-deconstructing-an-intruders-toolkit.pdf" target="_blank" class="p-6 u-blue-4 u-td-none u-flex u-ai-center wiggle-bottom download-file" title="RawPos Malware: Deconstructing an Intruder’s Toolkit.pdf"  >
+
+                        <svg class="Icon Icon--download u-blue-4 u-mr-12" data-app-tmpl="Icon">
+                            <title>Download vCard</title>
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#download"></use>
+                        </svg>
+                        <b>RawPos Malware: Deconstructing an Intruder’s Toolkit.pdf <span class="u-textFW-normal">(14.0) MB</span></b>
+
+
+                    </a>
+                </div>
+            </div>
+        </div>
+</div>
+<section class="ServicesOfferingV2 u-mb-54 u-bg-grey-4" data-app-tmpl="ServicesOfferingV2">
+    <div class="cf container">
+        
+        <header class="ServicesOfferingV2-header u-textCenter u-pt-30 u-pb-24 u-md-pt-42 u-md-pb-30 u-lg-pt-60 u-lg-pb-48" data-scroll-item>
+                <h3 class="p-4 u-m-0 u-blue-1 u-uppercase">Other Areas We Can Help</h3>
+        </header>
+
+        <div class="ServicesOfferingV2-services u-flex u-ai-stretch">
+                <article class="ServicesOfferingV5-tile u-bg-white u-blue-1 ServicesListing-parent" data-scroll-item>
+                    <header class="ServicesOfferingV5-image u-imgHolder">
+                            <img src="/-/media/feature/services/cyber-risk/cyber-risk-tile.jpg" alt="Cyber Risk" class="u-img--objectFit">
+
+                    </header>
+                    <div class="ServicesOfferingV5-content">
+                        <h2 class="h-5 md-h-6 lg-h-5 u-m-0 u-pb-6">
+                            Cyber Risk
+                        </h2>
+
+                        <p class="sm-hide md-hide lg-show p-2 u-m-0 u-pb-12 width-override-tab-landscape">
+                            Global, end-to-end cyber risk solutions.
+                        </p>
+                    </div>
+
+                    <a href="/en/services/cyber-risk" class=" u-faux-link" target="">Cyber Risk</a>
+                </article>
+                <article class="ServicesOfferingV5-tile u-bg-white u-blue-1 ServicesListing-parent" data-scroll-item>
+                    <header class="ServicesOfferingV5-image u-imgHolder">
+                            <img src="/-/media/feature/services/business-intelligence-and-investigations/bii-tile.jpg" alt="Business Intelligence and Investigations" class="u-img--objectFit">
+
+                    </header>
+                    <div class="ServicesOfferingV5-content">
+                        <h2 class="h-5 md-h-6 lg-h-5 u-m-0 u-pb-6">
+                            Business Intelligence and Investigations
+                        </h2>
+
+                        <p class="sm-hide md-hide lg-show p-2 u-m-0 u-pb-12 width-override-tab-landscape">
+                            Providing clients with global investigative expertise to help make critical decisions and mitigate risk.
+                        </p>
+                    </div>
+
+                    <a href="/en/services/business-intelligence-and-investigations" class=" u-faux-link" target="">Business Intelligence and Investigations</a>
+                </article>
+        </div>
+
+    </div>
+</section>                          
+
+<section class="new-insights ContentBlocks ContentBlocks--insights u-bg-grey-3 u-blue-1" data-app-tmpl=ContentBlocks data-block-types=insights>
+
+    <header class="ContentBlocks-header u-mb-0">
+        <div class="u-pt-30  u-md-pt-42 u-lg-pt-60">
+                <h3 class="MainTitle u-m-0 u-uppercase">Insights</h3>
+        </div>
+    </header>
+
+    <div class="ContentBlocks-container u-of-hidden container insights-v2" data-slider-conf='{"loop":false,"slidesPerView":"auto"}' data-app-tmpl="Slider">
+        <div class="ContentBlocks-slideFrame Slider-frame u-relative u-flex cf card-module-4 u-pb-42 u-pt-24" data-slider-frame>
+
+                    <article class="ContentBlocks-item ContentBlocks-item-- Slider-slide   g-sm-col-4-vw g-md-col-3-vw g-lg-col-3-vw  u-of-hidden  u-relative u-boxShadow-2"
+                             data-item-id="083ee3f6-1530-46f7-8dea-3cbc9867de8f" data-siteinterest="Publications" data-industry="Technology and Telecom" data-service="Security Risk Management" data-card-type="Article" style="border-top: none;" data-slider-slide data-scroll-item>
+
+                        <div class="card4__item__image u-relative" style="background-image: url('/-/media/kroll/images/publications/featured-images/five-ways-to-improve-your-cannabis-business-security-300-200.jpg')"
+                             data-card-image="/-/media/kroll/images/publications/featured-images/five-ways-to-improve-your-cannabis-business-security-300-200.jpg">
+                        </div>
+                        <div class="card4__item__content u-flex u-fd-column u-bg-white">
+                            <div class="card3__item__content--type" data-card-category="Security Risk Management">Security Risk Management</div>
+
+                            <h2 class="card4__item__content--title u-mt-0 u-fw-300" data-card-title="&lt;span style=&quot;background-color: #ffffff; margin: 0px; padding: 0px; border: 0px; color: #454b57;&quot;&gt;Five Ways to Improve Your Cannabis Business Security&lt;/span&gt;">
+                                <span style="background-color: #ffffff; margin: 0px; padding: 0px; border: 0px; color: #454b57;">Five Ways to Improve Your Cannabis Business Security</span>
+                            </h2>
+                            <div class="card4__item__content--description" data-card-description="">
+                                
+                            </div>
+                            <div data-bookmark-icon="" class="u-mt-auto u-ml-auto u-relative " style="z-index: 12">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" viewBox="80 155 350 200" class="Icon--bookmark">
+                                    <path d="M352,48H160a48,48,0,0,0-48,48V464L256,336,400,464V96A48,48,0,0,0,352,48Z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <a href="/en/insights/publications/five-ways-improve-cannabis-business-security" class="u-faux-link" data-card-url>Security Risk Management</a>
+
+                        <div class="u-absolute" data-bookmark-tooltip></div>
+                    </article>
+                    <article class="ContentBlocks-item ContentBlocks-item-- Slider-slide   g-sm-col-4-vw g-md-col-3-vw g-lg-col-3-vw  u-of-hidden  u-relative u-boxShadow-2"
+                             data-item-id="30c7646d-9da8-419b-8907-e743d940aa0f" data-siteinterest="Publications" data-industry="" data-service="" data-card-type="Article" style="border-top: none;" data-slider-slide data-scroll-item>
+
+                        <div class="card4__item__image u-relative" style="background-image: url('/-/media/kroll/images/publications/featured-images/digital-chattermisinformation.jpg')"
+                             data-card-image="/-/media/kroll/images/publications/featured-images/digital-chattermisinformation.jpg">
+                        </div>
+                        <div class="card4__item__content u-flex u-fd-column u-bg-white">
+                            <div class="card3__item__content--type" data-card-category="Business Intelligence and Investigations">Business Intelligence and Investigations</div>
+
+                            <h2 class="card4__item__content--title u-mt-0 u-fw-300" data-card-title="Reputational Risks in a World of Accelerating Digital Chatter">
+                                Reputational Risks in a World of Accelerating Digital Chatter
+                            </h2>
+                            <div class="card4__item__content--description" data-card-description="">
+                                
+                            </div>
+                            <div data-bookmark-icon="" class="u-mt-auto u-ml-auto u-relative " style="z-index: 12">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" viewBox="80 155 350 200" class="Icon--bookmark">
+                                    <path d="M352,48H160a48,48,0,0,0-48,48V464L256,336,400,464V96A48,48,0,0,0,352,48Z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <a href="/en/insights/publications/reputational-risks-in-a-world-of-accelerating-digital-chatter" class="u-faux-link" data-card-url>Business Intelligence and Investigations</a>
+
+                        <div class="u-absolute" data-bookmark-tooltip></div>
+                    </article>
+                    <article class="ContentBlocks-item ContentBlocks-item-- Slider-slide   g-sm-col-4-vw g-md-col-3-vw g-lg-col-3-vw  u-of-hidden  u-relative u-boxShadow-2"
+                             data-item-id="9617f6f1-3f87-4e6e-9c37-d249e3977551" data-siteinterest="Publications" data-industry="" data-service="Cyber" data-card-type="Article" style="border-top: none;" data-slider-slide data-scroll-item>
+
+                        <div class="card4__item__image u-relative" style="background-image: url('/-/media/kroll/images/publications/featured-images/2019/5-considerations-service-providers-privacy-security.jpg')"
+                             data-card-image="/-/media/kroll/images/publications/featured-images/2019/5-considerations-service-providers-privacy-security.jpg">
+                        </div>
+                        <div class="card4__item__content u-flex u-fd-column u-bg-white">
+                            <div class="card3__item__content--type" data-card-category="Cyber">Cyber</div>
+
+                            <h2 class="card4__item__content--title u-mt-0 u-fw-300" data-card-title="Five Considerations on Service Providers&#39; Privacy and Security">
+                                Five Considerations on Service Providers' Privacy and Security
+                            </h2>
+                            <div class="card4__item__content--description" data-card-description="">
+                                
+                            </div>
+                            <div data-bookmark-icon="" class="u-mt-auto u-ml-auto u-relative " style="z-index: 12">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" viewBox="80 155 350 200" class="Icon--bookmark">
+                                    <path d="M352,48H160a48,48,0,0,0-48,48V464L256,336,400,464V96A48,48,0,0,0,352,48Z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <a href="/en/insights/publications/cyber/five-considerations-service-providers-privacy-security" class="u-faux-link" data-card-url>Cyber</a>
+
+                        <div class="u-absolute" data-bookmark-tooltip></div>
+                    </article>
+                    <article class="ContentBlocks-item ContentBlocks-item-- Slider-slide   g-sm-col-4-vw g-md-col-3-vw g-lg-col-3-vw  u-of-hidden  u-relative u-boxShadow-2"
+                             data-item-id="41cf5dc2-1339-4e2f-bb61-73985fdf7331" data-siteinterest="Publications" data-industry="" data-service="Compliance" data-card-type="Article" style="border-top: none;" data-slider-slide data-scroll-item>
+
+                        <div class="card4__item__image u-relative" style="background-image: url('/-/media/kroll/images/publications/featured-images/play-the-odds-manage-your-risks-300-200.jpg')"
+                             data-card-image="/-/media/kroll/images/publications/featured-images/play-the-odds-manage-your-risks-300-200.jpg">
+                        </div>
+                        <div class="card4__item__content u-flex u-fd-column u-bg-white">
+                            <div class="card3__item__content--type" data-card-category="Compliance Risk">Compliance Risk</div>
+
+                            <h2 class="card4__item__content--title u-mt-0 u-fw-300" data-card-title="Play the Odds &amp;ndash; Manage Your Risks">
+                                Play the Odds &ndash; Manage Your Risks
+                            </h2>
+                            <div class="card4__item__content--description" data-card-description="">
+                                
+                            </div>
+                            <div data-bookmark-icon="" class="u-mt-auto u-ml-auto u-relative " style="z-index: 12">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="28" viewBox="80 155 350 200" class="Icon--bookmark">
+                                    <path d="M352,48H160a48,48,0,0,0-48,48V464L256,336,400,464V96A48,48,0,0,0,352,48Z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <a href="/en/insights/publications/compliance-risk/play-the-odds-manage-your-risks" class="u-faux-link" data-card-url>Compliance Risk</a>
+
+                        <div class="u-absolute" data-bookmark-tooltip></div>
+                    </article>
+
+        </div>
+
+
+
+        <div class="ContentBlocks-pagination cf u-pb-48">
+                <button class="Button Slider-ctrl-prev u-mr-12 wiggle-rev btn--disabled">
+                    <svg class="Icon Icon--arrow-left" data-app-tmpl="Icon">
+                        <title>Arrow-Left</title>
+                        <use xlink:href="#arrow-left"></use>
+                    </svg>
+                </button>
+                <button class="Button Slider-ctrl-next wiggle btn--disabled">
+                    <svg class="Icon Icon--arrow-right" data-app-tmpl="Icon">
+                        <title>Arrow-Right</title>
+                        <use xlink:href="#arrow-right"></use>
+                    </svg>
+                </button>
+                    </div>
+    </div>
+</section>
+
+
+            </div>
+        </main>
+        
+<footer class="Footer" role="contentinfo" data-app-tmpl="Footer" data-footer data-swiftype-index="false">
+    <section class="Footer-prefooter u-grey-2 u-bt-solid u-bt-currentColor u-bg-grey-4">
+        <div class="cf container">
+            <div class="g-sm-col-6 u-textCenter u-grey-2 u-bb-solid u-bb-currentColor u-pt-48 u-pb-48">
+                <p class="u-blue-1 h-4 u-m-0">Our firm has nearly <strong><a href="/en/our-team" class="u-td-none">5,000 professionals</a></strong> in <strong><a href="/en/about-us/global-locations" class="u-td-none">30 countries and territories</a></strong> around the world.</p>
+            </div>
+        </div>
+    </section>
+    <section class="Footer-main u-bg-blue-6">
+        <div class="cf container">
+            <ul class="Footer-prelinks u-m-0 u-p-0 u-pt-30 u-pb-30 u-ls-none u-flex u-fw-wrap u-jc-center">
+                    <li class="u-white">
+<a href="/en/about-us/global-locations" class="u-td-none p-8 u-uppercase" >                            <b>Global Locations</b>
+</a>                    </li>
+                    <li class="u-white">
+<a href="/en/contactus" class="u-td-none p-8 u-uppercase" >                            <b>GET IN TOUCH</b>
+</a>                    </li>
+                    <li class="u-white">
+<a href="https://careers.kroll.com/" class="u-td-none p-8 u-uppercase" target="_blank" >                            <b>Careers</b>
+</a>                    </li>
+            </ul>
+        </div>
+        <div class="Footer-mainMisc u-pt-24 u-pb-24 u-bg-black-opa-15">
+            <div class="cf container u-flex">
+                <address class="Footer-office u-block g-sm-col-6 g-md-col-3--wide g-lg-col-3--wide u-white">
+
+                    <p class="h-5 u-m-0 u-white-opa-50 u-lowercase" data-current-time>
+
+                    </p>
+                    <p class="p-6 u-mt-24 u-mb-24 sm-hide md-show"><i>Kroll is headquartered in New York with offices around the world.</i></p>
+                        <p class="p-6 u-mt-24 u-mb-24 u-relative Footer-officeIcons">
+                            <svg class="Icon Icon--location Icon--fillWhite" data-app-tmpl="Icon">
+                                <title>Location</title>
+                                <use xlink:href="#location"></use>
+                            </svg>
+                            <i>
+                                55 East 52nd Street 17 Fl<br>
+                                New York NY 10055<br class="sm-hide md-show">
+                                <br>
+                                
+                            </i>
+                        </p>
+                                            <p class="p-6 u-m-0 u-relative Footer-officeIcons Footer-Telephone-Number">
+                            <svg class="Icon Icon--phone Icon--strokeWhite" data-app-tmpl="Icon">
+                                <title>Phone</title>
+                                <use xlink:href="#phone"></use>
+                            </svg>
+                            <a class="u-td-none" href="tel:+1 212 593 1000"><i>+1 212 593 1000</i></a>
+                        </p>
+                </address>
+                <div class="Footer-map sm-hide md-show g-md-col-3 g-lg-col-5">
+                    <a class="u-td-none" href="/en/about-us/global-locations" target="">
+                        <img src="/-/media/kroll/images/footer/map-kroll.png?h=605&amp;w=1021&amp;la=en&amp;hash=9188203492BE3596D07BD4A0B4C14A99C28A5086" class="u-mw-100 g-lg-gut-neg--left" alt="Kroll Map" title="Kroll Map" />
+                    </a>
+                </div>
+                <div class="Footer-newsletter g-sm-col-6 g-md-col-3 g-lg-col-4 g-md-gut g-lg-gut u-flex u-fd-column">
+                        <p class="p-10 u-uppercase u-white-opa-50 u-m-0 u-mt-12 u-mb-18">Subscribe to Kroll Reports</p>
+                        <p class="h-5 u-white-opa-50 u-m-0 u-mt-12 u-mb-18 success" style="display: none">Thank you! A confirmation email has been sent to you.</p>
+                        <p class="h-5 u-white-opa-50 u-m-0 u-mt-12 u-mb-18 error" style="display: none">Sorry, something went wrong. Please try again later!</p>
+                        <form id="newsletter-subscription" action="" data-sandbox-url=""  method="post">
+                            <div class="NewsletterWrapper u-flex u-ai-stretch u-mt-6">
+                                <input type="hidden" name="elqFormName" value="Newsletter-Subscription-Form-Kroll">
+                                <input type="hidden" name="elqSiteId" value="615419487">
+                                <input type="hidden" name="elqCampaignId">
+                                <input id="sitecoreContactID1" type="hidden" name="sitecoreContactID1" value="">
+                                <input class="Newsletter-input p-6 u-pl-18 u-resetInput" type="email" name="emailAddress" placeholder="Enter your email" required>
+                                <button class="Button p-6" data-lead-score-form="">
+                                    <b>Sign up</b>
+                                </button>
+                            </div>
+                        </form>
+                                            <div class="u-mt-24">
+                            <p class="p-6 u-m-0 u-white-opa-80"><em>Sign up to receive periodic news, reports, and invitations from Kroll.
+Our <a href="/en/privacy-policy" class="u-td-none white-to-grey">privacy policy</a> describes how your data will be processed.</em></p>
+                        </div>
+                                            <div class="Footer-social">
+                            <p class="p-10 u-uppercase u-white-opa-50 u-mb-12">Follow Us</p>
+                            <ul class="u-ls-none u-m-0 u-p-0">
+                                        <li class="u-inline-block u-mr-20">
+                                            <a href="https://www.facebook.com/krollwire/?ref=br_tf" target="_blank">
+                                                <svg class="Icon Icon--facebook" data-app-tmpl="Icon">
+                                                    <title>Facebook</title>
+                                                    <use xlink:href="#facebook"></use>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li class="u-inline-block u-mr-20">
+                                            <a href="https://twitter.com/KrollWire" target="_blank">
+                                                <svg class="Icon Icon--twitter" data-app-tmpl="Icon">
+                                                    <title>Twitter</title>
+                                                    <use xlink:href="#twitter"></use>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li class="u-inline-block u-mr-20">
+                                            <a href="https://www.linkedin.com/company/kroll/" target="_blank">
+                                                <svg class="Icon Icon--linkedin" data-app-tmpl="Icon">
+                                                    <title>LinkedIn</title>
+                                                    <use xlink:href="#linkedin"></use>
+                                                </svg>
+                                            </a>
+                                        </li>
+                                        <li class="u-inline-block ">
+                                            <a href="https://www.youtube.com/channel/UC0kyYK53ukMV4iOn63Qqpcw" target="_blank">
+                                                <svg class="Icon Icon--youtube" data-app-tmpl="Icon">
+                                                    <title>YouTube</title>
+                                                    <use xlink:href="#youtube"></use>
+                                                </svg>
+                                            </a>
+                                        </li>
+                            </ul>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="cf container">
+            <div class="Footer-links u-flex u-ai-flex-start u-jc-space-between u-white-opa-60">
+                <ul class="Footer-linksList u-m-0 u-p-0 u-pt-24 u-pb-24 u-ls-none">
+                        <li class="u-block">
+                            <a href="/en/privacy-policy" class="u-td-none p-6" >Privacy Policy</a>
+                        </li>
+                        <li class="u-block">
+                            <a href="/en/licensing" class="u-td-none p-6" >Licensing</a>
+                        </li>
+                        <li class="u-block">
+                            <a href="/en/code-of-conduct" class="u-td-none p-6" >Code of Conduct</a>
+                        </li>
+                        <li class="u-block">
+                            <a href="/en/cookies-policy" class="u-td-none p-6" >Cookies</a>
+                        </li>
+                        <li class="u-block">
+                            <a href="/en/disclosure" class="u-td-none p-6" >Disclosure</a>
+                        </li>
+                        <li class="u-block">
+                            <a href="https://www.duffandphelps.com/-/media/assets/pdfs/slavery-and-human-trafficking-statement" class="u-td-none p-6" target="_blank" >Modern Slavery Statement</a>
+                        </li>
+                        <li class="u-block">
+                            <a href="/en/terms-of-use" class="u-td-none p-6" >Terms of Use</a>
+                        </li>
+                </ul>
+                <p class="Footer-copyright p-6 u-m-0">
+                    &copy; 2021 Kroll, LLC. All rights reserved.<br />
+Kroll is not affiliated with Kroll Bond Rating Agency,<br />
+Kroll OnTrack Inc. or their affiliated businesses. <a rel="noopener noreferrer" href="https://www.duffandphelps.com/legal" target="_blank">Read more</a>.
+                </p>
+            </div>
+        </div>
+    </section>
+</footer>
+<div class="NavMask"></div>
+<section class="CookieBanner u-bg-tertiary" data-app-tmpl="CookieBanner" data-swiftype-index="false">
+
+</section>
+
+    </div>
+<!-- OneTrust Cookies Consent Notice start -->
+<script type="text/javascript" src="https://cdn.cookielaw.org/consent/db8fa0ce-73a5-4e3f-9b55-60b230386b60/OtAutoBlock.js"></script>
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js"  type="text/javascript" charset="UTF-8" data-domain-script="db8fa0ce-73a5-4e3f-9b55-60b230386b60"></script>
+<script type="text/javascript">
+function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end -->
+<script>
+$(document).ready(function () {
+	$.ajax({
+            url: "/api/duff/contact/current", success: function (data) {
+                var eloquaFormNode = $('form.elq-form');
+                if (eloquaFormNode.length > 0) {
+                    $(eloquaFormNode).each(function (index, formNode) {
+                        if ($(formNode).find("#sitecoreContactID1").length < 1) {
+                            var newinputElement = document.createElement('input');
+                            newinputElement.id = 'sitecoreContactID1';
+                            newinputElement.type = 'hidden';
+                            newinputElement.name = 'sitecoreContactID1';
+                            newinputElement.value = data.id;
+                            $(formNode).prepend(newinputElement);
+                        } else {
+                            $(formNode).find("#sitecoreContactID1").each(function (index, node) {
+                                node.value = data.id;
+                            });
+                        }
+                    });
+                }
+            }})
+})
+</script>
+<script defer="" src="/assets/js/ipData.js?up"></script>
+<script>
+var element = $('footer .Footer-main .Footer-newsletter form#newsletter-subscription input[name=elqFormName]');
+$(element).attr('value',function (){ if (($(element).attr('value').split(''))[($(element).attr('value').split('')).length - 1 ] !== "_") {$(element).attr('value',$(element).attr('value') + "_") }}() );</script>
+    <script>var element = $('#subscription-module input[value=Newsletter-Subscription-The-Monitor]')[0] || $('#subscription-module input[value=newsletter-form-crd-portal]')[0];
+if (element) {
+$(element).attr('value',function (){ if (($(element).attr('value').split(''))[($(element).attr('value').split('')).length - 1 ] !== "_") {$(element).attr('value',$(element).attr('value') + "_") }}() );
+}</script>        <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PWHXW75"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    <script src="/assets/js/pearl-custom.js?19012021"></script>
+    <script src="/assets/js/pearltosdb.js?17112020"></script>
+</body>
+</html>

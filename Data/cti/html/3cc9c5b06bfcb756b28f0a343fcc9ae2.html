@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>xCmd an Alternative to PsExec | Technology Portal</title>
+<link rel="profile" href="http://gmpg.org/xfn/11">
+<link rel="pingback" href="https://ashwinrayaprolu.wordpress.com/xmlrpc.php">
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s2.wp.com' />
+<link rel='dns-prefetch' href='//s1.wp.com' />
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.pubmine.com' />
+<link rel='dns-prefetch' href='//x.bidswitch.net' />
+<link rel='dns-prefetch' href='//static.criteo.net' />
+<link rel='dns-prefetch' href='//ib.adnxs.com' />
+<link rel='dns-prefetch' href='//aax.amazon-adsystem.com' />
+<link rel='dns-prefetch' href='//bidder.criteo.com' />
+<link rel='dns-prefetch' href='//cas.criteo.com' />
+<link rel='dns-prefetch' href='//gum.criteo.com' />
+<link rel='dns-prefetch' href='//ads.pubmatic.com' />
+<link rel='dns-prefetch' href='//gads.pubmatic.com' />
+<link rel='dns-prefetch' href='//tpc.googlesyndication.com' />
+<link rel='dns-prefetch' href='//ad.doubleclick.net' />
+<link rel='dns-prefetch' href='//googleads.g.doubleclick.net' />
+<link rel='dns-prefetch' href='//www.googletagservices.com' />
+<link rel='dns-prefetch' href='//cdn.switchadhub.com' />
+<link rel='dns-prefetch' href='//delivery.g.switchadhub.com' />
+<link rel='dns-prefetch' href='//delivery.swid.switchadhub.com' />
+<link rel='dns-prefetch' href='//a.teads.tv' />
+<link rel='dns-prefetch' href='//prebid.media.net' />
+<link rel='dns-prefetch' href='//adserver-us.adtech.advertising.com' />
+<link rel='dns-prefetch' href='//fastlane.rubiconproject.com' />
+<link rel='dns-prefetch' href='//prebid-server.rubiconproject.com' />
+<link rel='dns-prefetch' href='//hb-api.omnitagjs.com' />
+<link rel='dns-prefetch' href='//mtrx.go.sonobi.com' />
+<link rel='dns-prefetch' href='//apex.go.sonobi.com' />
+<link rel='dns-prefetch' href='//u.openx.net' />
+<link rel="alternate" type="application/rss+xml" title="Technology Portal &raquo; Feed" href="https://ashwinrayaprolu.wordpress.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Technology Portal &raquo; Comments Feed" href="https://ashwinrayaprolu.wordpress.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Technology Portal &raquo; xCmd an Alternative to&nbsp;PsExec Comments Feed" href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/feed/" />
+	<script type="text/javascript">
+		/* <![CDATA[ */
+		function addLoadEvent(func) {
+			var oldonload = window.onload;
+			if (typeof window.onload != 'function') {
+				window.onload = func;
+			} else {
+				window.onload = function () {
+					oldonload();
+					func();
+				}
+			}
+		}
+		/* ]]> */
+	</script>
+			<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/72x72\/","ext":".png","svgUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/s0.wp.com\/wp-includes\/js\/wp-emoji-release.min.js?m=1612197847h&ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='all-css-0-1' href='https://s2.wp.com/_static/??-eJydUdtuwyAM/aERL1u7qQ/TvgWCRd3igGxolb8fSVU1WrRp2gvSOZyLDXDNZkhjwbEAV5NjDTQqXPOQ2ChTxOkb6gbVJ1jZXEzhYUzirVcIMTkbN9pVRaQzKpywZDuczYI28rs21AYdSmg3gnDpn7t9twNXKfq5fwlwYmUCLVPEPwQtrlW/nVItJgj5/0aILTQG/cG+2nzeofGcbZkVjJ4sRuQm+812+wXnsqCqaSdTZVOOzbh9uRsNuTpw1EaV1Bh5zPbJH/1bf9i9vO7fD6cv8NfCqQ==?cssminify=yes' type='text/css' media='all' />
+<style id='wp-block-library-inline-css'>
+.has-text-align-justify {
+	text-align:justify;
+}
+</style>
+<link crossorigin="anonymous" rel='stylesheet' id='big-brother-gentium-css'  href='https://fonts.googleapis.com/css?family=Gentium+Basic%3A400%2C700%2C400italic%2C700italic&#038;subset=latin%2Clatin-ext&#038;ver=5.7.2' media='all' />
+<link crossorigin="anonymous" rel='stylesheet' id='big-brother-open-sans-css'  href='https://fonts.googleapis.com/css?family=Open+Sans%3A400%2C800&#038;subset=latin%2Clatin-ext&#038;ver=5.7.2' media='all' />
+<link rel='stylesheet' id='all-css-4-1' href='https://s0.wp.com/_static/??-eJx9jcEOAiEMRH9IrGuyZj0YvwWwYhUogRLi34ueMMa9zXT6ZqAlZTkKRoFQVfLVUSzgMGKmHvyRW1vKBgZWbhiwQKoGDDllMvdLBooWijw9qpYshx9smGx0cSgFsPaUH4TK6waCIXktvfpTs1bgkJVnq4U4fhl19ZryGprReHZdOuhfg31D53Ca5uNuOsz7Zbm/AHnhck8=?cssminify=yes' type='text/css' media='all' />
+<link rel='stylesheet' id='print-css-5-1' href='https://s2.wp.com/wp-content/mu-plugins/global-print/global-print.css?m=1465851035h&cssminify=yes' type='text/css' media='print' />
+<style id='jetpack-global-styles-frontend-style-inline-css'>
+:root { --font-headings: unset; --font-base: unset; --font-headings-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; --font-base-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;}
+</style>
+<link rel='stylesheet' id='all-css-8-1' href='https://s1.wp.com/_static/??-eJxti0EKgCAQAD+ULUaJl+gtJqbG6opr9P3o0CHqNAzMwFmEpdxcbpAOUfDwMTMU4iY2NLECB1Nj9g97y9zB/8Vko0GB5Oktn6kFlxxDGMEjrQbvYEmzVHIclNZy2i9lFDfR?cssminify=yes' type='text/css' media='all' />
+<script id='wpcom-actionbar-placeholder-js-extra'>
+var actionbardata = {"siteID":"381084","siteName":"Technology Portal","siteURL":"http:\/\/ashwinrayaprolu.wordpress.com","icon":"<img alt='' src='https:\/\/s2.wp.com\/i\/logo\/wpcom-gray-white.png' class='avatar avatar-50' height='50' width='50' \/>","canManageOptions":"","canCustomizeSite":"","isFollowing":"","themeSlug":"pub\/big-brother","signupURL":"https:\/\/wordpress.com\/start\/","loginURL":"https:\/\/wordpress.com\/log-in?redirect_to=https%3A%2F%2Fashwinrayaprolu.wordpress.com%2F2011%2F04%2F12%2Fxcmd-an-alternative-to-psexec%2F&signup_flow=account","themeURL":"","xhrURL":"https:\/\/ashwinrayaprolu.wordpress.com\/wp-admin\/admin-ajax.php","nonce":"a09c78b47f","isSingular":"1","isFolded":"","isLoggedIn":"","isMobile":"","subscribeNonce":"<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"00b9d052ff\" \/>","referer":"https:\/\/ashwinrayaprolu.wordpress.com\/2011\/04\/12\/xcmd-an-alternative-to-psexec\/","canFollow":"1","feedID":"160283","statusMessage":"","customizeLink":"https:\/\/ashwinrayaprolu.wordpress.com\/wp-admin\/customize.php?url=https%3A%2F%2Fashwinrayaprolu.wordpress.com%2F2011%2F04%2F12%2Fxcmd-an-alternative-to-psexec%2F","postID":"261","shortlink":"https:\/\/wp.me\/p1B8w-4d","canEditPost":"","editLink":"https:\/\/wordpress.com\/post\/ashwinrayaprolu.wordpress.com\/261","statsLink":"https:\/\/wordpress.com\/stats\/post\/261\/ashwinrayaprolu.wordpress.com","i18n":{"view":"View site","follow":"Follow","following":"Following","edit":"Edit","login":"Log in","signup":"Sign up","customize":"Customize","report":"Report this content","themeInfo":"Get theme: Big Brother","shortlink":"Copy shortlink","copied":"Copied","followedText":"New posts from this site will now appear in your <a href=\"https:\/\/wordpress.com\/read\">Reader<\/a>","foldBar":"Collapse this bar","unfoldBar":"Expand this bar","editSubs":"Manage subscriptions","viewReader":"View site in Reader","viewReadPost":"View post in Reader","subscribe":"Sign me up","enterEmail":"Enter your email address","followers":"Join 45 other followers","alreadyUser":"Already have a WordPress.com account? <a href=\"https:\/\/wordpress.com\/log-in?redirect_to=https%3A%2F%2Fashwinrayaprolu.wordpress.com%2F2011%2F04%2F12%2Fxcmd-an-alternative-to-psexec%2F&signup_flow=account\">Log in now.<\/a>","stats":"Stats"}};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s2.wp.com/_static/??-eJyFzUEKwkAMheELmQ5DocWFeJZaY8kwyYxJBu3traBQV67e4v/ghUeFuYijeEgWajFnNJsW7JIdwm/lcqGM0Ax1A+JAcitfRzLndkV7w3RvqOtnOib5i4Bp0clxj3fPmh2qlue6tTOf4hDHPvbDeEwvhOVG7A=='></script>
+<script type='text/javascript'>
+	window.addEventListener( 'DOMContentLoaded', function() {
+		rltInitialize( {"token":null,"iframeOrigins":["https:\/\/widgets.wp.com"]} );
+	} );
+</script>
+<link rel='stylesheet' id='all-css-0-2' href='https://s0.wp.com/wp-content/mu-plugins/highlander-comments/style.css?m=1530132353h&cssminify=yes' type='text/css' media='all' />
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='highlander-comments-ie7-css'  href='https://s2.wp.com/wp-content/mu-plugins/highlander-comments/style-ie7.css?m=1351637563h&#038;ver=20110606' media='all' />
+<![endif]-->
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://ashwinrayaprolu.wordpress.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://s1.wp.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress.com" />
+<link rel="canonical" href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/" />
+<link rel='shortlink' href='https://wp.me/p1B8w-4d' />
+<link rel="alternate" type="application/json+oembed" href="https://public-api.wordpress.com/oembed/?format=json&amp;url=https%3A%2F%2Fashwinrayaprolu.wordpress.com%2F2011%2F04%2F12%2Fxcmd-an-alternative-to-psexec%2F&amp;for=wpcom-auto-discovery" /><link rel="alternate" type="application/xml+oembed" href="https://public-api.wordpress.com/oembed/?format=xml&amp;url=https%3A%2F%2Fashwinrayaprolu.wordpress.com%2F2011%2F04%2F12%2Fxcmd-an-alternative-to-psexec%2F&amp;for=wpcom-auto-discovery" />
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="xCmd an Alternative to PsExec" />
+<meta property="og:url" content="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/" />
+<meta property="og:description" content="I recently had to use PsExec for one of my project and it had to integrated into program. I mean invocation of PsExec had to be done from a coding language. Then i faced problem of application gett…" />
+<meta property="article:published_time" content="2011-04-12T17:30:14+00:00" />
+<meta property="article:modified_time" content="2011-04-12T17:30:58+00:00" />
+<meta property="og:site_name" content="Technology Portal" />
+<meta property="og:image" content="https://s0.wp.com/i/blank.jpg" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:site" content="@wordpressdotcom" />
+<meta name="twitter:text:title" content="xCmd an Alternative to&nbsp;PsExec" />
+<meta name="twitter:card" content="summary" />
+<meta property="fb:app_id" content="249643311490" />
+<meta property="article:publisher" content="https://www.facebook.com/WordPresscom" />
+
+<!-- End Jetpack Open Graph Tags -->
+<link rel="shortcut icon" type="image/x-icon" href="https://s1.wp.com/i/favicon.ico" sizes="16x16 24x24 32x32 48x48" />
+<link rel="icon" type="image/x-icon" href="https://s1.wp.com/i/favicon.ico" sizes="16x16 24x24 32x32 48x48" />
+<link rel="apple-touch-icon" href="https://s2.wp.com/i/webclip.png" />
+<link rel='openid.server' href='https://ashwinrayaprolu.wordpress.com/?openidserver=1' />
+<link rel='openid.delegate' href='https://ashwinrayaprolu.wordpress.com/' />
+<link rel="search" type="application/opensearchdescription+xml" href="https://ashwinrayaprolu.wordpress.com/osd.xml" title="Technology Portal" />
+<link rel="search" type="application/opensearchdescription+xml" href="https://s1.wp.com/opensearch.xml" title="WordPress.com" />
+
+<meta name='geo.position' content='40.618389;-75.495430' />
+<meta name='ICBM' content='40.618389, -75.495430' />
+<meta name="application-name" content="Technology Portal" /><meta name="msapplication-window" content="width=device-width;height=device-height" /><meta name="msapplication-tooltip" content="Technology Blog" /><meta name="msapplication-task" content="name=Subscribe;action-uri=https://ashwinrayaprolu.wordpress.com/feed/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=Sign up for a free blog;action-uri=http://wordpress.com/signup/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Support;action-uri=http://support.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Forums;action-uri=http://forums.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="description" content="I recently had to use PsExec for one of my project and it had to integrated into program. I mean invocation of PsExec had to be done from a coding language. Then i faced problem of application getting hanged. To verify my code i did call PsExec from Java, Csharp, VB.net. None of them worked&hellip;" />
+		<script type="text/javascript">
+
+			window.doNotSellCallback = function() {
+
+				var linkElements = [
+					'a[href="https://wordpress.com/?ref=footer_blog"]',
+					'a[href="https://wordpress.com/?ref=footer_website"]',
+					'a[href="https://wordpress.com/?ref=vertical_footer"]',
+					'a[href^="https://wordpress.com/?ref=footer_segment_"]',
+				].join(',');
+
+				var dnsLink = document.createElement( 'a' );
+				dnsLink.href = 'https://wordpress.com/advertising-program-optout';
+				dnsLink.classList.add( 'do-not-sell-link' );
+				dnsLink.rel = 'nofollow';
+				dnsLink.style.marginLeft = '0.5em';
+				dnsLink.textContent = 'Do Not Sell My Personal Information';
+
+				var creditLinks = document.querySelectorAll( linkElements );
+
+				if ( 0 === creditLinks.length ) {
+					return false;
+				}
+
+				Array.prototype.forEach.call( creditLinks, function( el ) {
+					el.insertAdjacentElement( 'afterend', dnsLink );
+				});
+
+				return true;
+			};
+
+		</script>
+				<script type="text/javascript">
+		function __ATA_CC() {var v = document.cookie.match('(^|;) ?personalized-ads-consent=([^;]*)(;|$)');return v ? 1 : 0;}
+		var __ATA_PP = { 'pt': 1, 'ht': 0, 'tn': 'big-brother', 'amp': false, 'consent': __ATA_CC(), 'gdpr_applies': false, 'ad': { 'label': { 'text': 'Advertisements' }, 'reportAd': { 'text': 'Report this ad' } }, 'siteid': 8982, 'blogid': 381084 };
+		var __ATA = __ATA || {};
+		__ATA.cmd = __ATA.cmd || [];
+		__ATA.criteo = __ATA.criteo || {};
+		__ATA.criteo.cmd = __ATA.criteo.cmd || [];
+		</script>
+		<script type="text/javascript">
+		(function(){var g=Date.now||function(){return+new Date};function h(a,b){a:{for(var c=a.length,d="string"==typeof a?a.split(""):a,e=0;e<c;e++)if(e in d&&b.call(void 0,d[e],e,a)){b=e;break a}b=-1}return 0>b?null:"string"==typeof a?a.charAt(b):a[b]};function k(a,b,c){c=null!=c?"="+encodeURIComponent(String(c)):"";if(b+=c){c=a.indexOf("#");0>c&&(c=a.length);var d=a.indexOf("?");if(0>d||d>c){d=c;var e=""}else e=a.substring(d+1,c);a=[a.substr(0,d),e,a.substr(c)];c=a[1];a[1]=b?c?c+"&"+b:b:c;a=a[0]+(a[1]?"?"+a[1]:"")+a[2]}return a};var l=0;function m(a,b){var c=document.createElement("script");c.src=a;c.onload=function(){b&&b(void 0)};c.onerror=function(){b&&b("error")};a=document.getElementsByTagName("head");var d;a&&0!==a.length?d=a[0]:d=document.documentElement;d.appendChild(c)}function n(a){var b=void 0===b?document.cookie:b;return(b=h(b.split("; "),function(c){return-1!=c.indexOf(a+"=")}))?b.split("=")[1]:""}function p(a){return"string"==typeof a&&0<a.length}
+		function r(a,b,c){b=void 0===b?"":b;c=void 0===c?".":c;var d=[];Object.keys(a).forEach(function(e){var f=a[e],q=typeof f;"object"==q&&null!=f||"function"==q?d.push(r(f,b+e+c)):null!==f&&void 0!==f&&(e=encodeURIComponent(b+e),d.push(e+"="+encodeURIComponent(f)))});return d.filter(p).join("&")}function t(a,b){a||((window.__ATA||{}).config=b.c,m(b.url))}var u=Math.floor(1E13*Math.random()),v=window.__ATA||{};window.__ATA=v;window.__ATA.cmd=v.cmd||[];v.rid=u;v.createdAt=g();var w=window.__ATA||{},x="s.pubmine.com";
+		w&&w.serverDomain&&(x=w.serverDomain);var y="//"+x+"/conf",z=window.top===window,A=window.__ATA_PP&&window.__ATA_PP.gdpr_applies,B="boolean"===typeof A?Number(A):null,C=window.__ATA_PP||null,D=z?document.referrer?document.referrer:null:null,E=z?window.location.href:document.referrer?document.referrer:null,F,G=n("__ATA_tuuid");F=G?G:null;var H=window.innerWidth+"x"+window.innerHeight,I=n("usprivacy"),J=r({gdpr:B,pp:C,rid:u,src:D,ref:E,tuuid:F,vp:H,us_privacy:I?I:null},"",".");
+		(function(a){var b=void 0===b?"cb":b;l++;var c="callback__"+g().toString(36)+"_"+l.toString(36);a=k(a,b,c);window[c]=function(d){t(void 0,d)};m(a,function(d){d&&t(d)})})(y+"?"+J);}).call(this);
+		</script><link rel="amphtml" href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/amp/"><script type="text/javascript">
+	window.google_analytics_uacct = "UA-52447-2";
+</script>
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-52447-2']);
+	_gaq.push(['_gat._anonymizeIp']);
+	_gaq.push(['_setDomainName', 'wordpress.com']);
+	_gaq.push(['_initData']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+	})();
+</script>
+
+</head>
+
+<body class="post-template-default single single-post postid-261 single-format-standard customizer-styles-applied highlander-enabled highlander-light">
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+		<header id="masthead" class="site-header clearfix" role="banner">
+				<div class="site-branding">
+			<a href="https://ashwinrayaprolu.wordpress.com/" class="site-logo-link" rel="home" itemprop="url"></a>			<h1 class="site-title"><a href="https://ashwinrayaprolu.wordpress.com/" rel="home">Technology Portal</a></h1>
+			<h2 class="site-description">Technology Blog</h2>
+		</div>
+
+		<nav id="site-navigation" class="main-navigation nav-horizontal" role="navigation">
+			<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false">Menu</button>
+			<div id="primary-menu" class="menu"><ul>
+<li ><a href="https://ashwinrayaprolu.wordpress.com/">Home</a></li><li class="page_item page-item-2"><a href="https://ashwinrayaprolu.wordpress.com/about/">About</a></li>
+</ul></div>
+		</nav><!-- #site-navigation -->
+	</header><!-- #masthead -->
+
+	<div id="content" class="site-content clearfix">
+			<div class="breadcrumbs">
+			<a class="breadcrumbs-root" href="https://ashwinrayaprolu.wordpress.com/">Home</a><span class="breadcrumbs-current">xCmd an Alternative to&nbsp;PsExec</span>		</div>
+		<div class="primary content-area">
+		<main id="main" class="site-main" role="main">
+
+					<div class="article-wrapper">
+				
+<article id="post-261" class="post-261 post type-post status-publish format-standard hentry category-utilities tag-alternative tag-psexec tag-windows-remote-execution tag-xcmd">
+	<header class="entry-header">
+					<h1 class="entry-title">xCmd an Alternative to&nbsp;PsExec</h1>
+		
+		<div class="entry-meta">
+						<span class="posted-on"><a href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/" rel="bookmark"><time class="entry-date published" datetime="2011-04-12T17:30:14-07:00">April 12, 2011</time><time class="updated" datetime="2011-04-12T17:30:58-07:00">April 12, 2011</time></a></span> <span class="byline"><span class="author vcard"><a class="url fn n" href="https://ashwinrayaprolu.wordpress.com/author/ashwinrayaprolu/">ashwinrayaprolu</a></span></span>
+			<span class="entry-categories"><a href="https://ashwinrayaprolu.wordpress.com/category/utilities/" rel="category tag">Utilities</a></span><span class="entry-tags"><a href="https://ashwinrayaprolu.wordpress.com/tag/alternative/" rel="tag">Alternative</a>, <a href="https://ashwinrayaprolu.wordpress.com/tag/psexec/" rel="tag">PsExec</a>, <a href="https://ashwinrayaprolu.wordpress.com/tag/windows-remote-execution/" rel="tag">Windows Remote Execution</a>, <a href="https://ashwinrayaprolu.wordpress.com/tag/xcmd/" rel="tag">xCmd</a></span>		</div><!-- .entry-meta -->
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<p>I recently had to use PsExec for one of my project and it had to integrated into program. I mean invocation of PsExec had to be done from a coding language. Then i faced problem of application getting hanged. To verify my code i did call PsExec from Java, Csharp, VB.net. None of them worked and program hanged on calling PSExec.</p>
+<p>There is a problem with PsExec OutputStream when it is called from a programming language. None of the versions of PsExec looked good with this bug. So i had tpo find out an alternative,  Here is one good tool named XCmd by &#8220;<a href="http://www.codeguru.com/member.php/155/">Zoltan Csizmadia</a>&#8221;</p>
+<h1>Execute Applications on Remote Systems</h1>
+<div>
+<ul>
+<li><span style="font-size:15px;font-weight:bold;">Overview</span></li>
+</ul>
+</div>
+<div id="display_content">
+<p>This program allows you to execute applications on remote systems without installing any client <a id="itxthook0" rel="nofollow" href="http://www.codeguru.com/Cpp/I-N/network/remoteinvocation/article.php/c5433#">software</a>. You can start a command prompt or just execute a command or exe  on a remote machine. The only restriction is you must be an administrator 😦</p>
+<p>Everybody knows the cool tools from Sysinternals (www.sysinternals.com). One of my favorites are PSEXEC, PSKILL and PSLIST,&#8230; 🙂<br />
+I was always wonder how they could query every kind of information or execute commands on a remote machine without installing any client software.</p>
+<h3>Features</h3>
+<ul>
+<li>With this program you can run as many remote commands on the remote machine as you want.  (PSEXEC supports only one remote command on the remote machine at the same time)</li>
+<li>You can execute internal commands (dir,..) directly.<br />
+xCmd.exe \\remote dir</li>
+<li>You can start a light &#8220;telnet&#8221; connection with a remote machine without any telnet server<br />
+xCmd.exe \\remote cmd</li>
+</ul>
+<h3>Usage</h3>
+<p><span style="font-family:'Courier New';">xCmd v1.0 for NT4/2000 &#8211; executes commands remotely<br />
+Freeware! 2001 Zoltan Csizmadia, zoltan_csizmadia@yahoo.com</span></p>
+<p>Usage: xCmd.exe \\computer [options] command/exe arguments</p>
+<p>Options:<br />
+/D:directory         Set working directory<br />
+Default: Remote &#8220;%SystemRoot%\System32&#8221;<br />
+/IDLE                Idle priority class<br />
+/NORMAL              Normal priority class<br />
+/HIGH                High priority class<br />
+/REALTIME            Realtime priority class<br />
+/C                   Copy the specified program to the remote machine&#8217;s<br />
+&#8220;%SystemRoot%\System32&#8221; directory<br />
+Commands&#8217;s exe file must be absolute to local machine<br />
+/USER:user           User for remote connection<br />
+/PWD:{password|*}    Password for remote connection<br />
+/NOWAIT              Don&#8217;t wait for remote process to terminate</p>
+<p>Examples:<br />
+xCmd.exe \\remote cmd<br />
+xCmd.exe \\remote /user:administrator dir c:\ <a href="/"><br />
+</a> xCmd.exe \\remote /user:somebody /pwd:* /d:d:\ test1.exe /p1 /p2<br />
+xCmd.exe \\remote /c /user:somebody /pwd:* /d:d:\ test2.exe /whatever</p>
+<p>&#8211; Input is passed to remote machine when you press the ENTER.<br />
+&#8211; Ctrl-C terminates the remote process<br />
+&#8211; Command and file path arguments have to be absolute to remote machine<br />
+If you are using /c option, command exe file path must be absolute to<br />
+local machine, but the arguments must be absolute to remote machine</p>
+<h3>How does it work?</h3>
+<ol>
+<li>The xCmd.exe is console application and when you start it, the program will extract a xCmdSvc.exe from its resources.</li>
+<li>xCmd.exe creates a service on the remote machine (that&#8217;s the reason, you must be an administrator</li>
+<li>xCmd.exe starts the remote service (#2)</li>
+<li>xCmd.exe and xCmdSvc.exe will communicate via named pipes</li>
+<li>xCmd.exe send a packet to the service what to execute</li>
+<li>xCmdSvc.exe starts the command and redirect stdout, stderr, stdin to 3 named pipes.</li>
+<li>xCmd.exe listens these 3 named pipes (#6), redirect them to its stdout, stderr, stdin</li>
+</ol>
+</div>
+<p>I have downloaded his code and converted to Visual Studio 2008 Solution and fixed a small bug which comes with iostream.h inclusion in new version of C++.</p>
+<p>Here is the link to original Article which i copied</p>
+<p><a href="http://www.codeguru.com/Cpp/I-N/network/remoteinvocation/article.php/c5433">http://www.codeguru.com/Cpp/I-N/network/remoteinvocation/article.php/c5433</a></p>
+<p>And here is modified C++ Solution which gets compiled in Visual Studio. Checkout from svn</p>
+<p><a title="SVN Location of code" href="https://linkwithweb.googlecode.com/svn/trunk/Utilities/RemoteExecution/xCmd" target="_blank">https://linkwithweb.googlecode.com/svn/trunk/Utilities/RemoteExecution/xCmd</a></p>
+		<div id="geo-post-261" class="geo geo-post" style="display: none">
+			<span class="latitude">40.618389</span>
+			<span class="longitude">-75.495430</span>
+		</div><div id="atatags-370373-60a9b60051662">
+        <script type="text/javascript">
+            __ATA.cmd.push(function() {
+                __ATA.initVideoSlot('atatags-370373-60a9b60051662', {
+                    sectionId: '370373',
+                    format: 'inread'
+                });
+            });
+        </script>
+    </div>			<div id="atatags-26942-60a9b60051695"></div>
+			
+			<script>
+				__ATA.cmd.push(function() {
+					__ATA.initDynamicSlot({
+						id: 'atatags-26942-60a9b60051695',
+						location: 120,
+						formFactor: '001',
+						label: {
+							text: 'Advertisements',
+						},
+						creative: {
+							reportAd: {
+								text: 'Report this ad',
+							},
+							privacySettings: {
+								text: 'Privacy',
+								
+							}
+						}
+					});
+				});
+			</script><div id="jp-post-flair" class="sharedaddy sd-like-enabled sd-sharing-enabled"><div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-facebook"><a rel="nofollow noopener noreferrer" data-shared="sharing-facebook-261" class="share-facebook sd-button share-icon" href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/?share=facebook" target="_blank" title="Click to share on Facebook"><span>Facebook</span></a></li><li class="share-twitter"><a rel="nofollow noopener noreferrer" data-shared="sharing-twitter-261" class="share-twitter sd-button share-icon" href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/?share=twitter" target="_blank" title="Click to share on Twitter"><span>Twitter</span></a></li><li><a href="#" class="sharing-anchor sd-button share-more"><span>More</span></a></li><li class="share-end"></li></ul><div class="sharing-hidden"><div class="inner" style="display: none;width:150px;"><ul style="background-image:none;"><li class="share-reddit"><a rel="nofollow noopener noreferrer" data-shared="" class="share-reddit sd-button share-icon" href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/?share=reddit" target="_blank" title="Click to share on Reddit"><span>Reddit</span></a></li><li class="share-end"></li></ul></div></div></div></div></div><div class='sharedaddy sd-block sd-like jetpack-likes-widget-wrapper jetpack-likes-widget-unloaded' id='like-post-wrapper-381084-261-60a9b60053724' data-src='//widgets.wp.com/likes/index.html?ver=20210413#blog_id=381084&amp;post_id=261&amp;origin=ashwinrayaprolu.wordpress.com&amp;obj_id=381084-261-60a9b60053724' data-name='like-post-frame-381084-261-60a9b60053724'><h3 class='sd-title'>Like this:</h3><div class='likes-widget-placeholder post-likes-widget-placeholder' style='height: 55px;'><span class='button'><span>Like</span></span> <span class="loading">Loading...</span></div><span class='sd-text-color'></span><a class='sd-link-color'></a></div>
+<div id='jp-relatedposts' class='jp-relatedposts' >
+	<h3 class="jp-relatedposts-headline"><em>Related</em></h3>
+</div></div>			</div><!-- .entry-content -->
+
+	<footer class="entry-meta">
+			</footer><!-- .entry-meta -->
+</article><!-- #post-## -->
+			</div>
+
+				<nav role="navigation" id="nav-below" class="post-navigation">
+		<h1 class="screen-reader-text">Post navigation</h1>
+
+	
+		<div class="nav-previous"><a href="https://ashwinrayaprolu.wordpress.com/2011/04/08/call-executable-from-c-program/" rel="prev"><span class="meta-nav">&larr;</span> Call Executable from C#&nbsp;Program</a></div>		<div class="nav-next"><a href="https://ashwinrayaprolu.wordpress.com/2011/04/12/find-codec-of-media-file-programatically/" rel="next">Find Codec of Media File&nbsp;Programatically <span class="meta-nav">&rarr;</span></a></div>
+	
+	</nav><!-- #nav-below -->
+	
+			
+<div id="comments" class="comments-area clearfix">
+
+	
+			<div class="comments-wrapper">
+			<h2 class="comments-title">
+				4 thoughts on &ldquo;<span>xCmd an Alternative to&nbsp;PsExec</span>&rdquo;			</h2>
+
+			
+			<ol class="comment-list">
+						<li id="comment-11883" class="comment even thread-even depth-1 highlander-comment">
+			<article id="div-comment-11883" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://0.gravatar.com/avatar/3e2221f8fdbbf911810cb2913cb70985?s=60&#038;d=identicon&#038;r=G' class='avatar avatar-60' height='60' width='60' />						<b class="fn"><a href='http://privaterentenvorsorge.blogstart.de/' rel='external nofollow ugc' class='url'>private rentenvorsorge</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/#comment-11883"><time datetime="2011-08-15T13:26:09-07:00">August 15, 2011 at 1:26 pm</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Diese  web page  kann a   Spaziergang &#8211; durch  für alle   Informationen  Sie gesucht  über dies und wusste nicht, wen Sie fragen. Glimpse  right here,  und auch Sie &#8216;ll definitiv   aufzudecken es.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/?replytocom=11883#respond' data-commentid="11883" data-postid="261" data-belowelement="div-comment-11883" data-respondelement="respond" data-replyto="Reply to private rentenvorsorge" aria-label='Reply to private rentenvorsorge'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-16102" class="comment odd alt thread-odd thread-alt depth-1 highlander-comment">
+			<article id="div-comment-16102" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://0.gravatar.com/avatar/c07bfd91e3c93e8459f712d0ddf2244b?s=60&#038;d=identicon&#038;r=G' class='avatar avatar-60' height='60' width='60' />						<b class="fn">Kenny</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/#comment-16102"><time datetime="2011-09-16T03:42:42-07:00">September 16, 2011 at 3:42 am</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>thanks, the article is very helpful. This time, i decide that i will use the xCmd to excute some script on servers.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/?replytocom=16102#respond' data-commentid="16102" data-postid="261" data-belowelement="div-comment-16102" data-respondelement="respond" data-replyto="Reply to Kenny" aria-label='Reply to Kenny'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-44077" class="comment even thread-even depth-1 highlander-comment">
+			<article id="div-comment-44077" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://0.gravatar.com/avatar/ce2db013c0da1132812a3f7d78101e8d?s=60&#038;d=identicon&#038;r=G' class='avatar avatar-60' height='60' width='60' />						<b class="fn">venkat</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/#comment-44077"><time datetime="2012-10-11T12:41:06-07:00">October 11, 2012 at 12:41 pm</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi Ashwin,</p>
+<p>I have synced xCMD source code from given SVN URL , i have opened the project in VS 2010 . when i try to build the project output file is generating only 23KB where original file is 40KB.<br />
+Do you have any idea regarding this?</p>
+<p>Regards,<br />
+Venkat</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/?replytocom=44077#respond' data-commentid="44077" data-postid="261" data-belowelement="div-comment-44077" data-respondelement="respond" data-replyto="Reply to venkat" aria-label='Reply to venkat'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-46912" class="comment odd alt thread-odd thread-alt depth-1 highlander-comment">
+			<article id="div-comment-46912" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://0.gravatar.com/avatar/f292114c0667b4bfdff960af2d1186c1?s=60&#038;d=identicon&#038;r=G' class='avatar avatar-60' height='60' width='60' />						<b class="fn"><a href='https://github.com/rischip/ReXeCutioner' rel='external nofollow ugc' class='url'>Chris</a></b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/#comment-46912"><time datetime="2017-08-18T18:06:25-07:00">August 18, 2017 at 6:06 pm</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>I updated XCmd back in 2006 to have a few more features including the ability to run applications visible on the desktop. This was for XP and it worked on Windows 7 for some things. The port is now located on Github. I would like some help updating it to Windows 10 and beyond. <a href="https://github.com/rischip/ReXeCutioner" rel="nofollow ugc">https://github.com/rischip/ReXeCutioner</a></p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/?replytocom=46912#respond' data-commentid="46912" data-postid="261" data-belowelement="div-comment-46912" data-respondelement="respond" data-replyto="Reply to Chris" aria-label='Reply to Chris'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+			</ol><!-- .comment-list -->
+
+					</div><!-- .comments-wrapper -->
+
+	
+	
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2011/04/12/xcmd-an-alternative-to-psexec/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://ashwinrayaprolu.wordpress.com/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><input type="hidden" id="highlander_comment_nonce" name="highlander_comment_nonce" value="a24c1ed278" /><input type="hidden" name="_wp_http_referer" value="/2011/04/12/xcmd-an-alternative-to-psexec/" />
+<input type="hidden" name="hc_post_as" id="hc_post_as" value="guest" />
+
+<div class="comment-form-field comment-textarea">
+	<label for="comment">Enter your comment here...</label>
+	<div id="comment-form-comment"><textarea id="comment" name="comment" title="Enter your comment here..."></textarea></div>
+</div>
+
+<div id="comment-form-identity">
+	<div id="comment-form-nascar">
+		<p>Fill in your details below or click an icon to log in:</p>
+		<ul>
+			<li class="selected" style="display:none;">
+				<a href="#comment-form-guest" id="postas-guest" class="nascar-signin-link"
+                   title="Login via Guest">
+									</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:WordPress.com" id="postas-wordpress" class="nascar-signin-link"
+                   title="Login via WordPress.com">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#0087be" d="M12.158 12.786l-2.698 7.84c.806.236 1.657.365 2.54.365 1.047 0 2.05-.18 2.986-.51-.024-.037-.046-.078-.065-.123l-2.762-7.57zM3.008 12c0 3.56 2.07 6.634 5.068 8.092L3.788 8.342c-.5 1.117-.78 2.354-.78 3.658zm15.06-.454c0-1.112-.398-1.88-.74-2.48-.456-.74-.883-1.368-.883-2.11 0-.825.627-1.595 1.51-1.595.04 0 .078.006.116.008-1.598-1.464-3.73-2.36-6.07-2.36-3.14 0-5.904 1.613-7.512 4.053.21.008.41.012.58.012.94 0 2.395-.114 2.395-.114.484-.028.54.684.057.74 0 0-.487.058-1.03.086l3.275 9.74 1.968-5.902-1.4-3.838c-.485-.028-.944-.085-.944-.085-.486-.03-.43-.77.056-.742 0 0 1.484.114 2.368.114.94 0 2.397-.114 2.397-.114.486-.028.543.684.058.74 0 0-.488.058-1.03.086l3.25 9.665.897-2.997c.456-1.17.684-2.137.684-2.907zm1.82-3.86c.04.286.06.593.06.924 0 .912-.17 1.938-.683 3.22l-2.746 7.94c2.672-1.558 4.47-4.454 4.47-7.77 0-1.564-.4-3.033-1.1-4.314zM12 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></g></svg>				</a>
+			</li>
+			<li>
+			<iframe id="googleplus-sign-in" name="googleplus-sign-in" src="https://public-api.wordpress.com/connect/?googleplus-sign-in=https%3A%2F%2Fashwinrayaprolu.wordpress.com&#038;color_scheme=light" width="24" height="24" scrolling="no" allowtransparency="true" seamless="seamless" frameborder="0"></iframe>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Twitter" id="postas-twitter" class="nascar-signin-link"
+                   title="Login via Twitter">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#1DA1F2" d="M22.23 5.924c-.736.326-1.527.547-2.357.646.847-.508 1.498-1.312 1.804-2.27-.793.47-1.67.812-2.606.996C18.325 4.498 17.258 4 16.078 4c-2.266 0-4.103 1.837-4.103 4.103 0 .322.036.635.106.935-3.41-.17-6.433-1.804-8.457-4.287-.353.607-.556 1.312-.556 2.064 0 1.424.724 2.68 1.825 3.415-.673-.022-1.305-.207-1.86-.514v.052c0 1.988 1.415 3.647 3.293 4.023-.344.095-.707.145-1.08.145-.265 0-.522-.026-.773-.074.522 1.63 2.038 2.817 3.833 2.85-1.404 1.1-3.174 1.757-5.096 1.757-.332 0-.66-.02-.98-.057 1.816 1.164 3.973 1.843 6.29 1.843 7.547 0 11.675-6.252 11.675-11.675 0-.178-.004-.355-.012-.53.802-.578 1.497-1.3 2.047-2.124z"/></g></svg>				</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Facebook" id="postas-facebook" class="nascar-signin-link"
+                   title="Login via Facebook">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#3B5998" d="M20.007 3H3.993C3.445 3 3 3.445 3 3.993v16.013c0 .55.445.994.993.994h8.62v-6.97H10.27V11.31h2.346V9.31c0-2.325 1.42-3.59 3.494-3.59.993 0 1.847.073 2.096.106v2.43h-1.438c-1.128 0-1.346.537-1.346 1.324v1.734h2.69l-.35 2.717h-2.34V21h4.587c.548 0 .993-.445.993-.993V3.993c0-.548-.445-.993-.993-.993z"/></g></svg>				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div id="comment-form-guest" class="comment-form-service selected">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+<a href="https://gravatar.com/site/signup/" target="_blank">				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="Gravatar" width="25" class="no-grav" />
+</a>			</div>
+
+				<div class="comment-form-fields">
+				<div class="comment-form-field comment-form-email">
+					<label for="email">Email <span class="required">(required)</span> <span class="nopublish">(Address never made public)</span></label>
+					<div class="comment-form-input"><input id="email" name="email" type="email" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-author">
+					<label for="author">Name <span class="required">(required)</span></label>
+					<div class="comment-form-input"><input id="author" name="author" type="text" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-url">
+					<label for="url">Website</label>
+					<div class="comment-form-input"><input id="url" name="url" type="url" value="" /></div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<div id="comment-form-wordpress" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="WordPress.com Logo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="wp_avatar" id="wordpress-avatar" class="comment-meta-wordpress" value="" />
+				<input type="hidden" name="wp_user_id" id="wordpress-user_id" class="comment-meta-wordpress" value="" />
+				<input type="hidden" name="wp_access_token" id="wordpress-access_token" class="comment-meta-wordpress" value="" />
+						<p class="comment-form-posting-as pa-wordpress">
+			<strong></strong>
+			You are commenting using your WordPress.com account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'wordpress' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#0087be" d="M12.158 12.786l-2.698 7.84c.806.236 1.657.365 2.54.365 1.047 0 2.05-.18 2.986-.51-.024-.037-.046-.078-.065-.123l-2.762-7.57zM3.008 12c0 3.56 2.07 6.634 5.068 8.092L3.788 8.342c-.5 1.117-.78 2.354-.78 3.658zm15.06-.454c0-1.112-.398-1.88-.74-2.48-.456-.74-.883-1.368-.883-2.11 0-.825.627-1.595 1.51-1.595.04 0 .078.006.116.008-1.598-1.464-3.73-2.36-6.07-2.36-3.14 0-5.904 1.613-7.512 4.053.21.008.41.012.58.012.94 0 2.395-.114 2.395-.114.484-.028.54.684.057.74 0 0-.487.058-1.03.086l3.275 9.74 1.968-5.902-1.4-3.838c-.485-.028-.944-.085-.944-.085-.486-.03-.43-.77.056-.742 0 0 1.484.114 2.368.114.94 0 2.397-.114 2.397-.114.486-.028.543.684.058.74 0 0-.488.058-1.03.086l3.25 9.665.897-2.997c.456-1.17.684-2.137.684-2.907zm1.82-3.86c.04.286.06.593.06.924 0 .912-.17 1.938-.683 3.22l-2.746 7.94c2.672-1.558 4.47-4.454 4.47-7.77 0-1.564-.4-3.033-1.1-4.314zM12 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-googleplus" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="Google photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="googleplus_avatar" id="googleplus-avatar" class="comment-meta-googleplus" value="" />
+				<input type="hidden" name="googleplus_user_id" id="googleplus-user_id" class="comment-meta-googleplus" value="" />
+				<input type="hidden" name="googleplus_access_token" id="googleplus-access_token" class="comment-meta-googleplus" value="" />
+						<p class="comment-form-posting-as pa-googleplus">
+			<strong></strong>
+			You are commenting using your Google account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'googleplus' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" x="0px" y="0px" viewBox="0 0 60 60" ><path fill="#519bf7" d="M56.3,30c0,-1.6 -0.2,-3.4 -0.6,-5h-3.1H42.2H30v10.6h14.8C44,39.3 42,42 39.1,43.9l8.8,6.8C53,46 56.3,39 56.3,30z" /><path fill="#3db366" d="M30,57.5c6.7,0 13.1,-2.4 17.9,-6.8l-8.8,-6.8c-2.5,1.6 -5.6,2.4 -9.1,2.4c-7.2,0 -13.3,-4.7 -15.4,-11.2l-9.3,7.1C9.8,51.3 19.1,57.5 30,57.5z" /><path fill="#fdc600" d="M5.3,42.2l9.3,-7.1c-0.5,-1.6 -0.8,-3.3 -0.8,-5.1s0.3,-3.5 0.8,-5.1l-9.3,-7.1C3.5,21.5 2.5,25.6 2.5,30S3.5,38.5 5.3,42.2z" /><path fill="#f15b44" d="M40.1,17.4l8,-8C43.3,5.1 37,2.5 30,2.5C19.1,2.5 9.8,8.7 5.3,17.8l9.3,7.1c2.1,-6.5 8.2,-11.1 15.4,-11.1C33.9,13.7 37.4,15.1 40.1,17.4z" /></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-twitter" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="Twitter picture" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="twitter_avatar" id="twitter-avatar" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_user_id" id="twitter-user_id" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_access_token" id="twitter-access_token" class="comment-meta-twitter" value="" />
+						<p class="comment-form-posting-as pa-twitter">
+			<strong></strong>
+			You are commenting using your Twitter account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'twitter' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#1DA1F2" d="M22.23 5.924c-.736.326-1.527.547-2.357.646.847-.508 1.498-1.312 1.804-2.27-.793.47-1.67.812-2.606.996C18.325 4.498 17.258 4 16.078 4c-2.266 0-4.103 1.837-4.103 4.103 0 .322.036.635.106.935-3.41-.17-6.433-1.804-8.457-4.287-.353.607-.556 1.312-.556 2.064 0 1.424.724 2.68 1.825 3.415-.673-.022-1.305-.207-1.86-.514v.052c0 1.988 1.415 3.647 3.293 4.023-.344.095-.707.145-1.08.145-.265 0-.522-.026-.773-.074.522 1.63 2.038 2.817 3.833 2.85-1.404 1.1-3.174 1.757-5.096 1.757-.332 0-.66-.02-.98-.057 1.816 1.164 3.973 1.843 6.29 1.843 7.547 0 11.675-6.252 11.675-11.675 0-.178-.004-.355-.012-.53.802-.578 1.497-1.3 2.047-2.124z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-facebook" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="Facebook photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="fb_avatar" id="facebook-avatar" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_user_id" id="facebook-user_id" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_access_token" id="facebook-access_token" class="comment-meta-facebook" value="" />
+						<p class="comment-form-posting-as pa-facebook">
+			<strong></strong>
+			You are commenting using your Facebook account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'facebook' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#3B5998" d="M20.007 3H3.993C3.445 3 3 3.445 3 3.993v16.013c0 .55.445.994.993.994h8.62v-6.97H10.27V11.31h2.346V9.31c0-2.325 1.42-3.59 3.494-3.59.993 0 1.847.073 2.096.106v2.43h-1.438c-1.128 0-1.346.537-1.346 1.324v1.734h2.69l-.35 2.717h-2.34V21h4.587c.548 0 .993-.445.993-.993V3.993c0-.548-.445-.993-.993-.993z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+
+	<div id="comment-form-load-service" class="comment-form-service">
+		<div class="comment-form-posting-as-cancel"><a href="javascript:HighlanderComments.cancelExternalWindow();">Cancel</a></div>
+		<p>Connecting to %s</p>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+var highlander_expando_javascript = function () {
+
+	function hide( sel ) {
+		var el = document.querySelector( sel );
+		if ( el ) {
+			el.style.setProperty( 'display', 'none' );
+		}
+	}
+
+	function show( sel ) {
+		var el = document.querySelector( sel );
+		if ( el ) {
+			el.style.removeProperty( 'display' );
+		}
+	}
+
+	var input = document.createElement( 'input' );
+	var comment = document.querySelector( '#comment' );
+
+	if ( input && comment && 'placeholder' in input ) {
+		var label = document.querySelector( '.comment-textarea label' );
+		if ( label ) {
+			var text = label.textContent;
+			label.parentNode.removeChild( label );
+			comment.setAttribute( 'placeholder', text );
+		}
+	}
+
+	// Expando Mode: start small, then auto-resize on first click + text length
+	hide( '#comment-form-identity' );
+	hide( '#comment-form-subscribe' );
+	hide( '#commentform .form-submit' );
+
+	if ( comment ) {
+		comment.style.height = '10px';
+
+		var handler = function () {
+			comment.style.height = HighlanderComments.initialHeight + 'px';
+			show( '#comment-form-identity' );
+			show( '#comment-form-subscribe' );
+			show( '#commentform .form-submit' );
+			HighlanderComments.resizeCallback();
+
+			comment.removeEventListener( 'focus', handler );
+		};
+
+		comment.addEventListener( 'focus', handler );
+	}
+}
+
+if ( document.readyState !== 'loading' ) {
+	highlander_expando_javascript();
+} else {
+	if ( typeof window.jQuery === 'function' ) {
+		// Use jQuery's `ready` if available.
+		// This solves some scheduling issues between this script and the main highlander script.
+		jQuery( document ).ready( highlander_expando_javascript );
+	} else {
+		// If not available, add a vanilla event listener.
+		document.addEventListener( 'DOMContentLoaded', highlander_expando_javascript );
+	}
+}
+
+</script>
+
+<div id="comment-form-subscribe">
+	<p class="comment-subscription-form"><input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;"/> <label class="subscribe-label" id="subscribe-label" for="subscribe" style="display: inline;">Notify me of new comments via email.</label></p><p class="post-subscription-form"><input type="checkbox" name="subscribe_blog" id="subscribe_blog" value="subscribe" style="width: auto;"/> <label class="subscribe-label" id="subscribe-blog-label" for="subscribe_blog"  style="display: inline;">Notify me of new posts via email.</label></p></div>
+
+
+
+
+<p class="form-submit"><input name="submit" type="submit" id="comment-submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='261' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="b58e98d574" /></p>
+<input type="hidden" name="genseq" value="1621734912" />
+<input type="hidden" id="ak_js" name="ak_js" value="111"/><textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100" style="display: none !important;"></textarea></form>	</div><!-- #respond -->
+	<div style="clear: both"></div>
+</div><!-- #comments -->
+
+		
+		</main><!-- #main -->
+	</div><!-- #primary -->
+
+					<div class="secondary widget-area" role="complementary">
+			
+		<aside id="recent-posts-3" class="widget widget_recent_entries">
+		<h1 class="widget-title">Recent</h1>
+		<ul>
+											<li>
+					<a href="https://ashwinrayaprolu.wordpress.com/2019/04/20/openvino-ubuntu-xenial-virtualbox-and-vagrant-install-intel-ncs2-neural-compute-stick-2/">OpenVINO Ubuntu Xenial, Virtualbox and Vagrant Install, Intel NCS2 (Neural Compute Stick&nbsp;2)</a>
+									</li>
+											<li>
+					<a href="https://ashwinrayaprolu.wordpress.com/2018/11/09/quickbooks-and-sage-data-exporter/">QuickBooks and Sage Data&nbsp;Exporter</a>
+									</li>
+											<li>
+					<a href="https://ashwinrayaprolu.wordpress.com/2018/09/07/invoking-ansible-inside-python-flask/">Invoking Ansible Inside Python&nbsp;Flask</a>
+									</li>
+											<li>
+					<a href="https://ashwinrayaprolu.wordpress.com/2017/02/06/amazon-kindle-hack-and-download-pdfimage/">Amazon Kindle Hack and Download&nbsp;PDF/Image</a>
+									</li>
+											<li>
+					<a href="https://ashwinrayaprolu.wordpress.com/2016/11/30/merge-overlapping-interval/">Merge Overlapping Interval</a>
+									</li>
+					</ul>
+
+		</aside><aside id="linkcat-1356" class="widget widget_links"><h1 class="widget-title">Blogroll</h1>
+	<ul class='xoxo blogroll'>
+<li><a href="http://javacentered.blogspot.com/" title="This is Old Blog Which i Wrote">AshwinBlogSpot</a>
+This is Old Blog Which i Wrote
+0</li>
+<li><a href="http://www2.clustrmaps.com/counter/maps.php?url=https://ashwinrayaprolu.wordpress.com"><img src="http://www2.clustrmaps.com/counter/index2.php?url=https://ashwinrayaprolu.wordpress.com"  alt="Cluster Map "  /> Cluster Map</a>
+0</li>
+<li><a href="http://www.dzone.com" rel="co-worker" title="DZone" target="_blank"><img src="http://dzone.com/sites/all/files/big-mvbbutton.png"  alt="Dzone DZone"  title="DZone" /> Dzone</a>
+DZone
+10</li>
+<li><a href="http://s03.flagcounter.com/more/Lrc" title="Flag Counter"><img src="http://s03.flagcounter.com/count/Lrc/bg=FFFFFF/txt=000000/border=CCCCCC/columns=2/maxflags=12/viewers=0/labels=1/pageviews=1/"  alt="FlagCounter Flag Counter"  title="Flag Counter" /> FlagCounter</a>
+Flag Counter
+0</li>
+<li><a href="http://www.javacodegeeks.com" rel="co-worker" title="Java Community Blogging" target="_blank"><img src="http://4.bp.blogspot.com/_tWwHCKnIbjs/TPIBwpd71cI/AAAAAAAAAEw/3zbNwgbGYDM/s1600/logo_jcg_115x100.png"  alt="Java Code Geeks Java Community Blogging"  title="Java Community Blogging" /> Java Code Geeks</a>
+Java Community Blogging
+10</li>
+
+	</ul>
+</aside>
+<aside id="wp_tag_cloud-2" class="widget wp_widget_tag_cloud"><h1 class="widget-title"></h1><div style="overflow:hidden"><a href="https://ashwinrayaprolu.wordpress.com/tag/aes/" class="tag-cloud-link tag-link-618236 tag-link-position-1" style="font-size: 11.876923076923pt;" aria-label="AES (2 items)">AES</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/algorithm/" class="tag-cloud-link tag-link-18127 tag-link-position-2" style="font-size: 8pt;" aria-label="Algorithm (1 item)">Algorithm</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/android-2/" class="tag-cloud-link tag-link-15948407 tag-link-position-3" style="font-size: 14.461538461538pt;" aria-label="android (3 items)">android</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/annotation/" class="tag-cloud-link tag-link-178443 tag-link-position-4" style="font-size: 11.876923076923pt;" aria-label="Annotation (2 items)">Annotation</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/apache/" class="tag-cloud-link tag-link-3768 tag-link-position-5" style="font-size: 11.876923076923pt;" aria-label="Apache (2 items)">Apache</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/apache-digestor/" class="tag-cloud-link tag-link-37364914 tag-link-position-6" style="font-size: 8pt;" aria-label="Apache Digestor (1 item)">Apache Digestor</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/apache-maven/" class="tag-cloud-link tag-link-7372522 tag-link-position-7" style="font-size: 14.461538461538pt;" aria-label="Apache Maven (3 items)">Apache Maven</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/attachment/" class="tag-cloud-link tag-link-35258 tag-link-position-8" style="font-size: 8pt;" aria-label="Attachment (1 item)">Attachment</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/build/" class="tag-cloud-link tag-link-21447 tag-link-position-9" style="font-size: 11.876923076923pt;" aria-label="Build (2 items)">Build</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/bytecode/" class="tag-cloud-link tag-link-49566 tag-link-position-10" style="font-size: 8pt;" aria-label="ByteCode (1 item)">ByteCode</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/c/" class="tag-cloud-link tag-link-2426 tag-link-position-11" style="font-size: 11.876923076923pt;" aria-label="C# (2 items)">C#</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/capture/" class="tag-cloud-link tag-link-153391 tag-link-position-12" style="font-size: 8pt;" aria-label="Capture (1 item)">Capture</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/component/" class="tag-cloud-link tag-link-99932 tag-link-position-13" style="font-size: 8pt;" aria-label="Component (1 item)">Component</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/configuration/" class="tag-cloud-link tag-link-45809 tag-link-position-14" style="font-size: 8pt;" aria-label="Configuration (1 item)">Configuration</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/database/" class="tag-cloud-link tag-link-475 tag-link-position-15" style="font-size: 11.876923076923pt;" aria-label="Database (2 items)">Database</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/database-connection/" class="tag-cloud-link tag-link-1431293 tag-link-position-16" style="font-size: 8pt;" aria-label="Database Connection (1 item)">Database Connection</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/dbunit/" class="tag-cloud-link tag-link-1511371 tag-link-position-17" style="font-size: 8pt;" aria-label="DBUnit (1 item)">DBUnit</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/derby/" class="tag-cloud-link tag-link-106741 tag-link-position-18" style="font-size: 11.876923076923pt;" aria-label="Derby (2 items)">Derby</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/devops/" class="tag-cloud-link tag-link-28070474 tag-link-position-19" style="font-size: 11.876923076923pt;" aria-label="Devops (2 items)">Devops</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/dwr/" class="tag-cloud-link tag-link-205710 tag-link-position-20" style="font-size: 8pt;" aria-label="DWR (1 item)">DWR</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/dwr-and-javascript/" class="tag-cloud-link tag-link-11804145 tag-link-position-21" style="font-size: 8pt;" aria-label="DWR and Javascript (1 item)">DWR and Javascript</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/dynamic/" class="tag-cloud-link tag-link-214633 tag-link-position-22" style="font-size: 8pt;" aria-label="Dynamic (1 item)">Dynamic</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/flowplayer/" class="tag-cloud-link tag-link-1025609 tag-link-position-23" style="font-size: 11.876923076923pt;" aria-label="Flowplayer (2 items)">Flowplayer</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/generics/" class="tag-cloud-link tag-link-18369 tag-link-position-24" style="font-size: 8pt;" aria-label="Generics (1 item)">Generics</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/gwt/" class="tag-cloud-link tag-link-173823 tag-link-position-25" style="font-size: 8pt;" aria-label="GWT (1 item)">GWT</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/hibernate/" class="tag-cloud-link tag-link-17907 tag-link-position-26" style="font-size: 8pt;" aria-label="Hibernate (1 item)">Hibernate</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/html/" class="tag-cloud-link tag-link-647 tag-link-position-27" style="font-size: 8pt;" aria-label="html (1 item)">html</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/https/" class="tag-cloud-link tag-link-164265 tag-link-position-28" style="font-size: 8pt;" aria-label="HTTPS (1 item)">HTTPS</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/httpupload/" class="tag-cloud-link tag-link-46178325 tag-link-position-29" style="font-size: 8pt;" aria-label="httpupload (1 item)">httpupload</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/ie-download/" class="tag-cloud-link tag-link-2888240 tag-link-position-30" style="font-size: 8pt;" aria-label="IE Download (1 item)">IE Download</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/inmemory/" class="tag-cloud-link tag-link-3708893 tag-link-position-31" style="font-size: 8pt;" aria-label="Inmemory (1 item)">Inmemory</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/installer/" class="tag-cloud-link tag-link-212876 tag-link-position-32" style="font-size: 8pt;" aria-label="Installer (1 item)">Installer</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/installshiled/" class="tag-cloud-link tag-link-46187252 tag-link-position-33" style="font-size: 8pt;" aria-label="Installshiled (1 item)">Installshiled</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/j2ee/" class="tag-cloud-link tag-link-8689 tag-link-position-34" style="font-size: 16.615384615385pt;" aria-label="J2ee (4 items)">J2ee</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/java/" class="tag-cloud-link tag-link-1017 tag-link-position-35" style="font-size: 22pt;" aria-label="Java (8 items)">Java</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/java-agents/" class="tag-cloud-link tag-link-37385802 tag-link-position-36" style="font-size: 8pt;" aria-label="Java Agents (1 item)">Java Agents</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/javaassist/" class="tag-cloud-link tag-link-37385801 tag-link-position-37" style="font-size: 8pt;" aria-label="Javaassist (1 item)">Javaassist</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/java-mail/" class="tag-cloud-link tag-link-12953 tag-link-position-38" style="font-size: 14.461538461538pt;" aria-label="Java Mail (3 items)">Java Mail</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/javascript/" class="tag-cloud-link tag-link-457 tag-link-position-39" style="font-size: 16.615384615385pt;" aria-label="JavaScript (4 items)">JavaScript</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/jpa/" class="tag-cloud-link tag-link-307053 tag-link-position-40" style="font-size: 11.876923076923pt;" aria-label="JPA (2 items)">JPA</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/jquery/" class="tag-cloud-link tag-link-203308 tag-link-position-41" style="font-size: 14.461538461538pt;" aria-label="JQuery (3 items)">JQuery</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/mail-attachments/" class="tag-cloud-link tag-link-10490730 tag-link-position-42" style="font-size: 8pt;" aria-label="Mail Attachments (1 item)">Mail Attachments</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/maven/" class="tag-cloud-link tag-link-47862 tag-link-position-43" style="font-size: 22pt;" aria-label="Maven (8 items)">Maven</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/microsoft/" class="tag-cloud-link tag-link-637 tag-link-position-44" style="font-size: 11.876923076923pt;" aria-label="microsoft (2 items)">microsoft</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/multimedia/" class="tag-cloud-link tag-link-4755 tag-link-position-45" style="font-size: 11.876923076923pt;" aria-label="Multimedia (2 items)">Multimedia</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/mysql/" class="tag-cloud-link tag-link-4419 tag-link-position-46" style="font-size: 8pt;" aria-label="Mysql (1 item)">Mysql</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/oauth/" class="tag-cloud-link tag-link-2027657 tag-link-position-47" style="font-size: 11.876923076923pt;" aria-label="oauth (2 items)">oauth</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/pagination/" class="tag-cloud-link tag-link-697683 tag-link-position-48" style="font-size: 8pt;" aria-label="Pagination (1 item)">Pagination</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/paramerterize/" class="tag-cloud-link tag-link-13171798 tag-link-position-49" style="font-size: 8pt;" aria-label="Paramerterize (1 item)">Paramerterize</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/pass-parameter/" class="tag-cloud-link tag-link-13171799 tag-link-position-50" style="font-size: 8pt;" aria-label="pass parameter (1 item)">pass parameter</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/pdf/" class="tag-cloud-link tag-link-47759 tag-link-position-51" style="font-size: 11.876923076923pt;" aria-label="PDF (2 items)">PDF</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/property-file/" class="tag-cloud-link tag-link-13171797 tag-link-position-52" style="font-size: 8pt;" aria-label="property file (1 item)">property file</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/rails/" class="tag-cloud-link tag-link-6652 tag-link-position-53" style="font-size: 8pt;" aria-label="rails (1 item)">rails</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/read/" class="tag-cloud-link tag-link-6700 tag-link-position-54" style="font-size: 8pt;" aria-label="Read (1 item)">Read</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/redmine/" class="tag-cloud-link tag-link-1078015 tag-link-position-55" style="font-size: 8pt;" aria-label="redmine (1 item)">redmine</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/resize/" class="tag-cloud-link tag-link-508602 tag-link-position-56" style="font-size: 11.876923076923pt;" aria-label="Resize (2 items)">Resize</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/rico/" class="tag-cloud-link tag-link-84995 tag-link-position-57" style="font-size: 8pt;" aria-label="Rico (1 item)">Rico</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/ruby/" class="tag-cloud-link tag-link-4872 tag-link-position-58" style="font-size: 8pt;" aria-label="ruby (1 item)">ruby</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/send/" class="tag-cloud-link tag-link-471471 tag-link-position-59" style="font-size: 8pt;" aria-label="Send (1 item)">Send</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/servlet/" class="tag-cloud-link tag-link-68800 tag-link-position-60" style="font-size: 11.876923076923pt;" aria-label="Servlet (2 items)">Servlet</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/signature/" class="tag-cloud-link tag-link-5477 tag-link-position-61" style="font-size: 8pt;" aria-label="Signature (1 item)">Signature</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/soap/" class="tag-cloud-link tag-link-8791 tag-link-position-62" style="font-size: 8pt;" aria-label="SOAP (1 item)">SOAP</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/sockets/" class="tag-cloud-link tag-link-12931 tag-link-position-63" style="font-size: 8pt;" aria-label="SOckets (1 item)">SOckets</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/spring/" class="tag-cloud-link tag-link-9486 tag-link-position-64" style="font-size: 11.876923076923pt;" aria-label="Spring (2 items)">Spring</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/spring-mvc/" class="tag-cloud-link tag-link-465938 tag-link-position-65" style="font-size: 11.876923076923pt;" aria-label="Spring MVC (2 items)">Spring MVC</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/svn/" class="tag-cloud-link tag-link-164684 tag-link-position-66" style="font-size: 8pt;" aria-label="SVN (1 item)">SVN</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/swfupload/" class="tag-cloud-link tag-link-3080659 tag-link-position-67" style="font-size: 11.876923076923pt;" aria-label="SWFUpload (2 items)">SWFUpload</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/tab/" class="tag-cloud-link tag-link-161389 tag-link-position-68" style="font-size: 8pt;" aria-label="tab (1 item)">tab</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/tested-configuration/" class="tag-cloud-link tag-link-46230000 tag-link-position-69" style="font-size: 8pt;" aria-label="Tested Configuration (1 item)">Tested Configuration</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/tree/" class="tag-cloud-link tag-link-176028 tag-link-position-70" style="font-size: 8pt;" aria-label="Tree (1 item)">Tree</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/vagrant/" class="tag-cloud-link tag-link-666241 tag-link-position-71" style="font-size: 14.461538461538pt;" aria-label="vagrant (3 items)">vagrant</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/virtualbox/" class="tag-cloud-link tag-link-989685 tag-link-position-72" style="font-size: 11.876923076923pt;" aria-label="virtualbox (2 items)">virtualbox</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/web-service/" class="tag-cloud-link tag-link-13849 tag-link-position-73" style="font-size: 11.876923076923pt;" aria-label="Web service (2 items)">Web service</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/webservices/" class="tag-cloud-link tag-link-7572 tag-link-position-74" style="font-size: 11.876923076923pt;" aria-label="WebServices (2 items)">WebServices</a>
+<a href="https://ashwinrayaprolu.wordpress.com/tag/xml/" class="tag-cloud-link tag-link-6852 tag-link-position-75" style="font-size: 8pt;" aria-label="XML (1 item)">XML</a></div></aside><aside id="top-clicks-2" class="widget widget_top-clicks"><h1 class="widget-title">Top Clicks</h1><ul><li><a href='https://linkwithweb.googlecode.com/svn/trunk/Utilities/jCryptionTutorial' target='_blank' rel='nofollow'>linkwithweb.googlecode.co&#8230;</a></li><li><a href='https://ashwinrayaprolu.files.wordpress.com/2011/06/openofficedesign1.jpg' target='_blank' rel='nofollow'>ashwinrayaprolu.files.wor&#8230;</a></li></ul></aside><aside id="archives-3" class="widget widget_archive"><h1 class="widget-title">Archives</h1>
+			<ul>
+					<li><a href='https://ashwinrayaprolu.wordpress.com/2019/04/'>April 2019</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2018/11/'>November 2018</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2018/09/'>September 2018</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2017/02/'>February 2017</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2016/11/'>November 2016</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2016/10/'>October 2016</a>&nbsp;(3)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2016/08/'>August 2016</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2016/06/'>June 2016</a>&nbsp;(2)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2011/08/'>August 2011</a>&nbsp;(4)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2011/06/'>June 2011</a>&nbsp;(3)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2011/05/'>May 2011</a>&nbsp;(8)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2011/04/'>April 2011</a>&nbsp;(8)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2011/03/'>March 2011</a>&nbsp;(12)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2011/02/'>February 2011</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2010/12/'>December 2010</a>&nbsp;(2)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2010/11/'>November 2010</a>&nbsp;(8)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2010/10/'>October 2010</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2010/08/'>August 2010</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2010/06/'>June 2010</a>&nbsp;(4)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2010/05/'>May 2010</a>&nbsp;(1)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2009/01/'>January 2009</a>&nbsp;(7)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2008/11/'>November 2008</a>&nbsp;(2)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2008/10/'>October 2008</a>&nbsp;(2)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2008/09/'>September 2008</a>&nbsp;(6)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2008/08/'>August 2008</a>&nbsp;(5)</li>
+	<li><a href='https://ashwinrayaprolu.wordpress.com/2006/08/'>August 2006</a>&nbsp;(1)</li>
+			</ul>
+
+			</aside><aside id="authors-2" class="widget widget_authors"><h1 class="widget-title">Author</h1><ul><li><a href="https://ashwinrayaprolu.wordpress.com/author/ashwinrayaprolu/"> <img alt='' src='https://2.gravatar.com/avatar/2339c64fc4c9cf6f51db535a5ad89259?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' /> <strong>ashwinrayaprolu</strong></a></li></ul></aside><aside id="calendar-4" class="widget widget_calendar"><h1 class="widget-title">Calendar</h1><div id="calendar_wrap" class="calendar_wrap"><table id="wp-calendar" class="wp-calendar-table">
+	<caption>April 2011</caption>
+	<thead>
+	<tr>
+		<th scope="col" title="Monday">M</th>
+		<th scope="col" title="Tuesday">T</th>
+		<th scope="col" title="Wednesday">W</th>
+		<th scope="col" title="Thursday">T</th>
+		<th scope="col" title="Friday">F</th>
+		<th scope="col" title="Saturday">S</th>
+		<th scope="col" title="Sunday">S</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td colspan="4" class="pad">&nbsp;</td><td>1</td><td>2</td><td>3</td>
+	</tr>
+	<tr>
+		<td><a href="https://ashwinrayaprolu.wordpress.com/2011/04/04/" aria-label="Posts published on April 4, 2011">4</a></td><td>5</td><td>6</td><td>7</td><td><a href="https://ashwinrayaprolu.wordpress.com/2011/04/08/" aria-label="Posts published on April 8, 2011">8</a></td><td>9</td><td>10</td>
+	</tr>
+	<tr>
+		<td>11</td><td><a href="https://ashwinrayaprolu.wordpress.com/2011/04/12/" aria-label="Posts published on April 12, 2011">12</a></td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td>
+	</tr>
+	<tr>
+		<td>18</td><td>19</td><td><a href="https://ashwinrayaprolu.wordpress.com/2011/04/20/" aria-label="Posts published on April 20, 2011">20</a></td><td>21</td><td>22</td><td>23</td><td>24</td>
+	</tr>
+	<tr>
+		<td>25</td><td>26</td><td>27</td><td>28</td><td><a href="https://ashwinrayaprolu.wordpress.com/2011/04/29/" aria-label="Posts published on April 29, 2011">29</a></td><td><a href="https://ashwinrayaprolu.wordpress.com/2011/04/30/" aria-label="Posts published on April 30, 2011">30</a></td>
+		<td class="pad" colspan="1">&nbsp;</td>
+	</tr>
+	</tbody>
+	</table><nav aria-label="Previous and next months" class="wp-calendar-nav">
+		<span class="wp-calendar-nav-prev"><a href="https://ashwinrayaprolu.wordpress.com/2011/03/">&laquo; Mar</a></span>
+		<span class="pad">&nbsp;</span>
+		<span class="wp-calendar-nav-next"><a href="https://ashwinrayaprolu.wordpress.com/2011/05/">May &raquo;</a></span>
+	</nav></div></aside><aside id="blog_subscription-4" class="widget widget_blog_subscription jetpack_subscription_widget"><h1 class="widget-title"><label for="subscribe-field">Email Subscription</label></h1>
+			<form
+				action="https://subscribe.wordpress.com"
+				method="post"
+				accept-charset="utf-8"
+				id=""
+			>
+				<p>Enter your email address to subscribe to this blog and receive notifications of new posts by email.</p>
+					<div class="jetpack-subscribe-count">
+						<p>
+						Join 45 other followers						</p>
+					</div>
+									<p id="subscribe-email">
+					<label
+						id="subscribe-field-label"
+						for="subscribe-field"
+						class="screen-reader-text"
+					>
+						Email Address:					</label>
+
+					<input
+							type="email"
+							name="email"
+							
+							style="width: 95%; padding: 1px 10px"
+							placeholder="Enter your email address"
+							value=""
+							id="subscribe-field"
+						/>				</p>
+
+				<p id="subscribe-submit"
+									>
+                    <input type="hidden" name="action" value="subscribe"/>
+                    <input type="hidden" name="blog_id" value="381084"/>
+                    <input type="hidden" name="source" value="https://ashwinrayaprolu.wordpress.com/2011/04/12/xcmd-an-alternative-to-psexec/"/>
+                    <input type="hidden" name="sub-type" value="widget"/>
+                    <input type="hidden" name="redirect_fragment" value="blog_subscription-4"/>
+					<input type="hidden" id="_wpnonce" name="_wpnonce" value="00b9d052ff" />                    <button type="submit"
+	                    		                	                >
+	                    Sign me up!                    </button>
+                </p>
+            </form>
+			
+</aside>			<div id="atatags-286348-60a9b6006175a"></div>
+			
+			<script>
+				__ATA.cmd.push(function() {
+					__ATA.initDynamicSlot({
+						id: 'atatags-286348-60a9b6006175a',
+						location: 140,
+						formFactor: '003',
+						label: {
+							text: 'Advertisements',
+						},
+						creative: {
+							reportAd: {
+								text: 'Report this ad',
+							},
+							privacySettings: {
+								text: 'Privacy',
+								
+							}
+						}
+					});
+				});
+			</script>		</div><!-- #secondary -->
+	
+	</div><!-- #content -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-footer-wrapper">
+			<div class="site-info">
+								<a href="https://wordpress.com/?ref=footer_blog" rel="nofollow">Blog at WordPress.com.</a>
+				
+							</div><!-- .site-info -->
+					</div><!-- .site-footer-wrapper -->
+	</footer><!-- #colophon -->
+</div><!-- #page -->
+
+<!--  -->
+<script src='//0.gravatar.com/js/gprofiles.js?ver=202120y' id='grofiles-cards-js'></script>
+<script id='wpgroho-js-extra'>
+var WPGroHo = {"my_hash":""};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s1.wp.com/wp-content/mu-plugins/gravatar-hovercards/wpgroho.js?m=1610363240h'></script>
+
+	<script>
+		// Initialize and attach hovercards to all gravatars
+		( function() {
+			function init() {
+				if ( typeof Gravatar === 'undefined' ) {
+					return;
+				}
+
+				if ( typeof Gravatar.init !== 'function' ) {
+					return;
+				}
+
+				Gravatar.profile_cb = function ( hash, id ) {
+					WPGroHo.syncProfileData( hash, id );
+				};
+
+				Gravatar.my_hash = WPGroHo.my_hash;
+				Gravatar.init( 'body', '#wp-admin-bar-my-account' );
+			}
+
+			if ( document.readyState !== 'loading' ) {
+				init();
+			} else {
+				document.addEventListener( 'DOMContentLoaded', init );
+			}
+		} )();
+	</script>
+
+		<div style="display:none">
+	<div class="grofile-hash-map-3e2221f8fdbbf911810cb2913cb70985">
+	</div>
+	<div class="grofile-hash-map-c07bfd91e3c93e8459f712d0ddf2244b">
+	</div>
+	<div class="grofile-hash-map-ce2db013c0da1132812a3f7d78101e8d">
+	</div>
+	<div class="grofile-hash-map-f292114c0667b4bfdff960af2d1186c1">
+	</div>
+	</div>
+<script id='highlander-comments-js-extra'>
+var HighlanderComments = {"loggingInText":"Logging In\u2026","submittingText":"Posting Comment\u2026","postCommentText":"Post Comment","connectingToText":"Connecting to %s","commentingAsText":"%1$s: You are commenting using your %2$s account.","logoutText":"Log Out","loginText":"Log In","connectURL":"https:\/\/ashwinrayaprolu.wordpress.com\/public.api\/connect\/?action=request","logoutURL":"https:\/\/ashwinrayaprolu.wordpress.com\/wp-login.php?action=logout&_wpnonce=605197e367","homeURL":"https:\/\/ashwinrayaprolu.wordpress.com\/","postID":"261","gravDefault":"identicon","enterACommentError":"Please enter a comment","enterEmailError":"Please enter your email address here","invalidEmailError":"Invalid email address","enterAuthorError":"Please enter your name here","gravatarFromEmail":"This picture will show whenever you leave a comment. Click to customize it.","logInToExternalAccount":"Log in to use details from one of these accounts.","change":"Change","changeAccount":"Change Account","comment_registration":"0","userIsLoggedIn":"","isJetpack":"","text_direction":"ltr"};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s0.wp.com/_static/??/wp-content/js/jquery/jquery.autoresize.js,/wp-content/mu-plugins/highlander-comments/script.js?m=1573483029j'></script>
+		<!-- CCPA [start] -->
+		<script type="text/javascript">
+			( function () {
+
+				var setupPrivacy = function() {
+
+					// Minimal Mozilla Cookie library
+					// https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie/Simple_document.cookie_framework
+					var cookieLib = window.cookieLib = {getItem:function(e){return e&&decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*"+encodeURIComponent(e).replace(/[\-\.\+\*]/g,"\\$&")+"\\s*\\=\\s*([^;]*).*$)|^.*$"),"$1"))||null},setItem:function(e,o,n,t,r,i){if(!e||/^(?:expires|max\-age|path|domain|secure)$/i.test(e))return!1;var c="";if(n)switch(n.constructor){case Number:c=n===1/0?"; expires=Fri, 31 Dec 9999 23:59:59 GMT":"; max-age="+n;break;case String:c="; expires="+n;break;case Date:c="; expires="+n.toUTCString()}return"rootDomain"!==r&&".rootDomain"!==r||(r=(".rootDomain"===r?".":"")+document.location.hostname.split(".").slice(-2).join(".")),document.cookie=encodeURIComponent(e)+"="+encodeURIComponent(o)+c+(r?"; domain="+r:"")+(t?"; path="+t:"")+(i?"; secure":""),!0}};
+
+					// Implement IAB USP API.
+					window.__uspapi = function( command, version, callback ) {
+
+						if ( typeof callback !== 'function' ) {
+							return;
+						}
+
+						if ( command !== 'getUSPData' || version !== 1 ) {
+							callback( null, false );
+							return;
+						}
+
+						// Check for GPC.
+						if ( navigator.globalPrivacyControl ) {
+							callback( { version: 1, uspString: '1YYN' }, true );
+							return;
+						}
+
+						// Check for cookie.
+						var consent = cookieLib.getItem( 'usprivacy' );
+
+						if ( null === consent ) {
+							callback( null, false );
+							return;
+						}
+
+						callback( { version: 1, uspString: consent }, true );
+					};
+
+					// Initialization.
+					document.addEventListener( 'DOMContentLoaded', function() {
+
+						var setDefaultOptInCookie = function() {
+							var value = '1YNN';
+							var domain = '.wordpress.com' === location.hostname.slice( -14 ) ? '.rootDomain' : location.hostname;
+							cookieLib.setItem( 'usprivacy', value, 365 * 24 * 60 * 60, '/', domain );
+						};
+
+						var setCcpaAppliesCookie = function( value ) {
+							var domain = '.wordpress.com' === location.hostname.slice( -14 ) ? '.rootDomain' : location.hostname;
+							cookieLib.setItem( 'ccpa_applies', value, 24 * 60 * 60, '/', domain );
+						}
+
+						var maybeCallDoNotSellCallback = function() {
+							if ( 'function' === typeof window.doNotSellCallback ) {
+								return window.doNotSellCallback();
+							}
+
+							return false;
+						}
+
+						var usprivacyCookie = cookieLib.getItem( 'usprivacy' );
+
+						if ( null !== usprivacyCookie ) {
+							maybeCallDoNotSellCallback();
+							return;
+						}
+
+						var ccpaCookie = cookieLib.getItem( 'ccpa_applies' );
+
+						if ( null === ccpaCookie ) {
+
+							var request = new XMLHttpRequest();
+							request.open( 'GET', 'https://public-api.wordpress.com/geo/', true );
+
+							request.onreadystatechange = function () {
+								if ( 4 === this.readyState ) {
+									if ( 200 === this.status ) {
+
+										var data = JSON.parse( this.response );
+										var ccpa_applies = data['region'] && data['region'].toLowerCase() === 'california';
+
+										setCcpaAppliesCookie( ccpa_applies );
+
+										if ( ccpa_applies ) {
+											if ( maybeCallDoNotSellCallback() ) {
+												setDefaultOptInCookie();
+											}
+										}
+									} else {
+										setCcpaAppliesCookie( true );
+										if ( maybeCallDoNotSellCallback() ) {
+											setDefaultOptInCookie();
+										}
+									}
+								}
+							};
+
+							request.send();
+						} else {
+							if ( ccpaCookie === 'true' ) {
+								if ( maybeCallDoNotSellCallback() ) {
+									setDefaultOptInCookie();
+								}
+							}
+						}
+					} );
+				};
+
+				if ( window.defQueue && defQueue.isLOHP && defQueue.isLOHP === 2020 ) {
+					defQueue.items.push( setupPrivacy );
+				} else {
+					setupPrivacy();
+				}
+
+			} )();
+		</script>
+
+		<!-- CCPA [end] -->
+					<script type="text/javascript">
+			( function( $ ) {
+				$( document.body ).on( 'post-load', function () {
+					if ( typeof __ATA.insertInlineAds === 'function' ) {
+						__ATA.insertInlineAds();
+					}
+				} );
+			} )( jQuery );
+			</script>
+<script>
+window.addEventListener( "load", function( event ) {
+	var link = document.createElement( "link" );
+	link.href = "https://s0.wp.com/wp-content/mu-plugins/actionbar/actionbar.css?v=20201002";
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.head.appendChild( link );
+
+	var script = document.createElement( "script" );
+	script.src = "https://s0.wp.com/wp-content/mu-plugins/actionbar/actionbar.js?v=20201002";
+	script.defer = true;
+	document.body.appendChild( script );
+} );
+</script>
+
+	
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/ashwinrayaprolu.wordpress.com\/2011\/04\/12\/xcmd-an-alternative-to-psexec\/":261};
+	</script>
+				<div class="widget widget_eu_cookie_law_widget">
+<div
+	class="hide-on-button ads-active"
+	data-hide-timeout="30"
+	data-consent-expiration="180"
+	id="eu-cookie-law"
+>
+	<form method="post">
+		<input type="submit" value="Close and accept" class="accept" />
+
+		Privacy &amp; Cookies: This site uses cookies. By continuing to use this website, you agree to their use. <br />
+To find out more, including how to control cookies, see here:
+				<a href="https://automattic.com/cookies" rel="nofollow">
+			Cookie Policy		</a>
+ </form>
+</div>
+</div><link rel='stylesheet' id='all-css-0-3' href='https://s0.wp.com/wp-content/mu-plugins/related-posts/related-posts.css?m=1614268815h&cssminify=yes' type='text/css' media='all' />
+<script id='jetpack_related-posts-js-extra'>
+var related_posts_js_options = {"post_heading":"h4"};
+</script>
+<script id='sharing-js-js-extra'>
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s2.wp.com/_static/??-eJyNUNtOwzAM/SFcr0Ji8ID4FJQ2bus2N+JkZXw9ngQICup4cmyfm4Nrgj6GQqHgLGjpxD2l12aWG/y5ml8q5fNHaTicmNarsJlKMv0CmYTfaAv3FZKrIwdBxwsJKqnSZIJ1lLfgMpFXSKoddjxCl6NO8sUymBOPpnAM/+fIwgkchwWG2FeBgb9u5tC7apWmsD56r0KaP7lz4/mXw7cTVrYjFUGquo0LEzizYiGfnCm0me/oGKs+0JmM3kihrC8oWX9R/kqoLfmO7JVwmS4hLKQoZdPtRVlYPBW4bQ74rK44xOx38Bc9GJzhjDKZzGH8rEp68o/tXXtsH+7bw3F+Bzt469Q='></script>
+<script type='text/javascript'>
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-facebook' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-facebook' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-twitter' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-twitter' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+						return false;
+					}
+				} );
+			} )();
+</script>
+<script type="text/javascript">
+// <![CDATA[
+(function() {
+try{
+  if ( window.external &&'msIsSiteMode' in window.external) {
+    if (window.external.msIsSiteMode()) {
+      var jl = document.createElement('script');
+      jl.type='text/javascript';
+      jl.async=true;
+      jl.src='/wp-content/plugins/ie-sitemode/custom-jumplist.php';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(jl, s);
+    }
+  }
+}catch(e){}
+})();
+// ]]>
+</script>	<iframe src='https://widgets.wp.com/likes/master.html?ver=20210413#ver=20210413&amp;origin=https://ashwinrayaprolu.wordpress.com' scrolling='no' id='likes-master' name='likes-master' style='display:none;'></iframe>
+	<div id='likes-other-gravatars'>
+		<div class="likes-text">
+			<span>%d</span> bloggers like this:		</div>
+		<ul class="wpl-avatars sd-like-gravatars"></ul>
+	</div>
+	
+		<script src="//stats.wp.com/w.js?61" defer></script> <script type="text/javascript">
+_tkq = window._tkq || [];
+_stq = window._stq || [];
+_tkq.push(['storeContext', {'blog_id':'381084','blog_tz':'-7','user_lang':'en','blog_lang':'en','user_id':'0'}]);
+_stq.push(['view', {'blog':'381084','v':'wpcom','tz':'-7','user_id':'0','post':'261','subd':'ashwinrayaprolu'}]);
+_stq.push(['extra', {'crypt':'UE5XaGUuOTlwaD85flAmcm1mcmZsaDhkV11YdWFnNncxc1tjZG9XVXhRZmhSYUFhNUdZYm9rZGlDV2R8RUE/MEU9T3FWeWs1N3ROTW9hUHdSdVdnLmFGd01Mc09WQVIxL10lMmJQSVlkZHU/XUFiZlR4Ji9tLzZRNm5wRHx0OE5pWlg3akhSVy9nWUxwb3pbMUczXXpXLFQzaWVORHZXQ0J1SHFsNi1ySGFSfGJHXU9GQVVpL0M5S1duZ1E/L2R8dz9xNTQlREN4em1XPTVQb0hrVDJpckI2LiUrTD8lNi5KWnV6VUFIM2JDWC5XXVFZSm05dnY1a0xyay95WG1+MmhFTGRjeGVrY2RwMGVDRXw9RUhKQXdqW084MFdrNCZBWmd4VkVrUGc1MU1EMQ=='}]);
+_stq.push([ 'clickTrackerInit', '381084', '261' ]);
+	</script>
+<noscript><img src="https://pixel.wp.com/b.gif?v=noscript" style="height:1px;width:1px;overflow:hidden;position:absolute;bottom:1px;" alt="" /></noscript>
+<script>
+if ( 'object' === typeof wpcom_mobile_user_agent_info ) {
+
+	wpcom_mobile_user_agent_info.init();
+	var mobileStatsQueryString = "";
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedPlatformName )
+		mobileStatsQueryString += "&x_" + 'mobile_platforms' + '=' + wpcom_mobile_user_agent_info.matchedPlatformName;
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedUserAgentName )
+		mobileStatsQueryString += "&x_" + 'mobile_devices' + '=' + wpcom_mobile_user_agent_info.matchedUserAgentName;
+	
+	if( wpcom_mobile_user_agent_info.isIPad() )
+		mobileStatsQueryString += "&x_" + 'ipad_views' + '=' + 'views';
+
+	if( "" != mobileStatsQueryString ) {
+		new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?v=wpcom-no-pv' + mobileStatsQueryString + '&baba=' + Math.random();
+	}
+	
+}
+</script>
+</body>
+</html>

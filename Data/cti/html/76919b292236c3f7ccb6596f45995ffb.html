@@ -1,0 +1,1093 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/favicon-152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/favicon/favicon-167x167.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#ffffff">
+    <link rel="shortcut icon" href="/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-config" content="/favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+<link rel="alternate" hreflang="en" href="https://blog.f-secure.com/detecting-parent-pid-spoofing/" />
+
+	<!-- This site is optimized with the Yoast SEO plugin v16.1.1 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Detecting Parent PID Spoofing - F-Secure Blog</title>
+	<link rel="canonical" href="https://blog.f-secure.com/detecting-parent-pid-spoofing/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Detecting Parent PID Spoofing - F-Secure Blog" />
+	<meta property="og:description" content="One of the most useful techniques hunt teams can use for detecting anomalous activity is the analysis of parent-child process relationships. However, more capable adversaries can bypass this using Parent PID (PPID) Spoofing allowing the execution of a malicious process from an arbitrary parent process. While this technique itself is not new, having been covered [&hellip;]" />
+	<meta property="og:url" content="https://blog.f-secure.com/detecting-parent-pid-spoofing/" />
+	<meta property="og:site_name" content="F-Secure Blog" />
+	<meta property="article:published_time" content="2018-12-21T09:41:29+00:00" />
+	<meta property="article:modified_time" content="2019-09-19T14:30:51+00:00" />
+	<meta property="og:image" content="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/13165948/business-metro-tablet-couple-1940x970.jpg" />
+	<meta property="og:image:width" content="1940" />
+	<meta property="og:image:height" content="971" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="Noora Hyvärinen">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="7 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://blog.f-secure.com/#website","url":"https://blog.f-secure.com/","name":"F-Secure Blog","description":"","potentialAction":[{"@type":"SearchAction","target":"https://blog.f-secure.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://blog.f-secure.com/detecting-parent-pid-spoofing/#primaryimage","inLanguage":"en-US","url":"https://blog-assets.f-secure.com/wp-content/uploads/2019/09/13165948/business-metro-tablet-couple-1940x970.jpg","contentUrl":"https://blog-assets.f-secure.com/wp-content/uploads/2019/09/13165948/business-metro-tablet-couple-1940x970.jpg","width":1940,"height":971},{"@type":"WebPage","@id":"https://blog.f-secure.com/detecting-parent-pid-spoofing/#webpage","url":"https://blog.f-secure.com/detecting-parent-pid-spoofing/","name":"Detecting Parent PID Spoofing - F-Secure Blog","isPartOf":{"@id":"https://blog.f-secure.com/#website"},"primaryImageOfPage":{"@id":"https://blog.f-secure.com/detecting-parent-pid-spoofing/#primaryimage"},"datePublished":"2018-12-21T09:41:29+00:00","dateModified":"2019-09-19T14:30:51+00:00","author":{"@id":"https://blog.f-secure.com/#/schema/person/51c3d10633c0eab90d5bdcf489bd4417"},"breadcrumb":{"@id":"https://blog.f-secure.com/detecting-parent-pid-spoofing/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://blog.f-secure.com/detecting-parent-pid-spoofing/"]}]},{"@type":"BreadcrumbList","@id":"https://blog.f-secure.com/detecting-parent-pid-spoofing/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://blog.f-secure.com/","url":"https://blog.f-secure.com/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://blog.f-secure.com/blogs/","url":"https://blog.f-secure.com/blogs/","name":"Blogs"}},{"@type":"ListItem","position":3,"item":{"@type":"WebPage","@id":"https://blog.f-secure.com/detecting-parent-pid-spoofing/","url":"https://blog.f-secure.com/detecting-parent-pid-spoofing/","name":"Detecting Parent PID Spoofing"}}]},{"@type":"Person","@id":"https://blog.f-secure.com/#/schema/person/51c3d10633c0eab90d5bdcf489bd4417","name":"Noora Hyv\u00e4rinen","image":{"@type":"ImageObject","@id":"https://blog.f-secure.com/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/1ef5b1b134c196b7cfa8d09d377d28b3?s=96&d=mm&r=g","contentUrl":"https://secure.gravatar.com/avatar/1ef5b1b134c196b7cfa8d09d377d28b3?s=96&d=mm&r=g","caption":"Noora Hyv\u00e4rinen"}}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//ajax.googleapis.com' />
+<link rel='dns-prefetch' href='//cdnjs.cloudflare.com' />
+<link rel='dns-prefetch' href='//use.fontawesome.com' />
+<link rel='dns-prefetch' href='//s3.eu-central-1.amazonaws.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel='stylesheet' id='wp-block-library-css'  href='https://blog.f-secure.com/wp-includes/css/dist/block-library/style.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' type='text/css' media='all' />
+<link rel='stylesheet' id='swiss-css-css'  href='https://blog.f-secure.com/wp-content/themes/swiss/assets/dist/css/bundle.css?v=1618578117' type='text/css' media='all' />
+<link rel='stylesheet' id='new-fsecure-css-css'  href='https://s3.eu-central-1.amazonaws.com/evermade-fsecure-assets/wp-content/uploads/css/blog-new-brand-overwrite.css' type='text/css' media='all' />
+<script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js' id='jquery-js'></script>
+<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js' id='modernizr-js'></script>
+<meta name="generator" content="WPML ver:4.4.10 stt:38,1,18,4,3,27,28,43,2;" />
+
+    <script>
+    if (window.jQuery) {
+        if(!window.$) $ = jQuery;
+    }
+    </script>
+
+    <script>
+    var fsData = [{
+        page: {
+            pageInfo: {
+                pageName: "detecting-parent-pid-spoofing",
+                geoRegion: "global",
+                language: "en"
+            },
+            category: {
+                primaryCategory: "blog"
+            }
+        }
+    }];
+    </script>
+
+    <meta name="google-site-verification" content="30P5dC3g0RF8s3M0hRFAji035x65l--RuQWj-1S6SGE" />
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','fsData','GTM-P9PC2DD');</script>
+<!-- End Google Tag Manager -->
+</head>
+<body class="post-template-default single single-post postid-18409 single-format-standard">
+
+    <!--[if lt IE 8]>
+        <div class="c-chromeframe">
+            You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.
+        </div>
+    <![endif]-->
+
+<a href="#content" class="h-accessability js-skip-to-content">Skip to content</a>
+
+<header class="b-header js-header">
+    <div class="b-header__top">
+        <div class="b-header__container">
+
+            <div class="b-header__logo">
+                <div class="c-site-logo">
+    <a href="https://blog.f-secure.com" title="F-Secure Blog">
+        
+<!-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 841.9 245.3" style="enable-background:new 0 0 841.9 245.3;" xml:space="preserve">
+<g>
+	<g>
+		<g>
+			<path d="M600.5,198.3c0-2-1-3-4.2-3c-0.9,0-2.1,0.1-2.8,0.2v8.8h2.1v-3h0.9l1.6,3h2.5l-2.1-3.4
+				C599.7,200.5,600.5,199.6,600.5,198.3z M596.4,199.8h-0.7V197c0.2,0,0.5,0,0.7,0c1.8,0,2,0.4,2,1.4
+				C598.4,199.4,597.9,199.8,596.4,199.8z"/>
+			<path d="M596.9,191c-5.9,0-8.9,3-8.9,8.9c0,5.9,3,8.9,8.9,8.9c5.9,0,8.9-3,8.9-8.9C605.8,194.1,602.8,191,596.9,191z
+				 M596.9,207.1c-5.2,0-7.2-1.9-7.2-7.2c0-5.3,2-7.2,7.2-7.2c5.1,0,7.2,1.9,7.2,7.2C604.1,205.2,602,207.1,596.9,207.1z"/>
+			<path d="M9.8,110.7c0-1.5,0.3-1.8,1.8-1.8h58.2c1.5,0,1.8,0.3,1.8,1.8v17.5c0,1.5-0.3,1.8-1.8,1.8H33.7v21.3h30.1
+				c1.5,0,1.8,0.3,1.8,1.8v17.2c0,1.5-0.3,1.8-1.8,1.8H33.7v33.1c0,1.5-0.3,1.8-1.8,1.8H11.6c-1.5,0-1.8-0.3-1.8-1.8V110.7z"/>
+			<path d="M82.7,172.3c-1.5,0-1.8-0.3-1.8-1.8v-17.2c0-1.5,0.3-1.8,1.8-1.8h29.8c1.5,0,1.8,0.3,1.8,1.8v17.2c0,1.5-0.3,1.8-1.8,1.8
+				H82.7z"/>
+			<path d="M147.7,135.7c0,6.5,3.8,7.8,18.5,12.1c21,6.1,28.8,14.2,28.8,30.6c0,21.3-17.9,30.4-38.2,30.4c-11.6,0-22.6-3.3-28.9-6.8
+				c-1-0.5-1.5-1-1.5-2.3v-12.9c0-1.1,0.3-1.5,1.3-1.5c2.1,0,15,3.6,27.4,3.6c11.1,0,16.2-2.6,16.2-9.3c0-6.6-4.6-8.4-17.7-11.9
+				c-22-6-29.4-14.1-29.4-30.4c0-19.3,15.6-30.1,34.6-30.1c11.1,0,20,2.3,28.6,6.8c1.2,0.7,1.5,1,1.5,2.3v12.9
+				c0,1.2-0.7,1.5-1.5,1.5c-2.8,0-14.4-3.6-27.3-3.6C151.1,127.1,147.7,130.6,147.7,135.7z"/>
+			<path d="M228,176.4c0.8,10.6,6.6,13.6,19.3,13.6c12.7,0,22.3-3.2,24.6-3.2c1,0,1.5,0.2,1.5,1.5v12.2c0,1.5-0.7,1.8-1.8,2.3
+				c-6.9,3-16.9,6-28.8,6c-24.3,0-38.4-11.1-38.4-38.2c0-25.6,13.9-39.5,37.4-39.5c26.5,0,34.7,15.9,34.7,37.4v6.1
+				c0,1.5-0.3,1.8-1.8,1.8H228z M227.9,163.2h26.5c0-10.7-3.5-15-12.4-15C233.8,148.1,228.4,152.4,227.9,163.2z"/>
+			<path d="M323.6,131.1c9.4,0,18.8,2.8,25.1,5.8c1.5,0.7,1.7,1,1.7,2.5v11.9c0,0.8-0.2,1.5-1.2,1.5c-2.3,0-11.2-2.8-21.7-2.8
+				c-12.9,0-17.7,6.9-17.7,20c0,13.1,4.8,20,17.7,20c10.4,0,20-3.2,22.3-3.2c1,0,1.2,0.7,1.2,1.5v12.2c0,1.5-0.2,1.8-1.7,2.5
+				c-6.3,3-16.4,5.8-25.8,5.8c-25.6,0-37.4-15.9-37.4-38.9C286.2,147,298,131.1,323.6,131.1z"/>
+			<path d="M398.4,208.8c-20.3,0-35.7-6.4-35.7-30.3v-44.3c0-1.5,0.3-1.8,1.8-1.8h19.8c1.5,0,1.8,0.3,1.8,1.8v41.2
+				c0,10.1,3.3,14.5,13.4,14.5c4.1,0,8.3-0.2,11.4-0.5v-55.3c0-1.5,0.3-1.8,1.8-1.8h19.8c1.5,0,1.8,0.3,1.8,1.8v68.7
+				c0,1.5-0.2,1.7-1.3,2C423.4,207.2,410.3,208.8,398.4,208.8z"/>
+			<path d="M485.4,150.4c-4.3,0-8.4,0.5-10.9,1.5v53.4c0,1.5-0.3,1.8-1.8,1.8h-19.8c-1.5,0-1.8-0.3-1.8-1.8v-66.2
+				c0-1.2,0.5-1.7,1.5-2c8.9-3.5,18.3-6.1,28.9-6.1c6.3,0,12.4,0.5,17.9,2.1c1,0.3,1.2,0.7,1.2,1.7v14.9c0,1.5-0.5,1.6-1.5,1.6
+				C497.1,151.4,492.8,150.4,485.4,150.4z"/>
+			<path d="M528.9,176.4c0.8,10.6,6.6,13.6,19.3,13.6c12.7,0,22.3-3.2,24.6-3.2c1,0,1.5,0.2,1.5,1.5v12.2c0,1.5-0.6,1.8-1.8,2.3
+				c-7,3-16.9,6-28.8,6c-24.3,0-38.4-11.1-38.4-38.2c0-25.6,13.9-39.5,37.4-39.5c26.5,0,34.7,15.9,34.7,37.4v6.1
+				c0,1.5-0.3,1.8-1.8,1.8H528.9z M528.7,163.2h26.5c0-10.7-3.5-15-12.4-15C534.6,148.1,529.2,152.4,528.7,163.2z"/>
+		</g>
+		<path d="M830.6,31.8C754.9,5.4,675.4,4.2,605.2,25.7c-15,4.6-19,17.2-16.4,27.9c4,16.3,9.9,34.9,17,51.8c0.1,0.3,0.3,0.2,0.3-0.3
+			c-0.9-7.9,5.1-17.9,17.1-21.6c66.5-20.2,124.6-15.2,176.3,2.3c8.7,3,18.5-1.7,21.3-10.7c7.1-22.8,10-38.4,10.7-42.2"/>
+		<g>
+			<path d="M655.4,81.9c-8.8,1.9-20.8,4.7-29.8,7.8c-18.1,6.2-17.3,28.1-7.6,35.2c0.7-4.1,5-9.6,9.9-11.5c18.1-7,37.4-11.3,57-13
+				C675,96.3,665.2,90.5,655.4,81.9z"/>
+		</g>
+		<path d="M799.2,126c-52.2-25-115.1-26.8-166.9-6.7c-8.5,3.3-14,13.7-8.5,23.7c8.7,15.8,19.5,32.6,31.9,48.7
+			c-1.7-5.9,1.3-16.9,12.9-20.5c31.9-9.8,65.4-5.7,87.8,3.3c6.3,2.6,15.1,1,20.2-6.5c11-16.5,21-36.3,23.2-40.7
+			C800.1,126.8,799.8,126.3,799.2,126z"/>
+		<g>
+			<path d="M747.4,204.8c-5.7-1.6-19.8-12.7-25.3-18.2c-3.5-3.5-8.5-8.4-13.9-14.3c-12.2,0-24.1,1.3-36.7,5.3
+				c-11.7,3.7-12.8,17.4-7.7,24.4c8.8,10.8,14.8,16.8,24.6,26.8c10.2,10.5,28.3,10.8,38.8,0.2c7.6-7.7,12.3-12.7,20.9-22.4
+				C748.4,205.9,748.2,205,747.4,204.8z"/>
+		</g>
+	</g>
+</g>
+</svg>
+        <span class="c-site-logo__text">BLOG</span>
+    </a>
+</div>
+            </div>
+
+            <div class="b-header__tools">
+                                <div class="b-header__external-link">
+                    <a href="https://www.f-secure.com/">
+                        F-Secure.com                    </a>
+                </div>
+                <div class="b-header__about">
+                    <a href="https://blog.f-secure.com/about-this-blog/">About This Blog</a>                </div>
+                                <div class="b-header__search js-search-trigger js-search-trigger-peek">
+                    Search                </div>
+                <div class="b-header__language">
+                    
+
+<div class="c-language-selector js-language-selector">
+
+    <span class="c-language-selector__current">
+		<span>en</span>                    <i class="fa fa-angle-down"></i>
+            </span>
+
+    <div class="c-language-selector__list js-language-selector-list">
+        
+        <ul>
+                                                                            <li>
+                        <a href="https://blog.f-secure.com/fi/">
+                            Suomi                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/fr/">
+                            Français                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/de/">
+                            Deutsch                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/it/">
+                            Italiano                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/es/">
+                            Español                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/nl/">
+                            Nederlands                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/ja/">
+                            日本語                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/pt-br/">
+                            Português                        </a>
+                    </li>
+                                    </ul>
+
+            </div>
+
+</div>
+
+                </div>
+                <div class="b-header__menu-toggle">
+                    <div class="c-menu-toggle js-header-toggle">
+    <div class="c-menu-toggle__icon">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</div>                </div>
+            </div>
+
+        </div>
+    </div>
+
+        <div class="b-header__menu">
+        <div class="b-header__container">
+
+            <div class="b-header__showall">
+                <a class="c-btn js-sidemenu-toggle" href="#">
+                    <span data-open="Trending tags" data-close="Close">Trending tags</span>
+                    <i data-open="fa-bars" data-close="fa-times-circle" class="fa fa-bars"></i>
+                </a>
+            </div>
+
+            <nav>
+                <div class="c-header-menu-desktop"><ul id="menu-main-navigation" class="c-header-menu-desktop__list"><li id="menu-item-18090" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18090"><a href="https://blog.f-secure.com/category/business-security/">Business Security</a></li>
+<li id="menu-item-18089" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18089"><a href="https://blog.f-secure.com/category/home-security/">Home Security</a></li>
+<li id="menu-item-18091" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-18091"><a href="https://blog.f-secure.com/category/threats-research/">Threats &#038; Research</a></li>
+<li id="menu-item-18566" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18566"><a href="https://blog.f-secure.com/category/f-secure-life/">F-Secure Life</a></li>
+<li id="menu-item-18093" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18093"><a href="https://blog.f-secure.com/category/podcasts/">Podcasts</a></li>
+<li id="menu-item-18094" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18094"><a href="https://blog.f-secure.com/category/videos/">Videos</a></li>
+<li id="menu-item-41889" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-41889"><a href="https://blog.f-secure.com/whitepapers/">Whitepapers</a></li>
+</ul></div>            </nav>
+        </div>
+    </div>
+    
+    <div class="b-header__progress js-article-progress"></div>
+
+    <div class="b-header__search-bar">
+        
+    <!-- FOR NAVIGATION -->
+
+    <div class="c-search-bar js-search-bar">
+        <div class="c-search-bar__container">
+            <div class="c-search-bar__wrapper">
+
+                <form action="https://blog.f-secure.com/search/">
+
+                    <input class="js-search-bar-input" type="text" name="query" placeholder="Type your search here">
+
+                    <button type="submit" class="c-btn c-btn--search js-search-bar-submit">
+                        Search                    </button>
+
+                </form>
+
+                <p class="c-search-bar__close js-search-trigger">
+                    Close                </p>
+
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <div class="b-header__mobile-navigation">
+
+        <div class="l-mobile-navigation">
+            <div class="l-mobile-navigation__menu">
+                <div class="c-header-menu-mobile"><ul id="menu-main-navigation-1" class="c-header-menu-mobile__list"><li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18090"><a href="https://blog.f-secure.com/category/business-security/">Business Security</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18089"><a href="https://blog.f-secure.com/category/home-security/">Home Security</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-18091"><a href="https://blog.f-secure.com/category/threats-research/">Threats &#038; Research</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18566"><a href="https://blog.f-secure.com/category/f-secure-life/">F-Secure Life</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18093"><a href="https://blog.f-secure.com/category/podcasts/">Podcasts</a></li>
+<li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-18094"><a href="https://blog.f-secure.com/category/videos/">Videos</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-41889"><a href="https://blog.f-secure.com/whitepapers/">Whitepapers</a></li>
+</ul></div>            </div>
+            <div class="l-mobile-navigation__tools">
+                <div class="l-mobile-navigation__search">
+                    <a href="https://blog.f-secure.com/search">
+                        Search                    </a>
+                </div>
+                <div class="l-mobile-navigation__language">
+                    
+
+<div class="c-language-selector js-language-selector c-language-selector--list-up">
+
+    <span class="c-language-selector__current">
+		<span>en</span>                    <i class="fa fa-angle-down"></i>
+            </span>
+
+    <div class="c-language-selector__list js-language-selector-list">
+        
+        <ul>
+                                                                            <li>
+                        <a href="https://blog.f-secure.com/fi/">
+                            Suomi                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/fr/">
+                            Français                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/de/">
+                            Deutsch                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/it/">
+                            Italiano                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/es/">
+                            Español                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/nl/">
+                            Nederlands                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/ja/">
+                            日本語                        </a>
+                    </li>
+                                                                <li>
+                        <a href="https://blog.f-secure.com/pt-br/">
+                            Português                        </a>
+                    </li>
+                                    </ul>
+
+            </div>
+
+</div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</header>
+
+<div class="b-sidemenu">
+    <div class="b-sidemenu__wrapper">
+        <h4>Trending tags</h4>
+
+                    <ul class="c-trending-tags">
+                                    <li><a href="https://blog.f-secure.com/tag/advanced-threat-protection-en/">Advanced Threat Protection</a></li>
+                                    <li><a href="https://blog.f-secure.com/ja/tag/artificial-intelligence-jp/">AI</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/best-practice-en/">Best Practice</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/cyber-threat-landscape/">Cyber Threat Landscape</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/data-breach-en/">Data Breach</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/digital-parenting-en/">Digital Parenting</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/iot/">IoT</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/privacy-en/">Privacy</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/ransomware-en/">Ransomware</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/smart-home-en/">Smart Home</a></li>
+                                    <li><a href="https://blog.f-secure.com/tag/social-media-en/">Social Media</a></li>
+                            </ul>
+            </div>
+</div>
+
+<div id="content" class="b-page-content b-page-content--offset">
+
+
+<div class="s-context--inverted">
+
+    <div class="b-single-header">
+
+    <div class="c-background-image" style="background-image: url(https://blog-assets.f-secure.com/wp-content/uploads/2019/09/13165948/business-metro-tablet-couple-1940x970-1024x513.jpg);"></div>
+    <div class="c-overlay"></div>
+
+    <div class="b-single-header__container">
+
+        <div class="b-single-header__content">
+
+            <!-- categories -->
+            <div class="b-single-header__categories">
+                <div class="c-category-list">
+                    <a href="https://blog.f-secure.com/category/threats-research/" rel="category tag">Threats &amp; Research</a>                </div>
+            </div>
+
+            <h1>Detecting Parent PID Spoofing</h1>
+
+            <!-- author -->
+            
+
+    <div class="c-blog-author">
+
+        <div class="c-blog-author__avatar">
+            <a href="https://blog.f-secure.com/author/noorah/">
+                <img src="https://blog-assets.f-secure.com/wp-content/uploads/2018/07/02055722/Blog-picture.png" alt="">            </a>
+        </div>
+
+        <div class="c-blog-author__text">
+            <h5>
+                <a href="https://blog.f-secure.com/author/noorah/">
+                    Noora Hyvärinen                </a>
+            </h5>
+            <p class="c-blog-author__time">
+                <span>21.12.18</span>
+                <span>8 min. read</span>
+            </p>
+        </div>
+
+    </div>
+
+
+        </div>
+
+        <div class="b-single-header__tags">
+            <strong>Tags: </strong><a href="https://blog.f-secure.com/tag/f-secure-countercept/" rel="tag">F-Secure Countercept</a><a href="https://blog.f-secure.com/tag/managed-detection-and-response/" rel="tag">Managed Detection and Response</a>        </div>
+
+        <div class="b-single-header__sharing" data-scheme-target>
+            <div class="c-share c-share--vertical">
+    <h5 class="c-share__title">Share</h5>
+    <ul class="c-share__list">
+                    <li>
+                <a href="http://twitter.com/share?url=https://SHARE_SITE_URL/detecting-parent-pid-spoofing/&text=Detecting+Parent+PID+Spoofing" title="Share on Twitter" data-some-link="twitter" class="twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </li>
+                    <li>
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://SHARE_SITE_URL/detecting-parent-pid-spoofing/&source=Detecting+Parent+PID+Spoofing" title="Share on Linkedin" data-some-link="linkedin" class="linkedin">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+            </li>
+                    <li>
+                <a href="http://www.facebook.com/sharer/sharer.php?u=https://SHARE_SITE_URL/detecting-parent-pid-spoofing/" title="Share on Facebook" data-some-link="facebook" class="facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+            </li>
+            </ul>
+</div>
+        </div>
+
+    </div>
+</div>
+
+</div>
+
+<div class="s-context">
+
+    <section class="b-blog b-blog--space-above">
+        <div class="b-blog__container">
+
+            <div class="l-blog">
+                <div class="l-blog__content">
+
+                    
+                    <div class="h-wysiwyg-html">
+                        <article class="c-article" data-scheme-target>
+                            <p>One of the most useful techniques hunt teams can use for detecting anomalous activity is the analysis of parent-child process relationships. However, more capable adversaries can bypass this using Parent PID (PPID) Spoofing allowing the execution of a malicious process from an arbitrary parent process. While this technique itself is not new, having been covered by Cobalt Strike <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/#Reference1">[1]</a> and Didier Stevens <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/#Reference2">[2]</a> <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/#Reference3">[3]</a>, very little research has been done in detecting such attacks.</p>
+<p>In this blog, we will explore how this technique works and how defenders can utilize Event Tracing for Windows (ETW) to detect this technique. We’ll also release a proof of concept PowerShell script to perform PPID spoofing and DLL injection, as well as a Python script that makes use of the pywintrace <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/#Reference8">[8]</a> library to detect this activity.</p>
+<h4>Why spoof in the first place?</h4>
+<p>In the past attackers were often able to move through networks undetected, but with the rise of EDR and threat hunting the tables have started to turn. The use of parent-child process analysis in particular has been a useful technique in detecting anomalous activity generated during nearly every phase of a kill chain.</p>
+<p>Some examples we use at Countercept:</p>
+<p>&#8211; Macro payload delivery &#8211; WinWord spawning processes</p>
+<p>&#8211; JS/VBS C# payload delivery &#8211; cscript spawning csc</p>
+<p>&#8211; Lateral movement &#8211; services/wmiprvse spawning new processes</p>
+<p>This has pushed attackers to re-evaluate their approach and look at techniques like PPID spoofing in order to bypass modern defensive teams.</p>
+<h4>Spoofing via CreateProcessA</h4>
+<p>There are a number of different ways to spoof process parents. In this post we’re going to focus on one of the simplest and most commonly used techniques involving the API call CreateProcessA.</p>
+<p>CreateProcessA, unsurprisingly, lets users create new processes and by default, processes will be created with their inherited parent. However, this function also supports a parameter called “lpStartupInfo” where you can essentially define the parent process you want to use. This feature was first introduced in Windows Vista with the addition of UAC in order to correctly set parents.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38045" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125649/Figure-11.jpg" alt="" width="509" height="312" /></p>
+<p><em>Figure 1</em></p>
+<p>At a deeper technical level, the lpStartupInfo parameter points to a STARTUPINFOEX structure <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/#Reference5">[5]</a>.This structure contains an lpAttributeList and using UpdateProcThreadAttribute you can set the process parent via the “PROC_THREAD_ATTRIBUTE_PARENT_PROCESS” attribute.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38053" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125652/Figure-21.jpg" alt="" width="600" height="195" /></p>
+<p><em>Figure 2</em></p>
+<p>As an aside, this approach can also be used for privilege escalation. The documentation alludes to this stating that “Attributes inherited from the specified process include handles, the device map, processor affinity, priority, quotas, the process token and job object.” Adam Chester has a blog that demonstrates how this can be abused to get SYSTEM in Windows <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/#Reference6">[6]</a>.</p>
+<h4>Have I lied to my parents?</h4>
+<p>One of the most common ways to gain a foothold on a network is using a malicious macro document. Many payloads will often launch new processes, such as cmd, PowerShell, regsvr32 or certutil; Figure 3 shows an example of this with rundll32 spawning from winword. However, this behavior is relatively anomalous and can easily be detected by most modern blue-teams.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38061" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125656/Figure-3-ppid1.png" alt="" width="600" height="331" /></p>
+<p><em>Figure 3</em></p>
+<p>To overcome this issue, an attacker could instead use a VBS macro implementation of the CreateProcessA technique to launch a payload from an expected parent process (e.g. Explorer launching cmd) to blend in with the environment. Figure 4 gives a glimpse into how this could be implemented.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38069" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125659/Figure-4a1.jpg" alt="" width="600" height="86" /></p>
+<p><em>Figure 4</em></p>
+<p>We won’t be releasing this VBS code; however, more information can be found here <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/#Reference7">[7]</a>.</p>
+<p>But, can we take this even further to avoid common Windows utilities completely? One option would be to use some form of DLL or memory injection to load a payload within an already running process.</p>
+<p>To illustrate this we created a PowerShell script based on code from Didier Stevens <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/#Reference3">[3]</a>  that can be used to create a process with a spoofed parent and then inject a DLL within it.</p>
+<p># ppid spoofing and process spoofing happening now. $result1 = [Kernel32]::InitializeProcThreadAttributeList([IntPtr]::Zero, 1, 0, [ref]$lpSize) $sInfoEx.lpAttributeList = [System.Runtime.InteropServices.Marshal]::AllocHGlobal($lpSize) $result1 = [Kernel32]::InitializeProcThreadAttributeList($sInfoEx.lpAttributeList, 1, 0, [ref]$lpSize) $result1 = [Kernel32]::UpdateProcThreadAttribute($sInfoEx.lpAttributeList, 0, 0x00020000, # PROC_THREAD_ATTRIBUTE_PARENT_PROCESS = 0x00020000 $lpValue, [IntPtr]::Size, [IntPtr]::Zero, [IntPtr]::Zero) $result1 = [Kernel32]::CreateProcess($spawnTo, [IntPtr]::Zero, [ref]$SecAttr, [ref]$SecAttr, 0, 0x08080004, #EXTENDED_STARTUPINFO_PRESENT | CREATE_NO_WINDOW | CREATE_SUSPENDED # 0x00080010, # EXTENDED_STARTUPINFO_PRESENT | CREATE_NEW_CONSOLE (This will show the window of the process) [IntPtr]::Zero, $GetCurrentPath, [ref] $sInfoEx, [ref] $pInfo)</p>
+<p><em>Figure 5</em></p>
+<p># Load and execute dll into spoofed process. $loadLibAddress = [Kernel32]::GetProcAddress([Kernel32]::GetModuleHandle(&#8220;kernel32.dll&#8221;), &#8220;LoadLibraryA&#8221;) $lpBaseAddress = [Kernel32]::VirtualAllocEx($pInfo.hProcess, 0, $dllPath.Length, 0x00003000, 0x4) $result1 = [Kernel32]::WriteProcessMemory($pInfo.hProcess, $lpBaseAddress, (New-Object &#8220;System.Text.ASCIIEncoding&#8221;).GetBytes($dllPath), $dllPath.Length, [ref]0) # $result1 = [Kernel32]::VirtualProtectEx($pInfo.hProcess, $lpBaseAddress, $dllPath.Length, 0x20, [ref]0) $result1 = [Kernel32]::CreateRemoteThread($pInfo.hProcess, 0, 0, $loadLibAddress, $lpBaseAddress, 0, 0)</p>
+<p><em>Figure 6</em></p>
+<p>To demonstrate how such a script could be used to hide activity we looked at commonly running processes on Windows 10. One quite common legitimate relationship we saw was “svchost.exe” launching “RuntimeBroker.exe” (Figure 7).</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38077" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125702/Figure-71.png" alt="" width="600" height="488" /></p>
+<p><em>Figure 7</em></p>
+<p>Using the PowerShell script we were able to mimic this activity and forcibly spawn a legitimate “RuntimeBroker.exe” from “svchost.exe”, then inject and execute our DLL payload.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38085" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125706/Figure-81.png" alt="" width="600" height="427" /></p>
+<p><em>Figure 8</em></p>
+<p>This vector shows how such techniques can potentially bypass detection rules focused on parent-child relationships.</p>
+<h4>How can we find the liar?</h4>
+<p>In the previous section we showed that the CreateProcessA technique can spoof parent IDs and from a blue team perspective if you queried running processes with something like Task Manager or Process Explorer you would see the spoofed IDs. But is there some way to find out the real IDs?</p>
+<p>One of the best forensic data sources in Windows is Event Tracing for Windows (ETW). ETW provides a real-time stream of data about events occurring on a system and is something we use within our endpoint agent at Countercept.</p>
+<p>The Microsoft-Windows-Kernel-Process provider in particular can give some useful insights into process creation and can help us detect the process ID spoofing. In the example below you’ll see how “rundll32.exe” (PID 5180) is being spawned from “winword.exe” (PID 9224) (Figure 9).</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38093" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125709/Figure-9.png" alt="" width="600" height="331" /></p>
+<p><em>Figure 9</em></p>
+<p>Looking into the ETW data collected (Figure 10) you’ll see there are multiple ProcessId fields, including the EventHeader ProcessId, as well as the actual event ProcessID and ParentProcessID. Although this is somewhat confusing, reading through the MSDN documentation, we find that the EventHeader ProcessId actually identifies the process that generated the event – i.e. the parent.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38101" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125712/Figure-10.png" alt="" width="600" height="230" /></p>
+<p><em>Figure 10 </em></p>
+<p>And in this legitimate example you’ll notice that the EventHeader ProcessId and ParentProcessId correctly match.</p>
+<p>In this second example we executed our malicious PowerShell script and spawned a “RuntimeBroker.exe” (PID 4976) from “svchost.exe” (PID 4652).</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38109" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125715/Figure-11.png" alt="" width="600" height="427" /></p>
+<p><em>Figure 11</em></p>
+<p>As before, we can see ETW generated a process event (Figure 12); however, this time the EventHeader ProcessId and ParentProcessID are different. And in fact the EventHeader ProcessId shows the real parent, which is “winword.exe” (PID 9224). We’ve just caught someone performing ParentPID spoofing!</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38117" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125719/Figure-12.png" alt="" width="600" height="227" /></p>
+<p><em>Figure 12</em></p>
+<p>However, as always in threat detection, things aren’t that simple and if you attempt to do this at scale you’re going to see false positives from legitimate spoofing. One common example is User Account Control (UAC), which is used to elevate process privileges. In Windows 10 when UAC executes, the Application Information service (through svchost) is used to launch the elevated process, but will then spoof the parent to show the original caller. The example below shows how an elevated cmd.exe will show explorer.exe as the parent, when in fact it was svchost.exe.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38125" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125722/Figure-13.png" alt="" width="600" height="124" /></p>
+<p><em>Figure 13</em></p>
+<p>Another false positive we saw involved crash handling with WerFault. In the example below, when MicrosoftEdge crashed svchost was used to launch WerFault.exe and the parent was spoofed as MicrosoftEdge.exe.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38133" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125725/Figure-14.png" alt="" width="600" height="102" /></p>
+<p><em>Figure 14</em><br />
+For testing purposes we created a simple proof-of-concept Python script that used pywintrace to log events from ETW, compare PIDs, and then filter results to remove false positives (Figure 15).</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-38037" src="https://blog-assets.f-secure.com/wp-content/uploads/2019/09/17125646/Figure-151.png" alt="" width="600" height="75" /></p>
+<p><em>Figure 15</em></p>
+<p>The code for the PowerShell spoofing script, as well as the detection script, <a href="https://github.com/countercept/ppid-spoofing">can be found on our Github</a>.</p>
+<h4>Conclusion</h4>
+<p>In this post we’ve shown how attackers can abuse legitimate Windows functions to fool blue teamers and potentially bypass detection techniques based on parent-child relationships.</p>
+<p>From a defensive perspective though, we’ve shown how analysis of ETW process events can easily highlight anomalous parent spoofing and help discover the true origin of a process. As always this research shows how essential it is for defenders to push the boundaries of current technology and stay one step ahead of attackers at all times.</p>
+<h4>References</h4>
+<p>[1] <a href="https://blog.didierstevens.com/2017/03/20/">https://blog.cobaltstrike.com/2017/05/23/cobalt-strike-3-8-whos-your-daddy/</a></p>
+<p>[2] <a href="https://blog.didierstevens.com/2017/03/20/">https://blog.didierstevens.com/2017/03/20/</a></p>
+<p>[3] <a href="https://blog.didierstevens.com/2009/11/22/quickpost-selectmyparent-or-playing-with-the-windows-process-tree/">https://blog.didierstevens.com/2009/11/22/quickpost-selectmyparent-or-playing-with-the-windows-process-tree/</a></p>
+<p>[4] <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363759(v=vs.85).aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/aa363759(v=vs.85).aspx</a></p>
+<p>[5] <a href="https://docs.microsoft.com/en-us/windows/desktop/api/winbase/ns-winbase-_startupinfoexa">https://docs.microsoft.com/en-us/windows/desktop/api/winbase/ns-winbase-_startupinfoexa</a></p>
+<p>[6] <a href="https://blog.xpnsec.com/becoming-system/">https://blog.xpnsec.com/becoming-system/</a></p>
+<p>[7] <a href="https://www.countercept.com/[1]%20https:/blog.cobaltstrike.com/2017/05/23/cobalt-strike-3-8-whos-your-daddy/ [2] https:/blog.didierstevens.com/2017/03/20/ [3] https:/blog.didierstevens.com/2009/11/22/quickpost-selectmyparent-or-playing-with-the-windows-process-tree/ [4] https:/msdn.microsoft.com/en-us/library/windows/desktop/aa363759(v=vs.85).aspx [5] https:/docs.microsoft.com/en-us/windows/desktop/api/winbase/ns-winbase-_startupinfoexa [6] https:/blog.xpnsec.com/becoming-system/ [7] http:/www.pwncode.club/2018/08/macro-used-to-spoof-parent-process.html [8] https:/github.com/fireeye/pywintrace">http://www.pwncode.club/2018/08/macro-used-to-spoof-parent-process.html</a></p>
+<p>[8] <a href="https://github.com/fireeye/pywintrace">https://github.com/fireeye/pywintrace</a></p>
+                        </article>
+                    </div>
+
+                    <div class="l-blog__meta">
+                        <div class="l-blog__author">
+                            
+
+    <div class="c-blog-author">
+
+        <div class="c-blog-author__avatar">
+            <a href="https://blog.f-secure.com/author/noorah/">
+                <img src="https://blog-assets.f-secure.com/wp-content/uploads/2018/07/02055722/Blog-picture.png" alt="">            </a>
+        </div>
+
+        <div class="c-blog-author__text">
+            <h5>
+                <a href="https://blog.f-secure.com/author/noorah/">
+                    Noora Hyvärinen                </a>
+            </h5>
+            <p class="c-blog-author__time">
+                <span>21.12.18</span>
+                <span>8 min. read</span>
+            </p>
+        </div>
+
+    </div>
+
+                        </div>
+                        <div class="l-blog__sharing">
+                            <div class="c-share c-share--right">
+    <h5 class="c-share__title">Share</h5>
+    <ul class="c-share__list">
+                    <li>
+                <a href="http://twitter.com/share?url=https://SHARE_SITE_URL/detecting-parent-pid-spoofing/&text=Detecting+Parent+PID+Spoofing" title="Share on Twitter" data-some-link="twitter" class="twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </li>
+                    <li>
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://SHARE_SITE_URL/detecting-parent-pid-spoofing/&source=Detecting+Parent+PID+Spoofing" title="Share on Linkedin" data-some-link="linkedin" class="linkedin">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+            </li>
+                    <li>
+                <a href="http://www.facebook.com/sharer/sharer.php?u=https://SHARE_SITE_URL/detecting-parent-pid-spoofing/" title="Share on Facebook" data-some-link="facebook" class="facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+            </li>
+            </ul>
+</div>
+                        </div>
+                    </div>
+
+                    
+                        <div class="l-blog__categories">
+                            <p class="text-dim">Categories</p>
+
+                            <div class="c-category-list">
+                                <a href="https://blog.f-secure.com/category/threats-research/" rel="category tag">Threats &amp; Research</a>                            </div>
+                        </div>
+
+                    
+                        <div class="l-blog__tags">
+                            <p class="text-dim">Tags</p>
+
+                            <ul class="c-tags-ul">
+                                                                    <li><a href="https://blog.f-secure.com/tag/f-secure-countercept/">F-Secure Countercept</a></li>
+                                                                    <li><a href="https://blog.f-secure.com/tag/managed-detection-and-response/">Managed Detection and Response</a></li>
+                                                            </ul>
+                        </div>
+
+                    
+                    <!-- <div class="l-blog__comments">
+                                            </div>
+                    -->
+                </div>
+
+                <div class="l-blog__sidebar" data-sticky="parent">
+                    
+<div class="c-sidebar">
+
+    <div class="c-sidebar-block c-sidebar-block--light s-context--dim"><div class="c-newsletter-form">
+
+    <form id="newsletter-form" method="post" name="2018-06-27_BlogNewsletter" action="">
+
+        <h4 class="c-newsletter-form__title">Sign up for our newsletter</h4>
+        <p class="c-newsletter-form__description">Are you interested in</p>
+
+        <div class="c-newsletter-form__checkboxes">
+
+            <label for="newsletter-form-interests-home-security">
+                <input id="newsletter-form-interests-home-security" type="checkbox" name="interest" value="Home Security">
+                <span>Home Security</span>
+            </label>
+
+            <label for="newsletter-form-interests-business-security">
+                <input id="newsletter-form-interests-business-security" type="checkbox" name="interest" value="Business Security">
+                <span>Business Security</span>
+            </label>
+
+            <label for="newsletter-form-interests-threats-hacks">
+                <input id="newsletter-form-interests-threats-hacks" type="checkbox" name="interest" value="Threats &amp; Research">
+                <span>Threats &amp; Research</span>
+            </label>
+
+            <label for="newsletter-form-interests-f-secure-life">
+                <input id="newsletter-form-interests-f-secure-life" type="checkbox" name="interest" value="F-Secure Life">
+                <span>F-Secure Life</span>
+            </label>
+
+        </div>
+
+        <div class="c-newsletter-form__input" id="emailWrapper">
+            <label style="margin-left:0;" for="field2" class="label customFont translate required" data-lang="emailAddress">Email address*</label>
+            <input id="field2" class="bg-grayLighter translate required" name="emailAddress" pattern="[a-zA-Z0-9.-_-+]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}" type="email" required placeholder="Email address*" data-lang="emailAddress">
+        </div>
+
+        <input type="hidden" name="elqFormName" value="2018-06-27_BlogNewsletter">
+        <input type="hidden" name="elqSiteID" value="2484">
+        <input type="hidden" name="interestAreasBlogNewsletter1" value="">
+        <input type="hidden" name="elqCampaignId">
+        <input type="hidden" name="redirectUrl" value="https://blog.f-secure.com/detecting-parent-pid-spoofing/?modal=subscription-thankyou">
+        <input type="hidden" name="language" value="English">
+        <input type="hidden" name="version" value="en">
+
+        <div class="c-newsletter-form__submit c-newsletter-form__submit--center">
+
+            <p class="js-newsletter-form-message c-newsletter-form__pick-one">Please select at least one interest.</p>
+
+            <button class="submit btn btn-primary translate" data-track-event="subscribe " data-track-name="subscription form" data-lang="sendSubscribe">
+                Subscribe            </button>
+
+        </div>
+
+    </form>
+</div>
+
+
+
+<script type="text/javascript">
+
+let form = document.getElementById("newsletter-form");
+form.addEventListener("submit", (e) => {
+
+    e.preventDefault();
+
+    form.setAttribute("action", "https://profiling.f-secure.com/e/f2");
+
+    let interests = [];
+    let interestElements = document.querySelectorAll("input[name=interest]");
+    for (var i = 0; i < interestElements.length; i++) {
+        if (interestElements[i].checked) {
+            interests.push(interestElements[i].getAttribute("value"));
+        }
+    }
+    document.querySelector("input[name=interestAreasBlogNewsletter1]").setAttribute("value", interests.join("::"));
+
+    if (interests.length == 0) {
+        document.querySelector(".js-newsletter-form-message").style.display = "block";
+    } else {
+        form.submit();
+    }
+    // return false;
+
+});
+
+
+</script></div><div class="c-sidebar-block">
+
+    <h5 class="c-sidebar-block__title">
+        Highlighted article    </h5>
+
+    
+<div class="c-promo js-clickable" data-url="https://blog.f-secure.com/vulnerability-macos-gatekeeper/">
+
+            <div class="c-promo__image">
+            <div class="c-background-image" style="background-image:url(https://blog-assets.f-secure.com/wp-content/uploads/2021/04/27190116/abstract-blur-lights-1024x684.jpg);"></div>
+
+            <h5 class="c-promo__label">
+                <a href="https://blog.f-secure.com/category/f-secure-life/">
+                    F-Secure Life                </a>
+            </h5>
+        </div>
+    
+    <div class="c-promo__content">
+        <h4 class="c-promo__title">
+            <a href="https://blog.f-secure.com/vulnerability-macos-gatekeeper/" title="F-Secure R&#038;D discovers exploitable vulnerability in Apple&#8217;s macOS Gatekeeper">
+                F-Secure R&#038;D discovers exploitable vulnerability in Apple&#8217;s macOS Gatekeeper            </a>
+        </h4>
+
+        
+        <div class="c-promo__meta">
+            <p class="c-promo__author">
+                Rasmus Sten            </p>
+            <p class="c-promo__time">
+                28.04.21            </p>
+                        <p class="c-promo__read-time">
+                2 min. read            </p>
+                    </div>
+    </div>
+
+</div>
+
+</div>
+
+</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    
+
+    
+    <section class="b-blog b-blog--space-above">
+        <div class="b-blog__container">
+            <h2>
+                Related posts            </h2>
+        </div>
+
+        <div class="b-blog__container">
+            <div class="l-related-posts">
+
+                
+                    <div class="l-related-posts__item">
+                        
+
+<div class="c-hero js-clickable" data-url="https://blog.f-secure.com/vulnerability-macos-gatekeeper/">
+
+            <div class="c-background-image" style="background-image:url(https://blog-assets.f-secure.com/wp-content/uploads/2021/04/27190116/abstract-blur-lights-1348x900.jpg);"></div>
+        <div class="c-overlay--fade"></div>
+
+    <div class="c-hero__content">
+        <h2 class="c-hero__title">
+            <a href="https://blog.f-secure.com/vulnerability-macos-gatekeeper/" title="F-Secure R&#038;D discovers exploitable vulnerability in Apple&#8217;s macOS Gatekeeper">
+                F-Secure R&#038;D discovers exploitable vulnerability in Apple&#8217;s macOS Gatekeeper            </a>
+        </h2>
+
+        <div class="c-hero__cta">
+                        <a class="c-cta-link" href="https://blog.f-secure.com/vulnerability-macos-gatekeeper/">Read article</a>
+        </div>
+
+        <div class="c-hero__meta">
+            <p class="c-hero__author">
+                Rasmus Sten            </p>
+            <p class="c-hero__time">
+                28.04.21            </p>
+                        <p class="c-hero__read-time">
+                2 min. read            </p>
+                    </div>
+    </div>
+
+    <h5 class="c-hero__label">
+        <a href="https://blog.f-secure.com/category/f-secure-life/">
+            F-Secure Life        </a>
+    </h5>
+</div>
+                    </div>
+
+                
+                    <div class="l-related-posts__item">
+                        
+
+<div class="c-hero js-clickable" data-url="https://blog.f-secure.com/poisoning-attacks-in-a-distributed-learning-environment/">
+
+            <div class="c-background-image" style="background-image:url(https://blog-assets.f-secure.com/wp-content/uploads/2021/04/05095945/falling-lights-colors-1200x900.jpg);"></div>
+        <div class="c-overlay--fade"></div>
+
+    <div class="c-hero__content">
+        <h2 class="c-hero__title">
+            <a href="https://blog.f-secure.com/poisoning-attacks-in-a-distributed-learning-environment/" title="A study of defences against poisoning attacks in a distributed learning environment">
+                A study of defences against poisoning attacks in a distributed learning environment            </a>
+        </h2>
+
+        <div class="c-hero__cta">
+                        <a class="c-cta-link" href="https://blog.f-secure.com/poisoning-attacks-in-a-distributed-learning-environment/">Read article</a>
+        </div>
+
+        <div class="c-hero__meta">
+            <p class="c-hero__author">
+                Andrew Patel            </p>
+            <p class="c-hero__time">
+                22.04.21            </p>
+                        <p class="c-hero__read-time">
+                35 min. read            </p>
+                    </div>
+    </div>
+
+    <h5 class="c-hero__label">
+        <a href="https://blog.f-secure.com/category/threats-research/">
+            Threats &amp; Research        </a>
+    </h5>
+</div>
+                    </div>
+
+                
+                    <div class="l-related-posts__item">
+                        
+
+<div class="c-hero js-clickable" data-url="https://blog.f-secure.com/threat-analysis-of-a-reinforcement-learning-trading-algorithm/">
+
+            <div class="c-background-image" style="background-image:url(https://blog-assets.f-secure.com/wp-content/uploads/2021/04/19134048/matrix-numbers-cards-1125x900.jpg);"></div>
+        <div class="c-overlay--fade"></div>
+
+    <div class="c-hero__content">
+        <h2 class="c-hero__title">
+            <a href="https://blog.f-secure.com/threat-analysis-of-a-reinforcement-learning-trading-algorithm/" title="Threat analysis of a reinforcement learning trading algorithm">
+                Threat analysis of a reinforcement learning trading algorithm            </a>
+        </h2>
+
+        <div class="c-hero__cta">
+                        <a class="c-cta-link" href="https://blog.f-secure.com/threat-analysis-of-a-reinforcement-learning-trading-algorithm/">Read article</a>
+        </div>
+
+        <div class="c-hero__meta">
+            <p class="c-hero__author">
+                Andrew Patel            </p>
+            <p class="c-hero__time">
+                19.04.21            </p>
+                        <p class="c-hero__read-time">
+                12 min. read            </p>
+                    </div>
+    </div>
+
+    <h5 class="c-hero__label">
+        <a href="https://blog.f-secure.com/category/threats-research/">
+            Threats &amp; Research        </a>
+    </h5>
+</div>
+                    </div>
+
+                
+                    <div class="l-related-posts__item">
+                        
+<div class="c-promo js-clickable" data-url="https://blog.f-secure.com/the-cisos-dilemma/">
+
+            <div class="c-promo__image">
+            <div class="c-background-image" style="background-image:url(https://blog-assets.f-secure.com/wp-content/uploads/2021/02/17082128/Dawn_1-1.jpg);"></div>
+
+            <h5 class="c-promo__label">
+                <a href="https://blog.f-secure.com/category/business-security/">
+                    Business Security                </a>
+            </h5>
+        </div>
+    
+    <div class="c-promo__content">
+        <h4 class="c-promo__title">
+            <a href="https://blog.f-secure.com/the-cisos-dilemma/" title="The CISO’s Dilemma: What the threat landscape looks like from the top">
+                The CISO’s Dilemma: What the threat landscape looks like from the top            </a>
+        </h4>
+
+        
+        <div class="c-promo__meta">
+            <p class="c-promo__author">
+                Jason Sattler            </p>
+            <p class="c-promo__time">
+                15.04.21            </p>
+                        <p class="c-promo__read-time">
+                5 min. read            </p>
+                    </div>
+    </div>
+
+</div>
+                    </div>
+
+                
+            </div>
+        </div>
+    </section>
+
+    
+</div>
+
+</div><!-- end of .page-content -->
+
+<footer class="b-footer">
+
+    <div class="b-footer__container">
+
+        <div class="b-footer__logo">
+            <a href="https://blog.f-secure.com" title="F-Secure Blog">
+                
+<!-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 841.9 245.3" style="enable-background:new 0 0 841.9 245.3;" xml:space="preserve">
+<g>
+	<g>
+		<g>
+			<path d="M600.5,198.3c0-2-1-3-4.2-3c-0.9,0-2.1,0.1-2.8,0.2v8.8h2.1v-3h0.9l1.6,3h2.5l-2.1-3.4
+				C599.7,200.5,600.5,199.6,600.5,198.3z M596.4,199.8h-0.7V197c0.2,0,0.5,0,0.7,0c1.8,0,2,0.4,2,1.4
+				C598.4,199.4,597.9,199.8,596.4,199.8z"/>
+			<path d="M596.9,191c-5.9,0-8.9,3-8.9,8.9c0,5.9,3,8.9,8.9,8.9c5.9,0,8.9-3,8.9-8.9C605.8,194.1,602.8,191,596.9,191z
+				 M596.9,207.1c-5.2,0-7.2-1.9-7.2-7.2c0-5.3,2-7.2,7.2-7.2c5.1,0,7.2,1.9,7.2,7.2C604.1,205.2,602,207.1,596.9,207.1z"/>
+			<path d="M9.8,110.7c0-1.5,0.3-1.8,1.8-1.8h58.2c1.5,0,1.8,0.3,1.8,1.8v17.5c0,1.5-0.3,1.8-1.8,1.8H33.7v21.3h30.1
+				c1.5,0,1.8,0.3,1.8,1.8v17.2c0,1.5-0.3,1.8-1.8,1.8H33.7v33.1c0,1.5-0.3,1.8-1.8,1.8H11.6c-1.5,0-1.8-0.3-1.8-1.8V110.7z"/>
+			<path d="M82.7,172.3c-1.5,0-1.8-0.3-1.8-1.8v-17.2c0-1.5,0.3-1.8,1.8-1.8h29.8c1.5,0,1.8,0.3,1.8,1.8v17.2c0,1.5-0.3,1.8-1.8,1.8
+				H82.7z"/>
+			<path d="M147.7,135.7c0,6.5,3.8,7.8,18.5,12.1c21,6.1,28.8,14.2,28.8,30.6c0,21.3-17.9,30.4-38.2,30.4c-11.6,0-22.6-3.3-28.9-6.8
+				c-1-0.5-1.5-1-1.5-2.3v-12.9c0-1.1,0.3-1.5,1.3-1.5c2.1,0,15,3.6,27.4,3.6c11.1,0,16.2-2.6,16.2-9.3c0-6.6-4.6-8.4-17.7-11.9
+				c-22-6-29.4-14.1-29.4-30.4c0-19.3,15.6-30.1,34.6-30.1c11.1,0,20,2.3,28.6,6.8c1.2,0.7,1.5,1,1.5,2.3v12.9
+				c0,1.2-0.7,1.5-1.5,1.5c-2.8,0-14.4-3.6-27.3-3.6C151.1,127.1,147.7,130.6,147.7,135.7z"/>
+			<path d="M228,176.4c0.8,10.6,6.6,13.6,19.3,13.6c12.7,0,22.3-3.2,24.6-3.2c1,0,1.5,0.2,1.5,1.5v12.2c0,1.5-0.7,1.8-1.8,2.3
+				c-6.9,3-16.9,6-28.8,6c-24.3,0-38.4-11.1-38.4-38.2c0-25.6,13.9-39.5,37.4-39.5c26.5,0,34.7,15.9,34.7,37.4v6.1
+				c0,1.5-0.3,1.8-1.8,1.8H228z M227.9,163.2h26.5c0-10.7-3.5-15-12.4-15C233.8,148.1,228.4,152.4,227.9,163.2z"/>
+			<path d="M323.6,131.1c9.4,0,18.8,2.8,25.1,5.8c1.5,0.7,1.7,1,1.7,2.5v11.9c0,0.8-0.2,1.5-1.2,1.5c-2.3,0-11.2-2.8-21.7-2.8
+				c-12.9,0-17.7,6.9-17.7,20c0,13.1,4.8,20,17.7,20c10.4,0,20-3.2,22.3-3.2c1,0,1.2,0.7,1.2,1.5v12.2c0,1.5-0.2,1.8-1.7,2.5
+				c-6.3,3-16.4,5.8-25.8,5.8c-25.6,0-37.4-15.9-37.4-38.9C286.2,147,298,131.1,323.6,131.1z"/>
+			<path d="M398.4,208.8c-20.3,0-35.7-6.4-35.7-30.3v-44.3c0-1.5,0.3-1.8,1.8-1.8h19.8c1.5,0,1.8,0.3,1.8,1.8v41.2
+				c0,10.1,3.3,14.5,13.4,14.5c4.1,0,8.3-0.2,11.4-0.5v-55.3c0-1.5,0.3-1.8,1.8-1.8h19.8c1.5,0,1.8,0.3,1.8,1.8v68.7
+				c0,1.5-0.2,1.7-1.3,2C423.4,207.2,410.3,208.8,398.4,208.8z"/>
+			<path d="M485.4,150.4c-4.3,0-8.4,0.5-10.9,1.5v53.4c0,1.5-0.3,1.8-1.8,1.8h-19.8c-1.5,0-1.8-0.3-1.8-1.8v-66.2
+				c0-1.2,0.5-1.7,1.5-2c8.9-3.5,18.3-6.1,28.9-6.1c6.3,0,12.4,0.5,17.9,2.1c1,0.3,1.2,0.7,1.2,1.7v14.9c0,1.5-0.5,1.6-1.5,1.6
+				C497.1,151.4,492.8,150.4,485.4,150.4z"/>
+			<path d="M528.9,176.4c0.8,10.6,6.6,13.6,19.3,13.6c12.7,0,22.3-3.2,24.6-3.2c1,0,1.5,0.2,1.5,1.5v12.2c0,1.5-0.6,1.8-1.8,2.3
+				c-7,3-16.9,6-28.8,6c-24.3,0-38.4-11.1-38.4-38.2c0-25.6,13.9-39.5,37.4-39.5c26.5,0,34.7,15.9,34.7,37.4v6.1
+				c0,1.5-0.3,1.8-1.8,1.8H528.9z M528.7,163.2h26.5c0-10.7-3.5-15-12.4-15C534.6,148.1,529.2,152.4,528.7,163.2z"/>
+		</g>
+		<path d="M830.6,31.8C754.9,5.4,675.4,4.2,605.2,25.7c-15,4.6-19,17.2-16.4,27.9c4,16.3,9.9,34.9,17,51.8c0.1,0.3,0.3,0.2,0.3-0.3
+			c-0.9-7.9,5.1-17.9,17.1-21.6c66.5-20.2,124.6-15.2,176.3,2.3c8.7,3,18.5-1.7,21.3-10.7c7.1-22.8,10-38.4,10.7-42.2"/>
+		<g>
+			<path d="M655.4,81.9c-8.8,1.9-20.8,4.7-29.8,7.8c-18.1,6.2-17.3,28.1-7.6,35.2c0.7-4.1,5-9.6,9.9-11.5c18.1-7,37.4-11.3,57-13
+				C675,96.3,665.2,90.5,655.4,81.9z"/>
+		</g>
+		<path d="M799.2,126c-52.2-25-115.1-26.8-166.9-6.7c-8.5,3.3-14,13.7-8.5,23.7c8.7,15.8,19.5,32.6,31.9,48.7
+			c-1.7-5.9,1.3-16.9,12.9-20.5c31.9-9.8,65.4-5.7,87.8,3.3c6.3,2.6,15.1,1,20.2-6.5c11-16.5,21-36.3,23.2-40.7
+			C800.1,126.8,799.8,126.3,799.2,126z"/>
+		<g>
+			<path d="M747.4,204.8c-5.7-1.6-19.8-12.7-25.3-18.2c-3.5-3.5-8.5-8.4-13.9-14.3c-12.2,0-24.1,1.3-36.7,5.3
+				c-11.7,3.7-12.8,17.4-7.7,24.4c8.8,10.8,14.8,16.8,24.6,26.8c10.2,10.5,28.3,10.8,38.8,0.2c7.6-7.7,12.3-12.7,20.9-22.4
+				C748.4,205.9,748.2,205,747.4,204.8z"/>
+		</g>
+	</g>
+</g>
+</svg>
+                
+            </a>
+        </div>
+
+
+                <div class="b-footer__special-links">
+
+            <ul id="menu-footer-top-menu" class=""><li id="menu-item-18241" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-18241"><a href="https://blog.f-secure.com/about-this-blog/">About This Blog</a></li>
+<li id="menu-item-18242" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-18242"><a href="http://www.f-secure.com">F-Secure</a></li>
+<li id="menu-item-18243" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-18243"><a href="https://www.f-secure.com/en/web/about_global/contact">Contact us</a></li>
+</ul>
+        </div>
+        
+    </div>
+
+        <div class="b-footer__container">
+
+        <div class="b-footer__navigation">
+            <ul id="menu-footer-col-1" class="c-page-navigation-footer"><li id="menu-item-18494" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-18494"><a href="https://blog.f-secure.com/">Back to front page</a></li>
+<li id="menu-item-22877" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22877"><a href="https://www.f-secure.com/en/web/legal/privacy/website">Privacy Policy</a></li>
+<li id="menu-item-22878" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22878"><a href="https://www.f-secure.com/en/web/legal/privacy/website">Terms of Service</a></li>
+</ul>        </div>
+
+        <div class="b-footer__navigation">
+                    </div>
+
+        <div class="b-footer__social-media">
+            
+<div class="c-social-media">
+
+    <h5 class="c-social-media__title">
+        Follow us    </h5>
+
+    <ul class="c-social-media__list">
+                    <li>
+                <a href="https://www.facebook.com/F-Secure-107471754306/">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                    <span class="c-social-media__service">facebook</span>
+                </a>
+            </li>
+                    <li>
+                <a href="https://twitter.com/FSecure">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                    <span class="c-social-media__service">twitter</span>
+                </a>
+            </li>
+                    <li>
+                <a href="https://www.instagram.com/fsecureglobal/">
+                    <i class="fab fa-instagram" aria-hidden="true"></i>
+                    <span class="c-social-media__service">instagram</span>
+                </a>
+            </li>
+                    <li>
+                <a href="https://www.linkedin.com/company/f-secure-corporation/">
+                    <i class="fab fa-linkedin" aria-hidden="true"></i>
+                    <span class="c-social-media__service">linkedin</span>
+                </a>
+            </li>
+                    <li>
+                <a href="https://www.youtube.com/user/FSecureNews">
+                    <i class="fab fa-youtube" aria-hidden="true"></i>
+                    <span class="c-social-media__service">youtube</span>
+                </a>
+            </li>
+                    <li>
+                <a href="https://www.youtube.com/c/FSecureConnectedLife?sub_confirmation=1">
+                    <i class="fab fa-youtube" aria-hidden="true"></i>
+                    <span class="c-social-media__service">youtube</span>
+                </a>
+            </li>
+            </ul>
+
+</div>
+        </div>
+
+    </div>
+    
+    <div class="b-footer__container">
+
+        <div class="b-footer__copyright">
+            <div>
+                Copyright 2021 F-Secure Blog            </div>
+
+            <div>
+                                                            </div>
+
+        </div>
+
+    </div>
+
+</footer><!-- end of footer -->
+
+<modals>
+
+    
+            <a href="#newsletter-modal" class="h-hidden js-trigger-newsletter-modal" data-swiss-modal="inline">Newsletter modal</a>
+        <div id="newsletter-modal" class="h-hidden">
+            <p>Thank you for your interest towards F-Secure newsletter. You will shortly get an email to confirm the subscription.</p>
+        </div>
+    
+            <a href="#gatedcontent-modal" class="h-hidden js-trigger-gatedcontent-modal" data-swiss-modal="inline">Gated Content modal</a>
+        <div id="gatedcontent-modal" class="h-hidden">
+            <p>Congratulations &#8211; You can now access the content by clicking the button below.</p>
+        </div>
+    
+</modals><script type='text/javascript' src='https://blog.f-secure.com/wp-content/themes/swiss/assets/dist/js/bundle.js?v=1618578117' id='swiss-js-js'></script>
+<script>
+window.apiGatewayUrl = "https://90tm3tokkh.execute-api.eu-central-1.amazonaws.com/test?";
+window.currentLanguage = "en";
+</script>
+</body>
+</html>

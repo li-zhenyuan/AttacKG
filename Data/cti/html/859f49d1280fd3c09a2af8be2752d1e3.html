@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="Fun with WMI Filters in Group Policy" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/archive/blogs/askds/fun-with-wmi-filters-in-group-policy" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="archived_blog_id" content="2188" />
+<meta name="archived_blog_orig_url" content="https://blogs.technet.microsoft.com/askds" />
+<meta name="archived_blog_post_author" content="NedPyle [MSFT]" />
+<meta name="archived_blog_post_author_email" content="nedpyle@microsoft.com" />
+<meta name="archived_blog_post_id" content="6550" />
+<meta name="author" content="kexugit" />
+<meta name="breadcrumb_path" content="/archive/blogs/bread/toc.json" />
+<meta name="depot_name" content="MSDN.blogs-archive" />
+<meta name="document_id" content="eb6fc346-fd13-df36-950a-aba9d0766e51" />
+<meta name="document_version_independent_id" content="ef86069e-2221-4ba5-2e8c-c8e5ca179163" />
+<meta name="gitcommit" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr/commit/b1e8e2636fecb5506007f86ab5aec32dc1eb4ffb?path=/blogs-archive/askds/fun-with-wmi-filters-in-group-policy.md&amp;_a=contents" />
+<meta name="is_archived" content="true" />
+<meta name="locale" content="en-us" />
+<meta name="ms.author" content="Archiveddocs" />
+<meta name="ms.date" content="09/11/2008" />
+<meta name="ms.topic" content="Archived" />
+<meta name="original_content_git_url" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr?path=/blogs-archive/askds/fun-with-wmi-filters-in-group-policy.md&amp;version=GBlive&amp;_a=contents" />
+<meta name="ROBOTS" content="NOINDEX,NOFOLLOW" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="blogs-archive" />
+<meta name="search.ms_product" content="MSDN" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="uhfHeaderId" content="MSDocsHeader-Archive" />
+<meta name="updated_at" content="2020-02-07 07:49 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="toc.json" />
+<meta name="word_count" content="1137" />
+
+
+	<meta name="scope" content="Blogs" />
+<link href="https://docs.microsoft.com/en-us/archive/blogs/askds/fun-with-wmi-filters-in-group-policy" rel="canonical">
+	<title>Fun with WMI Filters in Group Policy | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: false,
+			hasGithubIssues: false,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr?path=/blogs-archive/askds/fun-with-wmi-filters-in-group-policy.md&version=GBlive&_a=contents',
+			extendBreadcrumb: false,
+			isEditDisplayable: false,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="nav-bar border-top is-hidden-mobile"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="fun-with-wmi-filters-in-group-policy">Fun with WMI Filters in Group Policy</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2008-09-11T00:00:00.000Z" data-article-date-source="ms.date">09/11/2008</time>
+							</li>
+									<li class="readingTime">5 minutes to read</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p>Hi, <a href="https://twitter.com/NerdPyle" data-linktype="external">Ned</a> here again. You may remember Mike Stephens writing about <a href="../askds/bulk-exporting-and-importing-wmi-filters-for-group-policy" data-linktype="relative-path">importing and exporting WMI filters</a> back in May. A common follow up question we got from that blog post was: “<em>Hey cool. So, uh, what are WMI filters again?”</em></p>
+<p>Group Policy WMI filters were introduced with Windows XP, and are supported in Windows Server 2003, Windows Vista, and Windows Server 2008. They are <em>not</em> supported in Windows 2000, so if you have an all-2000 environment you’re out of luck (10 years is a long time to go without upgrading :-P).</p>
+<p>For those still with us…</p>
+<p>You can use WMI filters to add a decision on when to apply a given group policy. This can be very useful when users or computers are located in a relatively flat structure instead of specific OU’s, for example. Filters can also help when you need to apply certain policies based on server roles, operating system version, network configuration, or other criteria. Windows evaluates these filters in the following order of overall Group Policy Processing:</p>
+<ol>
+<li>Policies in hierarchy are located.</li>
+<li><em>WMI Filters are checked.</em></li>
+<li>Security settings are checked.</li>
+<li>Finally, once everything has ‘passed’, a policy is applied.</li>
+</ol>
+<p>So we find all the policies that exist in the user/computer’s Local, Site, Domain, and OU hierarchy. Then we determine if the WMI filter evaluates as <em>TRUE</em>. Then we verify that the user/computer has Read and Apply Group permissions for the GPO. This means that WMI filters are still less efficient than hierarchical linking, but can definitely use filters to make decisions in a non-hierarchical Active Directory design.</p>
+<p>You configure WMI filters using the WMI Filters node in <strong>GPMC.MSC</strong>.</p>
+<p><a href="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_technet/askds/WindowsLiveWriter/FunwithWMIFiltersinGroupPolicy_AE4B/image_2.png" data-linktype="external"><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_technet/askds/WindowsLiveWriter/FunwithWMIFiltersinGroupPolicy_AE4B/image_thumb.png" alt="image" data-linktype="external"/></a></p>
+<p>Figure 1 – GPMC WMI Filters Node</p>
+<p>Then you can create, delete or edit a filter.</p>
+<p><a href="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_technet/askds/WindowsLiveWriter/FunwithWMIFiltersinGroupPolicy_AE4B/image_4.png" data-linktype="external"><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_technet/askds/WindowsLiveWriter/FunwithWMIFiltersinGroupPolicy_AE4B/image_thumb_1.png" alt="image" data-linktype="external"/></a></p>
+<p>Figure 2 – WMI Filter Editor</p>
+<p>Then you can link the WMI filter to any GPO you like (or more than one GPO), like below:</p>
+<p><a href="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_technet/askds/WindowsLiveWriter/FunwithWMIFiltersinGroupPolicy_AE4B/image_6.png" data-linktype="external"><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_technet/askds/WindowsLiveWriter/FunwithWMIFiltersinGroupPolicy_AE4B/image_thumb_2.png" alt="image" data-linktype="external"/></a></p>
+<p>Figure 3 – GPMC Filter Dropdown</p>
+<p>So in this case, I created a filter (you will see more on this below) that allows a GPO to apply to operating systems earlier than Windows Vista. I linked the WMI filter to a GPO that is applied to Windows Server 2008 computers – so the GPO <em>shouldn’t</em> apply. If I force Group Policy processing using <strong>GPUPDATE /FORCE</strong> then run <strong>GPRESULT /R</strong>, I see: <a href="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_technet/askds/WindowsLiveWriter/FunwithWMIFiltersinGroupPolicy_AE4B/image_8.png" data-linktype="external"><img src="https://msdnshared.blob.core.windows.net/media/TNBlogsFS/BlogFileStorage/blogs_technet/askds/WindowsLiveWriter/FunwithWMIFiltersinGroupPolicy_AE4B/image_thumb_3.png" alt="image" data-linktype="external"/></a></p>
+<p>Figure 4 – GPRESULT output</p>
+<p>Slick!</p>
+<p>WMI filters use a language called <em>WQL</em>, which will be very familiar to anyone that has ever written a SQL query. The nice thing about learning WMI queries is that it forces you to learn more about the extremely powerful WMI system as a whole and its <a href="https://msdn.microsoft.com/en-us/library/aa394572(VS.85).aspx" data-linktype="external">massive repository of data</a> within it. WMI works within a construct of Namespaces and Classes. 99% of every WQL query will operate in the CIMV2 namespace, like all of the examples below.</p>
+<p>So let’s look at some syntax examples:</p>
+<p><strong>Only for certain operating systems</strong></p>
+<p>It is common to want Group Policy objects to apply to a computer using a specific operating system or service pack installed. Here are some examples that cover a few bases:</p>
+<p><strong>SELECT Version FROM Win32_OperatingSystem WHERE Version &lt; &quot;6&quot;</strong></p>
+<p>The above WQL query returns true for any operating systems older than Vista (so Windows XP and Windows Server 2003).</p>
+<p><strong>SELECT Version FROM Win32_OperatingSystem WHERE Version LIKE &quot;6.0%&quot;</strong></p>
+<p>The above WQL query returns true for only Windows Vista or Windows Server 2008 operating systems.</p>
+<p><strong>SELECT Version FROM Win32_OperatingSystem WHERE Version = &quot;5.1.2600&quot;</strong></p>
+<p>The above WQL query returns true only if the operating system is Windows XP Service Pack 2.</p>
+<p><strong>SELECT * FROM Win32_OperatingSystem WHERE Version LIKE “6.0.%” AND ProductType &lt;&gt; “1”</strong></p>
+<p>The above WQL query returns true only if the computer is running Windows Server 2008 regardless of service pack. Why so complex, you ask? Remember that Windows Server2008 and Vista SP1 share the same codebase, so they actually have the same exact version. Choosing a product type not equal to 1 (which is Workstation) returns only servers or domain controllers running Windows Server 2008.</p>
+<p><strong>Only on Windows Server 2008 Core servers</strong></p>
+<p>What if you have a GPO that you want to apply only to servers running Windows Server 2008 Core installations? Here is a sample query (wrapped for readability, this should be done as a single line in the filter dialog):</p>
+<p><strong>SELECT OperatingSystemSKU FROM Win32_OperatingSystem WHERE OperatingSystemSKU = 12 OR</strong> <strong>OperatingSystemSKU = 39 OR OperatingSystemSKU= 14 OR OperatingSystemSKU = 41 OR</strong> <strong>OperatingSystemSKU = 13 OR OperatingSystemSKU = 40 OR OperatingSystemSKU = 29</strong></p>
+<p>These values map back to HEX values, which map back to:</p>
+<table>
+<colgroup>
+<col/>
+<col/>
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Value</strong></td>
+<td><strong>Meaning</strong></td>
+</tr>
+<tr class="even">
+<td><p>PRODUCT_DATACENTER_SERVER_CORE0x0000000C</p>
+  </td>
+<td><p>Server Datacenter Edition (core installation)</p>
+  </td>
+</tr>
+<tr class="odd">
+<td><p>PRODUCT_DATACENTER_SERVER_CORE_V0x00000027</p>
+  </td>
+<td><p>Server Datacenter Edition without Hyper-V (core installation)</p>
+  </td>
+</tr>
+<tr class="even">
+<td><p>PRODUCT_ENTERPRISE_SERVER_CORE0x0000000E</p>
+  </td>
+<td><p>Server Enterprise Edition (core installation)</p>
+  </td>
+</tr>
+<tr class="odd">
+<td><p>PRODUCT_ENTERPRISE_SERVER_CORE_V0x00000029</p>
+  </td>
+<td><p>Server Enterprise Edition without Hyper-V (core installation)</p>
+  </td>
+</tr>
+<tr class="even">
+<td><p>PRODUCT_STANDARD_SERVER_CORE0x0000000D</p>
+  </td>
+<td><p>Server Standard Edition (core installation)</p>
+  </td>
+</tr>
+<tr class="odd">
+<td><p>PRODUCT_STANDARD_SERVER_CORE_V0x00000028</p>
+  </td>
+<td><p>Server Standard Edition without Hyper-V (core installation)</p>
+  </td>
+</tr>
+<tr class="even">
+<td><p>PRODUCT_WEB_SERVER_CORE0x0000001D</p>
+  </td>
+<td><p>Web Server Edition (core installation)</p>
+  </td>
+</tr>
+</tbody>
+</table>
+<p>If you want GPOs to apply only to computers NOT running Windows Server 2008 Core (and you can probably think of some reasons to do that), then you would change all the equal signs (=) in the above query to signs above to angled brackets (&lt;&gt;).<br/>
+(See <a href="http://msdn2.microsoft.com/en-us/library/ms724358.aspx" data-linktype="external">http://msdn2.microsoft.com/en-us/library/ms724358.aspx</a> for details and the<br/>
+non-CORE values.)</p>
+<p><strong>Only on a certain day of the week</strong></p>
+<p>Yes this is possible! Yes, customers have asked how to do this! No, I have no idea why! Ok, kidding about that last one, but it sure seems like an odd request at first. It turns out that some companies like to do things like set a specific <em>message of the day</em> for their legal notice. Or have a separate screensaver running every day of the week for their users. Different strokes for different folks, I suppose.</p>
+<p>To do this, your WQL queries (<em>one filter per GPO</em> that you wanted to set, remember) would be:</p>
+<p><strong>Select DayOfWeek from Win32_LocalTime where DayOfWeek = 1</strong></p>
+<p><strong>Select DayOfWeek from Win32_LocalTime where DayOfWeek = 2</strong></p>
+<p><strong>Select DayOfWeek from Win32_LocalTime where DayOfWeek = 3</strong></p>
+<p>You get the idea. One is Monday, two is Tuesday, etc.</p>
+<p><strong>Wrapping it up</strong></p>
+<p>Hopefully you’ve found some new things to think about regarding WMI filters and Group Policy. A closing note: not all WMI filters are created equal. Not everything in WMI is as optimized as we’d like it to be, and some WMI queries are not as performant as we’d like. Avoid loose wildcard queries when possible as they will run slower (for example, <em>Select * from Win32_LocalTime where DayOfWeek = 5</em> will run slightly slower than the samples provided above). And above all, always test before deploying to production, using the <em>slowest hardware you can find</em> so that you get a good idea about baseline performance.</p>
+<p>Got a filter question or a good sample to share? Hit the comments section below.</p>
+<p>- Ned Pyle</p>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

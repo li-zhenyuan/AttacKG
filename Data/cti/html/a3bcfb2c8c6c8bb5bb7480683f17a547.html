@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8" />	
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<title>Spoof Using Right to Left Override (RTLO) Technique - Infosec Resources</title>
+		<link rel="profile" href="http://gmpg.org/xfn/11">
+		<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+		<link rel="manifest" href="/favicons/site.webmanifest">
+		<link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#00334a">
+		<meta name="msapplication-TileColor" content="#00334a">
+		<meta name="theme-color" content="#00334a">
+		<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" data-pagespeed-no-defer>//<![CDATA[
+	var gtm4wp_datalayer_name = "dataLayer";
+	var dataLayer = dataLayer || [];
+
+	var gtm4wp_scrollerscript_debugmode         = false;
+	var gtm4wp_scrollerscript_callbacktime      = 100;
+	var gtm4wp_scrollerscript_readerlocation    = 150;
+	var gtm4wp_scrollerscript_contentelementid  = "content";
+	var gtm4wp_scrollerscript_scannertime       = 60;
+//]]>
+</script>
+<!-- End Google Tag Manager for WordPress by gtm4wp.com -->
+	<!-- This site is optimized with the Yoast SEO plugin v16.2 - https://yoast.com/wordpress/plugins/seo/ -->
+	<meta name="description" content="In this article we will learn about the one of the most overlooked spoofing mechanisms, known as right to left override (RTLO). What is RTLO? RIGHT TO" />
+	<link rel="canonical" href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Spoof Using Right to Left Override (RTLO) Technique - Infosec Resources" />
+	<meta property="og:description" content="In this article we will learn about the one of the most overlooked spoofing mechanisms, known as right to left override (RTLO). What is RTLO? RIGHT TO" />
+	<meta property="og:url" content="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/" />
+	<meta property="og:site_name" content="Infosec Resources" />
+	<meta property="article:modified_time" content="2021-03-25T06:27:10+00:00" />
+	<meta property="og:image" content="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/2020/10/041515_2317_SpoofUsingR1.png" />
+	<meta property="og:image:width" content="485" />
+	<meta property="og:image:height" content="410" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:label1" content="Est. reading time">
+	<meta name="twitter:data1" content="2 minutes">
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//player.vimeo.com' />
+<link rel='dns-prefetch' href='//a.omappapi.com' />
+<link rel='dns-prefetch' href='//www.googletagmanager.com' />
+<link rel="alternate" type="application/rss+xml" title="Infosec Resources &raquo; Spoof Using Right to Left Override (RTLO) Technique Comments Feed" href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/feed/" />
+<link rel='stylesheet' id='wp-block-library-css'  href='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-includes/css/dist/block-library/style.min.css?ver=5.7.1' type='text/css' media='all' />
+<link rel='stylesheet' id='live-css'  href='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/styles/live.css?ver=1621605136' type='text/css' media='all' />
+<script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js'  onload='' id='jquery-core-js'></script>
+<script type='text/javascript' id='isi_backup_data-js-extra'>
+/* <![CDATA[ */
+var ajax_data = {"ajax_url":"https:\/\/resources.infosecinstitute.com\/wp-admin\/admin-ajax.php"};
+var ajax_vars = {"ajaxurl":"https:\/\/resources.infosecinstitute.com\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/isi_backup/isi_backup_test.js?ver=5.7.1' defer onload='' id='isi_backup_data-js'></script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/duracelltomi-google-tag-manager/js/gtm4wp-form-move-tracker.js?ver=1.12.3' defer onload='' id='gtm4wp-form-move-tracker-js'></script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/duracelltomi-google-tag-manager/js/gtm4wp-youtube.js?ver=1.12.3' defer onload='' id='gtm4wp-youtube-js'></script>
+<script type='text/javascript' src='https://player.vimeo.com/api/player.js?ver=1.0' defer onload='' id='gtm4wp-vimeo-api-js'></script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/duracelltomi-google-tag-manager/js/gtm4wp-vimeo.js?ver=1.12.3' defer onload='' id='gtm4wp-vimeo-js'></script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/duracelltomi-google-tag-manager/js/analytics-talk-content-tracking.js?ver=1.12.3' defer onload='' id='gtm4wp-scroll-tracking-js'></script>
+<script type='text/javascript' src='https://www.googletagmanager.com/gtag/js?id=UA-146509-8' id='google_gtagjs-js' async></script>
+<script type='text/javascript' id='google_gtagjs-js-after'>
+window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("set", "developer_id.dZTNiMT", true);
+gtag("config", "UA-146509-8", {"anonymize_ip":true,"optimize_id":"GTM-5M79H7H"});
+</script>
+<meta name="generator" content="Site Kit by Google 1.31.0" />
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" data-pagespeed-no-defer>//<![CDATA[
+var google_tag_params = {"pageTitle":"Spoof Using Right to Left Override (RTLO) Technique - Infosec Resources","pagePostType":"topic","pagePostType2":"single-topic","pagePostAuthor":"Security Ninja","pagePostDate":"April 16, 2015","pagePostDateYear":"2015","pagePostDateMonth":"04","pagePostDateDay":"16","pagePostTerms":{"topic_cat":["Hacking"],"item_type":["Article"]},"browserName":"Firefox","browserVersion":"23.0","browserEngineName":"Gecko","browserEngineVersion":"23.0","osName":"Windows","osVersion":"6.1","deviceType":"desktop","deviceManufacturer":"","deviceModel":"","postCountOnPage":1,"postCountTotal":1,"postID":29091,"postFormat":"standard","geoCountryCode":"(no geo data available)","geoCountryName":"(no geo data available)","geoRegionCode":"(no geo data available)","geoRegionName":"(no geo data available)","geoCity":"(no geo data available)","geoZipcode":"(no geo data available)","geoLatitude":"(no geo data available)","geoLongitude":"(no geo data available)"};
+	var dataLayer_content = {"visitorLoginState":"logged-out","visitorType":"visitor-logged-out","visitorEmail":"","visitorIP":"122.11.202.14","pageTitle":"Spoof Using Right to Left Override (RTLO) Technique - Infosec Resources","pagePostType":"topic","pagePostType2":"single-topic","pagePostAuthor":"Security Ninja","pagePostDate":"April 16, 2015","pagePostDateYear":"2015","pagePostDateMonth":"04","pagePostDateDay":"16","pagePostTerms":{"topic_cat":["Hacking"],"item_type":["Article"]},"browserName":"Firefox","browserVersion":"23.0","browserEngineName":"Gecko","browserEngineVersion":"23.0","osName":"Windows","osVersion":"6.1","deviceType":"desktop","deviceManufacturer":"","deviceModel":"","postCountOnPage":1,"postCountTotal":1,"postID":29091,"postFormat":"standard","geoCountryCode":"(no geo data available)","geoCountryName":"(no geo data available)","geoRegionCode":"(no geo data available)","geoRegionName":"(no geo data available)","geoCity":"(no geo data available)","geoZipcode":"(no geo data available)","geoLatitude":"(no geo data available)","geoLongitude":"(no geo data available)","google_tag_params":window.google_tag_params};
+	dataLayer.push( dataLayer_content );//]]>
+</script>
+<!-- End Google Tag Manager for WordPress by gtm4wp.com --><!-- Google Tag Manager added by Site Kit -->
+<script>
+( function( w, d, s, l, i ) {
+	w[l] = w[l] || [];
+	w[l].push( {'gtm.start': new Date().getTime(), event: 'gtm.js'} );
+	var f = d.getElementsByTagName( s )[0],
+		j = d.createElement( s ), dl = l != 'dataLayer' ? '&l=' + l : '';
+	j.async = true;
+	j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+	f.parentNode.insertBefore( j, f );
+} )( window, document, 'script', 'dataLayer', 'GTM-W9VWCG' );
+</script>
+<!-- End Google Tag Manager -->
+				<script async type='text/javascript' src='https://www.lightboxcdn.com/vendor/c2c913a7-dd36-4b41-891c-8cce110d48bc/lightbox_inline.js'></script>
+	</head>
+	<body class="topic-template-default single single-topic postid-29091">
+
+				
+		<div id="search-wrap" class="search-wrap">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col col-lg-8 col-sm-10 col-xs-12">
+						<form class="position-relative" action="https://resources.infosecinstitute.com">
+							<input type="text" placeholder="Search" name="s" />
+							<button type="submit" class="fas fa-search"></button>
+							<div class="fas fa-times close-search"></div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="" id="mobile-menu"></div>
+
+		<header id="header" class="container-fluid large">
+			<div class="container-fluid large">
+
+				<section id="header-top" class="flex">
+
+					<nav class="navbar" id="top-navigation" role="navigation"><div class="top-navigation"><ul id="menu-top-menu" class="nav navbar-nav"><li id="menu-item-80" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-80"><a href="https://www.infosecinstitute.com/skills/?utm_source=resources&#038;utm_medium=infosec%20network&#038;utm_campaign=infosec%20skills%20homepage&#038;utm_content=homepage">Boot camps &#038; training</a></li>
+</li>
+<li id="menu-item-81" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-81"><a href="https://www.infosecinstitute.com/iq/?utm_source=resources&#038;utm_medium=infosec%20network&#038;utm_campaign=demo%20infosec%20iq&#038;utm_content=top%20navigation%20bar">Awareness &#038; anti-phishing</a></li>
+</li>
+<li id="menu-item-82" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-82"><a href="https://community.infosecinstitute.com/?utm_source=resources&#038;utm_medium=infosec%20network&#038;utm_campaign=community&#038;utm_content=homepage">Community</a></li>
+</li>
+</ul></div></nav>
+
+										<div class="about-social">
+
+						
+							               <span class="socials">
+	                  <span itemscope itemtype="http://schema.org/Organization">
+		                  		                  	<a class="fab fa-twitter" itemprop="sameAs" href="https://twitter.com/infosecedu" aria-label="twitter" target="_blank"></a>
+		                  		                  	<a class="fab fa-facebook-f" itemprop="sameAs" href="https://www.instagram.com/infosecinstitute/" aria-label="facebook-f" target="_blank"></a>
+		                  		                  	<a class="fab fa-linkedin-in" itemprop="sameAs" href="https://www.linkedin.com/company/infosec-institute/" aria-label="linkedin-in" target="_blank"></a>
+		                  	                  </span>
+	               </span>
+	               
+					</div>
+					
+				</section>
+
+				<section id="header-bottom" class="flex">
+
+					<div class="logo-wrap">
+						<a href="https://resources.infosecinstitute.com" arial-label="Home Link" class="flex logo-link"><img id="logo" data-srcset="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/images/logo.png 1x, https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/images/logo@2x.png 2x" id="logo" class="lazy" alt="Infosec Resources Home" /></a>
+					</div>
+
+					<nav class="navbar" id="main-navigation" role="navigation"><div class="main-navigation"><ul id="menu-main-navigation-menu" class="nav navbar-nav"><li id="menu-item-154" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-154"><a href="https://resources.infosecinstitute.com/topics/">Topics</a><div class="dropdown-menu-wrap position-absolute">
+									<div class="container-fluid">
+										<ul role="menu" class="dropdown-menu row row-cols-3"><li class="menu-item col" id="menu-item-topic_cat-0"><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/hacking/">Hacking</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/penetration-testing/">Penetration testing</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/cyber-range/">Cyber ranges</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/capture-the-flag/">Capture the flag (CTF)</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/malware-analysis/">Malware analysis</a></div></li><li class="menu-item col" id="menu-item-topic_cat-1"><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/professional-development/">Professional development</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/general-security/">General security</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/news/">News</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/security-awareness/">Security awareness</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/phishing/">Phishing</a></div></li><li class="menu-item col" id="menu-item-topic_cat-2"><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/management-compliance-auditing/">Management, compliance &amp; auditing</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/digital-forensics/">Digital forensics</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/threat-intelligence/">Threat Intelligence</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/topics/dod-8570/">DoD 8570</a></div><div class="term-item view-all"><a href="https://resources.infosecinstitute.com/topics/">+ View All</a></div></li></ul></div></div></li>
+</li>
+<li id="menu-item-153" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-153"><a href="https://resources.infosecinstitute.com/certifications/">Certification prep</a><div class="dropdown-menu-wrap position-absolute">
+									<div class="container-fluid">
+										<ul role="menu" class="dropdown-menu row row-cols-4"><li class="menu-item col" id="menu-item-certification_cat-0"><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/cissp/">CISSP</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/ccsp/">CCSP</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/cgeit/">CGEIT</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/ceh/">CEH</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/ccna/">CCNA</a></div></li><li class="menu-item col" id="menu-item-certification_cat-1"><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/cisa/">CISA</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/cism/">CISM</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/crisc/">CRISC</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/a/">A+</a></div></li><li class="menu-item col" id="menu-item-certification_cat-2"><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/network/">Network+</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/securityplus/">Security+</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/casp/">CASP+</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/pmp/">PMP</a></div></li><li class="menu-item col" id="menu-item-certification_cat-3"><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/cysa/">CySA+</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/cmmc/">CMMC</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/microsoft-azure/">Microsoft Azure</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/certifications/other/">Other</a></div><div class="term-item view-all"><a href="https://resources.infosecinstitute.com/certifications/">+ View All</a></div></li></ul></div></div></li>
+</li>
+<li id="menu-item-203" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-203"><a href="https://resources.infosecinstitute.com/careers/">Career guidance</a><div class="dropdown-menu-wrap position-absolute">
+									<div class="container-fluid">
+										<ul role="menu" class="dropdown-menu row row-cols-3"><li class="menu-item col" id="menu-item-career_cat-0"><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/it-auditor/">IT auditor</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/cybersecurity-architect/">Cybersecurity architect</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/cybercrime-investigator/">Cybercrime investigator</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/penetration-tester/">Penetration tester</a></div></li><li class="menu-item col" id="menu-item-career_cat-1"><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/cybersecurity-consultant/">Cybersecurity consultant</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/cybersecurity-analyst/">Cybersecurity analyst</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/cybersecurity-engineer/">Cybersecurity engineer</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/cybersecurity-manager/">Cybersecurity manager</a></div></li><li class="menu-item col" id="menu-item-career_cat-2"><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/incident-responder/">Incident responder</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/information-security-auditor/">Information security auditor</a></div><div class="term-item"><a href="https://resources.infosecinstitute.com/careers/information-security-manager/">Information security manager</a></div><div class="term-item view-all"><a href="https://resources.infosecinstitute.com/careers/">+ View All</a></div></li></ul></div></div></li>
+</li>
+<li id="menu-item-86" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-86"><a href="https://www.infosecinstitute.com/events/?utm_source=resources&#038;utm_medium=infosec%20network&#038;utm_campaign=events&#038;utm_content=homepage">Events</a></li>
+</li>
+<li id="menu-item-357" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-357"><a href="https://www.infosecinstitute.com/podcast/?utm_source=resources&#038;utm_medium=infosec%20network&#038;utm_campaign=cyber%20work&#038;utm_content=homepage">Cyber Work</a>
+<ul role="menu" class="dropdown-menu">
+	<li id="menu-item-56548" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56548"><a href="https://www.infosecinstitute.com/podcast/?utm_source=resources&#038;utm_medium=infosec%20network&#038;utm_campaign=cyber%20work&#038;utm_content=homepage">Cyber Work Podcast</a></li>
+</li>
+	<li id="menu-item-56549" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56549"><a href="https://www.infosecinstitute.com/learn/?utm_source=resources&#038;utm_medium=infosec%20network&#038;utm_campaign=cyber%20work&#038;utm_content=homepage">Cyber Work Applied</a></li>
+</li>
+	<li id="menu-item-56550" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56550"><a href="https://www.infosecinstitute.com/events/?utm_source=resources&#038;utm_medium=infosec%20network&#038;utm_campaign=cyber%20work&#038;utm_content=homepage">Cyber Work Live</a></li>
+</li>
+</ul>
+</li>
+</li>
+<li id="menu-item-356" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown menu-item-356"><a href="https://resources.infosecinstitute.com/about-infosec-resources/">About</a>
+<ul role="menu" class="dropdown-menu">
+	<li id="menu-item-207" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-207"><a href="https://resources.infosecinstitute.com/contributors/">Contributors</a></li>
+</li>
+</ul>
+</li>
+</li>
+<li id="menu-search-toggle" class="search"><a href="#">Search</a></li><li id="mob-nav-tog-wrap">
+	   		<div class="clearfix" id="mobile-navigation-toggle">
+					<div class="relative">
+						<span class="bar-top"></span>
+						<span class="bar-middle">Main Menu</span>
+						<span class="bar-bot"></span>
+					</div>
+				</div>
+	   	</li></ul></div></nav>
+
+				</section>
+
+			</div>
+		</header>
+
+		<div id="sticky-offset"></div><main id="main-content" class="single">
+	<div class="container-fluid">
+
+		<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="https://resources.infosecinstitute.com/topics/">Topics</a></li>
+				<li class="breadcrumb-item"><a href="https://resources.infosecinstitute.com/topics/hacking/">Hacking</a></li>
+				<li class="breadcrumb-item active" aria-current="page"><a href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/">Spoof Using Right to Left Override (RTLO) Technique</a></li>
+			</ol>
+</nav>
+		<div class="row content-row mt-4">
+
+			<div class="col content-wrap">
+
+				
+
+<a href="https://resources.infosecinstitute.com/topics/hacking/" class="d-block meta main-taxonomy color-teal">Hacking</a>
+
+<h1 class="mb-3 h2 larger">Spoof Using Right to Left Override (RTLO) Technique</h1>
+
+<div class="author-share flex v-center pb-25 mb-25">
+
+	<div class="left flex v-center meta">
+
+		<div class="author-img lazy bgimage" data-src="https://secure.gravatar.com/avatar/374821c0f6f6a30d764c777438a1f3f7?s=50&d=mm&r=g"></div>
+
+		<span class="date">April 16, 2015 by</span>
+
+		<span class="author-name color-black-dark font-weight-bold">Security Ninja</span>
+
+	</div>
+
+	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f2c86b0e7f7ef47"></script>
+	      <div class="share-wrap">
+	         <div class="mr-1">Share:</div>
+	         <div class="addthis_inline_share_toolbox"></div>
+	      </div>
+</div>
+				<div class="wysiwyg"><p>In this article we will learn about the one of the most overlooked spoofing mechanisms, known as right to left override (RTLO).</p>
+<h2>What is RTLO?</h2>
+<p>RIGHT TO LEFT OVERRIDE is a Unicode mainly used for the writing and the reading of Arabic or Hebrew text. Unicode has a special character, U+202e, that tells computers to display the text that follows it in right-to-left order. This vulnerability is used to disguise the names of files and can be attached to the carrier like email. For example, the file name with ThisIsRTLOfileexe.doc is actually ThisIsRTLOfiledoc.exe, which is an executable file with a U+202e placed just before &#8220;doc.&#8221;</p>
+
+		<div class="azone-container" data-zone="main_top"></div>
+		
+<p>Though some email applications and services that block executable files from being included in messages also block .exe programs that are obfuscated with this technique, unfortunately many mail applications don&#8217;t or can&#8217;t reliably scan archived and zipped documents, and the malicious files manipulated in this way are indeed being spammed out within zip archives.</p>
+<p style="margin-left: 72pt;"><img src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/041515_2317_SpoofUsingR1.png" alt="" /></p>
+<p>For example, let&#8217;s create a file with Name TestingRTLO[U+202E]xcod.txt. &#8220;U+202E&#8221; can be copied and pasted from the above character map present in Windows. To make sure something is present in the character, do the following steps:</p>
+<ul>
+<li>Create a new text document and see its properties and note down its name:</li>
+</ul>
+<p style="margin-left: 36pt;"><img src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/041515_2317_SpoofUsingR2.png" alt="" /></p>
+<ul>
+<li>
+<div>Now rename the file with the copied U+202E characters and see the change in file name:</div>
+<p><img src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/041515_2317_SpoofUsingR3.png" alt="" /></li>
+<li>
+<div>Now rename the File TestingRTLO[U+202E]xcod.txt with characters inserted and see the below results.</div>
+<p><img src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/041515_2317_SpoofUsingR4.png" alt="" /></li>
+</ul>
+<h2>File extension types that can be dangerous</h2>
+<p>The below section lists the common file types that can be used to execute unwanted code in the system:</p>
+<ul>
+<li>.bat</li>
+<li>.exe</li>
+<li>.cmd</li>
+<li>.com</li>
+<li>.lnk</li>
+<li>.pif</li>
+<li>.scr</li>
+<li>.vb</li>
+<li>.vbe</li>
+<li>.vbs</li>
+<li>.wsh</li>
+</ul>
+<h2>Remediation against RTLO</h2>
+<p>Though most endpoint security solutions like antivirus detect this type of spoofing, and some IRC clients even change the crafted malicious links back to original form, many mail applications don&#8217;t or can&#8217;t reliably scan archived and zipped documents, and the malicious files manipulated in this way are indeed being spammed out within zip archives. The biggest example of this is in the usage of the backdoor &#8220;Etumbot&#8221;. Some features of Windows also help to carry this type of attack, such as Windows hides the file extensions by default. Malicious individuals can set any icon they want for let&#8217;s say a .exe file. A file named pic.jpg.exe using the standard image icon will look like a harmless image with Windows&#8217; default settings.</p>
+<p style="margin-left: 72pt;"><img src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/041515_2317_SpoofUsingR5.png" alt="" /></p>
+<p>Uncheck this selection and Windows will stop hiding extension for known file types.</p>
+<p>Another good approach is to make sure that the folder where all the downloads take place should have its view set to &#8216;content&#8217;.</p>
+<p style="margin-left: 180pt;"><img src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/041515_2317_SpoofUsingR6.png" alt="" /></p>
+<p>This will make sure that the files will appear in their original form despite all the changes.</p>
+
+		<div class="azone-container" data-zone="main_bottom"></div>
+		
+<p>Though this technique is a bit old, it is still being used in backdoors like Etumbot, malware known as Sirefef, etc.</p>
+</div>
+
+<div class="date-social mt-35 flex v-center">
+
+	<div class="posted meta">Posted: <span class="color-black-dark">April 16, 2015</span></div>
+
+	<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f2c86b0e7f7ef47"></script>
+	      <div class="share-wrap">
+	         <div class="mr-1">Share:</div>
+	         <div class="addthis_inline_share_toolbox"></div>
+	      </div>
+</div>
+				<div class="form-modal-screen" id="modal-wrapper" style="display: none;">
+	<div class="form-outer-wrapper" id="modal" style="display: block;">
+		<button id="form-modal-close" class="isi-modal-close" onclick="closeModal()">
+			<svg aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#BBBCBC" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"></path></svg>
+		</button>
+		<div class="form-inner-wrapper" id="form">
+			<div class="form-error">
+				<p class="form-headline">Uh-oh!</p>
+				<p class="form-paragraph">We've encountered a new and totally unexpected error.</p>
+			</div>
+			<div class="form-main" id="form-main">
+				<p class="form-headline" id="form-headline">Get instant boot camp pricing</p>
+				<p class="form-subheadline" id="form-subheadline"></p>
+				<div id="form-wrapper"></div>
+			</div>
+			<div class="form-success">
+				<p class="form-headline">Thank you!</p>
+				<p class="form-paragraph" id="secondary-success">A new tab for your requested boot camp pricing will open in <span id="countdown">5</span> seconds. If it doesn't open, <a class="isi-btn" href="" id="bootcamp-link" target="new">click here</a>.</p>
+			</div>
+		</div>
+		<div class="processing-wrapper" id="form-processing">
+			<svg aria-hidden="true" class="processing rotate" focusable="false" role="img" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M456.433 371.72l-27.79-16.045c-7.192-4.152-10.052-13.136-6.487-20.636 25.82-54.328 23.566-118.602-6.768-171.03-30.265-52.529-84.802-86.621-144.76-91.424C262.35 71.922 256 64.953 256 56.649V24.56c0-9.31 7.916-16.609 17.204-15.96 81.795 5.717 156.412 51.902 197.611 123.408 41.301 71.385 43.99 159.096 8.042 232.792-4.082 8.369-14.361 11.575-22.424 6.92z"></path></svg>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	// Parse URL
+	function getParameterByName(name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+
+	// Objects
+	var dataLoad = ({
+		page_type: 'Form',
+		channel: 'wordpress',
+		customerActivityDate: '2021-05-23',
+	});
+
+	/*  UTMs
+	var utm_campaign = getParameterByName('utm_campaign');
+	if (utm_campaign != '') {
+		dataLoad.utm_campaign = utm_campaign;
+	}
+
+	var utm_content = getParameterByName('utm_content');
+	if (utm_content != '') {
+		dataLoad.utm_content = utm_content;
+	}
+
+	var utm_medium = getParameterByName('utm_medium');
+	if (utm_medium != '') {
+		dataLoad.utm_medium = utm_medium;
+	}
+
+	var utm_source = getParameterByName('utm_source');
+	if (utm_source != '') {
+		dataLoad.utm_source = utm_source;
+	}
+
+	var utm_term = getParameterByName('utm_term');
+	if (utm_term != '') {
+		dataLoad.utm_term = utm_term;
+	} */
+
+	// Assemble Tealium Data
+	var dataDigiohEvent = ({
+		tealium_event: 'digioh_form_load',
+		page_type: 'Form',
+		channel: 'wordpress2',
+		customerActivityDate: '2021-05-23',
+	});
+
+	// Tealium Tag Reader
+	let utagEmail;
+	let utagSessionID;
+	let utagTealiumID;
+
+	function tealiumTagReader() {
+		if (typeof utag !== 'undefined') {
+			//console.log("UTAG FOUND");
+			let utagEmail = utag.data['va.badges.11714'];
+			let utagSessionID = utag.data['ut.session_id'];
+			let utagTealiumID = utag.data['tealium_visitor_id'];
+
+			if( utagEmail == true ){
+				utagEmail = 'true';
+				window.utagEmail = utagEmail;
+			} else {
+				utagEmail = 'false';
+				utagEmail = 'false';
+				window.utagEmail = utagEmail;
+			}
+			if (utagTealiumID) {
+				dataLoad.visitorID = utagTealiumID;
+				dataDigiohEvent.visitorID = utagTealiumID;
+				console.log("utagTealiumID = " + utagTealiumID);
+			}
+			if (utagSessionID) {
+				dataLoad.sessionID = utagSessionID;
+				dataDigiohEvent.sessionID = utagSessionID;
+				console.log("utagSessionID = " + utagSessionID);
+			}
+		} else {
+			console.log("NO UTAG FOUND");
+		}
+	}
+
+	setTimeout(tealiumTagReader, 2000);
+
+	// Send Message
+	window.addEventListener('message', function(message) {
+		const channel = message.data.channel;
+		const id = message.data.id;
+		const utm_campaign = message.data.utm_campaign;
+		const utm_content = message.data.utm_content;
+		const utm_medium = message.data.utm_medium;
+		const utm_source = message.data.utm_source;
+		const utm_term = message.data.utm_term;
+		const customerActivity = message.data.customerActivity;
+		const customerActivityType = message.data.customerActivityType;
+		const internalSFCampaign = message.data.internalSFCampaign;
+		const formName = message.data.formName;
+
+		if (channel === 'digiohLoad') { // 3946
+			console.log("Self serve lightbox loaded...");
+			var lightbox = document.getElementById('lightbox-iframe-' + id);
+
+			// Assemble Tealium Data
+			/* if (utm_campaign) {
+				dataLoad.utm_campaign = utm_campaign;
+			}
+			if (utm_content) {
+				dataLoad.utm_content = utm_content;
+			}
+			if (utm_medium) {
+				dataLoad.utm_medium = utm_medium;
+			}
+			if (utm_source) {
+				dataLoad.utm_source = utm_source;
+			}
+			if (utm_term) {
+				dataLoad.utm_term = utm_term;
+			} */
+			if (customerActivity) {
+				dataLoad.customerActivity = customerActivity;
+				dataDigiohEvent.customerActivity = customerActivity;
+			}
+			if (customerActivityType) {
+				dataLoad.customerActivityType = customerActivityType;
+				dataDigiohEvent.customerActivityType = customerActivityType;
+			}
+			if (internalSFCampaign) {
+				dataLoad.internalSFCampaign = internalSFCampaign;
+				dataDigiohEvent.internalSFCampaign = internalSFCampaign;
+			}
+			if (formName) {
+				dataLoad.formName = formName;
+				dataDigiohEvent.formName = formName;
+				dataDigiohEvent.event_name = formName;
+			}
+
+			lightbox.contentWindow.postMessage(dataLoad, '*');
+
+			// Send ID Values
+			function sendID() {
+				var lightbox = document.getElementById('lightbox-iframe-' + id);
+				lightbox.contentWindow.postMessage(dataDigiohEvent, '*');
+				console.log("dataDigiohEvent.visitorID = " + dataDigiohEvent.visitorID);
+			}
+
+			setTimeout(sendID, 2250);
+
+			// Tealium
+			utag.view(dataDigiohEvent);
+		}
+
+	});
+
+	// Categories
+	let resCertification = '';
+	console.log("Certification (resCertification) = " + resCertification);
+
+	let resTopic = 'Hacking';
+	console.log("Topic (resTopic) = " + resTopic);
+
+	let articleURLPath = window.location.pathname;
+	console.log("Pathname (articleURLPath) = " + articleURLPath);
+
+	let resCareer = articleURLPath.includes("career");
+	//console.log("Is 'career' in URL: = " + resCareer);
+
+	$('head').append('<link rel="stylesheet" type="text/css" href="https://infosec-institute.s3-us-west-2.amazonaws.com/miscellaneous/resForms.css">');
+	// Form Variables
+	let modalWrapper = document.getElementById("modal-wrapper");
+	let modal = document.getElementById("modal");
+	let formPlacement = document.getElementById("form-wrapper");
+	let formProcessing = document.getElementById("form-processing");
+	let formController = document.getElementById('form');
+	let formHeadline = document.getElementById("form-headline");
+	let formSubheadline = document.getElementById("form-subheadline");
+	let successButton = document.getElementById('bootcamp-link');
+	let successSecondary = document.getElementById("secondary-success");
+
+	// Form Data
+	var myData = ({
+		page_type: 'Form',
+		page_name: 'Spoof Using Right to Left Override (RTLO) Technique',
+		channel: 'resources',
+		customerActivityDate: '2021-05-23',
+		customerActivity: 'Choose your boot camp - Resources',
+		customerActivityType: 'Pricing Form',
+		formName: 'Pricing Form - Spoof Using Right to Left Override (RTLO) Technique',
+		formSuccess: 'success',
+		internalFormName: 'Choose your boot camp - Resources',
+		internalFormType: 'Flex',
+		internalSFCampaign: '7010y00000176qrAAA',
+		internalTalkTrackValue: '',
+		utm_campaign: 'course pricing',
+		utm_content: 'in line pricing form',
+		utm_medium: 'infosec network',
+		utm_source: 'resources',
+	});
+
+	// Redirect
+	function redirect() {
+		var counterWrapper = document.getElementById("countdown");
+		var counterStart = 5;
+		var download = document.getElementById("bootcamp-link");
+		var downloadTimer = setInterval(function(){
+			if(counterStart <= 0){
+				clearInterval(downloadTimer);
+				counterWrapper.innerHTML = "0";
+				download.click();
+			} else {
+				counterWrapper.innerHTML = counterStart;
+			}
+			counterStart -= 1;
+		}, 1000);
+	}
+
+	// Display Form
+	function displayFormPrimary(name) {
+		let digiohBoxPrimary = document.createElement('div');
+		digiohBoxPrimary.setAttribute("id", "lightbox-inline-form-ccf21f05-4714-4671-b1a5-128ffc7d843e");
+		digiohBoxPrimary.className = "form";
+		formPlacement.appendChild(digiohBoxPrimary);
+		formSubheadline.innerHTML = name;
+	}
+
+	function displayFormSecondary() {
+		let digiohBoxSecondary = document.createElement('div');
+		digiohBoxSecondary.setAttribute("id", "lightbox-inline-form-897765c4-a11d-4b95-ae24-3ca928183a88");
+		digiohBoxSecondary.className = "form-secondary";
+		modalWrapper.classList.add("form-outer-wrapper-secondary");
+		formPlacement.appendChild(digiohBoxSecondary);
+		formHeadline.innerHTML = "Get boot camp pricing";
+		formSubheadline.style.display = "none";
+	}
+
+	// Processing
+	function primaryProcessor(name, slug) {
+		displayFormPrimary(name);
+		myData.customerCertificationInterest = slug;
+		myData.utm_term = name;
+		myData.formName = 'Resources Boot Camp: ' + name;
+		var successLink = 'https://www.infosecinstitute.com/courses/instant-pricing/?utm_course=' + slug + '&status=unlocked';
+		successButton.href=successLink;
+		modal.classList.add("form-outer-wrapper-primary");
+	}
+
+	function secondaryProcessor() {
+		displayFormSecondary();
+		myData.utm_term = 'Resources Boot Camp: General';
+		myData.formName = 'Resources Boot Camp: General';
+		successSecondary.innerHTML = "An Infosec representative will be in touch soon.";
+	}
+
+	// Ads
+	let ad = document.getElementsByClassName("form-ad");
+	let adHeadline = document.getElementsByClassName("ad-headline");
+	let adCopy = document.getElementsByClassName("ad-copy");
+	let adButton = document.getElementsByClassName("ad-cta");
+
+	function adContents() {
+		for(var i = 0; i < adHeadline.length; i++){
+			adHeadline[i].innerHTML = "Get live, expert " + resCertification + "  instruction from anywhere";
+		}
+		for(var i = 0; i < adCopy.length; i++){
+			adCopy[i].innerHTML = "Enroll in an upcoming live online boot camp and earn your " + resCertification + ", guaranteed.";
+		}
+	}
+
+	// Match Certification to ISI Slug
+	if (resCertification == 'A+') {
+		let isiCertification = 'comptia_authorized_a_plus_boot_camp_training';
+		let resBootCampName = 'CompTIA A+ Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CASP+') {
+		let isiCertification = 'casp-boot-camp';
+		let resBootCampName = 'CompTIA CASP+ Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CCNA') {
+		let isiCertification = 'ccna-4cert-training';
+		let resBootCampName = 'CCNA Associate & CyberOps Associate Training Boot Camp with Dual Certification';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CCSP') {
+		let isiCertification = 'ccsp-boot-camp';
+		let resBootCampName = 'CCSP Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CEH' || resTopic == 'Hacking') {
+		let isiCertification = 'ethical-hacking-boot-camp';
+		let resBootCampName = 'Ethical Hacking Dual Certification Boot Camp – CEH and PenTest+';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CISA') {
+		let isiCertification = 'cisa-boot-camp';
+		let resBootCampName = 'CISA Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CISM') {
+		let isiCertification = 'cism-boot-camp';
+		let resBootCampName = 'CISM Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CISSP') {
+		let isiCertification = 'cissp-boot-camp';
+		let resBootCampName = 'CISSP Certification Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CRISC') {
+		let isiCertification = 'crisc-boot-camp';
+		let resBootCampName = 'CRISC Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'CySA+') {
+		let isiCertification = 'csa-boot-camp';
+		let resBootCampName = 'CompTIA CySA+ Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'PMP') {
+		let isiCertification = 'pmp-boot-camp-training';
+		let resBootCampName = 'Project Management Professional (PMP) Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'Network+' || resTopic == 'Network security') {
+		let isiCertification = 'comptia_authorized_network_boot_camp_training';
+		let resBootCampName = 'CompTIA Network+ Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resCertification == 'Security+') {
+		let isiCertification = 'security-plus-boot-camp';
+		let resBootCampName = 'CompTIA Security+ Certification Training and Boot Camp SY0-601';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resTopic == 'Incident response' || resTopic == 'Digital forensics') {
+		let isiCertification = 'computer-forensics-boot-camp';
+		let resBootCampName = 'Computer and Mobile Forensics Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resTopic == 'Reverse engineering') {
+		let isiCertification = 'reverse-engineering-boot-camp';
+		let resBootCampName = 'Reverse Engineering Malware Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resTopic == 'SCADA/ ICS security') {
+		let isiCertification = 'scada-security-boot-camp';
+		let resBootCampName = 'SCADA/ICS Security Training Boot Camp';
+		primaryProcessor(resBootCampName, isiCertification);
+		setTimeout(adContents, 2000);
+	} else if (resTopic == 'General security' || resTopic == 'Professional development' || resTopic == 'Capture the flag (CTF)' || resTopic == 'Management, compliance &amp; auditing' || resTopic == 'Blockchain security' || resTopic == 'Vulnerabilities' || resTopic == 'Insider threat' || resTopic == 'Healthcare information security' || resTopic == 'Penetration testing' || resTopic == 'Application security' || resTopic == 'Network security' || resTopic == 'NIST Cyber Security Framework' || resTopic == 'Malware analysis' || resTopic == 'Threat Intelligence' || resCertification == 'CGEIT' || resCertification == 'CMMC' || resCertification == 'CSIH' || resCertification == 'Microsoft Azure' || resCertification == 'Other'  || resCertification == 'Retired' || resCareer == true ) {
+		secondaryProcessor();
+	}
+
+	// Modal
+	function modalOpen2() {
+		modalWrapper.style.opacity = "1";
+	}
+
+	function modalOpen() {
+		modalWrapper.style.display = "flex";
+		setTimeout(modalOpen2, 500);
+	}
+
+	function closeModal2() {
+		modalWrapper.style.display = "none";
+	}
+
+	function closeModal() {
+		modalWrapper.style.opacity = "0";
+		setTimeout(closeModal2, 500);
+	}
+
+	// Form States
+	function startProcessing2() {
+		formProcessing.style.opacity = "1";
+		var primaryWrapper = document.getElementById("lightbox-inline-form-ccf21f05-4714-4671-b1a5-128ffc7d843e");
+		if (primaryWrapper) {
+			redirect();
+		}
+	}
+	function startProcessing1() {
+		formProcessing.style.display = "flex";
+		setTimeout(startProcessing2, 40);
+	}
+
+	function stopProcessing2() {
+		formProcessing.style.display = "none";
+	}
+	function stopProcessing1() {
+		formProcessing.style.opacity = "0";
+		setTimeout(stopProcessing2, 200);
+	}
+
+	function error2() {
+		formController.style.left = "0";
+	}
+	function error1() {
+		stopProcessing1();
+		setTimeout(error2, 40);
+	}
+
+	function success2() {
+		formController.style.left = "-200%";
+	}
+	function success1() {
+		stopProcessing1();
+		setTimeout(success2, 40);
+	}
+
+	// Message Reading
+	window.addEventListener('message', function(message) {
+		const channel = message.data.channel;
+		// Form Loading
+		if (channel === 'formLoad') { // 3631
+			var iframePrimary = document.getElementById("lightbox-iframe-ccf21f05-4714-4671-b1a5-128ffc7d843e");
+			if (iframePrimary) {
+				iframePrimary.contentWindow.postMessage(myData, '*');
+			}
+			var iframeSecondary = document.getElementById("lightbox-iframe-897765c4-a11d-4b95-ae24-3ca928183a88");
+			if (iframeSecondary) {
+				iframeSecondary.contentWindow.postMessage(myData, '*');
+			}
+			setTimeout(stopProcessing1, 1000);
+		}
+		// Form Processing
+		if (channel === 'formProcessing') { // 3696
+			setTimeout(startProcessing1, 0);
+			console.log("Processing...");
+		}
+		// Form Submit
+		if (channel === 'formSubmit') { // 3696
+			console.log("Digioh data recieved: " + message.data.customerFirstName + " " + message.data.customerLastName);
+			myData.tealium_event = message.data.tealium_event;
+			myData.customerFirstName = message.data.customerFirstName;
+			myData.customerLastName = message.data.customerLastName;
+			myData.companyName = message.data.companyName;
+			myData.customerEmail = message.data.customerEmail;
+			myData.customerPhone = message.data.customerPhone;
+			myData.companySize = message.data.companySize;
+			myData.trainingFundingMethod = message.data.trainingFundingMethod;
+			myData.trainingBudget = message.data.trainingBudget;
+			myData.studentFinancing = message.data.studentFinancing;
+			myData.digiohCRMID = message.data.digiohCRMID;
+			var generalForm = document.getElementById("lightbox-inline-form-897765c4-a11d-4b95-ae24-3ca928183a88");
+			if (generalForm) {
+				myData.customerCertificationInterest = message.data.customerCertificationInterest;
+			}
+			// Backup
+			let postData = {action: "isi_backup_data",payload: myData,security: ajaxNonce};
+			try {
+				var request = jQuery.ajax({
+					type: "POST",
+					url: ajax_data.ajax_url, // Passed in via plugin
+					action: "isi_backup_data",
+					dataType: "json",
+					data: postData,
+				});
+				request.done(function (data) {
+					success1();
+					console.log("Data returned: ", data);
+				});
+				request.fail(function (jqXHR, textStatus) {
+					error1();
+					console.log("Request failed: " + textStatus, jqXHR);
+				});
+			} catch(e) {
+				error1();
+				console.log("Error backing up data:",e);
+			}
+			// Tealium
+			utag.view(myData);
+			console.log("Data sent to Tealium");
+			//success1();
+		}
+	});
+
+</script>
+				<section id="author-spotlight" class="mt-4">
+
+	<div class="background-black-dark color-white top position-relative">
+
+		<div class="author-image bg-image lazy background-gray-80 position-absolute" data-src="https://secure.gravatar.com/avatar/374821c0f6f6a30d764c777438a1f3f7?s=150&d=mm&r=g"></div>
+		
+		<div class="flex v-center">
+
+			<div class="name">
+
+				<div class="meta">Articles Author</div> 
+
+				<h5>Security Ninja</h5>
+
+			</div>
+
+			<a class="author-link d-block text-uppercase color-white font-weight-bold ml-auto" href="https://resources.infosecinstitute.com/author/security-ninja/">View Profile</a>
+
+		</div>
+
+	</div>
+
+	<div class="background-white bottom position-relative">
+
+		
+		
+	</div>
+
+
+</section>
+			</div>
+
+			<div class="mt-3 mt-md-0 col-12 col-sm-6 col-md-4 sidebar-content">
+				<div class="sidebar-inner">
+
+	
+		<div class="azone-container" data-zone="sidebar_top"></div>
+		
+	
+<div class="box series-box">
+	<div class="box-title font-weight-bold flex v-center">
+		<span>In this Series</span>
+
+		
+	</div>
+	<div class="box-inner wysiwyg">
+		
+		<ul>
+
+						<li class="mb-2 font-weight-bold active">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/spoof-using-right-to-left-override-rtlo-technique-2/">Spoof Using Right to Left Override (RTLO) Technique</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/20-popular-wireless-hacking-tools-updated-for-2016/">20 popular wireless hacking tools [updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/13-popular-wireless-hacking-tools/">13 popular wireless hacking tools [updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/man-in-the-middle-demystified/">Man-in-the-middle attack: Real-life example and video walkthrough [Updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/decrypting-ssl-tls-traffic-with-wireshark/">Decrypting SSL/TLS traffic with Wireshark [updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/dumping-a-database-using-sql-injection/">Dumping a complete database using SQL injection [updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/hacking-clients-wpad-web-proxy-auto-discovery-protocol/">Hacking clients with WPAD (web proxy auto-discovery) protocol [updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/hacking-communities-in-the-deep-web/">Hacking communities in the deep web [updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/hack-android-devices-using-stagefright-vulnerability/">How to hack android devices using the stagefright vulnerability [updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/hashcat-tutorial-beginners/">Hashcat tutorial for beginners [updated 2021]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/how-to-hack-a-phone-charger/">How to hack a phone charger</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/what-is-a-side-channel-attack/">What is a side-channel attack?</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/copy-paste-compromises/">Copy-paste compromises</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/hacking-microsoft-teams-vulnerabilities-a-step-by-step-guide/">Hacking Microsoft teams vulnerabilities: A step-by-step guide</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/pdf-file-format-basic-structure/">PDF file format: Basic structure [updated 2020]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/10-popular-password-cracking-tools/">10 most popular password cracking tools [updated 2020]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/popular-tools-for-brute-force-attacks/">Popular tools for brute-force attacks [updated for 2020]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/top-7-cybersecurity-books-for-ethical-hackers-in-2020/">Top 7 cybersecurity books for ethical hackers in 2020</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/how-quickly-can-hackers-find-exposed-data-online-faster-than-you-think/">How quickly can hackers find exposed data online? Faster than you think …</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/hacking-tor-network-follow/">Hacking the Tor Network: Follow Up [Updated 2020]</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/podcast-webinar-recap-whats-new-in-ethical-hacking/">Podcast/webinar recap: What&#8217;s new in ethical hacking?</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-tcp-ip-for-hackers/">Ethical hacking: TCP/IP for hackers</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-snmp-recon/">Ethical hacking: SNMP recon</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/how-hackers-check-to-see-if-your-website-is-hackable/">How hackers check to see if your website is hackable</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-stealthy-network-recon-techniques/">Ethical hacking: Stealthy network recon techniques</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/cyber-work-podcast-getting-started-in-red-teaming/">Cyber Work Podcast: Getting started in Red Teaming</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-iot-hacking-tools/">Ethical hacking: IoT hacking tools</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-byod-vulnerabilities/">Ethical hacking: BYOD vulnerabilities</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-wireless-hacking-with-kismet/">Ethical hacking: wireless hacking with Kismet</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-how-to-hack-a-web-server/">Ethical Hacking: How to hack a web server</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-top-6-techniques-for-attacking-two-factor-authentication/">Ethical hacking: Top 6 techniques for attacking two-factor authentication</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-port-interrogation-tools-and-techniques/">Ethical hacking: Port interrogation tools and techniques</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-top-10-browser-extensions-for-hacking/">Ethical hacking: Top 10 browser extensions for hacking</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-social-engineering-basics/">Ethical hacking: Social engineering basics</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-breaking-windows-passwords/">Ethical hacking: Breaking Windows passwords</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-basic-malware-analysis-tools/">Ethical hacking: Basic malware analysis tools</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-how-to-crack-long-passwords/">Ethical hacking: How to crack long passwords</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-passive-information-gathering-with-maltego/">Ethical hacking: Passive information gathering with Maltego</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-log-tampering-101/">Ethical hacking: Log tampering 101</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-what-is-vulnerability-identification/">Ethical hacking: What is vulnerability identification?</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-breaking-cryptography-for-hackers/">Ethical hacking: Breaking cryptography (for hackers)</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-attacking-routers/">Ethical hacking: Attacking routers</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-lateral-movement-techniques/">Ethical hacking: Lateral movement techniques</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/linux-for-ethical-hackers-101/">Linux for ethical hackers 101</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-buffer-overflow/">Ethical hacking: Buffer overflow</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/top-5-remote-access-trojans/">Top 5 Remote Access Trojans</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/cryptography-fundamentals-for-hackers/">Cryptography fundamentals for hackers</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/hiding-files-on-windows-linux-macos/">Covering tracks — Hiding files on Windows/Linux/MacOS</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/ethical-hacking-what-are-exploits/">Ethical hacking: What are exploits?</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/top-10-network-recon-tools/">Top 10 network recon tools</a>
+
+				
+			</li>
+						<li class="mb-2 font-weight-bold">
+				<a class="series-link" href="https://resources.infosecinstitute.com/topic/getting-started-with-ethical-hacking/">Getting started with ethical hacking</a>
+
+				
+			</li>
+			
+		</ul>
+
+	</div>
+</div>
+	
+	
+<div class="box related-bootcamps dark">
+
+	<div class="box-title dark font-weight-bold">Related Bootcamps</div>
+
+	<div class="box-inner">
+
+				<div class="item"><a class="color-black" href="https://www.infosecinstitute.com/courses/incident-response-and-network-forensics-training-boot-camp/?utm_source=resources&utm_medium=infosec%20network&utm_campaign=course%20pricing&utm_content=related%20boot%20camp%20ad" target="_blank" rel="noopener">Incident Response</a></div>
+				<div class="item"><a class="color-black" href="https://www.infosecinstitute.com/courses/incident-response-and-network-forensics-training-boot-camp/?utm_source=resources&utm_medium=infosec%20network&utm_campaign=course%20pricing&utm_content=related%20boot%20camp%20ad" target="_blank" rel="noopener">Information Assurance</a></div>
+		
+	</div>
+
+</div>
+
+
+	
+		<div class="azone-container" data-zone="sidebar_middle"></div>
+		
+	
+		<div class="azone-container" data-zone="sidebar_bottom"></div>
+		
+</div>			</div>
+
+		</div>
+
+		<section id="comments-wrap" class="mt-45">
+	
+	
+	
+<div id="disqus_thread"></div>
+
+</div>
+		<section id="related" class="container-fluid">
+
+	<h5 class="text-center mb-2">Related Articles</h5>
+
+	<div class="row h-center">
+
+		<article class="blog-box small col-12 col-sm-6 col-md-4 col-lg-3">
+	<div class="inner">
+
+				<a href="https://resources.infosecinstitute.com/topic/20-popular-wireless-hacking-tools-updated-for-2016/" class="d-block blog-box-image bg-image lazy" data-src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/2021/01/bigstock-Serious-Experienced-Female-Coa-292871122-copy-768x512.png"></a>
+		
+		<div class="bottom background-white">
+			<div class="info background-white">
+
+								<div class="meta">
+					<span class="term color-teal">Hacking</span>				</div>
+				
+				<h5 class="font-weight-normal"><a class="color-black-dark" href="https://resources.infosecinstitute.com/topic/20-popular-wireless-hacking-tools-updated-for-2016/">20 popular wireless hacking tools [updated 2021]</a></h5>
+
+			</div>
+
+			<div class="author-box background-white">
+				<div class="author-inner flex">
+
+										<a href="https://resources.infosecinstitute.com/author/howardposton/"><img data-src="https://secure.gravatar.com/avatar/6241a09127ae9e03381c675b0b75fe50?s=50&d=mm&r=g" class="lazy" alt="Author Image" /></a>
+					
+					<div class="author-info">
+												<div class="date">May 12, 2021</div>
+												<a class="name d-inline-block font-weight-bold color-black-dark" href="https://resources.infosecinstitute.com/author/howardposton/">Howard Poston</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</article><article class="blog-box small col-12 col-sm-6 col-md-4 col-lg-3">
+	<div class="inner">
+
+				<a href="https://resources.infosecinstitute.com/topic/13-popular-wireless-hacking-tools/" class="d-block blog-box-image bg-image lazy" data-src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/2020/10/wifi1.jpg"></a>
+		
+		<div class="bottom background-white">
+			<div class="info background-white">
+
+								<div class="meta">
+					<span class="term color-teal">Hacking</span>				</div>
+				
+				<h5 class="font-weight-normal"><a class="color-black-dark" href="https://resources.infosecinstitute.com/topic/13-popular-wireless-hacking-tools/">13 popular wireless hacking tools [updated 2021]</a></h5>
+
+			</div>
+
+			<div class="author-box background-white">
+				<div class="author-inner flex">
+
+										<a href="https://resources.infosecinstitute.com/author/howardposton/"><img data-src="https://secure.gravatar.com/avatar/6241a09127ae9e03381c675b0b75fe50?s=50&d=mm&r=g" class="lazy" alt="Author Image" /></a>
+					
+					<div class="author-info">
+												<div class="date">May 6, 2021</div>
+												<a class="name d-inline-block font-weight-bold color-black-dark" href="https://resources.infosecinstitute.com/author/howardposton/">Howard Poston</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</article><article class="blog-box small col-12 col-sm-6 col-md-4 col-lg-3">
+	<div class="inner">
+
+				<a href="https://resources.infosecinstitute.com/topic/man-in-the-middle-demystified/" class="d-block blog-box-image bg-image lazy" data-src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/2011/04/How-to-set-up-a-man-in-the-middle-attack-768x432.png"></a>
+		
+		<div class="bottom background-white">
+			<div class="info background-white">
+
+								<div class="meta">
+					<span class="term color-teal">Hacking</span>				</div>
+				
+				<h5 class="font-weight-normal"><a class="color-black-dark" href="https://resources.infosecinstitute.com/topic/man-in-the-middle-demystified/">Man-in-the-middle attack: Real-life example and video walkthrough [Updated 2021]</a></h5>
+
+			</div>
+
+			<div class="author-box background-white">
+				<div class="author-inner flex">
+
+										<a href="https://resources.infosecinstitute.com/author/jeff-peters/"><img data-src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/2020/10/Jeff-Peters-square-e1609818507571-150x150.jpg" class="lazy" alt="Author Image" /></a>
+					
+					<div class="author-info">
+												<div class="date">April 26, 2021</div>
+												<a class="name d-inline-block font-weight-bold color-black-dark" href="https://resources.infosecinstitute.com/author/jeff-peters/">Jeff Peters</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</article><article class="blog-box small col-12 col-sm-6 col-md-4 col-lg-3">
+	<div class="inner">
+
+				<a href="https://resources.infosecinstitute.com/topic/decrypting-ssl-tls-traffic-with-wireshark/" class="d-block blog-box-image bg-image lazy" data-src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/uploads/2020/10/Wireshark_icon.svg_-768x768.png"></a>
+		
+		<div class="bottom background-white">
+			<div class="info background-white">
+
+								<div class="meta">
+					<span class="term color-teal">Hacking</span>				</div>
+				
+				<h5 class="font-weight-normal"><a class="color-black-dark" href="https://resources.infosecinstitute.com/topic/decrypting-ssl-tls-traffic-with-wireshark/">Decrypting SSL/TLS traffic with Wireshark [updated 2021]</a></h5>
+
+			</div>
+
+			<div class="author-box background-white">
+				<div class="author-inner flex">
+
+										<a href="https://resources.infosecinstitute.com/author/howardposton/"><img data-src="https://secure.gravatar.com/avatar/6241a09127ae9e03381c675b0b75fe50?s=50&d=mm&r=g" class="lazy" alt="Author Image" /></a>
+					
+					<div class="author-info">
+												<div class="date">March 4, 2021</div>
+												<a class="name d-inline-block font-weight-bold color-black-dark" href="https://resources.infosecinstitute.com/author/howardposton/">Howard Poston</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</article>
+	</div>
+
+</section>
+	</div>
+</main>
+
+
+<span id="article-id" data-id="29091"></span>
+
+<span id="article-main-term" data-term="{&quot;term_id&quot;:51,&quot;name&quot;:&quot;Hacking&quot;,&quot;slug&quot;:&quot;hacking&quot;,&quot;term_group&quot;:0,&quot;term_taxonomy_id&quot;:51,&quot;taxonomy&quot;:&quot;topic_cat&quot;,&quot;description&quot;:&quot;&quot;,&quot;parent&quot;:0,&quot;count&quot;:551,&quot;filter&quot;:&quot;raw&quot;,&quot;term_order&quot;:&quot;1&quot;}"></span>
+
+
+
+<script type="text/javascript">
+	var utag_data = {
+		"posted_date": "01/01/1970",
+		"updated_date": "04/16/2015",
+		"posted_by": "",
+		"sourced_by": "",
+		"original_author": "Security Ninja",
+		"most_recent_author": "Security Ninja",
+		"category": "Hacking",
+		"post_tag": [""]
+	};
+</script>
+				<footer id="footer">
+			<div class="container-fluid">
+
+
+				<div class="row">
+
+					<div class="left col-12 col-md-5 col-lg-3">
+
+						<div class="logo-wrap">
+							<a href="https://resources.infosecinstitute.com" arial-label="Home Link" class="flex logo-link"><img id="logo-footer" data-srcset="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/images/logo.png 1x, https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/images/logo@2x.png 2x" id="logo" class="lazy" alt="Infosec Resources Home" /></a>
+						</div>
+
+							               <div class="socials mt-3">
+	                  	                  <span itemscope itemtype="http://schema.org/Organization">
+	                 		<a class="fab fa-facebook-f" itemprop="sameAs" href="https://www.facebook.com/infosecedu/" aria-label="facebook-f" target="_blank"></a>
+	                 	</span>
+	                  	                  <span itemscope itemtype="http://schema.org/Organization">
+	                 		<a class="fab fa-instagram" itemprop="sameAs" href="https://www.instagram.com/infosecinstitute/" aria-label="instagram" target="_blank"></a>
+	                 	</span>
+	                  	                  <span itemscope itemtype="http://schema.org/Organization">
+	                 		<a class="fab fa-linkedin" itemprop="sameAs" href="https://www.linkedin.com/company/infosec-institute/" aria-label="linkedin" target="_blank"></a>
+	                 	</span>
+	                  	                  <span itemscope itemtype="http://schema.org/Organization">
+	                 		<a class="fab fa-twitter" itemprop="sameAs" href="https://twitter.com/infosecedu" aria-label="twitter" target="_blank"></a>
+	                 	</span>
+	                  	               </div>
+	               
+	               
+                <div class='gf_browser_gecko gform_wrapper' id='gform_wrapper_2' ><div id='gf_2' class='gform_anchor' tabindex='-1'></div><form method='post' enctype='multipart/form-data' target='gform_ajax_frame_2' id='gform_2'  action='/topic/spoof-using-right-to-left-override-rtlo-technique-2/#gf_2'>
+                        <div class='gform_heading'>
+                            <h3 class='gform_title'>Join our newsletter</h3>
+                            <span class='gform_description'>Get the latest news, updates & offers straight to your inbox.</span>
+                        </div>
+                        <div class='gform_body'><ul id='gform_fields_2' class='gform_fields top_label form_sublabel_below description_below'><li id='field_2_1'  class='gfield nolabel gfield_contains_required field_sublabel_below field_description_below gfield_visibility_visible pk-gfield-wrap-type-email' ><label class='gfield_label' for='input_2_1' >Email<span class='gfield_required'>*</span></label><div class='ginput_container ginput_container_email'>
+                            <input placeholder="email@address.com" name='input_1' id='input_2_1' type='text' value='' class='medium'   placeholder='email@address.com' aria-required="true" aria-invalid="false" />
+                        </div></li><li id='field_2_2'  class='gfield gform_validation_container field_sublabel_below field_description_below gfield_visibility_visible pk-gfield-wrap-type-honeypot' ><label class='gfield_label' for='input_2_2' >Comments</label><div class='ginput_container'><input name='input_2' id='input_2_2' type='text' value='' /></div><div class='gfield_description' id='gfield_description_2_2'>This field is for validation purposes and should be left unchanged.</div></li>
+                            </ul></div>
+        <div class='gform_footer top_label'> <button type='submit' id='gform_submit_button_2' class='btn btn-primary  gform_button button' value='Subscribe'  onclick='if(window["gf_submitting_2"]){return false;}  window["gf_submitting_2"]=true;  ' onkeypress='if( event.keyCode == 13 ){ if(window["gf_submitting_2"]){return false;} window["gf_submitting_2"]=true;  jQuery("#gform_2").trigger("submit",[true]); }' ><span><span>Subscribe</span></span></button> <input type='hidden' name='gform_ajax' value='form_id=2&amp;title=1&amp;description=1&amp;tabindex=0' />
+            <input type='hidden' class='gform_hidden' name='is_submit_2' value='1' />
+            <input type='hidden' class='gform_hidden' name='gform_submit' value='2' />
+            
+            <input type='hidden' class='gform_hidden' name='gform_unique_id' value='' />
+            <input type='hidden' class='gform_hidden' name='state_2' value='WyJbXSIsIjE1OGZiYTA2OWZhNjQwZjFjOGRlMDY5OWEzNTdmZGZmIl0=' />
+            <input type='hidden' class='gform_hidden' name='gform_target_page_number_2' id='gform_target_page_number_2' value='0' />
+            <input type='hidden' class='gform_hidden' name='gform_source_page_number_2' id='gform_source_page_number_2' value='1' />
+            <input type='hidden' name='gform_field_values' value='' />
+            
+        </div>
+                        </form>
+                        </div>
+                <iframe style='display:none;width:0px;height:0px;' src='about:blank' name='gform_ajax_frame_2' id='gform_ajax_frame_2' title='This iframe contains the logic required to handle Ajax powered Gravity Forms.'></iframe>
+                <script type='text/javascript'>jQuery(document).ready(function($){gformInitSpinner( 2, 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );jQuery('#gform_ajax_frame_2').on('load',function(){var contents = jQuery(this).contents().find('*').html();var is_postback = contents.indexOf('GF_AJAX_POSTBACK') >= 0;if(!is_postback){return;}var form_content = jQuery(this).contents().find('#gform_wrapper_2');var is_confirmation = jQuery(this).contents().find('#gform_confirmation_wrapper_2').length > 0;var is_redirect = contents.indexOf('gformRedirect(){') >= 0;var is_form = form_content.length > 0 && ! is_redirect && ! is_confirmation;var mt = parseInt(jQuery('html').css('margin-top'), 10) + parseInt(jQuery('body').css('margin-top'), 10) + 100;if(is_form){jQuery('#gform_wrapper_2').html(form_content.html());if(form_content.hasClass('gform_validation_error')){jQuery('#gform_wrapper_2').addClass('gform_validation_error');} else {jQuery('#gform_wrapper_2').removeClass('gform_validation_error');}setTimeout( function() { /* delay the scroll by 50 milliseconds to fix a bug in chrome */ jQuery(document).scrollTop(jQuery('#gform_wrapper_2').offset().top - mt); }, 50 );if(window['gformInitDatepicker']) {gformInitDatepicker();}if(window['gformInitPriceFields']) {gformInitPriceFields();}var current_page = jQuery('#gform_source_page_number_2').val();gformInitSpinner( 2, 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );jQuery(document).trigger('gform_page_loaded', [2, current_page]);window['gf_submitting_2'] = false;}else if(!is_redirect){var confirmation_content = jQuery(this).contents().find('.GF_AJAX_POSTBACK').html();if(!confirmation_content){confirmation_content = contents;}setTimeout(function(){jQuery('#gform_wrapper_2').replaceWith(confirmation_content);jQuery(document).scrollTop(jQuery('#gf_2').offset().top - mt);jQuery(document).trigger('gform_confirmation_loaded', [2]);window['gf_submitting_2'] = false;}, 50);}else{jQuery('#gform_2').append(contents);if(window['gformRedirect']) {gformRedirect();}}jQuery(document).trigger('gform_post_render', [2, current_page]);} );} );</script><script type='text/javascript'> jQuery(document).bind('gform_post_render', function(event, formId, currentPage){if(formId == 2) {if(typeof Placeholders != 'undefined'){
+                        Placeholders.enable();
+                    }} } );jQuery(document).bind('gform_post_conditional_logic', function(event, formId, fields, isInit){} );</script><script type='text/javascript'> jQuery(document).ready(function(){jQuery(document).trigger('gform_post_render', [2, 1]) } ); </script>
+						<div class="copyright">&copy; 2021 Infosec Resources</div>
+
+						<nav class="navbar" id="foot-left-navigation" role="navigation"><div class="footer-left-navigation"><ul id="menu-footer-menu" class="nav navbar-nav"><li id="menu-item-54049" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-54049"><a href="https://resources.infosecinstitute.com/privacy-policy/">Privacy Policy</a></li>
+</ul></div></nav>
+
+					</div>
+
+					<div class="right col-12 col-md-7 col-lg-9">
+						
+						<nav role="navigation" id="footer-navigation" class="flex">
+
+							<div class="footer-nav-item-wrap"><div class="nav-label">Topics</div><ul><li class="smview"><a href="https://resources.infosecinstitute.com/topics/hacking/">Hacking</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/topics/penetration-testing/">Penetration testing</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/topics/cyber-range/">Cyber ranges</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/capture-the-flag/">Capture the flag (CTF)</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/malware-analysis/">Malware analysis</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/professional-development/">Professional development</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/general-security/">General security</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/news/">News</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/security-awareness/">Security awareness</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/phishing/">Phishing</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/management-compliance-auditing/">Management, compliance &amp; auditing</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/digital-forensics/">Digital forensics</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/threat-intelligence/">Threat Intelligence</a></li><li class=""><a href="https://resources.infosecinstitute.com/topics/dod-8570/">DoD 8570</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/topics/">+ See All Topics</a></li></ul></div>
+							<div class="footer-nav-item-wrap"><div class="nav-label">Certifications</div><ul><li class="smview"><a href="https://resources.infosecinstitute.com/certifications/cissp/">CISSP</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/certifications/ccsp/">CCSP</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/certifications/cgeit/">CGEIT</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/ceh/">CEH</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/ccna/">CCNA</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/cisa/">CISA</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/cism/">CISM</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/crisc/">CRISC</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/a/">A+</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/network/">Network+</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/securityplus/">Security+</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/casp/">CASP+</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/pmp/">PMP</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/cysa/">CySA+</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/cmmc/">CMMC</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/microsoft-azure/">Microsoft Azure</a></li><li class=""><a href="https://resources.infosecinstitute.com/certifications/other/">Other</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/certifications/">+ See All Certifications</a></li></ul></div>
+							<div class="footer-nav-item-wrap"><div class="nav-label">CyberSecurity Careers</div><ul><li class="smview"><a href="https://resources.infosecinstitute.com/careers/it-auditor/">IT auditor</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/careers/cybersecurity-architect/">Cybersecurity architect</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/careers/cybercrime-investigator/">Cybercrime investigator</a></li><li class=""><a href="https://resources.infosecinstitute.com/careers/penetration-tester/">Penetration tester</a></li><li class=""><a href="https://resources.infosecinstitute.com/careers/cybersecurity-consultant/">Cybersecurity consultant</a></li><li class=""><a href="https://resources.infosecinstitute.com/careers/cybersecurity-analyst/">Cybersecurity analyst</a></li><li class=""><a href="https://resources.infosecinstitute.com/careers/cybersecurity-engineer/">Cybersecurity engineer</a></li><li class=""><a href="https://resources.infosecinstitute.com/careers/cybersecurity-manager/">Cybersecurity manager</a></li><li class=""><a href="https://resources.infosecinstitute.com/careers/incident-responder/">Incident responder</a></li><li class=""><a href="https://resources.infosecinstitute.com/careers/information-security-auditor/">Information security auditor</a></li><li class=""><a href="https://resources.infosecinstitute.com/careers/information-security-manager/">Information security manager</a></li><li class="smview"><a href="https://resources.infosecinstitute.com/careers/">+ See All Careers</a></li></ul></div>
+						</nav>
+
+					</div>	
+
+				</div>
+
+			</div>
+		</footer>
+
+		<!--
+    INFOSEC GET USER INFO
+--> 
+<br />
+<b>Notice</b>:  Undefined index: visitor_id12882 in <b>/www/resourcesinfosecinstitute_601/public/wp-content/plugins/infosec-user-info/infosec-user-info.php</b> on line <b>117</b><br />
+
+<script>
+
+
+    var ajaxURL = "https://resources.infosecinstitute.com/wp-admin/admin-ajax.php";
+    var ajaxNonce = "728acde278";
+    if (typeof utag_data == 'undefined'){
+        var utag_data = [];
+    }
+
+    // GET
+
+
+    // END GET
+
+    utag_data["tealium_event"] = "page_view";
+    utag_data["post_date"] = "04/16/2015";
+    utag_data["post_id"] = "29091";
+    utag_data["site_name"] = "Infosec Resources";
+    utag_data["site_description"] = "The Right Knowledge. Right Now.";
+    utag_data["post_title"] = "Infosec Resources";
+    utag_data["post_author"] = "Security Ninja";
+    utag_data["page_type"] = "topic";
+    utag_data["search_results"] = "1";
+    // POWDERKEG
+    var breadcrumb = ["Topics","Hacking"];
+    utag_data["posted_date"] = "01/01/1970";
+    utag_data["updated_date"] = "04/16/2015";
+    utag_data["original_author"] = "Security Ninja";
+    utag_data["most_recent_author"] = "Security Ninja";
+    utag_data["category"] = "Hacking";
+
+
+    /* END POWDERKEG SECTION */
+    
+
+
+
+</script>
+
+<!-- This site is converting visitors into subscribers and customers with OptinMonster - https://optinmonster.com :: Campaign Title: [Overlay - IQ - CYOA - Email Capture - A - Deep Space] --><script>(function(d){var s=d.createElement('script');s.type='text/javascript';s.src='https://a.omappapi.com/app/js/api.min.js';s.async=true;s.dataset.campaign='aahp0gvcwmmigcbowtvo';s.dataset.user='23663';d.getElementsByTagName('head')[0].appendChild(s);})(document);</script><!-- / OptinMonster -->		<!-- Google Tag Manager (noscript) added by Site Kit -->
+		<noscript>
+			<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W9VWCG" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+		</noscript>
+		<!-- End Google Tag Manager (noscript) -->
+				<script type="text/javascript">
+		var aahp0gvcwmmigcbowtvo_shortcode = true;		</script>
+		<link rel='stylesheet' id='pk-fonts-css'  href='//fonts.googleapis.com/css?display=swap&#038;family=Open+Sans%3A400%2C400i%2C700%2C700i%7CRoboto+Slab%3A700%2C700i&#038;ver=5.7.1' type='text/css' media='all' />
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/infosec-user-info/user_info.js?ver=1' defer onload='' id='script-js'></script>
+<script type='text/javascript' id='disqus_count-js-extra'>
+/* <![CDATA[ */
+var countVars = {"disqusShortname":"infosec-resources"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/disqus-comment-system/public/js/comment_count.js?ver=3.0.21' defer onload='' id='disqus_count-js'></script>
+<script type='text/javascript' id='disqus_embed-js-extra'>
+/* <![CDATA[ */
+var embedVars = {"disqusConfig":{"integration":"wordpress 3.0.21"},"disqusIdentifier":"29091 http:\/\/infores.localhost.devpki.us:8074\/topic\/spoof-using-right-to-left-override-rtlo-technique-2\/","disqusShortname":"infosec-resources","disqusTitle":"Spoof Using Right to Left Override (RTLO) Technique","disqusUrl":"https:\/\/resources.infosecinstitute.com\/topic\/spoof-using-right-to-left-override-rtlo-technique-2\/","postId":"29091"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/disqus-comment-system/public/js/comment_embed.js?ver=3.0.21' defer onload='' id='disqus_embed-js'></script>
+<script type='text/javascript' id='geoip-detect-js-js-extra'>
+/* <![CDATA[ */
+var geoip_detect = {"options":{"ajaxurl":"https:\/\/resources.infosecinstitute.com\/wp-admin\/admin-ajax.php","default_locales":["en","en"],"do_body_classes":true,"do_shortcodes":false,"cookie_name":"geoip-detect-result","cookie_duration_in_days":1}};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/geoip-detect//js/dist/frontend.1115d690.js?ver=4.1.0' defer onload='' id='geoip-detect-js-js'></script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/pk-swiss-army-knife/tools/bootstrap-carousel-addons/js/bootstrap_carousel_addons.js?ver=2' defer onload='' id='pk-bootstrap-carousel-addons-js-js'></script>
+<script>(function(d){var s=d.createElement("script");s.type="text/javascript";s.src="https://a.omappapi.com/app/js/api.min.js' defer onload='";s.async=true;s.id="omapi-script";d.getElementsByTagName("head")[0].appendChild(s);})(document);</script><script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/js/live.js?ver=1606167687' defer onload='' id='jquery.site-js'></script>
+<script type='text/javascript' id='jquery.azones-js-extra'>
+/* <![CDATA[ */
+var adzoneajaxobj = {"adzoneajaxurl":"https:\/\/resources.infosecinstitute.com\/wp-content\/themes\/infores\/external\/adzone-ajax.php"};
+var ajaxobj = {"ajaxurl":"https:\/\/resources.infosecinstitute.com\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/js/azones.js?ver=5.7.1' defer onload='' id='jquery.azones-js'></script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/gravityforms/js/jquery.json.min.js?ver=2.4.24' id='gform_json-js'></script>
+<script type='text/javascript' id='gform_gravityforms-js-extra'>
+/* <![CDATA[ */
+var gf_global = {"gf_currency_config":{"name":"U.S. Dollar","symbol_left":"$","symbol_right":"","symbol_padding":"","thousand_separator":",","decimal_separator":".","decimals":2},"base_url":"https:\/\/resources.infosecinstitute.com\/wp-content\/plugins\/gravityforms","number_formats":[],"spinnerUrl":"https:\/\/resources.infosecinstitute.com\/wp-content\/plugins\/gravityforms\/images\/spinner.gif"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/gravityforms/js/gravityforms.min.js?ver=2.4.24' defer onload='' id='gform_gravityforms-js'></script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/gravityforms/js/placeholders.jquery.min.js?ver=2.4.24' defer onload='' id='gform_placeholder-js'></script>
+<script type='text/javascript' src='https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/plugins/optinmonster/assets/js/helper.js?ver=2.3.2' defer onload='' id='optinmonster-wp-helper-js'></script>
+<!--[if lt IE 9]><script src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/pk/lib/html5shiv/html5shiv.js"></script><![endif]--><!--[if lt IE 9]><script src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/pk/lib/selectivizr/selectivizr.min.js"></script><![endif]--><!--[if lt IE 9]><script src="https://mk0resourcesinf5fwsf.kinstacdn.com/wp-content/themes/infores/pk/lib/respond/respond.js"></script><![endif]-->		<script type="text/javascript">var omapi_localized = { ajax: 'https://resources.infosecinstitute.com/wp-admin/admin-ajax.php?optin-monster-ajax-route=1', nonce: 'd2ae69f8c1', slugs: {"aahp0gvcwmmigcbowtvo":{"slug":"aahp0gvcwmmigcbowtvo","mailpoet":false}} };</script>
+				<script type="text/javascript">var omapi_data = {"wc_cart":[],"object_id":29091,"object_key":"topic","object_type":"post","term_ids":[51,45]};</script>
+			</body>
+</html>

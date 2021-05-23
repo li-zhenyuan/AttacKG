@@ -1,0 +1,1081 @@
+  
+  
+
+
+
+
+
+
+
+    
+  
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+      <head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<meta name="format-detection" content="date=no">
+<meta name="format-detection" content="address=no">
+<meta name="format-detection" content="email=no">
+
+<style type="text/css">
+  a[x-apple-data-detectors] {
+    color: inherit !important;
+    text-decoration: none !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+  }
+</style>
+
+<link rel="canonical" href="https://securitytrails.com/blog/google-hacking-techniques" />
+
+  
+  
+
+
+
+
+<title>Exploring Google Hacking Techniques - Top Google Dorks</title>
+<meta name="description" content="Last week one of our developers shared an interesting link he found — one that was exposing many supposedly "private" resources from different websites.">
+
+
+
+  
+<meta property="og:url" content="https://securitytrails.com/blog/google-hacking-techniques" />
+<meta property="og:type" content="article" />
+    <meta property="og:title" content="SecurityTrails | Exploring Google Hacking Techniques - Top Google Dorks" />
+<meta property="og:description" content="Last week one of our developers shared an interesting link he found — one that was exposing many supposedly "private" resources from different websites." />
+<meta property="og:image:url" content="https://securitytrails.com/blog/google-hacking-techniques/google-hacking-techniques.png" />
+<meta property="og:image:secure_url" content="https://securitytrails.com/blog/google-hacking-techniques/google-hacking-techniques.png" />
+<meta name="twitter:image" content="https://securitytrails.com/blog/google-hacking-techniques/google-hacking-techniques.png" />
+    <meta name="twitter:title" content="SecurityTrails | Exploring Google Hacking Techniques - Top Google Dorks" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@securitytrails">
+<link rel="apple-touch-icon" sizes="180x180" href="/user/themes/twentytwenty/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/user/themes/twentytwenty/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/user/themes/twentytwenty/favicon/favicon-16x16.png">
+<link rel="manifest" crossorigin="use-credentials" href="/user/themes/twentytwenty/favicon/manifest.json">
+<link rel="mask-icon" href="/user/themes/twentytwenty/favicon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="/user/themes/twentytwenty/favicon/favicon.ico">
+<meta name="msapplication-TileColor" content="#ffc40d">
+<meta name="msapplication-config" content="/user/themes/twentytwenty/favicon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+
+        
+        
+    
+  
+
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+    "@type": "Article",
+        "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "http://securitytrails.com/blog/google-hacking-techniques"
+    },
+    "headline": "Exploring Google Hacking Techniques - Top Google Dorks",
+    "image": [
+        "http://securitytrails.com/blog/google-hacking-techniques/thumbs/1x1.jpg",
+        "http://securitytrails.com/blog/google-hacking-techniques/thumbs/4x3.jpg",
+        "http://securitytrails.com/blog/google-hacking-techniques/thumbs/16x9.jpg"
+    ],
+    "datePublished": "2019-03-05T00:00:00+00:00",
+    "dateModified": "2021-03-29T00:00:00+00:00",
+    "author": {
+        "@type": "Person",
+        "name": "Esteban Borges",
+        "givenName": "Esteban",
+        "familyName": "Borges",
+        "jobTitle": "Research Manager",
+        "sameAs": [
+            "https://www.linkedin.com/in/estebanborges/"
+        ],
+        "image": "https://securitytrails.com/user/pages/blog/author/estebanborges/esteban-borges-blog-author.png",
+        "description": "Esteban is a seasoned security researcher and cybersecurity specialist with over 15 years of experience. Since joining SecurityTrails in 2017 he’s been our go-to for technical server security and source intelligence info."
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "SecurityTrails",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://securitytrails.com/logo.jpg"
+        }
+    },
+    "description": "Last week one of our developers shared an interesting link he found — one that was exposing many supposedly &#8220;private&#8221; resources from different websites."
+}
+</script>
+
+<link rel="dns-prefetch" href="//www.google-analytics.com">
+<link rel="preconnect" href="https://www.google-analytics.com">
+
+<link rel="dns-prefetch" href="//ssl.google-analytics.com">
+<link rel="preconnect" href="https://ssl.google-analytics.com">
+
+
+
+    
+        
+
+        
+    
+
+      
+      
+  
+  
+  
+  
+  
+  
+
+
+
+
+<link href="/user/themes/twentytwenty/css/main.css" type="text/css" rel="stylesheet" />
+<link href="/user/themes/twentytwenty/css/pages/blog.css" type="text/css" rel="stylesheet" />
+<link href="/user/plugins/highlight/css/default.css" type="text/css" rel="stylesheet" />
+
+<style>
+.blog-post-body img {
+display: block;
+margin: 2rem auto;
+}
+
+</style>
+
+
+
+
+          <script>
+"use strict";
+function LoadDriftWidget() {
+  var t = window.driftt = window.drift = window.driftt || [];
+  if (!t.init) {
+    if (t.invoked) return void (window.console && console.error && console.error("Drift snippet included twice."));
+    t.invoked = !0, t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ],
+    t.factory = function(e) {
+      return function() {
+        var n = Array.prototype.slice.call(arguments);
+        return n.unshift(e), t.push(n), t;
+      };
+    }, t.methods.forEach(function(e) {
+      t[e] = t.factory(e);
+    }), t.load = function(t) {
+      var e = 3e5, n = Math.ceil(new Date() / e) * e, o = document.createElement("script");
+      o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + n + "/" + t + ".js";
+      var i = document.getElementsByTagName("script")[0];
+      i.parentNode.insertBefore(o, i);
+    };
+  }
+  drift.SNIPPET_VERSION = '0.3.1';
+  drift.load('6afn6yb3gygc');
+};
+</script>
+
+<script>
+setTimeout(function(){
+     LoadDriftWidget()
+}, 5000)
+</script>
+
+
+    
+  
+  
+  
+  
+    
+          
+  
+  
+  
+        
+    
+
+<script src="/user/plugins/highlight/js/highlight.pack.js" ></script>
+
+<script>
+hljs.initHighlightingOnLoad();
+
+</script>
+
+
+
+
+
+<!-- Hotjar Tracking Code for securitytrails.com -->
+<script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:2381377,hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+
+<!-- Google Analytics -->
+
+<script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-108439842-1', 'auto', {'allowLinker': true});
+    ga('require', 'linker');
+    ga('linker:autoLink', ['order.securitytrails.com']);
+    ga('send', 'pageview');
+    ga('require', 'OPT-M9CTVTJ');
+</script>
+
+<script defer src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<!-- Google Fonts Preload -->
+<link rel="preload" href="/user/themes/twentytwenty/fonts/fontawesome-webfont.woff2?v=4.7.0" as="font" type="font/woff2" crossorigin>
+
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin />
+
+<link rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700;900&display=swap" />
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700;900&display=swap"
+      media="print" onload="this.media='all'" />
+
+<noscript>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700;900&display=swap" />
+</noscript>
+
+</head>
+  
+  <body class="push-notifications">
+    <a id="pagetop"></a>
+
+                        <section id="shdr-pricing" class="sticky-header asrshdr">
+    <p>
+        <a id="asrv2stickybar-link" href="/corp/free-attack-surface-report" onclick="ga('send', 'event', 'Sticky Bar', 'Click', 'Sticky ASRv2 Announcement');">Fully know your attack surface</a>
+    </p>
+    <a class="button" id="asrv2stickybar" href="/corp/free-attack-surface-report" onclick="ga('send', 'event', 'Sticky Bar', 'Click', 'Sticky ASRv2 Announcement');">Get your free attack surface report</a>
+</section>
+            
+                  
+
+<nav class="main-nav">
+  <div id="nav" class="row">
+
+    <div class="col3 left middle logo-container">
+      <a class="logo" href="/">
+        <svg class="securitytrails-logo" data-name="securitytrails-logo" viewBox="0 0 679.3 162.4" xmlns="http://www.w3.org/2000/svg"><path d="m158.5 89.2h-35.5c.7 7.2 6.2 10.4 12.7 10.4s12.1-2.8 14.9-4.7l6.4 8.4c-1.6 1.2-8.2 8.1-23.6 8.1-15.3 0-26.5-9.5-26.5-25.9 0-16.5 12.1-25.8 26.8-25.8s24.9 9.8 24.9 24.3c.1 2.2-.1 5.2-.1 5.2zm-25.1-19.2c-6.7 0-10.1 5.2-10.3 10h20.5c-.1-4.6-3.4-10-10.2-10z"/><path d="m245.5 110.2-.1-5.7c-2.1 3-7.4 6.8-14.5 6.8-13.7 0-17.9-8.4-17.9-20.8v-30.1h16.1v27.9c0 5.8 1.6 9.7 7.4 9.7s8.4-4.5 8.4-11.1v-26.5h16.1v49.8z"/><path d="m302.4 73.9s-2.4-.1-5.9-.1c-8 0-11.6 9.7-11.6 16.3v20.1h-16.2v-49.8h16.2l-.1 7.1h.2c2.8-5.5 7-8 12.3-8 3.3 0 5 .9 5 .9v13.5z"/><path d="m487.3 73.9s-3.8-.1-7.3-.1c-8 0-11.6 9.7-11.6 16.3v20.1h-16.2v-49.8h16.2l-.1 7.1h.2c1.7-4.4 7.1-7.8 11.3-7.8 4 0 7.5.7 7.5.7z"/><path d="m308.1 110.2v-49.8h16.1v49.8z"/><path d="m347.8 72.7v17.9c0 4.3.3 7.4 5.2 7.4 2.5 0 4.8-.9 4.8-.9l.8 12.6c-1.2.3-5.7 1.6-11.5 1.6-12.9 0-15.6-7.9-15.6-19.3v-45h16.3v13.5h11v12.2z"/><path d="m440.6 53.4v56.7h-16.4v-56.7h-18v-12.9h52.3v12.9z"/><path d="m565.5 110.2v-69.7h16.2v69.6h-16.2z"/><path d="m606.5 111.3c-7.5 0-15.3-2.3-21-7.7l6.1-9.6c4 3.4 10.7 6.1 14.7 6.1s6.9-1 6.9-4.2-7.3-4.8-9.1-5.5c-8.3-2.1-15.5-5-15.5-15.3 0-9.7 8.5-15.6 18.9-15.6s16.3 3.8 19.1 6.2l-5.2 9.5c-2.8-2.2-8.5-4.8-12.5-4.8-3.8 0-6 1-6 3.6s3.8 3.8 7.3 4.8c8.6 2.5 17.6 5.1 17.6 16.1-.2 11.8-11 16.4-21.3 16.4z"/><path d="m308.1 53.3v-12.8h16.1v12.8z"/><path d="m541.2 110.2v-49.8h16.1v49.8z"/><path d="m541.2 53.3v-12.8h16.1v12.8z"/><path d="m205.7 92.4c-2.3 1.5-8 5.6-14.2 5.6-7.6 0-12.5-5-12.5-12.9s5.5-12.6 12.3-12.6c6.5 0 12.9 4 14 5.4h.1l.5-13.7c-.9-1.3-6.6-4.7-16.8-4.7-13.6 0-26.4 9.3-26.4 25.9s12.6 25.8 26.2 25.8c10.1 0 16.1-3.1 18.2-4.7z"/><path d="m508.9 59.5c-5.2 0-11.2.2-17.2 1.5v12.8c4.2-2.3 10.6-3 15.4-3 6.5 0 10.2 2.5 10.2 7.8v1.1l-12.5.5c-9.2.4-19.4 4.1-19.4 15.2s9.3 15.8 18.1 15.8c8.1 0 12.1-4.2 14.2-6.4l.3 5.2h15.4v-27.9c0-16.1-9-22.6-24.5-22.6zm8.4 36.9c-1 1.7-3.9 4.5-8.3 4.5s-7.6-2.3-7.6-6.2c0-3.7 2.9-5.9 7.9-6.1l8-.5z"/><path d="m89 69.9c-2.2-.9-7.4-2.7-10.4-3.9-3.1-1.2-7.1-2.8-7.1-7.1 0-4.2 3.8-6.3 9.1-6.3 7.4 0 15.3 4.6 19.9 9.4l.3-.1v-15.6c-5.1-3.8-12.9-6.6-19.8-6.6-8.1 0-14.4 2.2-18.4 5.6-4 3.3-7.3 8.6-7.3 15.2s2.4 10.6 5.5 13.4c3 2.9 6.6 4.2 8.3 5 2.3 1 7.6 2.8 10.6 3.9s8.2 2.9 8.2 7.7c0 4.6-4 7.2-9.3 7.2-7.5 0-16.9-5.7-22.1-11.1l-.1.1v17.7c5.1 3.8 13 7 20.7 7 13.5 0 27.1-7.4 27.1-22.4-.1-10.1-6.3-15.9-15.2-19.1z"/><path d="m386.8 136.1 30.8-75.7h-16.7l-11.2 32-11.3-32h-16.9l19.7 48.3-11.2 27.4z"/></svg>      </a>
+      <div class="nav-items top-nav">
+      
+
+                                
+  <div class="submenu">
+    <a class="" href="#">Products</a>
+
+        <ul>
+
+      
+      <li class="border-api">
+        <a href="/corp/api" >
+          <span>SecurityTrails API™ </span></a>
+      </li>
+
+      
+      <li class="border-feeds">
+        <a href="/corp/feeds" >
+          <span>SecurityTrails Feeds™ </span></a>
+      </li>
+
+      
+      <li class="border-surfacebrowser">
+        <a href="/corp/surfacebrowser" >
+          <span>SurfaceBrowser™ </span></a>
+      </li>
+
+      
+      <li class="border-asr">
+        <a href="/corp/attack-surface-reduction" >
+          <span>Attack Surface Reduction™ <img id="asr-tab-new" src="/images/new.gif" width="38" height="18" /></span></a>
+      </li>
+
+      
+    </ul>
+    
+    
+  </div>
+
+
+  
+  <div>
+    <a class="" href="/corp/why-us">Why Us</a>
+
+    
+    
+  </div>
+
+
+  
+  <div>
+    <a class="" href="/corp/customers">Customers</a>
+
+    
+    
+  </div>
+
+
+  
+  <div>
+    <a class="" href="/corp/pricing">Pricing</a>
+
+    
+    
+  </div>
+
+
+  
+  <div>
+    <a class="" href="/blog">Blog</a>
+
+    
+    
+  </div>
+
+
+                                
+  <div class="submenu">
+    <a class="" href="#">Support</a>
+
+        <ul>
+
+      
+      <li>
+        <a href="/support/"  target="_blank" >
+          <span>Documentation </span></a>
+      </li>
+
+      
+      <li>
+        <a href="/corp/apidocs" >
+          <span>API Docs </span></a>
+      </li>
+
+      
+      <li>
+        <a href="/corp/integrations" >
+          <span>API Integrations </span></a>
+      </li>
+
+      
+      <li>
+        <a href="/corp/contact" >
+          <span>Contact </span></a>
+      </li>
+
+      
+    </ul>
+    
+    
+  </div>
+
+      </div>
+    </div>
+
+    <div class="col1 right middle mobile-nav top-nav">
+
+       <div class="login"><a href="/app/account" id="login">Log in</a></div>
+       <div class="button"><a href="/app/signup?utm_source=st-home&utm_medium=button&utm_campaign=top" id="signup">Sign up for free</a></div>
+
+      <a href="#" id="menu" class="middle">         <span></span>
+        <span></span>
+        <span></span>
+      </a>
+    </div>
+
+    <div class="nav-overlay">
+      <div class="nav-overlay-content">
+              <a href="/corp/api">SecurityTrails API™</a>
+              <a href="/corp/feeds">SecurityTrails Feeds™</a>
+              <a href="/corp/attack-surface-reduction">Attack Surface Reduction™<img id="asr-tab-new" src="/images/new.gif" width="38" height="18" /></a>
+              <a href="/corp/surfacebrowser">SurfaceBrowser™</a>
+              <a href="/corp/why-us">Why us</a>
+              <a href="/corp/customers">Customers</a>
+              <a href="/corp/pricing">Pricing</a>
+              <a href="/blog">Blog</a>
+              <a href="https://securitytrails.com/support/knowledge-base/faq/">FAQ</a>
+              <a href="/corp/apidocs">API Docs</a>
+              <a href="/corp/integrations">API Integrations</a>
+              <a href="/corp/contact">Contact</a>
+            </div>
+    </div>
+
+  </div>
+
+</nav>
+          
+                      <main>
+        
+<section id="blog"
+
+   class="full-hero">
+
+      <div class="blog-hero-image middle center" data-hero=/blog/google-hacking-techniques/google-hacking-techniques.png data-heromob=/blog/google-hacking-techniques/google-hacking-techniques-mob.png ">
+
+
+    
+
+  </div>
+  
+    
+	<article class="blog-post row">
+		  
+  
+
+
+    
+
+  
+
+
+
+ 
+        <header class="blog-post-hero blog-post-header elem">
+    
+          <span class="tags">
+                <a href="/blog/tag=hacking" class="category">hacking</a>
+              </span>
+    
+      <p class="h6 meta"><a href="/blog">SecurityTrails Blog</a> · Last updated on Mar 29 2021 · by Esteban Borges</p>
+
+
+              <h1 class="small">Exploring Google Hacking Techniques - Top Google Dorks</h1>
+      
+      <small class="reading-time">Reading time: <span>14 minutes</span></small>
+
+              <div class="social-share-block mt2">
+          <a target="_blank" rel="noopener noreferrer" class="social-share facebook" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fsecuritytrails.com%2Fblog%2Fgoogle-hacking-techniques"><i class="fa fa-facebook-square"></i> Facebook</a>
+          <a target="_blank" rel="noopener noreferrer" class="social-share twitter" href="https://twitter.com/home?status=%22Exploring%20Google%20Hacking%20Techniques%20-%20Top%20Google%20Dorks%22%20by%20%40SecurityTrails%20http%3A%2F%2Fsecuritytrails.com%2Fblog%2Fgoogle-hacking-techniques"><i class="fa fa-twitter-square"></i> Twitter</a>
+          <a target="_blank" rel="noopener noreferrer" class="social-share linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=https://securitytrails.com/blog/google-hacking-techniques&title=Exploring%20Google%20Hacking%20Techniques%20-%20Top%20Google%20Dorks&summary=Last%20week%20one%20of%20our%20developers%20shared%20an%20interesting%20link%20he%20found%20%E2%80%94%20one%20that%20was%20exposing%20many%20supposedly%20%22private%22%20resources%20from%20different%20websites.&source=SecurityTrails"><i class="fa fa-linkedin-square"></i> LinkedIn</a>
+
+        </div>
+      
+      
+          </header>
+
+    <section class="blog-post-summary xl12 elem highlight-first-p">
+
+                    <p>Some time ago we wrote an interesting post about the <a href="/blog/what-is-osint-how-can-i-make-use-of-it">OSINT</a> concept and its importance in the security researching world, showing how easy it is to get information from publicly available sources on the Internet.</p>
+<p>Last week one of our developers shared an interesting link he found — one that was exposing many supposedly &#8220;private&#8221; resources from different websites.</p>
+
+
+    </section>
+
+        <aside class="blog-post-sidebar xl3 m12 elem">
+      
+      <div class="toc-container js-toc">
+        <div id="toc-content" class="toc-content">
+                <h6>Table of contents</h6>
+        <ul>
+  <li class="first last">
+    <span></span>
+    <ul class="menu_level_1">
+      <li class="first">
+        <a href="#what-is-a-google-dork">What is a Google Dork?</a>
+      </li>
+      <li>
+        <a href="#popular-google-dork-operators">Popular Google Dork operators</a>
+      </li>
+      <li>
+        <a href="#google-dork-examples">Google Dork examples</a>
+        <ul class="menu_level_2">
+          <li class="first">
+            <a href="#log-files">Log files</a>
+          </li>
+          <li>
+            <a href="#vulnerable-web-servers">Vulnerable web servers</a>
+          </li>
+          <li>
+            <a href="#open-ftp-servers">Open FTP servers</a>
+          </li>
+          <li>
+            <a href="#env-files">ENV files</a>
+          </li>
+          <li>
+            <a href="#ssh-private-keys">SSH private keys</a>
+          </li>
+          <li>
+            <a href="#email-lists">Email lists</a>
+          </li>
+          <li>
+            <a href="#live-cameras">Live cameras</a>
+          </li>
+          <li>
+            <a href="#mp3-movie-and-pdf-files">MP3, Movie, and PDF files</a>
+          </li>
+          <li>
+            <a href="#weather">Weather</a>
+          </li>
+          <li>
+            <a href="#zoom-videos">Zoom videos</a>
+          </li>
+          <li>
+            <a href="#sql-dumps">SQL dumps</a>
+          </li>
+          <li>
+            <a href="#wordpress-admin">WordPress Admin</a>
+          </li>
+          <li>
+            <a href="#apache2">Apache2</a>
+          </li>
+          <li>
+            <a href="#phpmyadmin">phpMyAdmin</a>
+          </li>
+          <li>
+            <a href="#jira-kibana">JIRA/Kibana</a>
+          </li>
+          <li>
+            <a href="#cpanel-password-reset">cPanel password reset</a>
+          </li>
+          <li class="last">
+            <a href="#government-documents">Government documents</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#preventing-google-dorks">Preventing Google Dorks</a>
+        <ul class="menu_level_2">
+          <li class="first last">
+            <a href="#using-robots-txt-configurations-to-prevent-google-dorking">Using robots.txt configurations to prevent Google Dorking</a>
+          </li>
+        </ul>
+      </li>
+      <li class="last">
+        <a href="#final-thoughts">Final thoughts</a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+  
+        </div>
+
+              </div>
+
+    </aside>
+    
+    <section class="blog-post-body xl9 m12 elem">
+
+                
+<p>That&#8217;s when someone from our team suggested a post about this kind of data exposure issue. We&#8217;ve mentioned this type of security problem in previous posts, as it&#8217;s a common source for security researchers to find valuable private information about any website.</p>
+<p>Today we are going to dig into Google hacking techniques, also known as Google Dorks.</p>
+<h2 id="what-is-a-google-dork">What is a Google Dork?</h2>
+<p>A Google Dork, also known as Google Dorking or Google hacking, is a valuable resource for security researchers. For the average person, Google is just a search engine used to find text, images, videos, and news. However, in the infosec world, Google is a useful hacking tool.</p>
+<p>How would anyone use Google to hack websites?</p>
+<p>Well, you can&#8217;t hack sites directly using Google, but as it has tremendous web-crawling capabilities, it can index almost anything within your website, including sensitive information. This means you could be exposing too much information about your web technologies, usernames, passwords, and general vulnerabilities without even knowing it.</p>
+<p>In other words: Google &#8220;Dorking&#8221; is the practice of using Google to find vulnerable web applications and servers by using native Google search engine capabilities.</p>
+<p>Unless you block specific resources from your website using a robots.txt file, Google indexes all the information that is present on any website. Logically, after some time any person in the world can access that information if they know what to search for.</p>
+<p>Important note: while this information is publicly available on the Internet, and it is provided and <a href="https://support.google.com/websearch/answer/2466433?hl=en%3Frel%3Dnofollow">encouraged</a> to be used by Google on a legal basis, people with the wrong intentions could use this information to harm your online presence.</p>
+<p>Be aware that Google also knows who you are when you perform this kind of query For this reason and many others, it&#8217;s advised to use it only with good intentions, whether for your own research or while looking for ways to defend your website against this kind of vulnerability.</p>
+<p>While some webmasters expose sensitive information on their own, this doesn&#8217;t mean it&#8217;s legal to take advantage of or exploit that information. If you do so you&#8217;ll be marked as  a cybercriminal. It&#8217;s pretty easy to track your browsing IP, even if you&#8217;re using a VPN service. It&#8217;s not as anonymous as you think.</p>
+<p>Before reading any further, be aware that Google will start blocking your connection if you connect from a single static IP. It will ask for captcha challenges to prevent automated queries.</p>
+
+
+<img title="Google prevents automated queries with captcha challenges." id="" alt="Captcha challenge" class="lazy shadow lbox" data-lazyold="1" data-src="/blog/google-hacking-techniques/captcha-challenge.png" width="" height="" data-srcset="/blog/google-hacking-techniques/captcha-challenge-2x.png 640w, /blog/google-hacking-techniques/captcha-challenge.png 1150w"  src="">
+</p>
+<p><a href="../bug-bounty-hunters-toolkit?referral_code=PL71MDQBEE"><img src="../blog/google-hacking-techniques/bbh-cta-banner.jpg" alt="Bug bounty hunters month promotion" title="Bug bounty hunters month promotion"></a></p>
+<h2 id="popular-google-dork-operators">Popular Google Dork operators</h2>
+<p>Google&#8217;s search engine has its own built-in query language. The following list of queries can be run to find a list of files, find information about your competition, track people, get information about SEO backlinks, build email lists, and of course, discover web vulnerabilities.</p>
+<p>Let&#8217;s look at the most popular Google Dorks and what they do.</p>
+<ul>
+<li><code>cache</code>: this dork will show you the cached version of any website, e.g. <code>cache:securitytrails.com</code></li>
+<li><code>allintext</code>: searches for specific text contained on any web page, e.g. <code>allintext: hacking tools</code></li>
+<li><code>allintitle</code>: exactly the same as allintext, but will show pages that contain titles with  X characters, e.g. <code>allintitle:"Security Companies"</code></li>
+<li><code>allinurl</code>: it can be used to fetch results whose URL contains all the specified characters, e.g: <code>allinurl:clientarea</code></li>
+<li><code>filetype</code>: used to search for any kind of file extensions, for example, if you want to search for pdf files you can use: <code>email security filetype: pdf</code></li>
+<li><code>inurl</code>: this is exactly the same as <code>allinurl</code>, but it is only useful for one single keyword, e.g. <code>inurl:admin</code></li>
+<li><code>intitle</code>: used to search for various keywords inside the title, for example, <code>intitle:security tools</code> will search for titles beginning with &#8220;security&#8221; but &#8220;tools&#8221; can be somewhere else in the page.</li>
+<li><code>inanchor</code>: this is useful when you need to search for an exact anchor text used on any links, e.g. <code>inanchor:"cyber security"</code></li>
+<li><code>intext</code>: useful to locate pages that contain certain characters or strings inside their text, e.g. <code>intext:"safe internet"</code></li>
+<li><code>site</code>: will show you the full list of all indexed URLs for the specified domain and subdomain, e.g. <code>site:securitytrails.com</code></li>
+<li><code>*</code>: wildcard used to search pages that contain &#8220;anything&#8221; before your word, e.g. <code>how to * a website</code>, will return &#8220;how to…&#8221; design/create/hack, etc… &#8220;a website&#8221;.</li>
+<li><code>|</code>: this is a logical operator, e.g. <code>"security" "tips"</code> will show all the sites which contain &#8220;security&#8221; or &#8220;tips,&#8221; or both words.</li>
+<li><code>+</code>: used to concatenate words, useful to detect pages that use more than one specific key, e.g. <code>security + trails</code></li>
+<li><code>–</code>: minus operator is used to avoiding showing results that contain certain words, e.g. <code>security -trails</code> will show pages that use &#8220;security&#8221; in their text, but not those that have the word &#8220;trails.&#8221;</li>
+</ul>
+<p>If you&#8217;re looking for the complete set of Google operators, you can follow this <a href="https://www.searchenginejournal.com/google-search-operators-commands/215331/" rel="nofollow">SEJ post</a> which  covers almost every known dork available today.</p>
+<!-- <div id="twitter-widget" class="subscribe-widget mv3  center black-grey">
+  <div id="twlogo"><img src="../images/logo-short.png" /></div>
+  <div id="twcont">
+    <h3>Stay in the loop with the best infosec news, tips and tools</h3><p><span class="h3 mb1">Follow us on Twitter to receive updates!</span></p>
+    <a href="https://twitter.com/SecurityTrails?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="true" data-size="large">Follow @SecurityTrails</a>
+  </div>
+</div>
+ -->
+<h2 id="google-dork-examples">Google Dork examples</h2>
+<p>Let&#8217;s take a look at some practical examples. You&#8217;ll be surprised how easy is to extract private information from any source just by using Google hacking techniques.</p>
+<h3 id="log-files">Log files</h3>
+<p>Log files are the  perfect example of how sensitive information can be found within any website. Error logs, access logs and other types of application logs are often discovered inside the public HTTP space of websites. This can help attackers find the PHP version you&#8217;re running, as well as the critical system path of your CMS or frameworks.</p>
+<p>For this kind of dork we can combine two Google operators, allintext and filetype, for example:</p>
+<p><code>allintext:username filetype:log</code></p>
+<p>This will show a lot of results that  include username inside all *.log files.</p>
+<p>In the results we discovered one particular website showing an SQL error log from a database server that included critical information:</p>
+<pre><code>MyBB SQL Error
+SQL Error: 1062 - Duplicate entry 'XXX' for key 'username'
+Query:
+INSERT
+INTO XXX (`username`,`password`,`salt`,`loginkey`,`email`,`postnum`,`avatar`,`avatartype`,`usergroup`,`additionalgroups`,`displaygroup`,`usertitle`,`regdate`,`lastactive`,`lastvisit`,`website`,`icq`,`aim`,`yahoo`,`msn`,`birthday`,`signature`,`allownotices`,`hideemail`,`subscriptionmethod`,`receivepms`,`receivefrombuddy`,`pmnotice`,`pmnotify`,`showsigs`,`showavatars`,`showquickreply`,`showredirect`,`tpp`,`ppp`,`invisible`,`style`,`timezone`,`dstcorrection`,`threadmode`,`daysprune`,`dateformat`,`timeformat`,`regip`,`longregip`,`language`,`showcodebuttons`,`away`,`awaydate`,`returndate`,`awayreason`,`notepad`,`referrer`,`referrals`,`buddylist`,`ignorelist`,`pmfolders`,`warningpoints`,`moderateposts`,`moderationtime`,`suspendposting`,`suspensiontime`,`coppauser`,`classicpostbit`,`usernotes`)
+VALUES ('XXX','XXX','XXX','XXX','XXX','0','','','5','','0','','1389074395','1389074395','1389074395','','0','','','','','','1','1','0','1','0','1','1','1','1','1','1','0','0','0','0','5.5','2','linear','0','','','XXX','-655077638','','1','0','0','0','','','0','0','','','','0','0','0','0','0','0','0','')</code></pre>
+<p>This example exposed the current database name, user login, password and email values to the Internet. We&#8217;ve replaced the original values with &#8220;XXX&#8221;.</p>
+<h3 id="vulnerable-web-servers">Vulnerable web servers</h3>
+<p>The following Google Dork can be used to detect vulnerable or hacked servers that  allow appending &#8220;/proc/self/cwd/&#8221; directly to the URL of your website.</p>
+<p><code>inurl:/proc/self/cwd</code></p>
+<p>As you can see in the following screenshot, vulnerable server results will appear, along with their exposed directories that can be surfed from your own browser.</p>
+
+
+<img title="Vulnerable web servers with their exposed directories." id="" alt="Vulnerable web servers" class="lazy shadow lbox" data-lazyold="1" data-src="/blog/google-hacking-techniques/vulnerable-web-servers.jpg" width="" height="" data-srcset="/blog/google-hacking-techniques/vulnerable-web-servers-2x.jpg 640w, /blog/google-hacking-techniques/vulnerable-web-servers.jpg 1150w"  src="">
+</p>
+<h3 id="open-ftp-servers">Open FTP servers</h3>
+<p>Google does not only index HTTP-based servers, it also indexes open FTP servers.</p>
+<p>With the following dork, you&#8217;ll be able to explore public FTP servers, which can often reveal interesting things.</p>
+<p><code>intitle:"index of" inurl:ftp</code></p>
+<p>In this example, we found an important government server with their FTP space open. Chances are that this was on purpose — but it could also be a security issue.</p>
+
+
+<img title="Important government server with open FTP space." id="" alt="Important government server with open FTP" class="lazy shadow lbox" data-lazyold="1" data-src="/blog/google-hacking-techniques/government-server.jpg" width="" height="" data-srcset="/blog/google-hacking-techniques/government-server-2x.jpg 640w, /blog/google-hacking-techniques/government-server.jpg 1150w"  src="">
+</p>
+<h3 id="env-files">ENV files</h3>
+<p>.env files are the ones used by popular web development frameworks to declare general variables and configurations for local and online dev environments.</p>
+<p>One of the recommended practices is to move these .env files to somewhere that isn&#8217;t publicly accessible. However, as you will see, there are a lot of devs who don&#8217;t care about this and insert their .env file in the main public website directory.</p>
+<p>As this is a critical dork we will not show you how do it; instead, we will only show you the critical results:</p>
+
+
+<img title="Publically available ENV files." id="" alt="ENV files" class="lazy shadow lbox" data-lazyold="1" data-src="/blog/google-hacking-techniques/env-files.png" width="" height="" data-srcset="/blog/google-hacking-techniques/env-files-2x.png 640w, /blog/google-hacking-techniques/env-files.png 1150w"  src="">
+</p>
+<p>You&#8217;ll notice that unencrypted usernames, passwords and IPs are directly exposed in the search results. You don&#8217;t even need to click the links to get the database login details.</p>
+<h3 id="ssh-private-keys">SSH private keys</h3>
+<p>SSH private keys are used to decrypt information that is exchanged in the SSH protocol. As a general security rule, private keys must always remain on the system being used to access the remote SSH server, and shouldn&#8217;t be shared with anyone.</p>
+<p>With the following dork, you&#8217;ll be able to find SSH private keys that were indexed by uncle Google.</p>
+<p>intitle:index.of id_rsa -id_rsa.pub</p>
+<p>Let&#8217;s move on to another interesting SSH Dork.</p>
+<p>If this isn&#8217;t your lucky day, and you&#8217;re using a Windows operating system with PUTTY SSH client, remember that this program always logs the usernames of your SSH connections.</p>
+<p>In this case, we can use a simple dork to fetch SSH usernames from PUTTY logs:</p>
+<p><code>filetype:log username putty</code></p>
+<p>Here&#8217;s the expected output:</p>
+
+
+<img title="SSH usernames from Putty SSH logs." id="" alt="SSH usernames" class="lazy shadow lbox" data-lazyold="1" data-src="/blog/google-hacking-techniques/ssh-usernames.jpg" width="" height="" data-srcset="/blog/google-hacking-techniques/ssh-usernames-2x.jpg 640w, /blog/google-hacking-techniques/ssh-usernames.jpg 1150w"  src="">
+</p>
+<h3 id="email-lists">Email lists</h3>
+<p>It&#8217;s pretty easy to find email lists using Google Dorks. In the following example, we are going to fetch excel files which may contain a lot of email addresses.</p>
+<p><code>filetype:xls inurl:"email.xls"</code></p>
+
+
+<img title="Email lists with a lot of email addresses." id="" alt="Email lists" class="lazy shadow lbox" data-lazyold="1" data-src="/blog/google-hacking-techniques/email-lists.jpg" width="" height="" data-srcset="/blog/google-hacking-techniques/email-lists-2x.jpg 640w, /blog/google-hacking-techniques/email-lists.jpg 1150w"  src="">
+</p>
+<p>We filtered to check out only the .edu domain names and found a popular university with around 1800 emails from students and teachers.</p>
+<p><code>site:.edu filetype:xls inurl:"email.xls"</code></p>
+<p>Remember that the real power of Google Dorks comes from the unlimited combinations you can use. Spammers know this trick too, and use it on a daily basis to build and grow their spamming email lists.</p>
+<h3 id="live-cameras">Live cameras</h3>
+<p>Have you ever wondered if  your private live camera could be watched not only by you but also by anyone on the Internet?</p>
+<p>The following Google hacking techniques can help you fetch live camera web pages that  are not restricted by IP.</p>
+<p>Here&#8217;s the dork to fetch various IP based cameras:</p>
+<p><code>inurl:top.htm inurl:currenttime</code></p>
+<p>To find WebcamXP-based transmissions:</p>
+<p><code>intitle:"webcamXP 5"</code></p>
+<p>And another one for general live cameras:</p>
+<p><code>inurl:"lvappl.htm"</code></p>
+<p>There are a lot of live camera dorks that can let you watch any part of the world, live. You can find education, government, and even military cameras without IP restrictions.</p>
+<p>If you get creative you can even do some white hat penetration testing on these cameras; you&#8217;ll be surprised at how you&#8217;re able to take control of the full admin panel remotely, and even re-configure the cameras as you like.</p>
+
+
+<img title="Live cameras" id="" alt="Live cameras" class="lazy shadow lbox" data-lazyold="1" data-src="/blog/google-hacking-techniques/live-cameras.jpg" width="" height="" data-srcset="/blog/google-hacking-techniques/live-cameras-2x.jpg 640w, /blog/google-hacking-techniques/live-cameras.jpg 1150w"  src="">
+</p>
+<h3 id="mp3-movie-and-pdf-files">MP3, Movie, and PDF files</h3>
+<p>Nowadays almost no one downloads music after Spotify and Apple Music appeared on the market. However, if you&#8217;re one of those classic individuals  who still download legal music, you can use this dork to find mp3 files:</p>
+<p><code>intitle: index of mp3</code></p>
+<p>The same applies to legal free media files or PDF documents you may need:</p>
+<p><code>intitle: index of pdf</code>
+<code>intext: .mp4</code></p>
+<h3 id="weather">Weather</h3>
+<p>Google hacking techniques can be used to fetch any kind of information, and that includes many different types of electronic devices connected to the Internet.</p>
+<p>In this case, we ran a dork that lets you fetch Weather Wing device transmissions. If you&#8217;re involved in meteorology stuff or merely curious, check this out:</p>
+<p><code>intitle:"Weather Wing WS-2"</code></p>
+<p>The output will show you several devices connected around the world, which share weather details such as wind direction, temperature, humidity and more.</p>
+
+
+<img title="weather-wing-device-transmissions." id="" alt="weather-wing-device-transmissions" class="lazy shadow lbox" data-lazyold="1" data-src="/blog/google-hacking-techniques/weather-wing-device-transmissions.jpg" width="" height="" data-srcset="/blog/google-hacking-techniques/weather-wing-device-transmissions-2x.jpg 640w, /blog/google-hacking-techniques/weather-wing-device-transmissions.jpg 1150w"  src="">
+</p>
+<h3 id="zoom-videos">Zoom videos</h3>
+<p>&#8220;Zoom-bombing&#8221; became a popular means of disrupting online meetings in 2020 during the initial lockdown. The company has since placed some restrictions to make it harder to find/disrupt Zoom meetings, but long as a URL is shared, a Zoom meeting can still be found:</p>
+<p><code>inurl:zoom.us/j and intext:scheduled for</code></p>
+<p>The only drawback to this is the speed at which Google indexes a website. By the time a site is indexed, the Zoom meeting might already be over.</p>
+<p><img title="Zoom videos" alt="Zoom videos" src="/user/pages/blog/097.google-hacking-techniques/zoom-videos.png"></p>
+<h3 id="sql-dumps">SQL dumps</h3>
+<p>Misconfigured databases are one way of finding exposed data. Another way is to look for SQL dumps that are stored on servers and accessible via a domain/IP.</p>
+<p>Sometimes, these dumps appear on sites through incorrect backup mechanisms used by site admins who store backups on web servers (assuming that they aren&#8217;t indexed by Google). To find a zipped SQL file, we use:</p>
+<p><code>"index of" "database.sql.zip"</code></p>
+<p>We&#8217;ve omitted screenshots to avoid exposing any possible data breaches.</p>
+<h3 id="wordpress-admin">WordPress Admin</h3>
+<p>The view on whether to obfuscate your WordPress login page has arguments on both sides. Some researchers say it&#8217;s unnecessary and using tools like a web application firewall (WAF) can prevent attacks much better than obfuscation would.</p>
+<p>Finding WP Admin login pages is not too difficult with a dork:</p>
+<p><code>intitle:"Index of" wp-admin</code></p>
+<p><img title="WordPress Admin" alt="WordPress Admin" src="/user/pages/blog/097.google-hacking-techniques/wordpress-admin.png"></p>
+<h3 id="apache2">Apache2</h3>
+<p>This can be considered a subset of &#8220;vulnerable web servers&#8221; mentioned above, but we&#8217;re discussing Apache2 specifically because:</p>
+<ul>
+<li>LAMP (Linux, Apache, MySQL, PHP) is a popular stack for hosted apps/websites</li>
+<li>These Apache servers could be misconfigured/forgotten or in some stage of being setup, making them great targets for botnets</li>
+</ul>
+<p>Find Apache2 web pages with the following dork:</p>
+<p><code>intitle:"Apache2 Ubuntu Default Page: It works"</code></p>
+<p><img title="Apache2" alt="Apache2" src="/user/pages/blog/097.google-hacking-techniques/Apache2.png"></p>
+<h3 id="phpmyadmin">phpMyAdmin</h3>
+<p>Another risky yet frequently discovered tool on LAMP servers is phpMyAdmin software. This tool is another method of compromising data, as phpMyAdmin is used for the administration of MySQL over the web. The dork to use is:</p>
+<p><code>"Index of" inurl:phpmyadmin</code></p>
+<h3 id="jira-kibana">JIRA/Kibana</h3>
+<p>Google dorks can also be used to find web applications hosting important enterprise data (via JIRA or Kibana).</p>
+<p><code>inurl:Dashboard.jspa intext:"Atlassian Jira Project Management Software"</code><br>
+<code>inurl:app/kibana intext:Loading Kibana</code></p>
+<p><img title="JIRA/Kibana" alt="JIRA/Kibana" src="/user/pages/blog/097.google-hacking-techniques/jira-kibana.png"></p>
+<p>An easier way to find JIRA instances is to use a tool like SurfaceBrowser™, which can identify subdomains as well as the applications on those subdomains (besides JIRA, there are many other applications).</p>
+<h3 id="cpanel-password-reset">cPanel password reset</h3>
+<p>Another dork that can be used as the first step in reconnaissance is to hosted cPanels and then exploit various weaknesses in password resets to take over the cPanel (along with all the websites hosted on it). The dork for this purpose is:</p>
+<p><code>inurl:_cpanel/forgotpwd</code></p>
+<p><img title="cPanel password reset" alt="cPanel password reset" src="/user/pages/blog/097.google-hacking-techniques/cpanel-password-reset.png"></p>
+<h3 id="government-documents">Government documents</h3>
+<p>Sensitive government documents are the last thing that should be exposed on the internet, but with dorks they aren&#8217;t too hard to find, as shown below:</p>
+<p><code>allintitle: restricted filetype:doc site:gov</code></p>
+<p><img title="Government documents" alt="Government documents" src="/user/pages/blog/097.google-hacking-techniques/government-documents.png"></p>
+<h2 id="preventing-google-dorks">Preventing Google Dorks</h2>
+<p>There are a lot of ways to avoid falling into the hands of a Google Dork.</p>
+<p>These measures are suggested to prevent your sensitive information from being indexed by search engines.</p>
+<ul>
+<li>Protect private areas with a user and password authentication and also by using IP-based restrictions.</li>
+<li>Encrypt your sensitive information (user, passwords, credit cards, emails, addresses, IP addresses, phone numbers, etc).</li>
+<li>Run regular vulnerability scans against your site, these usually already use popular Google Dorks queries and can be pretty effective in detecting the most common ones.</li>
+<li>Run regular dork queries against your own website to see if you can find any important information before the bad guys do. You can find a great list of popular dorks at the <a href="https://www.exploit-db.com/google-hacking-database/" rel="nofollow">Exploit DB Dorks database</a>.</li>
+<li>If you find sensitive content exposed, request its removal by using <a href="https://support.google.com/webmasters/answer/1663419?hl=en%3Frel%3Dnofollow">Google Search Console</a>.</li>
+<li>Block sensitive content by using a robots.txt file located in your root-level website directory.</li>
+</ul>
+<h3 id="using-robots-txt-configurations-to-prevent-google-dorking">Using robots.txt configurations to prevent Google Dorking</h3>
+<p>One of the best ways to prevent Google dorks is by using a <a href="https://support.google.com/webmasters/answer/6062596?hl=en%3Frel%3Dnofollow">robots.txt</a> file. Let&#8217;s see some practical examples.</p>
+<p>The following configuration will deny all crawling from any directory within your website, which is pretty useful for private access websites that don&#8217;t rely on publicly-indexable Internet content.</p>
+<pre><code>User-agent: *
+Disallow: /</code></pre>
+<p>You can also block specific directories to be excepted  from web crawling. If you have an /admin area and you need to protect it, just place this code inside:</p>
+<pre><code>User-agent: *
+Disallow: /admin/</code></pre>
+<p>This will also protect all the subdirectories inside.</p>
+<p>Restrict access to specific files:</p>
+<pre><code>User-agent: *
+Disallow: /privatearea/file.htm</code></pre>
+<p>Restrict access to dynamic URLs that contain &#8216;?&#8217; symbol</p>
+<pre><code>User-agent: *
+Disallow: /*?</code></pre>
+<p>To restrict access to specific file extensions you can use:</p>
+<pre><code>User-agent: *
+Disallow: /*.php$/</code></pre>
+<p>In this case, all access to .php files will be denied.</p>
+<h2 id="final-thoughts">Final thoughts</h2>
+<p>Google is one of the most important search engines in the world. As we all know, it has the ability to index everything unless we explicitly deny it.</p>
+<p>Today we learned that Google can be also used as a hacking tool, but you can stay one step ahead of the bad guys and use it regularly to find vulnerabilities in your own websites. You can even integrate this and run automated scans by using custom third-party Google SERPs APIs.</p>
+<p>If you&#8217;re a security researcher it can be a practical tool for your cybersecurity duties when used responsibly.</p>
+<p>While Google Dorking can be used to reveal sensitive information about your website that is located and indexable via HTTP protocol, you can also perform a full DNS audit by using the <a href="/">SecurityTrails</a> toolkit.</p>
+<hr>
+<p>If you&#8217;re looking for a way to do it all from a single interface—analyze your DNS records, zones, server IP map, related domains, subdomains as well as SSL Certificates—take a look into your <a href="/corp/surfacebrowser">SurfaceBrowser</a> tool, request a demo with us today, or sign up for a <a href="/corp/surfacebrowser">free API account</a>.</p>
+
+                <section id='author' class=''>
+                    <img id='author-image' src='../user/plugins/shortcode-custom/images/esteban-borges.jpg' data-src='../user/plugins/shortcode-custom/images/esteban-borges.jpg' width='200' height='200' />
+                    <div id='author-bio'>
+                    <a class='author-name' href='./_author/estebanborges'>ESTEBAN BORGES</a>
+                        <p>
+                        Esteban is a seasoned security researcher and cybersecurity specialist with over 15 years of experience. Since joining SecurityTrails in 2017 he’s been our go-to for technical server security and source intelligence info.
+                        </p>
+                    </div>
+                </section>
+            
+<div id="subscribe-widget" class="subscribe-widget mb3 mt6  center cyan">
+  <div id="nlcont">
+      <img src="../images/newsletter.png" widht="60" height="55"/>
+      <div id="nltxt">Sign up for our newsletter today!</div>
+      <h3>Get the best cybersec research, news, tools,<br>and interviews with industry leaders</h3>
+    </div>
+    <form id="subForm" class="js-cm-form" action="https://www.createsend.com/t/subscribeerror?description=" method="post" data-id="A61C50BEC994754B1D79C5819EC1255CE08F515CDFF682278FE9DBCE771AFDF3C4070645486B78880838C7C84DE8D2E4A5C70556F2E7E5599BBF1C7B78CA3BEC">
+        <input id="fieldEmail" name="cm-ydjhzt-ydjhzt" type="email" class="js-cm-email-input mb0" placeholder="name@company.com" required />
+        <button class="js-cm-submit-button mv0" type="submit">Subscribe</button>
+    </form>
+  <script type="text/javascript" src="https://js.createsend1.com/javascript/copypastesubscribeformlogic.js"></script>
+</div>
+
+
+
+      
+      
+      
+          </section>
+
+
+
+
+<footer class="blog-post-footer xl12 mt2 mb4">
+
+  </footer>
+
+
+    <section class="xl12 related-pages-section related-pages-narrow">
+              <h4 class="mb1">Related Posts:</h4>
+                <ul class="related-pages center">
+                <li class="related-item text-left">
+        <a class="card card-fixed-height" href="/blog/why-does-web-software-get-hacked" title="Why does web software get hacked?">
+                        <img title="Why does web software get hacked?" alt="Why does web software get hacked?" src="/blog/why-does-web-software-get-hacked/thumbs/356w.jpg" width="356" height="200" >
+                      <div class="elem">
+            <h5>Why does web software get hacked?</h5>
+            <p class="smaller">Innumerable technologies, applications, and protocols have emerged since the beginning of the Internet. Many have been forgotten, but many are here to last.</p>
+          </div>
+        </a>
+      </li>
+                          <li class="related-item text-left">
+        <a class="card card-fixed-height" href="/blog/github-dorks" title="Top GitHub Dorks and Tools Used to Scan GitHub Repositories for Sensitive Data">
+                        <img title="Top GitHub Dorks and Tools Used to Scan GitHub Repositories for Sensitive Data" alt="Top GitHub Dorks and Tools Used to Scan GitHub Repositories for Sensitive Data" src="/blog/github-dorks/thumbs/356w.jpg" width="356" height="200" >
+                      <div class="elem">
+            <h5>Top GitHub Dorks and Tools Used to Scan GitHub Repositories for Sensitive Data</h5>
+            <p class="smaller">Exploring ways to scan GitHub for critical data: usernames, passwords, database credentials etc., so you can detect security issues before the bad guys.</p>
+          </div>
+        </a>
+      </li>
+                          <li class="related-item text-left">
+        <a class="card card-fixed-height" href="/blog/information-gathering" title="Information Gathering: Concept, Techniques and Tools explained">
+                        <img title="Information Gathering: Concept, Techniques and Tools explained" alt="Information Gathering: Concept, Techniques and Tools explained" src="/blog/information-gathering/thumbs/356w.jpg" width="356" height="200" >
+                      <div class="elem">
+            <h5>Information Gathering: Concept, Techniques and Tools explained</h5>
+            <p class="smaller">Discover what is information gathering in cybersecurity, the most important techniques, tools and tips to perform a successful intel-recon task.</p>
+          </div>
+        </a>
+      </li>
+            </ul>
+          </section>
+
+	</article>
+
+</section>
+
+      </main>
+    
+    
+                  
+<footer class="main">
+  <div class="row middle text-left links">
+
+    <div class="xl2 m12 left footer-logo">
+      <a class="logo logo-may" href="/">
+        <svg class="securitytrails-logo" data-name="securitytrails-logo" viewBox="0 0 679.3 162.4" xmlns="http://www.w3.org/2000/svg"><path d="m158.5 89.2h-35.5c.7 7.2 6.2 10.4 12.7 10.4s12.1-2.8 14.9-4.7l6.4 8.4c-1.6 1.2-8.2 8.1-23.6 8.1-15.3 0-26.5-9.5-26.5-25.9 0-16.5 12.1-25.8 26.8-25.8s24.9 9.8 24.9 24.3c.1 2.2-.1 5.2-.1 5.2zm-25.1-19.2c-6.7 0-10.1 5.2-10.3 10h20.5c-.1-4.6-3.4-10-10.2-10z"/><path d="m245.5 110.2-.1-5.7c-2.1 3-7.4 6.8-14.5 6.8-13.7 0-17.9-8.4-17.9-20.8v-30.1h16.1v27.9c0 5.8 1.6 9.7 7.4 9.7s8.4-4.5 8.4-11.1v-26.5h16.1v49.8z"/><path d="m302.4 73.9s-2.4-.1-5.9-.1c-8 0-11.6 9.7-11.6 16.3v20.1h-16.2v-49.8h16.2l-.1 7.1h.2c2.8-5.5 7-8 12.3-8 3.3 0 5 .9 5 .9v13.5z"/><path d="m487.3 73.9s-3.8-.1-7.3-.1c-8 0-11.6 9.7-11.6 16.3v20.1h-16.2v-49.8h16.2l-.1 7.1h.2c1.7-4.4 7.1-7.8 11.3-7.8 4 0 7.5.7 7.5.7z"/><path d="m308.1 110.2v-49.8h16.1v49.8z"/><path d="m347.8 72.7v17.9c0 4.3.3 7.4 5.2 7.4 2.5 0 4.8-.9 4.8-.9l.8 12.6c-1.2.3-5.7 1.6-11.5 1.6-12.9 0-15.6-7.9-15.6-19.3v-45h16.3v13.5h11v12.2z"/><path d="m440.6 53.4v56.7h-16.4v-56.7h-18v-12.9h52.3v12.9z"/><path d="m565.5 110.2v-69.7h16.2v69.6h-16.2z"/><path d="m606.5 111.3c-7.5 0-15.3-2.3-21-7.7l6.1-9.6c4 3.4 10.7 6.1 14.7 6.1s6.9-1 6.9-4.2-7.3-4.8-9.1-5.5c-8.3-2.1-15.5-5-15.5-15.3 0-9.7 8.5-15.6 18.9-15.6s16.3 3.8 19.1 6.2l-5.2 9.5c-2.8-2.2-8.5-4.8-12.5-4.8-3.8 0-6 1-6 3.6s3.8 3.8 7.3 4.8c8.6 2.5 17.6 5.1 17.6 16.1-.2 11.8-11 16.4-21.3 16.4z"/><path d="m308.1 53.3v-12.8h16.1v12.8z"/><path d="m541.2 110.2v-49.8h16.1v49.8z"/><path d="m541.2 53.3v-12.8h16.1v12.8z"/><path d="m205.7 92.4c-2.3 1.5-8 5.6-14.2 5.6-7.6 0-12.5-5-12.5-12.9s5.5-12.6 12.3-12.6c6.5 0 12.9 4 14 5.4h.1l.5-13.7c-.9-1.3-6.6-4.7-16.8-4.7-13.6 0-26.4 9.3-26.4 25.9s12.6 25.8 26.2 25.8c10.1 0 16.1-3.1 18.2-4.7z"/><path d="m508.9 59.5c-5.2 0-11.2.2-17.2 1.5v12.8c4.2-2.3 10.6-3 15.4-3 6.5 0 10.2 2.5 10.2 7.8v1.1l-12.5.5c-9.2.4-19.4 4.1-19.4 15.2s9.3 15.8 18.1 15.8c8.1 0 12.1-4.2 14.2-6.4l.3 5.2h15.4v-27.9c0-16.1-9-22.6-24.5-22.6zm8.4 36.9c-1 1.7-3.9 4.5-8.3 4.5s-7.6-2.3-7.6-6.2c0-3.7 2.9-5.9 7.9-6.1l8-.5z"/><path d="m89 69.9c-2.2-.9-7.4-2.7-10.4-3.9-3.1-1.2-7.1-2.8-7.1-7.1 0-4.2 3.8-6.3 9.1-6.3 7.4 0 15.3 4.6 19.9 9.4l.3-.1v-15.6c-5.1-3.8-12.9-6.6-19.8-6.6-8.1 0-14.4 2.2-18.4 5.6-4 3.3-7.3 8.6-7.3 15.2s2.4 10.6 5.5 13.4c3 2.9 6.6 4.2 8.3 5 2.3 1 7.6 2.8 10.6 3.9s8.2 2.9 8.2 7.7c0 4.6-4 7.2-9.3 7.2-7.5 0-16.9-5.7-22.1-11.1l-.1.1v17.7c5.1 3.8 13 7 20.7 7 13.5 0 27.1-7.4 27.1-22.4-.1-10.1-6.3-15.9-15.2-19.1z"/><path d="m386.8 136.1 30.8-75.7h-16.7l-11.2 32-11.3-32h-16.9l19.7 48.3-11.2 27.4z"/></svg>      </a>
+    </div>
+
+    
+    <div class="footer-column xl2 m4 s6">
+
+      <h2 class="h6">Products</h2>
+
+      
+        <p>
+                  <a href="/corp/api"
+            >SecurityTrails API™</a><br>
+                  <a href="/corp/feeds"
+            >SecurityTrails Feeds™</a><br>
+                  <a href="/corp/surfacebrowser"
+            >SurfaceBrowser™</a><br>
+                  <a href="/corp/attack-surface-reduction"
+            >Attack Surface Reduction™</a><br>
+                  <a href="/corp/pricing"
+            >Pricing</a><br>
+        
+        
+                </p>
+
+    </div>
+
+    
+    <div class="footer-column xl2 m4 s6">
+
+      <h2 class="h6">Company</h2>
+
+      
+        <p>
+                  <a href="/blog"
+             style="width: auto">Blog</a><a href="/blog.rss" style="display: inline"><i class="fa fa-rss"></i></a>
+            <br>
+                  <a href="/corp/ourstory"
+            >Our Story</a><br>
+                  <a href="/corp/customers"
+            >Customers</a><br>
+                  <a href="/corp/careers"
+            >Careers</a><br>
+                  <a href="/corp/press"
+            >Press</a><br>
+                  <a href="/corp/open-source"
+            >Open Source</a><br>
+                  <a href="/corp/brand"
+            >Logo and Branding</a><br>
+        
+        
+                </p>
+
+    </div>
+
+    
+    <div class="footer-column xl2 m4 s6">
+
+      <h2 class="h6">Resources</h2>
+
+      
+        <p>
+                  <a href="/stats"
+            >Domain Stats</a><br>
+                  <a href="/corp/integrations"
+            >Integrations</a><br>
+                  <a href="/data/fortune-500"
+            >Fortune 500 Domains</a><br>
+                  <a href="/corp/manifesto"
+            >Product Manifesto</a><br>
+                  <a href="/dns-trails"
+            >DNS History</a><br>
+        
+        
+                </p>
+
+    </div>
+
+    
+    <div class="footer-column xl2 m4 s6">
+
+      <h2 class="h6">Support</h2>
+
+      
+        <p>
+                  <a href="https://securitytrails.com/support/"
+            >Product Docs</a><br>
+                  <a href="https://docs.securitytrails.com/docs"
+            >API Docs</a><br>
+                  <a href="https://securitytrails.com/support/knowledge-base/faq/"
+            >FAQ</a><br>
+                  <a href="https://status.securitytrails.io/"
+            >Service Status</a><br>
+                  <a href="/corp/contact#contact-us"
+            >Contact Us</a><br>
+        
+        
+                </p>
+
+    </div>
+
+    
+
+    
+  </div>
+
+  <div class="row middle footer-bottom-row">
+
+    <div class="m12 copyright">
+      <small><a>SecurityTrails © 2021</a><span>·</span><a href="/privacy-policy">Privacy Policy</a></a><span>·</span><a href="/terms-of-service">Terms of Service</a>
+            </small>
+
+    </div>
+
+    <div class="m12 social">
+              <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/company/securitytrails/"><i class="fa fa-linkedin"></i></a>
+              <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/securitytrails"><i class="fa fa-twitter"></i></a>
+              <a target="_blank" rel="noopener noreferrer" href="https://www.facebook.com/SecurityTrails-137000680343742/"><i class="fa fa-facebook-f"></i></a>
+      
+      <a class="twitter-follow-button"
+        href="https://twitter.com/SecurityTrails"
+        data-size="medium"
+        data-show-count="false">
+        Follow @SecurityTrails</a>
+      <style>
+        .footer-bottom-row .twitter-follow-button { margin-bottom: -4px; }
+      </style>
+    </div>
+
+  </div>
+
+    <!-- The Modal -->
+    <div id="modal" class="modal">
+        <span class="close">×</span>
+        <img class="modal-content" id="mimg" src="">
+    </div>
+</footer>
+          
+         <div id="assets-block">
+      <link href="/user/themes/twentytwenty/css/templates/blogpost.css" type="text/css" rel="stylesheet" />
+<link href="/user/plugins/archive_plus/assets/css/archive_plus.css" type="text/css" rel="stylesheet" />
+<link href="/user/plugins/simplesearch/css/simplesearch.css" type="text/css" rel="stylesheet" />
+<link href="/user/plugins/featherlight/css/featherlight.min.css" type="text/css" rel="stylesheet" />
+<link href="/user/themes/twentytwenty/css/font-awesome.css" type="text/css" rel="stylesheet" />
+
+
+              <script src="/user/themes/twentytwenty/js/vendor/jquery.min.js"></script>
+      
+      <script src="/user/themes/twentytwenty/js/vendor/modernizr-custom.min.js" ></script>
+<script src="/user/themes/twentytwenty/js/main.js" ></script>
+<script src="/user/plugins/simplesearch/js/simplesearch.js" ></script>
+<script src="/user/plugins/featherlight/js/featherlight.min.js" ></script>
+<script src="/js/app.js" ></script>
+<script src="/user/themes/twentytwenty/js/templates/blogpost.js" ></script>
+
+              <script>
+            // Optional declarations block
+            let assetsBlock = document.getElementById("assets-block");
+
+            function createScriptElement(jsrc) {
+                let script_element = document.createElement('script');
+                script_element.type = 'text/javascript';
+                script_element.src = jsrc;
+                return script_element;
+            }
+        </script>
+
+        
+        
+                    <script>
+                $(document).ready(function(){
+                    $('a[rel="lightbox"]').featherlight({
+                        openSpeed: 250,
+                        closeSpeed: 250,
+                        closeOnClick: 'background',
+                        closeOnEsc: '1',
+                        root: 'body'
+                    });
+                });
+            </script>
+              </div>
+    
+        
+    
+    <!-- push notifications if blog -->
+            <link rel="manifest" href="/manifest.json" />
+
+    
+    <!-- status page (not showing on blog & blogpost pages) -->
+    
+        
+
+  </body>
+
+        <!-- This page was cached on Sun, 23 May 2021 01:37:11 -->
+
+</html>

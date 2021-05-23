@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="AWSDocsDocPageApp">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <title>Logging AWS Backup API calls with CloudTrail - AWS Backup</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <meta name="assets_root" content="/assets" />
+      <meta name="target_state" content="logging-using-cloudtrail" />
+      <meta name="default_state" content="logging-using-cloudtrail" />
+      <link rel="icon" type="image/ico" href="/assets/images/favicon.ico" />
+      <link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" />
+      <link rel="canonical" href="https://docs.aws.amazon.com/aws-backup/latest/devguide/logging-using-cloudtrail.html" />
+      <meta name="description" content="Learn about logging AWS Backup with AWS CloudTrail." />
+      <meta name="deployment_region" content="IAD" />
+      <meta name="product" content="AWS Backup" />
+      <meta name="guide" content="Developer Guide" />
+      <meta name="locales" content="de_de:Deutsch/en_us:English/es_es:Español/fr_fr:Français/it_it:Italiano/ja_jp:日本語/ko_kr:한국어/pt_br:Português/zh_cn:中文 (简体)/zh_tw:中文 (繁體)" />
+      <meta name="abstract" content="Provides a conceptual overview of AWS Backup, detailed instructions for using the various features, and a complete API reference for developers." />
+      <meta name="guide-locale" content="en_us" />
+      <meta name="tocs" content="toc-contents.json" />
+      <meta name="feedback-item" content="Cryo" />
+      <meta name="this_doc_product" content="AWS Backup" />
+      <meta name="this_doc_guide" content="Developer Guide" />
+      <link href="/assets/css/vendor4.css?version=2020.09.30" rel="stylesheet" />
+      <link href="/assets/css/awsdocs-common.css?version=2020.09.30" rel="stylesheet" /><script type="text/javascript" src="/assets/js/vendor3.js?version=2020.09.30" defer=""></script><script type="text/javascript" src="/assets/js/vendor4.js?version=2020.09.30" defer=""></script><script type="text/javascript" src="/assets/js/vendor1.js?version=2020.09.30" defer=""></script><script type="text/javascript" src="/assets/js/awsdocs-common.js?version=2020.09.30" defer=""></script><script type="text/javascript" src="/assets/js/awsdocs-doc-app.js?version=2020.09.30" defer=""></script></head>
+   <body class="awsdocs awsui">
+      <div class="awsdocs-container">
+         <awsdocs-header></awsdocs-header>
+         <awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)">
+            <div id="guide-toc" dom-region="navigation">
+               <awsdocs-toc></awsdocs-toc>
+            </div>
+            <div id="main-column" dom-region="content" tabindex="-1">
+               <awsdocs-view class="awsdocs-view">
+                  <div id="awsdocs-content">
+                     <head>
+                        <title>Logging AWS Backup API calls with CloudTrail - AWS Backup</title>
+                        <meta name="pdf" content="AWSBackup-dg.pdf#logging-using-cloudtrail" />
+                        <meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=324" />
+                        <meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Cryo&amp;topic_url=http://docs.aws.amazon.com/en_us/aws-backup/latest/devguide/logging-using-cloudtrail.html" />
+                        <meta name="feedback-yes" content="feedbackyes.html?topic_url=http://docs.aws.amazon.com/en_us/aws-backup/latest/devguide/logging-using-cloudtrail.html" />
+                        <meta name="feedback-no" content="feedbackno.html?topic_url=http://docs.aws.amazon.com/en_us/aws-backup/latest/devguide/logging-using-cloudtrail.html" />
+                     </head>
+                     <body>
+                        <div id="main">
+                           <div style="display: none"><a href="AWSBackup-dg.pdf#logging-using-cloudtrail" target="_blank" title="Open PDF"></a></div>
+                           <div id="breadcrumbs" class="breadcrumb"><a href="http://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/aws-backup/index.html">AWS Backup</a><a href="whatisbackup.html">Developer Guide</a></div>
+                           <div id="page-toc-src"><a href="#service-name-info-in-cloudtrail">AWS Backup information in CloudTrail</a><a href="#understanding-service-name-entries">Understanding AWS Backup log file
+                                 entries</a><a href="#logging-cam-events">Logging cross-account management events</a></div>
+                           <div id="main-content" class="awsui-util-container">
+                              <div id="main-col-body">
+                                 <awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner>
+                                 <h1 class="topictitle" id="logging-using-cloudtrail">Logging AWS Backup API calls with CloudTrail</h1>
+                                 <div class="awsdocs-page-header-container">
+                                    <awsdocs-page-header></awsdocs-page-header>
+                                    <awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector>
+                                 </div>
+                                 <p>AWS Backup is integrated with AWS CloudTrail, a service that provides a record of
+                                    actions taken by a
+                                    user, role, or an AWS service in AWS Backup. CloudTrail captures all API calls for
+                                    AWS Backup as events. The
+                                    calls captured include calls from the AWS Backup console and code calls to the AWS
+                                    Backup API
+                                    operations. If you create a trail, you can enable continuous delivery of CloudTrail
+                                    events to an
+                                    Amazon S3 bucket, including events for AWS Backup. If you don't configure a trail,
+                                    you can still view
+                                    the most recent events in the CloudTrail console in <b>Event history</b>. Using the
+                                    information collected by CloudTrail, you can determine the request that was made to
+                                    AWS Backup, the IP
+                                    address from which the request was made, who made the request, when it was made, and
+                                    additional details. To learn more about CloudTrail, see the <a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html">AWS CloudTrail User Guide</a>.
+                                 </p>
+                                 <div class="highlights" id="inline-topiclist">
+                                    <p><strong>Topics</strong></p>
+                                    <ul>
+                                       <li><a href="#service-name-info-in-cloudtrail">AWS Backup information in CloudTrail</a></li>
+                                       <li><a href="#understanding-service-name-entries">Understanding AWS Backup log file
+                                             entries</a></li>
+                                       <li><a href="#logging-cam-events">Logging cross-account management events</a></li>
+                                    </ul>
+                                 </div>
+                                 
+                                 <h2 id="service-name-info-in-cloudtrail">AWS Backup information in CloudTrail</h2>
+                                 
+                                 
+                                 <p>CloudTrail is enabled on your AWS account when you create the account. When activity
+                                    occurs
+                                    in AWS Backup, that activity is recorded in a CloudTrail event along with other AWS
+                                    service events in
+                                    <b>Event history</b>. You can view, search, and download recent events in
+                                    your AWS account. AWS Backup generates these CloudTrail events when it performs backups,
+                                    restores, or
+                                    copies:
+                                 </p>
+                                 
+                                 <div class="itemizedlist">
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                    
+                                    <ul class="itemizedlist" type="disc">
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">BackupDeleted</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">BackupJobCompleted</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">BackupJobStarted</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">BackupSelectionDeletedDueToSLRDeletion</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">BackupTransitionedToCold</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">CopyJobCompleted</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">CopyJobStarted</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">RestoreCompleted</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">RestoreStarted</code></p>
+                                          
+                                       </li>
+                                    </ul>
+                                 </div>
+                                 
+                                 <p>These events are not necessarily generated by use of the AWS Backup public APIs. Rather,
+                                    they
+                                    are generated through AWS Backup asynchronously executing your jobs. For example,
+                                    your <a href="https://docs.aws.amazon.com/aws-backup/latest/devguide/API_StartBackupJob.html">StartBackupJob</a> API call could generate
+                                    the <code class="code">BackupJobStarted</code> event, but a scheduled job from a backup plan could also
+                                    generate the <code class="code">BackupJobStarted</code> event. 
+                                 </p>
+                                 
+                                 <p>For more information, see <a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html">Viewing
+                                       Events with CloudTrail Event History</a>. 
+                                 </p>
+                                 
+                                 
+                                 <p>For an ongoing record of events in your AWS account, including events for AWS Backup,
+                                    create a trail. A <em>trail</em> enables CloudTrail to deliver log files to an Amazon S3
+                                    bucket. By default, when you create a trail in the console, the trail applies to all
+                                    AWS
+                                    Regions. The trail logs events from all Regions in the AWS partition and delivers
+                                    the log
+                                    files to the Amazon S3 bucket that you specify. Additionally, you can configure other
+                                    AWS
+                                    services to further analyze and act upon the event data collected in CloudTrail logs.
+                                    For more
+                                    information, see the following: 
+                                 </p>
+                                 
+                                 <div class="itemizedlist">
+                                     
+                                     
+                                     
+                                     
+                                    
+                                    <ul class="itemizedlist" type="disc">
+                                       <li class="listitem">
+                                          
+                                          <p><a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-create-and-update-a-trail.html">Overview for
+                                                Creating a Trail</a></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-aws-service-specific-topics.html#cloudtrail-aws-service-specific-topics-integrations">CloudTrail Supported Services and Integrations</a></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/getting_notifications_top_level.html">Configuring Amazon
+                                                SNS Notifications for CloudTrail</a></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/receive-cloudtrail-log-files-from-multiple-regions.html">Receiving CloudTrail Log Files from Multiple Regions</a> and <a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-receive-logs-from-multiple-accounts.html">Receiving CloudTrail
+                                                Log Files from Multiple Accounts</a></p>
+                                          
+                                       </li>
+                                    </ul>
+                                 </div>
+                                 
+                                 
+                                 <p>Every event or log entry contains information about who generated the request. The
+                                    identity information helps you determine the following:
+                                 </p>
+                                 
+                                 <div class="itemizedlist">
+                                     
+                                     
+                                     
+                                    
+                                    <ul class="itemizedlist" type="disc">
+                                       <li class="listitem">
+                                          
+                                          <p>Whether the request was made with root or AWS Identity and Access Management (IAM)
+                                             user credentials.
+                                          </p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p>Whether the request was made with temporary security credentials for a role or
+                                             federated user.
+                                          </p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p>Whether the request was made by another AWS service.</p>
+                                          
+                                       </li>
+                                    </ul>
+                                 </div>
+                                 
+                                 <p>For more information, see the <a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-event-reference-user-identity.html">CloudTrail userIdentity
+                                       Element</a>.
+                                 </p>
+                                  
+                                 
+                                 <h2 id="understanding-service-name-entries">Understanding AWS Backup log file
+                                    entries
+                                 </h2>
+                                 
+                                 <p>A trail is a configuration that enables delivery of events as log files to an Amazon
+                                    S3
+                                    bucket that you specify. CloudTrail log files contain one or more log entries. An
+                                    event represents
+                                    a single request from any source and includes information about the requested action,
+                                    the
+                                    date and time of the action, request parameters, and so on. CloudTrail log files aren't
+                                    an ordered
+                                    stack trace of the public API calls, so they don't appear in any specific order. 
+                                 </p>
+                                 
+                                 <p>The following example shows a CloudTrail log entry that demonstrates the
+                                    <code class="code">StartBackupJob</code>, <code class="code">StartRestoreJob</code>, and
+                                    <code class="code">DeleteRecoveryPoint</code> actions and also the <code class="code">BackupJobCompleted</code>
+                                    event.
+                                 </p>
+                                 <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "eventVersion": "1.05",
+    "userIdentity": <span>{</span>
+        "type": "Root",
+        "principalId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:root",
+        "accountId": "<code class="replaceable">account-id</code>",
+        "accessKeyId": <code class="replaceable">aceess-key</code>,
+        "sessionContext": <span>{</span>
+            "attributes": <span>{</span>
+                "mfaAuthenticated": "false",
+                "creationDate": "2019-01-10T12:24:50Z"
+            }
+        }
+    },
+    "eventTime": "2019-01-10T13:45:24Z",
+    "eventSource": "backup.amazonaws.com",
+    "eventName": "StartBackupJob",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "12.34.567.89",
+    "userAgent": "aws-internal/3 aws-sdk-java/1.11.465 Linux/4.9.124-0.1.ac.198.73.329.metal1.x86_64 OpenJDK_64-Bit_Server_VM/25.192-b12 java/1.8.0_192",
+    "requestParameters": <span>{</span>
+        "backupVaultName": "Default",
+        "resourceArn": "arn:aws:ec2:us-east-1:123456789012:volume/vol-00a422a05b9c6asd3",
+        "iamRoleArn": "arn:aws:iam::123456789012:role/AWSBackup",
+        "startWindowMinutes": 60
+    },
+    "responseElements": <span>{</span>
+        "backupJobId": "8a3c2a87-b23e-4d56-b045-fa9e88ede4e6",
+        "creationDate": "Jan 10, 2019 1:45:24 PM"
+    },
+    "requestID": "98cf4d59-8c76-49f7-9201-790743931234",
+    "eventID": "fe8146a5-7812-4a95-90ad-074498be1234",
+    "eventType": "AwsApiCall",
+    "recipientAccountId": "<code class="replaceable">account-id</code>"
+},
+<span>{</span>
+    "eventVersion": "1.05",
+    "userIdentity": <span>{</span>
+        "type": "Root",
+        "principalId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:root",
+        "accountId": "<code class="replaceable">account-id</code>",
+        "accessKeyId": "<code class="replaceable">access-key</code>",
+        "sessionContext": <span>{</span>
+            "attributes": <span>{</span>
+                "mfaAuthenticated": "false",
+                "creationDate": "2019-01-10T12:24:50Z"
+            }
+        }
+    },
+    "eventTime": "2019-01-10T13:49:50Z",
+    "eventSource": "backup.amazonaws.com",
+    "eventName": "StartRestoreJob",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "12.34.567.89",
+    "userAgent": "aws-internal/3 aws-sdk-java/1.11.465 Linux/4.9.124-0.1.ac.198.73.329.metal1.x86_64 OpenJDK_64-Bit_Server_VM/25.192-b12 java/1.8.0_192",
+    "requestParameters": <span>{</span>
+        "recoveryPointArn": "arn:aws:ec2:us-east-1::snapshot/snap-00a129455bdbc9d99",
+        "metadata": <span>{</span>
+            "volumeType": "gp2",
+            "availabilityZone": "us-east-1b",
+            "volumeSize": "100"
+        },
+        "iamRoleArn": "arn:aws:iam::123456789012:role/AWSBackup",
+        "idempotencyToken": "a9c8b4fb-d369-4a58-944b-942e442a8fe3",
+        "resourceType": "EBS"
+    },
+    "responseElements": <span>{</span>
+        "restoreJobId": "9808E090-8C76-CCB8-4CEA-407CF6AC4C43"
+    },
+    "requestID": "783ddddc-6d7e-4539-8fab-376aa9668543",
+    "eventID": "ff35ddea-7577-4aec-a132-964b7e9dd423",
+    "eventType": "AwsApiCall",
+    "recipientAccountId": "<code class="replaceable">account-id</code>"
+},
+<span>{</span>
+    "eventVersion": "1.05",
+    "userIdentity": <span>{</span>
+        "type": "Root",
+        "principalId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:root",
+        "accountId": "<code class="replaceable">account-id</code>",
+        "accessKeyId": "<code class="replaceable">access-key</code>",
+        "sessionContext": <span>{</span>
+            "attributes": <span>{</span>
+                "mfaAuthenticated": "false",
+                "creationDate": "2019-01-10T12:24:50Z"
+            }
+        }
+    },
+    "eventTime": "2019-01-10T14:52:42Z",
+    "eventSource": "backup.amazonaws.com",
+    "eventName": "DeleteRecoveryPoint",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "12.34.567.89",
+    "userAgent": "aws-internal/3 aws-sdk-java/1.11.465 Linux/4.9.124-0.1.ac.198.73.329.metal1.x86_64 OpenJDK_64-Bit_Server_VM/25.192-b12 java/1.8.0_192",
+    "requestParameters": <span>{</span>
+        "backupVaultName": "Default",
+        "recoveryPointArn": "arn:aws:ec2:us-east-1::snapshot/snap-05f426fd9daab3433"
+    },
+    "responseElements": null,
+    "requestID": "f1f1b33a-48da-436c-9a8f-7574f1ab5fd7",
+    "eventID": "2dd70080-5aba-4a79-9a0f-92647c9f0846",
+    "eventType": "AwsApiCall",
+    "recipientAccountId": "<code class="replaceable">account-id</code>"
+},
+<span>{</span>
+    "eventVersion": "1.05",
+    "userIdentity": <span>{</span>
+        "accountId": "<code class="replaceable">account-id</code>",
+        "invokedBy": "backup.amazonaws.com"
+    },
+    "eventTime": "2019-01-10T08:24:39Z",
+    "eventSource": "backup.amazonaws.com",
+    "eventName": "BackupJobCompleted",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "backup.amazonaws.com",
+    "userAgent": "backup.amazonaws.com",
+    "requestParameters": null,
+    "responseElements": null,
+    "eventID": "2e7e4fcf-0c52-467f-9fd0-f61c2fcf7d17",
+    "eventType": "AwsServiceEvent",
+    "recipientAccountId": "<code class="replaceable">account-id</code>",
+    "serviceEventDetails": <span>{</span>
+        "completionDate": <span>{</span>
+            "seconds": 1547108091,
+            "nanos": 906000000
+        },
+        "state": "COMPLETED",
+        "percentDone": 100,
+        "backupJobId": "8A8E738B-A8C5-E058-8224-90FA323A3C0E",
+        "backupVaultName": "BackupVault",
+        "backupVaultArn": "arn:aws:backup:us-east-1:123456789012:backup-vault:BackupVault",
+        "recoveryPointArn": "arn:aws:ec2:us-east-1::snapshot/snap-07ce8c3141d361233",
+        "resourceArn": "arn:aws:ec2:us-east-1:123456789012:volume/vol-06692095a6a421233",
+        "creationDate": <span>{</span>
+            "seconds": 1547101638,
+            "nanos": 272000000
+        },
+        "backupSizeInBytes": 8589934592,
+        "iamRoleArn": "arn:aws:iam::123456789012:role/AWSBackup",
+        "resourceType": "EBS"
+    }
+}</code></pre>
+                                 
+                                 
+                                  
+                                 <h2 id="logging-cam-events">Logging cross-account management events</h2>
+                                 
+                                 
+                                 <p>Using AWS Backup, you can manage your backups across all AWS accounts inside your
+                                    <a href="AWS Organizations User Guideorgs_introduction.html" rel="noopener noreferrer" target="_blank">AWS Organizations</a> structure. AWS Backup generates
+                                    these CloudTrail events when you create, update, or delete an AWS Organizations backup
+                                    policy (that applies
+                                    backup plans to your member accounts):
+                                 </p>
+                                 
+                                 <div class="itemizedlist">
+                                     
+                                     
+                                     
+                                    
+                                    <ul class="itemizedlist" type="disc">
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">CreateOrganizationalBackupPlan</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">UpdateOrganizationalBackupPlan</code></p>
+                                          
+                                       </li>
+                                       <li class="listitem">
+                                          
+                                          <p><code class="code">DeleteOrganizationalBackupPlan</code></p>
+                                          
+                                       </li>
+                                    </ul>
+                                 </div>
+                                 
+                                  
+                                 
+                                 <h3 id="cam-log-examples">Example: AWS Backup log file entries for cross-account
+                                    management
+                                 </h3>
+                                 
+                                 <p> A trail is a configuration that enables delivery of events as log files to an Amazon
+                                    S3
+                                    bucket that you specify. CloudTrail log files contain one or more log entries. An
+                                    event
+                                    represents a single request from any source and includes information about the requested
+                                    action, the date and time of the action, request parameters, and so on. CloudTrail
+                                    log files
+                                    aren't an ordered stack trace of the public API calls, so they don't appear in any
+                                    specific order.
+                                 </p>
+                                 
+                                 
+                                 
+                                 
+                                 
+                                 <p>The following example shows a CloudTrail log entry that demonstrates the
+                                    <code class="code">CreateOrganizationalBackupPlan</code> action.
+                                 </p>
+                                 <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "*eventVersion*": "1.05",
+    "*userIdentity*": <span>{</span>
+        "*accountId*": "<code class="replaceable">account-id</code>",
+        "*invokedBy*": "backup.amazonaws.com"},
+    "*eventTime*": "2020-06-02T00:34:00Z",
+    "*eventSource*": "backup.amazonaws.com",
+    "*eventName*": "CreateOrganizationalBackupPlan",
+    "*awsRegion*": "ca-central-1",
+    "*sourceIPAddress*": "backup.amazonaws.com",
+    "*userAgent*": "backup.amazonaws.com",
+    "*requestParameters*": null,
+    "*responseElements*": null,
+    "*eventID*": "f2642255-af77-4203-8c37-7ca19d898e84",
+    "*readOnly*": false,
+    "*eventType*": "AwsServiceEvent",
+    "*recipientAccountId*": "<code class="replaceable">account-id</code>",
+    "*serviceEventDetails*": <span>{</span>
+        "*backupPlanId*": "orgs/544033d1-b19c-3f2a-9c20-40bcfa82ca68",
+        "*backupPlanVersionId*": "ZTA1Y2ZjZDYtNmRjMy00ZTA1LWIyNTAtM2M1NzQ4OThmNzRj",
+        "*backupPlanArn*": "arn:aws:backup:ca-central-1:123456789012:backup-plan:orgs/544033d1-b19c-3f2a-9c20-40bcfa82ca68",
+        "*backupPlanName*": "mybackupplan",
+        "*backupRules*": "[<span>{</span>\"id\":\"745fd0ea-7f57-3f35-8a0e-ed4b8c48a8e2\",\"name\":\"hourly\",\"description\":null,\"cryopodArn\":\"arn:aws:backup:ca-central-1:123456789012:backup-vault:CryoControllerCAMTestBackupVault\",\"scheduleExpression\":\"cron(0 0/1 ? * * *)\",\"startWindow\":\"PT1H\",\"completionWindow\":\"PT2H\",\"lifecycle\":<span>{</span>\"moveToColdStorageAfterDays\":null,\"deleteAfterDays\":\"7\"},\"tags\":null,\"copyActions\":[]}]",
+        "*backupSelections*": "[<span>{</span>\"name\":\"selectiondatatype\",\"arn\":\"arn:aws:backup:ca-central-1:123456789012:selection:8b40c6d9-3641-3d49-926d-a075ea715686\",\"role\":\"arn:aws:iam::123456789012:role/OrganizationmyRoleTestRole\",\"resources\":[],\"notResources\":[],\"conditions\":[<span>{</span>\"type\":\"STRINGEQUALS\",\"key\":\"dataType\",\"value\":\"PII\"},<span>{</span>\"type\":\"STRINGEQUALS\",\"key\":\"dataType\",\"value\":\"RED\"}],\"creationDate\":\"2020-06-02T00:34:00.695Z\",\"creatorRequestId\":null}]",
+        "*creationDate*": <span>{</span>
+            "*seconds*": 1591058040,
+            "*nanos*": 695000000
+        },
+        "*organizationId*": "<code class="replaceable">org-id</code>",
+        "*accountId*": "<code class="replaceable">account-id</code>"
+    }
+}</code></pre>
+                                 
+                                 <p>The following example shows a CloudTrail log entry that demonstrates the
+                                    <code class="code">DeleteOrganizationalBackupPlan</code> action.
+                                 </p>
+                                 <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="json "><span>{</span>
+    "*eventVersion*": "1.05",
+    "*userIdentity*": <span>{</span>
+        "*accountId*": "<code class="replaceable">account-id</code>",
+        "*invokedBy*": "backup.amazonaws.com"
+    },
+    "*eventTime*": "2020-06-02T00:34:25Z",
+    "*eventSource*": "backup.amazonaws.com",
+    "*eventName*": "DeleteOrganizationalBackupPlan",
+    "*awsRegion*": "ca-central-1",
+    "*sourceIPAddress*": "backup.amazonaws.com",
+    "*userAgent*": "backup.amazonaws.com",
+    "*requestParameters*": null,
+    "*responseElements*": null,
+    "*eventID*": "5ce66cd0-b90c-4957-8e00-96ea1077b4fa",
+    "*readOnly*": false,
+    "*eventType*": "AwsServiceEvent",
+    "*recipientAccountId*": "<code class="replaceable">account-id</code>",
+    "*serviceEventDetails*": <span>{</span>
+        "*backupPlanId*": "orgs/544033d1-b19c-3f2a-9c20-40bcfa82ca68",
+        "*backupPlanVersionId*": "ZTA1Y2ZjZDYtNmRjMy00ZTA1LWIyNTAtM2M1NzQ4OThmNzRj",
+        "*backupPlanArn*": "arn:aws:backup:ca-central-1:123456789012:backup-plan:orgs/544033d1-b19c-3f2a-9c20-40bcfa82ca68",
+        "*backupPlanName*": "mybackupplan",
+        "*deletionDate*": <span>{</span>
+            "*seconds*": 1591058065,
+            "*nanos*": 519000000
+        },
+        "*organizationId*": "<code class="replaceable">org-id</code>",
+        "*accountId*": "<code class="replaceable">account-id</code>"
+    }
+}</code></pre>
+                                  
+                                 <awsdocs-copyright class="copyright-print"></awsdocs-copyright>
+                                 <awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback>
+                              </div>
+                              <noscript>
+                                 <div>
+                                    <div>
+                                       <div>
+                                          <div id="js_error_message">
+                                             <p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your
+                                                   browser.</strong></p>
+                                             <p>To use the AWS Documentation, Javascript must be
+                                                enabled. Please refer to your browser's Help pages for instructions.
+                                             </p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </noscript>
+                              <div id="main-col-footer" class="awsui-util-font-size-0">
+                                 <div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div>
+                                 <div class="prev-next">
+                                    <div id="previous" class="prev-link" accesskey="p" href="./cloudwatch.html">Monitoring AWS Backup metrics with CloudWatch</div>
+                                    <div id="next" class="next-link" accesskey="n" href="./sns-notifications.html">Using Amazon SNS to Track Events</div>
+                                 </div>
+                              </div>
+                              <awsdocs-page-utilities></awsdocs-page-utilities>
+                           </div>
+                           <div id="quick-feedback-yes" style="display: none;">
+                              <div class="title">Did this page help you? - Yes</div>
+                              <div class="content">
+                                 <p>Thanks for letting us know we're doing a good
+                                    job!
+                                 </p>
+                                 <p>If you've got a moment, please tell us what we did right
+                                    so we can do more of it.
+                                 </p>
+                                 <p>
+                                    <awsui-button id="fblink" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Cryo&amp;topic_url=https://docs.aws.amazon.com/en_us/aws-backup/latest/devguide/logging-using-cloudtrail.html"></awsui-button>
+                                 </p>
+                              </div>
+                           </div>
+                           <div id="quick-feedback-no" style="display: none;">
+                              <div class="title">Did this page help you? - No</div>
+                              <div class="content">
+                                 <p>Thanks for letting us know this page needs work. We're
+                                    sorry we let you down.
+                                 </p>
+                                 <p>If you've got a moment, please tell us how we can make
+                                    the documentation better.
+                                 </p>
+                                 <p>
+                                    <awsui-button id="fblink" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=Cryo&amp;topic_url=https://docs.aws.amazon.com/en_us/aws-backup/latest/devguide/logging-using-cloudtrail.html"></awsui-button>
+                                 </p>
+                              </div>
+                           </div>
+                        </div>
+                     </body>
+                  </div>
+               </awsdocs-view>
+               <div class="page-loading-indicator" id="page-loading-indicator">
+                  <awsui-spinner size="large"></awsui-spinner>
+               </div>
+            </div>
+            <div id="tools-panel" dom-region="tools">
+               <awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel>
+            </div>
+         </awsui-app-layout>
+         <awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner>
+         <!--
+                SiteCatalyst code version: H.25.2.
+                Copyright 1996-2012 Adobe, Inc. All Rights Reserved
+                More info available at http://www.omniture.com
+            --><script language="JavaScript" type="text/javascript">
+var awsdocs = awsdocs || {};
+awsdocs.prop66 = 'AWS Backup';
+awsdocs.prop65 =  'Developer Guide';
+            </script><script src="https://a0.awsstatic.com/s_code/js/3.0/awshome_s_code.js" language="JavaScript" type="text/javascript"></script>
+         <!--/DO NOT REMOVE/-->
+         <!--End SiteCatalyst code version: H.25.2.--></div>
+   </body>
+</html>

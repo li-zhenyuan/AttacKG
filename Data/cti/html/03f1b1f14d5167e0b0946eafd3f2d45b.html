@@ -1,0 +1,241 @@
+<!DOCTYPE html><script>var __pbpa = true;</script><script>var translated_warning_string = 'Warning: Never enter your Tumblr password unless \u201chttps://www.tumblr.com/login\u201d\x0ais the address in your web browser.\x0a\x0aYou should also see a green \u201cTumblr, Inc.\u201d identification in the address bar.\x0a\x0aSpammers and other bad guys use fake forms to steal passwords.\x0a\x0aTumblr will never ask you to log in from a user\u2019s blog.\x0a\x0aAre you absolutely sure you want to continue?';</script><script type="text/javascript" language="javascript" src="https://assets.tumblr.com/assets/scripts/pre_tumblelog.js?_v=b9f848c06fcba7eaf305d4a7cb7a1b98"></script><!DOCTYPE html><html><head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# blog: http://ogp.me/ns/blog#"><title>Breaking into the OS X keychain - Juuso Salonen</title><style>
+      html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}
+body{line-height:1}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}
+nav ul{list-style:none}
+blockquote,q{quotes:none}
+blockquote:before,blockquote:after,q:before,q:after{content:none}
+a{margin:0;padding:0;font-size:100%;vertical-align:baseline;background:transparent}
+ins{background-color:#ff9;color:#000;text-decoration:none}
+mark{background-color:#ff9;color:#000;font-style:italic;font-weight:bold}
+del{text-decoration:line-through}
+abbr[title],dfn[title]{border-bottom:1px dotted;cursor:help}
+table{border-collapse:collapse;border-spacing:0}
+hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0}
+input,select{vertical-align:middle}
+
+body {
+  font: 17px/26px Helvetica, Arial, sans-serif;
+  color: #333;
+  margin: 0;
+}
+
+.column {
+  margin: 0 auto;
+  padding: 0 10px;
+  width: 700px;
+}
+
+p, h2, pre, article > img, article > blockquote, a, ul, ol, .info, .bio {
+  margin-bottom: 26px;
+  font-weight: 300;
+}
+
+a {
+  text-decoration: none;
+  color: #49d;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  padding-bottom: 6px;
+  font: 42px/52px Helvetica, Arial, sans-serif;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 52px;
+  font-weight: 400;
+}
+
+h1 a {
+  color: #333;
+  font-weight: 400;
+}
+
+.info {
+  font-size: 14px;
+  color: #aaa;
+}
+
+/* Oh my */
+.tags > .tag:not(:last-child):after {
+  content:", ";
+}
+
+h2 {
+  font: 24px/26px Helvetica, Arial, sans-serif;
+  margin-top: 52px;
+  margin-bottom: 13px;
+}
+
+pre, code {
+  font: 13px/22px Monaco, Consolas, Menlo, monospace;
+  background: #f9f9f9;
+}
+
+pre {
+  padding: 9px 13px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  overflow: scroll;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/*article > img {
+  padding: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}*/
+
+blockquote {
+  border-left: 5px solid rgba(0, 0, 0, 0.1);
+  padding-left: 13px;
+  color: #555;
+}
+
+.bio {
+  /* Picture = 64 px, two lines of text = 52 px */
+  height: 52px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 77px;
+  padding-right: 13px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  /*background: #fffbdd url('http://placekitten.com/g/64/64') no-repeat left;*/
+}
+
+.navigation {
+  height: 26px;
+}
+
+.navigation .left {
+  float: left;
+}
+
+.navigation .right {
+  float: right;
+}
+
+.related ul {
+  list-style: none;
+}
+
+ol.notes {
+  list-style: none;
+}
+
+ol.notes img.avatar {
+  vertical-align: top;
+  position: relative;
+  top: 6px;
+}
+
+ol.notes blockquote {
+  margin-bottom: 6px;
+  margin-left: 22px;
+  padding-left: 7px;
+  line-height: 20px;
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+    </style><style>figure{margin:0}.tmblr-iframe{position:absolute}.tmblr-iframe.hide{display:none}.tmblr-iframe--amp-cta-button{visibility:hidden;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);z-index:100}.tmblr-iframe--amp-cta-button.tmblr-iframe--loaded{visibility:visible;animation:iframe-app-cta-transition .2s ease-out}</style><link rel="stylesheet" media="screen" href="https://assets.tumblr.com/client/prod/standalone/blog-network-npf/index.build.css?_v=a6c4ad40cdc663ad83f8a1bbc8aeedc6"><link rel="alternate" href="android-app://com.tumblr/tumblr/x-callback-url/blog?blogName=juusosalonen%26postID=30923743427" /><link rel="alternate" href="ios-app://305343404/tumblr/x-callback-url/blog?blogName=juusosalonen&postID=30923743427" /><link rel="alternate" type="application/json+oembed" href="https://www.tumblr.com/oembed/1.0?url=https://juusosalonen.com/post/30923743427/breaking-into-the-os-x-keychain" title="Breaking into the OS X keychain
+Update: I want to clear up some misconceptions. This is not a security bug in OS X. Everything works as designed. The point of this post was to show a post-exploitation technique and to release a tool for the job. I..."/><link rel="amphtml" href=https://juusosalonen.com/post/30923743427/breaking-into-the-os-x-keychain/amp /><script src="https://assets.tumblr.com/assets/scripts/tumblelog_post_message_queue.js?_v=a8fadfa499d8cb7c3f8eefdf0b1adfdd"></script><link rel="stylesheet" type="text/css" href="https://assets.tumblr.com/fonts/gibson/stylesheet.css?v=3"><meta name="keywords" content="security,osx,keychain" /><!-- BEGIN TUMBLR FACEBOOK OPENGRAPH TAGS --><!-- If you'd like to specify your own Open Graph tags, define the og:url and og:title tags in your theme's HTML. --><!-- Read more: http://ogp.me/ --><meta property="fb:app_id" content="48119224995" /><meta property="og:site_name" content="Juuso Salonen" /><meta property="og:title" content="Breaking into the OS X keychain" /><meta property="og:description" content="***Update**: I want to clear up some misconceptions. This is not a security bug in OS X. Everything works as designed. The point of this post was to show a post-exploitation technique and to release a..." /><meta property="og:url" content="https://juusosalonen.com/post/30923743427/breaking-into-the-os-x-keychain" /><meta property="og:type" content="article" /><meta property="og:determiner" content="a" /><meta property="al:ios:url" content="tumblr://x-callback-url/blog?blogName=juusosalonen&amp;postID=30923743427" /><meta property="al:ios:app_name" content="Tumblr" /><meta property="al:ios:app_store_id" content="305343404" /><meta property="al:android:url" content="tumblr://x-callback-url/blog?blogName=juusosalonen&amp;postID=30923743427" /><meta property="al:android:app_name" content="Tumblr" /><meta property="al:android:package" content="com.tumblr" /><!-- END TUMBLR FACEBOOK OPENGRAPH TAGS --><!-- GOOGLE CAROUSEL --><script type="application/ld+json">
+	{"@type":"SocialMediaPosting","url":"https:\/\/juusosalonen.com\/post\/30923743427\/breaking-into-the-os-x-keychain","mainEntityOfPage":true,"datePublished":"2012-09-05T07:32:00-04:00","author":"juusosalonen","image":{"@list":["https:\/\/64.media.tumblr.com\/tumblr_m9v6uvxFcj1qm7unw.png","https:\/\/64.media.tumblr.com\/tumblr_m9v6v7vUpd1qm7unw.png"]},"headline":"Breaking into the OS X keychain","articleBody":"Update: I want to clear up some misconceptions. This is not a security bug in OS X. Everything works as designed. The point of this post was to show a post-exploitation technique and to release a tool for the job. I found this particular technique interesting because it is instantaneous, reliable...","@context":"http:\/\/schema.org"}</script><link rel="canonical" href="https://juusosalonen.com/post/30923743427/breaking-into-the-os-x-keychain" /></head><body><section class="posts"><div class="column"><h1><a href="https://juusosalonen.com/post/30923743427/breaking-into-the-os-x-keychain">Breaking into the OS X keychain</a></h1><div class="info"><time>September 5, 2012</time>.
+              
+              
+              
+              
+                Tagged <span class="tags"> <span class="tag"><a href="https://juusosalonen.com/tagged/security">security</a></span> <span class="tag"><a href="https://juusosalonen.com/tagged/osx">osx</a></span> <span class="tag"><a href="https://juusosalonen.com/tagged/keychain">keychain</a></span></span>.
+              
+            </div><p><em><strong>Update</strong>: I want to clear up some misconceptions. This is not a security bug in OS X. Everything works as designed. The point of this post was to show a post-exploitation technique and to release a tool for the job. I found this particular technique interesting because it is instantaneous, reliable across OS X versions, and requires no persistent changes in the system.</em></p><p>TL;DR: Root can read plaintext keychain passwords of logged-in users in OS X. Open source <a href="https://href.li/?https://github.com/juuso/keychaindump">proof-of-concept</a>.</p><p>There is a design compromise in Apple&rsquo;s <a href="https://href.li/?http://en.wikipedia.org/wiki/Keychain_(Mac_OS)">keychain</a> implementation that sacrifices some security for a lot of usability.</p><p>As a result, the root user is able to read all keychain secrets of logged-in users, unless they take <a href="https://href.li/?http://en.wikipedia.org/wiki/Keychain_(Mac_OS)#Locking_and_unlocking">extra steps</a> to protect themselves. I&rsquo;m sure Apple is perfectly aware of the security implications, and made the bargain intentionally.</p><p>Because this is an intentional design decision instead of a security bug, its exploitation should not come as a surprise. However, I haven&rsquo;t seen anyone actually use or mention any practical methods before in public.</p><h2>The situation</h2><p>In OS X, your keychain contains your saved passwords. This includes all your email accounts in Mail, passwords stored in Safari, and credentials for accessing known Wi-Fi networks. Because it contains valuable secrets, the keychain is encrypted. It can only be opened with your login password.</p><p>But there&rsquo;s a twist. When you log in to OS X, the operating system automatically unlocks your keychain for your convenience. This means that you don&rsquo;t have to enter your login password every time you want to use your stored passwords.</p><p>That&rsquo;s why, by default, you see keychain dialogs like this</p><p><img src="https://64.media.tumblr.com/tumblr_m9v6uvxFcj1qm7unw.png" alt="" /></p><p>instead of this</p><p><img src="https://64.media.tumblr.com/tumblr_m9v6v7vUpd1qm7unw.png" alt="" /></p><p>Notice that only one of them asks for your password. Most users are probably much happier with the no-password-needed dialog, so that&rsquo;s what Apple implemented. Of course, this means that it has to be somehow possible to read your keychain passwords even without asking for your login password every time. That&rsquo;s what &ldquo;unlocking&rdquo; means here.</p><p>So, your passwords are encrypted to keep them safe, but they have to be readable by OS X itself to keep you happy. That&rsquo;s a bit of a dilemma. Apple&rsquo;s solution is threefold.</p><ul><li><p>Unlocking does not change the keychain file. The plaintext passwords do not appear on disk (or in memory), even when they are unlocked.</p></li><li><p>Apple provides an official API for reading unlocked passwords. Even though it <em>does</em> allow you to read them, it also asks for the user&rsquo;s permission with a dialog window.</p></li><li><p>What unlocking actually does or how the unlocked passwords are accessed is not documented. This is security through lack-of-documentation.</p></li></ul><h2>The attack</h2><p>The passwords in a keychain file are encrypted many times over with various different keys. Some of these keys are encrypted using other keys stored in the same file, in a russian-doll fashion. The key that can open the outermost doll and kickstart the whole decryption cascade is derived from the user&rsquo;s login password using <a href="https://href.li/?http://en.wikipedia.org/wiki/PBKDF2">PBKDF2</a>. I&rsquo;ll call this key the <em>master key</em>.</p><p>If anyone wants to read the contents of a keychain file, they have to know either the user&rsquo;s login password or the master key. This means that <code>securityd</code>, the process that handles keychain operations in OS X, has to know at least one of these secrets.</p><p>I put this observation to the test on my own laptop.</p><p>Scanning <code>securityd</code>&rsquo;s whole memory space did not reveal any copies of my login password. Next, I used PBKDF2 with my login password to get my 24-byte master key. Scanning the memory again, a perfect copy of the master key was found in <code>securityd</code>&rsquo;s heap.</p><p>This lead to the next question. If the master keys are indeed stored in <code>securityd</code>&rsquo;s memory, is there a good way to find them? Testing every possible 24-byte sequence of the memory space is not very elegant.</p><p>Instead of fully inspecting <code>securityd</code>&rsquo;s whole memory space, possible master keys can be pinpointed with a couple of identifying features. They are stored in <code>securityd</code>&rsquo;s heap in an area flagged as MALLOC_TINY by <code>vmmap</code>. In the same area of memory, there&rsquo;s also always structure pointing to the master key. The structure contains an 8-byte size field with the value of 0x18 (24 in hex) and a pointer to the actual data.</p><p>The search is rather simple:</p><ul><li><p>Find <code>securityd</code>&rsquo;s MALLOC_TINY heap areas with <code>vmmap</code></p></li><li><p>Search each found area for occurrences of 0x0000000000000018</p></li><li><p>If the next 8-byte value is a pointer to the current heap area, treat the pointed-to data as a possible master key</p></li></ul><p>With this kind of pattern recognition, the number of possible master keys is reduced to about 20. Each of the candidates can be used to try to decrypt the next key (which I call the <em>wrapping key</em>). Only the real master key should spit out a sensible value for the wrapping key. It&rsquo;s not a foolproof method, but with the low number of candidates it seems to be good enough. I haven&rsquo;t run into a single false positive yet.</p><p>The rest of the decryption process is rather tedious. The master key reveals the wrapping key. A hardcoded obfuscation key reveals the encrypted credential key. The wrapping key reveals the credential key. The credential key finally reveals the plaintext password. All glory to <a href="https://href.li/?http://matt.ucc.asn.au">Matt Johnston</a> for his research on these decryption steps.</p><p>Here is a sample run and its truncated output, with actual passwords and usernames replaced with x&rsquo;s.</p><pre><code>$ sudo ./keychaindump 
+[*] Searching process 15 heap range 0x7fa809400000-0x7fa809500000
+[*] Searching process 15 heap range 0x7fa809500000-0x7fa809600000
+[*] Searching process 15 heap range 0x7fa809600000-0x7fa809700000
+[*] Searching process 15 heap range 0x7fa80a900000-0x7fa80ac00000
+[*] Found 17 master key candidates
+[*] Trying to decrypt wrapping key in /Users/juusosalonen/Library/Keychains/login.keychain
+[*] Trying master key candidate: b49ad51a672bd4be55a4eb4efdb90b242a5f262ba80a95df
+[*] Trying master key candidate: 22b8aa80fa0700605f53994940fcfe9acc44eb1f4587f1ac
+[*] Trying master key candidate: 1d7aa80fa0700f002005043210074b877579996d09b70000
+[*] Trying master key candidate: a0a20000000200f7474d400000700d01a980fa00007f085e
+[*] Trying master key candidate: 180000000000000000000000000000000000000007000001
+[*] Trying master key candidate: 0000b107000001000000803e970aa8710ae567eff7ff0000
+[*] Trying master key candidate: 796a63507e6c2a84d9f095fae2896058dfe029cd0f7105da
+[*] Trying master key candidate: 16ac866d636215c01e337e942f48cfed12d7c45bfab8dbf7
+[*] Trying master key candidate: 070020539baab0d1d6a3aa80fa006877ed57f80fa0000000
+[*] Trying master key candidate: 88edbaf22819a8eeb8e9b75120c0775de8a4d7da842d4a4a
+[+] Found master key: 88edbaf22819a8eeb8e9b75120c0775de8a4d7da842d4a4a
+[+] Found wrapping key: e9acc39947f1996df940fceb1f458ac74b877579f54409b7
+xxxxxxx:192.168.1.1:xxxxxxx
+xxxxxxx:news.ycombinator.com:xxxxxxx
+xxxxxxx@gmail.com:login.facebook.com:xxxxxxx
+xxxxxxx@gmail.com:smtp.google.com:xxxxxxx
+xxxxxxx@gmail.com:imap.google.com:xxxxxxx
+xxxxxxx@gmail.com:api.heroku.com:xxxxxxx
+xxxxxxx:www.freechess.org:xxxxxxx
+xxxxxxx:twitter.com:xxxxxxx
+xxxxxxx@gmail.com:www.google.com:xxxxxxx
+xxxxxxx:imap.gmail.com:xxxxxxx
+...
+</code></pre><p>You can find the <a href="https://href.li/?https://github.com/juuso/keychaindump">source code for keychaindump at GitHub</a>. It&rsquo;s a proof-of-concept, far from perfect, and it doesn&rsquo;t list all the possible keychain secrets. But it seems to work okay. I&rsquo;ve tested it on OS X Lion and Mountain Lion.</p><div class="bio" style="background: #fffbdd url('https://64.media.tumblr.com/avatar_322218e8cd99_64.pnj') no-repeat left;"><p>Hi! I'm Juuso Salonen, a software developer from Helsinki. You can find me on <a href="http://twitter.com/juusosalonen">Twitter</a> and <a href="https://github.com/juuso">GitHub</a>. I also made <a href="http://radiosilenceapp.com">Radio Silence, a firewall for Mac</a>. People like it.</p></div><!--<h2>Activity</h2>--><ol class="notes"><!-- START NOTES --><li class="note like tumblelog_1-800-mattress without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://1-800-mattress.tumblr.com/" title="canering " rel="nofollow"><img src="https://64.media.tumblr.com/avatar_6c18272dacea_16.pnj" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="https://1-800-mattress.tumblr.com/" title="canering" rel="nofollow">1-800-mattress</a> liked this                                    </span><div class="clear"></div></li><li class="note like tumblelog_verside without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://www.verside.com/" title="Verside | The Other Side " rel="nofollow"><img src="https://64.media.tumblr.com/avatar_eb94b477e2f5_16.pnj" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="https://www.verside.com/" title="Verside | The Other Side" rel="nofollow">verside</a> liked this                                    </span><div class="clear"></div></li><li class="note like tumblelog_pizza-and-ramen without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://pizza-and-ramen.tumblr.com/" title="My Stuffs " rel="nofollow"><img src="https://64.media.tumblr.com/avatar_8f5d5bd5c850_16.pnj" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="https://pizza-and-ramen.tumblr.com/" title="My Stuffs" rel="nofollow">pizza-and-ramen</a> liked this                                    </span><div class="clear"></div></li><li class="note like tumblelog_akyndofgreanishlite without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://akyndofgreanishlite.tumblr.com/" title="a kynd of greanish lite " rel="nofollow"><img src="https://64.media.tumblr.com/avatar_7cf2899af71a_16.pnj" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="https://akyndofgreanishlite.tumblr.com/" title="a kynd of greanish lite" rel="nofollow">akyndofgreanishlite</a> liked this                                    </span><div class="clear"></div></li><li class="note like tumblelog_qiangru without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://qiangru.tumblr.com/" title="Untitled " rel="nofollow"><img src="https://assets.tumblr.com/images/default_avatar/pyramid_closed_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="https://qiangru.tumblr.com/" title="Untitled" rel="nofollow">qiangru</a> liked this                                    </span><div class="clear"></div></li><li class="note like tumblelog_avaerya without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://avaerya.tumblr.com/" title="Untitled " rel="nofollow"><img src="https://assets.tumblr.com/images/default_avatar_16.png" class="avatar " alt="" /></a><span class="action"><a rel="nofollow" href="https://avaerya.tumblr.com/" title="Untitled" rel="nofollow">avaerya</a> liked this                                    </span><div class="clear"></div></li><li class="note reblog tumblelog_juusosalonen original_post without_commentary"><a rel="nofollow" class="avatar_frame" target="_blank" href="https://juusosalonen.com/" title="Juuso Salonen"><img src="https://64.media.tumblr.com/avatar_322218e8cd99_16.pnj" class="avatar " alt="" /></a><span class="action" data-post-url="https://juusosalonen.com/post/30923743427"><a rel="nofollow" href="https://juusosalonen.com/" class="tumblelog" title="Juuso Salonen">juusosalonen</a> posted this                                                                        </span><div class="clear"></div></li><!-- END NOTES --></ol><script type="text/javascript">var disqus_url = "https://juusosalonen.com/post/30923743427/breaking-into-the-os-x-keychain"; var disqus_title ="Breaking into the OS X keychain";</script><div id="disqus_thread"></div><script type="text/javascript">
+          /**
+            * var disqus_identifier; [Optional but recommended: Define a unique identifier (e.g. post id or slug) for this thread] 
+            */
+          (function() {
+           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+           dsq.src = 'http://juusosalonen.disqus.com/embed.js';
+           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+        </script><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=juusosalonen">comments powered by Disqus.</a></noscript><a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a><script type="text/javascript">
+        var disqus_shortname = 'juusosalonen';
+        (function () {
+          var s = document.createElement('script'); s.async = true;
+          s.src = 'http://juusosalonen.disqus.com/count.js';
+          (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+        </script></div></section><iframe scrolling="no" width="1" height="1" frameborder="0" style="background-color:transparent; overflow:hidden; position:absolute; top:0; left:0; z-index:9999;" id="ga_target"></iframe><script type="text/javascript">
+    (function(){
+        var analytics_frame = document.getElementById('ga_target');
+        var analytics_iframe_loaded;
+        var user_logged_in;
+        var blog_is_nsfw = 'No';
+
+        var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+        var eventer = window[eventMethod];
+        var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+        eventer(messageEvent,function(e) {
+            var message = (e.data && e.data.split) ? e.data.split(';') : '';
+            switch (message[0]) {
+                case 'analytics_iframe_loaded':
+                    analytics_iframe_loaded = true;
+                    postCSMessage();
+                    postGAMessage();
+                    break;
+                case 'user_logged_in':
+                    user_logged_in = message[1];
+                    postGAMessage();
+                    break;
+            }
+        }, false);
+
+        analytics_frame.src = "https://assets.tumblr.com/analytics.html?_v=9f5febfd57a8a649c598d888f2d9e062#" +
+                              "https://juusosalonen.com";
+        function postGAMessage() {
+            if (analytics_iframe_loaded && user_logged_in) {
+                var is_ajax = false;
+                analytics_frame.contentWindow.postMessage(['tick_google_analytics', is_ajax, user_logged_in, blog_is_nsfw, '/post/30923743427/breaking-into-the-os-x-keychain?route=%2Fpost%2F%3Aid%2F%3Asummary'].join(';'), analytics_frame.src.split('/analytics.html')[0]);
+            }
+        }
+        function postCSMessage() {
+            COMSCORE = true;
+            analytics_frame.contentWindow.postMessage('enable_comscore;' + window.location, analytics_frame.src.split('/analytics.html')[0]);
+        }
+    })();
+</script><script type="text/javascript" nonce="8jPINVBwA7r7sGrKRuO4Y8DCE">!function(s){s.src='https://px.srvcs.tumblr.com/impixu?T=1621736009&J=eyJ0eXBlIjoidXJsIiwidXJsIjoiaHR0cDovL2p1dXNvc2Fsb25lbi5jb20vcG9zdC8zMDkyMzc0MzQyNy9icmVha2luZy1pbnRvLXRoZS1vcy14LWtleWNoYWluIiwicmVxdHlwZSI6MCwicm91dGUiOiIvcG9zdC86aWQvOnN1bW1hcnkifQ==&U=BEDIPPBHMH&K=35042f994fc5bb1a94ed727c2178a54bee1ae1d45a3aae141b6939f5d54357b5&R='.replace(/&R=[^&$]*/,'').concat('&R='+escape(document.referrer)).slice(0,2000).replace(/%.?.?$/,'');}(new Image());</script><noscript><img style="position:absolute;z-index:-3334;top:0px;left:0px;visibility:hidden;" src="https://px.srvcs.tumblr.com/impixu?T=1621736009&J=eyJ0eXBlIjoidXJsIiwidXJsIjoiaHR0cDovL2p1dXNvc2Fsb25lbi5jb20vcG9zdC8zMDkyMzc0MzQyNy9icmVha2luZy1pbnRvLXRoZS1vcy14LWtleWNoYWluIiwicmVxdHlwZSI6MCwicm91dGUiOiIvcG9zdC86aWQvOnN1bW1hcnkiLCJub3NjcmlwdCI6MX0=&U=BEDIPPBHMH&K=e628f6961ba50d9dbf7578470b83d84d4366f54025dc43caa9c9be79ac1a55c1&R="></noscript><script type="text/javascript" nonce="8jPINVBwA7r7sGrKRuO4Y8DCE">!function(s){s.src='https://px.srvcs.tumblr.com/impixu?T=1621736009&J=eyJ0eXBlIjoicG9zdCIsInVybCI6Imh0dHA6Ly9qdXVzb3NhbG9uZW4uY29tL3Bvc3QvMzA5MjM3NDM0MjcvYnJlYWtpbmctaW50by10aGUtb3MteC1rZXljaGFpbiIsInJlcXR5cGUiOjAsInJvdXRlIjoiL3Bvc3QvOmlkLzpzdW1tYXJ5IiwicG9zdHMiOlt7InBvc3RpZCI6IjMwOTIzNzQzNDI3IiwiYmxvZ2lkIjoyNTk2NjIwMCwic291cmNlIjozM31dfQ==&U=JPIHKEDCGD&K=dbb336d5e6f84c39b58ef4b0a80e26a3f6677586c25cdd13e78e48f68f5279bf&R='.replace(/&R=[^&$]*/,'').concat('&R='+escape(document.referrer)).slice(0,2000).replace(/%.?.?$/,'');}(new Image());</script><noscript><img style="position:absolute;z-index:-3334;top:0px;left:0px;visibility:hidden;" src="https://px.srvcs.tumblr.com/impixu?T=1621736009&J=eyJ0eXBlIjoicG9zdCIsInVybCI6Imh0dHA6Ly9qdXVzb3NhbG9uZW4uY29tL3Bvc3QvMzA5MjM3NDM0MjcvYnJlYWtpbmctaW50by10aGUtb3MteC1rZXljaGFpbiIsInJlcXR5cGUiOjAsInJvdXRlIjoiL3Bvc3QvOmlkLzpzdW1tYXJ5IiwicG9zdHMiOlt7InBvc3RpZCI6IjMwOTIzNzQzNDI3IiwiYmxvZ2lkIjoyNTk2NjIwMCwic291cmNlIjozM31dLCJub3NjcmlwdCI6MX0=&U=JPIHKEDCGD&K=947624f4d72b26fba996808ab7b8a3dca9c1309d8a702de7a7c97484e2da4942&R="></noscript><noscript id="bootloader" data-bootstrap="{&quot;Components&quot;:{&quot;PostActivity&quot;:[],&quot;NotificationPoller&quot;:{&quot;messaging_keys&quot;:[],&quot;token&quot;:&quot;c86f8a500596474a7ef5034081f694bd&quot;,&quot;inbox_unread&quot;:0},&quot;DesktopDashboardLogo&quot;:{&quot;animations&quot;:[[&quot;https:\/\/assets.tumblr.com\/images\/logo\/hover-animations\/1.png?_v=161861acded461bb6e995593a3bae835&quot;,&quot;https:\/\/assets.tumblr.com\/images\/logo\/hover-animations\/1@2x.png?_v=496a774637302a598c851381d00009b0&quot;]]},&quot;TumblelogIframe&quot;:{&quot;unified&quot;:true,&quot;variant&quot;:null,&quot;isCompact&quot;:true,&quot;tumblelogBundleSrc&quot;:&quot;https:\/\/assets.tumblr.com\/client\/prod\/standalone\/tumblelog\/index.build.js?_v=f3fb5dbb23253ba13bb13591156de3e0&quot;,&quot;tumblelogName&quot;:&quot;juusosalonen&quot;,&quot;isLoggedIn&quot;:false,&quot;isFriend&quot;:false,&quot;formKey&quot;:&quot;&quot;,&quot;canSubscribe&quot;:false,&quot;isSubscribed&quot;:false,&quot;tumblelogTitle&quot;:&quot;Juuso Salonen&quot;,&quot;tumblelogAvatar&quot;:&quot;https:\/\/64.media.tumblr.com\/avatar_322218e8cd99_64.pnj&quot;,&quot;tumblelogAvatar128&quot;:&quot;https:\/\/64.media.tumblr.com\/avatar_322218e8cd99_128.pnj&quot;,&quot;tumblelogHost&quot;:&quot;https:\/\/juusosalonen.com&quot;,&quot;isOptica&quot;:false,&quot;isCustomTheme&quot;:true,&quot;themeHeaderImage&quot;:&quot;&quot;,&quot;themeBackgroundColor&quot;:&quot;#FAFAFA&quot;,&quot;themeTitleColor&quot;:&quot;#444444&quot;,&quot;themeAccentColor&quot;:&quot;#529ECC&quot;,&quot;brag&quot;:true,&quot;adsEnabled&quot;:true,&quot;canShowAd&quot;:true,&quot;isPremium&quot;:false,&quot;showLrecAds&quot;:false,&quot;showStickyLrecBackfill&quot;:false,&quot;showGeminiAds&quot;:false,&quot;geminiSectionCodeDesktop&quot;:&quot;a10bca9c-0c5d-4a02-ab13-14ab8513d81d&quot;,&quot;geminiSectionCodeMobile&quot;:&quot;ced63809-b609-4aca-96a0-abc099acba6b&quot;,&quot;currentPageType&quot;:&quot;single_post&quot;,&quot;currentPage&quot;:1,&quot;searchQuery&quot;:&quot;&quot;,&quot;tag&quot;:&quot;&quot;,&quot;query&quot;:&quot;&quot;,&quot;chrono&quot;:false,&quot;postId&quot;:&quot;30923743427&quot;,&quot;src&quot;:&quot;https:\/\/juusosalonen.com\/post\/30923743427\/breaking-into-the-os-x-keychain&quot;,&quot;postUrl&quot;:&quot;&quot;,&quot;isBlocked&quot;:null,&quot;isAdmin&quot;:false,&quot;lookupButtonUrl&quot;:&quot;&quot;,&quot;showSpamButton&quot;:false,&quot;showRootPostButton&quot;:false,&quot;rootPostUrl&quot;:&quot;&quot;,&quot;showRadarPostButton&quot;:false,&quot;radarKeys&quot;:&quot;&quot;,&quot;isUniblocked&quot;:false,&quot;isNsfw&quot;:false,&quot;isAdult&quot;:false,&quot;isSpam&quot;:false,&quot;isPrimaryBlog&quot;:false,&quot;canEdit&quot;:false,&quot;canReblogSelf&quot;:false,&quot;showLikeButton&quot;:false,&quot;showReblogButton&quot;:false,&quot;reblogUrl&quot;:&quot;&quot;,&quot;showMessagingButton&quot;:false,&quot;loginCheckIframeSrc&quot;:&quot;https:\/\/assets.tumblr.com\/assets\/html\/iframe\/login_check.html?_v=3de94a184d600617102ddd5b48fb36e9&quot;,&quot;appInstallUrls&quot;:{&quot;android&quot;:&quot;https:\/\/play.google.com\/store\/apps\/details?id=com.tumblr\u0026referrer=utm_source%3Dtumblr%26utm_medium%3Diframe%26utm_campaign%3Dbn_continue_or_install_cta&quot;,&quot;ios&quot;:&quot;https:\/\/apps.apple.com\/app\/apple-store\/id305343404?pt=212308\u0026ct=bn_continue_or_install_cta\u0026mt=8&quot;},&quot;appOpenReferrer&quot;:&quot;bn_header_open_btn&quot;,&quot;isShowSearch&quot;:true,&quot;supplyLogging&quot;:[],&quot;secondsSinceLastActivity&quot;:-1,&quot;installUrlOpenFailed&quot;:{&quot;android&quot;:&quot;https:\/\/play.google.com\/store\/apps\/details?id=com.tumblr\u0026referrer=utm_source%3Dtumblr%26utm_medium%3Diframe%26utm_campaign%3Dbn_header_app_open_failed&quot;,&quot;ios&quot;:&quot;https:\/\/apps.apple.com\/app\/apple-store\/id305343404?pt=212308\u0026ct=bn_header_app_open_failed\u0026mt=8&quot;}}},&quot;Flags&quot;:{&quot;features&quot;:&quot;eyJmaWx0ZXJfbnNmdyI6dHJ1ZSwibW9iaWxlX3dlYl9nYXRlIjp0cnVlLCJzYWZlX21vZGUiOnRydWUsInNhZmVfbW9kZV9lbmFibGVkIjp0cnVlLCJrZXljb21tYW5kX2F1dG9fcGFnaW5hdGUiOnRydWUsImxvZ2dlZF9vdXRfc2VhcmNoIjp0cnVlLCJrcmFrZW5fd2ViX2xvZ2dpbmdfbGlicmFyeSI6dHJ1ZSwibGl2ZXBob3Rvc193ZWIiOnRydWUsInVzZXJfdGFnX2ZpbHRlcmluZyI6dHJ1ZSwicHJvamVjdF94X2FwcGVhbCI6dHJ1ZSwicHJvamVjdF94X3dlYl9zZW5zaXRpdmVfY292ZXJzIjp0cnVlLCJzYWZlX21vZGVfb3duX3Bvc3QiOnRydWUsIm1vYmlsZV93ZWJfcGhvdG9zZXRzIjp0cnVlLCJoaWRlX2RlZmF1bHRfaGVhZGVyc19ibG9nX2NhcmRzIjp0cnVlLCJub3RpZmljYXRpb25fcmVwbHlfbGlua190b19ub3RlcyI6dHJ1ZSwidHlwaW5nX2luZGljYXRvcl93cml0ZSI6dHJ1ZSwiZ2Rwcl9ndWNlX2lzX3JlcXVpcmVkIjp0cnVlLCJ0dW1ibHJfdmlkZW9fc3BvbnNvcmVkX2RheSI6dHJ1ZSwiY2FwdGNoYTp1c2VfcmVjYXB0Y2hhMiI6dHJ1ZSwibGl0dGxlX3Npc3RlciI6dHJ1ZSwibG9nX2xhZHkiOnRydWUsInJlZHBvcF9wb3N0X2Zvcm1fbW9iaWxlX2NyZWF0ZSI6dHJ1ZSwiZ2Rwcl9xdWFudGNhc3RfY21wIjp0cnVlLCJsZWdhY3lfcG9zdF9mb3JtX2J1dHRvbnNfbGlua190b19yZWRwb3AiOnRydWUsImRhcmxhX2FkX2ZlZWRiYWNrIjp0cnVlLCJzdGF0dXNfaW5kaWNhdG9yIjp0cnVlLCJjb252ZXJzYXRpb25hbF9ub3RpZmljYXRpb25zIjp0cnVlLCJkaXNhYmxlX3lhaG9vX2JfY29va2llIjp0cnVlLCJsaXZlcGhvdG9zIjp0cnVlfQ==&quot;},&quot;Context&quot;:{&quot;name&quot;:&quot;default&quot;,&quot;time&quot;:1621736009000,&quot;userinfo&quot;:{&quot;primary&quot;:&quot;&quot;,&quot;name&quot;:&quot;&quot;,&quot;channels&quot;:[]},&quot;hosts&quot;:{&quot;assets_host&quot;:&quot;https:\/\/assets.tumblr.com&quot;,&quot;secure_assets_host&quot;:&quot;https:\/\/assets.tumblr.com&quot;,&quot;www_host&quot;:&quot;https:\/\/www.tumblr.com&quot;,&quot;secure_www_host&quot;:&quot;https:\/\/www.tumblr.com&quot;,&quot;embed_host&quot;:&quot;https:\/\/embed.tumblr.com&quot;,&quot;safe_host&quot;:&quot;https:\/\/safe.txmblr.com&quot;,&quot;platform_host&quot;:&quot;https:\/\/platform.tumblr.com&quot;},&quot;language&quot;:&quot;en_US&quot;,&quot;language_simple&quot;:&quot;en&quot;,&quot;assets&quot;:&quot;https:\/\/assets.tumblr.com\/client\/prod\/&quot;},&quot;Translations&quot;:{&quot;%1$sReport %2$s&#039;s post?%3$sIf it violates our community guidelines, we&#039;ll remove it.%4$s&quot;:&quot;%1$sReport %2$s&#039;s reblog?%3$sIf it violates our community guidelines, we&#039;ll remove it.%4$s&quot;,&quot;%1$sReport %2$s&#039;s reply?%3$sIf it violates our community guidelines, we&#039;ll remove it.%4$s&quot;:&quot;%1$sReport %2$s&#039;s reblog?%3$sIf it violates our community guidelines, we&#039;ll remove it.%4$s&quot;}}"></noscript><script src="https://assets.tumblr.com/client/prod/standalone/tumblelog/index.build.js?_v=f3fb5dbb23253ba13bb13591156de3e0"></script></body></html>

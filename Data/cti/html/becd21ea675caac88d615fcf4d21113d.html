@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="Defending Against Rules and Forms Injection" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/archive/blogs/office365security/defending-against-rules-and-forms-injection" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="archived_blog_id" content="124252" />
+<meta name="archived_blog_orig_url" content="http://blogs.technet.microsoft.com/office365security" />
+<meta name="archived_blog_post_author" content="Brandon Koeller" />
+<meta name="archived_blog_post_author_email" content="mrkoeller@hotmail.com" />
+<meta name="archived_blog_post_id" content="3675" />
+<meta name="author" content="kexugit" />
+<meta name="breadcrumb_path" content="/archive/blogs/bread/toc.json" />
+<meta name="depot_name" content="MSDN.blogs-archive" />
+<meta name="document_id" content="6e566df3-b3ef-e68d-f979-9960a1ee9d74" />
+<meta name="document_version_independent_id" content="1c093f2b-0e23-fffa-5f2c-746b56515b54" />
+<meta name="gitcommit" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr/commit/eb642dd1044ee615fc8ffa1cc1145e8bc3944da4?path=/blogs-archive/office365security/defending-against-rules-and-forms-injection.md&amp;_a=contents" />
+<meta name="is_archived" content="true" />
+<meta name="locale" content="en-us" />
+<meta name="ms.author" content="Archiveddocs" />
+<meta name="ms.date" content="02/21/2018" />
+<meta name="ms.topic" content="Archived" />
+<meta name="original_content_git_url" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr?path=/blogs-archive/office365security/defending-against-rules-and-forms-injection.md&amp;version=GBlive&amp;_a=contents" />
+<meta name="ROBOTS" content="NOINDEX,NOFOLLOW" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="blogs-archive" />
+<meta name="search.ms_product" content="MSDN" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="uhfHeaderId" content="MSDocsHeader-Archive" />
+<meta name="updated_at" content="2020-02-07 07:49 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="toc.json" />
+<meta name="word_count" content="1730" />
+
+
+	<meta name="scope" content="Blogs" />
+<link href="https://docs.microsoft.com/en-us/archive/blogs/office365security/defending-against-rules-and-forms-injection" rel="canonical">
+	<title>Defending Against Rules and Forms Injection | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: false,
+			hasGithubIssues: false,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr?path=/blogs-archive/office365security/defending-against-rules-and-forms-injection.md&version=GBlive&_a=contents',
+			extendBreadcrumb: false,
+			isEditDisplayable: false,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="nav-bar border-top is-hidden-mobile"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="defending-against-rules-and-forms-injection">Defending Against Rules and Forms Injection</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2018-02-21T00:00:00.000Z" data-article-date-source="ms.date">02/21/2018</time>
+							</li>
+									<li class="readingTime">8 minutes to read</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p>Over the last year, Office 365 security has been tracking an emergent attacker persistence mechanism in the Exchange Online ecosystem. The release of a security research tool called <a href="https://github.com/sensepost/ruler" data-linktype="external">Ruler</a> enables an attacker to install a persistence mechanism once an account has been breached to maintain access even through a password roll. While we haven't seen widespread use of the tool in Office 365, we wanted to equip IT Security Administrators with a robust understanding of the threat, a model for how to prevent the exploit, and some lightweight tooling to detect, monitor, and remediate the threat. The good news here is that if you keep your clients patched to the latest version, you are not vulnerable to the threat as Outlook client defaults block both mechanisms. You should still perform the actions in the 'How to Detect It' section, however, in case an account was breached prior to the patch releases last year.</p>
+<h1 id="the-threat">The Threat</h1>
+<p>There are two variants of the persistence mechanism: mailbox rules and custom mail forms. In both cases, the rule/form is synced from the cloud service down to the desktop client, so a full format and re-install of the client software doesn't eliminate the injection mechanism as resyncing the mailbox will re-download the rules/forms from the cloud. The rules/forms, once placed, are used to execute remote or custom code, usually to install <a href="https://www.powershellempire.com/" data-linktype="external">malware</a> on the local machine, which is in turn leveraged to re-steal credentials or perform other illicit activity. You can read an in-depth description of the exploits here:</p>
+<ul>
+<li>SilentBreak Security Post about Rules Vector: <a href="https://silentbreaksecurity.com/malicious-outlook-rules/" data-linktype="external">https://silentbreaksecurity.com/malicious-outlook-rules/</a></li>
+<li>Sensepost Blog about Mailrule Pwnage: <a href="https://sensepost.com/blog/2016/mapi-over-http-and-mailrule-pwnage/" data-linktype="external">https://sensepost.com/blog/2016/mapi-over-http-and-mailrule-pwnage/</a></li>
+<li>Sensepost Blog about Forms Threat Vector: <a href="https://sensepost.com/blog/2017/outlook-forms-and-shells/" data-linktype="external">https://sensepost.com/blog/2017/outlook-forms-and-shells/</a></li>
+<li>Ruler Codebase: <a href="https://github.com/sensepost/ruler" data-linktype="external">https://github.com/sensepost/ruler</a></li>
+</ul>
+<p>The exploits exhibit the following characteristics:</p>
+<h2 id="the-rules-exploit">The Rules Exploit</h2>
+<ol>
+<li>A user's credential is compromised and an attacker logs on to their Exchange account (Exchange Online, or On-Premise)</li>
+<li>The attacker creates a forwarding rule in the target's mailbox...</li>
+<li>That when triggered with an email that matches the rule criteria...</li>
+<li>Will execute an application...</li>
+<li>Usually hosted on a remote WebDav server...</li>
+<li>That installs malware locally such as <a href="https://www.powershellempire.com/" data-linktype="external">Powershell Empire</a></li>
+<li>Which allows attacker to dump creds from local machine and perform other malicious activities</li>
+</ol>
+<p>This is what the exploit looks like:</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/2018/02/maliciousruleinjection.jpg" alt="" data-linktype="external"/></a></p>
+<h2 id="the-forms-exploit">The Forms Exploit</h2>
+<ol>
+<li>A user's credential is compromised and an attacker logs on to their Exchange account (Exchange Online, or On-Premise)</li>
+<li>The attacker creates a custom mail form template and injects it into the target's mailbox...</li>
+<li>That when triggered with an email that matches the custom form template type...</li>
+<li>Will execute custom code in the template...</li>
+<li>That usually installs malware locally such as <a href="https://www.powershellempire.com/" data-linktype="external">Powershell Empire</a></li>
+<li>Which allows attacker to dump creds from local machine and perform other malicious activities</li>
+</ol>
+<p>This is what the exploit looks like:</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/2018/02/maliciousformsinjection.jpg" alt="" data-linktype="external"/></a></p>
+<h1 id="how-to-prevent-it">How to Prevent It</h1>
+<p>The Ruler exploit described here is considered a post-exploit technique, which means the account has already been breached by the attacker when this exploit is executed. Taking aggressive steps to prevent the initial breach in the first place is advised. There are many account breach vectors, including phishing and password spraying, which are relatively easy to execute. Using protection mechanisms like multi-factor authentication on user accounts, whether conditional or always-on, is an effective mitigation. This should be your first line of defense. Some effective tactics you can leverage include:</p>
+<ol>
+<li>Enable Multi-factor Authentication for all of your users, especially those with administrative privileges.</li>
+<li>Monitor your accounts for illicit activity. You can do this manually, or with a security monitoring toolset. This may not prevent the initial breach, but will shorten the duration, and the impact of the breach.</li>
+<li>Leverage a tool like the Office 365 Secure Score (<a href="https://securescore.office.com" data-linktype="external">https://securescore.office.com</a>) to manage account security configurations and behaviors.</li>
+</ol>
+<p>The second key prevention mechanism is to use the fully-updated latest versions of Outlook (2013/2016) and ensuring that rule actions that can start applications/macros are disabled per the security patches. This will ensure that, even if an attacker breaches the account, the rule and form execution mechanisms will be blocked.</p>
+<p>Patched versions are 15.0.4937.1000 or greater (Outlook 2013) and 16.0.4534.1001 or greater (Outlook 2016).  Details about the patches are here:</p>
+<ul>
+<li>Outlook 2013 Security Patch - <a href="https://support.microsoft.com/en-us/help/3191938" data-linktype="external">https://support.microsoft.com/en-us/help/3191938</a></li>
+<li>Outlook 2016 Security Patch - <a href="https://support.microsoft.com/en-us/help/3191883" data-linktype="external">https://support.microsoft.com/en-us/help/3191883</a></li>
+</ul>
+<p>Customers with on-premises Exchange installations should consider blocking older versions of Outlook that do not have patches available. Details on this process can be found in the article “<a href="https://technet.microsoft.com/en-us/library/dd335207(v=exchg.150).aspx" data-linktype="external">Configure Outlook client blocking</a>”.</p>
+<p>Please note that the rule mitigation is to disable the &quot;Start Application&quot; rule action by default. Even with the patch, it is possible for an attacker to change the local machine configuration to re-enable this. Make sure you monitor and enforce local machine policies on your clients. If you do happen to have an important business process that relies on this functionality, you can enable it for your users, but you will need to monitor your deployed user roles as per below with extra vigilance.</p>
+<p>To determine if “Start application” is enabled via override in the registry, check for these subkeys:</p>
+<ul>
+<li>Outlook 2016: HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook\Security\</li>
+<li>Outlook 2013: HKEY_CURRENT_USER\Software\Microsoft\Office\15.0\Outlook\Security\</li>
+</ul>
+<p>If the key EnableUnsafeClientMailRules exists with a value of 1, the patch is overridden and allows the action above.  If the value is 0, the rule actions are disabled.  If a current (fixed) version of Outlook is installed and this registry key is NOT present or present and set to 0, then a system is not susceptible to the mail rule injection exploit.</p>
+<p>The custom mail form injection exploit relies on custom code being injected into a very rarely used custom mail form feature and then executed outside the normal office macro sandbox. New versions of Outlook client prevent this code execution.</p>
+<h1 id="how-to-detect-it">How to Detect It</h1>
+<p>There are several methods you can leverage to detect and monitor for this exploit in your organization.</p>
+<p><em>Using Powershell</em></p>
+<p>The simplest method is to leverage a Powershell script we have created which allows you to dump all of the mail forwarding rules and custom forms for all the users in your tenancy: <a href="https://github.com/OfficeDev/O365-InvestigationTooling/blob/master/Get-AllTenantRulesAndForms.ps1" data-linktype="external">https://github.com/OfficeDev/O365-InvestigationTooling/blob/master/Get-AllTenantRulesAndForms.ps1</a> . You will need to have a global admin role elevation to run the script (because it connects to every mailbox in the tenancy to read the rules and forms). It takes no parameters. The script is written for an Office 365 organization, so if you are using Exchange on-prem, you'll need to modify it. The script will produce two time-stamped CSV files: one for rules and one for forms. The rules one should be examined for action conditions that include applications or executables. Two columns in the MailboxRulesExport_DATE.csv file will help focus your search.</p>
+<ul>
+<li>This assesses the rule to see if there is a custom action, if the action is to execute an application, or if the action is run a macro. Any of these conditions will flag the rule as being potentially malicious.</li>
+<li>This field contains the actual execution string if the rule executes an action. If it calls a remote server, or a suspiciously named application, it is likely malicious.</li>
+</ul>
+<p><em>Using Security Researcher Toolkit</em></p>
+<p>Another method you can leverage is to use the defensive version of the Ruler toolkit called NotRuler, authored by the same researcher: <a href="https://github.com/sensepost/notruler" data-linktype="external">https://github.com/sensepost/notruler</a>. The author has helpfully included a list of IOCs for the Ruler toolkit: <a href="https://github.com/sensepost/notruler/blob/master/iocs.md" data-linktype="external">https://github.com/sensepost/notruler/blob/master/iocs.md</a>.</p>
+<p><em>Using Outlook or MFCMAPI</em></p>
+<p>If you are willing to do substantial spelunking one mailbox at a time, you can also leverage the Outlook client or access the mailbox database directly by using the <a href="https://github.com/stephenegriffin/mfcmapi" data-linktype="external">MFCMAPI</a> tool. While this is time consuming and can result in a breach of the machine you are using to investigate the suspected breached mailbox, it is the most straightforward and complete enumeration of the exploit in context. Use the rule management interface form outlook and examine each rule description:</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/2018/02/rulesdetectionviaoutlook.jpg" alt="" data-linktype="external"/></a></p>
+<p>Or, enable the developer tab in the Outlook client, click <em>design a form</em>, and look in the user's Inbox for custom forms. The Ruler tool will, by default, mark the custom form as hidden. Once you open the form, click &quot;View Code&quot; to see what the custom form actually runs:</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/2018/02/formsinvestigationviaoutlook.jpg" alt="" data-linktype="external"/></a> <a href=""><img src="https://msdnshared.blob.core.windows.net/media/2018/02/formsinvestigationviaoutlookreviewcode.jpg" alt="" data-linktype="external"/></a></p>
+<p>You can also MFCMAPI to connect to the suspected breached mailbox, find the Inbox Folder, right click and open associated contents table, the look for Message Class IPM.Rule.Version2.Message (for malicious rules) and IPM.Microsoft.FolderDesign.FormsDescription (for malicious forms). Custom forms are rare enough that if you have <em>any</em> custom forms, it is worth a deeper look.</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/2018/02/investiationviamfcmapi.jpg" alt="" data-linktype="external"/></a></p>
+<p>Broadly speaking, you are looking for the following indicators of compromise:</p>
+<ul>
+<li>Indicators of compromise for rules
+<ul>
+<li>Rule Action is to start an application</li>
+<li>Rule References an EXE, ZIP, or URL</li>
+<li>On the local machine, look for new process starts that originate from the Outlook PID</li>
+</ul>
+</li>
+<li>Indicators of compromise for forms
+<ul>
+<li>Custom form present saved as their own message class</li>
+<li>Message class contains executable code</li>
+<li>Usually stored in Personal Forms Library or Inbox folders</li>
+<li>Form is named IPM.Note.[custom name]</li>
+</ul>
+</li>
+</ul>
+<h1 id="how-to-remediate-it">How to Remediate It</h1>
+<p>If you discover that you have been compromised with this vector, remediation of the actual exploit is straightforward: delete the rule or form from the mailbox. You can do this with the Outlook client, MFCMapi, or using remote PowerShell to remove rules. A full remediation, however, is more in depth and looks like:</p>
+<ol>
+<li>Remove the rule or form from the user's mailbox using Outlook, remote Powershell, or MFCMapi.</li>
+<li>Do not allow the user to logon and use email until the full remediation process is complete.</li>
+<li>Every machine that the user has used with Outlook will need to be cleaned of potential malware. The simplest way to accomplish this is to format and re-install everything on the machine, but if you can ensure that all malware has been removed with high confidence that might work.</li>
+<li>Ensure that you install the most up-to-date versions of Outlook so that the vector is closed.</li>
+<li>Once all offline copies of the mailbox have been removed, reset the user's password (ensuring it has a high-quality one set) and enable multi-factor authentication on the account to ensure the user's credentials are not exposed via other means (such as phishing or password re-use).</li>
+</ol>
+<p><em>Deleting with Outlook</em> <a href=""><img src="https://msdnshared.blob.core.windows.net/media/2018/02/rulesdetectionviaoutlook.jpg" alt="" data-linktype="external"/></a></p>
+<p><em>Deleting with MFCMapi</em> <a href=""><img src="https://msdnshared.blob.core.windows.net/media/2018/02/mfcmapidelete.jpg" alt="" data-linktype="external"/></a></p>
+<p>There are two remote powershell cmdlets you can use to remove or disable dangerous rules:</p>
+<ul>
+<li>Remove-InboxRule: <a href="https://technet.microsoft.com/en-us/library/dd351272(v=exchg.160).aspx" data-linktype="external">https://technet.microsoft.com/en-us/library/dd351272(v=exchg.160).aspx</a></li>
+<li>Disable-InboxRule: <a href="https://technet.microsoft.com/en-us/library/dd298120(v=exchg.160).aspx" data-linktype="external">https://technet.microsoft.com/en-us/library/dd298120(v=exchg.160).aspx</a> (use if you need to retain the rule contents for further investigation)</li>
+</ul>
+<h2 id="references">References</h2>
+<p>Ruler Codebase: <a href="https://github.com/sensepost/ruler" data-linktype="external">https://github.com/sensepost/ruler</a></p>
+<p>SilentBreak Security Post about Rules Vector: <a href="https://silentbreaksecurity.com/malicious-outlook-rules/" data-linktype="external">https://silentbreaksecurity.com/malicious-outlook-rules/</a></p>
+<p>Sensepost Blog about Mailrule Pwnage: <a href="https://sensepost.com/blog/2016/mapi-over-http-and-mailrule-pwnage/" data-linktype="external">https://sensepost.com/blog/2016/mapi-over-http-and-mailrule-pwnage/</a></p>
+<p>Sensepost Blog about Forms Threat Vector: <a href="https://sensepost.com/blog/2017/outlook-forms-and-shells/" data-linktype="external">https://sensepost.com/blog/2017/outlook-forms-and-shells/</a></p>
+<p>Get-AllTenantRulesAndForms.ps1: <a href="https://github.com/OfficeDev/O365-InvestigationTooling/blob/master/Get-AllTenantRulesAndForms.ps1" data-linktype="external">https://github.com/OfficeDev/O365-InvestigationTooling/blob/master/Get-AllTenantRulesAndForms.ps1</a></p>
+<p>MFCMAPI: <a href="https://github.com/stephenegriffin/mfcmapi" data-linktype="external">https://github.com/stephenegriffin/mfcmapi</a></p>
+<p>Outlook 2013 Security Patch - <a href="https://support.microsoft.com/en-us/help/3191938" data-linktype="external">https://support.microsoft.com/en-us/help/3191938</a></p>
+<p>Outlook 2016 Security Patch - <a href="https://support.microsoft.com/en-us/help/3191883" data-linktype="external">https://support.microsoft.com/en-us/help/3191883</a></p>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

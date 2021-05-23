@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>pam_unix(8) - Linux man page</title>
+<base href="https://linux.die.net/man/8/pam_unix">
+<link rel="canonical" href="https://linux.die.net/man/8/pam_unix">
+<link rel="stylesheet" type="text/css" href="/style/white.css">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link href="/style/search.xml" rel="search" title="Search the die.net site" type="application/opensearchdescription+xml">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="This is the standard Unix authentication module. It uses standard calls from the system's libraries to retrieve and set account information as well as ...">
+<script type="text/javascript">
+<!--
+var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-50820-6']);_gaq.push(['_trackPageview']);
+window.google_analytics_uacct = 'UA-50820-6';
+// -->
+</script>
+<script async src='/cdn-cgi/bm/cv/669835187/api.js'></script></head>
+
+<body>
+<div id=bg>
+<div id=logo>
+<a href="https://www.die.net/"><img
+src="/style/logo.svg" alt="die.net" width=120 height=120
+onerror="this.onerror=null; this.src='/style/logo.png'"></a>
+</div>
+<div id=content>
+
+<!-- google_ad_section_start -->
+<h1>pam_unix(8) - Linux man page</h1>
+
+<h2>Name</h2>
+
+<p>pam_unix - Module for traditional password authentication
+<h2>Synopsis</h2>
+
+<p><b>pam_unix.so</b> [...]
+<h2>Description</h2>
+<div id=adright>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-5823754184406795"
+     data-ad-slot="7130739364"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+
+<p>This is the standard Unix authentication module. It uses standard calls from the system's libraries to retrieve and set account information as well as
+authentication. Usually this is obtained from the /etc/passwd and the /etc/shadow file as well if shadow is enabled.
+<p>The account component performs the task of establishing the status of the user's account and password based on the following <i>shadow</i> elements: expire,
+last_change, max_change, min_change, warn_change. In the case of the latter, it may offer advice to the user on changing their password or, through the
+<b>PAM_AUTHTOKEN_REQD</b> return, delay giving service to the user until they have established a new password. The entries listed above are documented in the
+<b><a href="/man/5/shadow">shadow</a></b>(5) manual page. Should the user's record not contain one or more of these entries, the corresponding <i>shadow</i> check is not performed.
+
+<p>The authentication component performs the task of checking the users credentials (password). The default action of this module is to not permit the user
+access to a service if their official password is blank.
+<p>A helper binary, <b><a href="unix_chkpwd">unix_chkpwd</a></b>(8), is provided to check the user's password when it is stored in a read protected database. This binary is very simple
+and will only check the password of the user invoking it. It is called transparently on behalf of the user by the authenticating component of this module. In
+this way it is possible for applications like <b><a href="/man/1/xlock">xlock</a></b>(1) to work without being setuid-root. The module, by default, will temporarily turn off SIGCHLD
+handling for the duration of execution of the helper binary. This is generally the right thing to do, as many applications are not prepared to handle this
+signal from a child they didn't know was <b>fork()</b>d. The <b>noreap</b> module argument can be used to suppress this temporary shielding and may be needed
+for use with certain applications.
+<p>The password component of this module performs the task of updating the user's password.
+<p>The session component of this module logs when a user logins or leave the system.
+<p>Remaining arguments, supported by others functions of this module, are silently ignored. Other arguments are logged as errors through
+<b><a href="/man/3/syslog">syslog</a></b>(3).
+<h2>Options</h2>
+
+<p><b>debug</b>
+<dl compact>
+<dd>Turns on debugging via <b><a href="/man/3/syslog" rel="nofollow">syslog</a></b>(3).
+<dt><b>audit</b>
+<dd>A little more extreme than debug.
+<dt><b>nullok</b>
+<dd>The default action of this module is to not permit the user access to a service if their official password is blank. The <b>nullok</b> argument overrides
+this default.
+<dt><b>try_first_pass</b>
+<dd>Before prompting the user for their password, the module first tries the previous stacked module's password in case that satisfies this module as
+well.
+<dt><b>use_first_pass</b>
+<dd>The argument <b>use_first_pass</b> forces the module to use a previous stacked modules password and will never prompt the user - if no password is available
+or the password is not appropriate, the user will be denied access.
+<dt><b>nodelay</b>
+<dd>This argument can be used to discourage the authentication component from requesting a delay should the authentication as a whole fail. The default action
+is for the module to request a delay-on-failure of the order of two second.
+<dt><b>use_authtok</b>
+<dd>When password changing enforce the module to set the new password to the one provided by a previously stacked <b>password</b> module (this is used in the
+example of the stacking of the <b>pam_cracklib</b> module documented below).
+<dt><b>not_set_pass</b>
+<dd>This argument is used to inform the module that it is not to pay attention to/make available the old or new passwords from/to other (stacked) password
+modules.
+<dt><b>nis</b>
+<dd>NIS RPC is used for setting new passwords.
+<dt><b>remember=</b><i>n</i>
+<dd>The last <i>n</i> passwords for each user are saved in /etc/security/opasswd in order to force password change history and keep the user from alternating
+between the same password too frequently.
+<dt><b>shadow</b>
+<dd>Try to maintain a shadow based system.
+<dt><b>md5</b>
+<dd>When a user changes their password next, encrypt it with the MD5 algorithm.
+<dt><b>bigcrypt</b>
+<dd>When a user changes their password next, encrypt it with the DEC C2 algorithm.
+<dt><b>sha256</b>
+<dd>When a user changes their password next, encrypt it with the SHA256 algorithm. If the SHA256 algorithm is not known to the <b><a href="/man/3/crypt">crypt</a></b>(3) function, fall
+back to MD5.
+<dt><b>sha512</b>
+<dd>When a user changes their password next, encrypt it with the SHA512 algorithm. If the SHA512 algorithm is not known to the <b><a href="/man/3/crypt" rel="nofollow">crypt</a></b>(3) function, fall
+back to MD5.
+<dt><b>blowfish</b>
+<dd>When a user changes their password next, encrypt it with the blowfish algorithm. If the blowfish algorithm is not known to the <b><a href="/man/3/crypt" rel="nofollow">crypt</a></b>(3) function,
+fall back to MD5.
+<dt><b>rounds=</b><i>n</i>
+<dd>Set the optional number of rounds of the SHA256, SHA512 and blowfish password hashing algorithms to <i>n</i>.
+<dt><b>broken_shadow</b>
+<dd>Ignore errors reading shadow information for users in the account management module.
+<dt>Invalid arguments are logged with <b><a href="/man/3/syslog" rel="nofollow">syslog</a></b>(3).
+</dl>
+<h2>Module Types Provided</h2>
+
+<p>All module types (<b>account</b>, <b>auth</b>, <b>password</b> and <b>session</b>) are provided.
+<h2>Return Values</h2>
+
+<p>PAM_IGNORE
+<dl compact>
+<dd>Ignore this module.
+</dl>
+<h2>Examples</h2>
+
+<p>An example usage for /etc/pam.d/login would be:
+<dl compact>
+<dd>
+
+<pre class="code"><small># Authenticate the user
+auth       required   pam_unix.so
+# Ensure users account and password are still active
+account    required   pam_unix.so
+# Change the users password, but at first check the strength
+# with <b><a href="pam_cracklib">pam_cracklib</a></b>(8)
+password   required   pam_cracklib.so retry=3 minlen=6 difok=3
+password   required   pam_unix.so use_authtok nullok md5
+session    required   pam_unix.so
+
+</small></pre>
+</dl>
+<h2>See Also</h2>
+
+<p><b><a href="/man/5/pam.conf">pam.conf</a></b>(5), <b><a href="/man/5/pam.d">pam.d</a></b>(5), <b><a href="pam">pam</a></b>(8)
+<h2>Author</h2>
+
+<p>pam_unix was written by various people.
+
+<!-- google_ad_section_end -->
+<h2>Referenced By</h2>
+<b><a href="pam_pwquality" rel="nofollow">pam_pwquality</a></b>(8),
+<b><a href="unix_update" rel="nofollow">unix_update</a></b>(8)
+<div id=adbottom>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-5823754184406795"
+     data-ad-slot="8789940313"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+</div>
+<div id=menu>
+<dl>
+<dt>Site Search</dt>
+<dd>
+<form id="cse-search-box-menu" action="https://www.google.com/cse">
+<input name="q" type="text" size="10">
+<input type="hidden" name="sa" value="Search">
+<input type="hidden" name="ie" value="ISO-8859-1">
+<input type="hidden" name="cx" value="partner-pub-5823754184406795:54htp1rtx5u">
+<input type="hidden" name="cof" value="FORID:9">
+</form>
+<script type="text/javascript">
+<!--
+document.forms["cse-search-box-menu"].action = "https://www.die.net/search/";
+// -->
+</script>
+</dd></dl>
+
+
+
+<dl>
+<dt>Library</dt>
+<dd><a href="https://linux.die.net/">linux docs</a></dd>
+<dd><a href="https://linux.die.net/man/">linux man pages</a></dd>
+<dd><a href="https://www.die.net/musings/page_load_time/">page load time</a></dd>
+</dl>
+<dl>
+<dt>Toys</dt>
+<dd><a href="https://www.die.net/earth/">world sunlight</a></dd>
+<dd><a href="https://www.die.net/moon/">moon phase</a></dd>
+<dd><a href="http://trace.die.net/">trace explorer</a></dd>
+</dl>
+
+
+<dl>
+<dt><a href="/man/8/"><img src="/style/back.gif" alt="Back"
+width=20 height=22></a></dt><dd></dd>
+</dl>
+</div></div>
+<script type="text/javascript">
+<!--
+if (top.location != self.location) top.location = self.location;
+if (/[?&][pq]=/.test(document.referrer)) document.write(unescape("%3Cscript src='/style/highlight.js' type='text/javascript'%3E%3C/script%3E"));
+function googleTranslateElementInit() {new google.translate.TranslateElement({pageLanguage: 'en', floatPosition: google.translate.TranslateElement.FloatPosition.TOP_RIGHT, gaTrack: true, gaId: 'UA-50820-6'});}
+if (!/^en/i.test(window.navigator.userLanguage||window.navigator.language)) document.write(unescape("%3Cscript src='//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit' type='text/javascript'%3E%3C/script%3E"));
+(function() {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+// -->
+</script>
+<script type="text/javascript">(function(){window['__CF$cv$params']={r:'653abd6afb3f5f15',m:'2f20c020f2af0ea9d8410232e1858dc4b276f1f6-1621735743-1800-AbvcGtejs0o1fEuigJH9jxFKEEYWizX305GIU6oKaSEzD/c2Djt0yQOmx5z1CUNGqH86MlfrRxkARgN89MkggXise8zPMutPOl7JTyBNdK1rK/yd2w2uYYkYkZybVyLrXA==',s:[0xcdfdade51b,0x72621031a7],}})();</script></body>
+</html>

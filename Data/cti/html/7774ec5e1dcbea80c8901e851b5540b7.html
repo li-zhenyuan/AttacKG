@@ -1,0 +1,1745 @@
+<!doctype html>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" type="image/x-icon" href="https://securityintelligence.com/wp-content/themes/sapphire/images/favicon.ico" sizes="32x32" />
+        <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,maximum-scale=1">
+
+        <!-- DEFINITIONS -->
+        <title>More_eggs, Anyone? Threat Actor ITG08 Strikes Again</title>
+        <meta name="description" content="Find the latest security analysis and insight from top IT security experts and leaders, made exclusively for security professionals and CISOs.">
+
+        <!-- THEME COLOR -->
+        <meta name="theme-color" content="#000000">
+
+        <!-- REFERRER POLICY -->
+        <meta name="referrer" content="no-referrer-when-downgrade">
+
+        <!-- LANGUAGE/TRANSLATIONS -->
+        
+        <!-- AMP SCRIPTS -->
+        <script async src="https://cdn.ampproject.org/v0.js"></script>
+        <script async custom-element="amp-list" src="https://cdn.ampproject.org/v0/amp-list-0.1.js"></script>
+        <script async custom-template="amp-mustache" src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"></script>
+        <script async custom-element="amp-accordion" src="https://cdn.ampproject.org/v0/amp-accordion-0.1.js"></script>
+        <script custom-element="amp-animation" src="https://cdn.ampproject.org/v0/amp-animation-0.1.js" async></script>
+        <script custom-element="amp-position-observer" src="https://cdn.ampproject.org/v0/amp-position-observer-0.1.js" async></script>
+        <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
+        <script async custom-element="amp-autocomplete" src="https://cdn.ampproject.org/v0/amp-autocomplete-0.1.js"></script>
+        <script async custom-element="amp-social-share" src="https://cdn.ampproject.org/v0/amp-social-share-0.1.js"></script>
+
+        
+        
+                    <script async custom-element="amp-lightbox-gallery" src="https://cdn.ampproject.org/v0/amp-lightbox-gallery-0.1.js"></script>
+            <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+            <script async custom-element="amp-video" src="https://cdn.ampproject.org/v0/amp-video-0.1.js"></script>
+            <script async custom-element="amp-youtube" src="https://cdn.ampproject.org/v0/amp-youtube-0.1.js"></script>
+            <link rel="preload" as="image" href="/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-300x158.jpg.webp" media="(max-width: 300px)">
+            <link rel="preload" as="image" href="/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg.webp" media="(max-width: 1200px) and (min-width: 301px)">
+            <link rel="preload" as="image" href="/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg.webp" media="(max-width: 2400px) and (min-width: 631px)">
+            <link rel="preload" as="image" href="/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg.webp" media="(max-width: 2400px) and (min-width: 1201px)">
+        
+        
+        <!-- FONTS -->
+        <!-- <link rel="preload" href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed:300,400,500|IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet"> -->
+
+        <!-- ANALYTICS -->
+        
+<script>
+
+  
+  
+    // Digital Registry
+    digitalData = {
+        "page": {
+            "category": {
+                "primaryCategory": "Advanced Threats"
+            },
+            "pageInfo": {
+                "language": "en-US",
+                "country": "US",
+                "version": "custom",
+                "effectiveDate": "2019-08-29",
+                "publishDate": "2019-08-29",
+                "optimizely": {
+                  "enabled": "false",
+                },
+                "ibm": {
+                    "contentDelivery": "WordPress",
+                    "contentProducer": "Hand coded",
+                    "owner": "Ole Villadsen",
+                    "siteID": "SECURITYINTELLIGENCE",
+                    "type": "Internals",
+                                    }
+            }
+        }
+    }
+
+    
+    // Custom Click Tagging
+    // Collect and send clicks not detectable by ida_stats.js
+    function sendClickTag(section, feature, destination) {
+      console.log(section + " " + feature)
+      var config = {
+            type              : 'ELEMENT',
+            primaryCategory   : section,              // e_a1 - Element Category
+            eventName         : feature,              // e_a2 - Element Name
+            targetURL         : destination,          // e_a7 - Element Attribute: ibmEvTarget
+          };
+      ibmStats.event(config);
+    }
+
+    // Custom Click Tagging
+    // Collect and send clicks not detectable by ida_stats.js
+    // function sendClickConversion(feature, title) {
+    //   var config = {
+    //         type               : 'pageclick',
+    //         primaryCategory    : 'PAGE CLICK',
+    //         eventCategoryGroup : "TIMELINE - SECURITY INTELLIGENCE",
+    //         eventName          : feature,
+    //         targetTitle        : title
+    //       };
+    //   ibmStats.event(config);
+    // }
+
+    // Custom Link Event
+    // Add clicktag event on every link inside the element
+    function tagAllLinks(element, section, feature) {
+      var element = document.querySelectorAll(element);
+      if (typeof(element) != 'undefined' && element != null) {
+        for (var i = 0; i < element.length; i++) {
+          var elements = element[i].querySelectorAll("a:not(.btn)");
+          for (var o = 0; o < elements.length; o++) {
+            if (elements[o].getAttribute('listener') !== 'true') {
+              var destination = elements[o].getAttribute('href');
+              elements[o].addEventListener('click', function(){
+                if (this.getAttribute('listener') === 'true') {
+                  sendClickTag(section, feature, this.getAttribute('href'));
+                  this.setAttribute('listener', 'false');
+                }
+              }, false);
+              elements[o].setAttribute('listener', 'true');
+            }
+          }
+        }
+      }
+    }
+
+    window.onload = function() {
+
+        // Call to action click tag
+        var ctaButton = document.querySelectorAll(".single__content a");
+        if (typeof(ctaButton) != 'undefined' && ctaButton != null && ctaButton.length !== 0) {
+          for (var i = 0; i < ctaButton.length; i++) {
+            ctaButton[i].addEventListener('click', function(){
+              if (this.getAttribute('listener') === 'true') {
+                sendClickTag("BODY", "CALL TO ACTION");
+                this.setAttribute('listener', 'false');
+              }
+            }, false);
+            ctaButton[i].setAttribute('listener', 'true');
+          }
+        }
+
+        // Read more click tag
+        var readButton = document.querySelectorAll(".continue-reading button");
+        if (typeof(readButton) != 'undefined' && readButton != null && readButton.length !== 0) {
+          for (var i = 0; i < readButton.length; i++) {
+            readButton[i].addEventListener('click', function(){
+              if (this.getAttribute('listener') === 'true') {
+                sendClickTag("BODY", "READ-MORE");
+                this.setAttribute('listener', 'false');
+              }
+            }, false);
+            readButton[i].setAttribute('listener', 'true');
+          }
+        }
+
+
+        //  LISTICLES tag - Arrows
+            //left arrow
+            var leftArrow = document.getElementById("prev");
+            if (typeof(leftArrow) != 'undefined' && leftArrow != null ) {
+                  //for (var i = 0; i < leftArrow.length; i++) {
+                        leftArrow.addEventListener('click', function(){
+                        if (this.getAttribute('listener') === 'true' && leftArrow.id=="prev") {
+                        sendClickTag("BODY", "LISTICLE-LEFT-ARROW");
+                        this.setAttribute('listener', 'false');
+                        }
+                  }, false);
+                  leftArrow.setAttribute('listener', 'true');
+                  //}
+            }
+            //right arrow
+            var rightArrow = document.getElementById("next");
+            if (typeof(rightArrow) != 'undefined' && rightArrow != null ) {
+                  //for (var i = 0; i < rightArrow.length; i++) {
+                  rightArrow.addEventListener('click', function(){
+                        if (this.getAttribute('listener') === 'true' && rightArrow.id=="next") {
+                        sendClickTag("BODY", "LISTICLE-RIGHT-ARROW");
+                        this.setAttribute('listener', 'false');
+                        }
+                  }, false);
+                  rightArrow.setAttribute('listener', 'true');
+                  //}
+            }
+
+
+
+        //  LISTICLES tag - numbers
+        var listicleTopButton = document.querySelectorAll(".listicle__pagination__numbers");
+        if (typeof(listicleTopButton) != 'undefined' && listicleTopButton != null && listicleTopButton.length !== 0) {
+          for (var i = 0; i < listicleTopButton.length; i++) {
+                  var currentSlide = 1;
+
+                  listicleTopButton[i].addEventListener('click', function(){
+              
+                  if (this.getAttribute('listener') === 'true') {
+                        currentSlide++;
+                        var total = i;
+
+                        // var clickedSlides=currentSlide/2;
+                        // console.log(clickedSlides.toFixed());
+
+                        //I'm removing 2 because 2 arrows on the listicle are unclickable, but present on the DOM
+                        // clickableArrows = i-2;
+                        // clickableArrows = i-1;
+                        // I'm deviding by 2 because on each slide we have 2 arrows, so we were actually sendind the double of tags
+                        // clickableArrows= clickableArrows/2;
+                        // console.log(i);
+                        // clickableArrows.toFixed();
+
+                        if (currentSlide <= total){
+                              sendClickTag("PAGE CLICK", "LISTICLE-NAVIGATION-SLIDE"+currentSlide);
+                              this.setAttribute('listener', 'false');
+                        }
+                        else{
+                              sendClickTag("PAGE CLICK", "LISTICLE-NAVIGATION-END");
+                              this.setAttribute('listener', 'false');
+                        }
+
+             
+                }
+            }, false);
+            listicleTopButton[i].setAttribute('listener', 'true');
+          }
+        }
+        // // Timeline box click tag
+        // var boxButton = document.querySelectorAll(".timeline__content .box");
+        // if (typeof(boxButton) != 'undefined' && boxButton != null && boxButton.length !== 0) {
+        //   for (var i = 0; i < boxButton.length; i++) {
+        //     boxButton[i].addEventListener('click', function(){
+        //       if (this.getAttribute('listener') === 'true') {
+        //         sendClickConversion("DETAILED VIEW", this.getAttribute('data-title'));
+        //         this.setAttribute('listener', 'false');
+        //       }
+        //     }, false);
+        //     boxButton[i].setAttribute('listener', 'true');
+        //   }
+        // }
+
+    };
+
+</script>
+
+<!-- COREMETRICS -->
+      <script defer src="https://1.www.s81c.com/common/stats/ida_stats.js" type="text/javascript"></script>
+
+        <!-- AMP DEFAULT CSS -->
+        <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+        
+        <link rel="stylesheet" href="https://securityintelligence.com/wp-content/themes/sapphire/minifications/modules.css?v=1620050441">
+
+        <!-- CUSTOM CSS -->
+        <style amp-custom>@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:200,300,400,500,600');@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed:300,400,500,600,700');</style><link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"><link rel="stylesheet" href="https://securityintelligence.com/wp-content/themes/sapphire/minifications/single.css?v=1619532338">
+        <!-- YOAST SEO -->
+        
+<!-- This site is optimized with the Yoast SEO Premium plugin v13.1 - https://yoast.com/wordpress/plugins/seo/ -->
+<meta name="description" content="X-Force IRIS observed ITG08, which has historically targeted POS machines in the retail and hospitality sectors, injecting malicious code into online checkout pages to steal payment card data."/>
+<meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
+<link rel="canonical" href="https://securityintelligence.com/posts/more_eggs-anyone-threat-actor-itg08-strikes-again/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="More_eggs, Anyone? Threat Actor ITG08 Strikes Again" />
+<meta property="og:description" content="X-Force IRIS observed ITG08, which has historically targeted POS machines in the retail and hospitality sectors, injecting malicious code into online checkout pages to steal payment card data." />
+<meta property="og:url" content="https://securityintelligence.com/posts/more_eggs-anyone-threat-actor-itg08-strikes-again/" />
+<meta property="og:site_name" content="Security Intelligence" />
+<meta property="article:tag" content="Cybercrime" />
+<meta property="article:tag" content="Cybercriminals" />
+<meta property="article:tag" content="Dark Web" />
+<meta property="article:tag" content="Darknet" />
+<meta property="article:tag" content="Hospitality Industry" />
+<meta property="article:tag" content="Incident Response (IR)" />
+<meta property="article:tag" content="Malware" />
+<meta property="article:tag" content="Malware Analysis" />
+<meta property="article:tag" content="Malware Injection" />
+<meta property="article:tag" content="Malware-as-a-Service (MaaS)" />
+<meta property="article:tag" content="Online Shopping" />
+<meta property="article:tag" content="Point-of-Sale (POS) Systems" />
+<meta property="article:tag" content="Response and Intelligence Services (IRIS)" />
+<meta property="article:tag" content="Retail" />
+<meta property="article:tag" content="Retail Industry" />
+<meta property="article:tag" content="Threat Intelligence" />
+<meta property="article:tag" content="Threat Monitoring" />
+<meta property="article:tag" content="X-Force" />
+<meta property="article:section" content="Advanced Threats" />
+<meta property="fb:app_id" content="3703311399714818" />
+<meta property="og:image" content="https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg" />
+<meta property="og:image:secure_url" content="https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg" />
+<meta property="og:image:width" content="1191" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:description" content="X-Force IRIS observed ITG08, which has historically targeted POS machines in the retail and hospitality sectors, injecting malicious code into online checkout pages to steal payment card data." />
+<meta name="twitter:title" content="More_eggs, Anyone? Threat Actor ITG08 Strikes Again" />
+<meta name="twitter:image" content="https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg" />
+<script type='application/ld+json' class='yoast-schema-graph yoast-schema-graph--main'>{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://securityintelligence.com/#website","url":"https://securityintelligence.com/","name":"Security Intelligence","inLanguage":"en-US","description":"Analysis and Insight for Information Security Professionals","potentialAction":{"@type":"SearchAction","target":"https://securityintelligence.com/?s={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"ImageObject","@id":"https://securityintelligence.com/posts/more_eggs-anyone-threat-actor-itg08-strikes-again/#primaryimage","inLanguage":"en-US","url":"https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg","width":1191,"height":630,"caption":"Businessman infected with ITG08"},{"@type":"WebPage","@id":"https://securityintelligence.com/posts/more_eggs-anyone-threat-actor-itg08-strikes-again/#webpage","url":"https://securityintelligence.com/posts/more_eggs-anyone-threat-actor-itg08-strikes-again/","name":"More_eggs, Anyone? Threat Actor ITG08 Strikes Again","isPartOf":{"@id":"https://securityintelligence.com/#website"},"inLanguage":"en-US","primaryImageOfPage":{"@id":"https://securityintelligence.com/posts/more_eggs-anyone-threat-actor-itg08-strikes-again/#primaryimage"},"datePublished":"2019-08-29T10:00:52+00:00","dateModified":"2021-02-02T15:00:55+00:00","description":"X-Force IRIS observed ITG08, which has historically targeted POS machines in the retail and hospitality sectors, injecting malicious code into online checkout pages to steal payment card data."}]}</script>
+<!-- / Yoast SEO Premium plugin. -->
+
+      
+    </head>
+    <body>
+<!-- NAVIGATION -->
+<nav id="navigation" class="navigation navigation--homepage " aria-label="Security Intelligence" >
+    <div class="container">
+        <div class="row">
+
+            <!-- LOGO -->
+            <div class="navigation__brand" >
+                <a href="https://securityintelligence.com" title="Security Intelligence" tabindex="1">
+                    <amp-img  width="280" height="31" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/logo-white.svg" alt="Security Intelligence Logo">
+                        <div fallback>
+                            <h6>Security Intelligence</h6>                        </div>
+                    </amp-img>
+                </a>
+            </div>
+
+            <!-- DESKTOP MENU - HOVER -->
+            <div class="navigation__menu" onmouseleave="delete localStorage['megamenu-status']">
+                <a tabindex="2" id="nav-news" href="/news/" class="navigation__button " data-menu="megamenu__news" onclick="localStorage['megamenu-status'] = 'first-interaction';">News</a>
+                <a tabindex="3" id="nav-series" href="/series/" class="navigation__button " data-menu="megamenu__series" onclick="localStorage['megamenu-status'] = 'first-interaction';">Series</a>
+                <a tabindex="4" id="nav-topics" href="/category/topics/" class="navigation__button " data-menu="megamenu__topics" onclick="localStorage['megamenu-status'] = 'first-interaction';">Topics</a>
+                <a tabindex="5" id="nav-x-force" href="/category/x-force/" class="navigation__button " data-menu="megamenu__threat" onclick="localStorage['megamenu-status'] = 'first-interaction';">Threat Research</a>
+                <a tabindex="6" id="nav-media" href="/media/" class="navigation__button " data-menu="megamenu__podcast" onclick="localStorage['megamenu-status'] = 'first-interaction';">Podcast</a>
+                <button  aria-label="search Button" class="navigation__search" onclick="document.getElementById('search__input').focus()" on="tap:search.toggleClass(class='megamenu__open')" role="link" tabindex="-1" type="button">
+                    <amp-img tabindex="7" width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/search.svg" alt="Click to open the search bar"></amp-img>
+                </button>
+            </div>
+
+            <!-- TABLET MENU - TAP/CLICK -->
+            <div id="search-tablet" class="navigation__menu navigation__menu--tablet" tabindex="-1">
+                <button type="button" class="navigation__button " data-menu="megamenu__news">News</button>
+                <button type="button" class="navigation__button " data-menu="megamenu__series">Series</button>
+                <button type="button" class="navigation__button " data-menu="megamenu__topics" on="tap:megamenu__news.hide, megamenu__series.hide, megamenu__topics.show, megamenu__industries.hide, megamenu__threat.hide, megamenu__podcast.hide, megamenu__events.hide, megamenu__mask.show" role="link" tabindex="0">Topics</button>
+                <button type="button" class="navigation__button " data-menu="megamenu__threat" on="tap:megamenu__news.hide, megamenu__series.hide, megamenu__topics.hide, megamenu__industries.hide, megamenu__threat.show, megamenu__podcast.hide, megamenu__events.hide, megamenu__mask.show" role="link" tabindex="0">Threat Research</button>
+                <button type="button" class="navigation__button " data-menu="megamenu__podcast" on="tap:megamenu__news.hide, megamenu__series.hide, megamenu__topics.hide, megamenu__industries.hide, megamenu__threat.hide, megamenu__podcast.show, megamenu__events.hide, megamenu__mask.show" role="link" tabindex="0">Podcast</button>
+                <button type="button" aria-labelledby="search-tablet" class="navigation__search" onclick="document.getElementById('search__input').focus()" on="tap:search.toggleClass(class='megamenu__open')" role="link" tabindex="0">
+                    <amp-img width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/search.svg" alt="Search"></amp-img>
+                </button>
+            </div>
+
+            <!-- SEARCH -->
+            <form id="search" class="search " method="GET" action="/" target="_top" tabindex="-1">        
+                  <amp-autocomplete filter="prefix"  src="https://securityintelligence.com/wp-content/themes/sapphire/app/jsons/suggestions.json"  suggest-first  submit-on-enter on="select:search.submit" tabindex="-1">   
+                        <input id="search__input" 
+                              tabindex="-1"
+                              type="text" name="s" 
+                              autocomplete="on"
+                              placeholder= "What would you like to search for?"
+                              aria-label="Search"
+                              required>
+                  </amp-autocomplete > 
+                
+                <button tabindex="-1" value="submit" type="submit" class="search__submit" aria-label="Click to search" >
+                    <amp-img width="20" height="20" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/search.svg" alt="Search"></amp-img>
+                    <span>Search</span>
+                </button>
+                <button tabindex="-1" value="reset" class="search__close" type="reset" aria-labelledby="search" on="tap:search.toggleClass(class='megamenu__open')" role="link" >
+                    <amp-img width="14" height="14" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/close.svg" alt="Close"></amp-img>
+                </button>
+            </form>
+
+
+            <!-- MEGAMENU -->
+            <div id="navigation__mega"> 
+
+                <!-- NEWS -->
+                <section id="megamenu__news" class="megamenu" data-menu="nav-news" on="tap:megamenu__news.show, megamenu__mask.show" role="link" tabindex="0">
+                    <amp-list layout="responsive" width="1440" height="248" credentials="include" src="https://securityintelligence.com/wp-content/themes/sapphire/app/jsons/posts.php?quantity=4&type=ibm_news" binding="no">
+                        <template type="amp-mustache">
+                            <div class="row">
+
+                                <!-- ARTICLES -->
+                                {{#articles}}
+                                    <article class="megamenu__article">
+                                        <a href="{{permalink}}" class="megamenu__link">
+                                            <div class="megamenu__image">
+                                                <amp-img width="630" height="330" layout="responsive" src="{{image}}" alt="{{image_alt}}"></amp-img>
+                                            </div>
+                                            <h3 class="megamenu__title">{{title}}</h3>
+                                        </a>
+                                    </article>
+                                {{/articles}}
+
+                                <!-- VIEW MORE -->
+                                <a href="/news/" class="megamenu__more">
+                                    <amp-img width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/post-type-icons/news.svg" alt="News"></amp-img>
+                                    <span>View All News</span>
+                                </a>
+
+                            </div>
+                        </template>
+                    </amp-list>
+                </section>
+
+                <!-- SERIES -->
+                <section id="megamenu__series" class="megamenu" data-menu="nav-series" on="tap:megamenu__series.show, megamenu__mask.show" role="link" tabindex="0">
+                    <amp-list layout="responsive" width="1440" height="248" credentials="include" src="https://securityintelligence.com/wp-content/themes/sapphire/app/jsons/taxonomies.php?quantity=4&taxonomy=series&v=2" binding="no">
+                        <template type="amp-mustache">
+                            <div class="row">
+
+                                <!-- ARTICLES -->
+                                {{#articles}}
+                                    <article class="megamenu__article">
+                                        <a href="{{permalink}}" class="megamenu__link">
+                                            <div class="megamenu__image">
+                                                <amp-img width="630" height="330" layout="responsive" src="{{image}}" alt="{{image_alt}}"></amp-img>
+                                            </div>
+                                            <h3 class="megamenu__title">{{title}}</h3>
+                                        </a>
+                                    </article>
+                                {{/articles}}
+
+                                <!-- VIEW MORE -->
+                                <a href="/series/" class="megamenu__more">
+                                    <amp-img width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/post-type-icons/series.svg" alt="Series"></amp-img>
+                                    <span>View All Series</span>
+                                </a>
+
+                            </div>
+                        </template>
+                    </amp-list>
+                </section>
+
+                <!-- TOPICS -->
+                <section id="megamenu__topics" class="megamenu" data-menu="nav-topics" on="tap: megamenu__topics.show, megamenu__mask.show" role="link" tabindex="0">
+                    <div class="row">
+
+                        <!-- LISTS -->
+                        <div class="megamenu__list">
+                            <a href="/category/app-security/">Application Security</a>
+                            <a href="/category/artificial-intelligence/">Artificial Intelligence</a>
+                            <a href="/category/ciso-corner/">CISO</a>
+                            <a href="/category/cloud-protection/">Cloud Security</a>
+                            <a href="/category/data-protection/">Data Protection</a>
+                            <a href="/category/endpoint/">Endpoint</a>
+                        </div>
+                        <div class="megamenu__list">
+                            <a href="/category/fraud-protection/">Fraud Protection</a>
+                            <a href="/category/identity-access/">Identity & Access</a>
+                            <a href="/category/incident-response/">Incident Response</a>
+                            <a href="/category/mainframe/">Mainframe</a>
+                            <a href="/category/network/">Network</a>
+                            <a href="/category/risk-management/">Risk Management</a>
+                        </div>
+                        <div class="megamenu__list">
+                            <a href="/category/security-intelligence-analytics/">Intelligence & Analytics</a>
+                            <a href="/category/security-services/">Security Services</a>
+                            <a href="/category/threat-hunting/">Threat Hunting</a>
+                            <a href="/tag/zero-trust/">Zero Trust</a>
+                            <a href="/timeline/state-local-government-cyberattacks/">Timeline: Local Government Cyberattacks</a>
+                        </div>
+                        <div class="megamenu__list">
+                            <span>Industries</span>
+                            <a href="/category/banking-financial-services-industry/">Banking & Finance</a>
+                            <a href="/category/energy-utility-industry/">Energy & Utility</a>
+                            <a href="/category/government/">Government</a>
+                            <a href="/category/health-care-industry/">Healthcare</a>
+                            <a href="/category/retail/">Retail</a>
+                        </div>
+
+                        <!-- VIEW MORE -->
+                        <a href="/category/topics/" class="megamenu__more">
+                            <amp-img width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/post-type-icons/topics.svg" alt="Topics"></amp-img>
+                            <span>View All Topics</span>
+                        </a>
+
+                    </div>
+                </section>
+
+                <!-- THREAT RESEARCH -->
+                <section id="megamenu__threat" class="megamenu" data-menu="nav-x-force" on="tap:megamenu__threat.show, megamenu__mask.show" role="link" tabindex="0">
+                    <amp-list layout="responsive" width="1440" height="248" credentials="include" src="https://securityintelligence.com/wp-content/themes/sapphire/app/jsons/posts.php?quantity=4&category=x-force" binding="no">
+                        <template type="amp-mustache">
+                            <div class="row">
+
+                                <!-- ARTICLES -->
+                                {{#articles}}
+                                    <article class="megamenu__article">
+                                        <a href="{{permalink}}" class="megamenu__link">
+                                            <div class="megamenu__image">
+                                                <amp-img width="630" height="330" layout="responsive" src="{{image}}" alt="{{image_alt}}"></amp-img>
+                                            </div>
+                                            <h3 class="megamenu__title">{{title}}</h3>
+                                        </a>
+                                    </article>
+                                {{/articles}}
+
+                                <!-- VIEW MORE -->
+                                <a href="/category/x-force/" class="megamenu__more">
+                                    <amp-img width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/post-type-icons/threat-research.svg" alt="Threat Research"></amp-img>
+                                    <span>View More From X-Force</span>
+                                </a>
+
+                            </div>
+                        </template>
+                    </amp-list>
+                </section>
+
+                <!-- PODCAST -->
+                <section id="megamenu__podcast" class="megamenu" data-menu="nav-media" on="tap:megamenu__podcast.show, megamenu__mask.show" role="link" tabindex="0">
+                    <amp-list layout="responsive" width="1440" height="248" credentials="include" src="https://securityintelligence.com/wp-content/themes/sapphire/app/jsons/posts.php?quantity=4&type=ibm_media" binding="no">
+                        <template type="amp-mustache">
+                            <div class="row">
+
+                                <!-- ARTICLES -->
+                                {{#articles}}
+                                    <article class="megamenu__article">
+                                        <a href="{{permalink}}" class="megamenu__link">
+                                            <div class="megamenu__image">
+                                                <amp-img width="630" height="330" layout="responsive" src="{{image}}" alt="{{image_alt}}"></amp-img>
+                                            </div>
+                                            <h3 class="megamenu__title">{{title}}</h3>
+                                        </a>
+                                    </article>
+                                {{/articles}}
+
+                                <!-- VIEW MORE -->
+                                <a href="/media/" class="megamenu__more">
+                                    <amp-img width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/post-type-icons/podcast.svg" alt="Podcast"></amp-img>
+                                    <span>View All Episodes</span>
+                                </a>
+
+                            </div>
+                        </template>
+                    </amp-list>
+                </section>
+
+            </div>
+
+            <!-- MASK -->
+            <div id="megamenu__mask" class="navigation__mask  " hidden></div>
+
+            <!-- MEGAMENU SCRIPTS -->
+            <script type="text/javascript">
+
+                // DESKTOP MENU LINKS - HOVER ACTION
+                var elementList = document.querySelectorAll( '.navigation__menu .navigation__button' );
+                for (i = 0; i < elementList.length; i++) {
+
+                    elementList[i].addEventListener( 'mouseenter', function() {
+                        if ( localStorage['megamenu-status'] !== 'first-interaction' ) {
+                            var mega = document.getElementById( "navigation__mega" );
+                            var menu_elements = document.getElementById( this.dataset.menu );
+                            var mask = document.getElementById( "megamenu__mask" );
+                            menu_elements.click();
+                            mega.classList.add('amp-open');
+                            menu_elements.classList.add('amp-open');
+                            mask.classList.add('amp-open');
+                        }
+                    });
+
+                    elementList[i].addEventListener( 'mouseleave', function() {
+                        if ( localStorage['megamenu-status'] !== 'first-interaction' ) {
+                            var mega = document.getElementById( "navigation__mega" );
+                            var menu_elements = document.getElementById( this.dataset.menu );
+                            var mask = document.getElementById( "megamenu__mask" );
+                            mega.classList.remove('amp-open');
+                            menu_elements.classList.remove('amp-open');
+                            mask.classList.remove('amp-open');
+                        }
+                    });
+                }
+
+                // TABLET MENU LINKS - CLICK ACTION
+                var elementList = document.querySelectorAll( '.navigation__menu--tablet .navigation__button' );
+                for (i = 0; i < elementList.length; i++) {
+
+                    elementList[i].addEventListener( 'click', function() {
+                            var mega = document.getElementById( "navigation__mega" );
+                            var menu_elements = document.getElementById( this.dataset.menu );
+                            var mask = document.getElementById( "megamenu__mask" );
+                            menu_elements.click();
+                            mega.classList.add('amp-open');
+                            menu_elements.classList.add('amp-open');
+                            mask.classList.add('amp-open');
+                    });
+                }
+
+                // OPPENED MEGAMENU - HOVER ACTION
+                var elementList = document.querySelectorAll( '.megamenu' );
+                for (i = 0; i < elementList.length; i++) {
+
+                    elementList[i].addEventListener( 'mouseenter', function() {
+                        var mega = document.getElementById( "navigation__mega" );
+                        var nav_elements = document.getElementById( this.dataset.menu );
+                        var mask = document.getElementById( "megamenu__mask" );
+                        this.classList.add('amp-open');
+                        mega.classList.add('amp-open');
+                        mask.classList.add('amp-open');
+                        nav_elements.classList.add('amp-open');
+                    });
+
+                    elementList[i].addEventListener( 'mouseleave', function() {
+                        var mega = document.getElementById( "navigation__mega" );
+                        var nav_elements = document.getElementById( this.dataset.menu );
+                        var mask = document.getElementById( "megamenu__mask" );
+                        this.classList.remove('amp-open');
+                        mega.classList.remove('amp-open');
+                        mask.classList.remove('amp-open');
+                        nav_elements.classList.remove('amp-open');
+                    });
+                }
+
+            </script>
+
+            <!-- MOBILE ICON -->
+            <button type="button" aria-labelledby="search-tablet" class="search__mobile__icon" onclick="document.getElementById('search__input').focus()" on="tap:search.toggleClass(class='megamenu__open')" role="link" tabindex="0">
+                    <amp-img width="18" height="18" layout="fixed" src="https://securityintelligence.com/wp-content/themes/sapphire/images/search.svg" alt="Search"></amp-img>
+            </button>
+      
+            <div class="navigation__mobile-icon" on="tap:navigation__mobile.toggleVisibility, navigation__hamburguer.toggleVisibility, 
+                  navigation__close.toggleVisibility," 
+                  role="link" tabindex="0">
+                <amp-img id="navigation__hamburguer" width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/hamburguer.svg" alt="Menu"></amp-img>
+                <amp-img id="navigation__close" width="24" height="24" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/close.svg" alt="Close" hidden></amp-img>
+            </div>
+
+            <!-- MOBILE LIST -->
+            <section id="navigation__mobile" class="navigation__mobile-list" hidden>
+                  <div class="container">
+                        <a href="/news/">News</a>
+                        <a href="/series/">Series</a>
+
+                        <!-- ACCORDIONS -->
+                        <amp-accordion disable-session-states>
+                              <!-- TOPICS -->
+                              <section class="navigation__accordion">
+                                    <h2>Topics</h2>
+                                    <div class="navigation__accordion-content">
+                                          <div class="row">
+                                                <a href="/category/topics/">All Categories</a>
+                                                <a href="/category/app-security/">Application Security</a>
+                                                <a href="/category/identity-access/">Identity & Access</a>
+                                                <a href="/category/artificial-intelligence/">Artificial Intelligence</a>
+                                                <a href="/category/incident-response/">Incident Response</a>
+                                                <a href="/category/ciso-corner/">CISO</a>
+                                                <a href="/category/mainframe/">Mainframe</a>
+                                                <a href="/category/cloud-protection/">Cloud Security</a>
+                                                <a href="/category/mobile-security-podcasts/">Mobile Security</a>
+                                                <a href="/category/data-protection/">Data Protection</a>
+                                                <a href="/category/network/">Network</a>
+                                                <a href="/category/endpoint/">Endpoint</a>
+                                                <a href="/category/risk-management/">Risk Management</a>
+                                                <a href="/category/fraud-protection/">Fraud Protection</a>
+                                                <a href="/category/threat-hunting/">Threat Hunting</a>
+                                                <a href="/category/security-services/">Security Services</a>
+                                                <a href="/category/security-intelligence-analytics/">Security Intelligence & Analytics</a>
+                                          </div>
+                                          <div class="row">
+                                                <span>Industries</span>
+                                                <a href="/category/industries/banking-financial-services-industry/">Banking & Finance</a>
+                                                <a href="/category/energy-utility-industry/">Energy & Utility</a>
+                                                <a href="/category/government/">Government</a>
+                                                <a href="/category/health-care-industry/">Healthcare</a>
+                                                <a href="/category/retail-industry/">Retail</a>
+                                          </div>
+                                    </div>
+                              </section>
+                        </amp-accordion>
+
+                <a href="/category/x-force/">Threat Research</a>
+                <a href="/media/">Podcast</a>
+            </section>
+        </div>
+    </div>
+</nav>
+
+<!-- BACK TO TOP -->
+<div class="scroll-to-top ">
+
+    <!-- TOP VIEWER TRIGGER -->
+    <div id="top-viewer" class="scroll-to-top__viewer"></div>
+
+    <!-- BUTTON -->
+    <div class="sticky" style="height: 100%;">
+            
+            <button     id="scrollToTopButton" 
+                        on="tap:top-viewer.scrollTo(duration=200, position=bottom)" 
+                        class="tap_target ">
+                        
+                        <div class="scroll-to-top__button">
+                              <amp-img width="12" height="16" layout="fixed" alt="Back-to-top" src="https://securityintelligence.com/wp-content/themes/sapphire/images/scroll-to-top.svg"></amp-img>
+                        </div>
+            </button>
+
+    </div>
+
+    <!-- SCROLL SHOW/HIDE ANIMATION -->
+    <amp-animation id="showAnim" layout="nodisplay">
+        <script type="application/json">
+            {
+                "duration": "200ms",
+                "fill": "both",
+                "iterations": "1",
+                "direction": "alternate",
+                "animations": [{
+                    "selector": "#scrollToTopButton",
+                    "keyframes": [{
+                        "opacity": "1",
+                        "visibility": "visible"
+                    }]
+                }]
+            }
+        </script>
+    </amp-animation>
+    <amp-animation id="hideAnim" layout="nodisplay">
+        <script type="application/json">
+            {
+                "duration": "200ms",
+                "fill": "both",
+                "iterations": "1",
+                "direction": "alternate",
+                "animations": [{
+                    "selector": "#scrollToTopButton",
+                    "keyframes": [{
+                        "opacity": "0",
+                        "visibility": "hidden"
+                    }]
+                }]
+            }
+        </script>
+    </amp-animation>
+</div>
+
+<!-- CHECK PAGE POSITION -->
+<amp-position-observer target="top-viewer" intersection-ratios="0" on="enter:hideAnim.start; exit:showAnim.start" layout="nodisplay"></amp-position-observer>
+
+
+    <!-- PROGRESS BAR -->
+    <div id="progressbar">
+    <amp-animation id="progress-animation" layout="nodisplay">
+        <script type="application/json">
+            {
+                "duration": "1s",
+                "iterations": "1",
+                "fill": "both",
+                "direction": "alternate",
+                "animations": [{
+                    "selector": "#progressbar",
+                    "keyframes": [{
+                        "transform": "translateX(0)"
+                    }]
+                }]
+            }
+        </script>
+    </amp-animation>
+</div>
+<amp-position-observer target="single__height-calc" intersection-ratios="0" viewport-margins="25vh 75vh" on="scroll:progress-animation.seekTo(percent=event.percent)" layout="nodisplay"></amp-position-observer>
+
+    <!-- COUNT PAGE VIEWS -->
+    <pre></pre>
+    <!-- MAIN -->
+    <main>   
+        <div class="container">
+            <div class="row">
+
+                <!-- SCHEMA -->
+                <script id="post-schema" type="application/ld+json">
+                    {
+                        "@context": "http://schema.org",
+                        "@type": "Article",
+                        "headline": "More_eggs, Anyone? Threat Actor ITG08 Strikes Again",
+                        "mainEntityOfPage": "https://securityintelligence.com/posts/more_eggs-anyone-threat-actor-itg08-strikes-again/",
+                        "author": {
+                            "@type": "Person",
+                            "name": "Ole Villadsen"
+                        },
+                        "datePublished": "2019-08-29T06:00:52-04:00",
+                        "dateModified": "2021-02-02T10:00:55-05:00",
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "Security Intelligence",
+                            "logo":{
+                                "@type": "ImageObject",
+                                "url": "https://securityintelligence.com/wp-content/themes/security-intelligence/assets/img/logo.png"
+                            }
+                        },
+                        "image": [ "https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg" ],
+                        "articleBody": "&lt;a href=&quot;https://www.ibm.com/security/services/ibm-x-force-incident-response-and-intelligence&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;IBM X-Force Incident Response and Intelligence Services (IRIS)&lt;/a&gt; responds to security incidents across the globe. During a recent incident response investigation, our team identified new attacks by the financially motivated attack group ITG08, also known as &lt;a href=&quot;https://attack.mitre.org/groups/G0037/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;FIN6&lt;/a&gt;.
+
+ITG08 is an organized cybercrime gang that has been active since 2015, mostly targeting point-of-sale (POS) machines in brick-and-mortar retailers and companies in the hospitality sector in the U.S. and Europe. More recently, the group has been observed targeting e-commerce environments by injecting malicious code into online checkout pages of compromised websites — a technique known as online skimming — thereby stealing payment card data transmitted to the vendor by unsuspecting customers.
+&lt;p class=&quot;left&quot;&gt;Based on our investigation and analysis of its adversarial tactics, techniques and procedures (TTPs), we believe ITG08 is actively attacking multinational organizations, targeting specific employees with spear phishing emails advertising fake job advertisements and repeatedly deploying the &lt;a href=&quot;https://attack.mitre.org/software/S0284/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;More_eggs&lt;/a&gt; JScript backdoor malware (aka Terra Loader, SpicyOmelette). This tool, a TTP observed in ITG08 attacks since 2018, is sold on the dark web by an underground malware-as-a-service (MaaS) provider. Attackers use it to create, expand and cement their foothold in compromised environments. Past campaigns by ITG08 using the More_eggs backdoor were last &lt;a href=&quot;https://usa.visa.com/dam/VCOM/global/support-legal/documents/fin6-cybercrime-group-expands-threat-To-ecommerce-merchants.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;reported in February 2019&lt;/a&gt;.&lt;/p&gt;
+In the campaign we investigated, the attackers employed additional TTPs historically associated with ITG08, including the use of Windows Management Instrumentation (WMI) to automate the remote execution of PowerShell scripts, PowerShell commands with base64 encoding, and &lt;a href=&quot;https://www.metasploit.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Metasploit&lt;/a&gt; and PowerShell to move laterally and deploy malware. Lastly, the attackers used Comodo code-signing certificates several times during the course of the campaign. Many of the above TTPs are not unique to ITG08, but collectively, and with the use of More_eggs, strengthen the link to this group.
+
+Let&#039;s take a closer look at ITG08&#039;s TTPs that are relevant to the campaign we investigated, starting with its spear phishing and intrusion tactics and covering information on its use of the More_eggs backdoor. Please note that &lt;a href=&quot;https://usa.visa.com/dam/VCOM/global/support-legal/documents/fin6-cybercrime-group-expands-threat-To-ecommerce-merchants.pdf&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Visa&lt;/a&gt; has attributed the use of this backdoor to FIN6 in attacks that took place in 2018. Further linking the activity with the same threat actor, several of the network indicators and TTPs we encountered in this case — including the use of fake job advertisements as a lure in spear phishing — overlap with those reported earlier in 2019 by both Visa and &lt;a href=&quot;https://www.proofpoint.com/us/threat-insight/post/fake-jobs-campaigns-delivering-moreeggs-backdoor-fake-job-offers&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Proofpoint&lt;/a&gt; researchers.
+&lt;h2 class=&quot;&quot;&gt;Analysis of the Intrusion&lt;/h2&gt;
+ITG08&#039;s TTPs in compromising targeted organizations follow the typical &lt;a href=&quot;https://securityintelligence.com/how-the-ibm-x-force-iris-cyberattack-framework-helps-security-teams-reduce-risk-at-all-levels/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;framework for APT attacks&lt;/a&gt;. The following sections go over the steps taken by the attackers to gain an initial foothold and persist on the victimized organization&#039;s networks.
+&lt;h3 class=&quot;&quot;&gt;Initial Compromise&lt;/h3&gt;
+To gain access to victim environments, the threat actor began by targeting handpicked employees using LinkedIn messaging and email, advertising fake jobs to lure recipients into checking into the supposed offers. In one case, we uncovered evidence indicating that the attacker had established communication with a victim via email and convinced them to click on a Google Drive URL purporting to contain an attractive job advert. Once clicked, the URL displayed the message, &quot;Online preview is not available,&quot; then presented a second URL leading to a compromised or rogue domain, where the victim could download the payload under the guise of a job description:
+&lt;p align=&quot;center&quot;&gt;&lt;img title=&quot;figure 1: link provided in spear phishing email to an employee&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-1-more_eggs-blog.png&quot; alt=&quot;Figure 1: Link provided in spear phishing email to an employee&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 1: Link provided in spear phishing email to an employee&lt;/em&gt;&lt;/p&gt;
+That URL, in turn, downloaded a ZIP file containing a malicious Windows Script File (WSF) that initiated the infection routine of the More_eggs backdoor:
+&lt;p align=&quot;center&quot;&gt;&lt;img title=&quot;figure 2: final landing page that downloads a malicious file&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-2-more_eggs-blog.png&quot; alt=&quot;Figure 2: Final landing page that downloads a malicious file&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 2: Final landing page that downloads a malicious file&lt;/em&gt;&lt;/p&gt;
+Based on file system artifacts examined during our investigation, the ZIP file and WSF files were deleted upon a successful malware infection, likely in an attempt to prevent researchers from recovering the original files from the filesystem. The filesystem, however, contained evidence of a nonmalicious decoy document dropped to the disk drive during the spear phishing attacks.
+&lt;h3 class=&quot;&quot;&gt;Gaining a Foothold&lt;/h3&gt;
+The spear phishing attacks unfortunately led to initial compromise and the installation of the More_eggs JScript backdoor, which established a reverse shell connection to the attacker&#039;s command-and-control (C&amp;C) infrastructure. Additional capabilities of the More_eggs malware include the download and execution of files and scripts and running commands using cmd.exe.
+
+X-Force IRIS determined that the More_eggs backdoor later downloaded additional files, including a signed binary shellcode loader and a signed Dynamic Link Library (DLL), as described below, to create a reverse shell and connect to a remote host. The shellcode loader was observed on one infected device as &lt;em&gt;updater.exe&lt;/em&gt; with the Metasploit-style service name &lt;em&gt;APTYnDS1ABEuUHEA&lt;/em&gt;, indicating that it was installed as a service.
+&lt;h3 class=&quot;&quot;&gt;Reconnaissance, Lateral Movement and Privilege Escalation&lt;/h3&gt;
+Once the attackers established a foothold on the network, they employed WMI and PowerShell techniques to perform network reconnaissance and move laterally within the environment. This type of method, called living off the land, can often blend with legitimate system administration activities, which can make it challenging for security controls to detect.
+
+The attackers used this technique to remotely install a Metasploit reverse TCP stager on select systems, subsequently spawning a Meterpreter session and &lt;a href=&quot;https://www.csoonline.com/article/3353416/what-is-mimikatz-and-how-to-defend-against-this-password-stealing-tool.html&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Mimikatz&lt;/a&gt;. Meterpreter is a payload component in the Metasploit Framework that uses in-memory DLL injection, which can lead to a compromise by malware or any malicious code/commands. Mimikatz is a post-exploitation tool that allows attackers to extract credentials from volatile memory. Stolen credentials are usually leveraged to facilitate privilege escalation and further lateral movement through the compromised environment.
+
+Once the Metasploit reverse TCP stager executed, it downloaded and loaded a second stage Meterpreter DLL into memory, allowing the attacker to spawn a Meterpreter session via a handler and initiate the loading of extensions, such as Mimikatz. In addition to the More_eggs malware, the attacker leveraged in-memory attacks by injecting malicious code, in this case Mimikatz, into legitimate system processes.
+&lt;h3 class=&quot;&quot;&gt;Establishing Persistence&lt;/h3&gt;
+To cement their foothold and add persistence throughout the compromised environment, X-Force IRIS uncovered evidence that the attacker had selected several additional devices on which to install the More_eggs backdoor, creating redundancy in ways to get back into the network. ITG08 remotely connected to these devices using PowerShell and WMI and downloaded and executed a DLL file, subsequently installing More_eggs on the device without dropping the nonmalicious decoy document.
+&lt;h2 class=&quot;&quot;&gt;More_eggs: Malware Analysis&lt;/h2&gt;
+&lt;h3 class=&quot;&quot;&gt;ITG08 Leveraging a Malware-as-a-Service Provider&lt;/h3&gt;
+A recently rising attack tool in ITG08 campaigns has been the More_eggs JScript backdoor. But while it was recently identified with ITG08 activity, the More_eggs backdoor is apparently developed and sold through an underground &lt;a href=&quot;https://medium.com/@quoscient/golden-chickens-uncovering-a-malware-as-a-service-maas-provider-and-two-new-threat-actors-using-61cf0cb87648&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;MaaS provider&lt;/a&gt;. This vendor not only supplies the backdoor malware, but also offers related technical services, such as preparing the network infrastructure to download More_eggs-related files and furnishing resources for C&amp;C purposes.
+
+In addition to More_eggs, the same underground vendor is also responsible for producing the signed DLL described below, which creates a reverse shell (ReverseShell Executable). We based this assessment on code similarities between the DLL and other samples created by the same vendor, including the DLL that drops the More_eggs backdoor.
+&lt;p align=&quot;center&quot;&gt;&lt;img title=&quot;proofpoint report&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/si-moreeggs-chart.jpg&quot; alt=&quot;Network indicators diagram&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 3: Network indicators revealing the use of an underground MaaS vendor selling More_eggs and malicious infrastructure services&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 class=&quot;&quot;&gt;The More_eggs Dropper DLL&lt;/h3&gt;
+After a successful phishing attack in which users have opened emails and browsed to malicious links, ITG08 attackers install the More_eggs JScript backdoor on user devices alongside several other malware components.
+
+The process begins with the consistent execution of a malicious DLL using the legitimate &lt;em&gt;regsvr32.exe&lt;/em&gt; Windows Utility. Once executed, the DLL is deleted from the system and its components are dropped to the system.
+
+Before being deleted, the DLL executes a string decoding routine that is designed to execute for about a minute, spiking central processing unit (CPU) usage for the &lt;em&gt;regsvr32.exe&lt;/em&gt; process. Once the strings are decoded, the More_eggs components are decrypted, dropped to the system
+&lt;code&gt;(normally in the %APPDATA%\Microsoft\ or %ProgramData%\Microsoft\ directories)&lt;/code&gt; and executed.
+
+The observed strings appearing like HEX-encoded strings are shown below:
+
+&lt;img title=&quot;figure 4: sample encoded and decoded strings&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-4-more_eggs-blog.png&quot; alt=&quot;Figure 4: Sample Encoded and Decoded Strings&quot; /&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 4: Sample encoded and decoded strings&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 class=&quot;&quot;&gt;More_eggs Components&lt;/h3&gt;
+The More_eggs dropper DLL creates the following components on the infected device (further detail on each component in the chart follows in the next section):
+&lt;table border=&quot;0&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Sample File Name&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;Description&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5795C3AC7F57F.txt&lt;/td&gt;
+&lt;td&gt;An XSL stylesheet file that contains an obfuscated More_eggs JScript loader.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;625222E09B6CD028459.txt&lt;/td&gt;
+&lt;td&gt;Benign XML document occasionally used as a parameter when executing the &lt;em&gt;msxsl.exe &lt;/em&gt;utility.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p class=&quot;&quot;&gt;27603.docx&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;Benign Word Document decoy. The Decoy was not always dropped in the executions of the DLLs analyzed.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A70613FF7F5DE98.txt&lt;/td&gt;
+&lt;td&gt;Obfuscated script file that executes &lt;em&gt;msxsl.exe&lt;/em&gt; with the appropriate parameters as arguments. Once the script executes, the More_eggs JScript is loaded into the memory space of &lt;em&gt;msxsl.exe&lt;/em&gt;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;msxsl.exe&lt;/td&gt;
+&lt;td&gt;Benign Microsoft Command Line Transformation Utility known to be used to execute malicious code and bypass application whitelisting.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 5: Components created by DLL&lt;/em&gt;&lt;/p&gt;
+&lt;em&gt;msxsl.exe&lt;/em&gt; is executed by the script file &lt;em&gt;A70613FF7F5DE98.txt&lt;/em&gt;, which is obfuscated as shown below:
+
+&lt;img title=&quot;figure 6: obfuscated script file a70613ff7f5de98.txt&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-5-more_eggs-blog.png&quot; alt=&quot;Figure 6: Obfuscated Script File A70613FF7F5DE98.txt&quot; /&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 6: Obfuscated script file&lt;/em&gt; A70613FF7F5DE98.txt&lt;/p&gt;
+The use of &lt;em&gt;msxsl.exe&lt;/em&gt; is a known tactic to execute malicious code and bypass application whitelisting. The deobfuscated command is built as follows:
+
+&lt;em&gt;&quot;C:\Users\&lt;username&gt;\AppData\Roaming\Microsoft\msxsl.exe&quot; &quot;C:\Users\&lt;username&gt;\AppData\Roaming\Microsoft\625222E09B6CD028459.txt&quot; &quot;C:\Users\&lt;username&gt;\AppData\Roaming\Microsoft\5795C3AC7F57F.txt&quot;&lt;/em&gt;
+
+Once the above command is executed, the More_eggs JScript loader &lt;em&gt;5795C3AC7F57F.txt&lt;/em&gt; will deobfuscate the embedded More_eggs JScript. A sample loader is shown below.
+
+The start of the XSL file:
+
+&lt;img title=&quot;figure 7: jscript loader sample&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-6-more_eggs-blog.png&quot; alt=&quot;Figure 7: JScript loader sample&quot; /&gt;
+
+&lt;em&gt;Figure 7: JScript loader sample&lt;/em&gt;
+
+The end of the XSL file:
+
+&lt;img title=&quot;figure 7: jscript loader sample&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-7-more_eggs-blog.png&quot; alt=&quot;Figure 7: JScript loader sample&quot; /&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 8: JScript loader sample&lt;/em&gt;&lt;/p&gt;
+The &quot;select&quot; value within the template tag points to the function in the &lt;em&gt;msxsl:script&lt;/em&gt; tag, which will execute when the &lt;em&gt;msxsl.exe&lt;/em&gt; command is run. The JScript loader file is highly obfuscated and decodes the More_eggs backdoor in a variety of ways, including RC4 decryption.
+&lt;h3 class=&quot;&quot;&gt;Analyzing the More_eggs JScript Backdoor&lt;/h3&gt;
+The analysis in this section details the functionality of More_eggs backdoor samples specific to this investigation, so please bear in mind that the same malware can be deployed differently in other campaigns and by alternate attackers.
+
+The core functionality of the samples analyzed in this campaign remained the same as described by previous researchers. We aimed to add additional detail about the inner workings of the malware, including its C&amp;C communications flow, its filesystem activity, and some encryption and encoding schemes used by the samples we analyzed.
+
+The More_eggs backdoor is executed entirely in memory, never touching the filesystem in an unencrypted state. Notable configuration data is hardcoded and includes its C&amp;C server address, malware version number and an Rkey value, which is believed to identify campaign perpetrators to the vendor:
+&lt;ul&gt;
+ 	&lt;li&gt;The Rkey value is appended with a two-byte, pseudorandomly generated string used to construct an RC4 key.&lt;/li&gt;
+ 	&lt;li&gt;The Rkey variable is part of the ciphering key used to encrypt C&amp;C communications.&lt;/li&gt;
+ 	&lt;li&gt;The RC4 key is then used to encrypt data, which is additionally basE91 encoded and sent back to the C&amp;C. BasE91 is a method for encoding binary as ASCII characters.&lt;/li&gt;
+&lt;/ul&gt;
+Upon initial execution, the backdoor checks its environment to determine whether it is running with administrative or user privileges, and if proper components are present on the system. To check the user&#039;s privilege level on the newly infected device, it attempts to read the registry key &lt;em&gt;HKEY_USERS\S-1-5-19\Environment\TEMP&lt;/em&gt;; a successful read means it is running with administrative privileges, and the backdoor builds the path &lt;em&gt;%ProgramData%\Microsoft&lt;/em&gt;. If it is not running with administrative privileges, the path &lt;em&gt;%AppData%\Microsoft&lt;/em&gt; is used.
+
+The More_eggs backdoor obtains the username and computer name of the infected device, and if running with privileges, it reads the following registry key: &lt;em&gt;HKEY_LOCAL_MACHINE\Software\Microsoft\Notepad\&lt;computername&gt;&lt;/em&gt;. If not running with privileges, it reads the key &lt;em&gt;HKEY_CURRENT_USER\SOFTWARE\Microsoft\Notepad\&lt;username&gt;&lt;/em&gt; instead.
+
+The data in these Windows registry keys is expected to be a comma-separated list of files with no extension. The .txt extension is appended to the name by the backdoor. If these files exist along with &lt;em&gt;msxsl.exe&lt;/em&gt; in the proper location, either &lt;em&gt;%ProgramData%\Microsoft&lt;/em&gt; or &lt;em&gt;%AppData%\Microsoft&lt;/em&gt;, the malware&#039;s execution continues.
+
+Once the environment is checked, the backdoor will check for network connectivity by sending an HTTP GET request to &lt;em&gt;hxxp://www.w3[.]org/1999/XSL/Format&lt;/em&gt;, ensuring the response is &quot;This is another XSL namespace\n.&quot;
+&lt;table border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign=&quot;top&quot;&gt;&lt;em&gt;GET /1999/XSL/Format HTTP/1.1&lt;/em&gt;&lt;em&gt;
+Accept: */*
+Accept-Language: en-us
+UA-CPU: [CPU version]
+Accept-Encoding: gzip, deflate
+User-Agent: [User agent string here]
+Host: www.w3.org
+Connection: Keep-Alive,&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 9: HTTP GET request&lt;/em&gt;&lt;/p&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;If the connection is successful, the backdoor builds a string formatted with &quot;|&lt;random-value&gt;|&quot;. The random value is between 8 and 32 bytes long, RC4-encrypted, basE91 encoded, and subsequently sent to the C&amp;C in an HTTP POST request.&lt;/p&gt;
+The RC4 key used is generated from the Rkey variable value:
+&lt;table border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign=&quot;top&quot;&gt;
+&lt;p class=&quot;&quot;&gt;&lt;em&gt;POST HTTP/1.1&lt;/em&gt;
+&lt;em&gt;Connection: Keep-Alive&lt;/em&gt;
+&lt;em&gt;Accept: */*&lt;/em&gt;
+&lt;em&gt;Accept-Language: en-us&lt;/em&gt;
+&lt;em&gt;User-Agent: [User agent string]&lt;/em&gt;
+&lt;em&gt;Content-Length: 36&lt;/em&gt;
+&lt;em&gt;Host: &lt;/em&gt;
+&lt;em&gt;6R+#9fWCy)htQSo4:H9&amp;JSMTx|X[OEKj^gXE&lt;/em&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 10: HTTP POST request&lt;/em&gt;&lt;/p&gt;
+The C&amp;C response is expected to be between 8 and 32 bytes long, nothing is done with the server response. The random value acts as a handshake between the backdoor and the C&amp;C, and during failure of any of the above, More_eggs sends an HTTP GET request to 8.8.8.8 with a pseudorandom 8 to 32-byte URI.
+&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;em&gt;GET /avIRga9sfvjGj3HCPGlgzaBXOof3u7wq HTTP/1.1&lt;/em&gt;
+&lt;em&gt;Connection: Keep-Alive&lt;/em&gt;
+&lt;em&gt;Accept: */*&lt;/em&gt;
+&lt;em&gt;Accept-Language: en-us&lt;/em&gt;
+&lt;em&gt;User-Agent: [User agent string]&lt;/em&gt;
+&lt;em&gt;Host: 8.8.8.8&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 11: HTTP GET request to 8.8.8.8&lt;/em&gt;&lt;/p&gt;
+If the handshake is successful, the backdoor proceeds to collect system information from the infected device using a series of WMIC commands.
+&lt;table cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td valign=&quot;top&quot;&gt;&lt;em&gt;&quot;%comspec% /c wmic path win32_Operatingsystem get SerialNumber /FORMAT:Textvaluelist | findstr /R /C:\&quot;SerialNumber=\&quot; &gt;&lt;/em&gt;
+&lt;em&gt;\&quot;C:\\Users\\mal_re\\AppData\\Local\\Temp\\12025.txt\&quot; &amp; vol %HOMEDRIVE% &gt;&lt;/em&gt;
+&lt;em&gt;\&quot;C:\\Users\\mal_re\\AppData\\Local\\Temp\\50573.txt\&quot; &amp; wmic csproduct get Name /FORMAT:Textvaluelist | findstr /R /C:\&quot;Name=\&quot; &gt;&lt;/em&gt;
+&lt;em&gt;\&quot;C:\\Users\\mal_re\\AppData\\Local\\Temp\\58678.txt\&quot; &amp; tasklist /FO CSV /NH &gt;&lt;/em&gt;
+&lt;em&gt;\&quot;C:\\Users\\mal_re\\AppData\\Local\\Temp\\39054.txt\&quot; &amp; ver &gt;&lt;/em&gt;
+&lt;em&gt;\&quot;C:\\Users\\mal_re\\AppData\\Local\\Temp\\28535.txt\&quot; &amp; wmic os get ProductType /FORMAT:Textvaluelist | findstr /R /C:\&quot;ProductType=\&quot; &gt;&lt;/em&gt;
+&lt;em&gt;\&quot;C:\\Users\\mal_re\\AppData\\Local\\Temp\\4140.txt\&quot; &amp; ipconfig | findstr /R /C:\&quot;IPv4 Address\&quot; &gt; \&quot;C:\\Users\\mal_re\\AppData\\Local\\Temp\\65390.txt\&quot;&quot;&lt;/em&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p class=&quot;&quot;&gt;&lt;em&gt;Figure 12: System information collection&lt;/em&gt;&lt;/p&gt;
+The infected device&#039;s system information is written to several &lt;em&gt;%Temp%\&lt;random-filenames&gt;.txt&lt;/em&gt; files. The contents of the files are read and then the files themselves are deleted.
+
+The More_eggs backdoor accepts the following commands from its remote operator:
+&lt;table border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p class=&quot;&quot;&gt;&lt;strong&gt;Command&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p class=&quot;&quot;&gt;&lt;strong&gt;Description&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;d&amp;exec&lt;/td&gt;
+&lt;td&gt;Download and execute an executable (.exe or .dll).&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;more_eggs&lt;/td&gt;
+&lt;td&gt;Delete the current More_eggs and replace it.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Gtfo&lt;/td&gt;
+&lt;td&gt;Uninstall activity.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;more_onion&lt;/td&gt;
+&lt;td&gt;Execute a script.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;via_c&lt;/td&gt;
+&lt;td&gt;Run a command using &quot;cmd.exe /C&quot;.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 13: More_eggs commands&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 class=&quot;&quot;&gt;Meterpreter Reverse TCP Stagers&lt;/h3&gt;
+Beyond using More_eggs as a backdoor, the attackers in this campaign also used offensive security tools and PowerShell scripts to carry out the different stages of the attack.
+
+The PowerShell scripts analyzed during our investigation contained Metasploit &lt;em&gt;Reverse TCP&lt;/em&gt; stagers. These stagers were used to execute shellcode that connected back to an attacker&#039;s server and injected Meterpreter components, such as Mimikatz, into the memory space of legitimate processes. After injecting Meterpreter into memory, the attacker had complete control of the infected device.
+
+The reverse TCP PowerShell stagers functioned as follows:
+&lt;ol&gt;
+ 	&lt;li&gt;The reverse TCP PowerShell stagers were obfuscated with base64 encoding and GZip compression. This encoding scheme is standard for Meterpreter PowerShell stagers. The original command contained a base64-encoded loader script.&lt;/li&gt;
+ 	&lt;li&gt;The loader script base64 decodes, Gzip decompresses and executes a Metasploit PowerShell reflection payload in memory.&lt;/li&gt;
+ 	&lt;li&gt;The reflection payload base64 decodes a Meterpreter reverse TCP shellcode, injects it into memory using .NET reflection methods and executes the decoded shellcode.&lt;/li&gt;
+ 	&lt;li&gt;The shellcode connects back to the attacker&#039;s server. Meterpreter components, such as the core module and &lt;em&gt;metsvr.dll&lt;/em&gt;, and extensions, such as Mimikatz, are injected into the memory space of a legitimate process.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;img style=&quot;float: left; margin: 8px 20px 8px 0px;&quot; title=&quot;figure 13: original command&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-8-more_eggs-blog.png&quot; alt=&quot;Figure 13: Original Command&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt; &lt;/em&gt;&lt;/p&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 14: Original command&lt;/em&gt;&lt;/p&gt;
+&lt;img title=&quot;figure 14: decoded loader&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-9-more_eggs-blog.png&quot; alt=&quot;Figure 14: Decoded Loader&quot; /&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 15: Decoded loader&lt;/em&gt;&lt;/p&gt;
+&lt;img title=&quot;figure 15: decoded reflection payload&quot; src=&quot;https://securityintelligence.com/wp-content/uploads/2019/08/picture-10-more_eggs-blog.png&quot; alt=&quot;Figure 15: Decoded Reflection Payload&quot; /&gt;
+&lt;p class=&quot;left&quot; align=&quot;left&quot;&gt;&lt;em&gt;Figure 16: Decoded reflection payload&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3&gt;Metasploit Shellcode Loader&lt;/h3&gt;
+As our analysis continued, X-Force IRIS found a UPX-packed Metasploit shellcode loader (&lt;em&gt;49340.txt&lt;/em&gt;) during the forensic investigation of compromised devices. This loader attempted to masquerade as the Apache Bench application and notably contained metadata and project paths (.PDB), indicating that it may be attempting to masquerade as other applications as well, a rather typical behavior for malicious binaries.
+
+The shellcode was loaded into memory and designed to receive an RC4-encrypted buffer, which was decrypted and executed in memory. The sample also contained a Comodo code-signing certificate issued to &quot;MAHTEM LTD,&quot; which we believe is one of a number of &lt;a href=&quot;https://securityintelligence.com/certificates-as-a-service-code-signing-certs-become-popular-cybercrime-commodity/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;fake companies established to purchase the certificates&lt;/a&gt;.
+
+The sample we analyzed further contained five binary entries in a resource named &quot;REGISTRY&quot; — 35, 224, 409, 3908 and 4994 — each containing some obfuscated shellcode.
+
+Once loaded into memory, the shellcode connected back to a remote host, receiving 4 bytes in return. Those were XORed with the string &lt;em&gt;0xad350bdd&lt;/em&gt; and had &lt;em&gt;0x100&lt;/em&gt; added to it. This value was then used as the size specification for the next received buffer, which was RC4-decrypted with the resulting 16-byte key and executed in memory.
+&lt;h3&gt;A ReverseShell Executable&lt;/h3&gt;
+Yet another tool in the attackers&#039; arsenal for this campaign was a DLL backdoor executable that X-Force IRIS found during the investigation. When executed via its &lt;em&gt;DllRegisterServer&lt;/em&gt; export function, the DLL connected to a remote host on port 443 and created a reverse shell. In this investigation, the DLL connected to 185[.]204[.]2[.]182 and contained a Comodo code-signing certificate issued to &quot;D Bacte Ltd.&quot;
+&lt;h2 class=&quot;&quot;&gt;ITG08 Attacks Organizations for Financial Gain&lt;/h2&gt;
+ITG08 has been around for over four years now. Its attacks are financially motivated, sophisticated and persistent. The group historically has specialized in stealing payment card data from POS machines and has more recently expanded operations to target card-not-present data from online transactions. To follow information about ITG08 as it emerges, please join us on &lt;a href=&quot;https://exchange.xforce.ibmcloud.com/#/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;X-Force Exchange&lt;/a&gt;.
+&lt;h2&gt;Mitigation Tips&lt;/h2&gt;
+Effective network defense and threat intelligence rely on multiple factors, such as knowing the network&#039;s attack surface, understanding the threat actor&#039;s motivations and TTPs, and the skill and knowledge of the security team that enable it to identify malicious behavior.
+
+IBM X-Force IRIS has gained insight into ITG08&#039;s intrusion methods, ability to navigate laterally, use of custom and open-source tools, and typical persistence mechanisms. Our team has provided the following mitigation tips for defenders who are looking out for attacks by this group.
+&lt;h3 class=&quot;&quot;&gt;Educate Users About Email&lt;/h3&gt;
+X-Force IRIS determined that the ITG08 compromise was the result of a phishing email in which the initial compromise was made possible by a victim who clicked on a malicious attachment. Role-based security awareness training should be at the top of the list of any organization&#039;s mitigation strategies to help employees recognize phishing emails and possible malicious attachments, and to educate them about their security responsibilities with regards to reporting potentially malicious emails.
+&lt;h3 class=&quot;&quot;&gt;Search for Known IoCs&lt;/h3&gt;
+After the phishing email resulted in a successful infiltration, ITG08 used the More_eggs backdoor to gain a foothold and infect additional devices. More_eggs-related artifacts such as the DLL dropper have extremely low antivirus (AV) detection rates, based on analysis conducted via VirusTotal (VT). For example, a More_eggs DLL dropper submitted to VT on April 18, 2019 had a detection rate of only 5 percent.
+
+To detect this malware, critical events should be analyzed based on the attacker&#039;s patterns. SYSMON or an endpoint detection and response tool should be configured to detect the combined use of &lt;em&gt;msxsl.exe&lt;/em&gt; and WMI. In addition, Registry keys and scheduled tasks should be analyzed for indications of persistence. The network should also be scrutinized for any privilege escalation events and any signs of internal reconnaissance. YARA signatures should also be created to assist security personnel in detecting the More_eggs malware. YARA signatures for X-Force IRIS premium subscribers can be provided on request.
+&lt;h3 class=&quot;&quot;&gt;Analyze Logs&lt;/h3&gt;
+Other mitigation strategies against this type of activity include analyzing host-based firewall logs for internal pivoting, unauthorized listening executables and scanning activity. In addition, configuring PowerShell script logging and identifying any obfuscation will assist in mitigating ITG08&#039;s use of PowerShell to conduct malicious activity. ITG08 has also demonstrated the use of stolen credentials; therefore, multiple failed login attempts and/or unauthorized account usage may be indicators of ITG08 activity on a network.
+&lt;h3 class=&quot;&quot;&gt;Monitor for Remote Services&lt;/h3&gt;
+X-Force IRIS also recommends taking steps to prevent lateral movement. Although lateral movement can be difficult to detect, a spike in usage of Windows tools, such as remote administration services (PowerShell Remoting and WMI), should be monitored. Detection and monitoring capabilities should be in place and network defenders should be familiar with what is considered a &quot;normal&quot; baseline on their user network. Without a baseline of &quot;normal&quot; activity, the use of Windows tools may blend in with legitimate activity, which can allow attackers to continue to live off the land unnoticed.
+&lt;h3 class=&quot;&quot;&gt;Rethink Network Architecture&lt;/h3&gt;
+Security defenders should examine network architecture to see how the network is segregated, what Windows tools are restricted or used by administrators, and what alerts are set up to warrant personnel review. Least privilege principals should be implemented for all users on the network, and a strong password management system with two-factor authentication and password expiration dates should be deployed as an additional layer of security.
+&lt;h3&gt;Pen Test!&lt;/h3&gt;
+Organizations looking to limit the ways by which attackers can infiltrate their networks should be mindful of ongoing patching of vulnerabilities. After reaching maturity on the vulnerability assessment front, mitigation strategies should also include &lt;a href=&quot;https://www.ibm.com/security/services/offensive-security-services&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;penetration testing&lt;/a&gt; to find unknown vulnerabilities related to people, software and hardware used on the organization&#039;s critical assets and externally facing resources.
+&lt;h3&gt;Incident Response&lt;/h3&gt;
+Nowadays, no organization can be exempt from planning and drilling &lt;a href=&quot;https://securityintelligence.com/articles/how-to-create-an-effective-incident-response-plan/&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;incident response plans&lt;/a&gt; in the face of potential security incidents. Conducting tabletop exercises and regularly drilling plans can help organizations proactively prepare and take control of an incident if ever one should occur.
+
+For additional resources and information, please check out &lt;a href=&quot;https://www.ibm.com/security/services/ibm-x-force-incident-response-and-intelligence&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;X-Force IRIS&lt;/a&gt;. If you believe your organization may be under attack, please call the X-Force Emergency Response Hotline at 888-241-9812.
+&lt;h2&gt;Appendix A: IoCs&lt;/h2&gt;
+&lt;strong style=&quot;color: #333f48; font-size: 16px;&quot;&gt;More_eggs C&amp;C domains:&lt;/strong&gt;
+&lt;ul&gt;
+ 	&lt;li class=&quot;&quot;&gt;api[.]cloudservers[.]kz&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;mail[.]rediffmail[.]kz&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;secure[.]cloudserv[.]ink&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;metric[.]onlinefonts[.]kz&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;news[.]bradpitt[.]kz&lt;/li&gt;
+&lt;/ul&gt;
+&lt;strong&gt;Landing page domains (downloads files):&lt;/strong&gt;
+&lt;ul&gt;
+ 	&lt;li class=&quot;&quot;&gt;usastaffing[.]services&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;usstaffing[.]services&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;jobhyper[.]com&lt;/li&gt;
+&lt;/ul&gt;
+&lt;strong&gt;Meterpreter C&amp;C IP addresses:&lt;/strong&gt;
+&lt;ul&gt;
+ 	&lt;li class=&quot;&quot;&gt;185[.]162[.]128[.]70*.&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;185[.]243[.]115[.]50&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;192[.]99[.]20[.]90&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;192[.]187[.]103[.]42&lt;/li&gt;
+ 	&lt;li class=&quot;&quot;&gt;37[.]1[.]221[.]212.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;em&gt;*Also the C&amp;C IP address for the Metasploit Shellcode Loader.&lt;/em&gt;
+
+&lt;strong&gt;ReverseShell executable (DLL) C&amp;C IP address:&lt;/strong&gt;
+&lt;ul&gt;
+ 	&lt;li class=&quot;&quot;&gt;185[.]204[.]2[.]182&lt;/li&gt;
+&lt;/ul&gt;
+&lt;strong&gt;File hashes:&lt;/strong&gt;
+&lt;table border=&quot;1&quot; cellspacing=&quot;0&quot; cellpadding=&quot;0&quot;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;
+&lt;p class=&quot;&quot;&gt;&lt;strong&gt;Description&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;td&gt;
+&lt;p class=&quot;&quot;&gt;&lt;strong&gt;SHA256&lt;/strong&gt;&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5795C3AC7F57F.txt&lt;/td&gt;
+&lt;td&gt;b3537701e054823836da9c532560d30f01e38e549fb813206afd699ecde8a97c&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A70613FF7F5DE98.txt&lt;/td&gt;
+&lt;td&gt;28497c50d65c9f1d0233fc193a43014497fadddb1af8e7f5dbc6eefb3d4ede02&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;625222E09B6CD028459.txt&lt;/td&gt;
+&lt;td&gt;80716c2a49739850d8ccd1c035ea4bcc2da39527693c71b800c99ed2ea2c430f&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;More_eggs backdoor&lt;/td&gt;
+&lt;td&gt;37831e465728a913acab317b65c4474b8e6a4570e78c39c8b8c9b956e5d6db25&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Metasploit Shellcode Loader&lt;/td&gt;
+&lt;td&gt;d9a245f1fb502606c226c364aa1090f25916e68f5ff24ef75be87ad6a2e6dcc9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ReverseShell Executable&lt;/td&gt;
+&lt;td&gt;78a87d540c1758c6b4dcabb7b825ea3a186ef61e7439045ece3ce3205c7e85a2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&nbsp;"
+                    }
+                </script>
+
+                <!-- ARTICLE -->
+                <article class="single">
+                    <div class="row">
+
+                        <!-- HEADER -->
+                        <header class="single__header">
+
+    <!-- BREADCRUMBS -->
+        <div class="single__breadcrumbs">
+        <a href="/">Home</a>
+                    <span>/</span>
+            <a href="https://securityintelligence.com/category/x-force/">Threat Research</a>
+                <span>/</span>
+                                <a href="https://securityintelligence.com/category/x-force/threats/">Advanced Threats</a>
+            </div>
+
+    <!-- BREADCRUMB SCHEMA -->
+    <script id="post-schema" type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://securityintelligence.com/"
+            },
+                            {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Threat Research",
+                    "item": "https://securityintelligence.com/category/x-force/"
+                },
+                            {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Advanced Threats",
+                    "item": "https://securityintelligence.com/category/x-force/threats/"
+                }
+                    ]
+    }
+    </script>
+
+    <!-- SERIES COLLECTION -->
+    
+    <!-- TITLE -->
+    <h1 class="single__title">More_eggs, Anyone? Threat Actor ITG08 Strikes Again</h1>
+
+    <!-- LABELS -->
+    <div class="single__labels">
+        <div class="single__date-and-time">August 29, 2019</div>
+        <span>|</span>
+        <div class="single__author">By <a href="https://securityintelligence.com/author/ole-villadsen/">Ole Villadsen</a></div>
+                    <div class="single__author">co-authored by
+                                    <a href="https://securityintelligence.com/author/kevin-henson/">Kevin Henson</a>,                                     <a href="https://securityintelligence.com/author/melissa-frydrych/">Melissa Frydrych</a>,                                     <a href="https://securityintelligence.com/author/joey-victorino/">Joey Victorino</a>                            </div>
+                <span>|</span>
+        <div class="single__read-time"><span class="span-reading-time rt-reading-time"><span class="rt-label rt-prefix"></span> <span class="rt-time"> 14</span> <span class="rt-label rt-postfix">min read</span></span></div>
+    </div>
+
+    <!-- FEATURED IMAGE -->
+    <div class="single__featured-image">
+            <amp-img
+        alt="Businessman infected with ITG08" 
+        width="1200" height="630" layout="responsive"
+        src="/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg.webp"
+        srcset="/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-300x158.jpg.webp 300w,
+                /wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg.webp 630w,
+                /wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg.webp 1200w,
+                /wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg.webp 2400w">
+            <amp-img
+                fallback
+                alt="Businessman infected with ITG08" width="1200" height="630" layout="responsive"
+                src="https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg"
+                srcset="https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-300x158.jpg 300w,
+                        https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg 630w,
+                        https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg 1200w,
+                        https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg 2400w">
+            </amp-img>
+    </amp-img>
+        <span class="single__caption"><p><a href="https://www.istockphoto.com/photo/shot-of-thinking-financial-advisor-businessman-working-in-office-gm1077571930-288651726" target="_blank" rel="noopener">iStock</a></p></span>
+    </div>
+
+</header>
+
+                        <!-- SOCIAL ICONS -->
+                              <div class="single__social-icons">
+            <amp-social-share class="icons__wrapper" type="twitter"  width="48" height="48" data-param-text="Check out this article: More_eggs, Anyone? Threat Actor ITG08 Strikes Again">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+</svg>
+            </amp-social-share>
+
+
+            <amp-social-share class="icons__wrapper" type="linkedin"  width="48" height="48" data-param-text="Check out this article: More_eggs, Anyone? Threat Actor ITG08 Strikes Again">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+</svg>
+            </amp-social-share>
+
+
+            <amp-social-share class="icons__wrapper" type="facebook"  width="48" height="48" data-param-app_id="3703311399714818" data-param-text="Check out this article: More_eggs, Anyone? Threat Actor ITG08 Strikes Again">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+</svg>
+            </amp-social-share>
+      </div>
+
+                        <!-- SINGLE -->
+                        <div id="single__content" class="single__content single__content--collapsed">
+
+                            <!-- TRANSLATION -->
+                            
+                            <!-- CONTENT -->
+                            <div class="single__content-itself" id="single__height-calc">
+                                <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body><p><a href="https://www.ibm.com/security/services/ibm-x-force-incident-response-and-intelligence" >IBM X-Force Incident Response and Intelligence Services (IRIS)</a> responds to security incidents across the globe. During a recent incident response investigation, our team identified new attacks by the financially motivated attack group ITG08, also known as <a href="https://attack.mitre.org/groups/G0037/" target="_blank" rel="noopener nofollow" >FIN6</a>.</p>
+<p>ITG08 is an organized cybercrime gang that has been active since 2015, mostly targeting point-of-sale (POS) machines in brick-and-mortar retailers and companies in the hospitality sector in the U.S. and Europe. More recently, the group has been observed targeting e-commerce environments by injecting malicious code into online checkout pages of compromised websites &mdash; a technique known as online skimming &mdash; thereby stealing payment card data transmitted to the vendor by unsuspecting customers.</p>
+<p class="left">Based on our investigation and analysis of its adversarial tactics, techniques and procedures (TTPs), we believe ITG08 is actively attacking multinational organizations, targeting specific employees with spear phishing emails advertising fake job advertisements and repeatedly deploying the <a href="https://attack.mitre.org/software/S0284/" target="_blank" rel="noopener nofollow" >More_eggs</a> JScript backdoor malware (aka Terra Loader, SpicyOmelette). This tool, a TTP observed in ITG08 attacks since 2018, is sold on the dark web by an underground malware-as-a-service (MaaS) provider. Attackers use it to create, expand and cement their foothold in compromised environments. Past campaigns by ITG08 using the More_eggs backdoor were last <a href="https://usa.visa.com/dam/VCOM/global/support-legal/documents/fin6-cybercrime-group-expands-threat-To-ecommerce-merchants.pdf" target="_blank" rel="noopener nofollow" >reported in February 2019</a>.</p>
+<p>In the campaign we investigated, the attackers employed additional TTPs historically associated with ITG08, including the use of Windows Management Instrumentation (WMI) to automate the remote execution of PowerShell scripts, PowerShell commands with base64 encoding, and <a href="https://www.metasploit.com/" target="_blank" rel="noopener nofollow" >Metasploit</a> and PowerShell to move laterally and deploy malware. Lastly, the attackers used Comodo code-signing certificates several times during the course of the campaign. Many of the above TTPs are not unique to ITG08, but collectively, and with the use of More_eggs, strengthen the link to this group.</p>
+<p>Let&rsquo;s take a closer look at ITG08&rsquo;s TTPs that are relevant to the campaign we investigated, starting with its spear phishing and intrusion tactics and covering information on its use of the More_eggs backdoor. Please note that <a href="https://usa.visa.com/dam/VCOM/global/support-legal/documents/fin6-cybercrime-group-expands-threat-To-ecommerce-merchants.pdf" target="_blank" rel="noopener nofollow" >Visa</a> has attributed the use of this backdoor to FIN6 in attacks that took place in 2018. Further linking the activity with the same threat actor, several of the network indicators and TTPs we encountered in this case &mdash; including the use of fake job advertisements as a lure in spear phishing &mdash; overlap with those reported earlier in 2019 by both Visa and <a href="https://www.proofpoint.com/us/threat-insight/post/fake-jobs-campaigns-delivering-moreeggs-backdoor-fake-job-offers" target="_blank" rel="noopener nofollow" >Proofpoint</a> researchers.</p>
+<h2 class="">Analysis of the Intrusion</h2>
+<p>ITG08&rsquo;s TTPs in compromising targeted organizations follow the typical <a href="https://securityintelligence.com/how-the-ibm-x-force-iris-cyberattack-framework-helps-security-teams-reduce-risk-at-all-levels/" >framework for APT attacks</a>. The following sections go over the steps taken by the attackers to gain an initial foothold and persist on the victimized organization&rsquo;s networks.</p>
+<h3 class="">Initial Compromise</h3>
+<p>To gain access to victim environments, the threat actor began by targeting handpicked employees using LinkedIn messaging and email, advertising fake jobs to lure recipients into checking into the supposed offers. In one case, we uncovered evidence indicating that the attacker had established communication with a victim via email and convinced them to click on a Google Drive URL purporting to contain an attractive job advert. Once clicked, the URL displayed the message, &ldquo;Online preview is not available,&rdquo; then presented a second URL leading to a compromised or rogue domain, where the victim could download the payload under the guise of a job description:</p>
+<p align="center"><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-1-more_eggs-blog.png" layout="intrinsic" width="2000" height="1063" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>Figure 1: Link provided in spear phishing email to an employee</em></p>
+<p>That URL, in turn, downloaded a ZIP file containing a malicious Windows Script File (WSF) that initiated the infection routine of the More_eggs backdoor:</p>
+<p align="center"><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-2-more_eggs-blog.png" layout="intrinsic" width="1958" height="1125" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>Figure 2: Final landing page that downloads a malicious file</em></p>
+<p>Based on file system artifacts examined during our investigation, the ZIP file and WSF files were deleted upon a successful malware infection, likely in an attempt to prevent researchers from recovering the original files from the filesystem. The filesystem, however, contained evidence of a nonmalicious decoy document dropped to the disk drive during the spear phishing attacks.</p>
+<h3 class="">Gaining a Foothold</h3>
+<p>The spear phishing attacks unfortunately led to initial compromise and the installation of the More_eggs JScript backdoor, which established a reverse shell connection to the attacker&rsquo;s command-and-control (C&amp;C) infrastructure. Additional capabilities of the More_eggs malware include the download and execution of files and scripts and running commands using cmd.exe.</p>
+<p>X-Force IRIS determined that the More_eggs backdoor later downloaded additional files, including a signed binary shellcode loader and a signed Dynamic Link Library (DLL), as described below, to create a reverse shell and connect to a remote host. The shellcode loader was observed on one infected device as <em>updater.exe</em> with the Metasploit-style service name <em>APTYnDS1ABEuUHEA</em>, indicating that it was installed as a service.</p>
+<h3 class="">Reconnaissance, Lateral Movement and Privilege Escalation</h3>
+<p>Once the attackers established a foothold on the network, they employed WMI and PowerShell techniques to perform network reconnaissance and move laterally within the environment. This type of method, called living off the land, can often blend with legitimate system administration activities, which can make it challenging for security controls to detect.</p>
+<p>The attackers used this technique to remotely install a Metasploit reverse TCP stager on select systems, subsequently spawning a Meterpreter session and <a href="https://www.csoonline.com/article/3353416/what-is-mimikatz-and-how-to-defend-against-this-password-stealing-tool.html" target="_blank" rel="noopener nofollow" >Mimikatz</a>. Meterpreter is a payload component in the Metasploit Framework that uses in-memory DLL injection, which can lead to a compromise by malware or any malicious code/commands. Mimikatz is a post-exploitation tool that allows attackers to extract credentials from volatile memory. Stolen credentials are usually leveraged to facilitate privilege escalation and further lateral movement through the compromised environment.</p>
+<p>Once the Metasploit reverse TCP stager executed, it downloaded and loaded a second stage Meterpreter DLL into memory, allowing the attacker to spawn a Meterpreter session via a handler and initiate the loading of extensions, such as Mimikatz. In addition to the More_eggs malware, the attacker leveraged in-memory attacks by injecting malicious code, in this case Mimikatz, into legitimate system processes.</p>
+<h3 class="">Establishing Persistence</h3>
+<p>To cement their foothold and add persistence throughout the compromised environment, X-Force IRIS uncovered evidence that the attacker had selected several additional devices on which to install the More_eggs backdoor, creating redundancy in ways to get back into the network. ITG08 remotely connected to these devices using PowerShell and WMI and downloaded and executed a DLL file, subsequently installing More_eggs on the device without dropping the nonmalicious decoy document.</p>
+<h2 class="">More_eggs: Malware Analysis</h2>
+<h3 class="">ITG08 Leveraging a Malware-as-a-Service Provider</h3>
+<p>A recently rising attack tool in ITG08 campaigns has been the More_eggs JScript backdoor. But while it was recently identified with ITG08 activity, the More_eggs backdoor is apparently developed and sold through an underground <a href="https://medium.com/@quoscient/golden-chickens-uncovering-a-malware-as-a-service-maas-provider-and-two-new-threat-actors-using-61cf0cb87648" target="_blank" rel="noopener nofollow" >MaaS provider</a>. This vendor not only supplies the backdoor malware, but also offers related technical services, such as preparing the network infrastructure to download More_eggs-related files and furnishing resources for C&amp;C purposes.</p>
+<p>In addition to More_eggs, the same underground vendor is also responsible for producing the signed DLL described below, which creates a reverse shell (ReverseShell Executable). We based this assessment on code similarities between the DLL and other samples created by the same vendor, including the DLL that drops the More_eggs backdoor.</p>
+<p align="center"><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/si-moreeggs-chart.jpg" layout="intrinsic" width="1600" height="1536" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>Figure 3: Network indicators revealing the use of an underground MaaS vendor selling More_eggs and malicious infrastructure services</em></p>
+<h3 class="">The More_eggs Dropper DLL</h3>
+<p>After a successful phishing attack in which users have opened emails and browsed to malicious links, ITG08 attackers install the More_eggs JScript backdoor on user devices alongside several other malware components.</p>
+<p>The process begins with the consistent execution of a malicious DLL using the legitimate <em>regsvr32.exe</em> Windows Utility. Once executed, the DLL is deleted from the system and its components are dropped to the system.</p>
+<p>Before being deleted, the DLL executes a string decoding routine that is designed to execute for about a minute, spiking central processing unit (CPU) usage for the <em>regsvr32.exe</em> process. Once the strings are decoded, the More_eggs components are decrypted, dropped to the system<br><code>(normally in the %APPDATA%\Microsoft\ or %ProgramData%\Microsoft\ directories)</code> and executed.</p>
+<p>The observed strings appearing like HEX-encoded strings are shown below:</p>
+<p><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-4-more_eggs-blog.png" layout="intrinsic" width="704" height="170" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>Figure 4: Sample encoded and decoded strings</em></p>
+<h3 class="">More_eggs Components</h3>
+<p>The More_eggs dropper DLL creates the following components on the infected device (further detail on each component in the chart follows in the next section):</p>
+<table border="0" cellspacing="0" cellpadding="0"><tbody><tr><td><strong>Sample File Name</strong></td>
+<td><strong>Description</strong></td>
+</tr><tr><td>5795C3AC7F57F.txt</td>
+<td>An XSL stylesheet file that contains an obfuscated More_eggs JScript loader.</td>
+</tr><tr><td>625222E09B6CD028459.txt</td>
+<td>Benign XML document occasionally used as a parameter when executing the <em>msxsl.exe </em>utility.</td>
+</tr><tr><td>
+<p class="">27603.docx</p>
+</td>
+<td>Benign Word Document decoy. The Decoy was not always dropped in the executions of the DLLs analyzed.</td>
+</tr><tr><td>A70613FF7F5DE98.txt</td>
+<td>Obfuscated script file that executes <em>msxsl.exe</em> with the appropriate parameters as arguments. Once the script executes, the More_eggs JScript is loaded into the memory space of <em>msxsl.exe</em>.</td>
+</tr><tr><td>msxsl.exe</td>
+<td>Benign Microsoft Command Line Transformation Utility known to be used to execute malicious code and bypass application whitelisting.</td>
+</tr></tbody></table><p class="left" align="left"><em>Figure 5: Components created by DLL</em></p>
+<p><em>msxsl.exe</em> is executed by the script file <em>A70613FF7F5DE98.txt</em>, which is obfuscated as shown below:</p>
+<p><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-5-more_eggs-blog.png" layout="intrinsic" width="1016" height="243" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>Figure 6: Obfuscated script file</em> A70613FF7F5DE98.txt</p>
+<p>The use of <em>msxsl.exe</em> is a known tactic to execute malicious code and bypass application whitelisting. The deobfuscated command is built as follows:</p>
+<p><em>&ldquo;C:\Users\&lt;username&gt;\AppData\Roaming\Microsoft\msxsl.exe&rdquo; &ldquo;C:\Users\&lt;username&gt;\AppData\Roaming\Microsoft\625222E09B6CD028459.txt&rdquo; &ldquo;C:\Users\&lt;username&gt;\AppData\Roaming\Microsoft\5795C3AC7F57F.txt&rdquo;</em></p>
+<p>Once the above command is executed, the More_eggs JScript loader <em>5795C3AC7F57F.txt</em> will deobfuscate the embedded More_eggs JScript. A sample loader is shown below.</p>
+<p>The start of the XSL file:</p>
+<p><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-6-more_eggs-blog.png" layout="intrinsic" width="932" height="206" lightbox="lightbox"></amp-img></p>
+<p><em>Figure 7: JScript loader sample</em></p>
+<p>The end of the XSL file:</p>
+<p><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-7-more_eggs-blog.png" layout="intrinsic" width="932" height="194" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>Figure 8: JScript loader sample</em></p>
+<p>The &ldquo;select&rdquo; value within the template tag points to the function in the <em>msxsl:script</em> tag, which will execute when the <em>msxsl.exe</em> command is run. The JScript loader file is highly obfuscated and decodes the More_eggs backdoor in a variety of ways, including RC4 decryption.</p>
+<h3 class="">Analyzing the More_eggs JScript Backdoor</h3>
+<p>The analysis in this section details the functionality of More_eggs backdoor samples specific to this investigation, so please bear in mind that the same malware can be deployed differently in other campaigns and by alternate attackers.</p>
+<p>The core functionality of the samples analyzed in this campaign remained the same as described by previous researchers. We aimed to add additional detail about the inner workings of the malware, including its C&amp;C communications flow, its filesystem activity, and some encryption and encoding schemes used by the samples we analyzed.</p>
+<p>The More_eggs backdoor is executed entirely in memory, never touching the filesystem in an unencrypted state. Notable configuration data is hardcoded and includes its C&amp;C server address, malware version number and an Rkey value, which is believed to identify campaign perpetrators to the vendor:</p>
+<ul><li>The Rkey value is appended with a two-byte, pseudorandomly generated string used to construct an RC4 key.</li>
+<li>The Rkey variable is part of the ciphering key used to encrypt C&amp;C communications.</li>
+<li>The RC4 key is then used to encrypt data, which is additionally basE91 encoded and sent back to the C&amp;C. BasE91 is a method for encoding binary as ASCII characters.</li>
+</ul><p>Upon initial execution, the backdoor checks its environment to determine whether it is running with administrative or user privileges, and if proper components are present on the system. To check the user&rsquo;s privilege level on the newly infected device, it attempts to read the registry key <em>HKEY_USERS\S-1-5-19\Environment\TEMP</em>; a successful read means it is running with administrative privileges, and the backdoor builds the path <em>%ProgramData%\Microsoft</em>. If it is not running with administrative privileges, the path <em>%AppData%\Microsoft</em> is used.</p>
+<p>The More_eggs backdoor obtains the username and computer name of the infected device, and if running with privileges, it reads the following registry key: <em>HKEY_LOCAL_MACHINE\Software\Microsoft\Notepad\&lt;computername&gt;</em>. If not running with privileges, it reads the key <em>HKEY_CURRENT_USER\SOFTWARE\Microsoft\Notepad\&lt;username&gt;</em> instead.</p>
+<p>The data in these Windows registry keys is expected to be a comma-separated list of files with no extension. The .txt extension is appended to the name by the backdoor. If these files exist along with <em>msxsl.exe</em> in the proper location, either <em>%ProgramData%\Microsoft</em> or <em>%AppData%\Microsoft</em>, the malware&rsquo;s execution continues.</p>
+<p>Once the environment is checked, the backdoor will check for network connectivity by sending an HTTP GET request to <em>hxxp://www.w3[.]org/1999/XSL/Format</em>, ensuring the response is &ldquo;This is another XSL namespace\n.&rdquo;</p>
+<table border="1" cellspacing="0" cellpadding="0"><tbody><tr><td valign="top"><em>GET /1999/XSL/Format HTTP/1.1</em><em><br>
+Accept: */*<br>
+Accept-Language: en-us<br>
+UA-CPU: [CPU version]<br>
+Accept-Encoding: gzip, deflate<br>
+User-Agent: [User agent string here]<br>
+Host: www.w3.org<br>
+Connection: Keep-Alive,</em></td>
+</tr></tbody></table><p class="left" align="left"><em>Figure 9: HTTP GET request</em></p>
+<p class="left" align="left">If the connection is successful, the backdoor builds a string formatted with &ldquo;|&lt;random-value&gt;|&rdquo;. The random value is between 8 and 32 bytes long, RC4-encrypted, basE91 encoded, and subsequently sent to the C&amp;C in an HTTP POST request.</p>
+<p>The RC4 key used is generated from the Rkey variable value:</p>
+<table border="1" cellspacing="0" cellpadding="0"><tbody><tr><td valign="top">
+<p class=""><em>POST HTTP/1.1</em><br><em>Connection: Keep-Alive</em><br><em>Accept: */*</em><br><em>Accept-Language: en-us</em><br><em>User-Agent: [User agent string]</em><br><em>Content-Length: 36</em><br><em>Host: </em><br><em>6R+#9fWCy)htQSo4:H9&amp;JSMTx|X[OEKj^gXE</em></p>
+</td>
+</tr></tbody></table><p class="left" align="left"><em>Figure 10: HTTP POST request</em></p>
+<p>The C&amp;C response is expected to be between 8 and 32 bytes long, nothing is done with the server response. The random value acts as a handshake between the backdoor and the C&amp;C, and during failure of any of the above, More_eggs sends an HTTP GET request to 8.8.8.8 with a pseudorandom 8 to 32-byte URI.</p>
+<table cellspacing="0" cellpadding="0"><tbody><tr><td><em>GET /avIRga9sfvjGj3HCPGlgzaBXOof3u7wq HTTP/1.1</em><br><em>Connection: Keep-Alive</em><br><em>Accept: */*</em><br><em>Accept-Language: en-us</em><br><em>User-Agent: [User agent string]</em><br><em>Host: 8.8.8.8</em></td>
+</tr></tbody></table><p class="left" align="left"><em>Figure 11: HTTP GET request to 8.8.8.8</em></p>
+<p>If the handshake is successful, the backdoor proceeds to collect system information from the infected device using a series of WMIC commands.</p>
+<table cellspacing="0" cellpadding="0"><tbody><tr><td valign="top"><em>&ldquo;%comspec% /c wmic path win32_Operatingsystem get SerialNumber /FORMAT:Textvaluelist | findstr /R /C:\&rdquo;SerialNumber=\&rdquo; &gt;</em><br><em>\&rdquo;C:\\Users\\mal_re\\AppData\\Local\\Temp\\12025.txt\&rdquo; &amp; vol %HOMEDRIVE% &gt;</em><br><em>\&rdquo;C:\\Users\\mal_re\\AppData\\Local\\Temp\\50573.txt\&rdquo; &amp; wmic csproduct get Name /FORMAT:Textvaluelist | findstr /R /C:\&rdquo;Name=\&rdquo; &gt;</em><br><em>\&rdquo;C:\\Users\\mal_re\\AppData\\Local\\Temp\\58678.txt\&rdquo; &amp; tasklist /FO CSV /NH &gt;</em><br><em>\&rdquo;C:\\Users\\mal_re\\AppData\\Local\\Temp\\39054.txt\&rdquo; &amp; ver &gt;</em><br><em>\&rdquo;C:\\Users\\mal_re\\AppData\\Local\\Temp\\28535.txt\&rdquo; &amp; wmic os get ProductType /FORMAT:Textvaluelist | findstr /R /C:\&rdquo;ProductType=\&rdquo; &gt;</em><br><em>\&rdquo;C:\\Users\\mal_re\\AppData\\Local\\Temp\\4140.txt\&rdquo; &amp; ipconfig | findstr /R /C:\&rdquo;IPv4 Address\&rdquo; &gt; \&rdquo;C:\\Users\\mal_re\\AppData\\Local\\Temp\\65390.txt\&rdquo;&rdquo;</em></td>
+</tr></tbody></table><p class=""><em>Figure 12: System information collection</em></p>
+<p>The infected device&rsquo;s system information is written to several <em>%Temp%\&lt;random-filenames&gt;.txt</em> files. The contents of the files are read and then the files themselves are deleted.</p>
+<p>The More_eggs backdoor accepts the following commands from its remote operator:</p>
+<table border="1" cellspacing="0" cellpadding="0"><tbody><tr><td>
+<p class=""><strong>Command</strong></p>
+</td>
+<td>
+<p class=""><strong>Description</strong></p>
+</td>
+</tr><tr><td>d&amp;exec</td>
+<td>Download and execute an executable (.exe or .dll).</td>
+</tr><tr><td>more_eggs</td>
+<td>Delete the current More_eggs and replace it.</td>
+</tr><tr><td>Gtfo</td>
+<td>Uninstall activity.</td>
+</tr><tr><td>more_onion</td>
+<td>Execute a script.</td>
+</tr><tr><td>via_c</td>
+<td>Run a command using &ldquo;cmd.exe /C&rdquo;.</td>
+</tr></tbody></table><p class="left" align="left"><em>Figure 13: More_eggs commands</em></p>
+<h3 class="">Meterpreter Reverse TCP Stagers</h3>
+<p>Beyond using More_eggs as a backdoor, the attackers in this campaign also used offensive security tools and PowerShell scripts to carry out the different stages of the attack.</p>
+<p>The PowerShell scripts analyzed during our investigation contained Metasploit <em>Reverse TCP</em> stagers. These stagers were used to execute shellcode that connected back to an attacker&rsquo;s server and injected Meterpreter components, such as Mimikatz, into the memory space of legitimate processes. After injecting Meterpreter into memory, the attacker had complete control of the infected device.</p>
+<p>The reverse TCP PowerShell stagers functioned as follows:</p>
+<ol><li>The reverse TCP PowerShell stagers were obfuscated with base64 encoding and GZip compression. This encoding scheme is standard for Meterpreter PowerShell stagers. The original command contained a base64-encoded loader script.</li>
+<li>The loader script base64 decodes, Gzip decompresses and executes a Metasploit PowerShell reflection payload in memory.</li>
+<li>The reflection payload base64 decodes a Meterpreter reverse TCP shellcode, injects it into memory using .NET reflection methods and executes the decoded shellcode.</li>
+<li>The shellcode connects back to the attacker&rsquo;s server. Meterpreter components, such as the core module and <em>metsvr.dll</em>, and extensions, such as Mimikatz, are injected into the memory space of a legitimate process.</li>
+</ol><p align="center"><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-8-more_eggs-blog.png" layout="intrinsic" width="924" height="124" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>&nbsp;</em></p>
+<p class="left" align="left"><em>Figure 14: Original command</em></p>
+<p><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-9-more_eggs-blog.png" layout="intrinsic" width="968" height="193" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>Figure 15: Decoded loader</em></p>
+<p><amp-img src="https://securityintelligence.com/wp-content/uploads/2019/08/picture-10-more_eggs-blog.png" layout="intrinsic" width="972" height="399" lightbox="lightbox"></amp-img></p>
+<p class="left" align="left"><em>Figure 16: Decoded reflection payload</em></p>
+<h3>Metasploit Shellcode Loader</h3>
+<p>As our analysis continued, X-Force IRIS found a UPX-packed Metasploit shellcode loader (<em>49340.txt</em>) during the forensic investigation of compromised devices. This loader attempted to masquerade as the Apache Bench application and notably contained metadata and project paths (.PDB), indicating that it may be attempting to masquerade as other applications as well, a rather typical behavior for malicious binaries.</p>
+<p>The shellcode was loaded into memory and designed to receive an RC4-encrypted buffer, which was decrypted and executed in memory. The sample also contained a Comodo code-signing certificate issued to &ldquo;MAHTEM LTD,&rdquo; which we believe is one of a number of <a href="https://securityintelligence.com/certificates-as-a-service-code-signing-certs-become-popular-cybercrime-commodity/" >fake companies established to purchase the certificates</a>.</p>
+<p>The sample we analyzed further contained five binary entries in a resource named &ldquo;REGISTRY&rdquo; &mdash; 35, 224, 409, 3908 and 4994 &mdash; each containing some obfuscated shellcode.</p>
+<p>Once loaded into memory, the shellcode connected back to a remote host, receiving 4 bytes in return. Those were XORed with the string <em>0xad350bdd</em> and had <em>0x100</em> added to it. This value was then used as the size specification for the next received buffer, which was RC4-decrypted with the resulting 16-byte key and executed in memory.</p>
+<h3>A ReverseShell Executable</h3>
+<p>Yet another tool in the attackers&rsquo; arsenal for this campaign was a DLL backdoor executable that X-Force IRIS found during the investigation. When executed via its <em>DllRegisterServer</em> export function, the DLL connected to a remote host on port 443 and created a reverse shell. In this investigation, the DLL connected to 185[.]204[.]2[.]182 and contained a Comodo code-signing certificate issued to &ldquo;D Bacte Ltd.&rdquo;</p>
+<h2 class="">ITG08 Attacks Organizations for Financial Gain</h2>
+<p>ITG08 has been around for over four years now. Its attacks are financially motivated, sophisticated and persistent. The group historically has specialized in stealing payment card data from POS machines and has more recently expanded operations to target card-not-present data from online transactions. To follow information about ITG08 as it emerges, please join us on <a href="https://exchange.xforce.ibmcloud.com/#/" target="_blank" rel="noopener nofollow" >X-Force Exchange</a>.</p>
+<h2>Mitigation Tips</h2>
+<p>Effective network defense and threat intelligence rely on multiple factors, such as knowing the network&rsquo;s attack surface, understanding the threat actor&rsquo;s motivations and TTPs, and the skill and knowledge of the security team that enable it to identify malicious behavior.</p>
+<p>IBM X-Force IRIS has gained insight into ITG08&rsquo;s intrusion methods, ability to navigate laterally, use of custom and open-source tools, and typical persistence mechanisms. Our team has provided the following mitigation tips for defenders who are looking out for attacks by this group.</p>
+<h3 class="">Educate Users About Email</h3>
+<p>X-Force IRIS determined that the ITG08 compromise was the result of a phishing email in which the initial compromise was made possible by a victim who clicked on a malicious attachment. Role-based security awareness training should be at the top of the list of any organization&rsquo;s mitigation strategies to help employees recognize phishing emails and possible malicious attachments, and to educate them about their security responsibilities with regards to reporting potentially malicious emails.</p>
+<h3 class="">Search for Known IoCs</h3>
+<p>After the phishing email resulted in a successful infiltration, ITG08 used the More_eggs backdoor to gain a foothold and infect additional devices. More_eggs-related artifacts such as the DLL dropper have extremely low antivirus (AV) detection rates, based on analysis conducted via VirusTotal (VT). For example, a More_eggs DLL dropper submitted to VT on April 18, 2019 had a detection rate of only 5 percent.</p>
+<p>To detect this malware, critical events should be analyzed based on the attacker&rsquo;s patterns. SYSMON or an endpoint detection and response tool should be configured to detect the combined use of <em>msxsl.exe</em> and WMI. In addition, Registry keys and scheduled tasks should be analyzed for indications of persistence. The network should also be scrutinized for any privilege escalation events and any signs of internal reconnaissance. YARA signatures should also be created to assist security personnel in detecting the More_eggs malware. YARA signatures for X-Force IRIS premium subscribers can be provided on request.</p>
+<h3 class="">Analyze Logs</h3>
+<p>Other mitigation strategies against this type of activity include analyzing host-based firewall logs for internal pivoting, unauthorized listening executables and scanning activity. In addition, configuring PowerShell script logging and identifying any obfuscation will assist in mitigating ITG08&rsquo;s use of PowerShell to conduct malicious activity. ITG08 has also demonstrated the use of stolen credentials; therefore, multiple failed login attempts and/or unauthorized account usage may be indicators of ITG08 activity on a network.</p>
+<h3 class="">Monitor for Remote Services</h3>
+<p>X-Force IRIS also recommends taking steps to prevent lateral movement. Although lateral movement can be difficult to detect, a spike in usage of Windows tools, such as remote administration services (PowerShell Remoting and WMI), should be monitored. Detection and monitoring capabilities should be in place and network defenders should be familiar with what is considered a &ldquo;normal&rdquo; baseline on their user network. Without a baseline of &ldquo;normal&rdquo; activity, the use of Windows tools may blend in with legitimate activity, which can allow attackers to continue to live off the land unnoticed.</p>
+<h3 class="">Rethink Network Architecture</h3>
+<p>Security defenders should examine network architecture to see how the network is segregated, what Windows tools are restricted or used by administrators, and what alerts are set up to warrant personnel review. Least privilege principals should be implemented for all users on the network, and a strong password management system with two-factor authentication and password expiration dates should be deployed as an additional layer of security.</p>
+<h3>Pen Test!</h3>
+<p>Organizations looking to limit the ways by which attackers can infiltrate their networks should be mindful of ongoing patching of vulnerabilities. After reaching maturity on the vulnerability assessment front, mitigation strategies should also include <a href="https://www.ibm.com/security/services/offensive-security-services" >penetration testing</a> to find unknown vulnerabilities related to people, software and hardware used on the organization&rsquo;s critical assets and externally facing resources.</p>
+<h3>Incident Response</h3>
+<p>Nowadays, no organization can be exempt from planning and drilling <a href="https://securityintelligence.com/articles/how-to-create-an-effective-incident-response-plan/" >incident response plans</a> in the face of potential security incidents. Conducting tabletop exercises and regularly drilling plans can help organizations proactively prepare and take control of an incident if ever one should occur.</p>
+<p>For additional resources and information, please check out <a href="https://www.ibm.com/security/services/ibm-x-force-incident-response-and-intelligence" >X-Force IRIS</a>. If you believe your organization may be under attack, please call the X-Force Emergency Response Hotline at 888-241-9812.</p>
+<h2>Appendix A: IoCs</h2>
+<p><strong style="color: #333f48; font-size: 16px;">More_eggs C&amp;C domains:</strong></p>
+<ul><li class="">api[.]cloudservers[.]kz</li>
+<li class="">mail[.]rediffmail[.]kz</li>
+<li class="">secure[.]cloudserv[.]ink</li>
+<li class="">metric[.]onlinefonts[.]kz</li>
+<li class="">news[.]bradpitt[.]kz</li>
+</ul><p><strong>Landing page domains (downloads files):</strong></p>
+<ul><li class="">usastaffing[.]services</li>
+<li class="">usstaffing[.]services</li>
+<li class="">jobhyper[.]com</li>
+</ul><p><strong>Meterpreter C&amp;C IP addresses:</strong></p>
+<ul><li class="">185[.]162[.]128[.]70*.</li>
+<li class="">185[.]243[.]115[.]50</li>
+<li class="">192[.]99[.]20[.]90</li>
+<li class="">192[.]187[.]103[.]42</li>
+<li class="">37[.]1[.]221[.]212.</li>
+</ul><p><em>*Also the C&amp;C IP address for the Metasploit Shellcode Loader.</em></p>
+<p><strong>ReverseShell executable (DLL) C&amp;C IP address:</strong></p>
+<ul><li class="">185[.]204[.]2[.]182</li>
+</ul><p><strong>File hashes:</strong></p>
+<table border="1" cellspacing="0" cellpadding="0"><tbody><tr><td>
+<p class=""><strong>Description</strong></p>
+</td>
+<td>
+<p class=""><strong>SHA256</strong></p>
+</td>
+</tr><tr><td>5795C3AC7F57F.txt</td>
+<td>b3537701e054823836da9c532560d30f01e38e549fb813206afd699ecde8a97c</td>
+</tr><tr><td>A70613FF7F5DE98.txt</td>
+<td>28497c50d65c9f1d0233fc193a43014497fadddb1af8e7f5dbc6eefb3d4ede02</td>
+</tr><tr><td>625222E09B6CD028459.txt</td>
+<td>80716c2a49739850d8ccd1c035ea4bcc2da39527693c71b800c99ed2ea2c430f</td>
+</tr><tr><td>More_eggs backdoor</td>
+<td>37831e465728a913acab317b65c4474b8e6a4570e78c39c8b8c9b956e5d6db25</td>
+</tr><tr><td>Metasploit Shellcode Loader</td>
+<td>d9a245f1fb502606c226c364aa1090f25916e68f5ff24ef75be87ad6a2e6dcc9</td>
+</tr><tr><td>ReverseShell Executable</td>
+<td>78a87d540c1758c6b4dcabb7b825ea3a186ef61e7439045ece3ce3205c7e85a2</td>
+</tr></tbody></table><p>&nbsp;</p><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"653a992d2faf0ad8","version":"2021.5.1","r":1,"token":"6c45c30d23934cf9898ac93dcd6ca040","si":10}'></script>
+</body></html>
+                                <div id="nc_pixel"></div>
+                            </div>
+
+                            <!-- LISTICLES -->
+                            
+
+<script>
+      var mySwiper = new Swiper('.swiper-container', {
+            //Parameters
+            loop: true,
+            //although this is pretty handy, it was causign issues on SAFARI
+            // autoHeight: true, 
+
+            // Navigation arrows
+            navigation: {
+                  nextEl: '#next',
+                  prevEl: '#prev',
+
+            },
+
+            pagination: {
+                  el: '.listicle__pagination',
+                  modifierClass:'listicle__pagination--',
+                  bulletClass:'listicle__pagination__numbers',
+                  bulletActiveClass:'listicle__pagination__numbers--active',
+                  clickableClass: 'listicle__pagination',
+                  clickable: true,
+                  renderBullet: function (index, className) {
+                  return '<span class="' + className + '">' + (index + 1) + '</span>';
+                  },
+            },
+      })
+  
+
+</script>
+
+
+                            <!-- CONTINUE READING -->
+                            
+                                <style type="text/css">
+                                    .single .single__content--collapsed {
+                                        max-height: 1850px;
+                                    }
+                                    @media (max-width: 768px) {
+                                        .single .single__content--collapsed {
+                                            max-height: 2350px;
+                                        }
+                                    }
+                                </style>
+
+                                <div class="continue-reading" >
+                                    <button on="tap: single__content.toggleClass(class=single__content--expanded)" tabindex="0" role="button">Continue Reading</button>
+                                </div>
+                            
+                            <!-- SOCIAL BAR -->
+                            
+                            <!-- TAGS -->
+                            <div class="single__tags">
+    <div class='single__name'>Tags:&nbsp;</div><a href="https://securityintelligence.com/tag/cyber-crime/" rel="tag">Cybercrime</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/cyber-criminals/" rel="tag">Cybercriminals</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/dark-web/" rel="tag">Dark Web</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/darknet/" rel="tag">Darknet</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/hospitality-industry/" rel="tag">Hospitality Industry</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/incident-response-ir/" rel="tag">Incident Response (IR)</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/malware/" rel="tag">Malware</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/malware-analysis/" rel="tag">Malware Analysis</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/malware-injection/" rel="tag">Malware Injection</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/malware-as-a-service-maas/" rel="tag">Malware-as-a-Service (MaaS)</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/online-shopping/" rel="tag">Online Shopping</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/point-of-sale-pos-systems/" rel="tag">Point-of-Sale (POS) Systems</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/response-and-intelligence-services-iris/" rel="tag">Response and Intelligence Services (IRIS)</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/retail/" rel="tag">Retail</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/retail-industry/" rel="tag">Retail Industry</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/threat-intelligence-2/" rel="tag">Threat Intelligence</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/threat-monitoring/" rel="tag">Threat Monitoring</a><span>&nbsp;|&nbsp;</span><a href="https://securityintelligence.com/tag/x-force/" rel="tag">X-Force</a></div>
+
+                            <!-- AUTHOR -->
+                            <div class="author-box">
+        
+    <div class="author-box__profile" style="background-image:  url(https://securityintelligence.com/wp-content/uploads/2019/07/ole-villadsen.png);"></div>
+    <a href="https://securityintelligence.com/author/ole-villadsen/" class="author-box__name">Ole Villadsen</a>
+    <div class="author-box__role">Cyber Threat Hunt Analyst, IBM Security</div>
+    <div class="author-box__links">
+
+        <!-- TWITTER -->
+        
+        <!-- LINKEDIN -->
+        
+        <!-- FACEBOOK -->
+        
+    </div>
+    <div class="author-box__description">
+        <p>Ole Villadsen is an analyst on the Threat Hunt &amp; Discovery Team within IBM X-Force Incident Response and Intelligence Services (IRIS), where he investiga... <br><a href="https://securityintelligence.com/author/ole-villadsen/" title="Read More">read more</a></div>
+</div>
+
+                        </div>
+                     
+                    </div>
+                    
+                    <!-- TABLET ADVERTISING -->
+                    <section class="single__tablet-ad">
+                        <div class="advertising_container"><a href="https://www.ibm.com/events/think?utm_medium=OSocial&utm_source=Blog&utm_content=000038VY&utm_term=10001376&utm_id=Think2021-SIcom-Promo" target="_blank"><amp-img width="792" height="658" layout="responsive" src="https://securityintelligence.com/wp-content/uploads/2021/05/rightrail.jpg" alt=""></amp-img></a></div>                    </section>
+
+                </article>
+                
+                <!-- MOBILE ADVERTISING -->
+                <section class="single__small-ad"><a href="https://www.ibm.com/events/think?utm_medium=OSocial&utm_source=Blog&utm_content=000038VY&utm_term=10001376&utm_id=Think2021-SIcom-Promo" target="_blank"><amp-img width="792" height="658" layout="responsive" src="https://securityintelligence.com/wp-content/uploads/2021/05/rightrail.jpg" alt=""></amp-img></a></section>
+                <!-- SIDEBAR -->
+                
+<aside class="sidebar">
+      <!-- FEATURED IMAGE -->
+      <div class="sidebar__featured-image">
+                <amp-img
+        alt="Businessman infected with ITG08" 
+        width="1200" height="630" layout="responsive"
+        src="/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg.webp"
+        srcset="/wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-300x158.jpg.webp 300w,
+                /wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg.webp 630w,
+                /wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg.webp 1200w,
+                /wp-content/webp-express/webp-images/doc-root/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg.webp 2400w">
+            <amp-img
+                fallback
+                alt="Businessman infected with ITG08" width="1200" height="630" layout="responsive"
+                src="https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg"
+                srcset="https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-300x158.jpg 300w,
+                        https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again-630x330.jpg 630w,
+                        https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg 1200w,
+                        https://securityintelligence.com/wp-content/uploads/2019/08/more_eggs-anyone-threat-actor-itg08-strikes-again.jpg 2400w">
+            </amp-img>
+    </amp-img>
+            <span class="sidebar__caption"><p><a href="https://www.istockphoto.com/photo/shot-of-thinking-financial-advisor-businessman-working-in-office-gm1077571930-288651726" target="_blank" rel="noopener">iStock</a></p></span>
+      </div>
+
+      <!-- RECENT ARTICLES -->
+      <section class="sidebar__recents">
+            <!-- TITLE -->
+            <header class="title">
+                  <div class="title__name">Popular Articles</div>
+                  <div class="title__wave"></div>
+            </header>
+            <!-- SIDEBOX -->
+            <div class="sidebar__box">
+                  <div class="row">
+                        <a href="https://securityintelligence.com/posts/ransomware-2020-attack-trends-new-techniques-affecting-organizations-worldwide/" title="Ransomware 2020: Attack Trends Affecting Organizations Worldwide" class="sidebar__link"">
+                              <div class="single__labels">
+                                    <div class="single__date-and-time">Sep 28, 2020</div>
+                                    <span>|</span>
+                                    <div class="single__read-time">9 min read</div>
+                              </div>
+                              <h3 class="sidebar__title">Ransomware 2020: Attack Trends Affecting Organizations Worldwide</h3>
+                        </a>
+                                                      <a href="https://securityintelligence.com/articles/social-engineering-keep-security-researchers-safe/" title="Social Engineering: How to Keep Security Researchers Safe" class="sidebar__link"">
+                              <div class="single__labels">
+                                    <div class="single__date-and-time">May 16, 2021</div>
+                                    <span>|</span>
+                                    <div class="single__read-time">3 min read</div>
+                              </div>
+                              <h3 class="sidebar__title">Social Engineering: How to Keep Security Researchers Safe</h3>
+                              </a>
+                                                      <a href="https://securityintelligence.com/articles/ai-security-threats-risk/" title="AI Security Threats: The Real Risk Behind Science Fiction Scenarios" class="sidebar__link"">
+                              <div class="single__labels">
+                                    <div class="single__date-and-time">May 15, 2021</div>
+                                    <span>|</span>
+                                    <div class="single__read-time">5 min read</div>
+                              </div>
+                              <h3 class="sidebar__title">AI Security Threats: The Real Risk Behind Science Fiction Scenarios</h3>
+                              </a>
+                                                      <a href="https://securityintelligence.com/posts/transfer-learning-to-detect-code-security-weaknesses/" title="Harnessing the Power of Transfer Learning to Detect Code Security Weaknesses" class="sidebar__link"">
+                              <div class="single__labels">
+                                    <div class="single__date-and-time">5 days ago</div>
+                                    <span>|</span>
+                                    <div class="single__read-time">5 min read</div>
+                              </div>
+                              <h3 class="sidebar__title">Harnessing the Power of Transfer Learning to Detect Code Security Weaknesses</h3>
+                              </a>
+                                          </div> 
+            </div>
+
+            <!-- ADVERTISEMENT -->
+            <div class="advertising_container"><a href="https://www.ibm.com/events/think?utm_medium=OSocial&utm_source=Blog&utm_content=000038VY&utm_term=10001376&utm_id=Think2021-SIcom-Promo" target="_blank"><amp-img width="792" height="658" layout="responsive" src="https://securityintelligence.com/wp-content/uploads/2021/05/rightrail.jpg" alt=""></amp-img></a></div>      </section>
+
+</aside>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- RELATED POSTS -->
+    <section class="related">
+    <div class="container">
+        <div class="row">
+
+            <!-- TITLE -->
+            <header class="title">
+              <div class="title__name">More from Advanced Threats</div>
+              <div class="title__wave"></div>
+            </header>
+
+            <!-- CARDS -->
+            <div class="related__cards">
+                <amp-list layout="responsive" width="1440" height="275" credentials="include" src="https://securityintelligence.com/wp-content/themes/sapphire/app/jsons/posts.php?quantity=4&category=threats&post__not_in=405629" binding="no">
+                    <template type="amp-mustache">
+                        <div class="row">
+
+                            <!-- ARTICLES -->
+                            {{#articles}}
+                                <article class="related__article">
+                                    <a href="{{permalink}}?category=threats" title="{{title}}" class="related__link">
+                                        <div class="related__image">
+                                            <amp-img width="630" height="330" layout="responsive" src="{{image}}" alt="{{title}}"></amp-img>
+                                        </div>
+                                        <div class="related__labels">
+                                            <div class="related__date-and-time">{{date-and-time}}</div>
+                                            <span>|</span>
+                                            <div class="related__read-time">{{read-time}}</div>
+                                        </div>
+                                        <h3 class="related__title">{{title}}</h3>
+                                    </a>
+                                </article>
+                            {{/articles}}
+
+                        </div>
+                    </template>
+                </amp-list>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div style="background-color: #13171a;">
+      <div class="container">
+
+            <!-- FOOTER -->
+            <section id="footer" class="footer">                                                                          
+                  <!-- LOGO -->
+                  <div class="footer__logo">
+                        <amp-img width="280" height="31" layout="responsive" src="https://securityintelligence.com/wp-content/themes/sapphire/images/logo-white.svg" alt="Security Intelligence"></amp-img>
+                  </div>
+
+                  <!-- COPY  -->
+                  <div class="footer__copy">			<div class="textwidget"><p>Analysis and insights from hundreds of the brightest minds in the cybersecurity industry to help you prove compliance, grow business and stop threats.</p>
+</div>
+		</div>
+
+                  <!-- LINKS -->
+                  <div class="footer__list">
+                        <a href="/news/" class="footer__link">Cybersecurity News</a>
+                        <a href="/category/topics/" class="footer__link">By Topic</a>
+                        <a href="/category/industries/" class="footer__link">By Industry</a>
+                        <a href="/series/" class="footer__link">Exclusive Series</a>
+                        <a href="/category/x-force/" class="footer__link">Threat Research</a>
+                        <a href="/media/" class="footer__link">Podcast</a>
+                        <a href="/events/" class="footer__link">Events</a>
+                        <a href="/about-us/" class="footer__link">Contact</a>
+                        <a href="/about-us/" class="footer__link">About Us</a>
+                        <a href="/become-a-contributor/" class="footer__link">Become a Contributor</a>
+                  </div>
+
+
+                  <!-- SOCIAL NETWORKS -->
+                  <div class="footer__social-networks">
+                        <div class="headline">Follow us on social</div>
+
+                        <a href="https://www.twitter.com/ibmsecurity" aria-label="Twitter" class="footer__icon" style="left:-4px;">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="#FFFFFF"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </a>
+                        <a href="https://www.linkedin.com/company/ibm-security" aria-label="LinkedIn" class="footer__icon" style="justify-self: center;">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="#FFFFFF"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg>
+                        </a>
+                        <a href="https://www.youtube.com/c/IBMSecurity" aria-label="YouTube" class="footer__icon" style="justify-self: end;">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="#FFFFFF"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                        </a>
+                  </div>
+
+            </section>
+      </div>
+</div>
+
+
+<div style="background-color:black">
+      <div class="container" >
+
+            <!-- UTILITIES BAR -->
+            <section class="utility_bar">
+                  
+                  <!-- LINKS -->
+                  <div class="utility_bar__links" aria-label="Footer Navigation">
+                        <a href="http://www.ibm.com?ce=ISM0484&ct=SWG&cmp=IBMSocial&cm=h&cr=Security&ccy=US" target="_blank" rel="noopener, noreferrer">© 2021 IBM</a>
+                        <a href="https://www.ibm.com/contact/?ce=ISM0484&ct=SWG&cmp=IBMSocial&cm=h&cr=Security&ccy=US" target="_blank" rel="noopener, noreferrer">Contact</a>
+                        <a href="https://www.ibm.com/privacy/?ce=ISM0484&ct=SWG&cmp=IBMSocial&cm=h&cr=Security&ccy=US" target="_blank" rel="noopener, noreferrer">Privacy</a>
+                        <a href="https://www.ibm.com/legal/?ce=ISM0484&ct=SWG&cmp=IBMSocial&cm=h&cr=Security&ccy=US&cm_mc_uid=03001744655915532865554&cm_mc_sid_50200000=84159441565120380187" target="_blank" rel="noopener, noreferrer">Terms of use</a>
+                        <a href="https://www.ibm.com/accessibility/?ce=ISM0484&ct=SWG&cmp=IBMSocial&cm=h&cr=Security&ccy=US" target="_blank" rel="noopener, noreferrer">Accessibility</a>
+                        <a href="#" onclick="truste.eu.clickListener();return false;" target="_blank" rel="noopener, noreferrer">Cookie Preferences</a>
+                  </div>
+
+                  <!-- Sponsor credits -->
+                  <div class="utility_bar__sponsor">
+                        <a href="https://www.ibm.com/security?ce=ISM0484&amp;ct=SWG&amp;cmp=IBMSocial&amp;cm=h&amp;cr=Security&amp;ccy=US" target="_blank" data-icon="B" class="icon ibm" rel="noopener, noreferrer">
+                              <span>Sponsored by
+                              <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31.97 14.06"><defs><style>.cls-1{fill:#fff;}</style></defs><title>si-icon-eightbarfeature</title><path class="cls-1" d="M27.17,12.6h4.21v.84H27.17Zm0-1.68h4.21v.84H27.17Zm0-1.68h2.52v.84H27.17Zm0-1.69h2.52V8.4H27.17Zm0-1.68h2.52v.84H27.17Zm-.84-4.2.28-.85h4.77v.85Zm-.56,1.68.29-.84h5.32v.84ZM25.22,5l.28-.84h4.19V5Zm-.56,1.68L25,5.87h2.22l-.27.84Zm0,6.73-.28-.84H25Zm-.55-1.68-.29-.84H25.5l-.28.84Zm-.56-1.68-.27-.84H26l-.27.84ZM23,8.4l-.29-.85h3.9l-.28.85Zm-.57-1.69-.27-.84h2.22l.28.84Zm-2.8,2.53h2.53v.84H19.63Zm0-1.69h2.53V8.4H19.63Zm0-1.68h2.53v.84H19.63Zm0-.84V4.19h4.19l.29.84ZM18,12.6h4.21v.84H18Zm0-1.68h4.21v.84H18Zm0-7.57V2.51h5.32l.28.84Zm0-1.68V.82h4.76l.29.85ZM14.16,9.24H17a2.23,2.23,0,0,1,.07.37,2.49,2.49,0,0,1,0,.47H14.16Zm0-5h2.95a2.38,2.38,0,0,1,0,.46A2.18,2.18,0,0,1,17,5H14.16ZM9.11,9.24h2.52v.84H9.11Zm0-1.69H16a5,5,0,0,1,.4.4,2,2,0,0,1,.32.45H9.11Zm0-1.68h7.57a2,2,0,0,1-.32.45,4.89,4.89,0,0,1-.4.39H9.11Zm0-1.68h2.52V5H9.11ZM7.42,12.6H16a3.09,3.09,0,0,1-1,.62,3.73,3.73,0,0,1-1.32.22H7.42Zm0-1.68H17a2.47,2.47,0,0,1-.15.46,2.24,2.24,0,0,1-.21.38H7.42Zm0-8.41h9.22a1.91,1.91,0,0,1,.21.38,2.47,2.47,0,0,1,.15.46H7.42Zm0-1.69H13.6a3.73,3.73,0,0,1,1.32.23,3.09,3.09,0,0,1,1,.62H7.42Zm-5,8.42H4.9v.84H2.38Zm0-1.69H4.9V8.4H2.38Zm0-1.68H4.9v.84H2.38Zm0-1.68H4.9V5H2.38ZM.69,12.6H6.58v.84H.69Zm0-1.68H6.58v.84H.69Zm0-8.41H6.58v.84H.69ZM.69.82H6.58v.85H.69Z"/></svg>
+                              </span>
+                        </a>
+                  </div>
+            </section>
+            
+      </div>
+</div>
+ 
+
+<script>
+
+    
+</script>
+
+
+<!-- FOOTER SCRIPTS -->
+
+  </body>
+</html>

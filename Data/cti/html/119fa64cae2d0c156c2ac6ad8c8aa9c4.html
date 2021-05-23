@@ -1,0 +1,715 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+        <html lang="en">
+        <head><title>Anatomy of a system call, part 2 [LWN.net]</title>
+        <meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@lwnnet" />
+<meta name="twitter:title" content="Anatomy of a system call, part 2" />
+<meta name="twitter:description" content="
+      The previous article explored the kernel
+      implementation of system calls (syscalls) in its most vanilla form: a
+      normal syscall, on the most common architecture: x86_64.  We complete our
+      look at syscalls with variations on that basic theme, covering other
+      x86 architectures and other syscall 
+      mechanisms.
+      We start by exploring the various 32-bit x86 architecture variants, for which a map of the territory involved
+      may be helpful.  The map is clickable on the filenames and arrow labels
+      to link to the
+      code referenced:
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    x86_32 syscall invocation via SYSENTER
+    " />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+        <link rel="icon" href="/images/favicon.png" type="image/png">
+        <link rel="alternate" type="application/rss+xml" title="LWN.net headlines" href="https://lwn.net/headlines/newrss">
+<link rel="alternate" type="application/rss+xml" title="Comments posted to this article" href="https://lwn.net/headlines/604515/">
+        <link rel="stylesheet" href="/CSS/lwn">
+<link rel="stylesheet" href="/CSS/nosub">
+<link rel="stylesheet" href="/CSS/pure-min">
+           <!--[if lte IE 8]>
+             <link rel="stylesheet" href="/CSS/grids-responsive-old-ie-min">
+           <![endif]-->
+           <!--[if gt IE 8]><!-->
+             <link rel="stylesheet" href="/CSS/grids-responsive-min">
+           <!--<![endif]-->
+           <link rel="stylesheet" href="/CSS/pure-lwn">
+           
+        
+<script type="text/javascript">var p="http",d="static";if(document.location.protocol=="https:"){p+="s";d="engine";}var z=document.createElement("script");z.type="text/javascript";z.async=true;z.src=p+"://"+d+".adzerk.net/ados.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(z,s);</script>
+<script type="text/javascript">
+var ados_keywords = ados_keywords || [];
+if( location.protocol=='https:' ) {
+        ados_keywords.push('T:SSL');
+} else {
+        ados_keywords.push('T:HTTP');
+}
+
+var ados = ados || {};
+ados.run = ados.run || [];
+ados.run.push(function() {
+
+ados_add_placement(4669, 20979, "azk13321_leaderboard", 4).setZone(16026);
+
+ados_add_placement(4669, 20979, "azk93271_right_zone", [5,10,6]).setZone(16027);
+
+ados_add_placement(4669, 20979, "azk31017_tracking", 20).setZone(20995);
+
+
+
+ados_setKeywords(ados_keywords.join(', ')); 
+ados_load();
+});</script>
+
+        </head>
+        <body bgcolor="#ffffff" link="Blue" VLINK="Green" alink="Green">
+        <a name="t"></a>
+<div id="menu"><a href="/"><img src="https://static.lwn.net/images/logo/barepenguin-70.png" class="logo"
+                 border="0" alt="LWN.net Logo">
+           <font class="logo">LWN<br>.net</font>
+           <font class="logobl">News from the source</font></a>
+           <a href="/"><img src="https://static.lwn.net/images/lcorner-ss.png" class="sslogo"
+                 border="0" alt="LWN"></a><div class="navmenu-container">
+           <ul class="navmenu">
+        <li><a class="navmenu" href="#t"><b>Content</b></a><ul><li><a href="/current/">Weekly Edition</a></li><li><a href="/Archives/">Archives</a></li><li><a href="/Search/">Search</a></li><li><a href="/Kernel/">Kernel</a></li><li><a href="/Security/">Security</a></li><li><a href="/Distributions/">Distributions</a></li><li><a href="/Calendar/">Events calendar</a></li><li><a href="/Comments/unread">Unread comments</a></li><li><hr></li><li><a href="/op/FAQ.lwn">LWN FAQ</a></li><li><a href="/op/AuthorGuide.lwn">Write for us</a></li></ul></li>
+<li><a class="navmenu" href="#t"><b>Edition</b></a><ul><li><a href="/Articles/605132/">Return to the Kernel page</a></li></ul></li>
+</ul></div>
+</div> <!-- menu -->
+<div class="pure-g not-handset" style="margin-left: 10.5em">
+           <div class="not-print">
+             <div id="azk13321_leaderboard"></div>
+           </div>
+           </div>
+        <div class="topnav-container">
+<div class="not-handset"><form action="https://lwn.net/Login/" method="post" name="loginform"
+                 class="loginform">
+        <label><b>User:</b> <input type="text" name="Username" value="" size="8" id="uc" /></label> 
+		<label><b>Password:</b> <input type="password" name="Password" size="8" id="pc" /></label> <input type="hidden" name="target" value="/Articles/604515/" /> <input type="submit" name="submit" value="Log in" /></form> |
+           <form action="https://lwn.net/subscribe/" method="post" class="loginform">
+           <input type="submit" name="submit" value="Subscribe" />
+           </form> |
+           <form action="https://lwn.net/Login/newaccount" method="post" class="loginform">
+           <input type="submit" name="submit" value="Register" />
+           </form>
+        </div>
+               <div class="handset-only">
+               <a href="/subscribe/"><b>Subscribe</b></a> /
+               <a href="/Login/"><b>Log in</b></a> /
+               <a href="/Login/newaccount"><b>New account</b></a>
+               </div>
+               </div><div class="pure-grid maincolumn">
+<div class="lwn-u-1 pure-u-md-19-24">
+<div class="PageHeadline">
+<h1>Anatomy of a system call, part 2</h1>
+</div>
+<div class="ArticleText">
+<center>
+           <table class="Form" width="60%">
+           <tr><td><b>Did you know...?</b><p>LWN.net is a subscriber-supported publication; we rely on subscribers
+       to keep the entire operation going.  Please help out by <a
+       href="/subscribe/">buying a subscription</a> and keeping LWN on the
+       net.</td></tr>
+           </table>
+           </center>
+           <p>
+           <div class="GAByline">
+           <p>July 16, 2014</p>
+           <p>This article was contributed by David Drysdale</p>
+           </div>
+<p>
+      The <a href="/Articles/604287/">previous article</a> explored the kernel
+      implementation of system calls (syscalls) in its most vanilla form: a
+      normal syscall, on the most common architecture: x86_64.  We complete our
+      look at syscalls with variations on that basic theme, covering other
+      x86 architectures and other syscall 
+      mechanisms.
+      We start by exploring the various 32-bit x86 architecture variants, for which a map of the territory involved
+      may be helpful.  The map is clickable on the filenames and arrow labels
+      to link to the
+      code referenced:
+    </p>
+
+    <img src="https://static.lwn.net/images/2014/syscall.png" usemap="#syscall"/>
+
+<map id="syscall" name="syscall">
+<area shape="rect" id="node5" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L503" title="system_call()\nkernel/entry_32.S" alt="" coords="25,191,146,234"/>
+<area shape="poly" id="edge3" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L771" title="Via trap gate for\nSYSCALL_VECTOR" alt="" coords="217,77,189,79,157,86,127,99,102,119,93,132,88,147,85,179,80,178,83,146,89,130,98,115,125,95,156,82,188,75,217,72"/>
+<area shape="rect" id="edge3-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L771" title="Via trap gate for\nSYSCALL_VECTOR" alt="" coords="100,117,205,144"/>
+<area shape="rect" id="node7" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L399" title="ia32_syscall()\nia32/ia32entry.S" alt="" coords="349,191,461,234"/>
+<area shape="poly" id="edge5" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L766" title="Via trap gate for\nIA32_SYSCALL_VECTOR" alt="" coords="231,97,214,121,212,132,217,142,225,147,238,150,272,150,308,148,335,151,359,164,379,180,376,184,356,168,334,156,308,153,272,155,237,154,223,152,213,145,207,133,209,119,227,94"/>
+<area shape="rect" id="edge5-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L766" title="Via trap gate for\nIA32_SYSCALL_VECTOR" alt="" coords="215,117,351,144"/>
+<area shape="rect" id="node4" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L384" title="ia32_sysenter_target()\nkernel/entry_32.S" alt="" coords="168,191,319,234"/>
+<area shape="poly" id="edge7" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210" title="Via MSR for\nMSR_IA32_SYSENTER_EIP" alt="" coords="360,95,364,120,363,133,358,145,348,152,335,156,285,186,283,182,333,151,346,148,354,142,359,132,360,120,355,96"/>
+<area shape="rect" id="edge7-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210" title="Via MSR for\nMSR_IA32_SYSENTER_EIP" alt="" coords="362,117,509,144"/>
+<area shape="rect" id="node8" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L118" title="ia32_sysenter_target()\nia32/ia32entry.S" alt="" coords="483,191,634,234"/>
+<area shape="poly" id="edge9" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210" title="Via MSR for\nMSR_IA32_SYSENTER_EIP" alt="" coords="389,73,419,77,453,84,486,96,516,115,529,129,539,145,553,177,549,179,535,147,525,132,513,119,484,101,451,89,418,82,389,78"/>
+<area shape="rect" id="edge9-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210" title="Via MSR for\nMSR_IA32_SYSENTER_EIP" alt="" coords="536,117,683,144"/>
+<area shape="rect" id="node6" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_64.S#L593" title="system_call()\nkernel/entry_64.S" alt="" coords="656,191,777,234"/>
+<area shape="poly" id="edge1" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/cpu/common.c#L1134" title="Via MSR for\nMSR_LSTAR" alt="" coords="733,96,723,178,718,178,728,95"/>
+<area shape="rect" id="edge1-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/cpu/common.c#L1134" title="Via MSR for\nMSR_LSTAR" alt="" coords="727,117,794,144"/>
+<area shape="rect" id="node9" href="https://elixir.bootlin.com/linux/v3.14/source/fs/read_write.c#L511" title="sys_read()\nfs/read_write.c" alt="" coords="354,330,457,373"/>
+<area shape="poly" id="edge8" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls_syscall_32.tbl#L12" title="sys_call_table\n[3]" alt="" coords="267,232,321,281,370,320,367,324,318,284,264,236"/>
+<area shape="rect" id="edge8-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls_syscall_32.tbl#L12" title="sys_call_table\n[3]" alt="" coords="320,256,401,282"/>
+<area shape="poly" id="edge4" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L12" title="sys_call_table\n[3]" alt="" coords="119,232,160,257,206,280,276,308,342,330,341,334,274,312,204,285,158,261,117,237"/>
+<area shape="rect" id="edge4-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L12" title="sys_call_table\n[3]" alt="" coords="205,256,286,282"/>
+<area shape="poly" id="edge2" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_64.tbl#L9" title="sys_call_table\n[0]" alt="" coords="706,236,685,261,658,284,612,308,562,326,514,338,470,346,469,341,513,333,561,321,610,304,655,280,682,258,702,233"/>
+<area shape="rect" id="edge2-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_64.tbl#L9" title="sys_call_table\n[0]" alt="" coords="687,256,768,282"/>
+<area shape="poly" id="edge6" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L12" title="ia32_sys_call_table\n[3]\n" alt="" coords="408,234,408,317,403,317,403,234"/>
+<area shape="rect" id="edge6-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L12" title="ia32_sys_call_table\n[3]\n" alt="" coords="406,256,517,282"/>
+<area shape="poly" id="edge10" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L163" title="ia32_sys_call_table\n[3]" alt="" coords="553,235,541,260,523,284,496,307,466,326,463,322,493,303,520,281,537,257,549,233"/>
+<area shape="rect" id="edge10-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L163" title="ia32_sys_call_table\n[3]" alt="" coords="541,256,652,282"/>
+</map>
+
+    <h4>x86_32 syscall invocation via <tt>SYSENTER</tt></h4>
+    <p>
+      The normal invocation of a system call on a 32-bit x86_32 system is closely analogous to the mechanism
+      for x86_64 systems that was described in the previous article. Here, the
+      <tt>arch/x86/syscalls/syscall_32.tbl</tt> table has
+      an <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L12">entry</a> for <tt>sys_read</tt>:
+    </p>
+<pre>
+    3	i386	read			sys_read
+</pre>
+    <p>
+      This entry indicates that <tt>read()</tt> for x86_32 has syscall number 3, with entry point
+      <tt>sys_read()</tt> and an <tt>i386</tt> calling convention.  The
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscalltbl.sh">table post-processor</a> will emit a <tt>__SYSCALL_I386(3,
+      sys_read, sys_read)</tt> macro call into the generated
+      <tt>arch/x86/include/generated/asm/syscalls_32.h</tt> file.  This, in turn, is used to
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/syscall_32.c">build</a> the syscall table, <tt>sys_call_table</tt>, as before.
+    </p>
+    <p>
+      Moving outward, <tt>sys_call_table</tt> is accessed from the
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L384"><tt>ia32_sysenter_target</tt></a>
+      entry point of <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L435"><tt>arch/x86/kernel/entry_32.S</tt></a>.
+      However, here the
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L186"><tt>SAVE_ALL</tt></a> macro actually pushes a different
+      set of registers (EBX/ECX/EDX/ESI/EDI/EBP rather than RDI/RSI/RDX/R10/R8/R9) onto the stack, reflecting the different syscall
+      ABI convention for this platform.
+    </p>
+    <p>
+      The location of the <tt>ia32_sysenter_target</tt> entry point gets
+      <a
+    href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L240">written</a> to
+      a model-specific register (MSR) at kernel start (in <tt>enable_sep_cpu()</tt>); in this case, the MSR
+      in question is
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/include/uapi/asm/msr-index.h#L54"><tt>MSR_IA32_SYSENTER_EIP</tt></a> (0x176),
+      which is used for handling the <tt>SYSENTER</tt> instruction.
+    </p>
+    <p>
+      This shows the invocation path from userspace. The standard modern ABI for how x86_32 programs invoke a system call
+      is to put the system call number (3 for <tt>read()</tt>) into the EAX register, and the other parameters into
+      specific registers (EBX, ECX, and EDX for the first 3 parameters), then invoke the <tt>SYSENTER</tt> instruction.
+    </p>
+    <p>
+      This instruction causes the processor to transition to ring 0 and invoke the code referenced by
+      the <tt>MSR_IA32_SYSENTER_EIP</tt> model-specific register &mdash; namely <tt>ia32_sysenter_target</tt>.
+      That code pushes the registers onto the (kernel) stack, and calls the function
+      pointer at entry EAX in <tt>sys_call_table</tt> &mdash; namely <tt>sys_read()</tt>, which is a
+      thin, <tt>asmlinkage</tt> wrapper for the real implementation in <tt>SYSC_read()</tt>.
+    </p>
+
+    <h4>x86_32 syscall invocation via <tt>INT 0x80</tt></h4>
+    <p>
+      The <tt>sys_call_table</tt> table is also accessed
+      in <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L515"><tt>arch/x86/kernel/entry_32.S</tt></a> from
+      the <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L503"><tt>system_call</tt></a> assembly entry point.  Again,
+      this entry point saves registers to the stack, then uses the EAX register to pick the relevant entry in <tt>sys_call_table</tt> and call it.
+      This time,  the location of the <tt>system_call</tt> entry point is
+      <a
+    href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L771">used</a>
+    by <tt>trap_init()</tt>:
+    </p>
+<pre>
+    #ifdef CONFIG_X86_32
+    	set_system_trap_gate(SYSCALL_VECTOR, &amp;system_call);
+    	set_bit(SYSCALL_VECTOR, used_vectors);
+    #endif
+</pre>
+    <p>
+      This sets up the handler for the
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/include/asm/irq_vectors.h#L51"><tt>SYSCALL_VECTOR</tt></a> trap to be <tt>system_call</tt>;
+      that is, it sets it up to be the recipient of the venerable <tt>INT 0x80</tt> software interrupt method for invoking
+      system calls.</p>
+    <p>
+      This is the original user-space invocation path for system calls,
+    which is now generally avoided because, on modern
+      processors, it's slower than the instructions that are specifically designed for system call invocation
+      (<tt>SYSCALL</tt> and <tt>SYSENTER</tt>).
+    </p>
+    <p>
+      With this older ABI, programs invoke a system call by putting the system call number into
+      the EAX register, and the other parameters into specific registers
+    (EBX, ECX, and EDX for the first 3 parameters),
+      then invoking the <tt>INT 0x80</tt> instruction.  This instruction causes the processor to transition to ring 0 and
+      invoke the trap handler for software interrupt 0x80 &mdash; namely <tt>system_call</tt>.  The <tt>system_call</tt>
+      code pushes the registers onto the (kernel) stack, and calls the function pointer at entry EAX in
+      the <tt>sys_call_table</tt> table &mdash; namely <tt>sys_read()</tt>, the thin, <tt>asmlinkage</tt> wrapper for the
+      real implementation in <tt>SYSC_read()</tt>.  Much of that should
+    seem familiar, as it is the same as for using <tt>SYSENTER</tt>.
+    </p>
+
+    <h4>x86 syscall invocation mechanisms</h4>
+    <p>
+      For reference, the different user-space syscall invocation mechanisms on x86 we've seen so far are as
+      follows:
+    </p>
+    <ul>
+      <li><p>64-bit programs use the <tt>SYSCALL</tt> instruction.  This instruction was originally introduced by AMD,
+          but was subsequently implemented on Intel 64-bit processors and so is the
+          best choice for
+          <a href="http://wiki.osdev.org/SYSENTER#Compatibility_across_Intel_and_AMD">cross-platform compatibility</a>.</p></li>
+      <li><p>Modern 32-bit programs use the <tt>SYSENTER</tt> instruction, which has been present since Intel
+          introduced the IA-32 architecture.</p></li>
+      <li><p>Ancient 32-bit programs use the <tt>INT 0x80</tt> instruction to trigger a software interrupt handler, but
+          this is much slower than <tt>SYSENTER</tt> on modern processors.</p></li>
+    </ul>
+<a name="x86_32"></a>
+    <h4>x86_32 syscall invocation on x86_64</h4>
+    <p>
+      Now for a more complicated case:  what happens if we are running a 32-bit binary on our x86_64 system?
+      From the user-space perspective, nothing is different; in fact, nothing can be different, because the user code
+      being run is exactly the same.
+    </p>
+    <p>
+      For the <tt>SYSENTER</tt> case, an x86_64 kernel
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210">registers</a>
+      a different function
+      as the handler in the <tt>MSR_IA32_SYSENTER_EIP</tt> model-specific register. This function has the
+      same name (<tt>ia32_sysenter_target</tt>) as the x86_32 code but a different
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L118">definition</a> (in <tt>arch/x86/ia32/ia32entry.S</tt>).
+      In particular, it pushes the old-style registers but uses a different syscall table,
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L163"><tt>ia32_sys_call_table</tt></a>.  This table
+      is <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/syscall_ia32.c#L18">built</a> from the 32-bit table of entries; in
+      particular, it will have entry 3 (as used on 32-bit systems), rather
+    than 0 
+    (which is the syscall number for <tt>read()</tt> on 64-bit systems), mapping to <tt>sys_read()</tt>.
+    </p>
+
+    <p>
+      For the <tt>INT 0x80</tt> case, the <tt>trap_init()</tt> code on x86_64
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L765">instead invokes</a>:</p>
+<pre>
+    #ifdef CONFIG_IA32_EMULATION
+    	set_system_intr_gate(IA32_SYSCALL_VECTOR, ia32_syscall);
+    	set_bit(IA32_SYSCALL_VECTOR, used_vectors);
+    #endif
+</pre>
+    <p>
+      This maps the <tt>IA32_SYSCALL_VECTOR</tt> (which is
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/include/asm/irq_vectors.h#L49">still</a> 0x80) to
+      <tt>ia32_syscall</tt>.  This assembly entry point
+      (in <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L399"><tt>arch/x86/ia32/ia32entry.S</tt></a>)
+      uses <tt>ia32_sys_call_table</tt> rather than the 64-bit <tt>sys_call_table</tt>.
+    </p>
+
+
+    <h4>A more complex example: <tt>execve</tt> and 32-bit compatibility handling</h4>
+    <p>
+      Now let's look at a system call that involves other complications: <tt>execve()</tt>.  We'll again work outward from the
+      kernel implementation of the system call, and explore the differences from the simpler <tt>read()</tt> call
+      along the way.  Again, a clickable map of the territory we're going to explore might help things along:
+    </p>
+
+
+    <img src="https://static.lwn.net/images/2014/execve.png" usemap="#execve"/>
+
+<map id="execve" name="execve">
+<area shape="rect" id="node6" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L503" title="system_call()\nkernel/entry_32.S" alt="" coords="22,166,127,204"/>
+<area shape="poly" id="edge5" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L771" title="Via trap gate for\nSYSCALL_VECTOR" alt="" coords="188,67,163,69,136,75,110,86,89,103,81,115,77,128,74,156,70,155,73,127,78,113,86,101,108,83,135,71,162,65,188,63"/>
+<area shape="rect" id="edge5-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L771" title="Via trap gate for\nSYSCALL_VECTOR" alt="" coords="87,102,179,125"/>
+<area shape="rect" id="node8" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L399" title="ia32_syscall()\nia32/ia32entry.S" alt="" coords="304,166,402,204"/>
+<area shape="poly" id="edge7" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L766" title="Via trap gate for\nIA32_SYSCALL_VECTOR" alt="" coords="200,84,186,105,185,115,189,124,196,128,207,130,237,130,268,129,292,132,312,143,330,157,328,160,310,146,291,136,268,133,237,135,207,135,195,132,186,127,180,116,182,104,197,82"/>
+<area shape="rect" id="edge7-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/traps.c#L766" title="Via trap gate for\nIA32_SYSCALL_VECTOR" alt="" coords="187,102,306,125"/>
+<area shape="rect" id="node5" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L384" title="ia32_sysenter_target()\nkernel/entry_32.S" alt="" coords="147,166,278,204"/>
+<area shape="poly" id="edge9" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210" title="Via MSR for\nMSR_IA32_SYSENTER_EIP" alt="" coords="314,83,317,104,316,116,312,126,303,133,292,135,248,162,246,158,290,132,301,129,309,124,312,115,313,104,309,84"/>
+<area shape="rect" id="edge9-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210" title="Via MSR for\nMSR_IA32_SYSENTER_EIP" alt="" coords="315,102,444,125"/>
+<area shape="rect" id="node9" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L118" title="ia32_sysenter_target()\nia32/ia32entry.S" alt="" coords="421,166,552,204"/>
+<area shape="poly" id="edge11" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210" title="Via MSR for\nMSR_IA32_SYSENTER_EIP" alt="" coords="339,64,365,67,394,73,423,84,449,100,461,112,470,126,482,155,478,156,466,128,457,115,447,104,421,88,393,77,364,71,339,68"/>
+<area shape="rect" id="edge11-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32-setup.c#L210" title="Via MSR for\nMSR_IA32_SYSENTER_EIP" alt="" coords="467,102,595,125"/>
+<area shape="rect" id="node7" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_64.S#L593" title="system_call()\nkernel/entry_64.S" alt="" coords="601,166,707,204"/>
+<area shape="poly" id="edge1" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/cpu/common.c#L1134" title="Via MSR for\nMSR_LSTAR" alt="" coords="645,83,649,125,652,155,648,156,645,125,641,84"/>
+<area shape="rect" id="edge1-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/cpu/common.c#L1134" title="Via MSR for\nMSR_LSTAR" alt="" coords="647,102,706,125"/>
+<area shape="poly" id="edge3" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/cpu/common.c#L1134" title="Via MSR for\nMSR_LSTAR" alt="" coords="728,84,707,126,681,160,678,157,704,124,724,82"/>
+<area shape="rect" id="edge3-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/cpu/common.c#L1134" title="Via MSR for\nMSR_LSTAR" alt="" coords="717,102,776,125"/>
+<area shape="rect" id="node13" href="https://elixir.bootlin.com/linux/v3.14/source/fs/exec.c#L1614" title="sys_execve()\nfs/exec.c" alt="" coords="207,365,289,403"/>
+<area shape="poly" id="edge10" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20" title="sys_call_table\n[11]" alt="" coords="214,204,215,253,223,311,237,354,233,356,219,312,211,253,210,204"/>
+<area shape="rect" id="edge10-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20" title="sys_call_table\n[11]" alt="" coords="221,272,291,295"/>
+<area shape="poly" id="edge6" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20" title="sys_call_table\n[11]" alt="" coords="83,203,105,254,121,283,141,310,171,336,203,358,201,361,168,340,138,313,118,285,101,256,79,205"/>
+<area shape="rect" id="edge6-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20" title="sys_call_table\n[11]" alt="" coords="140,272,210,295"/>
+<area shape="rect" id="node11" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_64.S#L862" title="stub_execve()\nkernel/entry_64.S" alt="" coords="464,265,570,303"/>
+<area shape="poly" id="edge4" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_64.tbl#L68" title="sys_call_table\n[59]" alt="" coords="612,206,580,225,542,258,539,255,577,221,610,202"/>
+<area shape="rect" id="edge4-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_64.tbl#L68" title="sys_call_table\n[59]" alt="" coords="578,223,649,246"/>
+<area shape="rect" id="node12" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_64.S#L906" title="stub_x32_execve()\nkernel/entry_64.S" alt="" coords="596,265,708,303"/>
+<area shape="poly" id="edge2" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_64.tbl#L338" title="sys_call_table\n[520]" alt="" coords="656,204,655,254,650,254,652,204"/>
+<area shape="rect" id="edge2-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_64.tbl#L338" title="sys_call_table\n[520]" alt="" coords="654,223,725,246"/>
+<area shape="rect" id="node10" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L466" title="stub32_execve()\nia32/ia32entry.S" alt="" coords="330,265,431,303"/>
+<area shape="poly" id="edge8" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20" title="ia32_sys_call_table\n[11]\n" alt="" coords="337,205,325,225,323,235,326,245,335,257,332,259,322,247,319,235,321,224,333,203"/>
+<area shape="rect" id="edge8-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20" title="ia32_sys_call_table\n[11]\n" alt="" coords="324,223,421,246"/>
+<area shape="poly" id="edge12" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20" title="ia32_sys_call_table\n[11]" alt="" coords="467,206,446,224,422,248,410,259,407,256,419,245,443,221,464,203"/>
+<area shape="rect" id="edge12-label" href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20" title="ia32_sys_call_table\n[11]" alt="" coords="445,223,542,246"/>
+<area shape="rect" id="node14" href="https://elixir.bootlin.com/linux/v3.14/source/fs/exec.c#L1622" title="compat_sys_execve()\nfs/exec.c" alt="" coords="317,443,444,481"/>
+<area shape="rect" id="node17" href="https://elixir.bootlin.com/linux/v3.14/source/fs/exec.c#L1569" title="compat_do_execve()\nfs/exec.c" alt="" coords="313,521,435,558"/>
+<area shape="rect" id="node16" href="https://elixir.bootlin.com/linux/v3.14/source/fs/exec.c#L1559" title="do_execve()\nfs/exec.c" alt="" coords="214,521,292,558"/>
+<area shape="rect" id="node18" href="https://elixir.bootlin.com/linux/v3.14/source/fs/exec.c#L1440" title="do_execve_common()\nfs/exec.c" alt="" coords="231,598,360,636"/>
+</map>
+
+
+    <p>
+      The <tt>execve()</tt> definition in <a href="https://elixir.bootlin.com/linux/v3.14/source/fs/exec.c#L1614"><tt>fs/exec.c</tt></a> looks similar to
+      that for <tt>read()</tt>, but there is an interesting additional function defined right after it (at least
+      when <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/Kconfig#L2382"><tt>CONFIG_COMPAT</tt></a> is defined):</p>
+<pre>
+    SYSCALL_DEFINE3(execve,
+		    const char __user *, filename,
+    		    const char __user *const __user *, argv,
+    		    const char __user *const __user *, envp)
+    {
+    	    return do_execve(getname(filename), argv, envp);
+    }
+    #ifdef CONFIG_COMPAT
+    asmlinkage long compat_sys_execve(const char __user * filename,
+    	    const compat_uptr_t __user * argv,
+    	    const compat_uptr_t __user * envp)
+    {
+    	    return compat_do_execve(getname(filename), argv, envp);
+    }
+    #endif
+</pre>
+    <p>
+      Following the processing path, these two implementations converge on <tt>do_execve_common()</tt> to perform the
+      real work (<tt>sys_execve()</tt> &rarr; <tt>do_execve()</tt> &rarr; <tt>do_execve_common()</tt> versus
+      <tt>compat_sys_execve()</tt> &rarr; <tt>compat_do_execve()</tt>
+      &rarr; <tt>do_execve_common()</tt>), setting up
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/fs/exec.c#L387"><tt>user_arg_ptr</tt></a> structures along the way.
+      These structures hold those syscall arguments that are pointers-to-pointers, together with an indication of whether
+      they come from a 32-bit compatibility ABI; if so, the value being pointed to is a 32-bit user-space address, not a
+      64-bit value, and the
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/fs/exec.c#L399">code to copy</a>
+      the argument values from user space needs to allow for that.
+    </p>
+    <p>
+      So, unlike <tt>read()</tt>, where the syscall implementation didn't need to distinguish between 32-bit and
+      64-bit callers because the arguments were pointers-to-values, <tt>execve()</tt> does need to distinguish,
+      because it has arguments that are pointers-to-pointers.  This turns out to be a common theme &mdash;
+      other <tt>compat_sys_<i>name</i>()</tt> entry points are there to cope with pointer-to-pointer arguments (or
+      pointer-to-struct-containing-pointer arguments, for example
+      <tt>struct&nbsp;iovec</tt> or <tt>struct&nbsp;aiocb</tt>).
+    </p>
+<h4>x32 ABI support</h4>
+    <p>
+      The complication of having two variant implementations of <tt>execve()</tt> spreads outward from the code
+      to the system call tables. For x86_64, the <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_64.tbl">64-bit table</a> has
+      two distinct entries for <tt>execve()</tt>:</p>
+<pre>
+    59	64	execve			stub_execve
+    ...
+    520	x32	execve			stub_x32_execve
+</pre>
+    <p>
+      The additional entry in the 64-bit table at syscall number 520 is for
+      <a href="http://en.wikipedia.org/wiki/X32_ABI"><b>x32</b> ABI</a> programs, which run on x86_64 processors but use
+      32-bit pointers.  As a result of the <tt>64</tt> and <tt>x32</tt> ABI indicators, we will end up with
+      <tt>stub_execve</tt> as entry 59 in <tt>sys_call_table</tt>, and
+      <tt>stub_x32_execve</tt> as entry 520.
+    </p>
+    <p>
+      Although this is our first mention of the x32 ABI, it turns out that our previous <tt>read()</tt> example
+      did quietly include x32 ABI compatibility.  As no pointer-to-pointer address translation was needed, the
+      syscall invocation path (and syscall number) could simply be shared with the 64-bit version.
+    </p>
+    <p>
+      Both <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_64.S#L862"><tt>stub_execve</tt></a> and
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_64.S#L906"><tt>stub_x32_execve</tt></a> are defined in
+      <tt>arch/x86/kernel/entry_64.S</tt>.  These entry points call on <tt>sys_execve()</tt>
+      and <tt>compat_sys_execve()</tt>, but also save additional registers
+      (R12-R15, RBX, and RBP) to the kernel stack.
+      Similar <tt>stub_*</tt>  wrappers are also present in <tt>arch/x86/kernel/entry_64.S</tt> for other syscalls
+      (<tt>rt_sigreturn()</tt>, <tt>clone()</tt>, <tt>fork()</tt>, and <tt>vfork()</tt>) that may potentially need to
+      restart user-space execution at a different address and/or with a different user stack than when the syscall was
+      invoked.
+    </p>
+    <p>For x86_32, the 32-bit table has an <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/syscalls/syscall_32.tbl#L20">entry
+      for <tt>execve()</tt></a> that's slightly different in format from that for <tt>read()</tt>:
+    </p>
+<pre>
+    11	i386	execve			sys_execve			stub32_execve
+</pre>
+    <p>
+      First of all, this tells us that <tt>execve()</tt> has syscall number
+      of 11 on 32-bit systems, as compared to number
+      59 (or 520) on 64-bit systems.  More interesting to observe is the presence of an extra field in the 32-bit table,
+      holding a compatibility entry point <tt>stub32_execve</tt>.  For a native 32-bit build of the kernel, this extra
+      field is <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/syscall_32.c#L8">ignored</a> and the <tt>sys_call_table</tt>
+      holds <tt>sys_execve()</tt> as entry 11, as usual.</p>
+    <p>
+      However, for a 64-bit build of the kernel, the IA-32 compatibility code
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/syscall_ia32.c#L12">inserts</a> the <tt>stub32_execve()</tt>
+      entry point into <tt>ia32_sys_call_table</tt> as entry 11.  This
+      entry point is defined in
+      <a
+      href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L466"><tt>arch/x86/ia32/ia32entry.S</tt></a>
+      as:
+<pre>
+    PTREGSCALL stub32_execve, compat_sys_execve
+</pre> 
+The
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L455"><tt>PTREGSCALL</tt></a> macro
+      sets up the <tt>stub32_execve</tt> entry point to call on to <tt>compat_sys_execve()</tt> (by putting its
+      address into RAX), and saves additional registers (R12-R15, RBX, and RBP) to
+      the kernel stack (like <tt>stub_execve()</tt> above).
+    </p>
+
+<a name="vdso"></a>
+    <h4><tt>gettimeofday()</tt>: vDSO</h4>
+    <p>
+      Some system calls just read a small amount of information from the kernel, and
+      for these, the full machinery of a ring transition is a lot of overhead.
+      The vDSO (Virtual Dynamically-linked Shared Object) mechanism
+      speeds up some of these read-only syscalls by mapping the page containing
+      the relevant information (and code to read it) into user space, read-only.
+      In particular, the page is set up in the format of an ELF
+      shared-library, so it can be straightforwardly linked into user programs.
+    </p>
+    <p>
+      Running <tt>ldd</tt> on a normal glibc-using binary shows the vDSO
+      as a dependency on <tt>linux-vdso.so.1</tt> or <tt>linux-gate.so.1</tt> (which <tt>ldd</tt>
+      obviously can't find a file to back); it also shows up in the memory map
+      of a running process (<tt>[vdso]</tt> in <tt>cat /proc/<i>PID</i>/maps</tt>).
+    </p>
+    <p>
+      Historically,
+      <a href="https://lwn.net/Articles/446528/">vsyscall</a> was an
+      earlier mechanism to do something similar, which is now deprecated
+    due to security 
+      concerns.
+      This <a href="http://www.trilithium.com/johan/2005/08/linux-gate/">older
+        article by  Johan Petersson</a> describes how vsyscall's page
+      appears as an ELF object (at a fixed position) to user space.
+    </p>
+    <p>
+      There's a
+      <a href="http://www.linuxjournal.com/content/creating-vdso-colonels-other-chicken">Linux
+        Journal article</a> that discusses vDSO setup in some detail (although
+      it is now slightly out of date), so we'll just describe the basics here, as applied to
+      the <tt>gettimeofday()</tt> syscall.
+    </p>
+    <p>
+      First, <tt>gettimeofday()</tt> needs to access data. To allow this,
+      the relevant <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/vsyscall_64.c#L57"><tt>vsyscall_gtod_data</tt>
+        structure</a> is <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/include/asm/vvar.h#L36">exported</a>
+      into a special data section called  <tt>.vvar_vsyscall_gtod_data</tt>.
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/vmlinux.lds.S#L155">Linker instructions</a> then ensure that
+      this <tt>.vvar_vsyscall_gtod_data</tt> section is linked into the
+      kernel in the <tt>__vvar_page</tt> section, and at kernel startup the
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/setup.c#L857"><tt>setup_arch()</tt></a> function
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/setup.c#L1186">calls</a> <tt>map_vsyscall()</tt>
+      to <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/vsyscall_64.c#L387">set up a fixed mapping</a> for
+      that <tt>__vvar_page</tt>.
+    </p>
+    <p>
+      The code that provides the core vDSO implementation of <tt>gettimeofday()</tt> is
+      in <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vclock_gettime.c#L260"><tt>__vdso_gettimeofday()</tt></a>.
+      It's marked as <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/include/asm/linkage.h#L7"><tt>notrace</tt></a> to
+      prevent the compiler from ever adding
+     function
+        profiling, and also gets a weak alias as
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vclock_gettime.c#L281"><tt>gettimeofday()</tt></a>.
+      To ensure that the resulting page looks like an ELF shared object, the
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso.lds.S"><tt>vdso.lds.S</tt></a>
+      file pulls in <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso-layout.lds.S"><tt>vdso-layout.lds.S</tt></a>
+      and exports both <tt>gettimeofday()</tt> and <tt>__vdso_gettimeofday()</tt> into the page.
+    </p>
+    <p>
+      To make the vDSO page accessible to a new user-space program, the code in
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vma.c#L151"><tt>setup_additional_pages()</tt></a>
+      sets the vDSO page location to a random address chosen by
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vma.c#L124"><tt>vdso_addr()</tt></a>
+      at process start time.  Using a random address mitigates the security problems found with the
+      earlier vsyscall implementation, but does mean that the user program needs a way to find the location of
+      the vDSO page.  The location is exposed to user space as an <a href="/Articles/519085/">ELF
+      auxiliary value</a>: the binary loader for ELF format programs (<a
+    href="https://elixir.bootlin.com/linux/v3.14/source/fs/binfmt_elf.c#L566"><tt>load_elf_binary()</tt></a>) 
+      uses the <a
+    href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/include/asm/elf.h#L297"><tt>ARCH_DLINFO</tt>
+     macro</a> to set the
+      <tt>AT_SYSINFO_EHDR</tt> auxiliary value.
+      The user-space program can then find the page using the
+      <a href="http://man7.org/linux/man-pages/man3/getauxval.3.html">getauxval()</a> function to retrieve the
+      relevant auxiliary value (although in practice the <tt>libc</tt> library usually takes care of this under the
+      covers).
+    </p>
+    <p>
+      For completeness, we should also mention that the vDSO mechanism is used for another important syscall-related
+      feature for 32-bit programs.  At boot time, the kernel determines which of the possible x86_32 syscall
+      invocation mechanisms is best, and puts the appropriate
+    implementation wrapper (<a
+    href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32/sysenter.S#L31"><tt>SYSENTER</tt></a>, 
+     
+      <a
+    href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32/int80.S#L13"><tt>INT&nbsp;0x80</tt></a>,
+    or even  <a
+    href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/vdso/vdso32/syscall.S#L16"><tt>SYSCALL</tt></a>
+    for an AMD 64-bit processor)
+      into the <tt>__kernel_vsyscall</tt> function.  User-space programs can then invoke this wrapper and be sure
+      of getting the fastest way into the kernel for their syscalls; see
+      Petersson's article for more details.
+    </p>
+
+
+    <h4><tt>ptrace()</tt>: syscall tracing</h4>
+    <p>
+      The <a href="http://linux.die.net/man/2/ptrace"><tt>ptrace()</tt></a> system call is implemented in the normal
+      manner, but it's particularly relevant here because it can cause system calls of the traced kernel task to behave
+      differently.  Specifically, the <tt>PTRACE_SYSCALL</tt> request aims to "<span>arrange for the tracee to be stopped
+      at the next entry to or exit from a system call</span>".
+    </p>
+    <p>
+      Requesting <tt>PTRACE_SYSCALL</tt> causes the <tt>TIF_SYSCALL_TRACE</tt>
+      thread information flag to <a href="https://elixir.bootlin.com/linux/v3.14/source/kernel/ptrace.c#L727">be set</a>
+      in thread-specific data (<a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/include/asm/thread_info.h#L28"><tt>struct
+      thread_info.flags</tt></a>).  The effect of this
+      is <a href="https://elixir.bootlin.com/linux/v3.14/source/kernel/ptrace.c#L1071">architecture-specific</a>;
+      we'll describe the x86_64 implementation.
+    </p>
+    <p>
+      Looking more closely at the assembly for syscall entry (in all of
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L430">x86_32</a>,
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_64.S#L618">x86_64</a>, and
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L155">ia32</a>) we see a detail that we skipped
+      over previously: if the thread flags have any of the
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/include/asm/thread_info.h#L123"><tt>_TIF_WORK_SYSCALL_ENTRY</tt></a>
+      flags (which include <tt>TIF_SYSCALL_TRACE</tt>) set, the syscall implementation code
+      follows a different path to invoke <tt>syscall_trace_enter()</tt> instead
+      (<a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_32.S#L660">x86_32</a>,
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/entry_64.S#L732">x86_64</a>,
+      <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/ia32/ia32entry.S#L247">ia32</a>).
+      The <a href="https://elixir.bootlin.com/linux/v3.14/source/arch/x86/kernel/ptrace.c#L1457"><tt>syscall_trace_enter()</tt></a> function
+      then performs a variety of different functions that are associated with the various per-thread flag values
+      that were checked for with <tt>_TIF_WORK_SYSCALL_ENTRY</tt>:
+      <ul class="spacylist">
+        <li><tt>TIF_SINGLESTEP</tt>: single stepping of instructions for ptrace</li>
+        <li><tt>TIF_SECCOMP</tt>: perform secure computing checks on syscall entry</li>
+        <li><tt>TIF_SYSCALL_EMU</tt>: perform syscall emulation</li>
+        <li><tt>TIF_SYSCALL_TRACE</tt>: syscall tracing for ptrace</li>
+        <li><tt>TIF_SYSCALL_TRACEPOINT</tt>: syscall tracing for
+          <a href="https://elixir.bootlin.com/linux/v3.14/source/Documentation/trace/ftrace.txt">ftrace</a></li>
+        <li><tt>TIF_SYSCALL_AUDIT</tt>: generation of syscall audit records</li>
+      </ul>
+      In other words, <tt>syscall_trace_enter</tt> is the control point for a whole collection of different
+      per-syscall interception functionality — including
+    <tt>TIF_SYSCALL_TRACE</tt> syscall tracing.  It 
+  ends up calling
+  <a href="https://elixir.bootlin.com/linux/v3.14/source/kernel/signal.c#L1839"><tt>ptrace_stop()</tt></a>
+  with <tt>why=CLD_TRAPPED</tt>, which notifies the tracing
+  program (via <tt>SIGCHLD</tt>) that the tracee has been stopped
+  on entry to a syscall.
+    </p>
+
+<h4>Epilogue</h4>
+ <p>
+   System calls have been the standard method for user-space programs to
+   interact with Unix kernels for decades and, consequently, the Linux kernel
+   includes a set of facilities to make it easy to define them and to
+ efficiently use them.
+   Despite the invocation variations across architectures and occasional
+   special cases, system calls also remain a remarkably homogeneous mechanism
+   — this stability and homogeneity allows all sorts of useful tools,
+   from <tt>strace</tt>
+   to <a href="/Articles/475043/">seccomp-bpf</a>, to work in a
+   generic way.
+ </p><br clear="all"><table class="IndexEntries">
+           <tr><th colspan=2>Index entries for this article</th></tr>
+           <tr><td><a href="/Kernel/Index">Kernel</a></td><td><a href="/Kernel/Index#System_calls">System calls</a></td></tr>
+            <tr><td><a href="/Archives/GuestIndex/">GuestArticles</a></td><td><a href="/Archives/GuestIndex/#Drysdale_David">Drysdale, David</a></td></tr>
+            </table><br clear="all">
+<hr width="60%" align="left">
+           (<a href="https://lwn.net/Login/?target=/Articles/604515/">Log in</a> to post comments)
+           <p>
+           
+</div> <!-- ArticleText -->
+<p><a name="Comments"></a>
+
+<a name="CommAnchor635604"></a>
+<div class="CommentBox">
+  <h3 class="CommentTitle">Anatomy of a system call, part 2</h3>
+  <div class="CommentBody">
+    <p class="CommentPoster">Posted Mar 5, 2015 17:04 UTC (Thu) by <b>drysdale</b> (subscriber, #95971)
+       [<a href="/Articles/635604/">Link</a>]
+    </p>
+    <p>One additional detail to point out for the x32 ABI case: the syscall number gets a high bit set (<a href="http://lxr.free-electrons.com/source/arch/x86/include/uapi/asm/unistd.h?v=3.14#L5"><tt>__X32_SYSCALL_BIT</tt></a>), to mark it as an x32 call.
+<p>
+If x32 support is included in the kernel, then <a href="http://lxr.free-electrons.com/source/arch/x86/include/asm/unistd.h?v=3.14#L8"><tt>__SYSCALL_MASK</tt></a> will have a value that is not all-ones, and this will trigger an extra instruction in <tt>system_call</tt> to 
+<a href="http://lxr.free-electrons.com/source/arch/x86/kernel/entry_64.S?v=3.14#L621">mask off</a> the extra bit, so that the syscall table indexing still works.
+  </div>
+  
+  <div class="CommentReplyButton">
+    <form action="/Articles/635604/comment" method="post">
+      <input type="submit" value="Reply to this comment">
+    </form>
+  </div>
+
+  <p>
+  
+</div>
+</div>
+<div class="lwn-u-1 pure-u-md-1-6 not-print">
+<div id="azk93271_right_zone"></div>
+</div>
+</div> <!-- pure-grid -->
+
+        <br clear="all">
+        <center>
+        <P>
+        <font size="-2">
+        Copyright &copy; 2014, Eklektix, Inc.<BR>
+        
+        Comments and public postings are copyrighted by their creators.<br>
+        Linux  is a registered trademark of Linus Torvalds<br>
+        </font>
+        </center>
+        
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+            </script>
+            <script type="text/javascript">
+            try {
+            var pageTracker = _gat._getTracker("UA-2039382-1");
+            pageTracker._trackPageview();
+            } catch(err) {}</script>
+            
+        </body></html>
+        

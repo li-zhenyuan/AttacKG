@@ -1,0 +1,355 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>passlib.hash.msdcc2 - Windows’ Domain Cached Credentials v2 &#8212; Passlib v1.7.4 Documentation</title>
+    <link rel="stylesheet" href="../_static/cloud.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/table_styling.css" />
+    <link rel="stylesheet" type="text/css" href="https://assets.readthedocs.org/static/css/badge_only.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Noticia+Text:400,i,b,bi|Open+Sans:400,i,b,bi|Roboto+Mono:400,i,b,bi&display=swap" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://assets.readthedocs.org/static/javascript/readthedocs-doc-embed.js"></script>
+
+    
+    
+     
+        <script type="text/javascript" src="../_static/jquery.cookie.js"></script>
+    
+
+    
+     
+        <script type="text/javascript" src="../_static/cloud.base.js"></script>
+    
+
+    
+     
+        <script type="text/javascript" src="../_static/cloud.js"></script>
+    
+
+    <link rel="shortcut icon" href="../_static/logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="passlib.hash.cisco_type7 - Cisco “Type 7” hash" href="passlib.hash.cisco_type7.html" />
+    <link rel="prev" title="passlib.hash.msdcc - Windows’ Domain Cached Credentials" href="passlib.hash.msdcc.html" /> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="https://passlib.readthedocs.io/en/stable/lib/passlib.hash.msdcc2.html" />
+
+<link rel="stylesheet" href="https://assets.readthedocs.org/static/css/readthedocs-doc-embed.css" type="text/css" />
+
+<script type="text/javascript" src="../_static/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = "lib/passlib.hash.msdcc2"
+READTHEDOCS_DATA['source_suffix'] = ".rst"
+</script>
+
+<script type="text/javascript" src="https://assets.readthedocs.org/static/javascript/readthedocs-analytics.js" async="async"></script>
+
+<!-- end RTD <extrahead> -->
+</head><body>
+    <div class="relbar-top">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../contents.html" title="Table Of Contents"
+             accesskey="C">toc</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="passlib.hash.cisco_type7.html" title="passlib.hash.cisco_type7 - Cisco “Type 7” hash"
+             accesskey="N">next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="passlib.hash.msdcc.html" title="passlib.hash.msdcc - Windows’ Domain Cached Credentials"
+             accesskey="P">previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Passlib 1.7 Documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="passlib.hash.html" accesskey="U"><code class="docutils literal notranslate"><span class="pre">passlib.hash</span></code> - Password Hashing Schemes</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="passlib-hash-msdcc2-windows-domain-cached-credentials-v2">
+<span id="index-0"></span><h1><a class="reference internal" href="#passlib.hash.msdcc2" title="passlib.hash.msdcc2"><code class="xref py py-class docutils literal notranslate"><span class="pre">passlib.hash.msdcc2</span></code></a> - Windows’ Domain Cached Credentials v2<a class="headerlink" href="#passlib-hash-msdcc2-windows-domain-cached-credentials-v2" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.6.</span></p>
+</div>
+<p>This class implements the DCC2 (Domain Cached Credentials version 2) hash, used
+by Windows Vista and newer to cache and verify remote credentials when the relevant
+server is unavailable. It is known by a number of other names,
+including “mscache2” and “mscash2” (Microsoft CAched haSH). It replaces
+the weaker <a class="reference internal" href="passlib.hash.msdcc.html"><span class="doc">msdcc v1</span></a> hash used by previous releases
+of Windows. Security wise it is not particularly weak, but due to its
+use of the username as a salt, it should probably not be used for anything
+but verifying existing cached credentials.
+This class can be used directly as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">passlib.hash</span> <span class="kn">import</span> <span class="n">msdcc2</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># hash password using specified username</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hash</span> <span class="o">=</span> <span class="n">msdcc2</span><span class="o">.</span><span class="n">hash</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&quot;Administrator&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hash</span>
+<span class="go">&#39;4c253e4b65c007a8cd683ea57bc43c76&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># verify correct password</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msdcc2</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&quot;Administrator&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># verify correct password w/ wrong username</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msdcc2</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&quot;User&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># verify incorrect password</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msdcc2</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="s2">&quot;letmein&quot;</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s2">&quot;Administrator&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<ul class="last simple">
+<li><a class="reference internal" href="../narr/hash-tutorial.html#password-hash-examples"><span class="std std-ref">password hash usage</span></a> – for more usage examples</li>
+<li><a class="reference internal" href="passlib.hash.msdcc.html"><span class="doc">msdcc</span></a> – the predecessor to this hash</li>
+</ul>
+</div>
+<div class="section" id="interface">
+<h2>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="passlib.hash.msdcc2">
+<em class="property">class </em><code class="descclassname">passlib.hash.</code><code class="descname">msdcc2</code><a class="headerlink" href="#passlib.hash.msdcc2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class implements version 2 of Microsoft’s Domain Cached Credentials
+password hash, and follows the <a class="reference internal" href="passlib.ifc.html#password-hash-api"><span class="std std-ref">PasswordHash API</span></a>.</p>
+<p>It has a fixed number of rounds, and uses the associated
+username as the salt.</p>
+<p>The <a class="reference internal" href="passlib.ifc.html#passlib.ifc.PasswordHash.hash" title="passlib.ifc.PasswordHash.hash"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hash()</span></code></a>, <a class="reference internal" href="passlib.ifc.html#passlib.ifc.PasswordHash.genhash" title="passlib.ifc.PasswordHash.genhash"><code class="xref py py-meth docutils literal notranslate"><span class="pre">genhash()</span></code></a>, and <a class="reference internal" href="passlib.ifc.html#passlib.ifc.PasswordHash.verify" title="passlib.ifc.PasswordHash.verify"><code class="xref py py-meth docutils literal notranslate"><span class="pre">verify()</span></code></a> methods
+have the following extra keyword:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – <p>String containing name of user account this password is associated with.
+This is required to properly calculate the hash.</p>
+<p>This keyword is case-insensitive, and should contain just the username
+(e.g. <code class="docutils literal notranslate"><span class="pre">Administrator</span></code>, not <code class="docutils literal notranslate"><span class="pre">SOMEDOMAIN\Administrator</span></code>).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="html-toggle section" id="format-algorithm">
+<h2>Format &amp; Algorithm<a class="headerlink" href="#format-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>Much like <code class="xref py py-class docutils literal notranslate"><span class="pre">lmhash</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">nthash</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">msdcc</span></code>,
+MS DCC v2 hashes consists of a 16 byte digest, usually encoded as 32
+hexadecimal characters. An example hash (of <code class="docutils literal notranslate"><span class="pre">&quot;password&quot;</span></code> with the
+account <code class="docutils literal notranslate"><span class="pre">&quot;Administrator&quot;</span></code>) is <code class="docutils literal notranslate"><span class="pre">4c253e4b65c007a8cd683ea57bc43c76</span></code>.</p>
+<p>The digest is calculated as follows:</p>
+<ol class="arabic simple">
+<li>The password is encoded using <code class="docutils literal notranslate"><span class="pre">UTF-16-LE</span></code>.</li>
+<li>The MD4 digest of step 1 is calculated.
+(The result of this is identical to the <a class="reference internal" href="passlib.hash.nthash.html#passlib.hash.nthash" title="passlib.hash.nthash"><code class="xref py py-class docutils literal notranslate"><span class="pre">nthash</span></code></a>
+digest of the password).</li>
+<li>The unicode username is converted to lowercase,
+and encoded using <code class="docutils literal notranslate"><span class="pre">UTF-16-LE</span></code>.
+This should be just the plain username (e.g. <code class="docutils literal notranslate"><span class="pre">User</span></code>
+not <code class="docutils literal notranslate"><span class="pre">SOMEDOMAIN\\User</span></code>)</li>
+<li>The username from step 3 is appended to the
+digest from step 2; and the MD4 digest of the result
+is calculated (The result of this is identical to the
+<a class="reference internal" href="passlib.hash.msdcc.html#passlib.hash.msdcc" title="passlib.hash.msdcc"><code class="xref py py-class docutils literal notranslate"><span class="pre">msdcc</span></code></a> digest).</li>
+<li><a class="reference internal" href="passlib.crypto.digest.html#passlib.crypto.digest.pbkdf2_hmac" title="passlib.crypto.digest.pbkdf2_hmac"><code class="xref py py-func docutils literal notranslate"><span class="pre">PBKDF2-HMAC-SHA1</span></code></a> is then invoked,
+using the result of step 4 as the secret, the username from step 3 as
+the salt, 10240 rounds, and resulting in a 16 byte digest.</li>
+<li>The result of step 5 is encoded into hexadecimal;
+this is the DCC2 hash.</li>
+</ol>
+</div>
+<div class="section" id="security-issues">
+<h2>Security Issues<a class="headerlink" href="#security-issues" title="Permalink to this headline">¶</a></h2>
+<p>This hash is essentially <a class="reference internal" href="passlib.hash.msdcc.html"><span class="doc">msdcc v1</span></a> with a fixed-round PBKDF2 function
+wrapped around it. The number of rounds of PBKDF2 is currently
+sufficient to make this a semi-reasonable way to store passwords,
+but the use of the lowercase username as a salt, and the fact
+that the rounds can’t be increased, means this hash is not particularly
+future-proof, and should not be used for new applications.</p>
+</div>
+<div class="section" id="deviations">
+<h2>Deviations<a class="headerlink" href="#deviations" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Max Password Size</p>
+<p>Windows appears to enforce a maximum password size,
+but the actual value of this limit is unclear; sources
+report it to be set at assorted values from 26 to 128 characters,
+and it may in fact vary between Windows releases.
+The one consistent piece of information is that
+passwords above the limit are simply not allowed (rather
+than truncated ala <a class="reference internal" href="passlib.hash.des_crypt.html#passlib.hash.des_crypt" title="passlib.hash.des_crypt"><code class="xref py py-class docutils literal notranslate"><span class="pre">des_crypt</span></code></a>).
+Because of this, Passlib does not currently enforce a size limit:
+any hashes this class generates should be correct, provided Windows
+is willing to accept a password of that size.</p>
+</li>
+</ul>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="id1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Description of DCC v2 algorithm -
+<a class="reference external" href="http://openwall.info/wiki/john/MSCash2">http://openwall.info/wiki/john/MSCash2</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        <p class="logo"><a href="../index.html" title="index">
+          <img class="logo" src="../_static/masthead.png" alt="Logo"/>
+        </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<div class="sphinx-toc sphinxglobaltoc">
+<h3><a href="../contents.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../narr/index.html">Walkthrough &amp; Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="passlib.apache.html"><code class="docutils literal notranslate"><span class="pre">passlib.apache</span></code> - Apache Password Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.apps.html"><code class="docutils literal notranslate"><span class="pre">passlib.apps</span></code> - Helpers for various applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.context.html"><code class="docutils literal notranslate"><span class="pre">passlib.context</span></code> - CryptContext Hash Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.crypto.html"><code class="docutils literal notranslate"><span class="pre">passlib.crypto</span></code> - Cryptographic Helper Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.exc.html"><code class="docutils literal notranslate"><span class="pre">passlib.exc</span></code> - Exceptions and warnings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.ext.django.html"><code class="docutils literal notranslate"><span class="pre">passlib.ext.django</span></code> - Django Password Hashing Plugin</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="passlib.hash.html"><code class="docutils literal notranslate"><span class="pre">passlib.hash</span></code> - Password Hashing Schemes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="passlib.hash.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="passlib.hash.html#unix-hashes">Unix Hashes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="passlib.hash.html#other-modular-crypt-hashes">Other “Modular Crypt” Hashes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="passlib.hash.html#ldap-rfc2307-hashes">LDAP / RFC2307 Hashes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="passlib.hash.html#sql-database-hashes">SQL Database Hashes</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="passlib.hash.html#ms-windows-hashes">MS Windows Hashes</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="passlib.hash.lmhash.html"><code class="docutils literal notranslate"><span class="pre">passlib.hash.lmhash</span></code> - LanManager Hash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="passlib.hash.nthash.html"><code class="docutils literal notranslate"><span class="pre">passlib.hash.nthash</span></code> - Windows’ NT-HASH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="passlib.hash.msdcc.html"><code class="docutils literal notranslate"><span class="pre">passlib.hash.msdcc</span></code> - Windows’ Domain Cached Credentials</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">passlib.hash.msdcc2</span></code> - Windows’ Domain Cached Credentials v2</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#interface">Interface</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#format-algorithm">Format &amp; Algorithm</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#security-issues">Security Issues</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#deviations">Deviations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="passlib.hash.html#cisco-hashes">Cisco Hashes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="passlib.hash.html#other-hashes">Other Hashes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.hosts.html"><code class="docutils literal notranslate"><span class="pre">passlib.hosts</span></code> - OS Password Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.ifc.html"><code class="docutils literal notranslate"><span class="pre">passlib.ifc</span></code> – Password Hash Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.pwd.html"><code class="docutils literal notranslate"><span class="pre">passlib.pwd</span></code> – Password generation helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.registry.html"><code class="docutils literal notranslate"><span class="pre">passlib.registry</span></code> - Password Handler Registry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.totp.html"><code class="docutils literal notranslate"><span class="pre">passlib.totp</span></code> – TOTP / Two Factor Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="passlib.utils.html"><code class="docutils literal notranslate"><span class="pre">passlib.utils</span></code> - Helper Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other Documentation</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    
+    
+        <div class="sidebar-toggle-group no-js">
+            
+            <button class="sidebar-toggle" id="sidebar-hide" title="Hide the sidebar menu">
+                 «
+                <span class="show-for-small">hide menu</span>
+                
+            </button>
+            <button class="sidebar-toggle" id="sidebar-show" title="Show the sidebar menu">
+                
+                <span class="show-for-small">menu</span>
+                <span class="hide-for-small">sidebar</span>
+                 »
+            </button>
+        </div>
+    
+      <div class="clearer"></div>
+    </div>
+    <div class="relbar-bottom">
+        
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="../contents.html" title="Table Of Contents"
+             >toc</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="passlib.hash.cisco_type7.html" title="passlib.hash.cisco_type7 - Cisco “Type 7” hash"
+             >next</a> &nbsp; &nbsp;</li>
+        <li class="right" >
+          <a href="passlib.hash.msdcc.html" title="passlib.hash.msdcc - Windows’ Domain Cached Credentials"
+             >previous</a> &nbsp; &nbsp;</li>
+    <li><a href="../index.html">Passlib 1.7 Documentation</a> &#187;</li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="passlib.hash.html" ><code class="docutils literal notranslate"><span class="pre">passlib.hash</span></code> - Password Hashing Schemes</a> &#187;</li> 
+      </ul>
+    </div>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; <a href="../copyright.html">Copyright</a> 2008-2020, Assurance Technologies, LLC. Last Updated 2020-10-08.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+    <!-- cloud_sptheme 1.4 -->
+  </body>
+</html>

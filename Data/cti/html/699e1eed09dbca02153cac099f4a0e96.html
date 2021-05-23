@@ -1,0 +1,1953 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7 not-ie9" lang="en" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie10 lt-ie9 lt-ie8 not-ie9" lang="en" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie10 lt-ie9 not-ie9" lang="en" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!--[if IE 9]> <html class="no-js lt-ie10" lang="en" xmlns="http://www.w3.org/1999/xhtml"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 9]><!--> <html class="no-js not-ie9" lang="en" xmlns="http://www.w3.org/1999/xhtml"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>SANS Institute: Reading Room - Penetration Testing</title>
+    <meta property="og:title" content="SANS Institute: Reading Room - Penetration Testing"/>
+
+    <meta name="description" content="Computer security training, certification and free resources. We specialize in computer/network security, digital forensics, application security and IT audit." />
+    <meta name="keywords" content="computer security training, network security, information security, security courses, security events, sans, security essentials, intrusion detection, computer forensics, it audit, application security" />
+    <meta http-equiv="refresh" content=""/>
+<meta name="google-site-verification" content="cC-8xOerZ3opiLx9VloUCzc6SgMfOZHYihJzWA19-KI" /><meta name="msvalidate.01" content="4A0A2895C106F8337112421AFF33F698" /><script type="text/javascript" src="/scripts/libs/jquery.min.js"></script>
+<script type="text/javascript" src="/scripts/libs/jquery-ui.min.js"></script>
+
+<script>
+var dataLayer = [{
+  "siteVersion": "legacy"
+}];
+</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
+{'gtm.start': new Date().getTime(),event:'gtm.js'}
+
+);var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5T9DW3B');</script>
+<!-- End Google Tag Manager -->
+
+<!-- Global Site Tag (gtag.js) - Google Analytics --> 
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-25324117-2"></script> 
+<script> 
+  window.dataLayer = window.dataLayer || []; 
+  function gtag(){dataLayer.push(arguments);} 
+  gtag('js', new Date()); 
+</script>
+<script> 
+  var _gaq = { 
+    push: function (args) { 
+      if (args[0] == "_trackEvent") { 
+        gtag('event', args[2], { 
+          'send_to': 'UA-25324117-2', 
+          'event_category': args[1],
+          'event_label': args[3] 
+        } 
+      ); 
+        return true; 
+      } else { 
+        return false;
+      } 
+    } 
+  }; 
+</script>
+<!-- END Global Site Tag (gtag.js) - Google Analytics --> 
+
+
+<script type="text/javascript">
+/**
+ * Cleans utm tracking from the hashtag so anchor tags still function
+ * Call on load of desired pages
+ */
+function cleanUtm() {
+    var l = window.location;
+    if( l.hash.indexOf( "utm" ) != -1 ){
+        var anchor = l.hash.match(/#(?!utm)[^&]+/);
+        anchor	=	anchor? anchor[0]: '';
+        if(!anchor && window.history.replaceState){
+            history.replaceState({},'', l.pathname + l.search);
+        } else {
+            l.hash = anchor;
+        }
+    };
+}
+</script>
+
+
+
+
+    <link rel="canonical" href="https://www.sans.org/reading-room/whitepapers/testing/gcih/real-world-arp-spoofing-105411" />
+<link rel="stylesheet" href="/css2/common/libs/fontawesome5/css/all.css?v=12.1" /><meta content='width=device-width, initial-scale=1, maximum-scale=1' name='viewport'/><link rel="stylesheet" href="/css2/common/bootstrap/main.css?v=12.1" type="text/css" /><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  <script>window.jQuery || document.write('<script src="scripts/jquery.min.js"><\/script><script src="scripts/jquery-ui.min.js"><\/script>')</script><script src="/scripts/cookie-consent.js" type="text/javascript"></script>
+<script src="/scripts/sites/sans/reading_room.js" type="text/javascript"></script>
+<script src="/scripts/welcome.js" type="text/javascript"></script>
+<script src="/scripts/main.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/css2/common/cookie-consent.css" type="text/css" media="screen" />
+</head>
+
+<body class="sans">
+            <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5T9DW3B"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+            <div id="announcement-bar"><a href="https://www.sans.org/ondemand/?msc=OAB">Stay Sharp with Relevant Cybersecurity Delivered to your Door, No Travel Necessary - Learn More</a></div>
+    <div class="bodywrap ">
+        <div class="container default-navigation-all">
+            <!-- header -->
+            <div id="header" class="header navbar">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-main-navigation" style="display:none">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="fa fa-bars fa-lg"></span>
+              </button>
+              <a class="pull-left navbar-brand" href="/"><img src="/images/design-site/logo.png" alt="SANS Institute: Reading Room - Penetration Testing" class="logo" /></a>
+            </div>
+<div id="site-selector" class="pull-left" style="visibility:hidden"><ul class="site-selector ssno-js">
+    <li class="site-switcher"><a href="#"><span class="hideme hidden">SANS Site Network</span><span class="fa fa-caret-square-o-down fa-lg hideme"></span></a>
+        <ul class="sites">
+            <li class="current-site">Current Site</li><li class="sans selector-active"><a href="https://www.sans.org?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/sans.png" alt="sans" /></span><span class="selector-title">Security Training</span></a></li>
+<li class="selector-help">Choose a different site <a href="/help/site-network"><span class="hideme">Help</span></a></li><li class="giac"><a href="https://www.giac.org?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/giac.png" alt="giac" /></span><span class="selector-title">Security Certification</span></a></li>
+<li class="isc"><a href="https://isc.sans.edu?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/isc.png" alt="isc" /></span><span class="selector-title">Internet Storm Center</span></a></li>
+<li class="sti"><a href="https://www.sans.edu?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/sti.png" alt="sti" /></span><span class="selector-title">College Cybersecurity Programs</span></a></li>
+<li class="awareness"><a href="https://www.sans.org/security-awareness-training?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/awareness.png" alt="awareness" /></span><span class="selector-title">Security Awareness Training</span></a></li>
+<li class="cyber-defense"><a href="https://www.sans.org/blue-team/?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/cyber-defense.png" alt="cyber-defense" /></span><span class="selector-title">Blue Team Operations</span></a></li>
+<li class="forensics"><a href="https://digital-forensics.sans.org?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/forensics.png" alt="forensics" /></span><span class="selector-title">Forensics & Incident Response</span></a></li>
+<li class="pentest"><a href="https://www.sans.org/offensive-operations/?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/pentest.png" alt="pentest" /></span><span class="selector-title">Offensive Operations</span></a></li>
+<li class="ics"><a href="https://ics.sans.org?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/ics.png" alt="ics" /></span><span class="selector-title">Industrial Control Systems</span></a></li>
+<li class="ssi"><a href="https://www.sans.org/cloud-security/?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/ssi.png" alt="ssi" /></span><span class="selector-title">Cloud Security</span></a></li>
+<li class="leadership"><a href="https://www.sans.org/cybersecurity-leadership/?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/leadership.png" alt="leadership" /></span><span class="selector-title">Cybersecurity Leadership</span></a></li>
+<li class="sic"><a href="https://www.sans.org/sic?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/sic.png" alt="sic" /></span><span class="selector-title">Government Private Training</span></a></li>
+        </ul>
+    </li>
+</ul>
+</div><div class="top-menu">
+<!-- Begin Site Search -->
+            <div class="search-form pull-right">
+        <script src="/scripts/addSearch.js"></script>
+        </div><!-- / .search-form -->
+    
+
+    <div id="login-status" class="pull-right">
+
+        <ul class="dropdown user-menu">
+            
+            <li class="root-item"><a href="/account/login">Login</a><span class="hidden show-larger">&nbsp;&nbsp;</span></li><li class="root-item separate-item"><a href="/account/create">Join Community</a><span class="hidden show-larger">&nbsp;&nbsp;</span></li>        </ul>
+    </div>
+<div class="clear"></div>
+
+    <div class="collapse navbar-collapse" id="bs-main-navigation">
+<div id="main_navigation" class="nav navbar-nav pull-right">
+    <ul class="nav nav-pills dropdown">
+        <li class="root-item dropdown"><a href="/cyber-security-courses?msc=main-nav" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Train and Certify</a>
+        <ul class="dropdown-menu" role="menu">
+            <li class="first"><a href="/cybersecurity-careers/?msc=main-nav">Get Started in Cyber</a>
+            <li><a href="/cyber-security-courses/?msc=main-nav">Courses & Certifications</a>
+            <li><a href="/cyber-security-skills-roadmap/?msc=main-nav">Training Roadmap</a>
+            <li><a href="/find-training/?msc=main-nav">Search For Training</a></li>
+            <li><a href="/online-security-training/?msc=main-nav">Online Training</a></li>
+            <li><a href="/ondemand/?msc=main-nav">OnDemand</a></li>
+            <li><a href="/cyber-security-training-events?msc=main-nav">Live Training</a></li>
+            <li><a href="/cyber-security-summit/?msc=main-nav">Summits</a></li>
+            <li><a href="/cyber-ranges/?msc=main-nav">Cyber Ranges</a></li>
+            <li><a href="https://www.sans.edu?msc=main-nav">College Degrees & Certificates</a></li>
+            <li><a href="/about/academies/?msc=main-nav">Scholarship Academies</a></li>
+            <li><a href="/niceframework/?msc=main-nav">NICE Framework</a></li>
+            <li><a href="/dodd-8140?msc=main-nav">DoDD 8140</a></li>
+            <li class="last"><a href="https://www.sans.org/specials/north-america/?msc=main-nav">Specials</a></li>
+        </ul>
+    </li>
+
+<!--<li class="root-item dropdown"><a href="/online-security-training/?msc=main-nav" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Online Training</a>
+        <ul class="dropdown-menu" role="menu">
+            <li class="first"><a href="/online-security-training/?msc=main-nav">Overview</a></li>
+            <li><a href="/find-training/search/?types=10&msc=main-nav">Search For Training</a></li>
+            <li><a href="/ondemand/?msc=main-nav">OnDemand</a></li>
+            <li><a href="/live-online?msc=main-nav">Live Online</a></li>
+            <!--<li><a href="/vlive">Live Online: Multi-week Sessions</a></li>
+            <li><a href="/cyber-security-training-events/virtual?msc=main-nav">Live Online Events</a></li>
+            <li><a href="/self-study/?msc=main-nav">SelfStudy</a></li>
+            <li><a href="/netwars/continuous/?msc=main-nav">NetWars: Continuous</a></li>
+            <li><a href="/netwars/dfir-continuous/?msc=main-nav">DFIR NetWars: Continuous</a></li>
+            <li><a href="/private-training/online/?msc=main-nav">Private Training</a></li>
+            <li><a href="/security-awareness-training?msc=main-nav">Security Awareness</a></li>
+            <li class="last"><a href="/online-security-training/specials/?msc=main-nav">Specials</a></li>
+        </ul>
+    </li>-->
+
+    <!--<li class="root-item dropdown"><a href="/information-security-training/?msc=main-nav" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">In-Person Training</a>
+        <ul class="dropdown-menu" role="menu">
+            <li class="first"><a href="/information-security-training/?msc=main-nav">Overview</a></li>
+            <li><a href="/find-training/search/?types=5&msc=main-nav">Search For Training</a></li>
+            <li><a href="/cyber-security-training-events/in-person?msc=main-nav">In-Person Events</a></li>
+            <li class="last"><a href="/private-training/?msc=main-nav">Private Training</a></li>
+        </ul>
+    </li>-->
+    
+    <li class="root-item dropdown"><a href="/managing-cyber-teams/?msc=main-nav" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Manage Your Team</a>
+        <ul class="dropdown-menu" role="menu">
+            <li class="first"><a href="/managing-cyber-teams/?msc=main-nav">Overview</a></li>
+            <li><a href="/group-purchasing/?msc=main-nav">Group Purchasing</a></li>
+            <li><a href="/why-work-with-sans/?msc=main-nav">Why Work With SANS</a></li>
+            <li><a href="/build-your-team/?msc=main-nav">Build Your Team</a></li>
+            <li><a href="/hire-cyber-talent/?msc=main-nav">Hire Cyber Talent</a></li>
+            <li><a href="/team-development/?msc=main-nav">Team Development</a></li>
+            <li><a href="/private-training/?msc=main-nav">Private Training</a></li>
+            <li><a href="/security-awareness-training/?msc=main-nav">Security Awareness Training</a></li>
+            <li><a href="/cybersecurity-leadership/?msc=main-nav">Leadership Training</a></li>
+            <li class="last"><a href="/industries/?msc=main-nav">Industries</a></li>
+        </ul>
+    </li>
+    
+    <li class="root-item dropdown"><a href="/security-resources/?msc=main-nav"class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Resources</a>
+        <ul class="dropdown-menu" role="menu">
+            <li class="first"><a href="/security-resources/?msc=main-nav">Overview</a></li>
+            <li><a href="/reading-room/?msc=main-nav">Reading Room</a></li>
+            <li><a href="/webcasts/?msc=main-nav">Webcasts</a></li>
+            <li><a href="/tools/?msc=main-nav">Tools</a></li>
+            <li><a href="/newsletters/?msc=main-nav">Newsletters</a></li>
+            <li><a href="/blog/?msc=main-nav">Blog</a></li>
+            <li><a href="/tip_of_the_day.php/?msc=main-nav">Tip of The Day</a></li>
+            <li><a href="/security-resources/posters/?msc=main-nav">Posters & Cheat&nbsp;Sheets</a></li>
+            <li><a href="/top25-software-errors/?msc=main-nav">Top 25 Programming Errors</a></li>
+            <li><a href="/critical-security-controls/?msc=main-nav">The Critical Security Controls</a></li>
+            <li><a href="/information-security-policy/?msc=main-nav">Security Policy Project</a></li>
+            <li><a href="/critical-vulnerability-recaps/?msc=main-nav">Critical Vulnerability Recaps</a></li>
+            <li class="last"><a href="/security-resources/affiliate-directory/?msc=main-nav">Affiliate Directory</a></li>
+        </ul>
+    </li>
+
+    <li class="root-item dropdown"><a href="/cybersecurity-focus-areas/?msc=main-nav" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Focus Areas</a>
+         <ul class="dropdown-menu" role="menu">
+            <li class="first"><a href="/blue-team/?msc=main-nav">Blue Team Operations</a></li>
+            <li><a href="/cloud-security/?msc=main-nav">Cloud Security</a></li>
+            <li><a href="/digital-forensics-incident-response/?msc=main-nav">Digital Forensics & Incident Response</a></li>
+            <li><a href="/industrial-control-systems-security/?msc=main-nav">Industrial Control Systems</a></li>
+            <li><a href="/cybersecurity-leadership/?msc=main-nav">Leadership</a></li>
+            <li class="last"><a href="/offensive-operations/?msc=main-nav">Offensive Operations</a></li>
+        </ul>
+    </li>
+    
+    <li class="root-item dropdown"><a href="/get-involved/?msc=main-nav"class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Get Involved</a>
+        <ul class="dropdown-menu" role="menu">
+            <li class="first"><a href="/get-involved/?msc=main-nav">Overview</a></li>
+            <li><a href="/work-study-program/?msc=main-nav">Work Study</a></li>
+            <li><a href="/teach/?msc=main-nav">Teach for SANS</a></li>            
+            <li><a href="/partnerships/?msc=main-nav">Partnerships</a></li>
+            <li><a href="/sponsorship/?msc=main-nav">Sponsorship Opportunities</a></li>
+            <li class="last"><a href="/account/create?msc=main-nav">Join the Community</a></li>
+        </ul>
+    </li>
+
+    <li class="root-item dropdown"><a href="/about/?msc=main-nav" class="about menu-about dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About</a>
+        <ul class="last-menu dropdown-menu" role="menu">
+            <li class="first"><a href="/about/?msc=main-nav">About SANS</a></li>
+            <li><a href="/profiles/instructors/?msc=main-nav">Instructors</a></li>
+            <li><a href="/mission/?msc=main-nav">Mission</a></li>
+            <li><a href="/about/initiatives/?msc=main-nav">Initiatives</a></li>
+            <li><a href="/about/diversity/?msc=main-nav">Diversity</a></li>
+            <li><a href="/about/awards/?msc=main-nav">Awards</a></li>
+            <li><a href="/about/contact/?msc=main-nav">Contact</a></li>
+            <li><a href="/frequently-asked-questions/?msc=main-nav">Frequently Asked Questions</a></li>
+            <li><a href="/customer-reviews/?msc=main-nav">Customer Reviews</a></li>
+            <!--<li><a href="/about/link-to-sans/" rel="nofollow">Link to SANS</a></li>-->
+            <li><a href="/press/?msc=main-nav">Press</a></li>
+            <!--<li><a href="/about/careers/">Careers</a></li>-->
+<!--            <li class="last"><a href="http://pgp.mit.edu:11371/pks/lookup?op=get&amp;search=0xA1694E46" rel="nofollow">PGP Key</a></li>-->
+        </ul>
+    </li>
+    </ul><!-- / .dropdown -->
+</div><!-- #main_navigation -->
+</div>
+
+                </div><!-- end .top-menu -->
+                <div class="clear"></div><!-- end .clear -->
+            </div><!-- end .header-->
+        </div><!--  end .container -->
+    <!-- Header -->
+    <div id="ribbon" class="container-fluid">
+        <div class="container">
+                            <h1>Reading Room</h1>                    
+                    </div><!-- end .top-text -->
+            </a>    </div><!-- END RIBBON -->       
+    <div class="container top-buffer bottom-buffer">
+        <div id="mobile-register" class="bottom-buffer">
+                          <div class="sidebarBlurb ">
+                  
+<div id="newsletter-signup-form" class="boxley gdpr-communication-wrapper" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); text-align:center;padding:15px 15px 0;">
+    <form action="https://www.sans.org/newsletter-signup/process" method="post" id="newsletter_signup_form" name="newsletter_signup_form" class="validate">
+<input type="hidden" name="_xsrf_token" value="eecd2cb153d977f0f3c1131d964a7b0f5d81b181"  />
+
+            <h4>Subscribe to SANS Newsletters</h4>
+                                    Join the SANS Community to receive the latest curated cyber security news, vulnerabilities and mitigations,
+        training opportunities, and our webcast schedule.
+        <br><br>
+        <input type="text" id="email" name="email" value="" style="width:100%;max-width:350px;" placeholder="Enter email address..."  /><br><br><input type="text" id="country" name="country" value="" class="country-list" style="width:100%;max-width:350px;" placeholder="Enter country..."  /><br><br><fieldset class="gdpr-form-wrapper sti-no-fieldset-border giac-no-fieldset-border">
+    <!--hidden is hardcoded as this form seems to be reused, eventually as controllers
+    add the js code to those forms, this can be removed -->
+    <div class='marketing' style="display:none">
+                    <input type="hidden" name="marketing" value="0" />
+        
+                <div class="form-group gdpr-consent">
+            <input type="checkbox" id="gdpr-agreement" name="gdpr-agreement" value="gdpr-agreement" class="form-control"  />            <label for='gdpr-agreement'></label>
+                    </div>
+    </div>
+    <div class="ccpa-notice bottom-buffer" style="display:none">
+        <small>By providing this information, you agree to the processing of your personal data by SANS as described in our <a href=" https://www.sans.org/privacy ">Privacy Policy</a>.</small>
+    </div>
+    <div class="ccpa-notice-giac bottom-buffer" style="display:none">
+        <small>By providing this information, you agree to the processing of your personal data by GIAC as described in our <a href=" https://www.giac.org/about/policies/privacy ">Privacy Policy</a>.</small>
+    </div>    
+</fieldset>
+
+        <div class="form_item">
+            <input type="submit" id="submit" name="submit" value="Subscribe"  class="btn btn-primary bottom-buffer" onClick="_gaq.push(['_trackEvent', 'Subscribe Forms', 'Subscribed to Newsletter', 'List: Subscribe to our newsletter']);" />        </div>
+
+    <input type="text" id="_website" name="_website" value="" size="1" onchange="this.value=null" /></form>
+</div>
+                  </div>
+                <hr>
+        </div>
+<!-- middle -->
+    <div class="middle row">
+      <!-- content -->
+      <div class="wrapper col-md-9">
+        <div id="" class="content">
+                <div class="alert alert-warning">
+        <div>
+                            <p><span class="label">Sorry!</span> The requested paper could not be found.</p>                
+                    </div>
+    </div>
+
+<h3>Penetration Testing</h3>
+    <p>Featuring 67 Papers as of April 21, 2021</p>
+
+    
+    <div class="top-buffer bottom-buffer">
+        </div>
+     
+    <ul class="details divider rr_papers list-unstyled">
+            <li id="paper40205" class="rr_paper rr_analyst_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/analyst/pentest-service-cobalt-40205"  class="rr_paper_title"><strong>Pentest as a Service with Cobalt</strong></a>
+                    <small class="rr_paper_author">
+                        <strong> <font color='#24A71B'>Analyst Paper (requires membership in SANS.org community)</font></strong> <br />                        by Matt Bromiley -&nbsp;March&nbsp;16,&nbsp;2021&nbsp;                    </small>
+
+                    <ul><li><small class="rr_paper_webcasts"><span class="label">Associated Webcasts:</span> <a href="/webcasts/interactive-pentest-experience-118175">An Interactive Pentest Experience</a>  </small></li><li><small class="rr_paper_sponsors"><span class="label">Sponsored By:</span> <a href="/vendor.php?id=4655" class="rr_vendor" target="_blank" rel="noopener">Cobalt Labs, Inc.</a>  </small></li></ul>                                                                <p class="rr_paper_overview_content" style="margin-bottom:0;">What if organizations could turn external penetration testing into an interactive experience they could use to regularly evaluate and increase their security posture? It is possible. SANS instructor Matt Bromiley reviews Cobalt&#039;s "pentest as a service" platform, an experience he describes as "an information security experience unlike many others"--but in a good way. In this paper, Bromiley examines using Cobalt to schedule, perform, interact with, and act upon penetration testing results. And more.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper40205" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/account/login?url=/reading-room/whitepapers/analyst/membership/40205" class="icon_left"><small><span class="fa fa-unlock-alt"></span>&nbsp;Login</small></a></li><li><a href="/account/create?url=/reading-room/whitepapers/analyst/membership/40205" class="icon_left"><small><span class="fa fa-users"></span>&nbsp;Join SANS.org</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper39920" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/fear-unknown-meta-analysis-insecure-object-deserialization-vulnerabilities-39920" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39920','Penetration Testing', 'Fear of the Unknown: A Meta-Analysis of Insecure  Object Deserialization Vulnerabilities']);"><strong>Fear of the Unknown: A Meta-Analysis of Insecure  Object Deserialization Vulnerabilities</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Karim Lalji -&nbsp;October&nbsp;28,&nbsp;2020&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Deserialization vulnerabilities have gained significant traction in the past few years, resulting in this category of weakness taking eighth place on the OWASP Top 10. Despite the severity, deserialization vulnerabilities tend to be among the less popular application exploits discussed (Bekerman, 2020) and frequently misunderstood by security consultants and penetration testers without a development background. This knowledge discrepancy leaves adversaries with an advantage and security professionals with a disadvantage. This research will aim to demonstrate exploitation techniques using insecure deserialization on multiple platforms, including Java, .NET, PHP, and Android, to obtain a metanalysis of exploitation techniques and defensive strategies.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper39920" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/fear-unknown-meta-analysis-insecure-object-deserialization-vulnerabilities-39920" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39920','Penetration Testing','Fear of the Unknown: A Meta-Analysis of Insecure  Object Deserialization Vulnerabilities']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper39835" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/remote-penetration-testing-ninja-pi-39835" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39835','Penetration Testing', 'Remote Penetration Testing with Ninja Pi']);"><strong>Remote Penetration Testing with Ninja Pi</strong></a>
+                    <small class="rr_paper_author">
+                                                by Jeremy Druin -&nbsp;September&nbsp;28,&nbsp;2020&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Remote penetration testing can have significant advantages over on-site tests but some types of testing require a physical presence. However, having testers on-premise may increase costs, duration, and difficulty. Penetration testing "drop boxes" can provide the physical connectivity needed while allowing the testing team to work off-site. These drop boxes can be built with readily available hardware such as Raspberry Pi. When paired with Kali Linux and a few helpful scripts, the drop box becomes a viable alternative to onsite testing for many use-cases. Such drop boxes are available for purchase, but a pen tester can build their own in less than a day that connects to a cloud server for maximum flexibility. These custom boxes are less expensive, offer the opportunity to learn new skills, can be customized to get around challenging connectivity issues, and built to fit specific use-cases.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper39835" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/remote-penetration-testing-ninja-pi-39835" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39835','Penetration Testing','Remote Penetration Testing with Ninja Pi']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper39450" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/preventing-living-land-attacks-39450" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39450','Penetration Testing', 'Preventing Living off the Land Attacks']);"><strong>Preventing Living off the Land Attacks</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by David Brown -&nbsp;March&nbsp;5,&nbsp;2020&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Increasingly, attackers are relying on trusted Microsoft programs to carry out attacks against individuals and organizations (Symantec, 2017). The software typically comes installed by default in Windows and is often required for the essential functionality of the operating system. These types of attacks are called “living off the land,” and they can be challenging to detect and prevent. This paper examines the viability of using Microsoft AppLocker to thwart living off the land attacks without impacting the legitimate operating system and administrative use of the underlying Microsoft programs. 
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper39450" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/preventing-living-land-attacks-39450" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39450','Penetration Testing','Preventing Living off the Land Attacks']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper39440" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/unix-style-approach-web-application-testing-39440" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39440','Penetration Testing', 'Unix-style approach to web application testing']);"><strong>Unix-style approach to web application testing</strong></a>
+                    <small class="rr_paper_author">
+                                                by Andras Veres-Szentkiralyi -&nbsp;February&nbsp;27,&nbsp;2020&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Web application testers of our time have lots of tools at their disposal. Some of these offer the option to be extended in ways the original developers did not think of, thus making their tool more useful. However, developing extensions or plugins have entry barriers in the form of fixed costs, boilerplate, et cetera. At the same time, many problems already have a solution designed as a smaller standalone program, which could be combined in the Unix fashion to produce a useful complex tool quickly and easily. In this paper, a (meta)solution is introduced for this integration problem by lowering the entry barriers and offer several examples that demonstrate how it saved time in web application assessments. 
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper39440" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/unix-style-approach-web-application-testing-39440" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39440','Penetration Testing','Unix-style approach to web application testing']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper39190" class="rr_paper rr_analyst_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/analyst/red-blue-purple-teams-combining-security-capabilities-outcome-39190"  class="rr_paper_title"><strong>Red, Blue and Purple Teams: Combining Your Security Capabilities for the Best Outcome</strong></a>
+                    <small class="rr_paper_author">
+                        <strong> <font color='#24A71B'>Analyst Paper (requires membership in SANS.org community)</font></strong> <br />                        by Chris Dale -&nbsp;October&nbsp;2,&nbsp;2019&nbsp;                    </small>
+
+                    <ul><li><small class="rr_paper_webcasts"><span class="label">Associated Webcasts:</span> <a href="/webcasts/red-blue-purple-teams-combining-security-capabilities-outcome-111615">Red, Blue and Purple Teams: Combining Your Security Capabilities for the Best Outcome</a>  </small></li><li><small class="rr_paper_sponsors"><span class="label">Sponsored By:</span> <a href="/vendor.php?id=405" class="rr_vendor" target="_blank" rel="noopener">Core Security Technologies</a>  </small></li></ul>                                                            
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li><a href="/account/login?url=/reading-room/whitepapers/analyst/membership/39190" class="icon_left"><small><span class="fa fa-unlock-alt"></span>&nbsp;Login</small></a></li><li><a href="/account/create?url=/reading-room/whitepapers/analyst/membership/39190" class="icon_left"><small><span class="fa fa-users"></span>&nbsp;Join SANS.org</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper39170" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/pass-the-hash-windows-10-39170" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39170','Penetration Testing', 'Pass-the-Hash in Windows 10']);"><strong>Pass-the-Hash in Windows 10</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Lukasz Cyra -&nbsp;September&nbsp;27,&nbsp;2019&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Attackers have used the Pass-the-Hash (PtH) attack for over two decades. Its effectiveness has led to several changes to the design of Windows. Those changes influenced the feasibility of the attack and the effectiveness of the tools used to execute it. At the same time, novel PtH attack strategies appeared. All this has led to confusion about what is still feasible and what configurations of Windows are vulnerable. This paper examines various methods of hash extraction and execution of the PtH attack. It identifies the prerequisites for the attack and suggests hardening options. Testing in Windows 10 v1903 supports the findings. Ultimately, this paper shows the level of risk posed by PtH to environments using the latest version of Windows 10.
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper39170" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/pass-the-hash-windows-10-39170" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39170','Penetration Testing','Pass-the-Hash in Windows 10']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper39120" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/container-based-networks-lowering-tco-modern-cyber-range-39120" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39120','Penetration Testing', 'Container-Based Networks: Lowering the TCO of the Modern Cyber Range']);"><strong>Container-Based Networks: Lowering the TCO of the Modern Cyber Range</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Bryan Scarbrough -&nbsp;August&nbsp;26,&nbsp;2019&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The rapid pace and ever-changing environment of cybersecurity make it difficult for companies to find qualified individuals, and for those same individuals to receive the training and experience they need to succeed. Some are fortunate enough to use cyber ranges for training and proficiency testing, but access is often limited to company employees. Limited access to cyber ranges precludes outsiders or newcomers from learning the skills necessary to meet the ever-growing demand for cybersecurity professionals. There have been several open-sourced initiatives such as Japan&#039;s Cybersecurity Training and Operation Network Environment (CyTrONE), and the University of Rhode Island&#039;s Open Cyber Challenge Platform (OCCP), but they require significant hardware to support. The average security professional needs a cyber range environment that replicates real-world Internet topologies, networks, and services, but operates on affordable equipment.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper39120" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/container-based-networks-lowering-tco-modern-cyber-range-39120" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 39120','Penetration Testing','Container-Based Networks: Lowering the TCO of the Modern Cyber Range']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper38780" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/template-injection-attacks-bypassing-security-controls-living-land-38780" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 38780','Penetration Testing', 'Template Injection Attacks - Bypassing Security Controls by Living off the Land']);"><strong>Template Injection Attacks - Bypassing Security Controls by Living off the Land</strong></a>
+                    <small class="rr_paper_author">
+                                                by Brian Wiltse -&nbsp;February&nbsp;1,&nbsp;2019&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">As adversary tactics continue to adapt and embrace the concept of living off the land by using legitimate company software instead of a virus or other malwareRut15, their tactics techniques and procedures (TTPs) often leverage programs and features in target environments that are normal and expected. The adversaries leverage these features in a way that enables them to bypass security controls to complete their objective. In May of 2017, a suspected APT group began to leverage one such feature in Microsoft Office, utilizing a Template Injection attack to harvest credentials, or gain access to end users computers at a US power plant operator, Wolf Creek Nuclear Operating Corp. In this Gold Paper, we will review in detail what the Template Injection attacks may have looked like against this target, and assess their ability to bypass security controls. </p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper38780" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/template-injection-attacks-bypassing-security-controls-living-land-38780" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 38780','Penetration Testing','Template Injection Attacks - Bypassing Security Controls by Living off the Land']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper38375" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/learning-cbc-bit-flipping-gamification-38375" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 38375','Penetration Testing', 'Learning CBC Bit-flipping Through Gamification']);"><strong>Learning CBC Bit-flipping Through Gamification</strong></a>
+                    <small class="rr_paper_author">
+                                                by Jeremy Druin -&nbsp;April&nbsp;24,&nbsp;2018&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Cryptanalysis concepts like CBC Bit-flipping can be difficult to grasp through study alone. Working through "hands-on" exercises is a common teaching technique intended to assist, but freely available training tools may not be readily available for advanced web application penetration testing practice. To this end, this paper will describe CBC bit-flipping and offer instruction on trying this cryptanalysis technique. Also, a CBC bit-flipping game will be provided within the OWASP Mutillidae II web application. Mutillidae is a large collection of deliberately vulnerable web application challenges designed to teach web security in a stand-alone, local environment.
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper38375" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/learning-cbc-bit-flipping-gamification-38375" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 38375','Penetration Testing','Learning CBC Bit-flipping Through Gamification']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper38180" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/hacking-humans-evolving-paradigm-virtual-reality-38180" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 38180','Penetration Testing', 'Hacking Humans: The Evolving Paradigm with Virtual Reality']);"><strong>Hacking Humans: The Evolving Paradigm with Virtual Reality</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Andrew Andrasik -&nbsp;November&nbsp;22,&nbsp;2017&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Virtual reality (VR) systems are evolving from high-end gaming and military applications to being used in day-to-day business operations and daily life. Cyber security professionals must begin now to prepare proactive threat analysis and incident handling plans that cover information systems and users. Previous compromises illustrate the devastating effects malware can have on the confidentiality, integrity, and availability of information systems. These disastrous consequences may be transferred directly to the user given his or her perception of events. Even in the early stages, VR represents a new paradigm within the information age. Today, users view information systems through a monitor that acts as a window into a virtual environment. Within VR, a user may become completely immersed while absorbing information from all five senses. VR represents a dichotomy that adds a potential human component to an information system compromise. This research project examines offensive tactics, techniques, and procedures, then exploits and extrapolates them to a compromised VR system and the user to illustrate the hazards associated with VR. 
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper38180" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/hacking-humans-evolving-paradigm-virtual-reality-38180" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 38180','Penetration Testing','Hacking Humans: The Evolving Paradigm with Virtual Reality']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper38020" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/tackling-dod-cyber-red-team-deficiencies-systems-engineering-38020" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 38020','Penetration Testing', 'Tackling DoD Cyber Red Team Deficiencies Through Systems Engineering']);"><strong>Tackling DoD Cyber Red Team Deficiencies Through Systems Engineering</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by John Schab -&nbsp;September&nbsp;15,&nbsp;2017&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Red teaming is an essential capability in preparing and assessing the Department of Defense&#039;s (DoD) ability to execute their mission in a contested cyber environment. The identified deficiencies in DoD&#039;s overall red team capability resulting from their adhoc implementation creates unknown mission risk to the Combatant Commands and Services leading to a significant threat to national security. Unfortunately, many senior DoD officials are citing a lack of resources as the reason for the deficiencies and believe an increase in funding will solve the issues. However, funding alone is not scalable to address DoD&#039;s gaps in red team capability, and throwing more money to the existing adhoc process is quickly becoming a huge money pit for the DoD. This paper analyzes the deficiencies and concludes the primary cause to be a lack of a structured process needed to define, design, build, and sustain the required DoD red team capability. The solution presented is to treat the overall DoD cyber red team function as a complex system operating within a system of systems and apply the systems engineering process. Implementing a systems engineering process will eliminate some of the identified deficiencies through design and will identify feasible solutions or alternatives to the deficient areas which design cannot eliminate. The systems engineering process can help DoD build an effective and efficient red team capability which is needed to ensure the military can successfully execute its missions in the contestant cyber environment.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper38020" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/tackling-dod-cyber-red-team-deficiencies-systems-engineering-38020" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 38020','Penetration Testing','Tackling DoD Cyber Red Team Deficiencies Through Systems Engineering']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper37940" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/cracking-active-directory-passwords-how-cook-ad-crack-37940" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37940','Penetration Testing', 'Cracking Active Directory Passwords or "How to Cook AD Crack"']);"><strong>Cracking Active Directory Passwords or "How to Cook AD Crack"</strong></a>
+                    <small class="rr_paper_author">
+                                                by Martin Boller -&nbsp;August&nbsp;23,&nbsp;2017&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">It is too early to write the obituary on passwords, and they are still the most prevalent form of authentication for most corporations. You may be using Multi-Factor Authentication for some users, but there&#039;s still a password in use somewhere. Many end-users and IT Pros does not understand the art of creating and maintaining good passwords, and most organizations utilize Active Directory, which stores unsalted passwords using a weak hashing algorithm, further weakening their security.  This paper discusses several methods to acquire the password hashes from Active Directory, how to use them in Pass the Hash attacks, and how to crack them, revealing the clear text passwords they represent. It ends with a short discussion on how to report on the password security of the organization tested.
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper37940" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/cracking-active-directory-passwords-how-cook-ad-crack-37940" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37940','Penetration Testing','Cracking Active Directory Passwords or "How to Cook AD Crack"']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper37855" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/docker-create-multi-container-environments-research-sharing-lateral-movement-37855" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37855','Penetration Testing', 'Using Docker to Create Multi-Container Environments for Research and Sharing Lateral Movement']);"><strong>Using Docker to Create Multi-Container Environments for Research and Sharing Lateral Movement</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Shaun McCullough -&nbsp;July&nbsp;3,&nbsp;2017&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Docker, a program for running applications in containers, can be used to create multi-container infrastructures that mimic a more sophisticated network for research in penetration techniques. This paper will demonstrate how Docker can be used by information security researchers to build and share complex environments for recreation by anyone. The scenarios in this paper recreate previous research done in SSH tunneling, pivoting, and other lateral movement operations. By using Docker to build sharable and reusable test infrastructure, information security researchers can help readers recreate the research in their own environments, enhancing learning with a more immersive and hands on research project.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper37855" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/docker-create-multi-container-environments-research-sharing-lateral-movement-37855" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37855','Penetration Testing','Using Docker to Create Multi-Container Environments for Research and Sharing Lateral Movement']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper37562" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/attack-defend-linux-privilege-escalation-techniques-2016-37562" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37562','Penetration Testing', 'Attack and Defend: Linux Privilege Escalation Techniques of 2016']);"><strong>Attack and Defend: Linux Privilege Escalation Techniques of 2016</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Michael Long II -&nbsp;January&nbsp;30,&nbsp;2017&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Recent kernel exploits such as Dirty COW show that despite continuous improvements in Linux security, privilege escalation vectors are still in widespread use and remain a problem for the Linux community. Linux system administrators are generally cognizant of the importance of hardening their Linux systems against privilege escalation attacks; however, they often lack the knowledge, skill, and resources to effectively safeguard their systems against such threats. This paper will examine Linux privilege escalation techniques used throughout 2016 in detail, highlighting how these techniques work and how adversaries are using them. Additionally, this paper will offer remediation procedures in order to inform system administrators on methods to mitigate the impact of Linux privilege escalation attacks. 
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper37562" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/attack-defend-linux-privilege-escalation-techniques-2016-37562" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37562','Penetration Testing','Attack and Defend: Linux Privilege Escalation Techniques of 2016']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper37387" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/triaging-enterprise-application-security-assessments-37387" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37387','Penetration Testing', 'Triaging the Enterprise for Application Security Assessments']);"><strong>Triaging the Enterprise for Application Security Assessments</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Rebecca Deck -&nbsp;November&nbsp;4,&nbsp;2016&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Conducting a full array of security tests on all applications in an enterprise may be infeasible due to both time and cost. According to the Center for Internet Security, the purpose of application specific and penetration testing is to discover previously unknown vulnerabilities and security gaps within the enterprise. These activities are only warranted after an organization attains significant security maturity, which results in a large backlog of systems that need testing. When organizations finally undertake the efforts of penetration testing and application security, it can be difficult to choose where to begin. Computing environments are often filled with hundreds or thousands of different systems to test and each test can be long and costly. At this point in the testing process, little information is available about an application beyond the computers involved, the owners, data classification, and the extent to which the system is exposed. With so few variables, many systems are likely to have equal priority. This paper suggests a battery of technical checks that testers can quickly perform to stratify the vast array of applications that exist in the enterprise ecosystem. This process allows the security team to focus efforts on the riskiest systems first. </p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper37387" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/triaging-enterprise-application-security-assessments-37387" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37387','Penetration Testing','Triaging the Enterprise for Application Security Assessments']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper37187" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/out-protecting-confidentiality-penetration-testing-37187" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37187','Penetration Testing', 'In but not Out: Protecting Confidentiality during  Penetration Testing']);"><strong>In but not Out: Protecting Confidentiality during  Penetration Testing</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Andrew Andrasik -&nbsp;August&nbsp;22,&nbsp;2016&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">In but not Out: Protecting Confidentiality during Penetration Testing
+Abstract:Penetration testing is imperative for organizations committed to security. However, independent penetration testers are rarely greeted with open arms when initiating an assessment. As firms implement the Critical Security Controls or the Risk Management Framework, independent penetration testing will likely become standard practice as
+opposed to supplemental exercises. Ethical hacking is a common tactic to view a company’s network from an attacker’s perspective, but inviting external personnel into a network may increase risk. Penetration testers strive to gain superuser privileges wherever possible and utilize thousands of open-source tools and scripts, many of which do not originate from validated sources. Penetration testers may gain access to all compartmented sections of a network and document how to repeat successful exploits while saving restricted data to their laptops. This paper illustrates secure Tactics, Techniques, and Procedures (TTPs) to enable ethical hackers to complete their tests within scope while reducing managerial stress regarding confidentiality. A properly conducted independent penetration test should provide essential intelligence about a
+network without jeopardizing the confidentiality of proprietary data.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper37187" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/out-protecting-confidentiality-penetration-testing-37187" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 37187','Penetration Testing','In but not Out: Protecting Confidentiality during  Penetration Testing']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper36907" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/sulley-protocol-fuzz-linux-software-vulnerabilities-36907" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36907','Penetration Testing', 'Using Sulley to Protocol Fuzz for Linux Software Vulnerabilities']);"><strong>Using Sulley to Protocol Fuzz for Linux Software Vulnerabilities</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Aron Warren -&nbsp;April&nbsp;25,&nbsp;2016&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">
+Fuzzers are useful for discovering vulnerabilities in software services. Sulley is a common fuzzer with an ability to fuzz network protocols. This paper will describe the process for using Sulley to fuzz for a vulnerability in an implementation of the unencrypted telnet protocol. Specifically, Sulley will be used to detect the vulnerability that was found in CVE-2011-4862 implemented on the RedHat Enterprise Linux 3 distribution.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper36907" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/sulley-protocol-fuzz-linux-software-vulnerabilities-36907" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36907','Penetration Testing','Using Sulley to Protocol Fuzz for Linux Software Vulnerabilities']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper36677" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/intrusion-detection-prevention-systems-cheat-sheet-choosing-solution-common-misconfigurations-evasion-techniques-recommendations-36677" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36677','Penetration Testing', 'Intrusion Detection and Prevention Systems Cheat Sheet: Choosing the Best Solution, Common Misconfigurations, Evasion Techniques, and Recommendations.']);"><strong>Intrusion Detection and Prevention Systems Cheat Sheet: Choosing the Best Solution, Common Misconfigurations, Evasion Techniques, and Recommendations.</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Phillip Bosco -&nbsp;January&nbsp;25,&nbsp;2016&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">There are many decisions a company must make while choosing an Intrusion Detection System (IDS) or Intrusion Prevention System (IPS) for their infrastructure. Pricing questions will arise to determine if it will fit into their budget. 
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper36677" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/intrusion-detection-prevention-systems-cheat-sheet-choosing-solution-common-misconfigurations-evasion-techniques-recommendations-36677" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36677','Penetration Testing','Intrusion Detection and Prevention Systems Cheat Sheet: Choosing the Best Solution, Common Misconfigurations, Evasion Techniques, and Recommendations.']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper36637" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/testing-stateful-web-application-workflows-36637" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36637','Penetration Testing', 'Testing stateful web application workflows']);"><strong>Testing stateful web application workflows</strong></a>
+                    <small class="rr_paper_author">
+                                                by Andr&aacute;s Veres-Szentkir&aacute;lyi -&nbsp;January&nbsp;14,&nbsp;2016&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">When technology made it possible for web servers to return dynamic content, web applications started out simple. As the development of more and more applications shifted from desktop operating systems to the web, complexity grew.
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper36637" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/testing-stateful-web-application-workflows-36637" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36637','Penetration Testing','Testing stateful web application workflows']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper36547" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/clickbait-owning-ssl-heartbleed-poodle-superfish-36547" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36547','Penetration Testing', 'Clickbait: Owning SSL via Heartbleed, POODLE, and Superfish']);"><strong>Clickbait: Owning SSL via Heartbleed, POODLE, and Superfish</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Matthew Toussain -&nbsp;December&nbsp;23,&nbsp;2015&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">SSL is dead. Security researchers have now broken nearly every method of implementing the Secure Socket Layer (SSL). Unfortunately, the Internet is struggling to catch up to the new world order. SSL version 3.0 is still supported by 31.5% of public web servers (Kario, 2015). As a result attackers can gain access to key confidential information.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper36547" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/clickbait-owning-ssl-heartbleed-poodle-superfish-36547" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36547','Penetration Testing','Clickbait: Owning SSL via Heartbleed, POODLE, and Superfish']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper36487" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/web-application-file-upload-vulnerabilities-36487" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36487','Penetration Testing', 'Web Application File Upload Vulnerabilities']);"><strong>Web Application File Upload Vulnerabilities</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Matthew Koch -&nbsp;December&nbsp;7,&nbsp;2015&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">File upload vulnerabilities are a devastating category of web application vulnerabilities.
+Without secure coding and configuration an attacker can quickly compromise an affected
+system. This paper will discuss types of file upload vulnerabilities, how to discover,
+exploit, and maintain persistence using upload vulnerabilities.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper36487" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/web-application-file-upload-vulnerabilities-36487" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36487','Penetration Testing','Web Application File Upload Vulnerabilities']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper36427" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/cloud-assessment-survival-guide-36427" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36427','Penetration Testing', 'Cloud Assessment Survival Guide']);"><strong>Cloud Assessment Survival Guide</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Edward Zamora -&nbsp;November&nbsp;10,&nbsp;2015&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The time has come where the society at large is living in the cloud. Many have questioned the security of information in the cloud and many have been told that information is safe there. But how can one be sure that information is indeed safe in the cloud? In this day and age where there is an increased dependence on such complex technology as cloud systems, there are needs for methodologies to test cloud deployments. For organizations that have or seek to implement cloud technology in their environment, this paper will present a brief background on cloud technology and a methodology for assessing the security of their cloud implementation based on penetration testing principles.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper36427" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/cloud-assessment-survival-guide-36427" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36427','Penetration Testing','Cloud Assessment Survival Guide']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper36117" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/tunneling-pivoting-web-application-penetration-testing-36117" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36117','Penetration Testing', 'Tunneling, Pivoting, and Web Application Penetration Testing']);"><strong>Tunneling, Pivoting, and Web Application Penetration Testing</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Gordon Fraser -&nbsp;August&nbsp;3,&nbsp;2015&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">When conducting a web application penetration test there are times when you want to be able to pivot through a system to which you have gained access, to other systems in order to continue testing. There are many channels that can be used as avenues for pivoting. This paper examines five commonly used channels for pivoting: Netcat relays, SSH local port forwarding, SSH dynamic port forwarding (SOCKS proxy), Meterpreter sessions. and Ncat HTTP proxy; within the context of using them with key tools in the penetration tester’s arsenal including: Nmap, the Burp Suite, w3af, Nikto, Iceweasel, and Metasploit.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper36117" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/tunneling-pivoting-web-application-penetration-testing-36117" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 36117','Penetration Testing','Tunneling, Pivoting, and Web Application Penetration Testing']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper35970" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/automated-security-testing-oracle-forms-applications-35970" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35970','Penetration Testing', 'Automated Security Testing of Oracle Forms Applications']);"><strong>Automated Security Testing of Oracle Forms Applications</strong></a>
+                    <small class="rr_paper_author">
+                                                by Balint  Varga-Perke -&nbsp;May&nbsp;26,&nbsp;2015&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">To keep up with the increasing rate of web application attacks (Imperva, 2014) a wide variety of automated security testing tools have been developed (OWASP, 2014).
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper35970" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/automated-security-testing-oracle-forms-applications-35970" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35970','Penetration Testing','Automated Security Testing of Oracle Forms Applications']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper35807" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/powercat-35807" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35807','Penetration Testing', 'Powercat']);"><strong>Powercat</strong></a>
+                    <small class="rr_paper_author">
+                                                by Mick  Douglas -&nbsp;March&nbsp;4,&nbsp;2015&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Powercat started as a proof-of-concept tool that I initially developed.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper35807" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/powercat-35807" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35807','Penetration Testing','Powercat']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper35717" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/penetration-testing-alternative-password-cracking-35717" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35717','Penetration Testing', 'Penetration Testing: Alternative to Password Cracking']);"><strong>Penetration Testing: Alternative to Password Cracking</strong></a>
+                    <small class="rr_paper_author">
+                                                by Maxim Catanoi -&nbsp;February&nbsp;2,&nbsp;2015&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Penetration testing success directly depends on the skills, knowledge and resources available to each member of the penetration testing team (Wilhelm).</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper35717" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/penetration-testing-alternative-password-cracking-35717" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35717','Penetration Testing','Penetration Testing: Alternative to Password Cracking']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper35672" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/aix-penetration-testers-35672" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35672','Penetration Testing', 'AIX for penetration testers']);"><strong>AIX for penetration testers</strong></a>
+                    <small class="rr_paper_author">
+                                                by Zoltan Panczel -&nbsp;January&nbsp;8,&nbsp;2015&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">AIX (Advanced Interactive eXecutive) is a series of UNIX operating systems developed by IBM. AIX is based on System V UNIX with 4.2 BSD extensions. Nowadays it supports only RISC based machines. The operating system is widely used by banks, governments, hospitals and power plants. 
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper35672" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/aix-penetration-testers-35672" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35672','Penetration Testing','AIX for penetration testers']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper35377" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/hot-security-35377" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35377','Penetration Testing', 'H.O.T. | Security']);"><strong>H.O.T. | Security</strong></a>
+                    <small class="rr_paper_author">
+                                                by Luis Rocha -&nbsp;August&nbsp;21,&nbsp;2014&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The information security industry will continue to grow in size, density and specialization (Tipton, 2010). The demand for qualified security professionals who possess relevant knowledge and required skills is growing and will increase substantially (Miller, 2012) (Suby, 2013).</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper35377" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/hot-security-35377" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35377','Penetration Testing','H.O.T. | Security']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper35262" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/web-application-penetration-testing-pci-35262" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35262','Penetration Testing', 'Web Application Penetration Testing for PCI']);"><strong>Web Application Penetration Testing for PCI</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Michael Hoehl -&nbsp;June&nbsp;26,&nbsp;2014&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The Verizon 2014 Data Breach Investigations Report reported 3,937 total web application related incidents, with 490 confirmed unauthorized data disclosures (Verizon, 2014). 
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper35262" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/web-application-penetration-testing-pci-35262" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 35262','Penetration Testing','Web Application Penetration Testing for PCI']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper34577" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/ipwn-apps-pentesting-ios-applications-34577" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 34577','Penetration Testing', 'iPwn Apps: Pentesting iOS Applications']);"><strong>iPwn Apps: Pentesting iOS Applications</strong></a>
+                    <small class="rr_paper_author">
+                                                by Adam Kliarsky -&nbsp;May&nbsp;12,&nbsp;2014&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The growth of mobile device usage in both personal and professional environments continues to grow.
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper34577" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/ipwn-apps-pentesting-ios-applications-34577" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 34577','Penetration Testing','iPwn Apps: Pentesting iOS Applications']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper34380" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/introduction-owasp-mutillidae-ii-web-pen-test-training-environment-34380" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 34380','Penetration Testing', 'Introduction to the OWASP Mutillidae II Web Pen-Test Training Environment']);"><strong>Introduction to the OWASP Mutillidae II Web Pen-Test Training Environment</strong></a>
+                    <small class="rr_paper_author">
+                                                by Jeremy  Druin -&nbsp;October&nbsp;22,&nbsp;2013&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Web application security has become increasingly important to organizations. </p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper34380" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/introduction-owasp-mutillidae-ii-web-pen-test-training-environment-34380" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 34380','Penetration Testing','Introduction to the OWASP Mutillidae II Web Pen-Test Training Environment']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper34122" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/implementing-redmine-secure-project-management-34122" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 34122','Penetration Testing', 'Implementing Redmine for Secure Project Management']);"><strong>Implementing Redmine for Secure Project Management</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Russ   McRee -&nbsp;March&nbsp;12,&nbsp;2013&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">One of the core tenets of a good project management practice is the safekeeping of project information in a readily available, secure resource.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper34122" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/implementing-redmine-secure-project-management-34122" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 34122','Penetration Testing','Implementing Redmine for Secure Project Management']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper34022" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/exploiting-embedded-devices-34022" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 34022','Penetration Testing', 'Exploiting Embedded Devices']);"><strong>Exploiting Embedded Devices</strong></a>
+                    <small class="rr_paper_author">
+                                                by Neil Jones -&nbsp;October&nbsp;25,&nbsp;2012&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The majority of routers operate using a form of embedded Linux OS. This is an advantage to the majority of penetration testers as Linux is likely to be a familiar platform to work with; however the distributions that routers tend to run are very optimised, and as such the entire firmware for a router is generally only a few Megabytes in size.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper34022" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/exploiting-embedded-devices-34022" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 34022','Penetration Testing','Exploiting Embedded Devices']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33964" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/exploiting-financial-information-exchange-fix-protocol-33964" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33964','Penetration Testing', 'Exploiting Financial Information Exchange (FIX) Protocol?']);"><strong>Exploiting Financial Information Exchange (FIX) Protocol?</strong></a>
+                    <small class="rr_paper_author">
+                                                by Darren DeMarco -&nbsp;July&nbsp;3,&nbsp;2012&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The FIX Protocol website defines The Financial Information eXchange ("FIX") Protocol as “a series of messaging specifications for the electronic communication of trade-related messages” (FIX Protocol Ltd, 2012).</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33964" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/exploiting-financial-information-exchange-fix-protocol-33964" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33964','Penetration Testing','Exploiting Financial Information Exchange (FIX) Protocol?']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33945" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/penetration-testing-web-application-dangerous-http-methods-33945" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33945','Penetration Testing', 'Penetration Testing Of A Web Application Using Dangerous HTTP Methods']);"><strong>Penetration Testing Of A Web Application Using Dangerous HTTP Methods</strong></a>
+                    <small class="rr_paper_author">
+                                                by Issac Kim -&nbsp;May&nbsp;22,&nbsp;2012&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">HTTP methods are functions that a web server provides to process a request. For example, the "GET" method is used to retrieve the web page from the server.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33945" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/penetration-testing-web-application-dangerous-http-methods-33945" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33945','Penetration Testing','Penetration Testing Of A Web Application Using Dangerous HTTP Methods']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33909" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/post-exploitation-metasploit-pivot-port-33909" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33909','Penetration Testing', 'Post Exploitation using Metasploit pivot & port forward']);"><strong>Post Exploitation using Metasploit pivot & port forward</strong></a>
+                    <small class="rr_paper_author">
+                                                by David Dodd -&nbsp;March&nbsp;29,&nbsp;2012&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The Metasploit Project is an open-source, computer security project which provides information about security vulnerabilities that assist in performing a penetration test.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33909" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/post-exploitation-metasploit-pivot-port-33909" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33909','Penetration Testing','Post Exploitation using Metasploit pivot & port forward']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33859" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/iphone-backup-files-penetration-testers-treasure-33859" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33859','Penetration Testing', 'iPhone Backup Files. A Penetration Tester's Treasure']);"><strong>iPhone Backup Files. A Penetration Tester's Treasure</strong></a>
+                    <small class="rr_paper_author">
+                                                by Darren Manners -&nbsp;February&nbsp;7,&nbsp;2012&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">One of the noticeable changes in recent technology history is the emergence of the smart phone. Technological advances in these fields have created devices that have almost the equivalent power and functionality of desktop computers.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33859" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/iphone-backup-files-penetration-testers-treasure-33859" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33859','Penetration Testing','iPhone Backup Files. A Penetration Tester's Treasure']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33794" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/os-fingerprinting-ipv6-33794" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33794','Penetration Testing', 'OS fingerprinting with IPv6']);"><strong>OS fingerprinting with IPv6</strong></a>
+                    <small class="rr_paper_author">
+                                                by Christoph Eckstein -&nbsp;September&nbsp;21,&nbsp;2011&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">In real life human fingerprints are used as a method of identification. As of today no two fingerprints were found to be alike, hence fingerprints are an excellent way to positively identify a person beyond reasonable doubt.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33794" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/os-fingerprinting-ipv6-33794" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33794','Penetration Testing','OS fingerprinting with IPv6']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33654" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/mass-sql-injection-malware-distribution-33654" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33654','Penetration Testing', 'Mass SQL Injection for Malware Distribution']);"><strong>Mass SQL Injection for Malware Distribution</strong></a>
+                    <small class="rr_paper_author">
+                                                by Larry Wichman -&nbsp;April&nbsp;20,&nbsp;2011&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Cybercriminals have made alarming improvements to their infrastructure over the last few years. One reason for this expansion is thousands of websites vulnerable to SQL injection. Malicious code writers have exploited these vulnerabilities to distribute malware.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33654" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/mass-sql-injection-malware-distribution-33654" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33654','Penetration Testing','Mass SQL Injection for Malware Distribution']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33583" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/windows-script-host-hack-windows-33583" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33583','Penetration Testing', 'Using Windows Script Host and COM to Hack Windows']);"><strong>Using Windows Script Host and COM to Hack Windows</strong></a>
+                    <small class="rr_paper_author">
+                                                by Alex Ginos -&nbsp;January&nbsp;3,&nbsp;2011&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">During the exploitation phase of penetration testing, the attacker may establish a “beachhead” on a target machine by running an exploit against a vulnerable network service. Often this results in a command prompt.  At this point, the question becomes: “How can the command line be used to advantage to access sensitive information, escalate privileges and find and attack other hosts?” There are numerous useful hacking tools that can help with this but initially they are unlikely to be present on the compromised system. The attacker needs to bootstrap the process of further discovery and exploitation using only the limited tools and privileges available at the command prompt. In some cases, it may be necessary to evade detection by avoiding suspicious executables that may be flagged by anti-malware software running on the target. This paper explores the possibilities of using command line scripting tools and software components that are likely to be present on most Microsoft Windows systems to facilitate penetration testing.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33583" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/windows-script-host-hack-windows-33583" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33583','Penetration Testing','Using Windows Script Host and COM to Hack Windows']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33553" class="rr_paper rr_masters_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/about-face-defending-organization-penetration-testing-teams-33553" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33553','Penetration Testing', 'About Face: Defending Your Organization Against Penetration Testing Teams']);"><strong>About Face: Defending Your Organization Against Penetration Testing Teams</strong></a>
+                    <small class="rr_paper_author">
+                        <a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a> <br />                        by Terrence OConnor -&nbsp;December&nbsp;6,&nbsp;2010&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">In the following paper, we outline several methods for obscuring your network from attack during an external penetration test. Understanding how a penetration testing team performs a test and the tools in their arsenal is essential to defense. The penetration testing cycle in the next section. Following that, we discuss defeating recon and enumeration efforts, how to exhaust the penetration testing team’s time and effort, how to properly scrub outbound and inbound traffic, and finally, we present some obscure methods for preventing a successful penetration test.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33553" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/about-face-defending-organization-penetration-testing-teams-33553" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33553','Penetration Testing','About Face: Defending Your Organization Against Penetration Testing Teams']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33503" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/client-fingerprinting-analysis-browser-scripting-environment-33503" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33503','Penetration Testing', 'Client Fingerprinting via Analysis of Browser Scripting Environment']);"><strong>Client Fingerprinting via Analysis of Browser Scripting Environment</strong></a>
+                    <small class="rr_paper_author">
+                                                by Mark Fioravanti -&nbsp;September&nbsp;22,&nbsp;2010&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">During a Web Application Penetration Test, it is important to test the security of the clients that are interacting with the application.  Although not all Web Application Penetration Testing engagements include this activity, when it is performed it is essential to properly identify the client that is being exploited.  Beyond simply identifying the browser, it is also important to identify the operating system (O/S) before attempting to manipulate or exploit the client.  An accurate assessment of the characteristics of the client allows for the execution of optimized scripts and/or executing a few exploits instead of executing all of the available exploits and hoping the client does not notice or crash.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33503" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/client-fingerprinting-analysis-browser-scripting-environment-33503" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33503','Penetration Testing','Client Fingerprinting via Analysis of Browser Scripting Environment']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33378" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/bypassing-malware-defenses-33378" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33378','Penetration Testing', 'Bypassing Malware Defenses']);"><strong>Bypassing Malware Defenses</strong></a>
+                    <small class="rr_paper_author">
+                                                by Morton Christiansen -&nbsp;June&nbsp;3,&nbsp;2010&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Western societies increasingly rely upon information as the foundation for their social, political, financial and military success. Much of this information is transmitted through the Internet, or is handled in intranets using the Internet protocols. Often these internal networks even engage in some sort of (in)direct communication with the Internet itself.
+Examples of such mostly internal systems include Supervisory Control and Data Acquisition (SCADA) at times controlling nuclear reactors, civil defense sirens and air traffic control or the electricity/water/oil supply for entire nations. Other examples of sensitive internal systems include databases of large banks, of the police and of the military containing financial or intelligence information.
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33378" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/bypassing-malware-defenses-33378" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33378','Penetration Testing','Bypassing Malware Defenses']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33343" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/writing-penetration-testing-report-33343" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33343','Penetration Testing', 'Writing a Penetration Testing Report']);"><strong>Writing a Penetration Testing Report</strong></a>
+                    <small class="rr_paper_author">
+                                                by Mansour	 Alharbi -&nbsp;April&nbsp;29,&nbsp;2010&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">`A lot of currently available penetration testing resources lack report writing methodology and approach which leads to a very big gap in the penetration testing cycle. Report in its definition is a statement of the results of an investigation or of any matter on which definite information is required (Oxford English Dictionary).
+A penetration test is useless without something tangible to give to a client or executive officer. A report should detail the outcome of the test and, if you are making recommendations, document the recommendations to secure any high-risk systems (Whitaker & Newman, 2005). Report Writing is a crucial part for any service providers especially in IT service/ advisory providers. In pen-testing the final result is a report that shows the services provided, the methodology adopted, as well as testing results and recommendations. As one of the project managers at major electronics firm Said "We don&#039;t actually manufacture anything. Most of the time, the tangible products of this department [engineering] are reports." There is an old saying that in the consulting business: “If you do not document it, it did not happen.” (Smith, LeBlanc & Lam, 2004)
+</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33343" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/writing-penetration-testing-report-33343" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33343','Penetration Testing','Writing a Penetration Testing Report']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33348" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/solution-architecture-cyber-deterrence-33348" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33348','Penetration Testing', 'Solution Architecture for Cyber Deterrence']);"><strong>Solution Architecture for Cyber Deterrence</strong></a>
+                    <small class="rr_paper_author">
+                                                by Thomas Mowbray -&nbsp;April&nbsp;29,&nbsp;2010&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The mission of cyber deterrence is to prevent an enemy from conducting future attacks by changing their minds, by attacking their technology, or by more palpable means.  This definition is derived from influential policy papers including Libicki (2009), Beidleman (2009), Alexander (2007), and Kugler (2009). The goal of cyber deterrence is to deny enemies “freedom of action in cyberspace” (Alexander, 2007). In response to a cyber attack, retaliation is possible, but is not limited to the cyber domain. For example, in the late 90’s the Russian government declared that it could respond to a cyber attack with any of its strategic weapons, including nuclear (Libicki, 2009). McAfee estimates that about 120 countries are using the Internet for state-sponsored information operations, primarily espionage (McAfee, 2009).</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33348" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/solution-architecture-cyber-deterrence-33348" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33348','Penetration Testing','Solution Architecture for Cyber Deterrence']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33313" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/identifying-load-balancers-penetration-testing-33313" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33313','Penetration Testing', 'Identifying Load Balancers in Penetration Testing']);"><strong>Identifying Load Balancers in Penetration Testing</strong></a>
+                    <small class="rr_paper_author">
+                                                by Curt Shaffer -&nbsp;March&nbsp;9,&nbsp;2010&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">More and more applications are moving to a web-based platform because there is a need to have applications that can run on multiple platforms without the need to write different code for each. People are using different operating systems and CPU architectures such as 32 or 64 bit. Being able to write code one time to support all of these platforms is invaluable. Businesses are becoming more reliant on their web presence to offer 24-hour access to their services and goods. Thus, it is becoming more important that these applications are highly available. Over the past several years companies have dedicated substantial resources to achieve this flexibility and to use the increased ability to become more productive. One of the first methods used to achieve this was to use DNS load balancing. Using DNS to achieve redundancy is probably the easiest way to give an appearance of load balancing. It then became apparent that a better way to load balance was needed because this method has some serious limitations. The major limitation to this type of load balancing was that the DNS servers do not know if a host that a resource record points to is up and ready to receive requests or not. If someone attempts to connect to a server in this case, the request will not be successful, giving the user an error or not responding properly. Another issue with this is that DNS servers tend to cache requests. If a person’s DNS server has cached the record of the server that is down, the request will again fail.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33313" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/identifying-load-balancers-penetration-testing-33313" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33313','Penetration Testing','Identifying Load Balancers in Penetration Testing']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33314" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/penetration-testing-financial-services-industry-33314" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33314','Penetration Testing', 'Penetration Testing in the Financial Services Industry']);"><strong>Penetration Testing in the Financial Services Industry</strong></a>
+                    <small class="rr_paper_author">
+                                                by Christopher Olson -&nbsp;March&nbsp;9,&nbsp;2010&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The financial services industry is under attack from numerous and significant cybercriminal threats.  Recent breach data numbers reveal that hackers have successfully compromised many financial institutions with the trend being that more records containing personally identifiable information (PII) are being stolen each year.  In many cases where systems were breached the method of compromise was attributed to simple errors that gave rise to significant vulnerability.  Given the ever present competitive pressure and the current economic strain to operate more efficiently banks are allocating resources with added care and may miss the opportunity to rally and mitigate existing deficiencies in basic operational and process controls.  In lieu of allocating resources to implement appropriate preventative controls, penetration testing is one alternative detective control that can highlight areas of risk created when overburdened system administrators inadvertently create vulnerabilities.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33314" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/penetration-testing-financial-services-industry-33314" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33314','Penetration Testing','Penetration Testing in the Financial Services Industry']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33283" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/pass-the-hash-attacks-tools-mitigation-33283" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33283','Penetration Testing', 'Pass-the-hash attacks: Tools and Mitigation']);"><strong>Pass-the-hash attacks: Tools and Mitigation</strong></a>
+                    <small class="rr_paper_author">
+                                                by Bashar Ewaida -&nbsp;February&nbsp;23,&nbsp;2010&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Passwords are the most commonly used security tool in the world today (Skoudis & Liston, 2006). Strong passwords are the single most important aspect of information security, and weak passwords are the single greatest failure (Burnett, 2006).
+Password attacks, such as password guessing or password cracking, are time- consuming attacks. Tools that make use of precomputed hashes reduce the time needed to obtain passwords greatly. However, there is storage cost and time consumption related to the generation of those precompiled tables; this is especially true if the algorithm used to generate these passwords is relatively strong, and the passwords are complex and long (greater than 10 characters).
+In a pass-the-hash attack, the goal is to use the hash directly without cracking it, this makes time-consuming password attacks less needed.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33283" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/pass-the-hash-attacks-tools-mitigation-33283" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33283','Penetration Testing','Pass-the-hash attacks: Tools and Mitigation']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33249" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/taste-scapy-33249" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33249','Penetration Testing', 'A Taste of Scapy']);"><strong>A Taste of Scapy</strong></a>
+                    <small class="rr_paper_author">
+                                                by Judy Novak -&nbsp;December&nbsp;24,&nbsp;2009&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Have you ever envisioned that there may be an easy way to craft a TCP session beginning with the TCP three-way handshake so that you can emulate a client side of a TCP connection?</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33249" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/taste-scapy-33249" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33249','Penetration Testing','A Taste of Scapy']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33219" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/crack-pass-hash-33219" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33219','Penetration Testing', 'Why Crack When You Can Pass the Hash?']);"><strong>Why Crack When You Can Pass the Hash?</strong></a>
+                    <small class="rr_paper_author">
+                                                by Christopher Hummel -&nbsp;November&nbsp;3,&nbsp;2009&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">While the concept of passing a Windows password hash has been around for some time, the release of publicly available tools has taken the first major step towards harnessing the true power of this attack.  Although such tools have not yet targeted Microsoft’s implementation of Kerberos, all organizations are strongly encouraged to move towards pure Kerberos deployments in preparation for PKI integration.  The evolving nature of this attack puts under pressure the issue of passwords as a valid identifier thus requiring organizations to use an alternate credential form such as digital certificates.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33219" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/crack-pass-hash-33219" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33219','Penetration Testing','Why Crack When You Can Pass the Hash?']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33214" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/fuzzing-approach-credentials-discovery-burp-intruder-33214" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33214','Penetration Testing', 'A Fuzzing Approach to Credentials Discovery using Burp Intruder']);"><strong>A Fuzzing Approach to Credentials Discovery using Burp Intruder</strong></a>
+                    <small class="rr_paper_author">
+                                                by Karl Dawson -&nbsp;October&nbsp;29,&nbsp;2009&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">A general overview of the components of Burp that are used 
+to crack a password. This is followed by an analysis of usernames; a step that  is often overlooked in the rush to crack a password. </p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33214" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/fuzzing-approach-credentials-discovery-burp-intruder-33214" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33214','Penetration Testing','A Fuzzing Approach to Credentials Discovery using Burp Intruder']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper33138" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/scanning-windows-deeper-nmap-scanning-engine-33138" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33138','Penetration Testing', 'Scanning Windows Deeper With the Nmap Scanning Engine']);"><strong>Scanning Windows Deeper With the Nmap Scanning Engine</strong></a>
+                    <small class="rr_paper_author">
+                                                by Ron Bowes -&nbsp;June&nbsp;22,&nbsp;2009&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper will look at how SMB and Microsoft RPC 
+services work, how the Nmap scripts take advantage of the services, what checks the scripts are able to do, and what can be done to prevent them. </p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper33138" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/scanning-windows-deeper-nmap-scanning-engine-33138" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 33138','Penetration Testing','Scanning Windows Deeper With the Nmap Scanning Engine']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper1986" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/stack-based-overflows-detect-exploit-1986" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 1986','Penetration Testing', 'Stack Based Overflows: Detect & Exploit']);"><strong>Stack Based Overflows: Detect & Exploit</strong></a>
+                    <small class="rr_paper_author">
+                                                by Morton Christiansen -&nbsp;November&nbsp;6,&nbsp;2007&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">Buffer overflows remain some of the most serious and widespread vulnerabilities that exist, often giving an attacker complete control over the compromised system. Thus, in depth knowledge of how these vulnerabilities and exploits work is of utmost importance to penetration testers and incident handlers. This report provides the reader with a basic understanding of how stack based overflows work in practice. This is illustrated, while at the same time uncovering new vulnerabilities in the latest version of Windows XP.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper1986" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/stack-based-overflows-detect-exploit-1986" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 1986','Penetration Testing','Stack Based Overflows: Detect & Exploit']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper34635" class="rr_paper rr_analyst_overview">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/analyst/penetration-testing-assessing-security-attackers-34635"  class="rr_paper_title"><strong>Penetration Testing: Assessing Your Overall Security Before Attackers Do</strong></a>
+                    <small class="rr_paper_author">
+                        <strong> <font color='#24A71B'>Analyst Paper (requires membership in SANS.org community)</font></strong> <br />                        by Stephen Northcutt, Jerry Shenk, Dave Shackleford, Tim Rosenberg, Raul Sile, Steve Mancini -&nbsp;November&nbsp;17,&nbsp;2006&nbsp;                    </small>
+
+                    <ul><li><small class="rr_paper_sponsors"><span class="label">Sponsored By:</span> <a href="/vendor.php?id=405" class="rr_vendor" target="_blank" rel="noopener">Core Security Technologies</a>  </small></li></ul>                                                                <p class="rr_paper_overview_content" style="margin-bottom:0;">CORE IMPACT provides a stable, quality-assured testing tool that can be used to accurately assess systems by penetrating existing vulnerabilities.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper34635" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/account/login?url=/reading-room/whitepapers/analyst/membership/34635" class="icon_left"><small><span class="fa fa-unlock-alt"></span>&nbsp;Login</small></a></li><li><a href="/account/create?url=/reading-room/whitepapers/analyst/membership/34635" class="icon_left"><small><span class="fa fa-users"></span>&nbsp;Join SANS.org</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper268" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/war-dialing-268" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 268','Penetration Testing', 'War Dialing']);"><strong>War Dialing</strong></a>
+                    <small class="rr_paper_author">
+                                                by Michael Gunn -&nbsp;June&nbsp;22,&nbsp;2006&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper will give the reader general information on war dialing, war dialing tools and general steps you can take to protect your network from unwanted intruders who may try to gain access to your network via unauthorized or poorly managed modems.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper268" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/war-dialing-268" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 268','Penetration Testing','War Dialing']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper264" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/penetration-testing-third-party-hacker-264" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 264','Penetration Testing', 'Penetration Testing: The Third Party Hacker']);"><strong>Penetration Testing: The Third Party Hacker</strong></a>
+                    <small class="rr_paper_author">
+                                                by Pieter Danhieux -&nbsp;May&nbsp;17,&nbsp;2006&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper is intended to help managers decide on a penetration testing firm by providing them with some essential points of attention and critical questions to ask the prospective service providers.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper264" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/penetration-testing-third-party-hacker-264" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 264','Penetration Testing','Penetration Testing: The Third Party Hacker']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper1231" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/overview-remote-operating-system-fingerprinting-1231" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 1231','Penetration Testing', 'An Overview of Remote Operating System Fingerprinting']);"><strong>An Overview of Remote Operating System Fingerprinting</strong></a>
+                    <small class="rr_paper_author">
+                                                by Chris Trowbridge -&nbsp;October&nbsp;31,&nbsp;2003&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper presents an overview of the various approaches to OS fingerprinting, some current tools available on the Internet together with their features, the underlying techniques they use, and suggestions for defeating these tools.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper1231" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/overview-remote-operating-system-fingerprinting-1231" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 1231','Penetration Testing','An Overview of Remote Operating System Fingerprinting']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper1075" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/battle-internet-war-on-1075" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 1075','Penetration Testing', 'Battle for the Internet:  The War is On!']);"><strong>Battle for the Internet:  The War is On!</strong></a>
+                    <small class="rr_paper_author">
+                                                by Kevin Owens -&nbsp;June&nbsp;3,&nbsp;2003&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">There is a battle raging between security professionals and hackers. By placing people into the shoes of a hacker, and teaching them the skills to gain access to a system, one is better able to defend against them.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper1075" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/battle-internet-war-on-1075" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 1075','Penetration Testing','Battle for the Internet:  The War is On!']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper267" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/penetration-studies-technical-overview-267" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 267','Penetration Testing', 'Penetration Studies - A Technical Overview']);"><strong>Penetration Studies - A Technical Overview</strong></a>
+                    <small class="rr_paper_author">
+                                                by Timothy Layton -&nbsp;May&nbsp;30,&nbsp;2002&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper builds on Jessica Lowery's research paper, Penetration Testing: The Third Party Hacker, by drilling down on some of the most common tools and applications used to perform penetration tests. This paper is divided into two parts: "Tools of the Trade" that identifies various tools for penetration testing and the second part is the technical breakdown and "how-to" of reconnaissance, scanning, and vulnerability testing.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper267" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/penetration-studies-technical-overview-267" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 267','Penetration Testing','Penetration Studies - A Technical Overview']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper266" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/penetration-101-introduction-penetration-tester-266" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 266','Penetration Testing', 'Penetration 101 - Introduction to becoming a Penetration Tester']);"><strong>Penetration 101 - Introduction to becoming a Penetration Tester</strong></a>
+                    <small class="rr_paper_author">
+                                                by Dave Burrows -&nbsp;May&nbsp;9,&nbsp;2002&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">The purpose of this paper is to give you a brief and basic overview of what to look for when starting out in penetration testing and to build up an internal penetration test kit to aid you in performing both internal and external penetration tests on your company network. To also make you aware of the problems with new network technology like wireless networks, and remote access devices that can circumvent network perimeter security devices like firewalls and IDS.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper266" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/penetration-101-introduction-penetration-tester-266" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 266','Penetration Testing','Penetration 101 - Introduction to becoming a Penetration Tester']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper265" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/penetration-testing-you-265" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 265','Penetration Testing', 'Penetration Testing - Is it right for you?']);"><strong>Penetration Testing - Is it right for you?</strong></a>
+                    <small class="rr_paper_author">
+                                                by Jimmy Braden -&nbsp;March&nbsp;20,&nbsp;2002&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper will review the steps involved in preparing for and performing a penetration test.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper265" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/penetration-testing-you-265" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 265','Penetration Testing','Penetration Testing - Is it right for you?']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper263" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/model-peer-vulnerability-assessment-263" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 263','Penetration Testing', 'A Model for Peer Vulnerability Assessment']);"><strong>A Model for Peer Vulnerability Assessment</strong></a>
+                    <small class="rr_paper_author">
+                                                by Patricia Payne -&nbsp;December&nbsp;17,&nbsp;2001&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper proposes a model for ongoing assessment to be performed by the system administrators that includes testing and assessment in a non-threatening environment that provides added value of education for those performing the assessments.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper263" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/model-peer-vulnerability-assessment-263" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 263','Penetration Testing','A Model for Peer Vulnerability Assessment']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper262" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/finding-dsniff-network-262" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 262','Penetration Testing', 'Finding dsniff on Your Network']);"><strong>Finding dsniff on Your Network</strong></a>
+                    <small class="rr_paper_author">
+                                                by Richard Duffy -&nbsp;November&nbsp;28,&nbsp;2001&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper covers some ways to detect dsniff and two of its utilities, arpspoof and macof, on a network.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper262" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/finding-dsniff-network-262" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 262','Penetration Testing','Finding dsniff on Your Network']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper261" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/instruments-information-security-trade-261" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 261','Penetration Testing', 'Instruments of the Information Security Trade']);"><strong>Instruments of the Information Security Trade</strong></a>
+                    <small class="rr_paper_author">
+                                                by Mark Graff -&nbsp;November&nbsp;27,&nbsp;2001&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper examines how penetration testing, if done properly, will benefit your organization's information security.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper261" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/instruments-information-security-trade-261" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 261','Penetration Testing','Instruments of the Information Security Trade']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper260" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/security-life-cycle-1-diy-assessment-260" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 260','Penetration Testing', 'Security Life Cycle - 1. DIY Assessment']);"><strong>Security Life Cycle - 1. DIY Assessment</strong></a>
+                    <small class="rr_paper_author">
+                                                by Lee Wai -&nbsp;November&nbsp;13,&nbsp;2001&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper descibes a simplified and comprehensive way to accomplish vulnerability assessment, one phase of the Security Life Cycle.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper260" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/security-life-cycle-1-diy-assessment-260" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 260','Penetration Testing','Security Life Cycle - 1. DIY Assessment']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+            <li id="paper259" class="rr_paper">
+            <div class="row">
+                <div class="col-md-10">
+                                                            <a href="/reading-room/whitepapers/testing/guidelines-developing-penetration-rules-behavior-259" target="_blank" rel="noopener" class="rr_paper_title" onclick="_gaq.push(['_trackEvent', 'Download RR Paper 259','Penetration Testing', 'Guidelines for Developing Penetration Rules of Behavior']);"><strong>Guidelines for Developing Penetration Rules of Behavior</strong></a>
+                    <small class="rr_paper_author">
+                                                by Nancy Simpson -&nbsp;August&nbsp;14,&nbsp;2001&nbsp;                    </small>
+
+                                                                                    <p class="rr_paper_overview_content" style="margin-bottom:0;">This paper examines how, If planned and executed appropriately, penetration testing can be a very useful tool for determining the current security posture of an organization.</p>
+                                        
+                    
+                </div>
+                <div class="col-md-2">
+                    <div class="rr_paper_links wrap_right">
+                        <ul class="list-unstyled details_borderline">
+                            <li class="show_overview"><a href="#paper259" class="icon_left"><small><span class="fa fa-plus"></span>&nbsp;Overview</small></a></li><li><a href="/reading-room/whitepapers/testing/guidelines-developing-penetration-rules-behavior-259" class="icon_left" target="_blank" rel="noopener"  onclick="_gaq.push(['_trackEvent', 'Download RR Paper 259','Penetration Testing','Guidelines for Developing Penetration Rules of Behavior']);"><small><span class="fa fa-download"></span>&nbsp;Download</small></a></li>                        </ul>
+                    </div>                    
+                </div>
+            </div>
+        </li>
+        
+        <li><hr></li>
+    </ul>
+    <div class="alert alert-info">
+        <div>
+            <p>Most of the computer security white papers in the Reading Room have been written by students seeking <a href="https://www.giac.org/">GIAC certification</a> to fulfill part of their certification requirements and are provided by SANS as a resource to benefit the security community at large. SANS attempts to ensure the accuracy of information, but papers are published "as is". Errors or inconsistencies may exist or may be introduced over time as material becomes dated. If you suspect a serious error, please contact <a href="mailto:webmaster@sans.org">webmaster@sans.org</a>.</p>
+        </div>
+    </div>
+
+<div class="alert alert-warning">
+  <p><strong>All papers are copyrighted.</strong> No re-posting or distribution of papers is permitted.</p>
+</div>
+ <div class="row">
+  <div class="col-sm-1"><a target='_blank' class='rr_masters' href='https://www.sans.edu'><img src="https://www.sans.edu/images/design-site/logo-footer.png" ></a></div>
+  <div class="col-sm-11"><p><small><a target='_blank' class='rr_masters' href='https://www.sans.edu'>SANS.edu Graduate Student Research</a></small> - This paper was created by a <a href="https://www.sans.edu/">SANS Technology Institute</a> student as part of the graduate program curriculum.</p>
+</div>
+</div>
+          <div class="clear"></div>
+        </div>
+      </div>
+      <!--/ content -->
+
+      <!-- right navi -->
+      <div class="navigation col-md-3 padding-fix">
+<div class="clear"></div>
+
+        <div class="widget widget_pages">
+                                    <div  id="ribbon-icon" class="ribbon-icon-rr">
+                    <a href="https://www.sans.org/reading-room/"><span>Reading Room</span></a>                </div>
+                            </a>
+          <div class="sidebarBlurb ">
+          
+<div id="newsletter-signup-form" class="boxley gdpr-communication-wrapper" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); text-align:center;padding:15px 15px 0;">
+    <form action="https://www.sans.org/newsletter-signup/process" method="post" id="newsletter_signup_form" name="newsletter_signup_form" class="validate">
+<input type="hidden" name="_xsrf_token" value="eecd2cb153d977f0f3c1131d964a7b0f5d81b181"  />
+
+            <h4>Subscribe to SANS Newsletters</h4>
+                                    Join the SANS Community to receive the latest curated cyber security news, vulnerabilities and mitigations,
+        training opportunities, and our webcast schedule.
+        <br><br>
+        <input type="text" id="email" name="email" value="" style="width:100%;max-width:350px;" placeholder="Enter email address..."  /><br><br><input type="text" id="country" name="country" value="" class="country-list" style="width:100%;max-width:350px;" placeholder="Enter country..."  /><br><br><fieldset class="gdpr-form-wrapper sti-no-fieldset-border giac-no-fieldset-border">
+    <!--hidden is hardcoded as this form seems to be reused, eventually as controllers
+    add the js code to those forms, this can be removed -->
+    <div class='marketing' style="display:none">
+                    <input type="hidden" name="marketing" value="0" />
+        
+                <div class="form-group gdpr-consent">
+            <input type="checkbox" id="gdpr-agreement" name="gdpr-agreement" value="gdpr-agreement" class="form-control"  />            <label for='gdpr-agreement'></label>
+                    </div>
+    </div>
+    <div class="ccpa-notice bottom-buffer" style="display:none">
+        <small>By providing this information, you agree to the processing of your personal data by SANS as described in our <a href=" https://www.sans.org/privacy ">Privacy Policy</a>.</small>
+    </div>
+    <div class="ccpa-notice-giac bottom-buffer" style="display:none">
+        <small>By providing this information, you agree to the processing of your personal data by GIAC as described in our <a href=" https://www.giac.org/about/policies/privacy ">Privacy Policy</a>.</small>
+    </div>    
+</fieldset>
+
+        <div class="form_item">
+            <input type="submit" id="submit" name="submit" value="Subscribe"  class="btn btn-primary bottom-buffer" onClick="_gaq.push(['_trackEvent', 'Subscribe Forms', 'Subscribed to Newsletter', 'List: Subscribe to our newsletter']);" />        </div>
+
+    <input type="text" id="_website" name="_website" value="" size="1" onchange="this.value=null" /></form>
+</div>
+          </div>
+<div class="clear"></div>
+<ul class="list-unstyled"><li><a href="/reading-room">Home</a></li><li><a href="/reading-room/popular">Most Popular</a></li><li class="active"><a href="/reading-room/categories">Categories</a></li><li><a href="/reading-room/whitepapers/analyst/">Analyst Papers</a></li></ul>
+        </div>
+
+          <!-- widget: random blurb -->
+          <div class="sidebarBlurb ">
+                    </div>
+          <!-- /widget: random blurb -->
+
+          <!-- widget: ad -->
+          <!-- /widget: ad -->
+
+
+
+      </div>
+      <!--/ right navi -->
+      <div class="clear"></div>
+      <div class="middle-bot">
+            </div>
+      <div class="clear"></div>
+    </div>
+    <!--/ middle -->
+    </div>
+</div><!-- end .body -->
+<!-- Bottom Content -->
+<div id="pre_footer" class="bottom-content">
+<div class="container">
+<div class="row">
+<div class="footer-column col-md-4">
+<h5>Latest Whitepapers</h5>
+        <p>
+        <a href="/reading_room/whitepapers/mobile/steps-successful-mobile-validation_40285">
+            Six Steps To Successful Mobile Validation        </a>
+        <br />By Heather Mahalik    </p>
+        <p>
+        <a href="/reading_room/whitepapers/critical/cis-csc-controls-vs-ransomware-evaluation_40320">
+            CIS CSC Controls vs. Ransomware: An Evaluation        </a>
+        <br />By Dylan Malloy    </p>
+        <p>
+        <a href="/reading_room/whitepapers/legal/avoiding-minimizing-ransomware-impact-bottom-line_40315">
+            Avoiding or Minimizing Ransomware Impact to the Bottom Line        </a>
+        <br />By John Pescatore and Benjamin Wright    </p>
+        <p><a href="/reading_room/">Last 25 Papers &raquo;</a></p>
+</div>
+
+<div class="footer-column col-md-4">
+<h5>Latest Tweets @SANSInstitute</h5><p><a href="https://twitter.com/sansinstitute/statuses/1396186652507258880">Join us for practical #cybersecurity training during #SANSFI [...]</a><br>May 22, 2021 - 7:30 PM</p><p><a href="https://twitter.com/sansinstitute/statuses/1396111198823849984">Learn immediately applicable techniques from industry expert [...]</a><br>May 22, 2021 - 2:30 PM</p><p><a href="https://twitter.com/sansinstitute/statuses/1395760107661807617">The SANS 2021 #OT/#ICS #Cybersecurity Survey seeks to learn  [...]</a><br>May 21, 2021 - 3:15 PM</p></div>
+
+<div class="footer-column col-md-4">
+<h5>Contact Us</h5>
+        <p><strong>Australia/New Zealand</strong></br>
++61 2 6174 4581 / <a href="mailto:anz@sans.org">anz@sans.org</a><p>
+<p><strong>India</strong></br>
++91 97 4190 0324 / <a href="mailto:india@sans.org">india@sans.org</a><p>
+<p><strong>Japan</strong></br>
++81 3 3242 6276 / <a href="mailto:japan@sans.org">japan@sans.org</a><p>
+<p><strong>Singapore</strong></br>
++65 6983 1088 / <a href="mailto:singapore@sans.org">singapore@sans.org</a><p>
+
+         <p><strong>All other countries:</strong> <a href="mailto:asiapacific@sans.org">asiapacific@sans.org</a></p>
+        </div>
+</div>
+<div class="clear"></div>
+<div class="footer-quote-box row">
+<div class="col-md-4"><p>"SANS is a great place to enhance your technical and hands-on skills and tools. I thoroughly recommend it."<br />- Aaron Waugh, Datacom NZ Ltd</p></div>
+<div class="col-md-4"><p>"Just amazing content and instruction, it's really a 'must do' for any info sec professional."<br />- Mark Austin, PHH Mortgage</p></div>
+<div class="col-md-4"><p>"Expertise of the trainer is impressive, real life situations explained, very good manuals. Best training ever!"<br />- Jerry Robles de Medina, Godo CU</p></div>
+</div>
+
+</div>
+</div><!-- end .bottom-content -->
+<!-- Footer -->
+<div id="footer">
+    <div class="container">
+        <img src="/images/design-site/logo-footer.png" alt="SANS Institute: Reading Room - Penetration Testing" class="logo-footer pull-left" />
+
+        <div id="site-selector-footer" class="pull-left" style="visibility:hidden"><ul class="site-selector ssno-js">
+    <li class="site-switcher"><a href="#"><span class="hideme hidden">SANS Site Network</span><span class="fa fa-caret-square-o-down fa-lg hideme"></span></a>
+        <ul class="sites">
+            <li class="current-site">Current Site</li><li class="sans selector-active"><a href="https://www.sans.org?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/sans.png" alt="sans" /></span><span class="selector-title">Security Training</span></a></li>
+<li class="selector-help">Choose a different site <a href="/help/site-network"><span class="hideme">Help</span></a></li><li class="giac"><a href="https://www.giac.org?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/giac.png" alt="giac" /></span><span class="selector-title">Security Certification</span></a></li>
+<li class="isc"><a href="https://isc.sans.edu?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/isc.png" alt="isc" /></span><span class="selector-title">Internet Storm Center</span></a></li>
+<li class="sti"><a href="https://www.sans.edu?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/sti.png" alt="sti" /></span><span class="selector-title">College Cybersecurity Programs</span></a></li>
+<li class="awareness"><a href="https://www.sans.org/security-awareness-training?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/awareness.png" alt="awareness" /></span><span class="selector-title">Security Awareness Training</span></a></li>
+<li class="cyber-defense"><a href="https://www.sans.org/blue-team/?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/cyber-defense.png" alt="cyber-defense" /></span><span class="selector-title">Blue Team Operations</span></a></li>
+<li class="forensics"><a href="https://digital-forensics.sans.org?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/forensics.png" alt="forensics" /></span><span class="selector-title">Forensics & Incident Response</span></a></li>
+<li class="pentest"><a href="https://www.sans.org/offensive-operations/?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/pentest.png" alt="pentest" /></span><span class="selector-title">Offensive Operations</span></a></li>
+<li class="ics"><a href="https://ics.sans.org?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/ics.png" alt="ics" /></span><span class="selector-title">Industrial Control Systems</span></a></li>
+<li class="ssi"><a href="https://www.sans.org/cloud-security/?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/ssi.png" alt="ssi" /></span><span class="selector-title">Cloud Security</span></a></li>
+<li class="leadership"><a href="https://www.sans.org/cybersecurity-leadership/?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/leadership.png" alt="leadership" /></span><span class="selector-title">Cybersecurity Leadership</span></a></li>
+<li class="sic"><a href="https://www.sans.org/sic?msc=logo-drop-down"><span class="selector-image"><img src="/images/design/custom/site-selector/site-icons/sic.png" alt="sic" /></span><span class="selector-title">Government Private Training</span></a></li>
+        </ul>
+    </li>
+</ul>
+</div>
+                <div class="latest-icons pull-left" style="margin-left: 150px;">
+                            <a href="https://twitter.com/sansinstitute" target="_blank" rel="noopener"><img src="/images/design/custom/icons/twitter-icon.png" alt="Twitter" /></a>
+                <a href="https://www.linkedin.com/company/14104" target="_blank" rel="noopener"><img src="/images/design/custom/icons/linkedin-icon.png"/></a>
+                <a href="https://www.facebook.com/pages/SANS-Institute/173623382673767" target="_blank" rel="noopener"><img src="/images/design/custom/icons/facebook-icon.png" alt="Facebook" /></a>
+                        <a href="https://www.sans.org/rss.php"><img src="/images/design/custom/icons/rss-icon.png" alt="RSS" /></a>
+        </div><!-- end .latest-icons -->
+        
+        <div class="bottom-nav align-right pull-right">
+            <ul>
+                                    <li><a href="/find-training/">Find Training</a></li>
+                    <li><a href="/security-training/">Live Training</a></li>
+                    <li><a href="/online-security-training/">Online Training</a></li>
+                    <li><a href="/programs/">Programs</a></li>
+                    <li><a href="/security-resources.php">Resources</a></li>
+                    <li><a href="/vendor/">Vendor</a></li>
+                    <li class="last"><a href="/about/">About</a></li>
+                            </ul>
+            <ul class="copyright align-right">
+                <li><a href="/privacy/">Privacy Policy</a></li>
+                <li><a href="/trademarkuse.pdf">Trademark Usage Policy</a></li>
+                <li><a href="/site-credits">Credits</a></li>
+                <li class="last">&copy; 2000-2021 SANS&trade; Institute</li>
+            </ul>
+        </div><!-- end .bottom-nav align-right-->
+    </div><!-- end .container-->
+</div><!-- end .footer-->
+</body>
+</html>

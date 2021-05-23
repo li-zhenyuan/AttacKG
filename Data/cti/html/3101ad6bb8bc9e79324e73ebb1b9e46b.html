@@ -1,0 +1,531 @@
+<!DOCTYPE html><!--[if IE 7]>
+<html class="ie ie7" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<!--<![endif]-->
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Kerberos Golden Tickets are Now More Golden &#8211; Active Directory Security</title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Feed" href="https://adsecurity.org/?feed=rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Comments Feed" href="https://adsecurity.org/?feed=comments-rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Kerberos Golden Tickets are Now More Golden Comments Feed" href="https://adsecurity.org/?feed=rss2&#038;p=1640" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/adsecurity.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://adsecurity.org/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://adsecurity.org/wp-content/themes/graphene/bootstrap/css/bootstrap.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='https://adsecurity.org/wp-content/themes/graphene/fonts/font-awesome/css/font-awesome.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-css'  href='https://adsecurity.org/wp-content/themes/graphene/style.css?ver=2.8.4' type='text/css' media='screen' />
+<link rel='stylesheet' id='graphene-responsive-css'  href='https://adsecurity.org/wp-content/themes/graphene/responsive.css?ver=2.8.4' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-blocks-css'  href='https://adsecurity.org/wp-content/themes/graphene/blocks.css?ver=2.8.4' type='text/css' media='all' />
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/bootstrap/js/bootstrap.min.js?ver=2.8.4' id='bootstrap-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js?ver=2.8.4' id='bootstrap-hover-dropdown-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-submenu/bootstrap-submenu.min.js?ver=2.8.4' id='bootstrap-submenu-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/jquery.infinitescroll.min.js?ver=2.8.4' id='infinite-scroll-js'></script>
+<script type='text/javascript' id='graphene-js-extra'>
+/* <![CDATA[ */
+var grapheneJS = {"siteurl":"https:\/\/adsecurity.org","ajaxurl":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","templateUrl":"https:\/\/adsecurity.org\/wp-content\/themes\/graphene","isSingular":"1","enableStickyMenu":"","shouldShowComments":"1","commentsOrder":"newest","sliderDisable":"","sliderInterval":"7000","infScrollBtnLbl":"Load more","infScrollOn":"","infScrollCommentsOn":"","totalPosts":"1","postsPerPage":"10","isPageNavi":"","infScrollMsgText":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollMsgTextPlural":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollFinishedText":"All loaded!","commentsPerPage":"50","totalComments":"1","infScrollCommentsMsg":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsMsgPlural":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsFinishedMsg":"All comments loaded!","disableLiveSearch":"1","txtNoResult":"No result found.","isMasonry":""};
+/* ]]> */
+</script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/graphene.js?ver=2.8.4' id='graphene-js'></script>
+<link rel="https://api.w.org/" href="https://adsecurity.org/index.php?rest_route=/" /><link rel="alternate" type="application/json" href="https://adsecurity.org/index.php?rest_route=/wp/v2/posts/1640" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://adsecurity.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://adsecurity.org/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel="canonical" href="https://adsecurity.org/?p=1640" />
+<link rel='shortlink' href='https://adsecurity.org/?p=1640' />
+<link rel="alternate" type="application/json+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D1640" />
+<link rel="alternate" type="text/xml+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D1640&#038;format=xml" />
+		<script type="text/javascript">
+			var _statcounter = _statcounter || [];
+			_statcounter.push({"tags": {"author": "SeanMetcalf"}});
+		</script>
+				<script>
+		   WebFontConfig = {
+		      google: { 
+		      	families: ["Lato:400,400i,700,700i&display=swap"]		      }
+		   };
+
+		   (function(d) {
+		      var wf = d.createElement('script'), s = d.scripts[0];
+		      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+		      wf.async = true;
+		      s.parentNode.insertBefore(wf, s);
+		   })(document);
+		</script>
+	<style type="text/css">
+.header_title, .header_title a, .header_title a:visited, .header_title a:hover, .header_desc {color:#000000}.carousel, .carousel .item{height:400px}@media (max-width: 991px) {.carousel, .carousel .item{height:250px}}#header{max-height:198px}@media (min-width: 1200px) {.container {width:1280px}}
+</style>
+		<script type="application/ld+json">{"@context":"http:\/\/schema.org","@type":"Article","mainEntityOfPage":"https:\/\/adsecurity.org\/?p=1640","publisher":{"@type":"Organization","name":"Active Directory Security"},"headline":"Kerberos Golden Tickets are Now More Golden","datePublished":"2015-08-07T02:15:11+00:00","dateModified":"2016-04-17T15:20:30+00:00","description":"At my talk at Black Hat USA 2015, I highlighted new Golden Ticket capability in Mimikatz (\"Enhanced Golden Tickets\"). This post provides additional detailed on \"enhanced\" Golden Tickets. Over the past few months, I researched how SID History can be abused in modern enterprises. As part of this research, I reached out to Benjamin Delpy, ...","author":{"@type":"Person","name":"Sean Metcalf"},"image":["https:\/\/adsecurity.org\/wp-content\/uploads\/2015\/08\/GoldenTicket-MultiDomainSuccess-v2-02b.png"]}</script>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><meta property="og:type" content="article" />
+<meta property="og:title" content="Kerberos Golden Tickets are Now More Golden" />
+<meta property="og:url" content="https://adsecurity.org/?p=1640" />
+<meta property="og:site_name" content="Active Directory Security" />
+<meta property="og:description" content="At my talk at Black Hat USA 2015, I highlighted new Golden Ticket capability in Mimikatz (&quot;Enhanced Golden Tickets&quot;). This post provides additional detailed on &quot;enhanced&quot; Golden Tickets. Over the past few months, I researched how SID History can be abused in modern enterprises. As part of this research, I reached out to Benjamin Delpy, ..." />
+<meta property="og:updated_time" content="2016-04-17T15:20:30+00:00" />
+<meta property="article:modified_time" content="2016-04-17T15:20:30+00:00" />
+<meta property="article:published_time" content="2015-08-07T02:15:11+00:00" />
+<meta property="og:image" content="https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-MultiDomainSuccess-v2-02b.png" />
+<meta property="og:image:width" content="964" />
+<meta property="og:image:height" content="389" />
+    </head>
+    <body class="post-template-default single single-post postid-1640 single-format-standard custom-background wp-embed-responsive layout-boxed two_col_left two-columns singular">
+        
+        <div class="container boxed-wrapper">
+            
+                            <div id="top-bar" class="row clearfix top-bar ">
+                    
+                                                    
+                            <div class="col-md-12 top-bar-items">
+                                
+                                                                                                    	<ul class="social-profiles">
+							
+			            <li class="social-profile social-profile-rss">
+			            	<a href="https://adsecurity.org/?feed=rss2" title="Subscribe to Tech, News, and Other Ideations&#039;s RSS feed" id="social-id-1" class="mysocial social-rss">
+			            				                            <i class="fa fa-rss"></i>
+		                        			            	</a>
+			            </li>
+		            
+		    	    </ul>
+                                    
+                                                                    <button type="button" class="search-toggle navbar-toggle collapsed" data-toggle="collapse" data-target="#top_search">
+                                        <span class="sr-only">Toggle search form</span>
+                                        <i class="fa fa-search-plus"></i>
+                                    </button>
+
+                                    <div id="top_search" class="top-search-form">
+                                        <form class="searchform" method="get" action="https://adsecurity.org">
+	<div class="input-group">
+		<div class="form-group live-search-input">
+			<label for="s" class="screen-reader-text">Search for:</label>
+		    <input type="text" id="s" name="s" class="form-control" placeholder="Search">
+		    		</div>
+	    <span class="input-group-btn">
+	    	<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+	    </span>
+    </div>
+    </form>                                                                            </div>
+                                
+                                                            </div>
+
+                        
+                                    </div>
+            
+
+            <div id="header" class="row">
+
+                <img src="https://adsecurity.org/wp-content/themes/graphene/images/headers/fluid.jpg" alt="Active Directory Security" title="Active Directory Security" width="960" height="198" />                
+                                                                </div>
+
+
+                        <nav class="navbar row navbar-inverse">
+
+                <div class="navbar-header align-center">
+                		                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-menu-wrap, #secondary-menu-wrap">
+	                        <span class="sr-only">Toggle navigation</span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                    </button>
+                	                    
+                    
+                                            <p class="header_title">
+                            <a href="https://adsecurity.org" title="Go back to the front page">                                Active Directory Security                            </a>                        </p>
+                    
+                                                    <p class="header_desc">Active Directory &amp; Enterprise Security, Methods to Secure Active Directory, Attack Methods &amp; Effective Defenses, PowerShell, Tech Notes, &amp; Geek Trivia&#8230;</p>
+                                            
+                                    </div>
+
+                                    <div class="collapse navbar-collapse" id="header-menu-wrap">
+
+            			<ul class="nav navbar-nav flip"><li ><a href="https://adsecurity.org/">Home</a></li><li class="menu-item menu-item-8"><a href="https://adsecurity.org/?page_id=8" >About</a></li><li class="menu-item menu-item-41"><a href="https://adsecurity.org/?page_id=41" >AD Resources</a></li><li class="menu-item menu-item-4031"><a href="https://adsecurity.org/?page_id=4031" >Attack Defense &#038; Detection</a></li><li class="menu-item menu-item-293"><a href="https://adsecurity.org/?page_id=293" >Contact</a></li><li class="menu-item menu-item-1821"><a href="https://adsecurity.org/?page_id=1821" >Mimikatz</a></li><li class="menu-item menu-item-1352"><a href="https://adsecurity.org/?page_id=1352" >Presentations</a></li><li class="menu-item menu-item-195"><a href="https://adsecurity.org/?page_id=195" >Schema Versions</a></li><li class="menu-item menu-item-399"><a href="https://adsecurity.org/?page_id=399" >Security Resources</a></li><li class="menu-item menu-item-183"><a href="https://adsecurity.org/?page_id=183" >SPNs</a></li><li class="menu-item menu-item-2532"><a href="https://adsecurity.org/?page_id=2532" >Top Posts</a></li></ul>                        
+            			                        
+                                            </div>
+                
+                                    
+                            </nav>
+
+            
+            <div id="content" class="clearfix hfeed row">
+                
+                    
+                                        
+                    <div id="content-main" class="clearfix content-main col-md-8">
+                    
+	
+		<div class="post-nav post-nav-top clearfix">
+			<p class="previous col-sm-6"><i class="fa fa-arrow-circle-left"></i> <a href="https://adsecurity.org/?p=1632" rel="prev">DEF CON 23 (2015) Red vs Blue: Modern Active Directory Attacks &#038; Defense Talk Detail</a></p>			<p class="next-post col-sm-6"><a href="https://adsecurity.org/?p=1661" rel="next">Black Hat USA 2015 &#038; DEF CON 23 (2015) Presentation Slides Posted!</a> <i class="fa fa-arrow-circle-right"></i></p>					</div>
+		        
+<div id="post-1640" class="clearfix post post-1640 type-post status-publish format-standard hentry category-microsoft-security category-security-conference-presentationvideo category-technical-reference tag-activedirectory tag-activedirectoryattack tag-activedirectorysecurity tag-adattack tag-adforest tag-blackhat tag-compromiseactivedirectory tag-domain-trust tag-enhancedgoldenticket tag-enhancedgoldentickets tag-forest-trust tag-forged-kerberos-ticket tag-goldenticket tag-goldenticketlimitation tag-kerberos tag-kerberos-across-trust tag-kerberos-ticket tag-kerberoshacking tag-krbtgt tag-mimikatz tag-multiple-forests tag-powershell tag-service-ticket tag-sidhistory tag-tgs tag-tgs-ticket tag-tgt tag-tgt-ticket item-wrap">
+		
+	<div class="entry clearfix">
+    	
+                    	<div class="post-date date alpha with-year">
+            <p class="default_date">
+            	<span class="month">Aug</span>
+                <span class="day">07</span>
+                	                <span class="year">2015</span>
+                            </p>
+                    </div>
+            
+		        <h1 class="post-title entry-title">
+			Kerberos Golden Tickets are Now More Golden			        </h1>
+		
+			    <ul class="post-meta entry-meta clearfix">
+	    		        <li class="byline">
+	        	By <span class="author"><a href="https://adsecurity.org/?author=2" rel="author">Sean Metcalf</a></span><span class="entry-cat"> in <span class="terms"><a class="term term-category term-11" href="https://adsecurity.org/?cat=11">Microsoft Security</a>, <a class="term term-category term-234" href="https://adsecurity.org/?cat=234">Security Conference Presentation/Video</a>, <a class="term term-category term-2" href="https://adsecurity.org/?cat=2">Technical Reference</a></span></span>	        </li>
+	        	    </ul>
+    
+				
+				<div class="entry-content clearfix">
+							
+										
+						<div>
+<div>
+<div>
+<p>At my talk at <a href="https://www.blackhat.com/us-15/briefings.html#red-vs-blue-modern-active-directory-attacks-detection-and-protection">Black Hat USA 2015</a>, I highlighted new Golden Ticket capability in Mimikatz (&#8220;Enhanced Golden Tickets&#8221;). This post provides additional detailed on &#8220;enhanced&#8221; Golden Tickets.</p>
+<p>Over the past few months, I researched how SID History can be abused in modern enterprises. As part of this research, I reached out to Benjamin Delpy, author of Mimkatz, and requested he add &#8220;SID History&#8221; to Mimikatz forged Kerberos tickets. The June 28th version of Mimikatz now includes the capability to include arbitrary SIDs in SID History on forged tickets.</p>
+<p><span id="more-1640"></span></p>
+<p>SID History is a legacy feature that enables reach-back across Active Directory trusts. This functionality was put in place when Active Directory was first released to support migration scenarios. When a user is authenticated, the SIDs of every security group the user is a member of is added to the user&#8217;s Kerberos ticket, as well as any SIDs in the user&#8217;s SID History. Since SID History is meant to work across trusts, it provides cross-trust &#8220;impersonation&#8221;.</p>
+<p>Before we dig into this further, let&#8217;s recap what Golden Tickets are and how they work.</p>
+<h3><span style="text-decoration: underline;">Golden Tickets</span></h3>
+<p>Golden Tickets are forged Ticket-Granting Tickets (TGTs), also called authentication tickets.</p>
+<p>As shown in the following graphic, there is no AS-REQ or AS-REP (steps 1 &amp; 2) communication with the Domain Controller. Since a Golden Ticket is a forged TGT, it is sent to the Domain Controller as part of the TGS-REQ to get a service ticket.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms.png"><img loading="lazy" class="alignnone wp-image-1518" src="https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms.png" alt="Visio-GoldenTicket-Comms" width="688" height="343" srcset="https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms.png 1197w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms-300x150.png 300w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms-1024x511.png 1024w" sizes="(max-width: 688px) 100vw, 688px" /></a></p>
+<p>The Kerberos Golden Ticket is a valid TGT Kerberos ticket since it is encrypted/signed by the <a href="https://adsecurity.org/?p=483">domain Kerberos account (KRBTGT)</a>. The TGT is only used to prove to the KDC service on the Domain Controller that the user was authenticated by another Domain Controller. The fact that the TGT is encrypted by the KRBTGT password hash and can be decrypted by any KDC service in the domain proves it is valid (along with PAC validation, but that&#8217;s another story 🙂 ).</p>
+<p>Golden Ticket Requirements:<br />
+* Domain Name [AD PowerShell module: (Get-ADDomain).DNSRoot]<br />
+* Domain SID  [AD PowerShell module: (Get-ADDomain).DomainSID.Value]<br />
+* Domain KRBTGT Account NTLM password hash<br />
+* UserID for impersonation.</p>
+<p>Once an attacker has admin access to a Domain Controller, the KRBTGT account password hashes can be extracted using Mimikatz.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/08/Mimikatz-sekurlsa-krbtgt2.png"><img loading="lazy" class="alignnone size-full wp-image-1641" src="https://adsecurity.org/wp-content/uploads/2015/08/Mimikatz-sekurlsa-krbtgt2.png" alt="Mimikatz-sekurlsa-krbtgt2" width="607" height="222" srcset="https://adsecurity.org/wp-content/uploads/2015/08/Mimikatz-sekurlsa-krbtgt2.png 607w, https://adsecurity.org/wp-content/uploads/2015/08/Mimikatz-sekurlsa-krbtgt2-300x110.png 300w" sizes="(max-width: 607px) 100vw, 607px" /></a></p>
+<h3><span style="text-decoration: underline;">Golden Ticket &#8220;Limitation&#8221;</span></h3>
+<p>As incredible as Golden Tickets are, they have been “limited” to spoofing Admin rights to the current domain. The limitation exists when the KRBTGT account password hash is exposed in a child domain that is part of a multi-domain AD forest. The issue is that the parent (root) domain contains the forest-wide admin group, Enterprise Admins. Since Mimikatz adds group membership by the Relative IDentifiers (RIDs) to the ticket, the 519 (Enterprise Admin) RID is identified in the Kerberos ticket as being local to the domain it was created in (based on the KRBTGT account domain). If the domain Security IDentifier (SID) created by taking the domain SID and appending the RID doesn’t exist, then the holder of the Kerberos ticket doesn’t receive that level of access.</p>
+<p>In other words, in a mult-domain AD forest, if the domain the Golden Ticket was created in doesn&#8217;t contain the Enterprise Admins group, the Golden Ticket won&#8217;t provide admin rights to other domains in the forest.</p>
+<p>In a single domain Active Directory forest, this limitation doesn’t exist since the Enterprise Admins group is hosted in this domain (and this is where the Golden Tickets would be created).</p>
+<p>Graphic: Golden Ticket doesn’t work across trusts unless in EA domain.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-SingleDomainSuccess-OtherDomainFail-01b.png"><img loading="lazy" class="alignnone wp-image-1642" src="https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-SingleDomainSuccess-OtherDomainFail-01b.png" alt="GoldenTicket-SingleDomainSuccess-OtherDomainFail-01b" width="799" height="272" srcset="https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-SingleDomainSuccess-OtherDomainFail-01b.png 961w, https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-SingleDomainSuccess-OtherDomainFail-01b-300x102.png 300w" sizes="(max-width: 799px) 100vw, 799px" /></a></p>
+<p>The standard Golden Ticket is limited to the child domain it was created in, so now we add SID History to the equation…</p>
+<h3><span style="text-decoration: underline;">Golden Ticket + SID History = WINNING!</span></h3>
+<p>In a migration scenario, a user who is migrated from DomainA to DomainB has the original DomainA user SID added to the new DomainB SIDHistory attribute. When the user logs onto DomainB with the new account, the DomainA SID is evaluated along with the DomainB user’s groups which determines access. This means that a SID can be added to SID History to expand access.</p>
+<p>Things get more interesting once Mimikatz supports SID History in Golden Tickets (and Silver Tickets) since any group in the AD Forest can be included and used for authorization decisions. In order to support my research into how to expand access using SID History in Kerberos tickets across trusts (both intra-forest and external), I reached out to Benjamin Delpy in late June and requested SID History be added.</p>
+<p>Using the latest version of Mimikatz, we can now add SID History to the Golden Ticket for the Forest Enterprise Admins group. This enables forest-wide compromise once a single domain’s KRBTGT account password hash is exposed.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-MultiDomainSuccess-v2-02b.png"><img loading="lazy" class="alignnone size-full wp-image-1643" src="https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-MultiDomainSuccess-v2-02b.png" alt="GoldenTicket-MultiDomainSuccess-v2-02b" width="964" height="389" srcset="https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-MultiDomainSuccess-v2-02b.png 964w, https://adsecurity.org/wp-content/uploads/2015/08/GoldenTicket-MultiDomainSuccess-v2-02b-300x121.png 300w" sizes="(max-width: 964px) 100vw, 964px" /></a></p>
+<p><strong> In summary, Golden Tickets can now be used to compromise any domain in the AD Forest once a single one is compromised.</strong></p>
+<h4><span style="text-decoration: underline;">Update:</span></h4>
+<p>It has been noted that enabling SID Filtering between trusts in an Active Directory forest would mitigate this since SID History wouldn&#8217;t work. That may be true, though there&#8217;s a couple of potential issues with this approach: 1) I have never seen this configured in a production environment, 2) I&#8217;m not sure of Microsoft&#8217;s support posture on this, and 3) enabling SID filtering on trusts within an AD forest <em>may</em> break applications that rely on universal group membership across domains (this could be a pretty big deal since universal groups are typically used frequently in multi-domain AD forests). These may seem like minor issues, but I have seen several large enterprise AD environments that break when non-standard approaches are taken since the developers didn&#8217;t take the config into account when testing.</p>
+<p><a href="https://technet.microsoft.com/en-us/library/cc755321%28v=ws.10%29.aspx">More on Active Directory trust security. </a></p>
+<p>Note that the Active Directory domain is <em><span style="text-decoration: underline;">not</span> </em>the security boundary; the AD forest is. This means that if you need account isolation, you need AD forests, not domains in an AD forest.</p>
+<p>&nbsp;</p>
+</div>
+</div>
+</div>
+<div class="tptn_counter" id="tptn_counter_1640">(Visited 30,114 times, 6 visits today)</div>								</div>
+		
+			    <ul class="entry-footer">
+	    		        <li class="post-tags col-sm-8"><i class="fa fa-tags" title="Tags"></i> <span class="terms"><a class="term term-tagpost_tag term-20" href="https://adsecurity.org/?tag=activedirectory">ActiveDirectory</a>, <a class="term term-tagpost_tag term-537" href="https://adsecurity.org/?tag=activedirectoryattack">ActiveDirectoryAttack</a>, <a class="term term-tagpost_tag term-113" href="https://adsecurity.org/?tag=activedirectorysecurity">ActiveDirectorySecurity</a>, <a class="term term-tagpost_tag term-554" href="https://adsecurity.org/?tag=adattack">ADAttack</a>, <a class="term term-tagpost_tag term-67" href="https://adsecurity.org/?tag=adforest">ADForest</a>, <a class="term term-tagpost_tag term-397" href="https://adsecurity.org/?tag=blackhat">BlackHat</a>, <a class="term term-tagpost_tag term-553" href="https://adsecurity.org/?tag=compromiseactivedirectory">CompromiseActiveDirectory</a>, <a class="term term-tagpost_tag term-903" href="https://adsecurity.org/?tag=domain-trust">Domain Trust</a>, <a class="term term-tagpost_tag term-550" href="https://adsecurity.org/?tag=enhancedgoldenticket">EnhancedGoldenTicket</a>, <a class="term term-tagpost_tag term-552" href="https://adsecurity.org/?tag=enhancedgoldentickets">EnhancedGoldenTickets</a>, <a class="term term-tagpost_tag term-904" href="https://adsecurity.org/?tag=forest-trust">Forest Trust</a>, <a class="term term-tagpost_tag term-900" href="https://adsecurity.org/?tag=forged-kerberos-ticket">Forged Kerberos Ticket</a>, <a class="term term-tagpost_tag term-303" href="https://adsecurity.org/?tag=goldenticket">GoldenTicket</a>, <a class="term term-tagpost_tag term-551" href="https://adsecurity.org/?tag=goldenticketlimitation">GoldenTicketLimitation</a>, <a class="term term-tagpost_tag term-81" href="https://adsecurity.org/?tag=kerberos">Kerberos</a>, <a class="term term-tagpost_tag term-898" href="https://adsecurity.org/?tag=kerberos-across-trust">Kerberos across trust</a>, <a class="term term-tagpost_tag term-899" href="https://adsecurity.org/?tag=kerberos-ticket">Kerberos ticket</a>, <a class="term term-tagpost_tag term-298" href="https://adsecurity.org/?tag=kerberoshacking">KerberosHacking</a>, <a class="term term-tagpost_tag term-394" href="https://adsecurity.org/?tag=krbtgt">KRBTGT</a>, <a class="term term-tagpost_tag term-207" href="https://adsecurity.org/?tag=mimikatz">mimikatz</a>, <a class="term term-tagpost_tag term-897" href="https://adsecurity.org/?tag=multiple-forests">multiple forests</a>, <a class="term term-tagpost_tag term-575" href="https://adsecurity.org/?tag=powershell">PowerShell</a>, <a class="term term-tagpost_tag term-896" href="https://adsecurity.org/?tag=service-ticket">service ticket</a>, <a class="term term-tagpost_tag term-547" href="https://adsecurity.org/?tag=sidhistory">SIDHistory</a>, <a class="term term-tagpost_tag term-528" href="https://adsecurity.org/?tag=tgs">TGS</a>, <a class="term term-tagpost_tag term-901" href="https://adsecurity.org/?tag=tgs-ticket">TGS Ticket</a>, <a class="term term-tagpost_tag term-529" href="https://adsecurity.org/?tag=tgt">TGT</a>, <a class="term term-tagpost_tag term-902" href="https://adsecurity.org/?tag=tgt-ticket">TGT Ticket</a></span></li>
+	        	        <li class="addthis col-sm-8"><div class="add-this"></div></li>
+	        	    </ul>
+    	</div>
+
+</div>
+
+    <div class="entry-author">
+        <div class="row">
+            <div class="author-avatar col-sm-3">
+            	<a href="https://adsecurity.org/?author=2" rel="author">
+					<img alt='' src='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=200&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=400&#038;d=mm&#038;r=g 2x' class='avatar avatar-200 photo' height='200' width='200' loading='lazy'/>                </a>
+            </div>
+
+            <div class="author-bio col-sm-9">
+                <h3 class="section-title-sm">Sean Metcalf</h3>
+                <p>I improve security for enterprises around the world working for TrimarcSecurity.com<br />
+Read the About page (top left) for information about me. :)<br />
+https://adsecurity.org/?page_id=8</p>
+    <ul class="author-social">
+    	        
+			        <li><a href="mailto:sean@adsecurity.org"><i class="fa fa-envelope-o"></i></a></li>
+            </ul>
+                </div>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+<div id="comments" class="clearfix no-ping">
+        	<h4 class="comments current">
+            <i class="fa fa-comments-o"></i> 1 comment        </h4>
+	        
+    
+	
+	    <div class="comments-list-wrapper">
+        <ol class="clearfix comments-list" id="comments_list">
+            		<li id="comment-9515" class="comment even thread-even depth-1 comment">
+			<div class="row">
+								
+											
+				<div class="comment-wrap col-md-12">
+					
+                        <ul class="comment-meta">
+                <li class="comment-avatar"><img alt='' src='https://secure.gravatar.com/avatar/7710db5f6949bf17655209388824336c?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/7710db5f6949bf17655209388824336c?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' loading='lazy'/></li>
+                <li class="comment-attr"><span class="comment-author">ann</span> on <span class="comment-date">August 7, 2015 <span class="time">at 9:17 am</span></span></li>
+                <li class="single-comment-link"><a href="https://adsecurity.org/?p=1640#comment-9515">#</a></li>
+            </ul>
+    
+					<div class="comment-entry">
+												
+													<p>This is soooo scary! 😉<br />
+Great article ! Thanks for sharing your AD/Kerberos security research!</p>
+												
+											</div>
+				</div>
+			
+							</div>
+	</li><!-- #comment-## -->
+        </ol>
+       	
+            </div>
+        
+        
+    </div>
+
+
+	<div id="respond">
+		<h3 id="reply-title"><i class="fa fa-comment-o"></i> Comments have been disabled.</h3>
+            </div>
+
+
+
+            
+  
+
+                </div><!-- #content-main -->
+        
+            
+<div id="sidebar1" class="sidebar sidebar-right widget-area col-md-4">
+
+	
+    
+		<div id="recent-posts-4" class="sidebar-wrap widget_recent_entries">
+		<h3>Recent Posts</h3>
+		<ul>
+											<li>
+					<a href="https://adsecurity.org/?p=4367">Attacking Active Directory Group Managed Service Accounts (GMSAs)</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4277">From Azure AD to Active Directory (via Azure) &#8211; An Unanticipated Attack Path</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4211">What is Azure Active Directory?</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4179">Slides Posted for Black Hat USA 2019 Talk: Attacking &#038; Defending the Microsoft Cloud</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4187">AD Reading: Windows Server 2019 Active Directory Features</a>
+									</li>
+					</ul>
+
+		</div><div id="text-3" class="sidebar-wrap widget_text"><h3>Trimarc Active Directory Security Services</h3>			<div class="textwidget">Have concerns about your Active Directory environment?
+
+Trimarc helps enterprises improve their security posture. <p>
+<a href="http://trimarcsecurity.com/security-services">Find out how...</a> 
+TrimarcSecurity.com</div>
+		</div><div id="widget_tptn_pop-4" class="sidebar-wrap tptn_posts_list_widget"><h3>Popular Posts</h3><div class="tptn_posts  tptn_posts_widget tptn_posts_widget4"><ul><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2362"     class="tptn_link"><span class="tptn_title">Attack Methods for Gaining Domain Admin Rights in&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=478"     class="tptn_link"><span class="tptn_title">PowerShell Encoding &#038; Decoding (Base64)</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=483"     class="tptn_link"><span class="tptn_title">Kerberos &#038; KRBTGT: Active Directory&#8217;s&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3377"     class="tptn_link"><span class="tptn_title">Securing Domain Controllers to Improve Active&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2288"     class="tptn_link"><span class="tptn_title">Finding Passwords in SYSVOL &#038; Exploiting Group&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3299"     class="tptn_link"><span class="tptn_title">Securing Windows Workstations: Developing a Secure Baseline</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1684"     class="tptn_link"><span class="tptn_title">The Most Common Active Directory Security Issues and&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2653"     class="tptn_link"><span class="tptn_title">Building an Effective Active Directory Lab&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1729"     class="tptn_link"><span class="tptn_title">Mimikatz DCSync Usage, Exploitation, and Detection</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1790"     class="tptn_link"><span class="tptn_title">Microsoft Local Administrator Password Solution (LAPS)</span></a></span></li></ul><div class="tptn_clear"></div></div></div><div id="categories-4" class="sidebar-wrap widget_categories"><h3>Categories</h3>
+			<ul>
+					<li class="cat-item cat-item-565"><a href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>
+</li>
+	<li class="cat-item cat-item-55"><a href="https://adsecurity.org/?cat=55">Apple Security</a>
+</li>
+	<li class="cat-item cat-item-431"><a href="https://adsecurity.org/?cat=431">Cloud Security</a>
+</li>
+	<li class="cat-item cat-item-17"><a href="https://adsecurity.org/?cat=17">Continuing Education</a>
+</li>
+	<li class="cat-item cat-item-396"><a href="https://adsecurity.org/?cat=396">Entertainment</a>
+</li>
+	<li class="cat-item cat-item-347"><a href="https://adsecurity.org/?cat=347">Exploit</a>
+</li>
+	<li class="cat-item cat-item-1039"><a href="https://adsecurity.org/?cat=1039">Hacking</a>
+</li>
+	<li class="cat-item cat-item-168"><a href="https://adsecurity.org/?cat=168">Hardware Security</a>
+</li>
+	<li class="cat-item cat-item-172"><a href="https://adsecurity.org/?cat=172">Hypervisor Security</a>
+</li>
+	<li class="cat-item cat-item-126"><a href="https://adsecurity.org/?cat=126">Linux/Unix Security</a>
+</li>
+	<li class="cat-item cat-item-343"><a href="https://adsecurity.org/?cat=343">Malware</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://adsecurity.org/?cat=11">Microsoft Security</a>
+</li>
+	<li class="cat-item cat-item-819"><a href="https://adsecurity.org/?cat=819">Mitigation</a>
+</li>
+	<li class="cat-item cat-item-48"><a href="https://adsecurity.org/?cat=48">Network/System Security</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://adsecurity.org/?cat=7">PowerShell</a>
+</li>
+	<li class="cat-item cat-item-698"><a href="https://adsecurity.org/?cat=698">RealWorld</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="https://adsecurity.org/?cat=21">Security</a>
+</li>
+	<li class="cat-item cat-item-234"><a href="https://adsecurity.org/?cat=234">Security Conference Presentation/Video</a>
+</li>
+	<li class="cat-item cat-item-1045"><a href="https://adsecurity.org/?cat=1045">Security Recommendation</a>
+</li>
+	<li class="cat-item cat-item-24"><a href="https://adsecurity.org/?cat=24">Technical Article</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="https://adsecurity.org/?cat=4">Technical Reading</a>
+</li>
+	<li class="cat-item cat-item-2"><a href="https://adsecurity.org/?cat=2">Technical Reference</a>
+</li>
+	<li class="cat-item cat-item-156"><a href="https://adsecurity.org/?cat=156">TheCloud</a>
+</li>
+	<li class="cat-item cat-item-930"><a href="https://adsecurity.org/?cat=930">Vulnerability</a>
+</li>
+			</ul>
+
+			</div><div id="tag_cloud-3" class="sidebar-wrap widget_tag_cloud"><h3>Tags</h3><div class="tagcloud"><a href="https://adsecurity.org/?tag=activedirectory" class="tag-cloud-link tag-link-20 tag-link-position-1" style="font-size: 22pt;" aria-label="ActiveDirectory (52 items)">ActiveDirectory</a>
+<a href="https://adsecurity.org/?tag=active-directory" class="tag-cloud-link tag-link-75 tag-link-position-2" style="font-size: 10.531914893617pt;" aria-label="Active Directory (8 items)">Active Directory</a>
+<a href="https://adsecurity.org/?tag=activedirectoryattack" class="tag-cloud-link tag-link-537 tag-link-position-3" style="font-size: 8pt;" aria-label="ActiveDirectoryAttack (5 items)">ActiveDirectoryAttack</a>
+<a href="https://adsecurity.org/?tag=activedirectorysecurity" class="tag-cloud-link tag-link-113 tag-link-position-4" style="font-size: 13.957446808511pt;" aria-label="ActiveDirectorySecurity (14 items)">ActiveDirectorySecurity</a>
+<a href="https://adsecurity.org/?tag=active-directory-security" class="tag-cloud-link tag-link-976 tag-link-position-5" style="font-size: 9.7872340425532pt;" aria-label="Active Directory Security (7 items)">Active Directory Security</a>
+<a href="https://adsecurity.org/?tag=adreading" class="tag-cloud-link tag-link-5 tag-link-position-6" style="font-size: 13.510638297872pt;" aria-label="ADReading (13 items)">ADReading</a>
+<a href="https://adsecurity.org/?tag=adsecurity" class="tag-cloud-link tag-link-86 tag-link-position-7" style="font-size: 10.531914893617pt;" aria-label="ADSecurity (8 items)">ADSecurity</a>
+<a href="https://adsecurity.org/?tag=ad-security" class="tag-cloud-link tag-link-100 tag-link-position-8" style="font-size: 8pt;" aria-label="AD Security (5 items)">AD Security</a>
+<a href="https://adsecurity.org/?tag=dcsync" class="tag-cloud-link tag-link-598 tag-link-position-9" style="font-size: 10.531914893617pt;" aria-label="DCSync (8 items)">DCSync</a>
+<a href="https://adsecurity.org/?tag=defcon" class="tag-cloud-link tag-link-518 tag-link-position-10" style="font-size: 8pt;" aria-label="DEFCON (5 items)">DEFCON</a>
+<a href="https://adsecurity.org/?tag=domaincontroller" class="tag-cloud-link tag-link-101 tag-link-position-11" style="font-size: 15.446808510638pt;" aria-label="DomainController (18 items)">DomainController</a>
+<a href="https://adsecurity.org/?tag=emet5" class="tag-cloud-link tag-link-338 tag-link-position-12" style="font-size: 8pt;" aria-label="EMET5 (5 items)">EMET5</a>
+<a href="https://adsecurity.org/?tag=goldenticket" class="tag-cloud-link tag-link-303 tag-link-position-13" style="font-size: 11.276595744681pt;" aria-label="GoldenTicket (9 items)">GoldenTicket</a>
+<a href="https://adsecurity.org/?tag=hyperv" class="tag-cloud-link tag-link-3 tag-link-position-14" style="font-size: 8pt;" aria-label="HyperV (5 items)">HyperV</a>
+<a href="https://adsecurity.org/?tag=invoke-mimikatz" class="tag-cloud-link tag-link-336 tag-link-position-15" style="font-size: 10.531914893617pt;" aria-label="Invoke-Mimikatz (8 items)">Invoke-Mimikatz</a>
+<a href="https://adsecurity.org/?tag=kb3011780" class="tag-cloud-link tag-link-337 tag-link-position-16" style="font-size: 9.7872340425532pt;" aria-label="KB3011780 (7 items)">KB3011780</a>
+<a href="https://adsecurity.org/?tag=kdc" class="tag-cloud-link tag-link-80 tag-link-position-17" style="font-size: 8pt;" aria-label="KDC (5 items)">KDC</a>
+<a href="https://adsecurity.org/?tag=kerberos" class="tag-cloud-link tag-link-81 tag-link-position-18" style="font-size: 15.446808510638pt;" aria-label="Kerberos (18 items)">Kerberos</a>
+<a href="https://adsecurity.org/?tag=kerberoshacking" class="tag-cloud-link tag-link-298 tag-link-position-19" style="font-size: 11.872340425532pt;" aria-label="KerberosHacking (10 items)">KerberosHacking</a>
+<a href="https://adsecurity.org/?tag=krbtgt" class="tag-cloud-link tag-link-394 tag-link-position-20" style="font-size: 9.7872340425532pt;" aria-label="KRBTGT (7 items)">KRBTGT</a>
+<a href="https://adsecurity.org/?tag=laps" class="tag-cloud-link tag-link-631 tag-link-position-21" style="font-size: 9.0425531914894pt;" aria-label="LAPS (6 items)">LAPS</a>
+<a href="https://adsecurity.org/?tag=lsass" class="tag-cloud-link tag-link-71 tag-link-position-22" style="font-size: 11.276595744681pt;" aria-label="LSASS (9 items)">LSASS</a>
+<a href="https://adsecurity.org/?tag=mcm" class="tag-cloud-link tag-link-6 tag-link-position-23" style="font-size: 14.255319148936pt;" aria-label="MCM (15 items)">MCM</a>
+<a href="https://adsecurity.org/?tag=microsoftemet" class="tag-cloud-link tag-link-58 tag-link-position-24" style="font-size: 11.276595744681pt;" aria-label="MicrosoftEMET (9 items)">MicrosoftEMET</a>
+<a href="https://adsecurity.org/?tag=microsoftwindows" class="tag-cloud-link tag-link-102 tag-link-position-25" style="font-size: 9.7872340425532pt;" aria-label="MicrosoftWindows (7 items)">MicrosoftWindows</a>
+<a href="https://adsecurity.org/?tag=mimikatz" class="tag-cloud-link tag-link-207 tag-link-position-26" style="font-size: 18.425531914894pt;" aria-label="mimikatz (29 items)">mimikatz</a>
+<a href="https://adsecurity.org/?tag=ms14068" class="tag-cloud-link tag-link-295 tag-link-position-27" style="font-size: 11.276595744681pt;" aria-label="MS14068 (9 items)">MS14068</a>
+<a href="https://adsecurity.org/?tag=passthehash" class="tag-cloud-link tag-link-44 tag-link-position-28" style="font-size: 9.7872340425532pt;" aria-label="PassTheHash (7 items)">PassTheHash</a>
+<a href="https://adsecurity.org/?tag=powershell" class="tag-cloud-link tag-link-575 tag-link-position-29" style="font-size: 18.872340425532pt;" aria-label="PowerShell (31 items)">PowerShell</a>
+<a href="https://adsecurity.org/?tag=powershellcode" class="tag-cloud-link tag-link-22 tag-link-position-30" style="font-size: 15.148936170213pt;" aria-label="PowerShellCode (17 items)">PowerShellCode</a>
+<a href="https://adsecurity.org/?tag=powershellhacking" class="tag-cloud-link tag-link-68 tag-link-position-31" style="font-size: 8pt;" aria-label="PowerShellHacking (5 items)">PowerShellHacking</a>
+<a href="https://adsecurity.org/?tag=powershellv5" class="tag-cloud-link tag-link-69 tag-link-position-32" style="font-size: 8pt;" aria-label="PowerShellv5 (5 items)">PowerShellv5</a>
+<a href="https://adsecurity.org/?tag=powersploit" class="tag-cloud-link tag-link-232 tag-link-position-33" style="font-size: 10.531914893617pt;" aria-label="PowerSploit (8 items)">PowerSploit</a>
+<a href="https://adsecurity.org/?tag=presentation" class="tag-cloud-link tag-link-422 tag-link-position-34" style="font-size: 9.7872340425532pt;" aria-label="Presentation (7 items)">Presentation</a>
+<a href="https://adsecurity.org/?tag=security" class="tag-cloud-link tag-link-576 tag-link-position-35" style="font-size: 8pt;" aria-label="Security (5 items)">Security</a>
+<a href="https://adsecurity.org/?tag=sidhistory" class="tag-cloud-link tag-link-547 tag-link-position-36" style="font-size: 8pt;" aria-label="SIDHistory (5 items)">SIDHistory</a>
+<a href="https://adsecurity.org/?tag=silverticket" class="tag-cloud-link tag-link-304 tag-link-position-37" style="font-size: 11.276595744681pt;" aria-label="SilverTicket (9 items)">SilverTicket</a>
+<a href="https://adsecurity.org/?tag=sneakyadpersistence" class="tag-cloud-link tag-link-596 tag-link-position-38" style="font-size: 9.0425531914894pt;" aria-label="SneakyADPersistence (6 items)">SneakyADPersistence</a>
+<a href="https://adsecurity.org/?tag=spn" class="tag-cloud-link tag-link-294 tag-link-position-39" style="font-size: 9.0425531914894pt;" aria-label="SPN (6 items)">SPN</a>
+<a href="https://adsecurity.org/?tag=tgs" class="tag-cloud-link tag-link-528 tag-link-position-40" style="font-size: 9.0425531914894pt;" aria-label="TGS (6 items)">TGS</a>
+<a href="https://adsecurity.org/?tag=tgt" class="tag-cloud-link tag-link-529 tag-link-position-41" style="font-size: 9.0425531914894pt;" aria-label="TGT (6 items)">TGT</a>
+<a href="https://adsecurity.org/?tag=windows10" class="tag-cloud-link tag-link-494 tag-link-position-42" style="font-size: 10.531914893617pt;" aria-label="Windows10 (8 items)">Windows10</a>
+<a href="https://adsecurity.org/?tag=windowsserver2008r2" class="tag-cloud-link tag-link-46 tag-link-position-43" style="font-size: 9.0425531914894pt;" aria-label="WindowsServer2008R2 (6 items)">WindowsServer2008R2</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012" class="tag-cloud-link tag-link-47 tag-link-position-44" style="font-size: 11.276595744681pt;" aria-label="WindowsServer2012 (9 items)">WindowsServer2012</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012r2" class="tag-cloud-link tag-link-54 tag-link-position-45" style="font-size: 9.7872340425532pt;" aria-label="WindowsServer2012R2 (7 items)">WindowsServer2012R2</a></div>
+</div>    
+        
+    
+</div><!-- #sidebar1 -->        
+        
+    </div><!-- #content -->
+
+
+    
+        
+    <div id="sidebar_bottom" class="sidebar widget-area row footer-widget-col-3">
+                    <div id="text-2" class="sidebar-wrap widget_text col-sm-4"><h3>Copyright</h3>			<div class="textwidget">Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability.
+The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned.
+
+Content Ownership: All content posted here is intellectual work and under the current law, the poster owns the copyright of the article. Terms of Use Copyright © 2011 - 2020.</div>
+		</div>		
+            </div>
+
+	
+
+<div id="footer" class="row default-footer">
+    
+        
+            
+            <div class="copyright-developer">
+                                    <div id="copyright">
+                        <p>Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability. The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned. </p>
+                    </div>
+                
+                                    <div id="developer">
+                        <p>
+                                                        Made with <i class="fa fa-heart"></i> by <a href="https://www.graphene-theme.com/" rel="nofollow">Graphene Themes</a>.                        </p>
+
+                                            </div>
+                            </div>
+
+        
+                
+    </div><!-- #footer -->
+
+
+</div><!-- #container -->
+
+		<!-- Start of StatCounter Code -->
+		<script>
+			<!--
+			var sc_project=10100711;
+			var sc_security="4b306538";
+			      var sc_invisible=1;
+			var scJsHost = (("https:" == document.location.protocol) ?
+				"https://secure." : "http://www.");
+			//-->
+					</script>
+		
+<script type="text/javascript"
+				src="https://secure.statcounter.com/counter/counter.js"
+				async></script>		<noscript><div class="statcounter"><a title="web analytics" href="https://statcounter.com/"><img class="statcounter" src="https://c.statcounter.com/10100711/0/4b306538/1/" alt="web analytics" /></a></div></noscript>
+		<!-- End of StatCounter Code -->
+				<a href="#" id="back-to-top" title="Back to top"><i class="fa fa-chevron-up"></i></a>
+	<script type='text/javascript' id='tptn_tracker-js-extra'>
+/* <![CDATA[ */
+var ajax_tptn_tracker = {"ajax_url":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","top_ten_id":"1640","top_ten_blog_id":"1","activate_counter":"11","top_ten_debug":"0","tptn_rnd":"35459248"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://adsecurity.org/wp-content/plugins/top-10/includes/js/top-10-tracker.min.js?ver=1.0' id='tptn_tracker-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+</body>
+</html>

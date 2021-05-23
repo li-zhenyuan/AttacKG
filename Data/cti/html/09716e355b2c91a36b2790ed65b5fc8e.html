@@ -1,0 +1,882 @@
+
+<!DOCTYPE HTML>
+<html lang="en" data-template="post-page">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Malicious Macro Bypasses UAC to Elevate Privilege for Fareit Malware</title>
+    <meta name="keywords" content="fareit malware,escalated privilege,Threat Research,visual basic,macros,macro"/>
+    <meta name="description" content="To survive, Macro downloaders have to constantly develop new techniques for evading sandbox environments and anti-virus applications. Recently, Fortinet spotted a malicious document macro designed to bypass Microsoft Windows’ UAC security and execute Fareit, an information stealing malware, with high system privilege.
+
+SPAM
+
+This malicious document is distributed by a SPAM email.  As part of its social engineering strategy, it is presented in the context of someone being interested in a product.
+
+
+
+Fig.1 SPAM with the malicious..."/>
+    <meta name="template" content="post-page"/>
+    
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+
+<meta name="google-site-verification" content="tiQ03tSujT2TSsWJ6tNHiiUn8cwYVmdMQrGUCNrPQmo"/>
+
+<meta property="og:site_name" content="Fortinet Blog"/>
+<meta property="og:title" content="Malicious Macro Bypasses UAC to Elevate Privilege for Fareit Malware"/>
+<meta property="og:url" content="https://www.fortinet.com/blog/threat-research/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="To survive, Macro downloaders have to constantly develop new techniques for evading sandbox environments and anti-virus applications. Recently, Fortinet spotted a malicious document macro designed …"/>
+<meta property="og:image" content="https://www.fortinet.com/content/dam/fortinet-blog/article-images/individual-images/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware.png"/>
+
+<meta property="twitter:card" content="summary"/>
+<meta property="twitter:site" content="@Fortinet"/>
+
+<meta property="article:author" content="Joie Salvio and Rommel Joven"/>
+
+    <meta property="article:section" content="Threat Research"/>
+
+
+    <meta property="article:published_time" content="2016-12-16T00:00:00.000-08:00"/>
+
+
+    <meta property="article:tag" content="fareit malware"/>
+
+    <meta property="article:tag" content="escalated privilege"/>
+
+    <meta property="article:tag" content="visual basic"/>
+
+    <meta property="article:tag" content="macros"/>
+
+    <meta property="article:tag" content="macro"/>
+
+
+<link rel="shortcut icon" href="/etc/designs/fortinet-blog/favicon.ico"/>
+
+
+    
+<link rel="stylesheet" href="/etc.clientlibs/fortinet-blog/clientlibs/clientlib-base.min.css" type="text/css">
+
+
+
+
+
+
+<!-- SEO Script -->
+
+
+
+
+<!-- OneTrust Cookies Consent Notice start for fortinet.com -->
+
+
+
+    <script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" data-document-language="true" type="text/javascript" charset="UTF-8" data-domain-script="f85f39fc-d7aa-467a-b762-fbb722748016"></script>
+    <script type="text/javascript">
+
+function OptanonWrapper() {
+    {
+       try{
+            $('#cookiescript_injected').remove(); // remove old cookie script
+        }catch(e){}
+        window.dataLayer.push({
+            event: 'OneTrustGroupsUpdated'
+        });
+        Optanon.InsertScript('//assets.adobedtm.com/launch-EN23cb8375449840dc93b13f34d935b8b9.min.js','head',null, null, '1',true);
+    }
+}
+
+</script>
+
+
+<!-- OneTrust Cookies Consent Notice end for fortinet.com -->
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+</head>
+<body>
+
+
+
+
+
+<div class="root responsivegrid">
+
+
+<div class="aem-Grid aem-Grid--12 aem-Grid--default--12 ">
+    
+    <div class="b1-header aem-GridColumn aem-GridColumn--default--12">
+
+
+<header class="b1-header__container">
+    <div class="b1-header__logo">
+        <a href="https://www.fortinet.com">
+            
+            <img class="desktop-logo" src="/content/dam/fortinet-blog/fortinet-logo-white.svg" alt="Malicious Macro Bypasses UAC to Elevate Privilege for Fareit Malware"/>
+            <img class="mobile-logo" src="/content/dam/fortinet-blog/fortinet-logo-white.svg" alt="Malicious Macro Bypasses UAC to Elevate Privilege for Fareit Malware"/>
+        </a>
+    </div>
+
+    <div class="b1-header__cta-list">
+      <a class="b1-header__cta-list-item " href="https://www.fortinet.com/blog">
+          <span>Blog</span>
+      </a>
+    </div>
+
+    <div class="b1-header__nav"><div class="b2-navigation">
+
+
+
+
+    <ul class="b2-navigation__list">
+        
+            <li class="b2-navigation-categories"><div class="b2-navigation__list-item nav-dropdown-title">Categories</div>
+                <ul class="navdropdown">
+                    
+                        <li>
+                            <a class="b2-navigation__dropdown__list-item" href="/blog/business-and-technology">
+                                <span>Business &amp; Technology </span>
+                            </a>
+                        </li>
+                    
+                
+                    
+                        <li>
+                            <a class="b2-navigation__dropdown__list-item" href="/blog/threat-research">
+                                <span>Threat Research</span>
+                            </a>
+                        </li>
+                    
+                
+                    
+                        <li>
+                            <a class="b2-navigation__dropdown__list-item" href="/blog/industry-trends">
+                                <span>Industry Trends</span>
+                            </a>
+                        </li>
+                    
+                
+                    
+                        <li>
+                            <a class="b2-navigation__dropdown__list-item" href="/blog/partners">
+                                <span>Partners</span>
+                            </a>
+                        </li>
+                    
+                
+                    
+                        <li>
+                            <a class="b2-navigation__dropdown__list-item" href="/blog/customer-stories">
+                                <span>Customer Stories</span>
+                            </a>
+                        </li>
+                    
+                
+                    
+                        <li>
+                            <a class="b2-navigation__dropdown__list-item" href="/blog/psirt-blogs">
+                                <span>PSIRT Blogs</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+            </li>
+
+        
+            <li class="m-nav-item">
+                <a class="b2-navigation__list-item false" href="/blog/business-and-technology">
+                    <span>Business &amp; Technology </span>
+                </a>
+            </li>
+        
+            <li class="m-nav-item">
+                <a class="b2-navigation__list-item false" href="/blog/threat-research">
+                    <span>Threat Research</span>
+                </a>
+            </li>
+        
+            <li class="m-nav-item">
+                <a class="b2-navigation__list-item false" href="/blog/industry-trends">
+                    <span>Industry Trends</span>
+                </a>
+            </li>
+        
+            <li class="m-nav-item">
+                <a class="b2-navigation__list-item false" href="/blog/partners">
+                    <span>Partners</span>
+                </a>
+            </li>
+        
+            <li class="m-nav-item">
+                <a class="b2-navigation__list-item false" href="/blog/customer-stories">
+                    <span>Customer Stories</span>
+                </a>
+            </li>
+        
+            <li class="m-nav-item">
+                <a class="b2-navigation__list-item false" href="/blog/psirt-blogs">
+                    <span>PSIRT Blogs</span>
+                </a>
+            </li>
+        
+        
+        
+            <li>
+                <a class="b2-navigation__list-item false" href="/blog/ciso-collective">
+                    <span>CISO Collective</span>
+                </a>
+            </li>
+        
+    </ul>
+
+
+    
+
+</div>
+</div>
+
+    <div class="b1-header__search"><div class="b3-searchbox">
+
+
+<form class="b3-searchbox__form" action="/blog/search" method="get">
+    <input class="b3-searchbox__input" type="text" name="q" placeholder="Search Blogs"/>
+    <button class="b3-searchbox__icon" aria-label="Search" type="submit">
+        
+    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.688 14.18l-4.075-4.075C12.36 9.06 12.8 7.78 12.8 6.4 12.8 2.87 9.93 0 6.4 0 2.87 0 0 2.87 0 6.4c0 3.53 2.87 6.4 6.4 6.4 1.38 0 2.66-.44 3.705-1.187l4.075 4.075c.207.208.48.312.753.312.274 0 .547-.104.755-.312.416-.417.416-1.093 0-1.51zM2.133 6.4c0-2.357 1.91-4.267 4.267-4.267s4.267 1.91 4.267 4.267-1.91 4.267-4.267 4.267S2.133 8.757 2.133 6.4z" fill="#fff">
+        </path>
+    </svg>
+
+    </button>
+</form>
+
+
+    
+
+</div>
+</div>
+
+    <div class="b1-header__search-toggle">
+        
+    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.688 14.18l-4.075-4.075C12.36 9.06 12.8 7.78 12.8 6.4 12.8 2.87 9.93 0 6.4 0 2.87 0 0 2.87 0 6.4c0 3.53 2.87 6.4 6.4 6.4 1.38 0 2.66-.44 3.705-1.187l4.075 4.075c.207.208.48.312.753.312.274 0 .547-.104.755-.312.416-.417.416-1.093 0-1.51zM2.133 6.4c0-2.357 1.91-4.267 4.267-4.267s4.267 1.91 4.267 4.267-1.91 4.267-4.267 4.267S2.133 8.757 2.133 6.4z">
+        </path>
+    </svg>
+
+        <div class="b1-header__search-toggle-close">
+            <span class="b1-header__search-toggle-close-line"></span>
+            <span class="b1-header__search-toggle-close-line"></span>
+        </div>
+    </div>
+
+    <div class="b1-header__nav-toggle" aria-hidden="true">
+        <span class="b1-header__nav-toggle-line"></span>
+        <span class="b1-header__nav-toggle-line"></span>
+        <span class="b1-header__nav-toggle-line"></span>
+    </div>
+</header>
+
+    
+
+</div>
+<section class="b4-hero aem-GridColumn aem-GridColumn--default--12">
+
+
+
+<div class="b4-hero__container" style="background-image:url(/content/dam/fortinet-blog/article-images/individual-images/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware.png);">
+    <img class="ratio" alt="Malicious Macro Bypasses UAC to Elevate Privilege for Fareit Malware" aria-hidden="true" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAQAAAAe/WZNAAAADklEQVR42mNkgAJGDAYAAFEABCaLYqoAAAAASUVORK5CYII="/>
+    <div class="b4-hero__text text-container">
+        <p data-ly-test class="b4-hero__kicker">Threat Research</p>
+        
+        
+        <h1 class="b4-hero__headline">Malicious Macro Bypasses UAC to Elevate Privilege for Fareit Malware</h1>
+        
+    </div>
+</div>
+</section>
+<section class="b15-blog-meta aem-GridColumn aem-GridColumn--default--12">
+
+<div class="b15-blog-meta__container text-container">
+    <span>By </span>
+
+    <span class="b15-blog-meta__author">
+
+        
+					
+
+                        
+
+                                  
+                                      
+                                            
+                                          
+                                              <a href="/blog/search?author=Joie+Salvio">Joie Salvio</a> and
+                                          
+                                           
+                                      
+                                  
+                          
+
+                                  
+                                      
+                                            
+                                              <a href="/blog/search?author=Rommel+Joven">Rommel Joven</a>
+                                          
+                                          
+                                           
+                                      
+                                  
+                          
+                    
+        
+    </span>
+    <span class="b15-blog-meta__">
+        
+
+              </span>
+
+
+
+    <span class="b15-blog-meta__date"> | December 16, 2016</span>
+</div>
+</section>
+<div class="responsivegrid aem-GridColumn aem-GridColumn--default--12">
+
+
+<div class="aem-Grid aem-Grid--12 aem-Grid--default--12 ">
+    
+    <div class="raw-import aem-GridColumn aem-GridColumn--default--12">
+<div class="text-container"><style>
+@media (max-width: 767px)
+{
+#sblogs img
+{
+max-width: 100%;
+}
+#sblogs, li, p, pre code, pre
+	{
+		white-space: initial;
+		word-break: break-word;
+	}
+
+}
+@media (min-width: 768px)
+{
+#sblogs img
+{
+max-width: 100%;
+}
+}
+</style>
+
+
+<div id="sblogs">
+
+<p align="center"><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2008.png" data-style="width: 714px; height: 393px;"/></p>
+
+<p>To survive, Macro downloaders have to constantly develop new techniques for evading sandbox environments and anti-virus applications. Recently, Fortinet spotted a malicious document macro designed to bypass Microsoft Windows&rsquo; UAC security and execute <a href="https://blog.fortinet.com/2016/05/06/new-fareit-variant-analysis">Fareit</a>, an information stealing malware, with high system privilege.</p>
+
+<h3>SPAM</h3>
+
+<p>This malicious document is distributed by a SPAM email.&nbsp; As part of its social engineering strategy, it is presented in the context of someone being interested in a product.</p>
+
+<p align="center"><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2009.png" data-style="width: 575px; height: 361px;"/></p>
+
+<p align="center"><em>Fig.1 SPAM with the malicious document</em></p>
+
+<p>As usual, when the document is opened the targeted victim is instructed to enable Microsoft Word&rsquo;s macro execution. In doing so, the malicious macro executes in the background.</p>
+
+<p align="center"><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2010.png" data-style="width: 895px; height: 328px;"/></p>
+
+<p align="center"><em>Fig.2 Malicious document instructs user to allow macro</em></p>
+
+<p>The macro uses simple obfuscation by inserting garbage characters into real strings.</p>
+
+<p align="center"><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2011.png" data-style="width: 606px; height: 194px;"/></p>
+
+<p align="center"><em>Fig.3 Function to remove the garbage characters</em></p>
+
+<p>Here is an example:</p>
+
+<blockquote>
+<p align="center"><em>AR</em><span data-style="color:#FF0000;"><strong><em>c</em></strong></span><em>A</em><span data-style="color:#FF0000;"><strong><em>m</em></strong></span><em>4Y</em><span data-style="color:#FF0000;"><strong><em>d</em></strong></span><em>AJ</em><span data-style="color:#FF0000;"><strong><em>.</em></strong></span><em>JZ</em><span data-style="color:#FF0000;"><strong><em>e</em></strong></span><em>4</em><span data-style="color:#FF0000;"><strong><em>x</em></strong></span><em>R</em><span data-style="color:#FF0000;"><strong><em>e</em></strong></span><em>J R</em><span data-style="color:#FF0000;"><strong><em>/</em></strong></span><em>R</em><span data-style="color:#FF0000;"><strong><em>c</em></strong></span><em>JY 6A</em><span data-style="color:#FF0000;"><strong><em>p</em></strong></span><em>64</em><span data-style="color:#FF0000;"><strong><em>o</em></strong></span><em>A6</em><span data-style="color:#FF0000;"><strong><em>w</em></strong></span><em>Y</em><span data-style="color:#FF0000;"><strong><em>e</em></strong></span><em>A</em><em>J</em><span data-style="color:#FF0000;"><strong><em>r</em></strong></span><em>ZZ</em><span data-style="color:#FF0000;"><strong><em>s</em></strong></span><em>YJ</em><span data-style="color:#FF0000;"><strong><em>h</em></strong></span><em>AA</em><span data-style="color:#FF0000;"><strong><em>e</em></strong></span><em>4</em><span data-style="color:#FF0000;"><strong><em>l</em></strong></span><em>R</em><strong><em><span data-style="color:#FF0000;">l</span> </em></strong><em>&hellip;</em></p>
+</blockquote>
+
+<p>Below is the full shell command executed by the macro:</p>
+
+<p><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2012.png" data-style="width: 789px; height: 113px;"/></p>
+
+<p>It&rsquo;s common behavior for a malicious document macro to download and execute malware. However, what&rsquo;s interesting with this attack is that it executes the Fareit malware (sick.exe) with &ldquo;High&rdquo; privilege. In a default UAC setting, it should not be possible to do this without the UAC permission prompt popping up. Bypassing that setting has everything to do with the executed Windows native application, eventvwr.exe.</p>
+
+<p><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2013.png" data-style="width: 652px; height: 76px;"/></p>
+
+<p align="center"><em>Fig.4 Macro executes Event Viewer and Fareit (sick.exe)</em></p>
+
+<h3>UAC Bypass and Privilege Escalation</h3>
+
+<p>An application running with high privilege in the system means access to more resources that would otherwise be inaccessible if running with lower privilege. In terms of malware, this means more data that can be stolen and more changes that can be done to the system.</p>
+
+<p>UAC is a security feature that prevents an application from executing with higher privileges without the user&rsquo;s permission. It is also a very convenient feature that allows users to perform non-administrator and administrator tasks without switching users.</p>
+
+<p>To understand the shell command, let&rsquo;s divide it into four sections.</p>
+
+<p>The first section simply downloads the Fareit malware and drops it as <em>%TEMP%\sick.exe</em>.</p>
+
+<p><em>Command:</em></p>
+
+<p><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2014.png" data-style="width: 771px; height: 51px;"/></p>
+
+<p align="center"><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2015.png" data-style="width: 422px; height: 125px;"/></p>
+
+<p align="center"><em>Fig.5 Network log of the malware download</em></p>
+
+<p>The second section is where it starts to get really interesting. The malware adds the following entry to the registry:</p>
+
+<p data-style="margin-left:.5in;">Key: <em>HKCU\Software\Classes\mscfile\shell\open\command\</em></p>
+
+<p data-style="margin-left:.5in;"><em>(default):</em> <em>%temp%\sick.exe</em></p>
+
+<p><em>Command:</em></p>
+
+<p><em>reg add HKCU\Software\Classes\mscfile\shell\open\command /d %tmp%\sick.exe /f</em></p>
+
+<p align="center"><img alt="" src="/content/dam/fortinet-blog/new-images/uploads/malicious-macro-bypasses-uac-to-elevate-privilege-for-fareit-malware-2016.png" data-style="width: 677px; height: 178px;"/></p>
+
+<p align="center"><em>Fig. 6 Malware modifies the registry related to opening .msc files</em></p>
+
+<p><em>HKCU\Software\Classes\</em> contains registry entries that dictate the default software to be used when opening files based on file types. Adding the above malware registry means it will execute every time an <em>mscfile (.msc) </em>is opened. But there is a more important reason for changing this registry.</p>
+
+<p>Let&rsquo;s take a look at the third section of the command. After modifying the registry, it executes Microsoft&rsquo;s Event Viewer application, a tool used to view application and system logs for monitoring and troubleshooting.</p>
+
+<p><em>Command:</em></p>
+
+<p><em>C:\Windows\system32\eventvwr.exe &amp; PING -n 15 127.0.0.1&gt;nul </em></p>
+
+<p>&nbsp;</p>
+
+<p>Event Viewer needs to execute the Microsoft Management Console (mmc.exe) to work. MMC is a tool that serves as an interface for Windows administrative tools. But first, it needs to locate mmc.exe. The application does this by querying <em>HKCU\Software\Classes\mscfile\shell\open\command\</em> and <em>HKCR\mscfile\shell\open\command\</em>, in that order. However, we now know that the malicious macro has already added the path of the downloaded Fareit malware to the former, which means that the malware will be executed instead of MMC.</p>
+
+<p>Now, it is very important to note that Event Viewer has an <a href="https://technet.microsoft.com/en-us/library/2009.07.uac.aspx#id0560031">auto-elevate</a> parameter. This means it does not need UAC permission to execute in a high privilege. This also means that any child process, Fareit malware in this case, executed by this application will have the same high privilege.</p>
+
+<p>The main problem is that a high-privilege Windows native application (eventvwr.exe) bases its parameters or dependency on system artifacts that can be easily modified by a process with a lower privilege.</p>
+
+<p>Discovery and detailed analysis of this recent UAC bypass technique was posted by <em>enigma0x3</em> <a href="https://enigma0x3.net/2016/08/15/fileless-uac-bypass-using-eventvwr-exe-and-registry-hijacking/">here</a> only a few months ago.</p>
+
+<p>The fourth section of the command simply executes the Fareit malware again. This may just be a fail-safe mechanism in case the attempt to execute it in high privilege does not work.</p>
+
+<p>&nbsp;</p>
+
+<p><em>Command:</em></p>
+
+<p>%tmp%\sick.exe</p>
+
+<p>&nbsp;</p>
+
+<h3>Conclusion</h3>
+
+<p>Macro malware attacks have been around for a long time, mainly because they are very effective at social engineering schemes. Over time, they have become more aggressive and creative in evading detections for themselves and their payloads, and this current example is another advance development that we will surely start to see in other variants.</p>
+
+<p>It was not long ago when security researchers presented a POC of this UAC bypass. Sharing this kind of information to the public always has its pros and cons. For the security community, it can serve as a good heads-up to plan and mitigate its bad effects. However, as the good guys become aware of it, there&rsquo;s a good chance that the bad guys are aware of it too.</p>
+
+<p>In summary, then, here are a few simple security measures that can be implemented to mitigate these sorts of attacks:</p>
+
+<ul>
+	<li>Disable execution of Macros, if not in use</li>
+	<li>Change the default setting of UAC to &ldquo;Always Notify&rdquo;</li>
+	<li>Be vigilant on opening emails and documents from unknown sources</li>
+</ul>
+
+<p>-= FortiGuardLion Team =-</p>
+
+<p>&nbsp;</p>
+
+<h3>Samples (SHA256)</h3>
+
+<p>2e4a232753459ee64adfa1931d1bae5f3128e70918027c230c7da93aad69889b (sick.exe) - W32/Fareit.CIBX!tr.pws</p>
+
+<p>6dd7f947258458646153c414e0861c7257b794af5f03d37e0e9dc38e2c7126cf (scan002939110.doc) - WM/Fareit.UAC!tr.dldr</p>
+
+<p>d503aaa145be93e23e0e2d9a19ca89c9efd9729513d30f9be11db174c8ed6a9c(scan002939110.doc) - WM/Fareit.UAC!tr.dldr</p>
+
+<p>&nbsp;</p>
+
+<h3>IOC</h3>
+
+<p>Added Registry:</p>
+
+<p data-style="margin-left:.5in;">Key: <em>HKCU\Software\Classes\mscfile\shell\open\command\</em></p>
+
+<p data-style="margin-left:.5in;"><em>(default):</em> <em>%temp%\sick.exe</em></p>
+
+<p>&nbsp;</p>
+
+<p>Added File:</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; %temp%\sick.exe</p>
+
+<p>Network Connections:</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http[:]//hawkresultbox[.]net/logs/sick.exe</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http[:]//hawkresultbox[.]net/code/nam/gate.php</p>
+
+<p>http[:]//hawkresultbox[.]net/code/nam/shit.exe</p>
+
+
+</div></div>
+</div>
+
+    
+</div>
+</div>
+<div class="b16-blog-tags aem-GridColumn aem-GridColumn--default--12">
+
+
+
+  <div class="b16-blog-tags__container text-container">
+    <span class="b16-blog-tags__headline">Tags:</span>
+    <p class="b16-blog-tags__tag-links">
+      <a href="https://www.fortinet.com/blog/tags-search.html?tag=fareit-malware">fareit malware</a>, 
+    
+      <a href="https://www.fortinet.com/blog/tags-search.html?tag=escalated-privilege">escalated privilege</a>, 
+    
+      <a href="https://www.fortinet.com/blog/tags-search.html?tag=visual-basic">visual basic</a>, 
+    
+      <a href="https://www.fortinet.com/blog/tags-search.html?tag=macros">macros</a>, 
+    
+      <a href="https://www.fortinet.com/blog/tags-search.html?tag=macro">macro</a>
+    </p>
+  </div>
+
+</div>
+<section class="b12-related aem-GridColumn aem-GridColumn--default--12">
+
+
+
+
+<div class="b12-related__container text-container">
+    
+
+    
+    
+    <h3>Related Posts</h3>
+    <div class="b12-related__posts">
+        
+        <a href="/blog/threat-research/irs-notification-no-it-s-a-scam" class="b12-related__post b12-related__post-0">
+            <div class="b12-related__image" style="background-image:url(/content/dam/fortinet-blog/article-images/individual-images/irs-notification-no-it-is-a-scam.png.thumb.319.319.png);">
+                <img class="ratio" alt="IRS Notification? No, It is a Scam" aria-hidden="true" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAQAAAAe/WZNAAAADklEQVR42mNkgAJGDAYAAFEABCaLYqoAAAAASUVORK5CYII="/>
+            </div>
+
+            <div class="b12-related__text">
+                <p class="b12-related__category">
+                    Threat Research
+                </p>
+                <h5 class="b12-related__title">IRS Notification? No, It is a Scam</h5>
+            </div>
+        </a>
+    
+    
+        
+        <a href="/blog/threat-research/in-depth-analysis-of-net-malware-javaupdtr" class="b12-related__post b12-related__post-1">
+            <div class="b12-related__image" style="background-image:url(/content/dam/fortinet-blog/article-images/individual-images/deep-analysis-of-cve2016.jpg.thumb.319.319.png);">
+                <img class="ratio" alt="In-Depth Analysis of A New Variant of .NET Malware AgentTesla" aria-hidden="true" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAQAAAAe/WZNAAAADklEQVR42mNkgAJGDAYAAFEABCaLYqoAAAAASUVORK5CYII="/>
+            </div>
+
+            <div class="b12-related__text">
+                <p class="b12-related__category">
+                    Threat Research
+                </p>
+                <h5 class="b12-related__title">In-Depth Analysis of A New Variant of .NET Malware AgentTesla</h5>
+            </div>
+        </a>
+    
+    
+        
+        <a href="/blog/threat-research/analysis-of-a-fresh-variant-of-the-emotet-malware" class="b12-related__post b12-related__post-2">
+            <div class="b12-related__image" style="background-image:url(/content/dam/fortinet-blog/article-images/emotent_research_blog/emotent_01.png.thumb.319.319.png);">
+                <img class="ratio" alt="Analysis of a Fresh Variant of the Emotet Malware" aria-hidden="true" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAQAAAAe/WZNAAAADklEQVR42mNkgAJGDAYAAFEABCaLYqoAAAAASUVORK5CYII="/>
+            </div>
+
+            <div class="b12-related__text">
+                <p class="b12-related__category">
+                    Threat Research
+                </p>
+                <h5 class="b12-related__title">Analysis of a Fresh Variant of the Emotet Malware</h5>
+            </div>
+        </a>
+    
+    </div>
+</div>
+
+
+</section>
+<div class="b13-comment-section aem-GridColumn aem-GridColumn--default--12">
+
+
+<div class="b13-comment-section__container text-container">
+
+
+  <!--data-sly-test="true - got replaced with false to disable the discussion event-->
+  
+</div>
+</div>
+<div class="b6-footer aem-GridColumn aem-GridColumn--default--12">
+
+
+  
+
+  <div class="b6-footer__container text-container">
+    <div class="b6-footer__footer-info">
+      <div class="b6-footer__logo">
+        <a href="https://www.fortinet.com" target="_blank">
+          <img src="/content/dam/fortinet-blog/fortinet-logo-white.svg" alt="Fortinet"/>
+        </a>
+      </div>
+      <div class="b6-footer__social-footer">
+        <ul>
+          
+            <li class="social-icon facebook">
+              <a href="https://www.facebook.com/fortinet" target="_blank">
+                
+    <svg viewBox="0 0 9 18" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8.934.758v3.385H7.24c-.583 0-.845.685-.845 1.27v2.114h2.54v3.385h-2.54v6.77H3.01v-6.77H.472V7.527H3.01V4.143c0-1.87 1.516-3.385 3.385-3.385h2.54z" fill-opacity=".8" fill="#fff" fill-rule="evenodd"></path>
+    </svg>
+
+              </a>
+            </li>
+          
+            <li class="social-icon twitter">
+              <a href="https://www.twitter.com/fortinet" target="_blank">
+                
+    <svg viewBox="0 0 19 15" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18.17 2.296c-.652.296-1.354.49-2.082.584.745-.448 1.32-1.16 1.59-2.014-.702.423-1.48.72-2.3.89-.67-.73-1.61-1.152-2.675-1.152-1.988 0-3.613 1.625-3.613 3.63 0 .288.034.567.093.83-3.012-.153-5.694-1.6-7.48-3.792-.313.534-.49 1.16-.49 1.82 0 1.26.634 2.377 1.616 3.012-.61 0-1.16-.17-1.65-.423v.03c0 1.76 1.25 3.237 2.91 3.567-.31.084-.63.127-.96.127-.23 0-.46-.026-.68-.07.455 1.43 1.784 2.497 3.383 2.52-1.235.984-2.8 1.56-4.51 1.56-.288 0-.575-.018-.863-.05 1.61 1.03 3.52 1.632 5.57 1.632 6.667 0 10.33-5.534 10.33-10.332 0-.16 0-.313-.007-.474.71-.508 1.32-1.15 1.81-1.888z" fill-opacity=".8" fill="#fff" fill-rule="evenodd"></path>
+    </svg>
+
+              </a>
+            </li>
+          
+            <li class="social-icon youtube">
+              <a href="https://www.youtube.com/user/SecureNetworks" target="_blank">
+                
+    <svg viewBox="0 0 18 14" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.472 11.027V3.412L12.55 7.22l-5.08 3.806zM15.934.787C15.426.62 12.294.45 9.164.45c-3.13 0-6.26.16-6.77.322-1.32.44-1.69 3.4-1.69 6.447 0 3.03.37 6 1.69 6.43.51.17 3.64.33 6.77.33 3.13 0 6.262-.16 6.77-.33 1.32-.43 1.692-3.4 1.692-6.44 0-3.047-.372-6-1.692-6.43z" fill-opacity=".8" fill="#fff" fill-rule="evenodd"></path>
+    </svg>
+
+              </a>
+            </li>
+          
+            <li class="social-icon linkedin">
+              <a href="https://www.linkedin.com/company/fortinet" target="_blank">
+                
+    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.934 15.835H12.55v-5.712c0-.897-1.008-1.64-1.905-1.64s-1.48.743-1.48 1.64v5.712H5.78V5.68h3.385v1.693c.558-.905 1.996-1.49 2.96-1.49 2.116 0 3.81 1.727 3.81 3.817v6.135zm-11.846 0H.703V5.68h3.385v10.155zM2.395.605c.935 0 1.693.757 1.693 1.69 0 .936-.758 1.694-1.693 1.694S.703 3.23.703 2.29C.703 1.36 1.46.6 2.395.6z" fill-opacity=".8" fill="#fff" fill-rule="evenodd"></path>
+    </svg>
+
+              </a>
+            </li>
+          
+            <li class="social-icon instagram">
+              <a href="https://www.instagram.com/behindthefirewall/" target="_blank">
+                
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path class="st0" d="M16,3.7c4,0,4.5,0,6.1,0.1c1.5,0.1,2.3,0.3,2.8,0.5c0.7,0.3,1.2,0.6,1.7,1.1c0.5,0.5,0.8,1,1.1,1.7
+          c0.2,0.5,0.4,1.3,0.5,2.8c0.1,1.6,0.1,2.1,0.1,6.1s0,4.5-0.1,6.1c-0.1,1.5-0.3,2.3-0.5,2.8c-0.3,0.7-0.6,1.2-1.1,1.7
+          c-0.5,0.5-1,0.8-1.7,1.1c-0.5,0.2-1.3,0.4-2.8,0.5c-1.6,0.1-2.1,0.1-6.1,0.1s-4.5,0-6.1-0.1c-1.5-0.1-2.3-0.3-2.8-0.5
+          c-0.7-0.3-1.2-0.6-1.7-1.1c-0.5-0.5-0.8-1-1.1-1.7c-0.2-0.5-0.4-1.3-0.5-2.8C3.7,20.5,3.7,20,3.7,16s0-4.5,0.1-6.1
+          c0.1-1.5,0.3-2.3,0.5-2.8C4.6,6.5,4.9,6,5.4,5.4c0.5-0.5,1-0.8,1.7-1.1c0.5-0.2,1.3-0.4,2.8-0.5C11.5,3.7,12,3.7,16,3.7 M16,1
+          c-4.1,0-4.6,0-6.2,0.1C8.2,1.2,7.1,1.4,6.2,1.8c-1,0.4-1.8,0.9-2.7,1.7C2.7,4.4,2.2,5.2,1.8,6.2c-0.4,1-0.6,2-0.7,3.6
+          C1,11.4,1,11.9,1,16c0,4.1,0,4.6,0.1,6.2c0.1,1.6,0.3,2.7,0.7,3.6c0.4,1,0.9,1.8,1.7,2.7c0.8,0.8,1.7,1.3,2.7,1.7
+          c1,0.4,2,0.6,3.6,0.7C11.4,31,11.9,31,16,31s4.6,0,6.2-0.1c1.6-0.1,2.7-0.3,3.6-0.7c1-0.4,1.8-0.9,2.7-1.7c0.8-0.8,1.3-1.7,1.7-2.7
+          c0.4-1,0.6-2,0.7-3.6C31,20.6,31,20.1,31,16s0-4.6-0.1-6.2c-0.1-1.6-0.3-2.7-0.7-3.6c-0.4-1-0.9-1.8-1.7-2.7
+          c-0.8-0.8-1.7-1.3-2.7-1.7c-1-0.4-2-0.6-3.6-0.7C20.6,1,20.1,1,16,1L16,1z" fill-opacity=".8" fill="#fff" fill-rule="evenodd"></path>
+        <path class="st0" d="M16,8.3c-4.3,0-7.7,3.4-7.7,7.7s3.4,7.7,7.7,7.7s7.7-3.4,7.7-7.7S20.3,8.3,16,8.3z M16,21c-2.8,0-5-2.2-5-5
+          s2.2-5,5-5s5,2.2,5,5S18.8,21,16,21z" fill-opacity=".8" fill="#fff" fill-rule="evenodd"></path>
+        <circle class="st0" cx="24" cy="8" r="1.8" fill-opacity=".8" fill="#fff" fill-rule="evenodd"></circle>
+    </svg>
+
+              </a>
+            </li>
+          
+            <li class="social-icon rss">
+              <a href="https://www.fortinet.com/rss-feeds.html" target="_blank">
+                
+    <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.072 17.68c-1.27 0-2.37-1.1-2.37-2.368 0-1.27 1.1-2.37 2.37-2.37s2.37 1.1 2.37 2.37-1.016 2.37-2.37 2.37zM.702.76v2.538c7.955 0 14.386 6.43 14.386 14.385h2.538C17.626 8.336 10.05.76.703.76zm0 5.162V8.46c5.078 0 9.224 4.146 9.224 9.223h2.54c0-6.514-5.248-11.76-11.763-11.76z" fill-opacity=".8" fill="#fff" fill-rule="evenodd"></path>
+    </svg>
+
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+    </div>
+    <div class="b6-footer__footer-links">
+      
+        <div class="b6-footer__footer-links-column">
+          <h4 class="b6-footer__header">News &amp; Articles</h4>
+          <ul>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/newsroom/press-releases.html" target="_self">News Releases</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/newsroom/news.html" target="_blank">News Articles</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/contact-us/fortinet-trademark-guidelines.html" target="_self">Trademarks</a>
+              </li>
+            
+          </ul>
+        </div>
+      
+        <div class="b6-footer__footer-links-column">
+          <h4 class="b6-footer__header">Security Research</h4>
+          <ul>
+            
+              <li>
+                <a href="https://www.fortinet.com/fortiguard/threat-intelligence/threat-research.html" target="_self">Threat Research</a>
+              </li>
+            
+              <li>
+                <a href="https://fortiguard.com/" target="_self">FortiGuard Labs</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/fortiguard/threat-intelligence/threat-map.html" target="_self">Threat Map</a>
+              </li>
+            
+              <li>
+                <a href="https://secure.fortinet.com/fortiguard" target="_blank">Threat Briefs</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/solutions/ransomware.html" target="_self">Ransomware</a>
+              </li>
+            
+          </ul>
+        </div>
+      
+        <div class="b6-footer__footer-links-column">
+          <h4 class="b6-footer__header">Connect With Us</h4>
+          <ul>
+            
+              <li>
+                <a href="/content/fortinet-blog/us/en" target="_self">Blog</a>
+              </li>
+            
+              <li>
+                <a href="https://fusecommunity.fortinet.com" target="_self">Fuse Community</a>
+              </li>
+            
+          </ul>
+        </div>
+      
+        <div class="b6-footer__footer-links-column">
+          <h4 class="b6-footer__header">Company</h4>
+          <ul>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/about-us.html" target="_blank">About Us</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/why-fortinet.html" target="_blank">Why Fortinet</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/security-fabric.html" target="_self">Security Fabric</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/executive-management.html" target="_self">Exec Mgmt</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/careers.html" target="_self">Careers</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/product-certifications.html" target="_self">Certifications</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/events.html" target="_self">Events</a>
+              </li>
+            
+              <li>
+                <a href="https://www.fortinet.com/corporate/about-us/industry-awards.html" target="_self">Industry Awards</a>
+              </li>
+            
+          </ul>
+        </div>
+      
+      <div class="b6-footer__contact-info">
+        <h4 class="b6-footer__header">Contact Us</h4>
+        <ul>
+          <li>(866) 868-3678</li>
+        </ul>
+      </div>
+    </div>
+    <div class="b6-footer__copyright">
+      <div class="b6-footer__copyright-info">
+        <p class="b6-footer__copyright-text">Copyright © 2021 Fortinet, Inc. All Rights Reserved</p>
+        
+          <a class="b6-footer__copyright-link" href="https://www.fortinet.com/corporate/about-us/legal.html" target="_blank">Terms of Services</a>
+        
+          <a class="b6-footer__copyright-link" href="https://www.fortinet.com/corporate/about-us/privacy.html" target="_blank">Privacy Policy</a>
+        
+        <span class="ot-ftnt-cookie-settings"> | <a href="#" onclick="Optanon.ToggleInfoDisplay()">Cookie Settings</a></span>
+      </div>
+    </div>
+  </div>
+
+<!-- Launch COnfiguration -->
+
+
+<!-- END Launch COnfiguration --></div>
+
+    
+</div>
+</div>
+
+
+
+    
+    
+
+    
+    
+<script type="text/javascript" src="/etc.clientlibs/fortinet-blog/clientlibs/clientlib-base.min.js"></script>
+
+
+
+
+
+    
+
+
+
+
+</body>
+</html>

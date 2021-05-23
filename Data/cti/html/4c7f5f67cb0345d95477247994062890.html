@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="CdQpvJrliPsY6VRMmC1KuQjHng6GVUPHM-uItUx8E00" />
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-81036169-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-81036169-1');
+</script>
+<title>Demystifying Azure AD Service Principals | Ned in the Cloud</title>
+<link rel="profile" href="http://gmpg.org/xfn/11">
+<link rel="pingback" href="https://nedinthecloud.com/xmlrpc.php">
+
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//secure.gravatar.com' />
+<link rel='dns-prefetch' href='//maxcdn.bootstrapcdn.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel='dns-prefetch' href='//v0.wordpress.com' />
+<link rel='dns-prefetch' href='//i0.wp.com' />
+<link rel='dns-prefetch' href='//i1.wp.com' />
+<link rel='dns-prefetch' href='//i2.wp.com' />
+<link rel="alternate" type="application/rss+xml" title="Ned in the Cloud &raquo; Feed" href="https://nedinthecloud.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Ned in the Cloud &raquo; Comments Feed" href="https://nedinthecloud.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Ned in the Cloud &raquo; Demystifying Azure AD Service Principals Comments Feed" href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/nedinthecloud.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://nedinthecloud.com/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<style id='wp-block-library-inline-css' type='text/css'>
+.has-text-align-justify{text-align:justify;}
+</style>
+<link rel='stylesheet' id='github-embed-css'  href='https://nedinthecloud.com/wp-content/plugins/github-embed/css/github-embed.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='juiz_last_tweet_widget-css'  href='https://nedinthecloud.com/wp-content/plugins/juiz-last-tweet-widget/css/juiz_last_tweet_flat_light.css?ver=1.3.7' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=4.2.0' type='text/css' media='all' />
+<link rel='stylesheet' id='stock-style-css'  href='https://nedinthecloud.com/wp-content/themes/stock/style.css?ver=5.7.2' type='text/css' media='all' />
+<style id='stock-style-inline-css' type='text/css'>
+
+	.entry-content a,
+	.entry-content a:visited,
+	.comment-content a,
+	.comment-content a:visited,
+	.comment-author a,
+	.comment-author a:visited,
+	.entry-footer a,
+	.entry-footer a:visited,
+	a:hover,
+	a:focus,
+	a:active {
+		color: #000000;
+	}
+	h2.site-description {
+		color: #f5f5f5;
+	}
+	body,
+	button {
+		color: #404040;
+	}
+	input
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	select,
+	textarea {
+		color: #666666;
+	}
+	input:focus,
+	input[type="text"]:focus,
+	input[type="email"]:focus,
+	input[type="url"]:focus,
+	input[type="password"]:focus,
+	input[type="search"]:focus,
+	textarea:focus,
+	select:focus,
+	textarea:focus {
+		color: #222222;
+	}
+	input,
+	select,
+	textarea {
+		background-color: #ffffff;
+	}
+	h1.entry-title a {
+		color: #000000;
+	}
+	
+</style>
+<link rel='stylesheet' id='stock-fonts-css'  href='//fonts.googleapis.com/css?family=Lato%3A300%2C400%2C700%2C300italic%2C400italic%2C700italic%7CCrimson+Text%3A400%2C400italic%2C600%2C600italic&#038;ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-markdown-prettify-css'  href='https://nedinthecloud.com/wp-content/plugins/wp-markdown/css/prettify.css?ver=1.6.1' type='text/css' media='all' />
+<link rel='stylesheet' id='__EPYT__style-css'  href='https://nedinthecloud.com/wp-content/plugins/youtube-embed-plus/styles/ytprefs.min.css?ver=13.4.1.2' type='text/css' media='all' />
+<style id='__EPYT__style-inline-css' type='text/css'>
+
+                .epyt-gallery-thumb {
+                        width: 33.333%;
+                }
+                
+</style>
+<link rel='stylesheet' id='sedlex_styles-css'  href='https://nedinthecloud.com/wp-content/sedlex/inline_styles/435e337deef1a939a9c79bae0b4621b92099c37b.css?ver=20210523' type='text/css' media='all' />
+<link rel='stylesheet' id='social-logos-css'  href='https://nedinthecloud.com/wp-content/plugins/jetpack/_inc/social-logos/social-logos.min.css?ver=9.4' type='text/css' media='all' />
+<link rel='stylesheet' id='jetpack_css-css'  href='https://nedinthecloud.com/wp-content/plugins/jetpack/css/jetpack.css?ver=9.4' type='text/css' media='all' />
+<script type='text/javascript' src='https://nedinthecloud.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script type='text/javascript' id='jetpack_related-posts-js-extra'>
+/* <![CDATA[ */
+var related_posts_js_options = {"post_heading":"h4"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/jetpack/_inc/build/related-posts/related-posts.min.js?ver=20201207' id='jetpack_related-posts-js'></script>
+<script type='text/javascript' id='__ytprefs__-js-extra'>
+/* <![CDATA[ */
+var _EPYT_ = {"ajaxurl":"https:\/\/nedinthecloud.com\/wp-admin\/admin-ajax.php","security":"9068da3262","gallery_scrolloffset":"20","eppathtoscripts":"https:\/\/nedinthecloud.com\/wp-content\/plugins\/youtube-embed-plus\/scripts\/","eppath":"https:\/\/nedinthecloud.com\/wp-content\/plugins\/youtube-embed-plus\/","epresponsiveselector":"[\"iframe.__youtube_prefs_widget__\"]","epdovol":"1","version":"13.4.1.2","evselector":"iframe.__youtube_prefs__[src], iframe[src*=\"youtube.com\/embed\/\"], iframe[src*=\"youtube-nocookie.com\/embed\/\"]","ajax_compat":"","ytapi_load":"light","pause_others":"","stopMobileBuffer":"1","vi_active":"","vi_js_posttypes":[]};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/youtube-embed-plus/scripts/ytprefs.min.js?ver=13.4.1.2' id='__ytprefs__-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/sedlex/inline_scripts/4139b9ad7b935834d8d31961702681728a5a530a.js?ver=20210523' id='sedlex_scripts-js'></script>
+<link rel="https://api.w.org/" href="https://nedinthecloud.com/wp-json/" /><link rel="alternate" type="application/json" href="https://nedinthecloud.com/wp-json/wp/v2/posts/1016" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://nedinthecloud.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://nedinthecloud.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel="canonical" href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/" />
+<link rel='shortlink' href='https://wp.me/p7L4kK-go' />
+<link rel="alternate" type="application/json+oembed" href="https://nedinthecloud.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fnedinthecloud.com%2F2019%2F07%2F16%2Fdemystifying-azure-ad-service-principals%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://nedinthecloud.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fnedinthecloud.com%2F2019%2F07%2F16%2Fdemystifying-azure-ad-service-principals%2F&#038;format=xml" />
+<style type="text/css"><!--
+--></style><style type="text/css"><!--
+--></style>		<style type="text/css">.pp-podcast {opacity: 0;}</style>
+		<style type='text/css'>img#wpstats{display:none}</style>
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Demystifying Azure AD Service Principals" />
+<meta property="og:url" content="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/" />
+<meta property="og:description" content="Anyone who&#8217;s worked with Azure for a bit has encountered the need to create a service principal. If you are an IT Ops person, you probably equate an SP with a service account in local Active …" />
+<meta property="article:published_time" content="2019-07-16T14:11:32+00:00" />
+<meta property="article:modified_time" content="2019-07-16T14:11:32+00:00" />
+<meta property="og:site_name" content="Ned in the Cloud" />
+<meta property="og:image" content="https://i2.wp.com/nedinthecloud.com/wp-content/uploads/2019/01/cropped-Logo_1000x596.jpg?fit=512%2C512&amp;ssl=1" />
+<meta property="og:image:width" content="512" />
+<meta property="og:image:height" content="512" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:text:title" content="Demystifying Azure AD Service Principals" />
+<meta name="twitter:image" content="https://i2.wp.com/nedinthecloud.com/wp-content/uploads/2019/01/cropped-Logo_1000x596.jpg?fit=240%2C240&amp;ssl=1" />
+<meta name="twitter:card" content="summary" />
+
+<!-- End Jetpack Open Graph Tags -->
+<link rel="icon" href="https://i2.wp.com/nedinthecloud.com/wp-content/uploads/2019/01/cropped-Logo_1000x596.jpg?fit=32%2C32&#038;ssl=1" sizes="32x32" />
+<link rel="icon" href="https://i2.wp.com/nedinthecloud.com/wp-content/uploads/2019/01/cropped-Logo_1000x596.jpg?fit=192%2C192&#038;ssl=1" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://i2.wp.com/nedinthecloud.com/wp-content/uploads/2019/01/cropped-Logo_1000x596.jpg?fit=180%2C180&#038;ssl=1" />
+<meta name="msapplication-TileImage" content="https://i2.wp.com/nedinthecloud.com/wp-content/uploads/2019/01/cropped-Logo_1000x596.jpg?fit=270%2C270&#038;ssl=1" />
+			<style type="text/css" id="wp-custom-css">
+				/*
+You can add your own CSS here.
+
+Click the help icon above to learn more.
+*/
+
+#colophon {
+	width: 100%;
+	background: #00bbff;
+	color: #f5f5f5;
+	font-weight: 300;
+}			</style>
+		</head>
+
+<body class="post-template-default single single-post postid-1016 single-format-standard">
+<div id="page" class="hfeed site">
+	<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+
+	<header id="masthead" class="site-header" role="banner">
+		<div class="site-branding">
+			<h1 class="site-title"><a href="https://nedinthecloud.com/" rel="home">Ned in the Cloud</a></h1>
+			<h2 class="site-description">Feet On-Prem</h2>
+		</div>
+
+		<nav id="site-navigation" class="main-navigation" role="navigation">
+			<button class="menu-toggle">Menu</button>
+			<div class="menu-social-container"><ul id="menu-social" class="menu"><li id="menu-item-249" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-249"><a href="https://nedinthecloud.com">Home</a></li>
+<li id="menu-item-965" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-965"><a href="https://nedinthecloud.com/podcasts/">Podcasts</a></li>
+<li id="menu-item-1010" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1010"><a href="https://nedinthecloud.com/pluralsight-courses/">Pluralsight Courses</a></li>
+<li id="menu-item-1215" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1215"><a href="https://nedinthecloud.com/books/">Books</a></li>
+<li id="menu-item-1232" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1232"><a href="https://nedinthecloud.com/the-daily-check-in/">The Daily Check-In</a></li>
+<li id="menu-item-250" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-250"><a href="https://nedinthecloud.com/about-me/">About Me</a></li>
+</ul></div>		</nav><!-- #site-navigation -->
+	</header><!-- #masthead -->
+
+	<div id="content" class="site-content">
+
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
+
+		
+			
+<article id="post-1016" class="post-1016 post type-post status-publish format-standard hentry category-howto category-rant tag-azure tag-azure-ad tag-powershell">
+	<header class="entry-header">
+
+		<h1 class="entry-title"><span>Demystifying Azure AD Service Principals</span></h1>
+		
+		<div class="entry-meta">
+			<span class="posted-on">Posted on <a href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/" rel="bookmark"><time class="entry-date published updated" datetime="2019-07-16T10:11:32-04:00">July 16, 2019</time></a></span><span class="byline"> by <span class="author vcard"><a class="url fn n" href="https://nedinthecloud.com/author/nedbellavance/">nedbellavance</a></span></span>		</div><!-- .entry-meta -->
+
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<p>Anyone who&#8217;s worked with Azure for a bit has encountered the need to create a service principal. If you are an IT Ops person, you probably equate an SP with a service account in local Active Directory. If you&#8217;re more of an application developer, then you may have created an SP as part of your application in Azure, because you want to give that application permissions to Azure resources. The purpose of this post is to tease apart what service principals are, how they interact with application objects, and all the myriad ways to create an SP on Azure.</p>
+<p><span id="more-1016"></span></p>
+<h2>Azure Active Directory Applications</h2>
+<p>The first thing you need to understand when it comes to service principals is that they cannot exist without an application object. If that sounds totally odd, you aren&#8217;t wrong. The service principal construct came from a need to grant an Azure based application permissions in Azure Active Directory. Since access to resources in Azure is governed by Azure Active Directory, creating an SP for an application in Azure also enabled the scenario where the application was granted access to Azure resources at the management level. That is all very useful in the context of creating applications in Azure. If you wanted an account in Azure AD to use for automation or to power a service, then you could use the same construct. Instead of creating a separate object type in Azure AD, Microsoft decided to roll forward with an application object that has a service principal.  For the purposes of using an SP like a service account, the application it creates as part of the process sits unused and misunderstood.</p>
+<p>To make things even more confusing, a single application object can have multiple service principals across different Azure AD tenants. When an application object is registered with the home tenant, an SP is also created in that Azure AD tenant. If the application being developed is a single-tenant application, that&#8217;s the only SP needed. But if the application is meant to be multi-tenant &#8211; by which I mean multiple Azure AD tenants &#8211; then it will have an SP created in each tenant that uses it. The consent process of enabling an application for your Azure AD tenant includes creating and granting permissions to that application object in the form of an SP in your tenant.</p>
+<p>Of course, if your whole goal was to use a service principal to do some automation, then you don&#8217;t care about any of this nonsense. You just want to create an SP and be done with it.</p>
+<h2>Service Principals</h2>
+<p>As an IT Ops person trying to get some work done, you don&#8217;t care about the application object. You probably don&#8217;t want to deal with the application object. You just want to create an SP. There is NO way to do this without also creating an application object. That&#8217;s the decision that Microsoft made, and it seems to be sticking with it. What that means is that depending on which tool you use to create a service principal, you may need to create an application object first. For instance, the portal requires that you create the application object first and doesn&#8217;t even mention the service principal as a construct. If you are using a different tool, it may automatically create that application object for you. For instance, the Azure CLI allows you to directly create an SP, and it will take care of creating that application object for you in the background. How helpful! The downside is that there are so many different tools to use with Azure, and they ALL seem to have a different workflow. You can create an SP by using:</p>
+<ul>
+<li>The Azure Portal</li>
+<li>The AzureAD PowerShell Module</li>
+<li>The Az PowerShell Module</li>
+<li>The AzureRM PowerShell Module</li>
+<li>The Azure CLI</li>
+<li>Other Azure SDKs</li>
+<li>The Azure AD API</li>
+<li>The Microsoft Graph API</li>
+</ul>
+<p>Holy cow! What&#8217;s a poor IT Ops person to do? Let&#8217;s break it down with what will likely be the most common ways you will create a Service Principal.</p>
+<h2>Creating Service Principals</h2>
+<h3>Microsoft Graph API</h3>
+<p>The one thing that all of these tools have in common is that they are all referencing one of two APIs to perform their operations. Microsoft is in the process of deprecating the Azure AD API in favor of the Microsoft Graph API. All the other methods are using some kind of SDK to interact with one of these two APIs. If you&#8217;re curious about the Azure AD API, the relevant sections for the application and service principal objects can be found in the <a href="https://docs.microsoft.com/en-us/previous-versions/azure/ad/graph/api/entity-and-complex-type-reference">entity and complex types area</a> of the docs. The Microsoft Graph API docs seem to be a little better organized, and you can find information on <a href="https://docs.microsoft.com/en-us/graph/api/resources/application?view=graph-rest-beta">applications</a> and <a href="https://docs.microsoft.com/en-us/graph/api/resources/serviceprincipal?view=graph-rest-beta">service principals</a>. Funny thing that I noticed, there is no create function for the service principal object. The resource appears to be implicitly created when an application is registered with a tenant.</p>
+<h3>The Azure Portal</h3>
+<p>The experience for registering an application and creating a service principal has changed recently. I&#8217;d like to say it makes more sense now, but I would be lying. As far as I can tell it&#8217;s more confusing with check boxes that don&#8217;t fully explain what they want you to do. Regardless, if you want to create a service principal through the portal, just follow <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal">these directions</a>.</p>
+<h3>The AzureAD PowerShell Module</h3>
+<p>If you don&#8217;t already have the AzureAD PowerShell module, you can install it by running <code>Install-Module AzureAD -Force</code>. Then run the following commands:</p>
+<pre><code class="PowerShell">Connect-AzureAD -TenantId "YOUR_TENANT_ID"
+$myApp = New-AzureADApplication -DisplayName "AzureAD Module App" -IdentifierUris "https://azureadmoduleapp"
+$mySP = New-AzureADServicePrincipal -AppId $myApp.AppId
+
+</code></pre>
+<p>Obviusly, the AzureAD module does not take care of creating the application object for you.  You have to do that first and then create the SP.  The commands above will get you a service principal, but without any type of credentials to login. If you want a password associated with the service principal, then you can run the following:</p>
+<pre><code class="PowerShell">$spCredParameters = @{
+  StartDate = [DateTime]::UtcNow
+  EndDate = [DateTime]::UtcNow.AddYears(1)
+  Value = 'MySuperAwesomePasswordIs3373'
+  ObjectId = $mySP.ObjectID
+}
+
+New-AzureADServicePrincipalPasswordCredential @spCredParameters
+</code></pre>
+<p>Now you have a service principal that you can assign roles and permissions to.</p>
+<h3>The Az PowerShell Module</h3>
+<p>There&#8217;s a new Azure PowerShell module on the block. The Az module is replacing the original AzureRM module. The reason? Partly, Microsoft just wanted to shorten the commands by five letters. They also wanted to rewrite the module to take advantage of new functionality in PowerShell and in Azure and get rid of some of the old commands that maybe weren&#8217;t following best practices. Regardless, this is the module you&#8217;ll be using to do things with Azure going forward. If you&#8217;re currently running AzureRM, <strong>beware</strong> here there be dragons. You need to completely remove AzureRM first, or install PowerShell 6 and run the Az module in PowerShell 6 context instead. To create a service principal with the Az module, run the following commands:</p>
+<pre><code class="PowerShell">Connect-AzAccount
+$mySP = New-AzADServicePrincipal
+</code></pre>
+<p>That&#8217;s it. The good news is that the command creates the application in the background for you.  And that is pretty much where the good news ends.  In this case, the command creates a service principal with a display name that starts <em>azure-powershell-</em> and appends the current date and time. It also gives it a secret of the type <em>System.Security.SecureString</em> which is not particularly useful. It is possible to decrypt it, but I would recommend setting a password credential manually like we did in the AzureAD module example. You might think that there is a command like <code>New-AzureADServicePrincipalPasswordCredential</code> in the Az module, and you would be partly correct.  There is the <code>New-AzADSpCredential</code> command, but that only allows you to add a certificate type and not a password.  No idea why that choice was made.  Maybe because Microsoft hates passwords?</p>
+<p>Before we get into the process for creating a password based credential, which I assure you is non-intuitive and annoying, I would first like to point out something that really annoys me.  The service principal object from the AzureAD module isn&#8217;t the same type as the service principal object from the Az module.  If you run <code>Get-Member</code> on the SP object from the AzureAD module you  get the <em>TypeName</em> <code>Microsoft.Open.AzureAD.Model.ServicePrincipal</code>, whereas with the Az module you get the <em>TypeName</em> <code>Microsoft.Azure.Commands.Resources.Models.Authorization.PSADServicePrincipalWrapper</code>.  The properties exposed in each object type also differ.  The AzureAD module exposes 25 different properties, and the Az module exposes only 7.  If I might present a table for comparison:</p>
+<table>
+<thead>
+<tr>
+<th>Az</th>
+<th>AzureAD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ApplicationId</td>
+<td>AppId</td>
+</tr>
+<tr>
+<td>DisplayName</td>
+<td>DisplayName</td>
+</tr>
+<tr>
+<td>Id</td>
+<td>ObjectId</td>
+</tr>
+<tr>
+<td>ObjectType</td>
+<td>ObjectType</td>
+</tr>
+<tr>
+<td>Secret</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>ServicePrincipalNames</td>
+<td>ServicePrincipalNames</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p>Right off the bat, the <em>ApplicationId</em> is named differently across the two objects.  So is the <em>ObjectId</em>.  And it&#8217;s not even consistent in its inconsistency.  The Az modules uses the longer <em>ApplicationId</em> property and the shorter <em>Id</em> property.  Then there is the <em>Secret</em> property, which is really just the value stored in one of the keys in the <em>PasswordCredential</em> property.  A service principal can have multiple passwords &#8211; aka secrets &#8211; which are held in an array in the <em>PasswordCredential</em> property.  The <em>PasswordCredential</em> property is an object type of <code>Microsoft.Open.AzureAD.Model.PasswordCredential</code>.  There is a separate <em>KeyCredentials</em> property and object type that houses certificate based authentication.  The <code>New-AzADSpCredential</code> command takes a cert value and adds it to the service principal in a property that is not even exposed by the Az implementation of the service principal type.  That means you need to run the Get-AzADSpCredential command to get the value back.  In order to create a password based credential, you have to create <em>PasswordCredential</em> object directly like this:</p>
+<pre><code class="PowerShell">$credProps = @{
+   StartDate = Get-Date
+   EndDate = (Get-Date -Year 2024)
+   KeyId = (New-Guid).ToString()
+   Value = 'MySuperAwesomePasswordIs3373'
+}
+$credentials = New-Object Microsoft.Azure.Graph.RBAC.Models.PasswordCredential -Property $credProps
+
+Set-AzADServicePrincipal -ObjectId $mysp.Id -PasswordCredential $credentials
+</code></pre>
+<p>That&#8217;s if you want to configure a password after creation of the SP.  If you wanted to set the password while creating the service principal, you have to create a <strong>completely different object type</strong>.  When you run <code>New-AzAdServicePrincipal</code> with the <em>PasswordCredential</em> parameter, the command is expecting an object of type <code>Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential</code>.  When you run <code>Set-AzAdServicePrincipal</code> with the <em>PasswordCredential</em> parameter, the command is expecting an object of type <code>Microsoft.Azure.Graph.RBAC.Models.PasswordCredential</code>.  And it will not do an implicit conversion for you!  Instead you have to do the following:</p>
+<pre><code class="PowerShell">$credProps = @{
+    StartDate = Get-Date
+    EndDate = (Get-Date -Year 2024)
+    Password = 'MySuperAwesomePasswordIs3373'
+}
+$credentials = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property $credProps
+
+$sp = New-AzAdServicePrincipal -DisplayName "WhateverItDoesntMatter" -PasswordCredential $credentials
+</code></pre>
+<p>You may have also noticed that the two different object types have different arguments.  One expects a <em>KeyId</em> and <em>Value</em> and the other expects a <em>Password</em> argument only.</p>
+<p>My advice is this.  <strong>Don&#8217;t use the Az module for managing Azure AD resources.</strong>  It&#8217;s a hot mess.</p>
+<h3>The Azure CLI</h3>
+<p>Unlike the PowerShell modules, the Azure CLI is written in Python.  The process for creating a service principal is simple.  Run the following command:</p>
+<pre><code class="bash">az ad sp create-for-rbac -n "MySpCLI"
+</code></pre>
+<p>The command will create the application object in the background for you.  And the output will include all the information you need to use the service principal, including the password in clear text.</p>
+<pre><code class="bash">{
+  "appId": "d9bdde72-73eb-4bc2-8dbf-0855c0d19820",
+  "displayName": "MySpCLI",
+  "name": "http://MySpCLI",
+  "password": "7778ef85-2c5a-4f8d-81d5-88389c9a4feb",
+  "tenant": "f06624a8-558d-45ab-8a87-a88094a3995d"
+}
+</code></pre>
+<p>That&#8217;s all there is to it.  Super easy and simple.</p>
+<h2>Conclusion</h2>
+<p>I started this post hoping to demystify the application and service principal relationship and shed some light on how to use different tools to accomplish the same goal.  At the end, I may have made things a little more confusing.  But that simply reflects the confusing nature of service principal kludge.  My advice would be to use the Azure CLI to create a service principal.  The command is simple.  You can run it from the Cloud Shell if you don&#8217;t have the Azure CLI locally.  It is faster than using the portal, and easier than using PowerShell.  Additionally, many resources in Azure now have the ability to use Managed Service Idenities (MSIs) to access other Azure resources.  You still need service principals for some use cases, but I would highly recommend checking to see if an MSI can meet your requirements.</p>
+<div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow noopener noreferrer" data-shared="sharing-twitter-1016" class="share-twitter sd-button share-icon no-text" href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/?share=twitter" target="_blank" title="Click to share on Twitter"><span></span><span class="sharing-screen-reader-text">Click to share on Twitter (Opens in new window)</span></a></li><li class="share-facebook"><a rel="nofollow noopener noreferrer" data-shared="sharing-facebook-1016" class="share-facebook sd-button share-icon no-text" href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/?share=facebook" target="_blank" title="Click to share on Facebook"><span></span><span class="sharing-screen-reader-text">Click to share on Facebook (Opens in new window)</span></a></li><li class="share-end"></li></ul></div></div></div>
+<div id='jp-relatedposts' class='jp-relatedposts' >
+	<h3 class="jp-relatedposts-headline"><em>Related</em></h3>
+</div>			</div><!-- .entry-content -->
+
+	<footer class="entry-footer">
+		<span class="cat-links">Posted in <a href="https://nedinthecloud.com/category/howto/" rel="category tag">How To</a>, <a href="https://nedinthecloud.com/category/rant/" rel="category tag">Rant</a></span><span class="tags-links">Tagged <a href="https://nedinthecloud.com/tag/azure/" rel="tag">Azure</a>, <a href="https://nedinthecloud.com/tag/azure-ad/" rel="tag">Azure AD</a>, <a href="https://nedinthecloud.com/tag/powershell/" rel="tag">PowerShell</a></span>	</footer><!-- .entry-footer -->
+</article><!-- #post-## -->
+
+				<nav class="navigation post-navigation" role="navigation">
+		<h1 class="screen-reader-text">Post navigation</h1>
+		<div class="nav-links">
+			<div class="nav-previous"><a href="https://nedinthecloud.com/2019/07/05/privilege-and-perspective/" rel="prev"><span class="meta-nav">&larr;</span>&nbsp;Privilege and perspective</a></div><div class="nav-next"><a href="https://nedinthecloud.com/2019/07/23/azure-netapp-files-performance-with-azure-kubernetes-service/" rel="next">Azure NetApp Files Performance with Azure Kubernetes Service&nbsp;<span class="meta-nav">&rarr;</span></a></div>		</div><!-- .nav-links -->
+	</nav><!-- .navigation -->
+	
+			
+<div id="comments" class="comments-area">
+
+	
+			<h2 class="comments-title">
+			8 thoughts on &ldquo;<span>Demystifying Azure AD Service Principals</span>&rdquo;		</h2>
+
+		
+		<ol class="comment-list">
+					<li id="comment-3028" class="comment even thread-even depth-1">
+			<article id="div-comment-3028" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://secure.gravatar.com/avatar/311237c6827e240f3db439969e3797cd?s=45&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/311237c6827e240f3db439969e3797cd?s=90&#038;d=mm&#038;r=g 2x' class='avatar avatar-45 photo' height='45' width='45' loading='lazy'/>						<b class="fn">Tim Martin</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/#comment-3028"><time datetime="2020-03-24T18:57:56-04:00">March 24, 2020 at 6:57 pm</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>This was incredibly helpful for navigating the confusing and conflicting documentation by Microsoft on this topic.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/?replytocom=3028#respond' data-commentid="3028" data-postid="1016" data-belowelement="div-comment-3028" data-respondelement="respond" data-replyto="Reply to Tim Martin" aria-label='Reply to Tim Martin'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-3097" class="comment odd alt thread-odd thread-alt depth-1">
+			<article id="div-comment-3097" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://secure.gravatar.com/avatar/68c37f20c25fcf8a691bfb8a2dcac610?s=45&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/68c37f20c25fcf8a691bfb8a2dcac610?s=90&#038;d=mm&#038;r=g 2x' class='avatar avatar-45 photo' height='45' width='45' loading='lazy'/>						<b class="fn">Jeeva</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/#comment-3097"><time datetime="2020-05-09T17:58:21-04:00">May 9, 2020 at 5:58 pm</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hi Ned, After watching your pluralsight course, I landed here. Awesome course and thank you. </p>
+<p>I had this confusion with Service prinicipal and Application. Now it becomes more clear than before but I too have the same question why do we need an application for a service principal. </p>
+<p>I have noticed something in this blog where it is mentioned that New-AzADSlCredentials can only allow create credentials from a cert. But I happen to land in below microsoft docs which suggest otherwise. </p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/module/Az.Resources/New-AzADSpCredential?view=azps-3.8.0" rel="nofollow ugc">https://docs.microsoft.com/en-us/powershell/module/Az.Resources/New-AzADSpCredential?view=azps-3.8.0</a></p>
+<p>It might be introduced recently but worh it to take a look and update this for anyone lands here. </p>
+<p>Thanks<br />
+J</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/?replytocom=3097#respond' data-commentid="3097" data-postid="1016" data-belowelement="div-comment-3097" data-respondelement="respond" data-replyto="Reply to Jeeva" aria-label='Reply to Jeeva'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-3294" class="pingback even thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href='https://itworldjd.wordpress.com/2020/07/31/azure-serviceprincipal-demystified/' rel='external nofollow ugc' class='url'>Azure serviceprincipal demystified &#8211; Jacques Dalbera&#039;s IT world</a> 			</div>
+		</li><!-- #comment-## -->
+		<li id="comment-3426" class="comment odd alt thread-odd thread-alt depth-1">
+			<article id="div-comment-3426" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://secure.gravatar.com/avatar/ef7a8b7a2fb0652475ed892b62ced3d6?s=45&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/ef7a8b7a2fb0652475ed892b62ced3d6?s=90&#038;d=mm&#038;r=g 2x' class='avatar avatar-45 photo' height='45' width='45' loading='lazy'/>						<b class="fn">Danny</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/#comment-3426"><time datetime="2020-10-14T20:44:07-04:00">October 14, 2020 at 8:44 pm</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Hey Ned, great article and I wish I had read it yesterday!</p>
+<p>Just wanted to add that I recently created a SP using &#8220;New-AzADServicePrincipal&#8221; and it did create an Enterprise Application for me, possibly due to a recent update in the module. However I did go in and generate Secrets from the gui as I couldn&#8217;t see a parameter that would allow me to do this. Nevertheless, agree the AZ CLI is the way to go.</p>
+<p>Details here &#8211; FYI <a href="https://docs.microsoft.com/en-us/powershell/module/az.resources/new-azadserviceprincipal?view=azps-4.8.0" rel="nofollow ugc">https://docs.microsoft.com/en-us/powershell/module/az.resources/new-azadserviceprincipal?view=azps-4.8.0</a></p>
+<p>Cheers,</p>
+<p>Danny</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/?replytocom=3426#respond' data-commentid="3426" data-postid="1016" data-belowelement="div-comment-3426" data-respondelement="respond" data-replyto="Reply to Danny" aria-label='Reply to Danny'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-3496" class="pingback even thread-even depth-1">
+			<div class="comment-body">
+				Pingback: <a href='https://amethyste16.wordpress.com/2020/11/15/difference-entre-un-objet-application-et-un-principal-de-service-dans-azure/' rel='external nofollow ugc' class='url'>Différence entre un objet application et un principal de service dans Azure | Nouvelles Chroniques d&#039;Amethyste</a> 			</div>
+		</li><!-- #comment-## -->
+		<li id="comment-3691" class="comment odd alt thread-odd thread-alt depth-1">
+			<article id="div-comment-3691" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://secure.gravatar.com/avatar/cb81c2fa24408a7006ff00a5057d724d?s=45&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/cb81c2fa24408a7006ff00a5057d724d?s=90&#038;d=mm&#038;r=g 2x' class='avatar avatar-45 photo' height='45' width='45' loading='lazy'/>						<b class="fn">Stefano</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/#comment-3691"><time datetime="2021-01-05T07:55:39-04:00">January 5, 2021 at 7:55 am</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Thank you Ned,<br />
+very helpful!<br />
+If I understand correctly, whenever my &#8220;Application&#8221; requires multiple &#8220;service roles&#8221; with different privileges on Azure resources, I have to create multiple AD Applications and grant permissions accordingly.<br />
+To me it would have been easier to have a single AD Application object with multiple associated service principals and delegate permissions at service principal level but it looks like this is not possible.</p>
+<p>Stefano</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/?replytocom=3691#respond' data-commentid="3691" data-postid="1016" data-belowelement="div-comment-3691" data-respondelement="respond" data-replyto="Reply to Stefano" aria-label='Reply to Stefano'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-4014" class="comment even thread-even depth-1">
+			<article id="div-comment-4014" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://secure.gravatar.com/avatar/8a842f23724fa24f691ec89a7ad960cd?s=45&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/8a842f23724fa24f691ec89a7ad960cd?s=90&#038;d=mm&#038;r=g 2x' class='avatar avatar-45 photo' height='45' width='45' loading='lazy'/>						<b class="fn">Dave</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/#comment-4014"><time datetime="2021-03-12T05:58:56-04:00">March 12, 2021 at 5:58 am</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Very very good explanation &#8211; clearest and most comprehensive I have come across &#8211; thank you so much.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/?replytocom=4014#respond' data-commentid="4014" data-postid="1016" data-belowelement="div-comment-4014" data-respondelement="respond" data-replyto="Reply to Dave" aria-label='Reply to Dave'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		<li id="comment-4135" class="comment odd alt thread-odd thread-alt depth-1">
+			<article id="div-comment-4135" class="comment-body">
+				<footer class="comment-meta">
+					<div class="comment-author vcard">
+						<img alt='' src='https://secure.gravatar.com/avatar/d71329c9523125ec18ab9bff0482a478?s=45&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/d71329c9523125ec18ab9bff0482a478?s=90&#038;d=mm&#038;r=g 2x' class='avatar avatar-45 photo' height='45' width='45' loading='lazy'/>						<b class="fn">Craig</b> <span class="says">says:</span>					</div><!-- .comment-author -->
+
+					<div class="comment-metadata">
+						<a href="https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/#comment-4135"><time datetime="2021-05-19T23:06:46-04:00">May 19, 2021 at 11:06 pm</time></a>					</div><!-- .comment-metadata -->
+
+									</footer><!-- .comment-meta -->
+
+				<div class="comment-content">
+					<p>Demystifying is very good use of word. The MS documentation on this is, as ever, overly simplistic and at the same time confusing. This article clears up so much.</p>
+				</div><!-- .comment-content -->
+
+				<div class="reply"><a rel='nofollow' class='comment-reply-link' href='https://nedinthecloud.com/2019/07/16/demystifying-azure-ad-service-principals/?replytocom=4135#respond' data-commentid="4135" data-postid="1016" data-belowelement="div-comment-4135" data-respondelement="respond" data-replyto="Reply to Craig" aria-label='Reply to Craig'>Reply</a></div>			</article><!-- .comment-body -->
+		</li><!-- #comment-## -->
+		</ol><!-- .comment-list -->
+
+		
+	
+	
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2019/07/16/demystifying-azure-ad-service-principals/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://nedinthecloud.com/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required='required' /></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required='required' /></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200" /></p>
+<p class="comment-subscription-form"><input type="checkbox" name="subscribe_comments" id="subscribe_comments" value="subscribe" style="width: auto; -moz-appearance: checkbox; -webkit-appearance: checkbox;" /> <label class="subscribe-label" id="subscribe-label" for="subscribe_comments">Notify me of follow-up comments by email.</label></p><p class="comment-subscription-form"><input type="checkbox" name="subscribe_blog" id="subscribe_blog" value="subscribe" style="width: auto; -moz-appearance: checkbox; -webkit-appearance: checkbox;" /> <label class="subscribe-label" id="subscribe-blog-label" for="subscribe_blog">Notify me of new posts by email.</label></p><p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='1016' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="0611fc795b" /></p><input type="hidden" id="ak_js" name="ak_js" value="149"/><textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100" style="display: none !important;"></textarea></form>	</div><!-- #respond -->
+	<p class="akismet_comment_form_privacy_notice">This site uses Akismet to reduce spam. <a href="https://akismet.com/privacy/" target="_blank" rel="nofollow noopener">Learn how your comment data is processed</a>.</p>
+</div><!-- #comments -->
+
+		
+		</main><!-- #main -->
+	</div><!-- #primary -->
+
+
+<div id="secondary" class="widget-area" role="complementary">
+	<aside id="dkpp_podcast_widget-3" class="widget dkpp_podcast_widget"><h1 class="widget-title">Buffer Overflow <a href="https://www.anexinet.com/blog/category/podcasts/buffer-overflow/feed/podcast/" title="Subscribe to the  Feed"><i class="fa fa-feed"></i></a> <a href="https://itunes.apple.com/us/podcast/buffer-overflow/id1176965733" title="Subscribe to  on iTunes"><i class="fa fa-microphone"></i></a></h1>    
+	<ul class="podcast_feed">
+	    	        	            <li>
+	                <h5><a href="https://bufferoverflow.libsyn.com/episode-203-skeletor-v-dr-doom" target="_blank"
+	                    title="Posted April 7, 2021 | 4:00 pm">
+	                    Episode 203: Skeletor v. Dr. Doom	                </a></h5>
+	                <p class="podcast_desc">
+	        	                Show Notes Buffer Overflow: Skeletor v. Dr. Doom Episode 203 Google v. Oracle, Office 365 Outages, and VMware Cloud Part Trois Hosts Ned Bellavance https://www.linkedin.com/in/ned-bellavance-ba68a52 @Ned1313 Chris Hayner, Delivery Manager https://www.linkedin.com/in/chrismhayner Kimberly DeFilippi, Project Manager, Business Analyst https://www.linkedin.com/in/kimberly-defilippi-77b3986/ Brenda Heisler, ISG Operations https://www.linkedin.com/in/brenda-heisler-b5431989/ Longer Topics Google v. Oracle ends. No one wins. Supreme Court Decision:&hellip;</p>
+	                <p class="podcast_player"><!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+<audio class="wp-audio-shortcode" id="audio-1016-1" preload="none" style="width: 100%;" controls="controls"><source type="audio/mpeg" src="https://traffic.libsyn.com/secure/bufferoverflow/BufferOverflow-Episode203.mp3?_=1" /><a href="https://traffic.libsyn.com/secure/bufferoverflow/BufferOverflow-Episode203.mp3">https://traffic.libsyn.com/secure/bufferoverflow/BufferOverflow-Episode203.mp3</a></audio></p>
+	            </li>
+	        	    	</ul>
+
+    </aside><aside id="archives-4" class="widget widget_archive"><h1 class="widget-title">Oldies but goodies</h1>		<label class="screen-reader-text" for="archives-dropdown-4">Oldies but goodies</label>
+		<select id="archives-dropdown-4" name="archive-dropdown">
+			
+			<option value="">Select Month</option>
+				<option value='https://nedinthecloud.com/2021/05/'> May 2021 &nbsp;(17)</option>
+	<option value='https://nedinthecloud.com/2021/04/'> April 2021 &nbsp;(24)</option>
+	<option value='https://nedinthecloud.com/2021/03/'> March 2021 &nbsp;(5)</option>
+	<option value='https://nedinthecloud.com/2021/02/'> February 2021 &nbsp;(5)</option>
+	<option value='https://nedinthecloud.com/2021/01/'> January 2021 &nbsp;(4)</option>
+	<option value='https://nedinthecloud.com/2020/10/'> October 2020 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2020/08/'> August 2020 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2020/05/'> May 2020 &nbsp;(3)</option>
+	<option value='https://nedinthecloud.com/2020/04/'> April 2020 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2020/01/'> January 2020 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2019/12/'> December 2019 &nbsp;(3)</option>
+	<option value='https://nedinthecloud.com/2019/11/'> November 2019 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2019/10/'> October 2019 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2019/09/'> September 2019 &nbsp;(7)</option>
+	<option value='https://nedinthecloud.com/2019/08/'> August 2019 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2019/07/'> July 2019 &nbsp;(3)</option>
+	<option value='https://nedinthecloud.com/2019/06/'> June 2019 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2019/05/'> May 2019 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2019/04/'> April 2019 &nbsp;(5)</option>
+	<option value='https://nedinthecloud.com/2019/03/'> March 2019 &nbsp;(5)</option>
+	<option value='https://nedinthecloud.com/2019/02/'> February 2019 &nbsp;(4)</option>
+	<option value='https://nedinthecloud.com/2019/01/'> January 2019 &nbsp;(4)</option>
+	<option value='https://nedinthecloud.com/2018/12/'> December 2018 &nbsp;(4)</option>
+	<option value='https://nedinthecloud.com/2018/11/'> November 2018 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2018/10/'> October 2018 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2018/09/'> September 2018 &nbsp;(13)</option>
+	<option value='https://nedinthecloud.com/2018/08/'> August 2018 &nbsp;(16)</option>
+	<option value='https://nedinthecloud.com/2018/07/'> July 2018 &nbsp;(20)</option>
+	<option value='https://nedinthecloud.com/2018/06/'> June 2018 &nbsp;(15)</option>
+	<option value='https://nedinthecloud.com/2018/05/'> May 2018 &nbsp;(4)</option>
+	<option value='https://nedinthecloud.com/2018/04/'> April 2018 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2018/03/'> March 2018 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2018/02/'> February 2018 &nbsp;(5)</option>
+	<option value='https://nedinthecloud.com/2017/11/'> November 2017 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2017/09/'> September 2017 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2017/08/'> August 2017 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2017/04/'> April 2017 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2017/03/'> March 2017 &nbsp;(4)</option>
+	<option value='https://nedinthecloud.com/2017/02/'> February 2017 &nbsp;(3)</option>
+	<option value='https://nedinthecloud.com/2017/01/'> January 2017 &nbsp;(4)</option>
+	<option value='https://nedinthecloud.com/2016/12/'> December 2016 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2016/10/'> October 2016 &nbsp;(1)</option>
+	<option value='https://nedinthecloud.com/2016/09/'> September 2016 &nbsp;(2)</option>
+	<option value='https://nedinthecloud.com/2016/08/'> August 2016 &nbsp;(3)</option>
+	<option value='https://nedinthecloud.com/2016/07/'> July 2016 &nbsp;(3)</option>
+
+		</select>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+	var dropdown = document.getElementById( "archives-dropdown-4" );
+	function onSelectChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value !== '' ) {
+			document.location.href = this.options[ this.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onSelectChange;
+})();
+/* ]]> */
+</script>
+			</aside><aside id="tag_cloud-3" class="widget widget_tag_cloud"><h1 class="widget-title">#tags#</h1><div class="tagcloud"><a href="https://nedinthecloud.com/tag/aks/" class="tag-cloud-link tag-link-64 tag-link-position-1" style="font-size: 12.335483870968pt;" aria-label="AKS (5 items)">AKS</a>
+<a href="https://nedinthecloud.com/tag/asdk/" class="tag-cloud-link tag-link-60 tag-link-position-2" style="font-size: 9.6258064516129pt;" aria-label="ASDK (2 items)">ASDK</a>
+<a href="https://nedinthecloud.com/tag/automation/" class="tag-cloud-link tag-link-48 tag-link-position-3" style="font-size: 9.6258064516129pt;" aria-label="automation (2 items)">automation</a>
+<a href="https://nedinthecloud.com/tag/aws/" class="tag-cloud-link tag-link-19 tag-link-position-4" style="font-size: 16.4pt;" aria-label="AWS (16 items)">AWS</a>
+<a href="https://nedinthecloud.com/tag/aws-outposts/" class="tag-cloud-link tag-link-55 tag-link-position-5" style="font-size: 9.6258064516129pt;" aria-label="AWS Outposts (2 items)">AWS Outposts</a>
+<a href="https://nedinthecloud.com/tag/azure/" class="tag-cloud-link tag-link-9 tag-link-position-6" style="font-size: 19.2pt;" aria-label="Azure (34 items)">Azure</a>
+<a href="https://nedinthecloud.com/tag/azure-ad/" class="tag-cloud-link tag-link-61 tag-link-position-7" style="font-size: 11.612903225806pt;" aria-label="Azure AD (4 items)">Azure AD</a>
+<a href="https://nedinthecloud.com/tag/azure-classic/" class="tag-cloud-link tag-link-11 tag-link-position-8" style="font-size: 8pt;" aria-label="Azure Classic (1 item)">Azure Classic</a>
+<a href="https://nedinthecloud.com/tag/azure-kubernetes-service/" class="tag-cloud-link tag-link-78 tag-link-position-9" style="font-size: 10.709677419355pt;" aria-label="Azure Kubernetes Service (3 items)">Azure Kubernetes Service</a>
+<a href="https://nedinthecloud.com/tag/azure-resource-manager/" class="tag-cloud-link tag-link-10 tag-link-position-10" style="font-size: 9.6258064516129pt;" aria-label="Azure Resource Manager (2 items)">Azure Resource Manager</a>
+<a href="https://nedinthecloud.com/tag/azure-stack/" class="tag-cloud-link tag-link-33 tag-link-position-11" style="font-size: 16.129032258065pt;" aria-label="Azure Stack (15 items)">Azure Stack</a>
+<a href="https://nedinthecloud.com/tag/azurestack/" class="tag-cloud-link tag-link-34 tag-link-position-12" style="font-size: 13.870967741935pt;" aria-label="AzureStack (8 items)">AzureStack</a>
+<a href="https://nedinthecloud.com/tag/buffer/" class="tag-cloud-link tag-link-45 tag-link-position-13" style="font-size: 9.6258064516129pt;" aria-label="buffer (2 items)">buffer</a>
+<a href="https://nedinthecloud.com/tag/buffer-overflow/" class="tag-cloud-link tag-link-58 tag-link-position-14" style="font-size: 9.6258064516129pt;" aria-label="Buffer Overflow (2 items)">Buffer Overflow</a>
+<a href="https://nedinthecloud.com/tag/cfd3/" class="tag-cloud-link tag-link-44 tag-link-position-15" style="font-size: 10.709677419355pt;" aria-label="CFD3 (3 items)">CFD3</a>
+<a href="https://nedinthecloud.com/tag/cfd5/" class="tag-cloud-link tag-link-66 tag-link-position-16" style="font-size: 14.322580645161pt;" aria-label="CFD5 (9 items)">CFD5</a>
+<a href="https://nedinthecloud.com/tag/cfd6/" class="tag-cloud-link tag-link-80 tag-link-position-17" style="font-size: 13.41935483871pt;" aria-label="CFD6 (7 items)">CFD6</a>
+<a href="https://nedinthecloud.com/tag/cicd/" class="tag-cloud-link tag-link-35 tag-link-position-18" style="font-size: 10.709677419355pt;" aria-label="CICD (3 items)">CICD</a>
+<a href="https://nedinthecloud.com/tag/cloud/" class="tag-cloud-link tag-link-26 tag-link-position-19" style="font-size: 11.612903225806pt;" aria-label="Cloud (4 items)">Cloud</a>
+<a href="https://nedinthecloud.com/tag/cloud-field-day/" class="tag-cloud-link tag-link-43 tag-link-position-20" style="font-size: 16.670967741935pt;" aria-label="Cloud Field Day (17 items)">Cloud Field Day</a>
+<a href="https://nedinthecloud.com/tag/day-two-cloud/" class="tag-cloud-link tag-link-57 tag-link-position-21" style="font-size: 12.335483870968pt;" aria-label="Day Two Cloud (5 items)">Day Two Cloud</a>
+<a href="https://nedinthecloud.com/tag/docker/" class="tag-cloud-link tag-link-42 tag-link-position-22" style="font-size: 9.6258064516129pt;" aria-label="docker (2 items)">docker</a>
+<a href="https://nedinthecloud.com/tag/fotd/" class="tag-cloud-link tag-link-53 tag-link-position-23" style="font-size: 21.638709677419pt;" aria-label="FotD (64 items)">FotD</a>
+<a href="https://nedinthecloud.com/tag/hammerspace/" class="tag-cloud-link tag-link-84 tag-link-position-24" style="font-size: 9.6258064516129pt;" aria-label="Hammerspace (2 items)">Hammerspace</a>
+<a href="https://nedinthecloud.com/tag/hashicorp/" class="tag-cloud-link tag-link-52 tag-link-position-25" style="font-size: 22pt;" aria-label="HashiCorp (69 items)">HashiCorp</a>
+<a href="https://nedinthecloud.com/tag/hashicorp-vault/" class="tag-cloud-link tag-link-62 tag-link-position-26" style="font-size: 11.612903225806pt;" aria-label="HashiCorp Vault (4 items)">HashiCorp Vault</a>
+<a href="https://nedinthecloud.com/tag/hci/" class="tag-cloud-link tag-link-13 tag-link-position-27" style="font-size: 10.709677419355pt;" aria-label="HCI (3 items)">HCI</a>
+<a href="https://nedinthecloud.com/tag/hpe/" class="tag-cloud-link tag-link-14 tag-link-position-28" style="font-size: 10.709677419355pt;" aria-label="HPE (3 items)">HPE</a>
+<a href="https://nedinthecloud.com/tag/hybrid-cloud/" class="tag-cloud-link tag-link-30 tag-link-position-29" style="font-size: 9.6258064516129pt;" aria-label="hybrid cloud (2 items)">hybrid cloud</a>
+<a href="https://nedinthecloud.com/tag/hyperconverged/" class="tag-cloud-link tag-link-12 tag-link-position-30" style="font-size: 11.612903225806pt;" aria-label="hyperconverged (4 items)">hyperconverged</a>
+<a href="https://nedinthecloud.com/tag/kubernetes/" class="tag-cloud-link tag-link-39 tag-link-position-31" style="font-size: 13.870967741935pt;" aria-label="Kubernetes (8 items)">Kubernetes</a>
+<a href="https://nedinthecloud.com/tag/microsoft/" class="tag-cloud-link tag-link-7 tag-link-position-32" style="font-size: 14.322580645161pt;" aria-label="Microsoft (9 items)">Microsoft</a>
+<a href="https://nedinthecloud.com/tag/netapp/" class="tag-cloud-link tag-link-77 tag-link-position-33" style="font-size: 10.709677419355pt;" aria-label="NetApp (3 items)">NetApp</a>
+<a href="https://nedinthecloud.com/tag/nutanix/" class="tag-cloud-link tag-link-15 tag-link-position-34" style="font-size: 9.6258064516129pt;" aria-label="Nutanix (2 items)">Nutanix</a>
+<a href="https://nedinthecloud.com/tag/packet-pushers/" class="tag-cloud-link tag-link-63 tag-link-position-35" style="font-size: 9.6258064516129pt;" aria-label="Packet Pushers (2 items)">Packet Pushers</a>
+<a href="https://nedinthecloud.com/tag/powershell/" class="tag-cloud-link tag-link-22 tag-link-position-36" style="font-size: 15.316129032258pt;" aria-label="PowerShell (12 items)">PowerShell</a>
+<a href="https://nedinthecloud.com/tag/scripting/" class="tag-cloud-link tag-link-23 tag-link-position-37" style="font-size: 11.612903225806pt;" aria-label="Scripting (4 items)">Scripting</a>
+<a href="https://nedinthecloud.com/tag/solo-io/" class="tag-cloud-link tag-link-85 tag-link-position-38" style="font-size: 9.6258064516129pt;" aria-label="solo.io (2 items)">solo.io</a>
+<a href="https://nedinthecloud.com/tag/sysdig/" class="tag-cloud-link tag-link-72 tag-link-position-39" style="font-size: 9.6258064516129pt;" aria-label="Sysdig (2 items)">Sysdig</a>
+<a href="https://nedinthecloud.com/tag/terraform/" class="tag-cloud-link tag-link-41 tag-link-position-40" style="font-size: 22pt;" aria-label="Terraform (69 items)">Terraform</a>
+<a href="https://nedinthecloud.com/tag/terraform-certified/" class="tag-cloud-link tag-link-90 tag-link-position-41" style="font-size: 9.6258064516129pt;" aria-label="Terraform Certified (2 items)">Terraform Certified</a>
+<a href="https://nedinthecloud.com/tag/tfs/" class="tag-cloud-link tag-link-36 tag-link-position-42" style="font-size: 11.612903225806pt;" aria-label="TFS (4 items)">TFS</a>
+<a href="https://nedinthecloud.com/tag/virtualization/" class="tag-cloud-link tag-link-17 tag-link-position-43" style="font-size: 8pt;" aria-label="virtualization (1 item)">virtualization</a>
+<a href="https://nedinthecloud.com/tag/vmware/" class="tag-cloud-link tag-link-8 tag-link-position-44" style="font-size: 13.41935483871pt;" aria-label="VMware (7 items)">VMware</a>
+<a href="https://nedinthecloud.com/tag/vsan/" class="tag-cloud-link tag-link-16 tag-link-position-45" style="font-size: 8pt;" aria-label="VSAN (1 item)">VSAN</a></div>
+</aside><aside id="rss_links-3" class="widget widget_rss_links"><p><a target="_self" href="https://nedinthecloud.com/feed/" title="Subscribe to Posts"><img src="https://nedinthecloud.com/wp-content/plugins/jetpack/images/rss/orange-small.png" alt="RSS Feed" /></a>&nbsp;<a target="_self" href="https://nedinthecloud.com/feed/" title="Subscribe to Posts">RSS - Posts</a></p>
+</aside><aside id="wpcom_social_media_icons_widget-3" class="widget widget_wpcom_social_media_icons_widget"><h1 class="widget-title">Connect</h1><ul><li><a href="https://twitter.com/ned1313/" class="genericon genericon-twitter" target="_blank"><span class="screen-reader-text">View ned1313&#8217;s profile on Twitter</span></a></li><li><a href="https://www.linkedin.com/in/ned-bellavance-ba68a52/" class="genericon genericon-linkedin" target="_blank"><span class="screen-reader-text">View ned-bellavance-ba68a52&#8217;s profile on LinkedIn</span></a></li><li><a href="https://github.com/ned1313/" class="genericon genericon-github" target="_blank"><span class="screen-reader-text">View ned1313&#8217;s profile on GitHub</span></a></li></ul></aside></div><!-- #secondary -->
+
+	</div><!-- #content -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		<div class="site-info">
+			<a href="http://wordpress.org/">Proudly powered by WordPress</a>		</div><!-- .site-info -->
+	</footer><!-- #colophon -->
+</div><!-- #page -->
+
+
+
+<!-- No script for Juiz Last Tweet Widget :) -->
+
+		<style type="text/css"></style>
+			<div style="display:none">
+	<div class="grofile-hash-map-311237c6827e240f3db439969e3797cd">
+	</div>
+	<div class="grofile-hash-map-68c37f20c25fcf8a691bfb8a2dcac610">
+	</div>
+	<div class="grofile-hash-map-ef7a8b7a2fb0652475ed892b62ced3d6">
+	</div>
+	<div class="grofile-hash-map-cb81c2fa24408a7006ff00a5057d724d">
+	</div>
+	<div class="grofile-hash-map-8a842f23724fa24f691ec89a7ad960cd">
+	</div>
+	<div class="grofile-hash-map-d71329c9523125ec18ab9bff0482a478">
+	</div>
+	</div>
+
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/nedinthecloud.com\/2019\/07\/16\/demystifying-azure-ad-service-principals\/":1016};
+	</script>
+				<link rel='stylesheet' id='mediaelement-css'  href='https://nedinthecloud.com/wp-includes/js/mediaelement/mediaelementplayer-legacy.min.css?ver=4.2.16' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-mediaelement-css'  href='https://nedinthecloud.com/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='genericons-css'  href='https://nedinthecloud.com/wp-content/plugins/jetpack/_inc/genericons/genericons/genericons.css?ver=3.1' type='text/css' media='all' />
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/jetpack/_inc/build/photon/photon.min.js?ver=20191001' id='jetpack-photon-js'></script>
+<script type='text/javascript' src='https://secure.gravatar.com/js/gprofiles.js?ver=202120' id='grofiles-cards-js'></script>
+<script type='text/javascript' id='wpgroho-js-extra'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/jetpack/modules/wpgroho.js?ver=9.4' id='wpgroho-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/themes/stock/js/navigation.js?ver=20120206' id='stock-navigation-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/themes/stock/js/skip-link-focus-fix.js?ver=20130115' id='stock-skip-link-focus-fix-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/wp-markdown/js/prettify.min.js?ver=1.6.1' id='wp-markdown-prettify-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/youtube-embed-plus/scripts/fitvids.min.js?ver=13.4.1.2' id='__ytprefsfitvids__-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/wp-markdown/js/markdown.min.js?ver=1.6.1' id='wp-markdown-js'></script>
+<script async="async" type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/akismet/_inc/form.js?ver=4.1.8' id='akismet-form-js'></script>
+<script type='text/javascript' id='mediaelement-core-js-before'>
+var mejsL10n = {"language":"en","strings":{"mejs.download-file":"Download File","mejs.install-flash":"You are using a browser that does not have Flash player enabled or installed. Please turn on your Flash player plugin or download the latest version from https:\/\/get.adobe.com\/flashplayer\/","mejs.fullscreen":"Fullscreen","mejs.play":"Play","mejs.pause":"Pause","mejs.time-slider":"Time Slider","mejs.time-help-text":"Use Left\/Right Arrow keys to advance one second, Up\/Down arrows to advance ten seconds.","mejs.live-broadcast":"Live Broadcast","mejs.volume-help-text":"Use Up\/Down Arrow keys to increase or decrease volume.","mejs.unmute":"Unmute","mejs.mute":"Mute","mejs.volume-slider":"Volume Slider","mejs.video-player":"Video Player","mejs.audio-player":"Audio Player","mejs.captions-subtitles":"Captions\/Subtitles","mejs.captions-chapters":"Chapters","mejs.none":"None","mejs.afrikaans":"Afrikaans","mejs.albanian":"Albanian","mejs.arabic":"Arabic","mejs.belarusian":"Belarusian","mejs.bulgarian":"Bulgarian","mejs.catalan":"Catalan","mejs.chinese":"Chinese","mejs.chinese-simplified":"Chinese (Simplified)","mejs.chinese-traditional":"Chinese (Traditional)","mejs.croatian":"Croatian","mejs.czech":"Czech","mejs.danish":"Danish","mejs.dutch":"Dutch","mejs.english":"English","mejs.estonian":"Estonian","mejs.filipino":"Filipino","mejs.finnish":"Finnish","mejs.french":"French","mejs.galician":"Galician","mejs.german":"German","mejs.greek":"Greek","mejs.haitian-creole":"Haitian Creole","mejs.hebrew":"Hebrew","mejs.hindi":"Hindi","mejs.hungarian":"Hungarian","mejs.icelandic":"Icelandic","mejs.indonesian":"Indonesian","mejs.irish":"Irish","mejs.italian":"Italian","mejs.japanese":"Japanese","mejs.korean":"Korean","mejs.latvian":"Latvian","mejs.lithuanian":"Lithuanian","mejs.macedonian":"Macedonian","mejs.malay":"Malay","mejs.maltese":"Maltese","mejs.norwegian":"Norwegian","mejs.persian":"Persian","mejs.polish":"Polish","mejs.portuguese":"Portuguese","mejs.romanian":"Romanian","mejs.russian":"Russian","mejs.serbian":"Serbian","mejs.slovak":"Slovak","mejs.slovenian":"Slovenian","mejs.spanish":"Spanish","mejs.swahili":"Swahili","mejs.swedish":"Swedish","mejs.tagalog":"Tagalog","mejs.thai":"Thai","mejs.turkish":"Turkish","mejs.ukrainian":"Ukrainian","mejs.vietnamese":"Vietnamese","mejs.welsh":"Welsh","mejs.yiddish":"Yiddish"}};
+</script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-includes/js/mediaelement/mediaelement-and-player.min.js?ver=4.2.16' id='mediaelement-core-js'></script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-includes/js/mediaelement/mediaelement-migrate.min.js?ver=5.7.2' id='mediaelement-migrate-js'></script>
+<script type='text/javascript' id='mediaelement-js-extra'>
+/* <![CDATA[ */
+var _wpmejsSettings = {"pluginPath":"\/wp-includes\/js\/mediaelement\/","classPrefix":"mejs-","stretching":"responsive"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-includes/js/mediaelement/wp-mediaelement.min.js?ver=5.7.2' id='wp-mediaelement-js'></script>
+<script type='text/javascript' id='sharing-js-js-extra'>
+/* <![CDATA[ */
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://nedinthecloud.com/wp-content/plugins/jetpack/_inc/build/sharedaddy/sharing.min.js?ver=9.4' id='sharing-js-js'></script>
+<script type='text/javascript' id='sharing-js-js-after'>
+var windowOpen;
+			document.body.addEventListener( 'click', function ( event ) {
+				if ( event.target && (
+					event.target.matches && event.target.matches( 'a.share-twitter' ) ||
+					event.target.msMatchesSelector && event.target.msMatchesSelector( 'a.share-twitter' )
+				) ) {
+					// If there's another sharing window open, close it.
+					if ( typeof windowOpen !== 'undefined' ) {
+						windowOpen.close();
+					}
+					windowOpen = window.open( event.target.getAttribute( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+					return false;
+				}
+			} );
+var windowOpen;
+			document.body.addEventListener( 'click', function ( event ) {
+				if ( event.target && (
+					event.target.matches && event.target.matches( 'a.share-facebook' ) ||
+					event.target.msMatchesSelector && event.target.msMatchesSelector( 'a.share-facebook' )
+				) ) {
+					// If there's another sharing window open, close it.
+					if ( typeof windowOpen !== 'undefined' ) {
+						windowOpen.close();
+					}
+					windowOpen = window.open( event.target.getAttribute( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+					return false;
+				}
+			} );
+</script>
+<script src='https://stats.wp.com/e-202120.js' defer></script>
+<script>
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:9.4',blog:'114652430',post:'1016',tz:'-4',srv:'nedinthecloud.com'} ]);
+	_stq.push([ 'clickTrackerInit', '114652430', '1016' ]);
+</script>
+
+</body>
+</html>

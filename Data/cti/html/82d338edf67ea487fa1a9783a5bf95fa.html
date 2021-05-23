@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta name="google-site-verification" content="AzXejGir1yHCDJGOUZUhLb3PbItCbGJUG2rarG2pkAY" />
+	<meta charset="utf-8">
+	<meta name="HandheldFriendly" content="true">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width = device-width, initial-scale = 1.0, minimum-scale = 1.0, minimal-ui">
+	<link rel="shortcut icon" href="https://labs.detectify.com/wp-content/themes/detectify2.0.5/favicon.ico" type="image/x-icon">
+
+	<title>Slack bot token leakage exposing business critical information | Detectify Labs</title>
+
+	<script src="https://use.typekit.net/tzo5nif.js"></script>
+	<script>try{Typekit.load({ async: true });}catch(e){}</script>
+
+	<link href="https://fonts.googleapis.com/css?family=Alegreya:400,400i,700,700i|Open+Sans:400,400i,700,700i" rel="stylesheet">
+
+	<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+	<!-- This site is optimized with the Yoast SEO plugin v16.1.1 - https://yoast.com/wordpress/plugins/seo/ -->
+	<link rel="canonical" href="https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Slack bot token leakage exposing business critical information | Detectify Labs" />
+	<meta property="og:url" content="https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/" />
+	<meta property="og:site_name" content="Detectify Labs" />
+	<meta property="article:published_time" content="2016-04-28T10:47:21+00:00" />
+	<meta property="article:modified_time" content="2019-04-24T11:13:40+00:00" />
+	<meta property="og:image" content="https://labs.detectify.com/wp-content/uploads/2016/04/env-vars1-1.png" />
+	<meta property="og:image:width" content="790" />
+	<meta property="og:image:height" content="350" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="labsdetectify">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://labs.detectify.com/#organization","name":"Detectify","url":"https://labs.detectify.com/","sameAs":[],"logo":{"@type":"ImageObject","@id":"https://labs.detectify.com/#logo","inLanguage":"en-US","url":"https://labs.detectify.com/wp-content/uploads/2020/09/logotyope_single.png","contentUrl":"https://labs.detectify.com/wp-content/uploads/2020/09/logotyope_single.png","width":1440,"height":810,"caption":"Detectify"},"image":{"@id":"https://labs.detectify.com/#logo"}},{"@type":"WebSite","@id":"https://labs.detectify.com/#website","url":"https://labs.detectify.com/","name":"Detectify Labs","description":"A security research blog by top-ranked ethical hackers","publisher":{"@id":"https://labs.detectify.com/#organization"},"potentialAction":[{"@type":"SearchAction","target":"https://labs.detectify.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#primaryimage","inLanguage":"en-US","url":"https://labs.detectify.com/wp-content/uploads/2016/04/env-vars1-1.png","contentUrl":"https://labs.detectify.com/wp-content/uploads/2016/04/env-vars1-1.png","width":790,"height":350},{"@type":"WebPage","@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#webpage","url":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/","name":"Slack bot token leakage exposing business critical information | Detectify Labs","isPartOf":{"@id":"https://labs.detectify.com/#website"},"primaryImageOfPage":{"@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#primaryimage"},"datePublished":"2016-04-28T10:47:21+00:00","dateModified":"2019-04-24T11:13:40+00:00","breadcrumb":{"@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/"]}]},{"@type":"BreadcrumbList","@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://labs.detectify.com/","url":"https://labs.detectify.com/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/","url":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/","name":"Slack bot token leakage exposing business critical information"}}]},{"@type":"Article","@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#article","isPartOf":{"@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#webpage"},"author":{"@id":"https://labs.detectify.com/#/schema/person/56d93aed8db4590cefb9283f25b97ff1"},"headline":"Slack bot token leakage exposing business critical information","datePublished":"2016-04-28T10:47:21+00:00","dateModified":"2019-04-24T11:13:40+00:00","mainEntityOfPage":{"@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#webpage"},"commentCount":69,"publisher":{"@id":"https://labs.detectify.com/#organization"},"image":{"@id":"https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#primaryimage"},"keywords":"Slack,Slackbots,token","articleSection":"Writeups","inLanguage":"en-US","potentialAction":[{"@type":"CommentAction","name":"Comment","target":["https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/#respond"]}]},{"@type":"Person","@id":"https://labs.detectify.com/#/schema/person/56d93aed8db4590cefb9283f25b97ff1","name":"labsdetectify","image":{"@type":"ImageObject","@id":"https://labs.detectify.com/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/269c88535243ae74db5e01efb1970837?s=96&d=mm&r=g","contentUrl":"https://secure.gravatar.com/avatar/269c88535243ae74db5e01efb1970837?s=96&d=mm&r=g","caption":"labsdetectify"},"sameAs":["http://labsdetectify.wpengine.com"]}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//s.w.org' />
+    <meta property="og:title" content="Slack bot token leakage exposing business critical information"/>
+    <meta property="og:description" content="Developers are leaking access tokens for Slack widely on GitHub, in public repositories, support tickets and public gists. They are extremely easy to find due to their structure. It is clear that the knowledge about what these tokens can be used for with malicious intent is not on top of people’s minds&#8230;yet. The Detectify team shows the impact, with examples, and explains how this could be prevented."/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:url" content="https://labs.detectify.com/2016/04/28/slack-bot-token-leakage-exposing-business-critical-information/"/>
+    <meta property="og:site_name" content="Detectify Labs"/>
+<meta property="og:image" content="https://labs.detectify.com/wp-content/uploads/2016/04/env-vars1-1-300x133.png"/>		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/labs.detectify.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.1"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://labs.detectify.com/wp-includes/css/dist/block-library/style.min.css?ver=5.7.1' type='text/css' media='all' />
+<link rel='stylesheet' id='detectify_style-css'  href='https://labs.detectify.com/wp-content/themes/detectify2.0.5/dist/css/style.css?ver=5.7.1' type='text/css' media='all' />
+<script type='text/javascript' src='https://labs.detectify.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://labs.detectify.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<link rel="https://api.w.org/" href="https://labs.detectify.com/wp-json/" /><link rel="alternate" type="application/json" href="https://labs.detectify.com/wp-json/wp/v2/posts/189" /><link rel="alternate" type="application/json+oembed" href="https://labs.detectify.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Flabs.detectify.com%2F2016%2F04%2F28%2Fslack-bot-token-leakage-exposing-business-critical-information%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://labs.detectify.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Flabs.detectify.com%2F2016%2F04%2F28%2Fslack-bot-token-leakage-exposing-business-critical-information%2F&#038;format=xml" />
+</head>
+<body class="post-template-default single single-post postid-189 single-format-standard">
+
+<div class="header">
+	<div class="header__inner">
+		<a class="header__logo" href="https://labs.detectify.com/">
+			<img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/detectify.svg" alt="Detectify Labs">
+		</a>
+
+		<a class="header__what-is" href="https://detectify.com/">What is Detectify?</a>
+	</div>
+</div>
+
+<div class="hero" style="background-image: url()">
+	<div class="hero__inner">
+	</div>
+</div>
+
+<div class="navigation">
+	<div class="navigation__fade"></div>
+
+	<div class="navigation__inner">
+		<ul id="navigation__list" class="navigation__list"><li id="menu-item-365" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-365"><a href="https://labs.detectify.com/category/security/">App Security</a></li>
+<li id="menu-item-366" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-366"><a href="https://labs.detectify.com/category/writeups/">Writeups</a></li>
+<li id="menu-item-367" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-367"><a href="https://labs.detectify.com/category/how-to/">How to</a></li>
+<li id="menu-item-368" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-368"><a href="https://labs.detectify.com/category/detectify/">Crowdsource</a></li>
+</ul>	</div>
+</div>
+
+	<div class="blog-wrapper">
+														<div class="blog-header">
+						<div class="blog-header__inner">
+							<h1>Slack bot token leakage exposing business critical information</h1>
+						</div>
+					</div>
+				
+				<div class="blog-author-date">
+					
+					<span>April 28, 2016</span>
+				</div>
+												<div class="blog-content">
+					<div class="blog-content__textfield">
+						<p><strong>TL;DR,</strong> <em>Developers are leaking access tokens for Slack widely on GitHub, in public repositories, support tickets and public gists. They are extremely easy to find due to their structure. It is clear that the knowledge about what these tokens can be used for with malicious intent is not on top of people’s minds&#8230;yet. The <a href="https://www.detectify.com">Detectify </a>team shows the impact, with examples, and explains how this could be prevented.</em></p>
+<p><strong>Update</strong>: Slack has made a follow-up response: &#8220;we&#8217;ve revoked the tokens you reported, notified affected users and team owners directly, and that we&#8217;ll be doing that proactively going forward&#8221;.</p>
+<p><span style="font-weight: 400;">Slack has become one of the world’s most popular corporate tools for communicating internally. The simplicity of the Slack API and its tokens also inspire people to create services using Slack to automate manual tasks. This aligns well with the </span><a href="https://www.pagerduty.com/blog/what-is-chatops/"><span style="font-weight: 400;">ChatOps</span></a><span style="font-weight: 400;"> movement, a conversation-driven development widely credited to GitHub. Using ChatOps enables you to do automation only by writing simple commands in a chat. </span></p>
+<p><span style="font-weight: 400;">The problem is that many developers tend to include Slack tokens &#8211; credentials tied to their personal Slack account &#8211; directly in the code when building Slack bots. These projects are also shared publicly on GitHub. Now, because the code contains these tokens, the developer is actually giving anyone &#8211; that finds the token &#8211; access to the developer’s company’s internal chats and files on Slack. And not only that, there’s no easy way to see if someone is eavesdropping on the communication.</span></p>
+<p><span style="font-weight: 400;">The irony is that a lot of these bots are mostly fun “weekend projects”. We saw examples of fit bots, reminding you to stretch throughout the day, quote bots, quoting both Jurassic Park (“Ah ah ah…you didn&#8217;t say the magic word”) and Don Quijote. Yet, these hobby projects, in combination with being shared on GitHub, risk exposing both sensitive company information as well as private messages and files for the user that created the token.</span></p>
+<p><span style="font-weight: 400;">In the worst case scenario, these tokens can leak production database credentials, source code, files with passwords and highly sensitive information. </span><span style="font-weight: 400;">The Detectify Team have already been able to find thousands of tokens by simply searching GitHub; and new tokens are becoming publicly available every day.  </span></p>
+<h2><b>How to generate Slack tokens &#8211; and where the problem occurs </b></h2>
+<p><span style="font-weight: 400;">There are multiple open source projects to easily create Slack bots, such as </span><a href="https://github.com/slackhq/hubot-slack"><span style="font-weight: 400;">Hubot</span></a><span style="font-weight: 400;">. Hubot does a great job of using environment variables for access tokens. One reason behind environment variables is to separate credentials from the code completely, getting the environment that runs the code to provide the data depending on where the code runs. </span></p>
+<p>&nbsp;</p>
+<p><span style="font-weight: 400;">However, developers tend to be creative in how to work with these variables. Here are real life examples where the developers are injecting the tokens inside the code onto the environment, which breaks the whole concept of how environment variables are supposed to be set up:</span></p>
+<p><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/env-vars1.png" alt="env-vars1" width="284" height="126" /><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/env-vars2.png" alt="env-vars2" width="363" height="130" /></p>
+<p><img loading="lazy" class="alignnone size-full " src="https://labs.detectify.com/wp-content/uploads/2016/04/env-vars3.png" alt="env-vars3" width="2016" height="444" /></p>
+<p><span style="font-weight: 400;">We also saw examples of where log output from applications was spitting out the Slack tokens in clear text, leaking them when people posted GitHub issues needing help in public projects:</span></p>
+<p><a href="https://labs.detectify.com/wp-content/uploads/2016/04/issue1.png" target="_blank" rel="noopener"><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/issue1.png" alt="issue1" width="300" height="200" /></a><a href="https://labs.detectify.com/wp-content/uploads/2016/04/issue2.png" target="_blank" rel="noopener"><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/issue2.png" alt="issue2" width="342" height="203" /></a></p>
+<p><a href="https://labs.detectify.com/wp-content/uploads/2016/04/issue3.png" target="_blank" rel="noopener"><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/issue3.png" alt="issue3" width="348" height="178" /></a></p>
+<h2><b>How big is the problem?</b></h2>
+<p><span style="font-weight: 400;">Independently of Slack, tokens on GitHub are unfortunately very common. But in this case, compared to </span><a href="https://www.forbes.com/sites/runasandvik/2014/01/14/attackers-scrape-github-for-cloud-service-credentials-hijack-account-to-mine-virtual-currency/"><span style="font-weight: 400;">AWS tokens that were reported being scraped by black hats</span></a><span style="font-weight: 400;"> a few years ago, it’s most likely because the developers don’t know about the full impact of leaking a Slack token. Also, a bonus is how GitHub’s full text index work and the format of Slack tokens, since the tokens use a prefix with a hyphen as a separator:</span></p>
+<p><code>xoxp-XXXXXXXXX-XXXXXXXXXXXXXXXXXXX<br />
+xoxb-XXXXXXXXX-XXXXXXXXX-XXXXXXXXX-XXXXXX</code></p>
+<p><span style="font-weight: 400;">GitHub’s search treats hyphenated strings as separate words, and since these prefixes are very distinguishable of being tokens to Slack, you will find a huge amount of Slack tokens on GitHub just by searching for the prefixes.</span></p>
+<p><span style="font-weight: 400;">Using the tokens it’s possible to eavesdrop on a company. Outsiders can easily gain access to internal chat conversations, shared files, direct messages and even passwords to other services if these have been shared on Slack. Here are some examples of sensitive messages being shared among people inside Slack teams <strong>(the sensitive information in these examples has been modified or redacted):</strong></span></p>
+<p><img loading="lazy" class="alignnone size-full " src="https://labs.detectify.com/wp-content/uploads/2016/04/expose1.png" alt="expose1" width="1430" height="228" /> <img loading="lazy" class="alignnone size-full " src="https://labs.detectify.com/wp-content/uploads/2016/04/expose2.png" alt="expose2" width="1422" height="268" /> <img loading="lazy" class="alignnone size-full " src="https://labs.detectify.com/wp-content/uploads/2016/04/expose3.png" alt="expose3" width="1416" height="132" /></p>
+<p><span style="font-weight: 400;">Companies that we’ve been in contact with to let them know about them leaking their token were surprised of the amount of data that was accessible by this token as per default. One of the most common responses were “I did not know that token gave that much access” which indicates that the process to generate these tokens does not adequately explain how much data could be exposed by abusing the token.</span></p>
+<p><span style="font-weight: 400;">There are different types of tokens in Slack, and some of them has less access than others. The problem is that it is difficult to create a proper limited token whereas creating a very open token with full access is easy.</span></p>
+<h2><b>Who is affected?</b></h2>
+<p><span style="font-weight: 400;">Up until now we’ve identified over 1500 tokens that match the pattern of a Slack token being publicly available on GitHub. These tokens belong to different users and companies; among them Forbes 500 companies, payment providers, multiple internet service providers and health care providers. Renowned advertising agencies that want to show what they are doing internally. University classes at some of the world’s best-known schools. Newspapers sharing their bots as part of stories. The list goes on and on.</span></p>
+<h2><b>Our research and results</b></h2>
+<p><span style="font-weight: 400;">As we’ve mentioned, there are different kinds of tokens in Slack. There are also different restrictions to them. To explain this we need to understand what types of API-endpoints there are:</span></p>
+<ul>
+<li style="font-weight: 400;"><span style="font-weight: 400;"><strong>Search API.</strong> This API makes it possible to search using a query and get all results back in a list. </span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;"><strong>IM/Groups API.</strong> The private messages sent to a user, both by direct messages and groups.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;"><strong>Channels API.</strong> Using these APIs you can gather all data for all public channels in a team. Please understand that public in this sense means that anyone internally in the team can join, the information in this channel is not public per se. </span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;"><strong>Users API.</strong> You will get all users in the complete Slack team together with their e-mail address and user information.</span></li>
+<li style="font-weight: 400;"><span style="font-weight: 400;">There are many more APIs, </span><a href="https://api.slack.com/methods"><span style="font-weight: 400;">you can find them all here</span></a><span style="font-weight: 400;">.</span></li>
+</ul>
+<p><span style="font-weight: 400;">Now, these APIs above are essential for someone that wants to eavesdrop on a company. If a token is leaked, depending on the token there are different scenarios for how the company data can get exposed:</span></p>
+<h3><b>xoxb &#8211; Custom Bot Token</b></h3>
+<p><span style="font-weight: 400;">A xoxb-token (which has the prefix </span><span style="font-weight: 400;">xoxb</span><span style="font-weight: 400;">) is created by the </span><a href="https://my.slack.com/services/new/bot"><span style="font-weight: 400;">“Custom Bot”</span></a>-page<span style="font-weight: 400;"> for each team. This token is detached from the creator, it is marked as a bot and behaves like a separate user. You cannot restrict this token to disable a certain API endpoint. It does have one significant restriction though, the search.all API will respond with: <code>Error: user_is_bot</code>. However, since it still has access to all channel’s messages, all data can be retrieved using this token.</span></p>
+<h3><b>xoxp &#8211; Private Token</b></h3>
+<p><span style="font-weight: 400;">The xoxp-token (prefix </span><span style="font-weight: 400;">xoxp</span><span style="font-weight: 400;">) can be generated from the </span><a href="https://api.slack.com/docs/oauth-test-tokens"><span style="font-weight: 400;">OAuth Test Token</span></a><span style="font-weight: 400;">-page. This token is exactly like having the complete username and password for the user. Even for a user with two factor authentication enabled, you can still access Slack with nothing else but this token. </span></p>
+<p><span style="font-weight: 400;">This token can use the search.all-API, being able to search not only for channel messages and files, but also in the current user’s internal messages and groups. </span></p>
+<p><span style="font-weight: 400;">There are additional types of tokens, but these two types are the ones being leaked the most.</span></p>
+<p><span style="font-weight: 400;">We found 626 private tokens and 879 bot tokens. On the page where you generate the Private Tokens, this message is shown:</span></p>
+<p><img loading="lazy" class="alignnone size-full " src="https://labs.detectify.com/wp-content/uploads/2016/04/test-tokens.png" alt="test-tokens" width="1346" height="174" /></p>
+<p><span style="font-weight: 400;">On the Custom Bot page on Slack, there’s no indication at all that the token should be kept secret, but looking at the data, that message on the Private Token page doesn’t really make any difference. </span></p>
+<p><span style="font-weight: 400;">When we identified companies running responsible disclosure, with security contact or an email for the owner of the repository, we got mixed results as you see here:</span></p>
+<p><a href="https://labs.detectify.com/wp-content/uploads/2016/04/response1.png" target="_blank" rel="noopener"><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/response1.png" alt="response1" width="337" height="208" /></a> <a href="https://labs.detectify.com/wp-content/uploads/2016/04/response2.png" target="_blank" rel="noopener"><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/response2.png" alt="response2" width="314" height="283" /></a> <img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/response3.png" alt="response3" width="328" height="315" /></p>
+<p><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/response4.png" alt="response4" width="307" height="221" /></p>
+<p>&nbsp;</p>
+<p><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/response5.png" alt="response5" width="326" height="140" /></p>
+<p><img loading="lazy" class="alignnone size-full " src="https://labs.detectify.com/wp-content/uploads/2016/04/response6.png" alt="response6" width="1127" height="162" /></p>
+<h3><span style="font-weight: 400;">What we found:</span></h3>
+<p><span style="font-weight: 400;">Database credentials, login to continuous integration platforms and internal services, private messages to the token owner and files with passwords. We also concluded from the internal communication inside Slack teams, that people tend to be really sloppy with passing credentials in general.</span></p>
+<h2><b>What happened next?</b></h2>
+<p><span style="font-weight: 400;">We reported this to Slack as “The sad state of Slack tokens on GitHub” on Mar 26th. The report was closed as informative by Slack on Apr 18th. During the discussions we mentioned different ways for Slack to actually be proactive around the cause of this. Some of the things was to be able to restrict access per API, being able to revoke the API-key using the API itself and to automatically revoke the tokens that ended up on GitHub.</span></p>
+<p><span style="font-weight: 400;">Slack believe that it is foremost the responsibility of the users not to be sharing their tokens around &#8211; and are also clear with stating this on their website when a token is created. </span></p>
+<p><span style="font-weight: 400;">The problem though, is what to do when people are obviously sharing this data publicly online daily. </span></p>
+<p><span style="font-weight: 400;">In their last response they said;</span></p>
+<p><i><span style="font-weight: 400;">“Thanks for the additional tokens. We&#8217;re proactively looking for tokens ourselves now, and reaching out to customers to let them know when we&#8217;ve disabled tokens and where we found them. We&#8217;ll deactivate these in the next batch.”</span></i></p>
+<p><span style="font-weight: 400;"><span style="text-decoration: line-through;">We haven’t been able to confirm this is actually the case yet</span> but it sounds like a great plan.<br />
+<strong>Update</strong>: We received the message sent by Slack to teams with leaked tokens:<br />
+<a href="https://labs.detectify.com/wp-content/uploads/2016/04/Screen-Shot-2016-04-28-at-14.53.38.png" target="_blank" rel="noopener"><img loading="lazy" class="alignnone" src="https://labs.detectify.com/wp-content/uploads/2016/04/Screen-Shot-2016-04-28-at-14.53.38.png" alt="Screen Shot 2016-04-28 at 14.53.38" width="340" height="315" /></a><br />
+</span></p>
+<h2><b>Best Practice</b></h2>
+<p><span style="font-weight: 400;">NEVER COMMIT CREDENTIALS INSIDE CODE. EVER. </span></p>
+<p><span style="font-weight: 400;">The first thing you should do is to create environment-variables inside a file and ignore that file from the code repository from start. Also, public due diligence of your company: What type of public repositories do you have? How does the commit history of them look like? Do they have a bunch of legacy in them? Could there be any credentials forgotten inside the commit history? Are all developers in our company able to create private repositories?</span></p>
+<p><span style="font-weight: 400;">When passing credentials internally, use services like </span><a href="https://onetimesecret.com/"><span style="font-weight: 400;">onetimesecret.com</span></a><span style="font-weight: 400;"> to place passwords in a only-visible-once out-of-context. Sending the URL to the secret together with the username in the message will be an improvement compared to today, since the viewer of the secret can only watch it once, and if onetimesecret.com is hacked, no one will know what the password belongs to.</span></p>
+<p><span style="font-weight: 400;">Also, Slack has some settings that could be great to enable. The important one is disabling the ability for all users to create integrations and tokens:</span></p>
+<p><img loading="lazy" class="alignnone " src="https://labs.detectify.com/wp-content/uploads/2016/04/settings.png" alt="settings" width="420" height="161" /></p>
+<p><span style="font-weight: 400;">You will find this setting over at </span><a href="https://my.slack.com/admin/settings#integrations"><span style="font-weight: 400;">Admin Settings</span></a><span style="font-weight: 400;"> in Slack.</span></p>
+<h2><b>Last words</b></h2>
+<p><span style="font-weight: 400;">GitHub is full of sensitive data. Slack just made it really simple to search for their tokens due to how they are formed. We hope that this advisory might help people realize how big impact getting these tokens exposed really is. </span></p>
+<p><span style="font-weight: 400;"><img loading="lazy" class=" alignright" src="https://labs.detectify.com/wp-content/uploads/2016/04/terminator_robots-970-80.jpg" alt="terminator_robots-970-80" width="333" height="187" />Also, if we can help limit the amount of robots in the world somehow, the Skynet hopefully won’t happen that soon.</span></p>
+<p>(We love robots, but not exploited ones)</p>
+<p>&nbsp;</p>
+					</div>
+
+																	<div class="share-buttons">
+							<a href="https://news.ycombinator.com/submitlink?u=https%3A%2F%2Flabs.detectify.com%2F2016%2F04%2F28%2Fslack-bot-token-leakage-exposing-business-critical-information%2F&t=Slack bot token leakage exposing business critical information"><img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/icon-ycombinator.png"></a>
+							<a href="http://www.reddit.com/submit?url=https%3A%2F%2Flabs.detectify.com%2F2016%2F04%2F28%2Fslack-bot-token-leakage-exposing-business-critical-information%2F&title=Slack bot token leakage exposing business critical information"><img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/icon-reddit.png"></a>
+							<a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Flabs.detectify.com%2F2016%2F04%2F28%2Fslack-bot-token-leakage-exposing-business-critical-information%2F&title=Slack bot token leakage exposing business critical information&summary=&source="><img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/icon-linkedin.png"></a>
+							<a href="https://twitter.com/home?status=https%3A%2F%2Flabs.detectify.com%2F2016%2F04%2F28%2Fslack-bot-token-leakage-exposing-business-critical-information%2F"><img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/icon-twitter.png"></a>
+							<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Flabs.detectify.com%2F2016%2F04%2F28%2Fslack-bot-token-leakage-exposing-business-critical-information%2F"><img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/icon-facebook.png"></a>
+						</div>
+									</div>
+					
+					<div class="blog-content">
+				<div class="blog-content__tags">
+																								<a class="blog-content__tag" href="https://labs.detectify.com/tag/slack/">Slack</a>
+																														<a class="blog-content__tag" href="https://labs.detectify.com/tag/slackbots/">Slackbots</a>
+																														<a class="blog-content__tag" href="https://labs.detectify.com/tag/token/">token</a>
+															</div>
+			</div>
+		
+		
+		<div class="blog-content">
+			<div class="blog-content__disqus">
+				<div id="disqus_thread"></div>
+				<script>
+				/**
+				* RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+				* LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+				*/
+				/*
+				var disqus_config = function () {
+				this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+				this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+				};
+				*/
+				(function() { // DON'T EDIT BELOW THIS LINE
+				var d = document, s = d.createElement('script');
+
+				s.src = '//detectify.disqus.com/embed.js';
+
+				s.setAttribute('data-timestamp', +new Date());
+				(d.head || d.body).appendChild(s);
+				})();
+				</script>
+				<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+			</div>
+		</div>
+	</div>
+
+			<div class="related-posts">
+			<div class="related-posts__inner">
+				<h3>Related posts</h3>
+								<div class="related-posts__posts">
+											<a class="related-posts__post" href="https://labs.detectify.com/2021/01/15/how-i-hijacked-the-top-level-domain-of-a-sovereign-state/">
+					<img src="https://labs.detectify.com/wp-content/uploads/2021/01/210114_Labs_DNS_Kongo_Hijack-400x480.png">
+	
+	<strong>How I hijacked the top-level domain of a sovereign state</strong>
+</a>
+											<a class="related-posts__post" href="https://labs.detectify.com/2019/05/24/investigation-of-php-web-shell-hexedglobals-3793-variants/">
+					<img src="https://labs.detectify.com/wp-content/uploads/2019/05/Hacker-Pic-B-1-400x480.png">
+	
+	<strong>Investigation of PHP Web Shell Hexedglobals.3793 Variants</strong>
+</a>
+											<a class="related-posts__post" href="https://labs.detectify.com/2018/08/02/bypassing-exploiting-bucket-upload-policies-signed-urls/">
+					<img src="https://labs.detectify.com/wp-content/uploads/2018/08/image-1-400x480.png">
+	
+	<strong>Bypassing and exploiting Bucket Upload Policies and Signed URLs</strong>
+</a>
+									</div>
+			</div>
+		</div>
+	
+<div class="footer">
+	<div class="footer__links">
+		<a href="https://detectify.com/" target="_blank">What is Detectify?</a>
+		<a href="https://go.detectify.com/blogs-subscription" target="_blank">Subscribe to newsletter</a>
+		<a href="https://detectify.com/pricing" class="cta-button" target="_blank">Sign up for a free trial »</a>
+	</div>
+
+	
+	<div class="footer__slogan-social">
+		<div class="footer__slogan">
+								A security service for developers.					</div>
+
+		<div class="footer__social">
+			<a href="https://github.com/detectify" class="icon icon-git" target="_blank"><img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/giticon.svg"></a>
+			<a href="https://www.linkedin.com/company/detectify" class="icon icon-linkedin" target="_blank"><img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/linkedinicon.svg"></a>
+			<a href="https://twitter.com/detectify" class="icon icon-twitter" target="_blank"><img src="https://labs.detectify.com/wp-content/themes/detectify2.0.5/images/twittericon.svg"></a>
+		</div>
+	</div>
+</div>
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-TWT88B"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TWT88B');</script>
+<!-- End Google Tag Manager -->
+
+<script type='text/javascript' src='https://labs.detectify.com/wp-content/themes/detectify2.0.5/dist/js/main.js?ver=1' id='detectify_script-js'></script>
+<script type='text/javascript' src='https://labs.detectify.com/wp-includes/js/wp-embed.min.js?ver=5.7.1' id='wp-embed-js'></script>
+
+</body>
+</html>

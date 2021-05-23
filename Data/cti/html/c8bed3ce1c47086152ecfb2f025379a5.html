@@ -1,0 +1,422 @@
+<HTML
+><HEAD
+><TITLE
+>Linux Password &#38; Shadow File Formats</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.63
+"><LINK
+REL="HOME"
+TITLE="Linux Administration Made Easy"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="General System Administration Issues"
+HREF="administrative-issues.html"><LINK
+REL="PREVIOUS"
+TITLE="Removing User Accounts"
+HREF="removing-user-accounts.html"><LINK
+REL="NEXT"
+TITLE="System Shutdown and Restart"
+HREF="system-shutdown-and-restart.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Linux Administration Made Easy</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="removing-user-accounts.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. General System Administration Issues</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="system-shutdown-and-restart.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="SHADOW-FILE-FORMATS"
+>6.6. Linux Password &#38; Shadow File Formats</A
+></H1
+><P
+>Traditional Unix systems keep user account information, including
+one-way encrypted passwords, in a text file called
+``<TT
+CLASS="LITERAL"
+><TT
+CLASS="FILENAME"
+>/etc/passwd</TT
+></TT
+>''.  As this file is
+used by many tools (such as ``ls'') to display file ownerships, etc. by
+matching user id #'s with the user's names, the file needs to be
+world-readable.  Consequentally, this can be somewhat of a security
+risk.</P
+><P
+>Another method of storing account information, one that I always
+use, is with the shadow password format.  As with the traditional method,
+this method stores account information in the /etc/passwd file in a
+compatible format.  However, the password is stored as a single
+<SPAN
+CLASS="QUOTE"
+>"x"</SPAN
+> character (ie.  not actually stored in this file).  A
+second file, called
+``<TT
+CLASS="LITERAL"
+><TT
+CLASS="FILENAME"
+>/etc/shadow</TT
+></TT
+>'', contains
+encrypted password as well as other information such as account or
+password expiration values, etc.  The /etc/shadow file is readable only
+by the root account and is therefore less of a security risk.</P
+><P
+>While some other Linux distributions forces you to install the
+Shadow Password Suite in order to use the shadow format, Red Hat makes it
+simple.  To switch between the two formats, type (as root):</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  /usr/sbin/pwconv	To convert to the shadow format
+  /usr/sbin/pwunconv	To convert back to the traditional format</PRE
+></TD
+></TR
+></TABLE
+><P
+>With shadow passwords, the
+``<TT
+CLASS="LITERAL"
+><TT
+CLASS="FILENAME"
+>/etc/passwd</TT
+></TT
+>'' file contains
+account information, and looks like this:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>smithj:x:561:561:Joe Smith:/home/smithj:/bin/bash</PRE
+></TD
+></TR
+></TABLE
+><P
+>Each field in a passwd entry is separated with <SPAN
+CLASS="QUOTE"
+>":"</SPAN
+>
+colon characters, and are as follows:</P
+><P
+></P
+><UL
+COMPACT="COMPACT"
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>Username, up to 8 characters.  Case-sensitive, usually all
+lowercase</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>An <SPAN
+CLASS="QUOTE"
+>"x"</SPAN
+> in the password field.  Passwords are
+stored in the ``<TT
+CLASS="LITERAL"
+><TT
+CLASS="FILENAME"
+>/etc/shadow</TT
+></TT
+>''
+file.</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>Numeric user id.  This is assigned by the
+``<TT
+CLASS="LITERAL"
+>adduser</TT
+>'' script.  Unix uses this field, plus the
+following group field, to identify which files belong to the
+user.</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>Numeric group id.  Red Hat uses group id's in a fairly
+unique manner for enhanced file security.  Usually the group id will match
+the user id.</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>Full name of user.  I'm not sure what the maximum length
+for this field is, but try to keep it reasonable (under 30
+characters).</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>User's home directory.  Usually /home/username (eg.
+/home/smithj).  All user's personal files, web pages, mail forwarding,
+etc. will be stored here.</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>User's <SPAN
+CLASS="QUOTE"
+>"shell account"</SPAN
+>.  Often set to
+``<TT
+CLASS="LITERAL"
+><TT
+CLASS="FILENAME"
+>/bin/bash</TT
+></TT
+>'' to provide access
+to the bash shell (my personal favorite shell).</P
+></LI
+></UL
+><P
+>Perhaps you do not wish to provide shell accounts for your users.  
+You could create a script file called
+``<TT
+CLASS="LITERAL"
+><TT
+CLASS="FILENAME"
+>/bin/sorrysh</TT
+></TT
+>'', for example,
+that would display some kind of error message and log the user off, and
+then set this script as their default shell.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Note: If the account needs to provide <SPAN
+CLASS="QUOTE"
+>"FTP"</SPAN
+> transfers
+to update web pages, etc. then the shell account will need to be set to
+``<TT
+CLASS="LITERAL"
+><TT
+CLASS="FILENAME"
+>/bin/bash</TT
+></TT
+>'' -- and then special
+permissions will need to be set up in the user's home directory to prevent
+shell logins.  See <A
+HREF="web-server-administration.html"
+>Section 7.1</A
+> for details
+on this.</P
+></BLOCKQUOTE
+></DIV
+><P
+>The ``<TT
+CLASS="LITERAL"
+><TT
+CLASS="FILENAME"
+>/etc/shadow</TT
+></TT
+>'' file
+contains password and account expiration information for users, and looks
+like this:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>smithj:Ep6mckrOLChF.:10063:0:99999:7:::</PRE
+></TD
+></TR
+></TABLE
+><P
+>As with the passwd file, each field in the shadow file is also
+separated with <SPAN
+CLASS="QUOTE"
+>":"</SPAN
+> colon characters, and are as
+follows:</P
+><P
+></P
+><UL
+COMPACT="COMPACT"
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>Username, up to 8 characters.  Case-sensitive, usually all
+lowercase.  A direct match to the username in the /etc/passwd
+file.</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>Password, 13 character encrypted.  A blank entry (eg. ::)
+indicates a password is not required to log in (usually a bad idea), and a
+``*'' entry (eg. :*:) indicates the account has been
+disabled.</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>The number of days (since January 1, 1970) since the
+password was last changed.</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>The number of days before password may be changed (0
+indicates it may be changed at any time)</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>The number of days after which password
+<EM
+>must</EM
+> be changed (99999 indicates user can keep his or
+her password unchanged for many, many years)</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>The number of days to warn user of an expiring password (7
+for a full week)</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>The number of days after password expires that account is
+disabled</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>The number of days since January 1, 1970 that an account
+has been disabled</P
+></LI
+><LI
+STYLE="list-style-type: Bullet"
+><P
+>A reserved field for possible future use</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="removing-user-accounts.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="system-shutdown-and-restart.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Removing User Accounts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="administrative-issues.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>System Shutdown and Restart</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

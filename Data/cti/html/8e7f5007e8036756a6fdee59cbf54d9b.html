@@ -1,0 +1,1766 @@
+
+	<!DOCTYPE html>
+<html lang="en-US" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="profile" href="https://gmpg.org/xfn/11">
+    <link rel="pingback" href="https://www.cisecurity.org/xmlrpc.php">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+        <title>MS-ISAC Security Primer- Emotet</title>
+
+    <!-- Functions for Google Tag Manager -->
+    <!-- www.cisecurity.org -->
+        <!-- Page hiding snippet (recommended) -->
+        <style>.async-hide { opacity: 0 !important} </style>
+        <script>
+        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;
+        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);
+        })(window,document.documentElement,'async-hide','dataLayer',4000,{'GTM-P5Q9JG6':true});
+        </script>
+
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-P5Q9JG6');</script>
+        <!-- End Google Tag Manager -->
+        <!-- Production Detected -->
+    
+    <meta name='robots' content='max-image-preview:large' />
+
+<!-- This site is optimized with the Yoast SEO Premium plugin v12.0.1 - https://yoast.com/wordpress/plugins/seo/ -->
+<meta name="description" content="Emotet continues to be among the most costly and destructive malware affecting state, local, tribal, and territorial (SLTT) governments."/>
+<link rel="canonical" href="https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="MS-ISAC Security Primer- Emotet" />
+<meta property="og:description" content="Emotet continues to be among the most costly and destructive malware affecting state, local, tribal, and territorial (SLTT) governments." />
+<meta property="og:url" content="https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/" />
+<meta property="og:site_name" content="CIS" />
+<meta property="article:publisher" content="https://www.facebook.com/CenterforIntSec/" />
+<meta property="og:image" content="https://www.cisecurity.org/wp-content/uploads/2018/07/emotet-.png" />
+<meta property="og:image:secure_url" content="https://www.cisecurity.org/wp-content/uploads/2018/07/emotet-.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="627" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:description" content="Emotet continues to be among the most costly and destructive malware affecting state, local, tribal, and territorial (SLTT) governments." />
+<meta name="twitter:title" content="MS-ISAC Security Primer- Emotet" />
+<meta name="twitter:site" content="@CISecurity" />
+<meta name="twitter:image" content="https://www.cisecurity.org/wp-content/uploads/2018/07/emotet-.png" />
+<meta name="twitter:creator" content="@CISecurity" />
+<script type='application/ld+json' class='yoast-schema-graph yoast-schema-graph--main'>{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.cisecurity.org/#organization","name":"CIS (Center for Internet Security)","url":"https://www.cisecurity.org/","sameAs":["https://www.facebook.com/CenterforIntSec/","https://www.instagram.com/cisecurity/","https://www.linkedin.com/company/the-center-for-internet-security/","https://www.youtube.com/user/TheCISecurity","https://twitter.com/CISecurity"],"logo":{"@type":"ImageObject","@id":"https://www.cisecurity.org/#logo","url":"https://www.cisecurity.org/wp-content/uploads/2018/10/2.png","width":1200,"height":627,"caption":"CIS (Center for Internet Security)"},"image":{"@id":"https://www.cisecurity.org/#logo"}},{"@type":"WebSite","@id":"https://www.cisecurity.org/#website","url":"https://www.cisecurity.org/","name":"CIS","publisher":{"@id":"https://www.cisecurity.org/#organization"},"potentialAction":{"@type":"SearchAction","target":"https://www.cisecurity.org/?s={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"ImageObject","@id":"https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/#primaryimage","url":"https://www.cisecurity.org/wp-content/uploads/2018/07/Screen-Shot-2018-07-23-at-11.23.00-AM.png","width":549,"height":429,"caption":"Emotet E-mail"},{"@type":"WebPage","@id":"https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/#webpage","url":"https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/","inLanguage":"en-US","name":"MS-ISAC Security Primer- Emotet - CIS","isPartOf":{"@id":"https://www.cisecurity.org/#website"},"primaryImageOfPage":{"@id":"https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/#primaryimage"},"datePublished":"2018-12-12T14:52:49-05:00","dateModified":"2019-01-03T15:34:08-05:00","description":"Emotet continues to be among the most costly and destructive malware affecting state, local, tribal, and territorial (SLTT) governments.","breadcrumb":{"@id":"https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://www.cisecurity.org/","url":"https://www.cisecurity.org/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"/resources/","url":"/resources/","name":"Resources"}},{"@type":"ListItem","position":3,"item":{"@type":"WebPage","@id":"https://www.cisecurity.org/white-papers/","url":"https://www.cisecurity.org/white-papers/","name":"White Papers"}},{"@type":"ListItem","position":4,"item":{"@type":"WebPage","@id":"https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/","url":"https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/","name":"MS-ISAC Security Primer- Emotet"}}]}]}</script>
+<!-- / Yoast SEO Premium plugin. -->
+
+<link rel='dns-prefetch' href='//s.w.org' />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/www.cisecurity.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://www.cisecurity.org/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-min-css'  href='https://www.cisecurity.org/wp-content/themes/cis/assets/bootstrap/css/bootstrap.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='fawsome-css'  href='https://www.cisecurity.org/wp-content/themes/cis/assets/font-awesome/css/font-awesome.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='core-css'  href='https://www.cisecurity.org/wp-content/themes/cis/assets/css/style.css?ver=4660' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.cisecurity.org/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-content/themes/cis/assets/jQuery/jquery-3.4.1.min.js?ver=5.7.2' id='cis-jquery-js-js'></script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-content/themes/cis/assets/jQuery/jquery-ui.js?ver=5.7.2' id='cis-jquery-ui-js'></script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-content/themes/cis/assets/bootstrap/js/bootstrap.min.js?ver=5.7.2' id='cis-bootstrap-js-js'></script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-content/themes/cis/assets/js/retina.min.js?ver=5.7.2' id='cis-retina-js-js'></script>
+<script type='text/javascript' id='cis-membership-js-js-extra'>
+/* <![CDATA[ */
+var process_membership = {"ajax_url":"https:\/\/www.cisecurity.org\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-content/themes/cis/assets/js/membership.js?ver=5.7.2' id='cis-membership-js-js'></script>
+<script type='text/javascript' id='cis-downloadpdf-js-js-extra'>
+/* <![CDATA[ */
+var downloadpdf = {"ajax_url":"https:\/\/www.cisecurity.org\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-content/themes/cis/assets/js/pdf.js?ver=5.7.2' id='cis-downloadpdf-js-js'></script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-content/themes/cis/assets/js/gaeventtrack.js?ver=5.7.2' id='cis-gaeventtrack-js-js'></script>
+<link rel="https://api.w.org/" href="https://www.cisecurity.org/wp-json/" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.cisecurity.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.cisecurity.org/wp-includes/wlwmanifest.xml" /> 
+<link rel='shortlink' href='https://www.cisecurity.org/?p=8602' />
+<link rel="alternate" type="application/json+oembed" href="https://www.cisecurity.org/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.cisecurity.org%2Fwhite-papers%2Fms-isac-security-primer-emotet%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://www.cisecurity.org/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.cisecurity.org%2Fwhite-papers%2Fms-isac-security-primer-emotet%2F&#038;format=xml" />
+<meta name="description" content="This MS-ISAC Security Primer discusses Emotet, the most prevalent malware currently affecting state, local, tribal, and territorial (SLTT) governments" />
+<style type="text/css">.broken_link, a.broken_link {
+	text-decoration: line-through;
+}</style><link rel="icon" href="https://www.cisecurity.org/wp-content/uploads/2020/04/cropped-CIS-512x512-1-32x32.png" sizes="32x32" />
+<link rel="icon" href="https://www.cisecurity.org/wp-content/uploads/2020/04/cropped-CIS-512x512-1-192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://www.cisecurity.org/wp-content/uploads/2020/04/cropped-CIS-512x512-1-180x180.png" />
+<meta name="msapplication-TileImage" content="https://www.cisecurity.org/wp-content/uploads/2020/04/cropped-CIS-512x512-1-270x270.png" />
+    <script type="text/javascript">
+        window.setRecentlyViewedBenchmarkCookie = function(technologyKey, technologyVersion, version) {
+
+            var recentlyViewedBenchmarks = Cookies.getJSON('recentlyViewedBenchmarks') || [];
+
+            var exists = false;
+
+            for(var z = 0; z < recentlyViewedBenchmarks.length; z++) {
+
+                var benchmark = recentlyViewedBenchmarks[z];
+
+                if(
+                    benchmark.technologyKey === technologyKey
+                    && benchmark.technologyVersion === technologyVersion
+                    && benchmark.version === version
+                ) {
+                    exists = true;
+                }
+            }
+
+            if(!exists) {
+                if(recentlyViewedBenchmarks.length >= 5) {
+                    recentlyViewedBenchmarks.splice(-1,1);
+                }
+
+                recentlyViewedBenchmarks.unshift({
+                    technologyKey: technologyKey,
+                    technologyVersion: technologyVersion,
+                    version: version
+                });
+
+                Cookies.set('recentlyViewedBenchmarks', recentlyViewedBenchmarks, { domain: '.cisecurity.org' });
+            }
+            window.location = "https://learn.cisecurity.org/benchmarks";
+        };
+    </script>
+    <style>
+        #searchLink, #navigation{
+            display: none;
+        }
+    </style>
+
+    <!-- Google code that was here has been removed. It is now in a developer only file. Manage any Google interactions with the Google Tag Manager plugin, or by editing googleTagManagerFunctions.php -->
+
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="965d9c8b-6ef3-48b4-ba8f-11d8d9ba39c1" type="text/javascript" async></script>
+
+
+<style>//.async-hide { opacity: 0 !important} </style>   <style>
+        #searchLink, #navigation{
+            display: none;
+        }
+
+
+        /* FOUND ON DESKTOP AND MOBILE NAV */
+        .p_is_below_link{
+            padding-bottom:0;
+            margin-bottom:0;
+        }
+        .blue_nav_link{
+            color: #0086bf;
+        }
+        .blue_nav_link:hover, .blue_nav_link:focus{
+            color: #003b5c;
+        }
+        .fa-angle-right{
+            color: #0086bf;
+            padding-right:1em;
+        }
+        .fa-angle-right:hover, .fa-angle-right:focus{
+            color: #003b5c;
+        }
+        /*** TODO: HERE - above is good ***/
+
+        .learn-more-2{
+            color:#0086BF;
+        }
+        .learn-more-2:hover{
+            color:#003b5c;
+        }
+        .child_nav_header{
+            color:black;
+            font-weight:normal;
+        }
+        .child_nav_main_header{
+            font-family: "Open Sans Regular";
+            font-size:1.75em;
+            padding-bottom:.875em;
+        }
+        .child_nav_secondary_header{
+            font-size:1.25em;
+            padding-bottom:.5em;
+            font-family: "Open Sans Bold";
+        }
+        .child_nav_hr{
+            width:64px;border-bottom:solid 1px #DE890A;
+        }
+        .padded_td{
+            padding-top:1.5em;
+        }
+        .no_bottom_padding{
+            padding-bottom:0;
+            margin-bottom:0;
+        }
+        .header_hr{
+            border-color:lightgrey;
+            border-width:1px;
+            margin-top:1em;
+            margin-bottom:1em;
+        }
+        #site_search{
+            background-color:#eee;
+            width:100%;
+        }
+        .fa{
+            cursor:pointer;
+        }
+        /* SECONDARY MENU MOBILE */
+        .mobile_secondary_svg{
+            height: 24px;
+            width: 24px;
+        }
+        .top_secondary_m_td_icon{
+            width:40px;
+            vertical-align: middle;
+            text-align:center;
+        }
+        .top_secondary_m_td_right{
+            vertical-align: middle;
+        }
+        .mobile_child_link_large{
+
+            font-family:"Open Sans Bold";
+        }
+        .div_indent_links{
+            width:100%;
+            padding-left:1em;
+        }
+        .pointer_cursor:link, .pointer_cursor:visited, .pointer_cursor:hover, .pointer_cursor:active {
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .link_pad_right{
+            cursor: pointer;
+            text-decoration: none;
+            color:#222;
+            font-size:16px;
+            padding-right:1em;
+        }
+        .link_pad_right:hover, .link_pad_right:focus{
+            text-decoration: none;
+            color:black;
+        }
+        .desktop_nav_chevron{
+            font-size:.75em;
+            display:inline;
+            padding-bottom:.25em;
+        }
+        .desktop_link{
+            margin-left:2em;
+            margin-right:2em;
+            cursor:pointer;
+            font-weight:bold;
+            padding-bottom:.75em;
+            border-bottom:solid 5px white;
+        }
+        .desktop_link:hover, .desktop_link:focus{
+            text-decoration:none;
+        }
+        /* UNDERLINE APPLIED TO MAIN MENU ITEMS BY JAVASCRIPT TO SHOW ACTIVE LINK */
+        .blue_underline_desktop_nav{
+            border-bottom:solid 5px #0086bf;
+        }
+        .active_span_chevron{
+            display:none;
+        }
+        .hidden_menu_div {
+            position: absolute;
+            background: #F3F4F4;
+            width: 100%;
+            z-index:1000;
+            display:none;
+            margin-top:1.1em;
+            box-shadow: 0 25px 25px 0 rgba(0,0,0,0.3);
+        }
+        /* TODO: look in next one - can we move? */
+        @media screen and (max-height: 450px) {
+            .overlay a {font-size: 20px}
+            .overlay .closebtn {
+                font-size: 40px;
+                top: 15px;
+                right: 35px;
+            }
+        }
+        @media print {
+            #blog-post,
+            .masthead,
+            .template-sidebar-content,
+            .learn-more,
+            .btn,
+            #cookiebanner,
+            .noPrint,
+            #printTest {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<style>
+
+    .overlay {
+        display:none;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        background-color: rgb(255,255,255);
+        overflow-x: hidden;
+        /*overflow: hidden;*/
+        /*transition: 0.5s;*/
+        /*float:left;*/
+        /*display:none;*/
+    }
+    #overlay_content_parent{
+        padding-left:2em;
+        padding-right:0em;
+    }
+    #overlay_content_child1, #overlay_content_child2, #overlay_content_child3, #overlay_content_child4 {
+        padding-left:2em;
+        padding-right:3em;
+    }
+    .overlay_content_child{
+        padding-bottom:3em;
+    }
+    #overlay_bg {
+        display:none;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        z-index: 5;
+        top: 0;
+        background-color: rgb(255,255,255);
+        overflow-x: hidden;
+    }
+    .overlay_left{
+        float:left;
+    }
+    .overlay_right{
+        float:right;
+    }
+    .overlay-content {
+        position: relative;
+        top: 5em;
+        top:100px;
+        width: 100%;
+        text-align: left;
+        padding-left:1em;
+        padding-right:1em;
+    }
+    .overlay_content_child{
+        padding-top:1.25em;
+        padding-right:3em;
+    }
+    .overlay a {
+        text-decoration: none;
+        display: block;
+        transition: 0.3s;
+    }
+    #mobile_navigation{
+        display:none;
+        z-index: 1000;
+        position: fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100px;
+        background-color:white;
+    }
+    #mobile_navigation::-webkit-scrollbar {
+        display: none;
+    }
+    #mobile_navigation a {
+        padding: 10px;
+        text-decoration: none;
+        color: #0086bf;
+    }
+    .hr_grey_thin{
+        border-top:solid 1px #ccc;
+    }
+    .closebtn_link {
+        position: absolute;
+        top: 15px;
+        right: .425em;
+        font-size: 2.5em;
+        font-size: 50px;
+        cursor: pointer;
+    }
+    .backbtn_link {
+        position: absolute;
+        top: 24px;
+        left:1em;
+    }
+    #backbtn{
+        font-size: 30px;
+        cursor: pointer;
+    }
+    #back_btn_text{
+        font-weight:bold;
+        font-size: 24px;
+        cursor: pointer;
+        margin-bottom:1em;
+    }
+    .p_below_link{
+        padding-top:0;
+        margin-top:0;
+    }
+    .parent_mobile_link{
+        padding: 8px;
+        font-size: 2em;
+        padding-bottom:.65em;
+        padding-top:1em;
+        padding-left:0;
+        cursor: pointer;
+        padding-right:0;
+    }
+    .parent_mobile_link_grey{
+        color: #444;
+        font-size: 1.75em;
+    }
+    .parent_mobile_link_grey:hover, .parent_mobile_link_grey:focus{
+        color: black;
+    }
+    .child_mobile_link{
+        font-size:1em;
+        padding-bottom:.5em;
+        padding-top:.75em;
+    }
+    .no_padding_left{
+        padding-left:0;
+    }
+</style>
+<!--********************** MOBILE MENU **********************-->
+
+<!--******** FULLSCREEN MOBILE MENU VIEW WITH CLOSE BUTTON TO RETURN TO CONDENSED ********-->
+
+<!-- MOBILE FULLSCREEN MENU NAVIGATION - absolute positioning-->
+<div id="mobile_navigation">
+    <a class="backbtn_link" id="mobile_nav_back_button" style="display:none;padding-top:1.25em;">
+        <i id="backbtn" class="fa fa-angle-left" style="font-weight:bold;"></i> <span id="back_btn_text">&nbsp; Back</span>
+    </a>
+    <a class="closebtn_link nav_close_button pull-right" id="mobile_nav_close_button">&times</a>
+    <input type="hidden" id="current_child_nav" value="">
+</div>
+
+<!-- FULLSCREEN PARENT - LEVEL 1-->
+<div id="myNav" class="overlay">
+    <div class="overlay-content" id="overlay_content_parent" style="overflow:hidden;">
+        <a class=" parent_mobile_link parent_mobile_link_animate blue_nav_link" id="why_cis">
+            Why CIS  <i class="fa fa-angle-right pull-right fa-lg" style="overflow:hidden;"></i>
+        </a>
+        <a class=" parent_mobile_link parent_mobile_link_animate blue_nav_link"  id="solutions">
+            Solutions <i class="fa fa-angle-right pull-right fa-lg" style=""></i>
+        </a>
+        <a class=" parent_mobile_link parent_mobile_link_animate blue_nav_link" id="join_cis">
+            Join CIS <i class="fa fa-angle-right pull-right fa-lg" style=""></i>
+        </a>
+        <a class=" parent_mobile_link parent_mobile_link_animate blue_nav_link" id="resources">
+            Resources <i class="fa fa-angle-right pull-right fa-lg" style=""></i>
+        </a>
+        <hr class="hr_grey_thin">
+        <a class="parent_mobile_link parent_mobile_link_grey" href="https://workbench.cisecurity.org/" id="" style="overflow:hidden;">
+            CIS WorkBench Sign-in <img class=""  alt="CIS WorkBench Sign In"  src="/wp-content/themes/cis/assets/new-navigation/icons/utility-icon-login.svg" style="">
+        </a>
+        <a class="parent_mobile_link parent_mobile_link_grey" href="/support/" id="" style="margin-bottom:.5em;">
+            Support <img class="" alt="CIS Support"  src="/wp-content/themes/cis/assets/new-navigation/icons/utility-icon-support.svg" style="">
+        </a>
+        <br>
+        
+<a href="/cybersecurity-threats/alert-level/">
+    <button class="btn" style="background-color:#00A8E1; color:black;text-size:16px;padding-top:.25em;padding-bottom:.25em;">
+        Alert Level: <strong>Guarded</strong>
+                    <img class="" alt="CIS Alert Level" src="/wp-content/themes/cis/assets/new-navigation/icons/navi-icon-alert-info_dark.svg" style="padding-bottom:.25em;">
+            </button>
+</a>
+        <br><br>
+    </div>
+</div>
+<!-- END FULLSCREEN PARENT - LEVEL 1-->
+
+
+<!-- FULLSCREEN CHILD - Why CIS - LEVEL 2 -->
+<div id="div_child_mobile_nav_why_cis" class="overlay overlay_right">
+    <div class="overlay-content overlay_content_child" id="overlay_content_child1">
+        <h2 class="child_nav_header child_nav_main_header">Why CIS</h2>
+        <h5 class="child_nav_header child_nav_secondary_header">Who We Are</h5>
+        <p>CIS is an independent, nonprofit organization with a mission to create confidence in the connected world</p>
+        <hr class="pull-left child_nav_hr" style=""><br>
+        <a class="child_mobile_link blue_nav_link " style="" href="/about-us/">
+            About Us
+        </a>
+        <a class="child_mobile_link blue_nav_link " style="" href="/about-us/cis-leadership-principles/">
+            Leadership Principles
+        </a>
+        <a class="child_mobile_link blue_nav_link " style="" href="/testimonials/">
+            Testimonials
+        </a>
+    </div>
+</div>
+<!-- END - FULLSCREEN CHILD - Why CIS - LEVEL 2 -->
+
+
+<!-- FULLSCREEN CHILD - Solutions - LEVEL 2 -->
+<div id="div_child_mobile_nav_solutions" class="overlay overlay_right">
+    <div class="overlay-content overlay_content_child" id="overlay_content_child2">
+        <h2 class="child_nav_header child_nav_main_header">Solutions</h2>
+        <table class="no_padding" style="width:100%">
+            <!-- SECURE YOUR ORGANIZATION -->
+            <tr>
+                <td class="top_secondary_m_td_icon" style="">
+                    <img class="mobile_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-company.svg">
+                </td>
+                <td class="top_secondary_m_td_right"  style="">
+                    <h5 class="child_nav_header child_nav_secondary_header no_bottom_padding">Secure Your Organization</h5>
+                </td >
+            </tr>
+            <tr>
+                <td></td>
+                <td style="vertical-align: top;">
+                    <hr class="pull-left child_nav_hr" style=""><br>
+                    <div class="div_indent_links">
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/controls/">
+                            CIS Controls<sup>&#174;</sup>
+                        </a>
+                        <p class="p_below_link">Prioritized & simplified best practices</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link"  style="" href="https://www.cisecurity.org/communities/controls/">
+                            CIS Controls Community
+                        </a>
+                        <p  class="p_below_link">Help develop and maintain the Controls</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="https://learn.cisecurity.org/cis-ram">
+                            CIS RAM
+                        </a>
+                        <p  class="p_below_link">Information security risk assessment method</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="https://www.cisecurity.org/controls/cis-controls-self-assessment-tool-cis-csat/">
+                            CIS CSAT
+                        </a>
+                        <p  class="p_below_link">Assess & measure Controls implementation</p>
+                    </div>
+                </td>
+            </tr>
+            <!-- SECURE SPECIFIC PLATFORMS -->
+            <tr><td class="padded_td"></td></tr>
+            <tr>
+                <td class="top_secondary_m_td_icon" style="">
+                    <img class="mobile_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-platform.svg">
+                </td>
+                <td class="top_secondary_m_td_right"  style="">
+                    <h5 class="child_nav_header child_nav_secondary_header no_bottom_padding">Secure Specific Platforms</h5>
+                </td >
+            </tr>
+            <tr>
+                <td></td>
+                <td style="vertical-align: top;">
+                    <hr class="pull-left child_nav_hr" style=""><br>
+                    <div class="div_indent_links">
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/cis-benchmarks/">
+                            CIS Benchmarks<sup>&#8482;</sup>
+                        </a>
+                        <p class="p_below_link">100+ vendor-neutral configuration guides</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link"  style="" href="https://www.cisecurity.org/communities/benchmarks/">
+                            CIS Benchmarks Community
+                        </a>
+                        <p  class="p_below_link">Develop & update secure configuration guides</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/cybersecurity-tools/cis-cat-pro/">
+                            CIS-CAT<sup>&#174;</sup>
+                        </a>
+                        <p  class="p_below_link">Assess system conformance to CIS Benchmarks</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/cis-hardened-images/">
+                            CIS Hardened Images<sup>&#174;</sup>
+                        </a>
+                        <p  class="p_below_link">Virtual images hardened to CIS Benchmarks</p>
+                    </div>
+                </td>
+            </tr>
+            <!-- U.S. State, Local, Tribal & Territorial Governments -->
+            <tr><td class="padded_td"></td></tr>
+            <tr>
+                <td class="top_secondary_m_td_icon top_secondary_td_padded">
+                    <img class="mobile_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-government.svg">
+                </td>
+                <td class="top_secondary_m_td_right"  style="">
+                    <h5 class="child_nav_header child_nav_secondary_header no_bottom_padding">U.S. State, Local, Tribal & Territorial Governments</h5>
+                </td >
+            </tr>
+            <tr>
+                <td></td>
+                <td style="vertical-align: top;">
+                    <hr class="pull-left child_nav_hr" style=""><br>
+                    <div class="div_indent_links">
+                        <h5 class="child_nav_header child_nav_secondary_header">Memberships</h5>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/ms-isac/">
+                            MS-ISAC<sup>&#174;</sup>
+                        </a>
+                        <p class="p_below_link">Cybersecurity resource for SLTT Governments</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link"  style="" href="/ei-isac/">
+                            EI-ISAC<sup>&#174;</sup>
+                        </a>
+                        <p  class="p_below_link">Election-focused cyber defense suite</p>
+                        <h5 class="child_nav_header child_nav_secondary_header">Services for Members</h5>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/services/albert-network-monitoring/">
+                            Albert Network Monitoring<sup>&#174;</sup>
+                        </a>
+                        <p  class="p_below_link">Cost-effective Intrusion Detection System</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/services/managed-security-services-mss/">
+                            Managed Security Services
+                        </a>
+                        <p  class="p_below_link">VSecurity monitoring of enterprises devices</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/services/cis-cybermarket/">
+                            CIS CyberMarket<sup>&#174;</sup>
+                        </a>
+                        <p  class="p_below_link">Savings on training and software</p>
+                        <a class="child_mobile_link blue_nav_link p_is_below_link" style="" href="/ms-isac/services/mdbr/">
+                            Malicious Domain Blocking & Reporting
+                        </a>
+                        <p  class="p_below_link">Prevent Connection to harmful web domains</p>
+                    </div>
+                </td>
+            </tr>
+            <!-- LINK AT BOTTOM - VIEW ALL PRODUCTS...-->
+            <tr><td class="padded_td"></td></tr>
+            <tr>
+                <td colspan="2">
+                    <a class="mobile_child_link_large" href="/cybersecurity-tools/" style="font-size:1.25em;">
+                        View All Products & Services &nbsp; <i class="fa fa-angle-right fa-lg" style=""></i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- END - FULLSCREEN CHILD - Solutions - LEVEL 2 -->
+
+
+<!-- FULLSCREEN CHILD - Join CIS - LEVEL 2 -->
+<div id="div_child_mobile_nav_join_cis" class="overlay overlay_right">
+    <div class="overlay-content overlay_content_child" id="overlay_content_child3">
+        <h2 class="child_nav_header child_nav_main_header">Join CIS</h2>
+        <h5 class="child_nav_header child_nav_secondary_header">Get Involved</h5>
+        <p>Join CIS as a member, partner, or volunteer - or explore our career opportunities</p>
+        <hr class="pull-left" style="width:5em;border:solid 1px goldenrod;"><br>
+        <a class="child_mobile_link blue_nav_link" style="" href="/cis-securesuite/">
+            CIS SecureSuite<sup>&#174;</sup> Membership
+        </a>
+        <a class="child_mobile_link blue_nav_link" style="" href="/ms-isac/">
+            Multi-State ISAC (MS-ISAC<sup>&#174;</sup>)
+        </a>
+        <a class="child_mobile_link blue_nav_link" style="" href="/ei-isac/">
+            Elections Infrastructure ISAC (EI-ISAC<sup>&#174;</sup>)
+        </a>
+        <a class="child_mobile_link blue_nav_link" style="" href="/services/cis-cybermarket/vendor-information/">
+            CIS CyberMarket<sup>&#174;</sup> Vendors
+        </a>
+        <a class="child_mobile_link blue_nav_link" style="" href="/communities/">
+            CIS Communities
+        </a>
+        <a class="child_mobile_link blue_nav_link" style="" href="https://careers-cisecurity.icims.com/jobs/search?hashed=-626009842&mobile=false&width=1492&height=500&bga=true&needsRedirect=false&jan1offset=-300&jun1offset=-240">
+            Careers
+        </a>
+    </div>
+</div>
+
+<!-- FULLSCREEN CHILD - Resources - LEVEL 2 -->
+<div id="div_child_mobile_nav_resources" class="overlay overlay_right" >
+    <div class="overlay-content overlay_content_child" id="overlay_content_child4">
+        <h2 class="child_nav_header child_nav_main_header">Resources</h2>
+        <table class="no_padding" style="width:100%">
+            <!-- Resources -->
+            <tr>
+                <td class="top_secondary_m_td_icon" style="">
+                    <img class="mobile_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-resources.svg">
+                </td>
+                <td class="top_secondary_m_td_right"  style="">
+                    <h5 class="child_nav_header child_nav_secondary_header no_bottom_padding">Secure Your Organization</h5>
+                </td >
+            </tr>
+            <tr>
+                <td></td>
+                <td style="vertical-align: top;">
+                    <hr class="pull-left child_nav_hr" style=""><br>
+                    <div class="div_indent_links">
+                        <a class="child_mobile_link blue_nav_link secondary_mynav_link" style="" href="/resources/?type=post">
+                            Blog
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?type=advisory">
+                            Advisories
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?type=newsletter">
+                            Newsletters
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/about-us/media/">
+                            Press Releases
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/about-us/media/?type=media-mention">
+                            In The News
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/elections-resources/">
+                            Elections Resources
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <!-- Learn -->
+            <tr><td class="padded_td"></td></tr>
+            <tr>
+                <td class="top_secondary_m_td_icon" style="">
+                    <img class="mobile_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-learn.svg">
+                </td>
+                <td class="top_secondary_m_td_right"  style="">
+                    <h5 class="child_nav_header child_nav_secondary_header no_bottom_padding">Learn</h5>
+                </td >
+            </tr>
+            <tr>
+                <td></td>
+                <td style="vertical-align: top;">
+                    <hr class="pull-left child_nav_hr" style=""><br>
+                    <div class="div_indent_links">
+                        <a class=" child_mobile_link blue_nav_link" style="" href="/resources/?type=white-papers">
+                            White Papers
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?type=webinar">
+                            Webinars
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?type=case-study">
+                            Case Studies
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?type=spotlight">
+                            Spotlights
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?type=daily-tip">
+                            Daily Tips
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <!-- Filter By Topic -->
+            <tr><td class="padded_td"></td></tr>
+            <tr>
+                <td class="top_secondary_m_td_icon" style="">
+                    <img class="mobile_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-filter.svg">
+                </td>
+                <td class="top_secondary_m_td_right"  style="">
+                    <h5 class="child_nav_header child_nav_secondary_header no_bottom_padding">Filter by Topic</h5>
+                </td >
+            </tr>
+            <tr>
+                <td></td>
+                <td style="vertical-align: top;">
+                    <hr class="pull-left child_nav_hr" style=""><br>
+                    <div class="div_indent_links">
+                        <a class="child_mobile_link blue_nav_link secondary_mynav_link" style="" href="/resources/?o=benchmarks">
+                            CIS Benchmarks<sup>&#8482;</sup>
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?o=controls">
+                            CIS Controls<sup>&#174;</sup>
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?o=cis-hardened-images">
+                            CIS Hardened Images<sup>&#174;</sup>
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?o=services">
+                            CIS Services<sup>&#174;</sup>
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?o=ms-isac">
+                            MS-ISAC<sup>&#174;</sup>
+                        </a>
+                        <a class="child_mobile_link blue_nav_link" style="" href="/resources/?o=ei-isac">
+                            EI-ISAC<sup>&#174;</sup>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <!-- LINK AT BOTTOM - VIEW ALL PRODUCTS...-->
+            <tr><td class="padded_td"></td></tr>
+            <tr>
+                <td colspan="2">
+                    <a class="mobile_child_link_large" href="/resources/" style="font-size:1.25em;">
+                        View All Resources &nbsp; <i class="fa fa-angle-right fa-lg" style=""></i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- MOBILE OVERLAY BACKGROUND -->
+<div id="overlay_bg"></div>
+<!--********************** END - MOBILE MENU **********************-->
+<style>
+    .right_gold_divider{
+        border-right:solid 1px #DE890A;
+    }
+    .desktop_heading{
+        color:black;
+        padding-bottom:.5em;
+        /*font-size:1.25em;*/
+        font-size:18px;
+        font-family:"Open Sans Bold";
+    }
+    .desktop_p{
+        font-size:16px;
+        line-height: 22px;
+        /*line-height:1.5;*/
+    }
+    .child_desktop_link{
+        display:block;
+        padding-top:.5em;
+        padding-bottom:.5em;
+        font-weight:bold;
+        /*font-size:.85em;*/
+        font-size:14px;
+        color: #337AB7
+    }
+    .desktop_child_link_large:hover, .desktop_child_link_large:focus, .child_desktop_link:hover, .child_desktop_link:focus{
+        text-decoration: none;
+    }
+    .tr_middle_aligned{
+        vertical-align: middle;
+    }
+    .td_who_we_are_padding{
+        padding:3em;
+        padding-top:1.25em;
+        padding-bottom:1.25em;
+    }
+    .desktop_secondary_svg{
+        width:34px;
+    }
+    .child_desktop_header{
+        font-size:16px;
+        font-family:"Open Sans Bold";
+        color:black;
+    }
+    .child_desktop_secondary_header{
+        margin-top:.5em;
+        margin-bottom:1em;
+        font-size:14px;
+    }
+    .p_below_link_desktop{
+        font-size:12px;
+    }
+    .desktop_child_link_large{
+        font-size:16px;
+        font-family:"Open Sans Bold";
+    }
+</style>
+
+
+
+
+
+
+<div class="container container-sm" id="main_content_div">
+    <!-- DESKTOP MENU -->
+    <div class="container-fluid hidden-sm hidden-xs" style="width:100%;padding-top:20px;">
+        <!-- LOGO AND TOP ROW -->
+        <div class="row ">
+            <!-- LOGO -->
+            <div class="col-xl-2 col-lg-3 col-md-4 ">
+                <a href="/"><img src="/wp-content/themes/cis/assets/new-navigation/CIS-Logo-2-Line-2-Spot-Tagline-300px-high-largetext.png" alt="CIS Logo" style="width:250px;"></a>
+            </div>
+            <!-- support, workbench, alert-level, search -->
+            <div class="col-xl-10 col-lg-9 col-md-8 text-right" style="padding-right:0;">
+                <!-- SUPPORT -->
+                <a class="link_pad_right" href="/support/" id="">
+                    Support <img alt="CIS Support" class=""  src="/wp-content/themes/cis/assets/new-navigation/icons/utility-icon-support.svg" style="">
+                </a>
+                <!-- WORKBENCH SIGN IN -->
+                <a class="link_pad_right" href="https://workbench.cisecurity.org/" id="" style="margin-right:.5em;">
+                    CIS WorkBench Sign-in <img alt="CIS WorkBench Sign In" class=""  src="/wp-content/themes/cis/assets/new-navigation/icons/utility-icon-login.svg" style="">
+                </a>
+                <!-- ALERT LEVEL -->
+                
+<a href="/cybersecurity-threats/alert-level/">
+    <button class="btn" style="background-color:#00A8E1; color:black;text-size:16px;padding-top:.25em;padding-bottom:.25em;">
+        Alert Level: <strong>Guarded</strong>
+                    <img class="" alt="CIS Alert Level" src="/wp-content/themes/cis/assets/new-navigation/icons/navi-icon-alert-info_dark.svg" style="padding-bottom:.25em;">
+            </button>
+</a>
+                <br>
+                <!-- DESKTOP SEARCH -->
+                <div class="row" style="padding-top:.75em;">
+                    <!--                    <div class="col-lg-offset-5 col-lg-7 col-md-offset-2 col-md-10" style="padding:.125em;text-align:left;margin-top:.5em;background-color:#eee;">-->
+                    <div class="col-md-12 text-right" style="">
+                        <div class="pull-right" style="padding:.25em;background-color:#eee;width:600px;">
+                            <form autocomplete="off" class="main_search_form" role="search" method="get" id="form_desktop_search" action="https://www.cisecurity.org/">
+                                <input class="homepage_search_input"  style="border:0;background-color:rgba(255,255,255,0); display:inline-block;padding:.5em;padding-left:1.5em;width:545px;" title="search" type="text"
+                                       placeholder="" name="s" id="input_desktop_search" value="">
+                                <span id="desktop_search"  class="btn btn-primary pull-right main_search_button pointer_cursor" style="padding:.5em;border-radius:5px;padding-left:.75em;padding-right:.95em;">
+                                    <img class="pointer_cursor " alt="search"   src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-search-blue.svg" style="display:inline;width:1.4em;">
+                                </span>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- LINE BREAK -->
+        <div class="row">
+            <div class="col-md-12">
+                <hr class="header_hr">
+            </div>
+        </div>
+        <!-- MENU ITEMS -->
+        <div class="row" style="padding-top:1em;padding-bottom:1.25em;margin-bottom:0em;">
+            <div class="col-md-12 text-center">
+                <!-- WHY CIS -->
+                <div class="desktop_link_div" id="desktop_why_cis" style="display:inline;" >
+                    <a class="desktop_link a_hovered" id="a_desktop_why_cis" style="">
+                        Why CIS <span id="inactive_desktop_why_cis"> <img alt="Why CIS" class="desktop_nav_chevron"  id=""  src="/wp-content/themes/cis/assets/new-navigation/icons/chevron_down_sm.svg" style=""></span>
+                        <span class="active_span_chevron" id="active_desktop_why_cis"> <img class="desktop_nav_chevron"  id=""  src="/wp-content/themes/cis/assets/new-navigation/icons/chevron_up_sm.svg" style=""></span>
+                    </a>
+                    <div class="row hidden_menu_div" id="div_desktop_why_cis" >
+                        <div class="col-12">
+                                <div class="row">
+        <div class=" col-lg-offset-4 col-lg-5 col-md-offset-2 col-md-9 col-sm-12 col-xs-12" style="padding-top:2.75em;padding-bottom:2.75em;">
+            <table>
+                <tr style="">
+                    <td class="right_gold_divider text-left tr_middle_aligned td_who_we_are_padding" style="width:55%;">
+                        <h5 class="desktop_heading">Who We Are</h5>
+                        <p class="desktop_p">CIS is an independent, nonprofit organization with a mission to create confidence in the connected world.</p>
+                    </td>
+                    <td class="text-left tr_middle_aligned td_who_we_are_padding" style="width:45%;">
+                        <a class="child_desktop_link blue_nav_link " style="" href="/about-us/">
+                            About Us
+                        </a>
+                        <a class="child_desktop_link blue_nav_link " style="" href="/about-us/cis-leadership-principles/">
+                            Leadership Principles
+                        </a>
+                        <a class="child_desktop_link blue_nav_link " style="" href="/testimonials/">
+                            Testimonials
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Solutions -->
+                <div class="desktop_link_div" id="desktop_solutions" style="display:inline;" >
+                    <a class="desktop_link a_hovered" id="a_desktop_solutions" style="">
+                        Solutions <span id="inactive_desktop_solutions"> <img alt="Solutions" class="desktop_nav_chevron"  id=""  src="/wp-content/themes/cis/assets/new-navigation/icons/chevron_down_sm.svg" style=""></span>
+                        <span class="active_span_chevron" id="active_desktop_solutions"> <img class="desktop_nav_chevron"  id=""  src="/wp-content/themes/cis/assets/new-navigation/icons/chevron_up_sm.svg" style=""></span>
+                    </a>
+                    <!-- SOLUTIONS -->
+                    <div class="row hidden_menu_div" id="div_desktop_solutions"  >
+                        <div class="col-12">
+                                <div class="row">
+        <div class="col-md-12" style="padding-top:1.5em;padding-bottom:1.5em;padding-left:3.5em;padding-right:3.5em;">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 " style="padding:1.5em;">
+                    <!-- SECURE YOUR ORGANIZATION -->
+                    <table style="width:100%;" >
+                        <tr>
+                            <td class="text-center tr_middle_aligned" style="width:8%">
+                                <img class="desktop_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-company.svg">
+                            </td>
+                            <td class="tr_middle_aligned text-left" colspan="2">
+                                <h5 style="" class="child_desktop_header  no_bottom_padding">Secure Your Organization</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left"  colspan="2">
+                                <hr class="pull-left child_nav_hr" style="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left" style="width:46%">
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/controls/">
+                                    CIS Controls<sup>&#174;</sup>
+                                </a>
+                                <p class="p_below_link_desktop">Prioritized & simplified best practices</p>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="https://learn.cisecurity.org/cis-ram">
+                                    CIS RAM
+                                </a>
+                                <p  class="p_below_link_desktop">Information security risk assessment method</p>
+                            </td>
+                            <td class="text-left" style="width:46%;">
+                                <a class="child_desktop_link blue_nav_link p_is_below_link"  style="" href="https://www.cisecurity.org/communities/controls/">
+                                    CIS Controls Community
+                                </a>
+                                <p  class="p_below_link_desktop">Help develop and maintain the Controls</p>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="https://www.cisecurity.org/controls/cis-controls-self-assessment-tool-cis-csat/">
+                                    CIS CSAT
+                                </a>
+                                <p  class="p_below_link_desktop">Assess & measure Controls implementation</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- SECURE SPECIFIC PLATFORMS -->
+                    <table style="width:100%;margin-top:1.75em;">
+                        <tr style="">
+                            <td class="text-center tr_middle_aligned" style="width:8%;">
+                                <img class="desktop_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-platform.svg">
+                            </td>
+                            <td class="tr_middle_aligned text-left" colspan="2" style="">
+                                <h5 style="" class="child_desktop_header no_bottom_padding">Secure Specific Platforms</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left"  colspan="2">
+                                <hr class="pull-left child_nav_hr" style="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left" style="width:46%">
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/cis-benchmarks/">
+                                    CIS Benchmarks<sup>&#8482;</sup>
+                                </a>
+                                <p class="p_below_link_desktop">100+ vendor-neutral configuration guides</p>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/cybersecurity-tools/cis-cat-pro/">
+                                    CIS-CAT<sup>&#174;</sup>
+                                </a>
+                                <p  class="p_below_link_desktop">Assess system conformance to CIS Benchmarks</p>
+                            </td>
+                            <td class="text-left" style="width:46%;">
+                                <a class="child_desktop_link blue_nav_link p_is_below_link"  style="" href="https://www.cisecurity.org/communities/benchmarks/">
+                                    CIS Benchmarks Community
+                                </a>
+                                <p  class="p_below_link_desktop">Develop & update secure configuration guides</p>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/cis-hardened-images/">
+                                    CIS Hardened Images<sup>&#174;</sup>
+                                </a>
+                                <p  class="p_below_link_desktop">Virtual images hardened to CIS Benchmarks</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            <!-- RIGHT COLUMN -->
+                <div class="col-lg-6 col-md-12 " style="background-color:rgba(0,0,0,0.075);padding:1.5em;">
+                    <!-- U.S. State, Local, Tribal & Territorial Governments -->
+                    <table style="width:100%;">
+                        <tr>
+                            <td class="text-center tr_middle_aligned" style="width:8%">
+                                <img class="desktop_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-government.svg">
+                            </td>
+                            <td class="tr_middle_aligned text-left" colspan="2">
+                                <h5 style="" class="child_desktop_header  no_bottom_padding">U.S. State, Local, Tribal & Territorial Governments</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left"  colspan="2">
+                                <hr class="pull-left child_nav_hr" style="">
+                            </td>
+                        </tr>
+                        <!-- MEMBERSHIPS -->
+                        <tr>
+                            <td></td>
+                            <td class="text-left" style="width:46%;vertical-align: top;">
+                                <h5 class="child_desktop_header child_desktop_secondary_header">Memberships</h5>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/ms-isac/">
+                                    MS-ISAC<sup>&#174;</sup>
+                                </a>
+                                <p class="p_below_link_desktop">Cybersecurity resource for SLTT Governments</p>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/ei-isac/">
+                                    EI-ISAC<sup>&#174;</sup>
+                                </a>
+                                <p  class="p_below_link_desktop">Election-focused cyber defense suite</p>
+                            </td>
+                            <!-- SERVICES FOR MEMBERS -->
+                            <td class="text-left" style="width:46%;vertical-align: top;">
+                                <h5 class="child_desktop_header child_desktop_secondary_header">Services for Members</h5>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link"  style="" href="/services/albert-network-monitoring/">
+                                    Albert Network Monitoring<sup>&#174;</sup>
+                                </a>
+                                <p  class="p_below_link_desktop">Cost-effective Intrusion Detection System</p>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/services/managed-security-services-mss/">
+                                    Managed Security Services
+                                </a>
+                                <p  class="p_below_link_desktop">VSecurity monitoring of enterprises devices</p>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link"  style="" href="/services/cis-cybermarket/">
+                                    CIS CyberMarket<sup>&#174;</sup>
+                                </a>
+                                <p  class="p_below_link_desktop">Savings on training and software</p>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/ms-isac/services/mdbr/">
+                                    Malicious Domain Blocking & Reporting
+                                </a>
+                                <p  class="p_below_link_desktop">Prevent Connection to harmful web domains</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row" style="padding-top:1.5em;">
+                <div class="col-sm-12 text-center">
+                    <a class="desktop_child_link_large" href="/cybersecurity-tools/" style="">
+                        View All Products & Services &nbsp;<i class="fa fa-angle-right fa-lg" style="width:10px;height:6px;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- JOIN CIS  -->
+                <div class="desktop_link_div" id="desktop_join_cis" style="display:inline;" >
+                    <a class="desktop_link a_hovered" id="a_desktop_join_cis" style="">
+                        Join CIS <span id="inactive_desktop_join_cis"> <img alt="Join CIS" class="desktop_nav_chevron"  id=""  src="/wp-content/themes/cis/assets/new-navigation/icons/chevron_down_sm.svg" style=""></span>
+                        <span class="active_span_chevron" id="active_desktop_join_cis"> <img class="desktop_nav_chevron"  id=""  src="/wp-content/themes/cis/assets/new-navigation/icons/chevron_up_sm.svg" style=""></span>
+                    </a>
+                    <div class="row hidden_menu_div" id="div_desktop_join_cis"  >
+                        <div class="col-12">
+                                <div class="row">
+        <div class=" col-lg-offset-3 col-lg-8 col-md-offset-2 col-md-9 col-sm-12 col-xs-12" style="padding-top:2.75em;padding-bottom:2.75em;">
+            <table>
+                <tr style="">
+                    <td class="right_gold_divider text-left tr_middle_aligned td_who_we_are_padding" style="width:45%;padding-left:4.5em;">
+                        <h5 class="desktop_heading">Get Involved</h5>
+                        <p class="desktop_p">Join CIS as a member, partner, or volunteer - or explore our career opportunities.</p>
+                    </td>
+                    <td class="text-left tr_middle_aligned td_who_we_are_padding" style="width:55%%;">
+                        <a class="child_desktop_link blue_nav_link " style="" href="/cis-securesuite/">
+                            CIS SecureSuite<sup>&#174;</sup> Membership
+                        </a>
+                        <a class="child_desktop_link blue_nav_link " style="" href="/ms-isac/">
+                            Multi-State ISAC (MS-ISAC<sup>&#174;</sup>)
+                        </a>
+                        <a class="child_desktop_link blue_nav_link " style="" href="/ei-isac/">
+                            Elections Infrastructure ISAC (EI-ISAC<sup>&#174;</sup>)
+                        </a>
+                        <a class="child_desktop_link blue_nav_link " style="" href="/services/cis-cybermarket/vendor-information/">
+                            CIS CyberMarket<sup>&#174;</sup> Vendors
+                        </a>
+                        <a class="child_desktop_link blue_nav_link " style="" href="/communities/">
+                            CIS Communities
+                        </a>
+                        <a class="child_desktop_link blue_nav_link " style="" href="https://careers-cisecurity.icims.com/jobs/search?hashed=-626009842&mobile=false&width=1492&height=500&bga=true&needsRedirect=false&jan1offset=-300&jun1offset=-240">
+                            Careers
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- RESOURCES  -->
+                <div class="desktop_link_div" id="desktop_resources" style="display:inline;" >
+                    <a class="desktop_link a_hovered" id="a_desktop_resources" style="">
+                        Resources <span id="inactive_desktop_resources"> <img alt="Resources" class="desktop_nav_chevron"  id=""  src="/wp-content/themes/cis/assets/new-navigation/icons/chevron_down_sm.svg" style=""></span>
+                        <span class="active_span_chevron" id="active_desktop_resources"> <img class="desktop_nav_chevron"  id=""  src="/wp-content/themes/cis/assets/new-navigation/icons/chevron_up_sm.svg" style=""></span>
+                    </a>
+                    <div class="row hidden_menu_div" id="div_desktop_resources">
+                        <div class="col-12">
+                                <div class="row" style="padding-top:2.75em;padding-bottom:1.5em;">
+        <div class="col-md-12">
+            <div class="row">
+                <div class=" col-lg-offset-3 col-lg-2 col-md-offset-1 col-md-3 " >
+                    <!-- Resources -->
+                    <table style="width:100%;">
+                        <tr>
+                            <td class="text-center tr_middle_aligned" style="width:25%">
+                                <img class="desktop_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-resources.svg">
+                            </td>
+                            <td class="tr_middle_aligned text-left" style="width:75%">
+                                <h5 style="" class="child_desktop_header  no_bottom_padding">Resources</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left" >
+                                <hr class="pull-left child_nav_hr" style="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left" style="width:100%;vertical-align: top;">
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?type=post">
+                                    Blog
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?type=advisory">
+                                    Advisories
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?type=newsletter">
+                                    Newsletters
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/about-us/media/">
+                                    Press Releases
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/about-us/media/?type=media-mention">
+                                    In The News
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/elections-resources/">
+                                    Elections Resources
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-lg-2 col-md-3 " >
+                    <!-- Learn -->
+                    <table style="width:100%;">
+                        <tr>
+                            <td class="text-center tr_middle_aligned" style="width:25%">
+                                <img class="desktop_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-learn.svg">
+                            </td>
+                            <td class="tr_middle_aligned text-left" style="width:75%">
+                                <h5 style="" class="child_desktop_header  no_bottom_padding">Learn</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left" >
+                                <hr class="pull-left child_nav_hr" style="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left" style="width:100%;vertical-align: top;">
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?type=white-papers">
+                                    White Papers
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?type=webinar">
+                                    Webinars
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?type=case-study">
+                                    Case Studies
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?type=spotlight">
+                                    Spotlights
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?type=daily-tip">
+                                    Daily Tips
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-lg-2 col-md-3 " >
+                    <!-- Resources -->
+                    <table style="width:100%;">
+                        <tr>
+                            <td class="text-center tr_middle_aligned" style="width:25%">
+                                <img class="desktop_secondary_svg" src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-filter.svg">
+                            </td>
+                            <td class="tr_middle_aligned text-left" style="width:75%">
+                                <h5 style="" class="child_desktop_header  no_bottom_padding">Filter by Topic</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left" >
+                                <hr class="pull-left child_nav_hr" style="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="text-left" style="width:100%;vertical-align: top;">
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?o=benchmarks">
+                                    CIS Benchmarks<sup>&#8482;</sup>
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?o=controls">
+                                    CIS Controls<sup>&#174;</sup>
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?o=cis-hardened-images">
+                                    CIS Hardened Images<sup>&#174;</sup>
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?o=services">
+                                    CIS Services<sup>&#174;</sup>
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?o=ms-isac">
+                                    MS-ISAC<sup>&#174;</sup>
+                                </a>
+                                <a class="child_desktop_link blue_nav_link p_is_below_link" style="" href="/resources/?o=ei-isac">
+                                    EI-ISAC<sup>&#174;</sup>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row" style="padding-top:1.5em;">
+                <div class="col-sm-12 text-center">
+                    <a class="desktop_child_link_large" href="/resources/" style="">
+                        View All Resources &nbsp;<i class="fa fa-angle-right fa-lg" style="width:10px;height:6px;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- DESKTOP ITEMS -->
+        <div class="row" style="">
+            <div class="col-md-12 text-center">
+                            </div>
+        </div>
+    </div>
+
+    <!--******** INITIAL TOP ALIGNED, CONDENSED MENU VIEW WITH HAMBURGER ********-->
+    <div class="row visible-sm visible-xs ">
+        <div class="col-sm-12 col-xs-12" style="width:100%;padding-left:1.75em;padding-right:1.75em;">
+            <table style="width:100%">
+                <tr class="primary_nav" id="view1">
+                    <td style="width:40%;vertical-align: middle;height:80px;padding-left:.5em;">
+                        <a href="/"><img alt="CIS Logo" src="/wp-content/themes/cis/assets/new-navigation/logo/CIS_logo_no-tag_stacked@2x.png" style="width:100%;"></a>
+                    </td>
+                    <td style="width:60%;vertical-align: middle;text-align: right;padding-right:1em;">
+                        <img class="search_toggle pointer_cursor" alt="Show Search" id="show_search"  src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-search-mobile-blue.svg" style="padding-right:1em;">
+                        <img class="hamburger_button pointer_cursor" alt="Expand Menu"  src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-mobile-hamburger.svg" style="">
+                    </td>
+                </tr>
+                <tr class="primary_nav" id="view2" style="display:none;">
+                    <td style="width:88%;vertical-align: middle;padding-left:1em;height:80px;">
+                        <!-- MOBILE Search -->
+                        <form autocomplete="off" class="main_search_form" role="search" method="get" id="form_mobile_search" action="https://www.cisecurity.org/">
+                            <table style="background-color:#eee; width:100%">
+                                <tr>
+                                    <td style="vertical-align: middle;padding:.75em;">
+                                        <img class="pointer_cursor main_search_button " alt="Search" id="mobile_search"
+                                             src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-search-mobile-blue.svg" style="padding-right:1em;">
+                                        <input class="homepage_search_input" style="border:0;background-color:rgba(255,255,255,0); width:70%;display:inline;" title="search" type="search"
+                                               placeholder="" name="s" id="input_mobile_search" value="">
+                                        <a class="pointer_cursor search_toggle nav_close_button pull-right"  style="font-size:1.5em;font-weight:bold;padding-top:.075em;padding-right:.5em;">&times</a>
+                                        <!--                                    <img class="search_toggle pointer_cursor pull-right"  src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-mobile-close_search.svg" style="font-size:1.5em;padding-right:1em;display:inline;">-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </td>
+                    <td style="width:12%;vertical-align: middle;text-align: right;padding-right:1em;">
+                        <img alt="Expand Menu" class="hamburger_button pointer_cursor"  src="/wp-content/themes/cis/assets/new-navigation/icons/nav-icon-mobile-hamburger.svg" style="">
+                    </td>
+                </tr>
+            </table>
+            <hr class="hr_grey_thin">
+        </div>
+    </div>
+    <!--******** END INITIAL TOP ALIGNED, CONDENSED MENU VIEW WITH HAMBURGER ********-->
+
+    
+    <div class="main">
+    <div id="blog-post" class="row">
+        <div class="vertical-divider-smaller hidden-md hidden-lg"></div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 blog-post popular-title">
+            <!-- <a href="https://www.cisecurity.org" class="text-blog-post padding-l-5">Home</a> -->
+                                <!-- <a href="https://www.cisecurity.org/resources" class="text-blog-post padding-l-5">Resources</a> -->
+                                        <!-- <a href="https://www.cisecurity.org/resources/white-papers" class="text-blog-post padding-l-5">Resources</a> -->
+                    <p style="padding-left: 5px;" id="breadcrumbs"><span><span><a href="https://www.cisecurity.org/" >Home</a> • <span><a href="/resources/" >Resources</a> • <span><a href="https://www.cisecurity.org/white-papers/" >White Papers</a> • <span class="breadcrumb_last" aria-current="page">MS-ISAC Security Primer- Emotet</span></span></span></span></span></p>        </div>
+    </div>
+    <div>
+            </div>
+
+    <script>
+
+        $(document).ready( function(){
+
+            // this controls the speed divs slide and out for mobile nav
+            let animation_time = 400;
+
+            /*** HANDLE SEARCH FORM SUBMIT ***/
+            $(document).on('click', '.main_search_button', function(){
+                let this_id = $(this).attr('id');
+                let this_search_input = $("#input_"+this_id);
+                let this_search_form = $("#form_"+this_id);
+                let this_search_val = this_search_input.val();
+                if( this_search_val == ""){
+                    this_search_input.val("all");
+                } else {
+                    // strip out all non alphanumeric characters
+                    let sanitized_val = this_search_val.replace(/[^a-zA-Z 0-9\-]+/g, ' ');
+                    this_search_input.val(sanitized_val);
+                }
+                this_search_form.submit();
+            });
+
+
+            /******** DESKTOP FUNCTIONALITY ********/
+            // SHOW DESKTOP EXPANDED -- do the underline through this as well
+            $(".desktop_link_div").hover(
+                function(){
+                    let this_id = $(this).attr('id');
+                    // add underline
+                    $("#a_"+this_id).addClass("blue_underline_desktop_nav");
+                    $("#div_"+this_id).show();
+                    $("#inactive_"+this_id).hide();
+                    $("#active_"+this_id).show();
+                },
+                function(){
+                    let this_id = $(this).attr('id');
+                    // remove underline
+                    $("#a_"+this_id).removeClass("blue_underline_desktop_nav");
+                    $("#div_"+this_id).hide();
+                    $("#inactive_"+this_id).show();
+                    $("#active_"+this_id).hide();
+                }
+            );
+            /******** END - DESKTOP FUNCTIONALITY ********/
+
+
+            /******** MOBILE FUNCTIONALITY ********/
+            // OPEN FULLSCREEN MOBILE MENU - slide out from left
+            $(".hamburger_button").click(function(){
+                $("#main_content_div").hide();
+                $("#mobile_navigation").show();
+                $("#overlay_bg").show();
+                // SCROLL IN FROM LEFT
+                // $('#myNav').show('slide', {direction: 'left'}, animation_time);
+                $("#myNav").fadeIn( "slow", function() {
+                    // Animation complete.
+                });
+                let this_id = $("#current_child_nav").val();
+            });
+
+            // SHOW CHILD NAV - On Click from mobile menu top level (expanded - no hamburger)
+            $(".parent_mobile_link_animate").click(function(){
+                let this_id = $(this).attr('id');
+                // SHOW BACK BUTTON - ONLY NEEDED IN CHILD FULLSCREEN MOBILE VIEW in order to get back to parent
+                show_secondary_nav_button();
+                $('#myNav').hide('slide', {direction: 'left'}, animation_time);
+                // DELAY THE SCROLL IN OF CHILD
+                setTimeout(
+                    function()
+                    {
+                        $('#div_child_mobile_nav_'+this_id).show('slide', {direction: 'right'}, animation_time);
+                        $("#current_child_nav").val(this_id);
+                    }, 100);
+            });
+
+            // BACK BUTTON FROM CHILD FULLSCREEN MOBILE MENU - GOES BACK TO PARENT FULLSCREEN
+            $("#mobile_nav_back_button").click(function(){
+                let this_id = $("#current_child_nav").val();
+                $('#div_child_mobile_nav_'+this_id).hide('slide', {direction: 'right'}, animation_time);
+                setTimeout(
+                    function()
+                    {
+                        $('#myNav').show('slide', {direction: 'left'}, animation_time);
+                        // HIDE BACK BUTTON - NOT NEEDED ON PARENT FULLSCREEN
+                        $("#mobile_nav_back_button").hide();
+                        // MAKE SURE LAST CHILD DIV IS AGAIN RIGHT ALIGNED SO COMES IN FROM RIGHT SIDE WHEN WE NAVIGATE TO IT AGAIN
+                        right_align_folding_div();
+                    }, 100);
+            });
+
+            // CLOSE FULLSCREEN MOBILE NAV - RETURNS TO TOP ALIGNED SMALL MOBILE MENU WITH HAMBURGER
+            $("#mobile_nav_close_button").click(function(){
+                $("#myNav").fadeOut( "slow", function() {
+                    // Animation complete.
+                });
+                right_align_folding_div();
+                $("#overlay_bg").hide();
+                $("#mobile_navigation").hide();
+            });
+
+
+
+            // CLOSE FULLSCREEN MOBILE MENU
+            $("#mobile_nav_close_button").click(function(){
+                close_mobile_menu(animation_time);
+            });
+
+            // ON TOP ALIGNED / SMALL MOBILE VIEW - TOGGLE SEARCH
+            $(".search_toggle").click(function(){
+                $(".primary_nav").toggle();
+            });
+
+            // GO BACK TO DESKTOP VIEW ON SCREEN WIDTH CHANGE
+            $( window ).resize(function() {
+                // alert($(window).width());
+                let width = $(window).width();
+                // if width goes above 900 and mobile menu is visible, hide mobile nav
+                if(width > 900 && $("#overlay_bg").is(":visible") ){
+                    close_mobile_menu(animation_time);
+                }
+            });
+            /******** END - MOBILE FUNCTIONALITY ********/
+
+        });
+        /*** END ON READY ***/
+
+
+        /*** FUNCTIONS ***/
+        function close_mobile_menu(animation_time){
+            hide_secondary_nav_button();
+            $("#main_content_div").show();
+            let this_id = $("#current_child_nav").val();
+            $("#myNav").fadeOut( "slow", function() {
+                // Animation complete.
+            });
+            $('#div_child_mobile_nav_'+this_id).hide('slide', {direction: 'right'}, animation_time);
+
+            $("#overlay_bg").fadeOut( "slow", function() {
+                // Animation complete.
+            });
+            $("#mobile_navigation").fadeOut( "slow", function() {
+                // Animation complete.
+            });
+        }
+
+        function left_align_folding_div(id){
+            // $("#div_child_mobile_nav_"+id).removeClass("overlay_right");
+            //  $("#div_child_mobile_nav_"+id).addClass("overlay_left");
+        }
+
+        function right_align_folding_div(id = ""){
+            $(".parent_mobile_link_animate").each(function(){
+                // let this_id = $(this).attr('id');
+                // $("#div_child_mobile_nav_".this_id).addClass("overlay_right");
+                // $("#div_child_mobile_nav_".this_id).removeClass("overlay_left");
+            });
+        }
+
+        function show_secondary_nav_button() {
+            $("#mobile_nav_back_button").show();
+        }
+        function hide_secondary_nav_button() {
+            $("#mobile_nav_back_button").hide();
+        }
+
+    </script>
+
+	
+
+	<div>
+
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-sm-12 template-content">
+
+				<!-- LEFT COLUMN -->
+
+				<div class="col-lg-8 col-lg-offset-1 col-md-8 col-sm-12 template-main-content">
+					<h1>MS-ISAC Security Primer- Emotet</h1>
+	                <div class="div_img_responsive">
+<h3>Overview</h3>
+<p>Emotet continues to be among the most costly and destructive malware affecting state, local, tribal, and territorial (SLTT) governments. Its highly infectious nature makes it difficult to combat and has cost SLTT governments up to $1 million per incident to remediate due to its worm-like features resulting in rapid, network-wide infections. Emotet is an advanced, modular banking trojan that primarily functions as a downloader or dropper of other banking trojans. Additionally, Emotet is polymorphic allowing it to evade typical signature-based detection. It has several methods for maintaining persistence, including auto-start registry keys and services. The trojan uses modular Dynamic Link Libraries (DLL) to continuously evolve and update its capabilities. Furthermore, Emotet is Virtual Machine (VM) aware and can generate false indicators if run in a virtual environment.</p>
+<p>Emotet is disseminated through malspam (emails containing malicious attachments or links) that uses branding familiar to the recipient, including the MSISAC name. As of July 2018, the most recent campaigns imitate PayPal receipts, shipping notifications, or “past-due” invoices purportedly from the MS-ISAC. Initial infection occurs when a user opens or clicks the malicious download link, XML, PDF, or macro enabled Microsoft Word document included in the malspam. Once downloaded, Emotet establishes persistence and attempts to propagate the local networks through incorporated spreader modules.<br />
+<a href="https://www.cisecurity.org/white-papers/ms-isac-security-primer-emotet/screen-shot-2018-07-23-at-10-31-13-am/" rel="attachment wp-att-12221"><img class=" wp-image-12221 alignright" style="float: right;" src="https://www.cisecurity.org/wp-content/uploads/2018/07/Screen-Shot-2018-07-23-at-11.23.00-AM.png" alt="Emotet E-mail" width="481" height="375" /></a></p>
+<p>Currently, there are five known spreader modules:</p>
+<ul>
+<li><strong>NetPass.exe:</strong> a legitimate utility developed by NirSoft that recovers all network passwords stored on a system for the current logged-on user. This tool can also recover passwords stored in the credentials file of external drives.</li>
+<li><strong> Outlook scraper:</strong> a tool that scrapes dates, names, email addresses, and email bodies from the victim’s Outlook accounts and uses that information to send out additional phishing emails from the compromised accounts.</li>
+<li><strong>WebBrowserPassView:</strong> a password recovery tool that captures passwords stored by Internet Explorer, Mozilla Firefox, Google Chrome, Safari, and Opera and passes them to the credential enumerator module.</li>
+<li><strong>Mail PassView:</strong> a password recovery tool that reveals passwords and account details for various email clients such as Microsoft Outlook, Windows Mail, Mozilla Thunderbird, Hotmail, Yahoo! Mail, and Gmail and passes them to the credential enumerator module.</li>
+<li><strong>Credential enumerator: </strong>a self-extracting RAR file containing two components, a bypass, and a service component. The bypass component is used for enumeration of network resources and either find writable share drives using Server Message Block (SMB) or tries to brute force user accounts, including the administrator account. Once an available system is found, Emotet then writes the service component on the system, which writes Emotet onto the disk. Access to SMB can result in entire domains (servers and clients) becoming infected.</li>
+</ul>
+<p>To maintain persistence, Emotet injects code into explorer.exe and other running processes. The trojan can also collect sensitive information including system name, location, and operating system version, sending it to a remote command and control server (C2). The C2 is a compromised web server, commonly hosting Nginx, and the connection is over a common web port to a URL containing the IP address. Once Emotet establishes the connection with the C2, it reports a new infection, receives configuration data, downloads and runs files, receives instructions, and uploads base64 encoded data to the C2 server.</p>
+<p>Emotet artifacts are typically found in arbitrary paths located off of the AppData\Local and AppData\Roaming directories and mimicking names of known executables. Persistence is typically maintained through scheduled tasks or via registry keys. Additionally, Emotet creates randomly-named files in the system root directories that are run as windows services. When executed, these services attempt to propagate the malware to adjacent systems via accessible administrative shares. It is essential that privileged accounts are not used to login to compromised systems during remediation as this may accelerate the spread of the malware.</p>
+<p>&nbsp;</p>
+<h3><img class=" wp-image-13599 aligncenter" src="https://www.cisecurity.org/wp-content/uploads/2018/07/emotet.png" alt="emotet" width="1168" height="799" /></h3>
+<p>&nbsp;</p>
+<p><img class="size-full wp-image-13601 aligncenter" src="https://www.cisecurity.org/wp-content/uploads/2018/07/Screen-Shot-2018-12-12-at-2.11.08-PM.png" alt="filename path" width="1868" height="664" /></p>
+<h3>Recommendations:</h3>
+<p>The MS-ISAC recommends organizations adhere to the following general best practices, to limit the effect of Emotet and similar malspam in your organization.</p>
+<ul>
+<li>Use Group Policy to set a Windows Firewall rule to restrict inbound SMB communication between client systems. If using an alternative host-based intrusion prevention system (HIPS), consider implementing custom modifications for the control of client-to-client SMB communication. At a minimum create a Group Policy Object that restricts inbound SMB connections to clients originating from clients.</li>
+<li>Use antivirus programs on clients and servers, with automatic updates of signatures and software.</li>
+<li>Disable all macros except those which are digitally signed.</li>
+<li>Apply appropriate patches and updates immediately after appropriate testing.</li>
+<li>Implement filters at the email gateway to filter out emails with known malspam indicators, such as known malicious subject lines, and block suspicious IP addresses at the firewall.</li>
+<li>If you do not have a policy regarding suspicious emails, consider creating one and specifying that all suspicious emails should be reported to the security and/or IT departments.</li>
+<li>Mark external emails with a banner denoting it is from an external source. This will assist users in detecting spoofed emails.</li>
+<li>Provide social engineering and phishing training to employees. Urge them to not open suspicious emails, click links contained in such emails, post sensitive information online, and to never provide usernames, passwords and/or personal information to any unsolicited request. Teach users to hover over a link with their mouse to verify the destination prior to clicking on the link.</li>
+<li>Adhere to the principle of least privilege, ensuring that users have the minimum level of access required to accomplish their duties. Limit administrative credentials to designated administrators.</li>
+<li>Implement Domain-Based Message Authentication, Reporting &amp; Conformance (DMARC), a validation system that minimizes spam emails by detecting email spoofing using Domain Name System (DNS) records and digital signatures.</li>
+<li>Adhere to best practices, such as those described in the CIS Controls, which are part of the CIS SecureSuite.</li>
+</ul>
+<p>If a user opened a malicious email or an infection is believed to exist, we recommend running an antivirus scan on the system and take action based on the results to isolate the infected computer. If multiple machines are infected:</p>
+<ul>
+<li>Consider temporarily taking the network offline to perform identification, prevent reinfections, and stop the spread of the malware. Emotet could be dropping malware with Remote Access Trojan (RAT) capabilities damaging the integrity of the overall network.</li>
+<li>Identify, shutdown, and take the infected machines off the network.</li>
+<li>Do not log in to infected systems using a domain or shared local admin accounts.</li>
+<li>After reviewing systems for Emotet indicators, reimage and move clean systems to a containment VLAN, segregated from the infected network.</li>
+<li>Issue password resets for both domain and local credentials.</li>
+<li>As Emotet scrapes additional credentials, consider password resets for other applications that may have had stored credentials on the compromised machine(s).</li>
+<li>Review log files and the Outlook mailbox rules associated with the user account to ensure further compromises have not occurred. It is possible that the Outlook account may now have rules to auto-forward all emails to an external email address, which could result in a data breach.</li>
+<li>Search base64 encoded network stream data referencing the organization’s email domain. If references are found, perform additional analysis to see if a data breach has occurred.</li>
+</ul>
+<p>&nbsp;</p>
+<p><em>The MS-ISAC is the focal point for cyber threat prevention, protection, response, and recovery for the nation’s </em><em>state, local, tribal, and territorial (SLTT) governments. More information about this topic, as well as 24x7 </em><em>cybersecurity assistance for SLTT governments, is available at 866-787-4722, SOC@cisecurity.org, or </em><em><a href="/ms-isac/">https://www.cisecurity.org/ms-isac/</a>. The MS-ISAC is interested in your comments - an anonymous feedback survey is </em><em><a href="https://www.surveymonkey.com/r/MSISACProductEvaluation">available</a>.</em></p>
+</div>
+
+										
+<!-- <p>CTA Stuff.</p> -->
+				</div>
+				<!-- EOF: LEFT COLUMN -->
+
+
+				<!-- RIGHT COLUMN -->
+	            <div class="col-lg-3 col-md-4 col-sm-12 template-sidebar">
+                    <div class="template-sidebar-content">
+						<!-- added pdf back temporarilly -->
+					
+<!-- <p>CTA Stuff.</p> -->
+                    <!-- SHOW FILE DOWNLOAD CTA'S-->
+	                                        <p>
+                            <a href="https://www.cisecurity.org/wp-content/uploads/2018/07/Security-Primer-Emotet.pdf" title="" style="color:white;">
+                                <div class="center-block cta_right_rail">
+                                    Download PDF <img src="https://www.cisecurity.org/wp-content/themes/cis/assets/images/arrow-right-white.png" class="hidden-sm" alt="Arrow">
+                                </div>
+                            </a>
+                        </p>
+                    	                	                	                
+
+                    
+
+
+                    </div>
+                </div>
+	        	<!-- EOF RIGHT COLUMN -->
+
+
+			</div> <!-- <div class="col-lg-12 col-md-12 col-sm-12 template-content">-->
+		</div>	 <!--<div class="row">-->
+	</div>
+
+
+
+
+
+
+
+	
+
+	
+
+<!-- THE FOOTER CONTENT HAS BEEN MOVED to /partials/footer_common.php - same content as
+ footer-ei-isac.php -->
+
+<div class="row" id="about-us">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 center-xs learn-more">
+        <div class="col-lg-12 col-md-12 col-sm-12 bg-blue">
+            <div class="vertical-divider-small"></div>
+            <div class="col-lg-2 col-lg-offset-1 col-md-2 col-sm-2 col-sm-offset-1 col-xs-12">
+                <ul class="footer-list">
+                    <li><a href="https://www.cisecurity.org/about-us" class="text-lightgrey popular-title small">About us</a></li>
+                    <li><a href="https://www.cisecurity.org/about-us/leadership" class="text-lightgrey small">Leadership</a></li>
+                    <li><a href="https://www.cisecurity.org/about-us/board" class="text-lightgrey small">Board</a></li>
+                    <li><a href="https://careers-cisecurity.icims.com" class="text-lightgrey small">Jobs</a></li>
+                    <li><a href="https://www.cisecurity.org/about-us/media/" class="text-lightgrey small">Media</a></li>
+                    <li><a href="https://www.cisecurity.org/testimonials" class="text-lightgrey small">Testimonials</a></li>
+                    <li><a href="https://www.cisecurity.org/event-calendar" class="text-lightgrey small">Events</a></li>
+                    <li><a href="https://learn.cisecurity.org/contact-us" class="text-lightgrey small">Contact</a></li>
+                    <li><a href="https://www.cisecurity.org/support/" class="text-lightgrey small">Member Support</a></li>
+                    <!-- <li><a href="https://www.cisecurity.org/about-us/contact" class="text-lightgrey small">Contact</a></li> -->
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-2 col-xs-12">
+                <ul class="footer-list">
+                    <li><a href="https://www.cisecurity.org/cybersecurity-tools/" class="text-lightgrey popular-title small">Programs & Memberships</a></li>
+                    <li><a href="https://www.cisecurity.org/communities/" class="text-lightgrey small">CIS Communities</a></li>
+                    <li><a href="/cis-benchmarks/" class="text-lightgrey small">CIS Benchmarks™</a></li>
+                    <li><a href="https://www.cisecurity.org/controls/" class="text-lightgrey small">CIS Controls<sup>&reg;</sup></a></li>
+                    <li><a href="https://www.cisecurity.org/cis-securesuite/" class="text-lightgrey small">CIS SecureSuite<sup>&reg;</sup></a></li>
+                    <li><a href="https://www.cisecurity.org/ms-isac/" class="text-lightgrey small">MS-ISAC<sup>&reg;</sup></a></li>
+                    <li><a href="https://www.cisecurity.org/ei-isac/" class="text-lightgrey small">EI-ISAC<sup>&reg;</sup></a></li>
+                </ul>
+            </div>
+            <!--<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                            <ul class="footer-list">
+                                <li><a href="https://www.cisecurity.org/memberships/" class="text-lightgrey popular-title small">Memberships</a></li>
+                                <li><a href="https://www.cisecurity.org/memberships/ms-isac/" class="text-lightgrey small">MS-ISAC</a></li>
+                                <li><a href="https://www.cisecurity.org/memberships/cis-securesuite/" class="text-lightgrey small">CIS SecureSuite</a></li>
+                            </ul>
+                        </div>-->
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                <ul class="footer-list">
+                    <li><a href="https://www.cisecurity.org/cybersecurity-tools/" class="text-lightgrey popular-title small">Tools</a></li>
+                    <li><a href="https://learn.cisecurity.org/cis-cat-lite" class="text-lightgrey small">CIS-CAT<sup>&reg;</sup>Lite</a></li>
+                    <li><a href="https://www.cisecurity.org/tools/cis-cat-pro/" class="text-lightgrey small">CIS-CAT<sup>&reg;</sup>Pro</a></li>
+                    <li><a href="https://workbench.cisecurity.org" target="_blank" class="text-lightgrey small">CIS WorkBench</a></li>
+                    <li><a href="https://learn.cisecurity.org/cis-ram" target="_blank" class="text-lightgrey small">CIS RAM</a></li>
+                    <li><a href="https://www.cisecurity.org/controls/cis-controls-self-assessment-tool-cis-csat/ " target="_blank" class="text-lightgrey small">CIS CSAT</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                <ul class="footer-list">
+                    <li><a href="https://www.cisecurity.org/services" class="text-lightgrey popular-title small">Services</a></li>
+                    <li><a href="https://www.cisecurity.org/services/hardened-virtual-images/" class="text-lightgrey small">CIS Hardened Images<sup>&reg;</sup></a></li>
+                    <li><a href="https://www.cisecurity.org/services/security-assessment-consulting/" class="text-lightgrey small">Consulting</a></li>
+                    <li><a href="/services/albert/" class="text-lightgrey small">Network Monitoring – Albert</a></li>
+                    <li><a href="https://www.cisecurity.org/services/cis-cybermarket/" class="text-lightgrey small">CIS CyberMarket<sup>&reg;</sup></a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                <ul class="footer-list">
+                    <li><a href="https://www.cisecurity.org/resources/" class="text-lightgrey popular-title small">Resources</a></li>
+                    <li><a href="https://www.cisecurity.org/resources/?type=post" class="text-lightgrey small">Blog</a></li>
+                    <!--<li><a href="https://www.cisecurity.org/case-studies/" class="text-lightgrey small">Case Studies</a></li> -->
+                    <li><a href="https://www.cisecurity.org/resources/?type=case-study" class="text-lightgrey small">Case Studies</a></li>
+                    <li><a href="https://www.cisecurity.org/resources/?type=newsletter" class="text-lightgrey small">Newsletters</a></li>
+                    <li><a href="https://www.youtube.com/user/TheCISecurity" target="_blank" class="text-lightgrey small">Videos</a></li>
+                    <li><a href="https://www.cisecurity.org/resources/?type=webinar" class="text-lightgrey small">Webinars</a></li>
+                    <li><a href="https://www.cisecurity.org/resources/?type=white-papers" class="text-lightgrey small">Whitepapers</a></li>
+                    <li><a href="http://www.uscyberchallenge.org" target="_blank"  class="text-lightgrey small external-link">US Cyber Challenge</a></li>
+                    <li><a href="https://www.cybercompex.org/" target="_blank"  class="text-lightgrey small external-link">CyberCompEx</a></li>
+                    <li><a href="https://www.cisecurity.org/elections-resources/" class="text-lightgrey small external-link">Elections Resources</a></li>
+                </ul>
+            </div>
+
+
+            <div class="vertical-divider"></div>
+
+            <div class="col-lg-11 col-lg-offset-1 col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1">
+                <a href="https://www.facebook.com/CenterforIntSec/" class="middle padding-r-15"><img style="max-width:36px;" src="https://www.cisecurity.org/wp-content/themes/cis/assets/images/facebook.svg" alt="Facebook"></a>                 <a href="https://twitter.com/CISecurity/" class="middle padding-r-15"><img style="max-width:36px;" src="https://www.cisecurity.org/wp-content/themes/cis/assets/images/twitter.svg" alt="Twitter"></a>                 <a href="https://www.linkedin.com/company/the-center-for-internet-security/" class="middle padding-r-15"><img style="max-width:36px;" src="https://www.cisecurity.org/wp-content/themes/cis/assets/images/linkedin.svg" alt="LinkedIn"></a>                 <a href="https://www.youtube.com/user/TheCISecurity/" class="middle padding-r-15"><img style="max-width:36px;" src="https://www.cisecurity.org/wp-content/themes/cis/assets/images/youtube.svg" alt="Youtube"></a>             </div>
+
+            <div class="vertical-divider"></div>
+
+            <div class="col-lg-2 col-lg-offset-1 col-md-2 col-xs-12 text-lightgrey small">Copyright &copy; 2021 </div>
+            <div class="col-lg-3 col-md-3 popular-title col-xs-12 text-lightgrey small">Center for Internet Security&reg;</div>
+            <div class="col-lg-2 col-md-2 col-xs-12"><a href="https://www.cisecurity.org/privacy-policy/" class="text-lightgrey small" style="text-decoration: underline">Privacy Policy</a></div>
+
+            <div class="vertical-divider-small"></div>
+        </div>
+    </div>
+
+</div><!--END - FOOTER CONTENT HAS BEEN MOVED -->
+
+
+</div>
+</div>
+
+<script>
+
+</script>
+
+<script type="text/javascript">
+    piAId = '800323';
+    piCId = '2596';
+    piHostname = 'pi.pardot.com';(function() {
+        function async_load(){
+            var s = document.createElement('script'); s.type = 'text/javascript';
+            s.src = ('https:' == document.location.protocol ? 'https://pi' : 'http://cdn') + '.pardot.com/pd.js';
+            var c = document.getElementsByTagName('script')[0]; c.parentNode.insertBefore(s, c);
+        }
+        if(window.attachEvent) { window.attachEvent('onload', async_load); }
+        else { window.addEventListener('load', async_load, false); }
+    })();
+</script>
+<script async src="//analytics.newscred.com/analytics_420c70665fd445358623ebe8c5379cac.js"></script>
+<script type='text/javascript' src='https://www.cisecurity.org/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+
+
+</body>
+</html>
+

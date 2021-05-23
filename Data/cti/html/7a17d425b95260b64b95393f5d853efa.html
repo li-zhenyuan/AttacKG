@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="The COM Elevation Moniker - Win32 apps" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/windows/win32/com/the-com-elevation-moniker" />
+			<meta property="og:description" content="The COM elevation moniker allows applications that are running under user account control (UAC) to activate COM classes with elevated privileges. For more information, see Focus on Least Privilege." />
+		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
+		<meta property="og:image:alt" content="Microsoft Logo" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="author" content="mcleanbyron" />
+<meta name="breadcrumb_path" content="/windows/desktop/breadcrumb/toc.json" />
+<meta name="depot_name" content="MSDN.win32" />
+<meta name="description" content="The COM elevation moniker allows applications that are running under user account control (UAC) to activate COM classes with elevated privileges. For more information, see Focus on Least Privilege." />
+<meta name="document_id" content="ec2be6cb-a7fb-eb59-5a89-da3d67bc9c86" />
+<meta name="document_version_independent_id" content="cf87521d-5861-7c61-3b0d-c11aa57388e9" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/win32-pr/blob/3a86b5fd47e4620109f95ea797a77e8ed1ca604b/desktop-src/com/the-com-elevation-moniker.md" />
+<meta name="locale" content="en-us" />
+<meta name="ms.assetid" content="1595ebb8-65af-4609-b3e7-a21209e64391" />
+<meta name="ms.author" content="mcleans" />
+<meta name="ms.date" content="05/31/2018" />
+<meta name="ms.prod" content="desktop" />
+<meta name="ms.technology" content="system-services" />
+<meta name="ms.topic" content="article" />
+<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/win32-pr/blob/live/desktop-src/com/the-com-elevation-moniker.md" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="win32" />
+<meta name="search.ms_product" content="MSDN" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="uhfHeaderId" content="MSDocsHeader-WinDevCenter" />
+<meta name="updated_at" content="2020-08-21 06:40 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="toc.json" />
+<meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/MSDN.win32/{branchName}{pdfName}" />
+<meta name="word_count" content="1781" />
+
+
+	<meta name="scope" content="Windows, Desktop" />
+<link href="https://docs.microsoft.com/en-us/windows/win32/com/the-com-elevation-moniker" rel="canonical">
+	<title>The COM Elevation Moniker - Win32 apps | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: true,
+			hasGithubIssues: false,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/com/the-com-elevation-moniker.md',
+			extendBreadcrumb: false,
+			isEditDisplayable: true,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+			contributors: [
+						{ name: "mcleanbyron", url: "https://github.com/mcleanbyron" },
+						{ name: "DCtheGeek", url: "https://github.com/DCtheGeek" },
+						{ name: "drewbatgit", url: "https://github.com/drewbatgit" },
+						{ name: "mijacobs", url: "https://github.com/mijacobs" },
+						{ name: "msatranjr", url: "https://github.com/msatranjr" }
+],
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="nav-bar border-top is-hidden-mobile"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+								<li id="contenteditbtn">
+									<a href="https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/com/the-com-elevation-moniker.md" class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit" data-original_content_git_url="https://github.com/MicrosoftDocs/win32-pr/blob/live/desktop-src/com/the-com-elevation-moniker.md" data-original_content_git_url_template="{repo}/blob/{branch}/desktop-src/com/the-com-elevation-moniker.md" data-pr_repo="" data-pr_branch="">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-edit-outline"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
+								</a>
+							</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="the-com-elevation-moniker">The COM Elevation Moniker</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2018-05-31T00:00:00.000Z" data-article-date-source="ms.date">05/31/2018</time>
+							</li>
+									<li class="readingTime">8 minutes to read</li>
+								<li class="contributors-holder">
+									<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
+														<li class="facepile-item">
+															<a href="https://github.com/mcleanbyron" title="mcleanbyron" aria-label="mcleanbyronGithub profile" data-src="https://github.com/mcleanbyron.png?size=32" data-contributor-name="mcleanbyron" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mcleanbyron.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">m</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/DCtheGeek" title="DCtheGeek" aria-label="DCtheGeekGithub profile" data-src="https://github.com/DCtheGeek.png?size=32" data-contributor-name="DCtheGeek" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/DCtheGeek.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">D</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/drewbatgit" title="drewbatgit" aria-label="drewbatgitGithub profile" data-src="https://github.com/drewbatgit.png?size=32" data-contributor-name="drewbatgit" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/drewbatgit.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">d</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/mijacobs" title="mijacobs" aria-label="mijacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="mijacobs" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">m</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/msatranjr" title="msatranjr" aria-label="msatranjrGithub profile" data-src="https://github.com/msatranjr.png?size=32" data-contributor-name="msatranjr" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/msatranjr.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">m</span>
+															</a>
+														</li>
+									</ul>
+								</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p>The COM elevation moniker allows applications that are running under user account control (UAC) to activate COM classes with elevated privileges. For more information, see <a href="/en-us/previous-versions/dotnet/articles/aa480194(v=msdn.10)" data-linktype="absolute-path">Focus on Least Privilege</a>.</p>
+<h2 id="when-to-use-the-elevation-moniker">When to Use the Elevation Moniker</h2>
+<p>The elevation moniker is used to activate a COM class to accomplish a specific and limited function that requires elevated privileges, such as changing the system date and time.</p>
+<p>Elevation requires participation from both a COM class and its client. The COM class must be configured to support elevation by annotating its registry entry, as described in the Requirements section. The COM client must request elevation by using the elevation moniker.</p>
+<p>The elevation moniker is not intended to provide application compatibility. For example, if you want to run a legacy COM application such as WinWord as an elevated server, you should configure the COM client executable to require elevation, rather than activating the legacy application's class with the elevation moniker. When the elevated COM client calls <a href="/en-us/windows/desktop/api/combaseapi/nf-combaseapi-cocreateinstance" data-linktype="absolute-path"><strong>CoCreateInstance</strong></a> using the legacy application's CLSID, the client's elevated state will flow to the server process.</p>
+<p>Not all COM functionality is compatible with elevation. The functionality that will not work includes:</p>
+<ul>
+<li>Elevation does not flow from a client to a remote COM server. If a client activates a remote COM server with the elevation moniker, the server will not be elevated, even if it supports elevation.</li>
+<li>If an elevated COM class uses impersonation during a COM call, it might lose its elevated privileges during the impersonation.</li>
+<li>If an elevated COM server registers a class in the running object table (ROT), the class will not be available to non-elevated clients.</li>
+<li>A process elevated by using the UAC mechanism does not load per-user classes during COM activations. For COM applications, this means that the application's COM classes must be installed in the <strong>HKEY_LOCAL_MACHINE</strong> registry hive if the application is to be used both by non-privileged and privileged accounts. The application's COM classes need only be installed in the <strong>HKEY_USERS</strong> hive if the application is never used by privileged accounts.</li>
+<li>Drag and drop is not allowed from non-elevated to elevated applications.</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<p>In order to use the elevation moniker to activate a COM class, the class must be configured to run as the launching user or the 'Activate as Activator' application identity. If the class is configured to run under any other identity, the activation returns the error CO_E_RUNAS_VALUE_MUST_BE_AAA.</p>
+<p>The class must also be annotated with a &quot;friendly&quot; display name that is multilingual user interface (MUI) compatible. This requires the following registry entry:</p>
+<pre><code>HKEY_LOCAL_MACHINE\Software\Classes\CLSID
+   {CLSID}
+      LocalizedString = displayName
+</code></pre>
+<p>If this entry is missing, the activation returns the error CO_E_MISSING_DISPLAYNAME. If the MUI file is missing, the error code from the <a href="/en-us/windows/desktop/api/winreg/nf-winreg-regloadmuistringa" data-linktype="absolute-path"><strong>RegLoadMUIStringW</strong></a> function is returned.</p>
+<p>Optionally, to specify an application icon to be displayed by the UAC user interface, add the following registry key:</p>
+<pre><code>HKEY_LOCAL_MACHINE\Software\Classes\CLSID
+   {CLSID}
+      Elevation
+         IconReference = applicationIcon
+</code></pre>
+<p><strong>IconReference</strong> uses the same format as <strong>LocalizedString</strong>:</p>
+<p>@<em>pathtobinary</em>,<em>-resourcenumber</em></p>
+<p>In addition, the COM component must be signed for the icon to be displayed.</p>
+<p>The COM class must also be annotated as LUA-Enabled. This requires the following registry entry:</p>
+<pre><code>HKEY_LOCAL_MACHINE\Software\Classes\CLSID
+   {CLSID}
+      Elevation
+         Enabled = 1
+</code></pre>
+<p>If this entry is missing, then the activation returns the error CO_E_ELEVATION_DISABLED.</p>
+<p>Note that these entries must exist in the HKEY_LOCAL_MACHINE hive, not the HKEY_CURRENT_USER or HKEY_USERS hive. This prevents users from elevating COM classes that they did not also have the privileges to register.</p>
+<h2 id="the-elevation-moniker-and-the-elevation-ui">The Elevation Moniker and the Elevation UI</h2>
+<p>If the client is already elevated, using the elevation moniker will not cause the Elevation UI to display.</p>
+<h2 id="how-to-use-the-elevation-moniker">How to Use the Elevation Moniker</h2>
+<p>The elevation moniker is a standard COM moniker, similar to the session, partition, or queue monikers. It directs an activation request to a specified server with the specified elevation level. The CLSID to be activated appears in the moniker string.</p>
+<p>The elevation moniker supports the following Run level tokens:</p>
+<ol>
+<li>Administrator</li>
+<li>Highest</li>
+</ol>
+<p>The syntax for this is as follows:</p>
+<pre><code class="lang-syntax">Elevation:Administrator!new:{guid}
+Elevation:Highest!new:{guid}
+</code></pre>
+<p>The preceding syntax uses the &quot;new&quot; moniker to return an instance of the COM class specified by <em>guid</em>. Note that the &quot;new&quot; moniker internally uses the <a href="/en-us/windows/win32/api/unknwn/nn-unknwn-iclassfactory" data-linktype="absolute-path"><strong>IClassFactory</strong></a> interface to obtain a class object and then calls <a href="/en-us/windows/desktop/api/Unknwn/nf-unknwn-iclassfactory-createinstance" data-linktype="absolute-path"><strong>IClassFactory::CreateInstance</strong></a> on it.</p>
+<p>The elevation moniker can also be used to get a class object, which implements <a href="/en-us/windows/win32/api/unknwn/nn-unknwn-iclassfactory" data-linktype="absolute-path"><strong>IClassFactory</strong></a>. The caller then calls <a href="/en-us/windows/desktop/api/Unknwn/nf-unknwn-iclassfactory-createinstance" data-linktype="absolute-path"><strong>CreateInstance</strong></a> to get an object instance. The syntax for this is as follows:</p>
+<pre><code class="lang-syntax">Elevation:Administrator!clsid:{guid}
+</code></pre>
+<h2 id="sample-code">Sample code</h2>
+<p>The following code example shows how to use the elevation moniker. It assumes that you have already initialized COM on the current thread.</p>
+<pre><code class="lang-C++">HRESULT CoCreateInstanceAsAdmin(HWND hwnd, REFCLSID rclsid, REFIID riid, __out void ** ppv)
+{
+    BIND_OPTS3 bo;
+    WCHAR  wszCLSID[50];
+    WCHAR  wszMonikerName[300];
+
+    StringFromGUID2(rclsid, wszCLSID, sizeof(wszCLSID)/sizeof(wszCLSID[0])); 
+    HRESULT hr = StringCchPrintf(wszMonikerName, sizeof(wszMonikerName)/sizeof(wszMonikerName[0]), L&quot;Elevation:Administrator!new:%s&quot;, wszCLSID);
+    if (FAILED(hr))
+        return hr;
+    memset(&amp;bo, 0, sizeof(bo));
+    bo.cbStruct = sizeof(bo);
+    bo.hwnd = hwnd;
+    bo.dwClassContext  = CLSCTX_LOCAL_SERVER;
+    return CoGetObject(wszMonikerName, &amp;bo, riid, ppv);
+}
+</code></pre>
+<p><a href="/en-us/windows/win32/api/objidl/ns-objidl-bind_opts3%7Er1" data-linktype="absolute-path"><strong>BIND_OPTS3</strong></a> is new in Windows Vista. It is derived from <a href="/en-us/windows/win32/api/objidl/ns-objidl-bind_opts2%7Er1" data-linktype="absolute-path"><strong>BIND_OPTS2</strong></a>.</p>
+<p>The only addition is an <strong>HWND</strong> field, <strong>hwnd</strong>. This handle represents a window that becomes the owner of the Elevation UI, if applicable.</p>
+<p>If <strong>hwnd</strong> is <strong>NULL</strong>, COM will call <a href="/en-us/windows/win32/api/winuser/nf-winuser-getactivewindow" data-linktype="absolute-path">GetActiveWindow</a> to find a window handle associated with the current thread. This case might occur if the client is a script, which cannot fill in a <a href="/en-us/windows/win32/api/objidl/ns-objidl-bind_opts3%7Er1" data-linktype="absolute-path"><strong>BIND_OPTS3</strong></a> structure. In this case, COM will try to use the window associated with the script thread.</p>
+<h2 id="over-the-shoulder-ots-elevation">Over-The-Shoulder (OTS) Elevation</h2>
+<p>Over-the-shoulder (OTS) elevation refers to the scenario in which a client runs a COM server with an administrator's credentials rather than his or her own. (The term &quot;over the shoulder&quot; means that the administrator is watching over the client's shoulder as the client runs the server.)</p>
+<p>This scenario might cause a problem for COM calls into the server, because the server might not call <a href="/en-us/windows/desktop/api/combaseapi/nf-combaseapi-coinitializesecurity" data-linktype="absolute-path"><strong>CoInitializeSecurity</strong></a> either explicitly (that is, programmatically) or implicitly (that is, declaratively, using the registry). For such servers, COM computes a security descriptor that allows only SELF, SYSTEM, and Builtin\Administrators to makes COM calls into the server. This arrangement will not work in OTS scenarios. Instead, the server must call <strong>CoInitializeSecurity</strong>, either explicitly or implicitly, and specify an ACL that includes the INTERACTIVE group SID and SYSTEM.</p>
+<p>The following code example shows how to create a security descriptor (SD) with the INTERACTIVE group SID.</p>
+<pre><code class="lang-syntax">BOOL GetAccessPermissionsForLUAServer(SECURITY_DESCRIPTOR **ppSD)
+{
+// Local call permissions to IU, SY
+    LPWSTR lpszSDDL = L&quot;O:BAG:BAD:(A;;0x3;;;IU)(A;;0x3;;;SY)&quot;;
+    SECURITY_DESCRIPTOR *pSD;
+    *ppSD = NULL;
+
+    if (ConvertStringSecurityDescriptorToSecurityDescriptorW(lpszSDDL, SDDL_REVISION_1, (PSECURITY_DESCRIPTOR *)&amp;pSD, NULL))
+    {
+        *ppSD = pSD;
+        return TRUE;
+    }
+
+    return FALSE;
+}
+</code></pre>
+<p>The following code example shows how to call <a href="/en-us/windows/desktop/api/combaseapi/nf-combaseapi-coinitializesecurity" data-linktype="absolute-path"><strong>CoInitializeSecurity</strong></a> implicitly with the SD from the previous code example:</p>
+<pre><code class="lang-C++">// hKey is the HKCR\AppID\{GUID} key
+BOOL SetAccessPermissions(HKEY hkey, PSECURITY_DESCRIPTOR pSD)
+{
+    BOOL bResult = FALSE;
+    DWORD dwLen = GetSecurityDescriptorLength(pSD);
+    LONG lResult;
+    lResult = RegSetValueExA(hkey, 
+        &quot;AccessPermission&quot;,
+        0,
+        REG_BINARY,
+        (BYTE*)pSD,
+        dwLen);
+    if (lResult != ERROR_SUCCESS) goto done;
+    bResult = TRUE;
+done:
+    return bResult;
+}
+</code></pre>
+<p>The following code example shows how to call <a href="/en-us/windows/desktop/api/combaseapi/nf-combaseapi-coinitializesecurity" data-linktype="absolute-path"><strong>CoInitializeSecurity</strong></a> explicitly with the above SD:</p>
+<pre><code class="lang-C++">// Absolute SD values
+PSECURITY_DESCRIPTOR pAbsSD = NULL;
+DWORD AbsSdSize = 0;
+PACL  pAbsAcl = NULL;
+DWORD AbsAclSize = 0;
+PACL  pAbsSacl = NULL;
+DWORD AbsSaclSize = 0;
+PSID  pAbsOwner = NULL;
+DWORD AbsOwnerSize = 0;
+PSID  pAbsGroup = NULL;
+DWORD AbsGroupSize = 0;
+
+MakeAbsoluteSD (
+    pSD,
+    pAbsSD,
+    &amp;AbsSdSize,
+    pAbsAcl,
+    &amp;AbsAclSize,
+    pAbsSacl,
+    &amp;AbsSaclSize,
+    pAbsOwner,
+    &amp;AbsOwnerSize,
+    pAbsGroup,
+    &amp;AbsGroupSize
+);
+
+if (ERROR_INSUFFICIENT_BUFFER == GetLastError())
+{
+    pAbsSD = (PSECURITY_DESCRIPTOR)LocalAlloc(LMEM_FIXED, AbsSdSize);
+    pAbsAcl = (PACL)LocalAlloc(LMEM_FIXED, AbsAclSize);
+    pAbsSacl = (PACL)LocalAlloc(LMEM_FIXED, AbsSaclSize);
+    pAbsOwner = (PSID)LocalAlloc(LMEM_FIXED, AbsOwnerSize);
+    pAbsGroup = (PSID)LocalAlloc(LMEM_FIXED, AbsGroupSize);
+
+    if ( ! (pAbsSD &amp;&amp; pAbsAcl &amp;&amp; pAbsSacl &amp;&amp; pAbsOwner &amp;&amp; pAbsGroup))
+    {
+        hr = E_OUTOFMEMORY;
+        goto Cleanup;
+    }
+    if ( ! MakeAbsoluteSD(
+        pSD,
+        pAbsSD,
+        &amp;AbsSdSize,
+        pAbsAcl,
+        &amp;AbsAclSize,
+        pAbsSacl,
+        &amp;AbsSaclSize,
+        pAbsOwner,
+        &amp;AbsOwnerSize,
+        pAbsGroup,
+        &amp;AbsGroupSize
+        ))
+    {
+        hr = HRESULT_FROM_WIN32(GetLastError());
+        goto Cleanup;
+    }
+}
+else
+{
+    hr = HRESULT_FROM_WIN32(GetLastError());
+    goto Cleanup;
+}
+
+// Call CoinitilizeSecurity.
+</code></pre>
+<h2 id="com-permissions-and-mandatory-access-labels">COM Permissions and Mandatory Access Labels</h2>
+<p>Windows Vista introduces the notion of <em>mandatory access labels</em> in security descriptors. The label dictates whether clients can get execute access to a COM object. The label is specified in the system access control list (SACL) portion of the security descriptor. In Windows Vista, COM supports the SYSTEM_MANDATORY_LABEL_NO_EXECUTE_UP label. SACLs in the COM permissions are ignored on operating systems prior to Windows Vista.</p>
+<p>As of Windows Vista, dcomcnfg.exe does not support changing the integrity level (IL) in COM permissions. It must be set programmatically.</p>
+<p>The following code example shows how to create a COM security descriptor with a label that allows launch/activation requests from all LOW IL clients. Note that the labels are valid for Launch/Activation and Call permissions. Thus, it is possible to write a COM server that disallows launch, activation or calls from clients with a certain IL. For more information about integrity levels, see the section &quot;Understanding Windows Vista's Integrity Mechanism&quot; in <a href="/en-us/previous-versions/windows/internet-explorer/ie-developer/" data-linktype="absolute-path">Understanding and Working in Protected Mode Internet Explorer</a>.</p>
+<pre><code class="lang-C++">BOOL GetLaunchActPermissionsWithIL (SECURITY_DESCRIPTOR **ppSD)
+{
+// Allow World Local Launch/Activation permissions. Label the SD for LOW IL Execute UP
+    LPWSTR lpszSDDL = L&quot;O:BAG:BAD:(A;;0xb;;;WD)S:(ML;;NX;;;LW)&quot;;
+    if (ConvertStringSecurityDescriptorToSecurityDescriptorW(lpszSDDL, SDDL_REVISION_1, (PSECURITY_DESCRIPTOR *)&amp;pSD, NULL))
+    {
+        *ppSD = pSD;
+        return TRUE;
+    }
+}
+
+BOOL SetLaunchActPermissions(HKEY hkey, PSECURITY_DESCRIPTOR pSD)
+{
+    
+    BOOL bResult = FALSE;
+    DWORD dwLen = GetSecurityDescriptorLength(pSD);
+    LONG lResult;
+    lResult = RegSetValueExA(hkey, 
+        &quot;LaunchPermission&quot;,
+        0,
+        REG_BINARY,
+        (BYTE*)pSD,
+        dwLen);
+    if (lResult != ERROR_SUCCESS) goto done;
+    bResult = TRUE;
+done:
+    return bResult;
+};
+</code></pre>
+<h2 id="cocreateinstance-and-integrity-levels">CoCreateInstance and Integrity Levels</h2>
+<p>The behavior of <a href="/en-us/windows/desktop/api/combaseapi/nf-combaseapi-cocreateinstance" data-linktype="absolute-path"><strong>CoCreateInstance</strong></a> has changed in Windows Vista, to prevent Low IL clients from binding to COM servers by default. The server must explicitly allow such bindings by specifying the SACL. The changes to <strong>CoCreateInstance</strong> are as follows:</p>
+<ol>
+<li>When launching a COM server process, the IL in the server process token is set to the client or server token IL, whichever is lower.</li>
+<li>By default, COM will prevent Low IL clients from binding to running instances of any COM servers. To allow the bind, a COM server's Launch/Activation security descriptor must contain a SACL that specifies the Low IL label (see the previous section for the sample code to create such a security descriptor).</li>
+</ol>
+<h2 id="elevated-servers-and-rot-registrations">Elevated Servers and ROT Registrations</h2>
+<p>If a COM server wishes to register in the running object table (ROT) and allow any client to access the registration, it must use the ROTFLAGS_ALLOWANYCLIENT flag. An &quot;Activate As Activator&quot; COM server cannot specify ROTFLAGS_ALLOWANYCLIENT because the DCOM service control manager (DCOMSCM) enforces a spoof check against this flag. Therefore, in Windows Vista, COM adds support for a new registry entry that allows the server to stipulate that its ROT registrations be made available to any client:</p>
+<pre><code>HKEY_LOCAL_MACHINE\Software\Classes\AppID
+   {APPID}
+      ROTFlags
+</code></pre>
+<p>The only valid value for this REG_DWORD entry is:</p>
+<pre><code class="lang-syntax">ROTREGFLAGS_ALLOWANYCLIENT 0x1
+</code></pre>
+<p>The entry must exist in the <strong>HKEY_LOCAL_MACHINE</strong> hive.</p>
+<p>This entry provides an &quot;Activate As Activator&quot; server with the same functionality that ROTFLAGS_ALLOWANYCLIENT provides for a RunAs server.</p>
+<h2 id="related-topics">Related topics</h2>
+<dl> <dt>
+<p><a href="security-in-com" data-linktype="relative-path">Security in COM</a></p>
+</dt> <dt>
+<p><a href="/en-us/previous-versions/windows/internet-explorer/ie-developer/" data-linktype="absolute-path">Understanding and Working in Protected Mode Internet Explorer</a></p>
+</dt> </dl>
+<p> </p>
+<p> </p>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+								<div class="is-hidden-desktop border-top has-margin-top-large has-padding-top-large binary-rating-holder">
+									
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small font-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>									</div>
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+								
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

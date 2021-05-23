@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8">
+        <title>CIRCL » Passive DNS</title>
+        <link href="../../assets/style-v31.css" media="screen" rel="stylesheet">
+        <link rel="stylesheet" href="../../assets/font-awesome/css/font-awesome.min.css">
+        <link rel="alternate" type="application/atom+xml" title="News" href="../../atom.xml">
+        <link rel="alternate" type="application/rss+xml" title="News" href="../../rss.xml">
+        <meta name="viewport" content="width=device-width" initial-scale="1.0">
+        <meta name="description" content="CIRCL Passive DNS is a database of historical DNS records.">
+    </head>
+    <body class="page">
+        <header>
+            <div class="header-content">
+                <nav class="main">
+                    <ol>
+                        <li class="home"><a href="../../"><span>Home</span></a></li>
+                        <li><a href="../../mission/">About</a></li>
+                        <li><a href="../../team/">Team</a></li>
+                        <li><a href="../../news/">News</a></li>
+                        <li><a href="../">Services</a></li>
+                        <li><a href="../training/">Training</a></li>
+                        <li><a href="../../pub/">Publications</a></li>
+                        <li><a href="../../projects/">Projects</a></li>
+                        <li><a href="../../contact/">Contact</a></li>
+                    </ol>
+                </nav>
+                
+            </div>
+        </header>
+
+        <div class="intro">
+            <div class="intro-content">
+                <h1>Passive DNS</h1>
+                
+            </div>
+        </div>
+        <div class="content">
+            <article>
+                <div class="side">
+                    
+                        <div class="details">
+                            <h3>Passive DNS</h3>
+                            <p>↑ <a href="../">Back to Services</a></p>
+                            <ol class="toc">
+<li><a href="#passive-dns">Passive DNS</a></li>
+<li><a href="#how-to-use-the-service">How to use the service?</a></li>
+<li><a href="#access-to-circl-passive-dns">Access to CIRCL Passive DNS</a></li>
+<li><a href="#python-library-to-access-the-circl-passive-dns-api">Python Library to access the CIRCL Passive DNS API</a></li>
+<li><a href="#ruby-library-to-access-the-circl-passive-dns-api">Ruby Library to access the CIRCL Passive DNS API</a></li>
+<li><a href="#scala-library-to-access-the-circl-passive-dns-api">Scala library to access the CIRCL Passive DNS API</a></li>
+<li><a href="#r-library-to-access-the-circl-passive-dns-api">R Library to access the CIRCL Passive DNS API</a></li>
+<li><a href="#go-language-implementation-to-access-the-circl-passive-dns-api">Go Language implementation to access the CIRCL Passive DNS API</a></li>
+<li><a href="#c-implementation-to-access-the-circl-and-farsight-security-passive-dns-api">C implementation to access the CIRCL and Farsight Security Passive DNS API</a></li>
+</ol>
+                        </div>
+                    
+                    <div class="report">
+                    <p>You can <a href="../../report/">report incidents</a> via our official contact including <a href="../../contact/">e-mail, phone</a>
+                    or use the <a href="../../contactform/">Anonymous reporting form</a>.</p>
+                    </div>
+                    <div class="accreditation">
+                        <center>
+                                <p>Search</p>
+<form method="get" action="https://search.circl.lu/"><input type="text" name="q" value=""></form>
+                        </center>
+                        <br>
+                        <center>
+                                <img alt="CIRCL is accredited TI" src="../../assets/images/ti.png">
+                                <img alt="CIRCL is a FIRST member" src="../../assets/images/first-member.png">
+                                <img alt="CIRCL is an OASIS member" src="../../assets/images/oasis_member2004.jpg">
+                        </center>
+                    </div>
+                </div>
+                <div class="article-content">
+                    
+<h2 id="passive-dns">Passive DNS</h2>
+
+<p><img src="../../assets/images/logos/passivedns.png" alt="CIRCL Passive DNS"></p>
+
+<p>CIRCL Passive DNS is a database storing historical DNS records from various resources including malware analysis or partners. The DNS historical data is indexed, which makes it searchable for incident handlers, security analysts or researchers.</p>
+
+<h2 id="how-to-use-the-service">How to use the service?</h2>
+
+<p>CIRCL Passive DNS is accessible via a REST API and the output format is in JSON following <a href="http://tools.ietf.org/html/draft-dulaunoy-dnsop-passive-dns-cof-01">Passive DNS - Common Output Format</a>.</p>
+
+<p>The REST API is accessible via the following URL</p>
+
+<pre><code>https://www.circl.lu/pdns/query/&lt;queryvalue&gt;
+</code></pre>
+
+<p>Query values can be any records like IP addresses, hostnames or domain names (please note that CIDR block queries are not supported):</p>
+
+<pre><code>https://www.circl.lu/pdns/query/www.circl.lu
+</code></pre>
+
+<p>and a sample JSON output:</p>
+
+<div class="highlighter-coderay">
+<div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>{<span style="color:#606"><span style="color:#404">"</span><span>count</span><span style="color:#404">"</span></span>: <span style="color:#00D">20426</span>, <span style="color:#606"><span style="color:#404">"</span><span>time_first</span><span style="color:#404">"</span></span>: <span style="color:#00D">1298398417</span>, <span style="color:#606"><span style="color:#404">"</span><span>rrtype</span><span style="color:#404">"</span></span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">"</span><span style="color:#D20">A</span><span style="color:#710">"</span></span>, <span style="color:#606"><span style="color:#404">"</span><span>rrname</span><span style="color:#404">"</span></span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">"</span><span style="color:#D20">www.circl.lu</span><span style="color:#710">"</span></span>, <span style="color:#606"><span style="color:#404">"</span><span>rdata</span><span style="color:#404">"</span></span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">"</span><span style="color:#D20">194.154.205.24</span><span style="color:#710">"</span></span>, <span style="color:#606"><span style="color:#404">"</span><span>time_last</span><span style="color:#404">"</span></span>: <span style="color:#00D">1299264077</span>} {<span style="color:#606"><span style="color:#404">"</span><span>count</span><span style="color:#404">"</span></span>: <span style="color:#00D">202990</span>, <span style="color:#606"><span style="color:#404">"</span><span>time_first</span><span style="color:#404">"</span></span>: <span style="color:#00D">1298398002</span>, <span style="color:#606"><span style="color:#404">"</span><span>rrtype</span><span style="color:#404">"</span></span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">"</span><span style="color:#D20">CNAME</span><span style="color:#710">"</span></span>, <span style="color:#606"><span style="color:#404">"</span><span>rrname</span><span style="color:#404">"</span></span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">"</span><span style="color:#D20">www.circl.lu</span><span style="color:#710">"</span></span>, <span style="color:#606"><span style="color:#404">"</span><span>rdata</span><span style="color:#404">"</span></span>: <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">"</span><span style="color:#D20">cpa.circl.lu</span><span style="color:#710">"</span></span>, <span style="color:#606"><span style="color:#404">"</span><span>time_last</span><span style="color:#404">"</span></span>: <span style="color:#00D">1408612615</span>} 
+</pre></div>
+</div>
+</div>
+
+<h2 id="access-to-circl-passive-dns">Access to CIRCL Passive DNS</h2>
+
+<p>Access to CIRCL Passive DNS is only allowed to trusted partners in Luxembourg and abroad. <a href="../../contact/">Contact us</a> if you would like access. Include your affiliation and the foreseen use of the Passive DNS data.</p>
+
+<h2 id="python-library-to-access-the-circl-passive-dns-api">Python Library to access the CIRCL Passive DNS API</h2>
+
+<p>We developed a Python library called <a href="https://github.com/CIRCL/PyPDNS">PyPDNS</a> to query any <a href="http://www.ietf.org/archive/id/draft-dulaunoy-dnsop-passive-dns-cof-01.txt">Passive DNS implementation following the Passive DNS - Common Output Format</a>.</p>
+
+<h2 id="ruby-library-to-access-the-circl-passive-dns-api">Ruby Library to access the CIRCL Passive DNS API</h2>
+
+<p><a href="https://github.com/chrislee35/passivedns-client">PassiveDNS::Client</a> is a rubygem developed by Chris Lee who includes access to different passive DNS services including CIRCL.</p>
+
+<h2 id="scala-library-to-access-the-circl-passive-dns-api">Scala library to access the CIRCL Passive DNS API</h2>
+
+<p><a href="https://github.com/arbor-jjones/pdns-scala">Scala library</a> is a Scala implementation developed by Jason Jones.</p>
+
+<h2 id="r-library-to-access-the-circl-passive-dns-api">R Library to access the CIRCL Passive DNS API</h2>
+
+<p><a href="https://github.com/michaelschratt/rpdns">R Port of CIRCL.LU’s PyPDNS Python module</a>.</p>
+
+<h2 id="go-language-implementation-to-access-the-circl-passive-dns-api">Go Language implementation to access the CIRCL Passive DNS API</h2>
+
+<p><a href="https://github.com/jkosik/pdns-circl">Passive DNS client for CIRCL PDNS Database - golang implementation</a></p>
+
+<h2 id="c-implementation-to-access-the-circl-and-farsight-security-passive-dns-api">C implementation to access the CIRCL and Farsight Security Passive DNS API</h2>
+<p><a href="https://github.com/dnsdb/dnsdbq/">pure C implementation</a></p>
+
+                </div>
+            </article>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <nav>
+                    <section class="about">
+                        <h3>About CIRCL</h3>
+                        <ul>
+                            <li><a href="../../mission/">Mission</a></li>
+                            <li><a href="../../news/">News</a></li>
+                            <li><a href="../../mission/rfc2350/">RFC2350</a></li>
+                            <li><a href="../../team/">Team Members</a></li>
+                            <li><a href="../../projects/internships/">Internships</a></li>
+                            <li><a href="../../contact/">Contact</a></li>
+                            <li><a href="../../opendata/statistics/">Statistics</a></li>
+<li>
+                            </li>
+<li><a href="../../opendata/">Opendata</a></li>
+                            <li><a href="../../privacy/">Privacy</a></li>
+                        </ul>
+                    </section>
+                    <section class="services">
+                        <h3>Services, Projects and Software</h3>
+                        <ul>
+                            <li><a href="../">Services</a></li>
+                            <ul>
+                            <li><a href="../dynamic-malware-analysis/"> Dynamic Malware Analysis Platform</a></li>
+                            <li><a href="../misp-malware-information-sharing-platform/">Malware Information Sharing and Threat Sharing Platform</a></li>
+                            </ul>
+                            <li><a href="../../projects/">Projects</a></li>
+                            <li><a href="../../projects/#free-software">Software</a></li>
+                        </ul>
+                    </section>
+                    <section class="publication">
+                        <h3>Publications and Presentations</h3>
+                        <ul>
+                            <li><a href="../../pub/">Publications</a></li>
+                            <li><a href="../../pub/#the-digital-first-aid-kit">Digital First Aid Kit</a></li>
+                            <li><a href="../../pub/#presentations">Presentations</a></li>
+                        </ul>
+                    </section>
+                    <section class="publicservices">
+                        <h3>Public services</h3>
+                        <ul>
+                            <li><a href="../../urlabuse/">Review and report malicious URLs</a></li>
+<li>
+                            </li>
+<li><a href="http://bgpranking.circl.lu/">BGP Ranking</a></li>
+                            <li><a href="http://cve.circl.lu/">Common vulnerability exposure</a></li>
+                            <li><a href="http://pgp.circl.lu/">PGP key server</a></li>
+                            <li><a href="http://github.com/CIRCL">Free software</a></li>
+                        </ul>
+                    </section>
+                </nav>
+                <div class="copyright">
+                        <!-- <img align="left" src="/assets/images/circlb.png"> -->
+                        <div class="copyright-logo">
+                                <img src="../../assets/images/circl-logo.png">
+                        </div>
+                        <div class="social">
+                                <a href="https://www.twitter.com/circl_lu"><i class="fa fa-twitter fa-2x"></i></a>
+                                <a href="https://www.github.com/CIRCL/"><i class="fa fa-github fa-2x"></i></a>
+                        </div>
+                        <div class="copyright-text">
+                        <p>CIRCL is the CERT (Computer Emergency Response Team/Computer Security Incident Response Team) for the private sector, communes and non-governmental entities in Luxembourg.</p>
+                    <p>Content from this website is classified as <a href="../../pub/traffic-light-protocol/">TLP:WHITE</a> information may be distributed without restriction, subject to copyright controls.</p>
+                    <p>Copyright 2008 - 2020 CIRCL Computer Incident Response Center Luxembourg (<a href="https://securitymadein.lu/contact/about/">SECURITYMADEIN.lu gie</a>).</p>
+                    <p><a href="index.html.asc">PGP signature of this page</a> and <a href="../../verify">How to Verify Integrity of CIRCL Web Pages</a></p>
+            </div>
+            </div>
+            </div>
+        </footer>
+    </body>
+</html>

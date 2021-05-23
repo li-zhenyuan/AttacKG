@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="Use Windows Event Forwarding to help with intrusion detection (Windows 10) - Windows security" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection" />
+			<meta property="og:description" content="Learn about an approach to collect events from devices in your organization. This article talks about events in both normal operations and when an intrusion is suspected." />
+		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
+		<meta property="og:image:alt" content="Microsoft Logo" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="audience" content="ITPro" />
+<meta name="author" content="DulceMontemayor" />
+<meta name="breadcrumb_path" content="/windows/windows-10/breadcrumb/toc.json" />
+<meta name="depot_name" content="TechNet.windows-security" />
+<meta name="description" content="Learn about an approach to collect events from devices in your organization. This article talks about events in both normal operations and when an intrusion is suspected." />
+<meta name="document_id" content="e5862cc7-3f36-5f2e-9ade-f7441f99f818" />
+<meta name="document_version_independent_id" content="b8bd1985-7b5b-ea79-976a-7d96ad69335c" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/windows-docs-pr/blob/e967b61aa98632e8622ef08b246ada571093749f/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection.md" />
+<meta name="locale" content="en-us" />
+<meta name="manager" content="dansimp" />
+<meta name="ms.assetid" content="733263E5-7FD1-45D2-914A-184B9E3E6A3F" />
+<meta name="ms.author" content="dansimp" />
+<meta name="ms.date" content="02/28/2019" />
+<meta name="ms.localizationpriority" content="medium" />
+<meta name="ms.mktglfcycl" content="deploy" />
+<meta name="ms.pagetype" content="security" />
+<meta name="ms.prod" content="m365-security" />
+<meta name="ms.reviewer" content="" />
+<meta name="ms.sitesec" content="library" />
+<meta name="ms.technology" content="mde" />
+<meta name="ms.topic" content="article" />
+<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/windows-docs-pr/blob/live/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection.md" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="windows-security" />
+<meta name="search.ms_product" content="TechNet" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="uhfHeaderId" content="MSDocsHeader-M365-IT" />
+<meta name="updated_at" content="2021-03-25 08:22 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="toc.json" />
+<meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/TechNet.windows-security/{branchName}{pdfName}" />
+<meta name="word_count" content="5151" />
+
+
+	<meta name="scope" content="Windows 10" />
+<link href="https://docs.microsoft.com/en-us/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection" rel="canonical">
+	<title>Use Windows Event Forwarding to help with intrusion detection (Windows 10) - Windows security | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: true,
+			hasGithubIssues: true,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'GitHub',
+			feedbackGitHubRepo: 'MicrosoftDocs/windows-itpro-docs',
+			feedbackProductUrl: 'https://support.microsoft.com/help/4021566/windows-10-send-feedback-to-microsoft-with-feedback-hub-app',
+			contentGitUrl: 'https://github.com/MicrosoftDocs/windows-itpro-docs/blob/public/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection.md',
+			extendBreadcrumb: false,
+			isEditDisplayable: true,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+			contributors: [
+						{ name: "DulceMontemayor", url: "https://github.com/DulceMontemayor" },
+						{ name: "DCtheGeek", url: "https://github.com/DCtheGeek" },
+						{ name: "Dansimp", url: "https://github.com/Dansimp" },
+						{ name: "warren-msft", url: "https://github.com/warren-msft" },
+						{ name: "illfated", url: "https://github.com/illfated" },
+						{ name: "j0rt3g4", url: "https://github.com/j0rt3g4" },
+						{ name: "nschonni", url: "https://github.com/nschonni" },
+						{ name: "VSC-Service-Account", url: "https://github.com/VSC-Service-Account" },
+						{ name: "get-itips", url: "https://github.com/get-itips" },
+						{ name: "Justinha", url: "https://github.com/Justinha" },
+						{ name: "MaratMussabekov", url: "https://github.com/MaratMussabekov" },
+						{ name: "andreabichsel", url: "https://github.com/andreabichsel" },
+						{ name: "DuncanmaMSFT", url: "https://github.com/DuncanmaMSFT" }
+],
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="nav-bar border-top is-hidden-mobile"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+							<li id="feedback-section-link">
+								<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments" title="Send feedback about this page">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-comment-lines"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
+								</a>
+							</li>
+								<li id="contenteditbtn">
+									<a href="https://github.com/MicrosoftDocs/windows-itpro-docs/blob/public/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection.md" class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit" data-original_content_git_url="https://github.com/MicrosoftDocs/windows-docs-pr/blob/live/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection.md" data-original_content_git_url_template="{repo}/blob/{branch}/windows/security/threat-protection/use-windows-event-forwarding-to-assist-in-intrusion-detection.md" data-pr_repo="" data-pr_branch="">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-edit-outline"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
+								</a>
+							</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="use-windows-event-forwarding-to-help-with-intrusion-detection">Use Windows Event Forwarding to help with intrusion detection</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2019-02-28T00:00:00.000Z" data-article-date-source="ms.date">02/28/2019</time>
+							</li>
+									<li class="readingTime">25 minutes to read</li>
+								<li class="contributors-holder">
+									<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
+														<li class="facepile-item">
+															<a href="https://github.com/DulceMontemayor" title="DulceMontemayor" aria-label="DulceMontemayorGithub profile" data-src="https://github.com/DulceMontemayor.png?size=32" data-contributor-name="DulceMontemayor" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/DulceMontemayor.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">D</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/DCtheGeek" title="DCtheGeek" aria-label="DCtheGeekGithub profile" data-src="https://github.com/DCtheGeek.png?size=32" data-contributor-name="DCtheGeek" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/DCtheGeek.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">D</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/Dansimp" title="Dansimp" aria-label="DansimpGithub profile" data-src="https://github.com/Dansimp.png?size=32" data-contributor-name="Dansimp" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/Dansimp.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">D</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/warren-msft" title="warren-msft" aria-label="warren-msftGithub profile" data-src="https://github.com/warren-msft.png?size=32" data-contributor-name="warren-msft" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/warren-msft.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">w</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/illfated" title="illfated" aria-label="illfatedGithub profile" data-src="https://github.com/illfated.png?size=32" data-contributor-name="illfated" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/illfated.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">i</span>
+															</a>
+														</li>
+											<li class="facepile-item">
+													<button aria-label="View all contributors" class="facepile-item-more" title="View all contributors">
+														<div class="facepile-item-coin" aria-hidden="true">
+															<span class="facepile-item-coin-text" aria-hidden="true">
+																+8
+															</span>
+														</div>
+													</button>
+											</li>
+									</ul>
+								</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p><strong>Applies to</strong></p>
+<ul>
+<li>Windows 10</li>
+<li>Windows Server</li>
+</ul>
+<p>Learn about an approach to collect events from devices in your organization. This article talks about events in both normal operations and when an intrusion is suspected.</p>
+<p>Windows Event Forwarding (WEF) reads any operational or administrative event log on a device in your organization and forwards the events you choose to a Windows Event Collector (WEC) server.</p>
+<p>To accomplish this, there are two different subscriptions published to client devices - the Baseline subscription and the suspect subscription. The Baseline subscription enrolls all devices in your organization, and a Suspect subscription only includes devices that have been added by you. The Suspect subscription collects additional events to help build context for system activity and can quickly be updated to accommodate new events and/or scenarios as needed without impacting baseline operations.</p>
+<p>This implementation helps differentiate where events are ultimately stored. Baseline events can be sent to devices with online analytical capability, such as Security Event Manager (SEM), while also sending events to a MapReduce system, such as HDInsight or Hadoop, for long-term storage and deeper analysis. Events from the Suspect subscription are sent directly to a MapReduce system due to volume and lower signal/noise ratio, they are largely used for host forensic analysis.</p>
+<p>An SEM’s strength lies in being able to inspect, correlate events, and generate alerts for known patterns manner and alert security staff at machine speed.</p>
+<p>A MapReduce system has a longer retention time (years versus months for an SEM), larger ingress ability (hundreds of terabytes per day), and the ability to perform more complex operations on the data like statistical and trend analysis, pattern clustering analysis, or apply Machine Learning algorithms.</p>
+<p>Here's an approximate scaling guide for WEF events:</p>
+<table>
+<thead>
+<tr>
+<th>Events/second range</th>
+<th>Data store</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 - 5,000</td>
+<td>SQL or SEM</td>
+</tr>
+<tr>
+<td>5,000 - 50,000</td>
+<td>SEM</td>
+</tr>
+<tr>
+<td>50,000+</td>
+<td>Hadoop/HDInsight/Data Lake</td>
+</tr>
+</tbody>
+</table>
+<p>Event generation on a device must be enabled either separately or as part of the GPO for the baseline WEF implementation, including enabling of disabled event logs and setting channel permissions. For more info, see <a href="#bkmk-appendixc" data-linktype="self-bookmark">Appendix C - Event channel settings (enable and channel access) methods</a>. This is because WEF is a passive system regarding the event log. It cannot change the size of event log files, enable disabled event channels, change channel permissions, or adjust a security audit policy. WEF only queries event channels for existing events. Additionally, having event generation already occurring on a device allows for more complete event collection building a complete history of system activity. Otherwise, you'll be limited to the speed of GPO and WEF subscription refresh cycles to make changes to what is being generated on the device. On modern devices, enabling additional event channels and expanding the size of event log files has not resulted in noticeable performance differences.</p>
+<p>For the minimum recommended audit policy and registry system ACL settings, see <a href="#bkmk-appendixa" data-linktype="self-bookmark">Appendix A - Minimum recommended minimum audit policy</a> and <a href="#bkmk-appendixb" data-linktype="self-bookmark">Appendix B - Recommended minimum registry system ACL policy</a>.</p>
+<blockquote>
+<p><strong>Note:</strong>  These are only minimum values need to meet what the WEF subscription selects.</p>
+</blockquote>
+<p>From a WEF subscription management perspective, the event queries provided should be used in two separate subscriptions for ease of maintenance; only machines meeting specific criteria would be allowed access to the targeted subscription, this access would be determined by an algorithm or an analysts’ direction. All devices should have access to the Baseline subscription.</p>
+<p>This means you would create two base subscriptions:</p>
+<ul>
+<li><strong>Baseline WEF subscription</strong>. Events collected from all hosts, this includes some role-specific events, which will only be emitted by those machines.</li>
+<li><strong>Targeted WEF subscription</strong>. Events collected from a limited set of hosts due to unusual activity and/or heightened awareness for those systems.</li>
+</ul>
+<p>Each using the respective event query below. Note that for the Targeted subscription enabling the “read existing events” option should be set to true to allow collection of existing events from systems. By default, WEF subscriptions will only forward events generated after the WEF subscription was received by the client.</p>
+<p>In <a href="#bkmk-appendixe" data-linktype="self-bookmark">Appendix E – Annotated Baseline Subscription Event Query</a> and <a href="#bkmk-appendixf" data-linktype="self-bookmark">Appendix F – Annotated Suspect Subscription Event Query</a>, the event query XML is included when creating WEF subscriptions. These are annotated for query purpose and clarity. Individual &lt;Query&gt; element can be removed or edited without affecting the rest of the query.</p>
+<h3 id="common-wef-questions">Common WEF questions</h3>
+<p>This section addresses common questions from IT pros and customers.</p>
+<h3 id="will-the-user-notice-if-their-machine-is-enabled-for-wef-or-if-wef-encounters-an-error">Will the user notice if their machine is enabled for WEF or if WEF encounters an error?</h3>
+<p>The short answer is: No.</p>
+<p>The longer answer is: The <strong>Eventlog-forwardingPlugin/Operational</strong> event channel logs the success, warning, and error events related to WEF subscriptions present on the device. Unless the user opens Event Viewer and navigates to that channel, they will not notice WEF either through resource consumption or Graphical User Interface pop-ups. Even if there is an issue with the WEF subscription, there is no user interaction or performance degradation. All success, warning, and failure events are logged to this operational event channel.</p>
+<h3 id="is-wef-push-or-pull">Is WEF Push or Pull?</h3>
+<p>A WEF subscription can be configured to be push or pull, but not both. The simplest, most flexible IT deployment with the greatest scalability can be achieved by using a push, or source initiated, subscription. WEF clients are configured by using a GPO and the built-in forwarding client is activated. For pull, collector initiated, the subscription on the WEC server is pre-configured with the names of the WEF Client devices from which events are to be selected. Those clients also have to be configured ahead of time to allow the credentials used in the subscription to access their event logs remotely (normally by adding the credential to the <strong>Event Log Readers</strong> built-in local security group.) A useful scenario: closely monitoring a specific set of machines.</p>
+<h3 id="will-wef-work-over-vpn-or-ras">Will WEF work over VPN or RAS?</h3>
+<p>WEF handles VPN, RAS, and DirectAccess scenarios well and will reconnect and send any accumulated backlog of events when the connection to the WEF Collector is re-established.</p>
+<h3 id="how-is-client-progress-tracked">How is client progress tracked?</h3>
+<p>The WEC server maintains in its registry the bookmark information and last heartbeat time for each event source for each WEF subscription. When an event source re-connects to a WEC server, the last bookmark position is sent to the device to use as a starting point to resume forwarding events. If a
+WEF client has no events to send, the WEF client will connect periodically to send a Heartbeat to the WEC server to indicate it is active. This heartbeat value can be individually configured for each subscription.</p>
+<h3 id="will-wef-work-in-an-ipv4-ipv6-or-mixed-ipv4ipv6-environment">Will WEF work in an IPv4, IPv6, or mixed IPv4/IPv6 environment?</h3>
+<p>Yes. WEF is transport agnostic and will work over IPv4 or IPv6.</p>
+<h3 id="are-wef-events-encrypted-i-see-an-httphttps-option">Are WEF events encrypted? I see an HTTP/HTTPS option!</h3>
+<p>In a domain setting, the connection used to transmit WEF events is encrypted using Kerberos, by default (with NTLM as a fallback option, which can be disabled by using a GPO). Only the WEF collector can decrypt the connection. Additionally, the connection between WEF client and WEC server is mutually authenticated regardless of authentication type (Kerberos or NTLM.) There are GPO options to force Authentication to use Kerberos Only.</p>
+<p>This authentication and encryption is performed regardless if HTTP or HTTPS is selected.</p>
+<p>The HTTPS option is available if certificate based authentication is used, in cases where the Kerberos based mutual authentication is not an option. The SSL certificate and provisioned client certificates are used to provide mutual authentication.</p>
+<h3 id="do-wef-clients-have-a-separate-buffer-for-events">Do WEF Clients have a separate buffer for events?</h3>
+<p>The WEF client machines local event log is the buffer for WEF for when the connection to the WEC server is lost. To increase the “buffer size”, increase the maximum file size of the specific event log file where events are being selected. For more info, see <a href="#bkmk-appendixc" data-linktype="self-bookmark">Appendix C – Event Channel Settings (enable and Channel Access) methods</a>.</p>
+<p>When the event log overwrites existing events (resulting in data loss if the device is not connected to the Event Collector), there is no notification sent to the WEF collector that events are lost from the client. Neither is there an indicator that there was a gap encountered in the event stream.</p>
+<h3 id="what-format-is-used-for-forwarded-events">What format is used for forwarded events?</h3>
+<p>WEF has two modes for forwarded events. The default is “Rendered Text” which includes the textual description of the event as you would see it in Event Viewer. This means that the event size is effectively doubled or tripled depending on the size of the rendered description. The alternative mode is
+“Events” (also sometimes referred to as “Binary” format) – which is just the event XML itself sent in binary XML format (as it would be written to the evtx file.) This is very compact and can more than double the event volume a single WEC server can accommodate.</p>
+<p>A subscription “testSubscription” can be configured to use the Events format through the WECUTIL utility:</p>
+<pre><code class="lang-syntax">@rem required to set the DeliveryMaxItems or DeliveryMaxLatencyTime
+Wecutil ss “testSubscription” /cf:Events
+</code></pre>
+<h3 id="how-frequently-are-wef-events-delivered">How frequently are WEF events delivered?</h3>
+<p>Event delivery options are part of the WEF subscription configuration parameters – There are three built-in subscription delivery options: Normal, Minimize Bandwidth, and Minimize Latency. A fourth, catch-all called “Custom” is available but cannot be selected or configured through the WEF UI by using Event Viewer. The Custom delivery option must be selected and configured using the WECUTIL.EXE command-line application. All subscription options define a maximum event count and maximum event age, if either limit is exceeded then the accumulated events are sent to the event collector.</p>
+<p>This table outlines the built-in delivery options:</p>
+<table>
+<thead>
+<tr>
+<th>Event delivery optimization options</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal</td>
+<td>This option ensures reliable delivery of events and does not attempt to conserve bandwidth. It is the appropriate choice unless you need tighter control over bandwidth usage or need forwarded events delivered as quickly as possible. It uses pull delivery mode, batches 5 items at a time and sets a batch timeout of 15 minutes.</td>
+</tr>
+<tr>
+<td>Minimize bandwidth</td>
+<td>This option ensures that the use of network bandwidth for event delivery is strictly controlled. It is an appropriate choice if you want to limit the frequency of network connections made to deliver events. It uses push delivery mode and sets a batch timeout of 6 hours. In addition, it uses a heartbeat interval of 6 hours.</td>
+</tr>
+<tr>
+<td>Minimize latency</td>
+<td>This option ensures that events are delivered with minimal delay. It is an appropriate choice if you are collecting alerts or critical events. It uses push delivery mode and sets a batch timeout of 30 seconds.</td>
+</tr>
+</tbody>
+</table>
+<p>For more info about delivery options, see <a href="/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc749167(v=ws.11)" data-linktype="absolute-path">Configure Advanced Subscription Settings</a>.</p>
+<p>The primary difference is in the latency which events are sent from the client. If none of the built-in options meet your requirements you can set Custom event delivery options for a given subscription from an elevated command prompt:</p>
+<pre><code class="lang-syntax">@rem required to set the DeliveryMaxItems or DeliveryMaxLatencyTime
+Wecutil ss “SubscriptionNameGoesHere” /cm:Custom
+@rem set DeliveryMaxItems to 1 event
+Wecutil ss “SubscriptionNameGoesHere” /dmi:1
+@rem set DeliveryMaxLatencyTime to 10 ms
+Wecutil ss “SubscriptionNameGoesHere” /dmlt:10
+</code></pre>
+<h3 id="how-do-i-control-which-devices-have-access-to-a-wef-subscription">How do I control which devices have access to a WEF Subscription?</h3>
+<p>For source initiated subscriptions: Each WEF subscription on a WEC server has its own ACL for machine accounts or security groups containing machine accounts (not user accounts) that are explicitly allowed to participate in that subscription or are explicitly denied access. This ACL applies to only a single WEF subscription (since there can be multiple WEF subscriptions on a given WEC server), other WEF Subscriptions have their own separate ACL.</p>
+<p>For collector initiated subscriptions: The subscription contains the list of machines from which the WEC server is to collect events. This list is managed at the WEC server, and the credentials used for the subscription must have access to read event logs from the WEF Clients – the credentials can be either the machine account or a domain account.</p>
+<h3 id="can-a-client-communicate-to-multiple-wef-event-collectors">Can a client communicate to multiple WEF Event Collectors?</h3>
+<p>Yes. If you desire a High-Availability environment, simply configure multiple WEC servers with the same subscription configuration and publish both WEC Server URIs to WEF clients. WEF Clients will forward events simultaneously to the configured subscriptions on the WEC servers, if they have the appropriate access.</p>
+<h3 id="what-are-the-wec-servers-limitations"><a href="" id="what-are-the-wec-server-s-limitations-"></a>What are the WEC server’s limitations?</h3>
+<p>There are three factors that limit the scalability of WEC servers. The general rule for a stable WEC server on commodity hardware is planning for a total of 3,000 events per second on average for all configured subscriptions.</p>
+<ul>
+<li><p><strong>Disk I/O</strong>. The WEC server does not process or validate the received event, but rather buffers the received event and then logs it to a local event log file (EVTX file). The speed of logging to the EVTX file is limited by the disk write speed. Isolating the EVTX file to its own array or using high speed disks can increase the number of events per second that a single WEC server can receive.</p>
+</li>
+<li><p><strong>Network Connections</strong>. While a WEF source does not maintain a permanent, persistent connection to the WEC server, it does not immediately disconnect after sending its events. This means that the number of WEF sources that can simultaneously connect to the WEC server is limited to the open TCP ports available on the WEC server.</p>
+</li>
+<li><p><strong>Registry size</strong>. For each unique device that connects to a WEF subscription, there is a registry key (corresponding to the FQDN of the WEF Client) created to store bookmark and source heartbeat information. If this is not pruned to remove inactive clients this set of registry keys can grow to an unmanageable size over time.</p>
+<ul>
+<li>When a subscription has &gt;1000 WEF sources connect to it over its operational lifetime, also known as lifetime WEF sources, Event Viewer can become unresponsive for a few minutes when selecting the <strong>Subscriptions</strong> node in the left-navigation, but will function normally afterwards.</li>
+<li>At &gt;50,000 lifetime WEF sources, Event Viewer is no longer an option and wecutil.exe (included with Windows) must be used to configure and manage subscriptions.</li>
+<li>At &gt;100,000 lifetime WEF sources, the registry will not be readable and the WEC server will likely have to be rebuilt.</li>
+</ul>
+</li>
+</ul>
+<h2 id="subscription-information">Subscription information</h2>
+<p>Below lists all of the items that each subscription collects, the actual subscription XML is available in an Appendix. These are separated out into Baseline and Targeted. The intent is to subscribe all hosts to Baseline, and then enroll (and remove) hosts on an as needed basis to the Targeted subscription.</p>
+<h3 id="baseline-subscription">Baseline subscription</h3>
+<p>While this appears to be the largest subscription, it really is the lowest volume on a per-device basis. (Exceptions should be allowed for unusual devices – a device performing complex developer related tasks can be expected to create an unusually high volume of process create and AppLocker events.) This subscription does not require special configuration on client devices to enable event channels or modify channel permissions.</p>
+<p>The subscription is essentially a collection of query statements applied to the Event Log. This means that it is modular in nature and a given query statement can be removed or changed without impacting other query statement in the subscription. Additionally, suppress statements which filter out specific events, only apply within that query statement and are not to the entire subscription.</p>
+<h3 id="baseline-subscription-requirements">Baseline subscription requirements</h3>
+<p>To gain the most value out of the baseline subscription we recommend to have the following requirements set on the device to ensure that the clients are already generating the required events to be forwarded off the system.</p>
+<ul>
+<li><p>Apply a security audit policy that is a super-set of the recommended minimum audit policy. For more info, see <a href="#bkmk-appendixa" data-linktype="self-bookmark">Appendix A – Minimum Recommended minimum Audit Policy</a>. This ensures that the security event log is generating the required events.</p>
+</li>
+<li><p>Apply at least an Audit-Only AppLocker policy to devices.</p>
+<ul>
+<li>If you are already allowing or restricting events by using AppLocker, then this requirement is met.</li>
+<li>AppLocker events contain extremely useful information, such as file hash and digital signature information for executables and scripts.</li>
+</ul>
+</li>
+<li><p>Enable disabled event channels and set the minimum size for modern event files.</p>
+</li>
+<li><p>Currently, there is no GPO template for enabling or setting the maximum size for the modern event files. This must be done by using a GPO. For more info, see <a href="#bkmk-appendixc" data-linktype="self-bookmark">Appendix C – Event Channel Settings (enable and Channel Access) methods</a>.</p>
+</li>
+</ul>
+<p>The annotated event query can be found in the following. For more info, see <a href="#bkmk-appendixf" data-linktype="self-bookmark">Appendix F – Annotated Suspect Subscription Event Query</a>.</p>
+<ul>
+<li><p>Anti-malware events from Microsoft Antimalware or Windows Defender. This can be configured for any given anti-malware product easily if it writes to the Windows event log.</p>
+</li>
+<li><p>Security event log Process Create events.</p>
+</li>
+<li><p>AppLocker Process Create events (EXE, script, packaged App installation and execution).</p>
+</li>
+<li><p>Registry modification events. For more info, see <a href="#bkmk-appendixb" data-linktype="self-bookmark">Appendix B – Recommended minimum Registry System ACL Policy</a>.</p>
+</li>
+<li><p>OS startup and shutdown</p>
+<ul>
+<li>Startup event include operating system version, service pack level, QFE version, and boot mode.</li>
+</ul>
+</li>
+<li><p>Service install</p>
+<ul>
+<li>Includes what the name of the service, the image path, and who installed the service.</li>
+</ul>
+</li>
+<li><p>Certificate Authority audit events</p>
+<ul>
+<li>This is only applicable on systems with the Certificate Authority role installed.</li>
+<li>Logs certificate requests and responses.</li>
+</ul>
+</li>
+<li><p>User profile events</p>
+<ul>
+<li>Use of a temporary profile or unable to create a user profile may indicate an intruder is interactively logging into a device but not wanting to leave a persistent profile behind.</li>
+</ul>
+</li>
+<li><p>Service start failure</p>
+<ul>
+<li>Failure codes are localized, so you have to check the message DLL for values.</li>
+</ul>
+</li>
+<li><p>Network share access events</p>
+<ul>
+<li>Filter out IPC$ and /NetLogon file shares, which are expected and noisy.</li>
+</ul>
+</li>
+<li><p>System shutdown initiate requests</p>
+<ul>
+<li>Find out what initiated the restart of a device.</li>
+</ul>
+</li>
+<li><p>User initiated interactive logoff event</p>
+</li>
+<li><p>Remote Desktop Services session connect, reconnect, or disconnect.</p>
+</li>
+<li><p>EMET events, if EMET is installed.</p>
+</li>
+<li><p>Event forwarding plugin events</p>
+<ul>
+<li>For monitoring WEF subscription operations, particularly Partial Success events. This is useful for diagnosing deployment issues.</li>
+</ul>
+</li>
+<li><p>Network share create and delete</p>
+<ul>
+<li>Enables detection of unauthorized share creation.
+<blockquote>
+<p><strong>Note:</strong>  All shares are re-created when the device starts.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>Logon sessions</p>
+<ul>
+<li>Logon success for interactive (local and Remote Interactive/Remote Desktop)</li>
+<li>Logon success for services for non-built-in accounts, such as LocalSystem, LocalNetwork, and so on.</li>
+<li>Logon success for batch sessions</li>
+<li>Logon session close, which are logoff events for non-network sessions.</li>
+</ul>
+</li>
+<li><p>Windows Error Reporting (Application crash events only)</p>
+<ul>
+<li>This can help detect early signs of intruder not familiar with enterprise environment using targeted malware.</li>
+</ul>
+</li>
+<li><p>Event log service events</p>
+<ul>
+<li>Errors, start events, and stop events for the Windows Event Log service.</li>
+</ul>
+</li>
+<li><p>Event log cleared (including the Security Event Log)</p>
+<ul>
+<li>This could indicate an intruder that are covering their tracks.</li>
+</ul>
+</li>
+<li><p>Special privileges assigned to new logon</p>
+<ul>
+<li>This indicates that at the time of logon a user is either an Administrator or has the sufficient access to make themselves Administrator.</li>
+</ul>
+</li>
+<li><p>Outbound Remote Desktop Services session attempts</p>
+<ul>
+<li>Visibility into potential beachhead for intruder</li>
+</ul>
+</li>
+<li><p>System time changed</p>
+</li>
+<li><p>SMB Client (mapped drive connections)</p>
+</li>
+<li><p>Account credential validation</p>
+<ul>
+<li>Local accounts or domain accounts on domain controllers</li>
+</ul>
+</li>
+<li><p>A user was added or removed from the local Administrators security group.</p>
+</li>
+<li><p>Crypto API private key accessed</p>
+<ul>
+<li>Associated with signing objects using the locally stored private key.</li>
+</ul>
+</li>
+<li><p>Task Scheduler task creation and delete</p>
+<ul>
+<li>Task Scheduler allows intruders to run code at specified times as LocalSystem.</li>
+</ul>
+</li>
+<li><p>Logon with explicit credentials</p>
+<ul>
+<li>Detect credential use changes by intruders to access additional resources.</li>
+</ul>
+</li>
+<li><p>Smartcard card holder verification events</p>
+<ul>
+<li>This detects when a smartcard is being used.</li>
+</ul>
+</li>
+</ul>
+<h3 id="suspect-subscription">Suspect subscription</h3>
+<p>This adds some possible intruder-related activity to help analyst further refine their determinations about the state of the device.</p>
+<ul>
+<li><p>Logon session creation for network sessions</p>
+<ul>
+<li>Enables time-series analysis of network graphs.</li>
+</ul>
+</li>
+<li><p>RADIUS and VPN events</p>
+<ul>
+<li>Useful if you use a Microsoft IAS RADIUS/VPN implementation. It shows user-&gt; IP address assignment with remote IP address connecting to the enterprise.</li>
+</ul>
+</li>
+<li><p>Crypto API X509 object and build chain events</p>
+<ul>
+<li>Detects known bad certificate, CA, or sub-CA</li>
+<li>Detects unusual process use of CAPI</li>
+</ul>
+</li>
+<li><p>Groups assigned to local logon</p>
+<ul>
+<li>Gives visibility to groups which enable account wide access</li>
+<li>Allows better planning for remediation efforts</li>
+<li>Excludes well known, built-in system accounts.</li>
+</ul>
+</li>
+<li><p>Logon session exit</p>
+<ul>
+<li>Specific for network logon sessions.</li>
+</ul>
+</li>
+<li><p>Client DNS lookup events</p>
+<ul>
+<li>Returns what process performed a DNS query and the results returned from the DNS server.</li>
+</ul>
+</li>
+<li><p>Process exit</p>
+<ul>
+<li>Enables checking for processes terminating unexpectedly.</li>
+</ul>
+</li>
+<li><p>Local credential validation or logon with explicit credentials</p>
+<ul>
+<li>Generated when the local SAM is authoritative for the account credentials being authenticated.</li>
+<li>Noisy on domain controllers</li>
+<li>On client devices this is only generated when local accounts log on.</li>
+</ul>
+</li>
+<li><p>Registry modification audit events</p>
+<ul>
+<li>Only when a registry value is being created, modified, or deleted.</li>
+</ul>
+</li>
+<li><p>Wireless 802.1x authentication</p>
+<ul>
+<li>Detect wireless connection with a peer MAC address</li>
+</ul>
+</li>
+<li><p>Windows PowerShell logging</p>
+<ul>
+<li>Covers Windows PowerShell 2.0 and later and includes the Windows PowerShell 5.0 logging improvements for in-memory attacks using Windows PowerShell.</li>
+<li>Includes Windows PowerShell remoting logging</li>
+</ul>
+</li>
+<li><p>User Mode Driver Framework “Driver Loaded” event</p>
+<ul>
+<li>Can possibly detect a USB device loading multiple device drivers. For example, a USB_STOR device loading the keyboard or network driver.</li>
+</ul>
+</li>
+</ul>
+<h2 id="appendix-a---minimum-recommended-minimum-audit-policy"><a href="" id="bkmk-appendixa"></a>Appendix A - Minimum recommended minimum audit policy</h2>
+<p>If your organizational audit policy enables additional auditing to meet its needs, that is fine. The policy below is the minimum audit policy settings needed to enable events collected by both baseline and targeted subscriptions.</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Subcategory</th>
+<th>Audit settings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Account Logon</td>
+<td>Credential Validation</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Account Management</td>
+<td>Security Group Management</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>Account Management</td>
+<td>User Account Management</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Account Management</td>
+<td>Computer Account Management</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Account Management</td>
+<td>Other Account Management Events</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Detailed Tracking</td>
+<td>Process Creation</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>Detailed Tracking</td>
+<td>Process Termination</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>Logon/Logoff</td>
+<td>User/Device Claims</td>
+<td>Not configured</td>
+</tr>
+<tr>
+<td>Logon/Logoff</td>
+<td>IPsec Extended Mode</td>
+<td>Not configured</td>
+</tr>
+<tr>
+<td>Logon/Logoff</td>
+<td>IPsec Quick Mode</td>
+<td>Not configured</td>
+</tr>
+<tr>
+<td>Logon/Logoff</td>
+<td>Logon</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Logon/Logoff</td>
+<td>Logoff</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>Logon/Logoff</td>
+<td>Other Logon/Logoff Events</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Logon/Logoff</td>
+<td>Special Logon</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Logon/Logoff</td>
+<td>Account Lockout</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>Object Access</td>
+<td>Application Generated</td>
+<td>Not configured</td>
+</tr>
+<tr>
+<td>Object Access</td>
+<td>File Share</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>Object Access</td>
+<td>File System</td>
+<td>Not configured</td>
+</tr>
+<tr>
+<td>Object Access</td>
+<td>Other Object Access Events</td>
+<td>Not configured</td>
+</tr>
+<tr>
+<td>Object Access</td>
+<td>Registry</td>
+<td>Not configured</td>
+</tr>
+<tr>
+<td>Object Access</td>
+<td>Removable Storage</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>Policy Change</td>
+<td>Audit Policy Change</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Policy Change</td>
+<td>MPSSVC Rule-Level Policy Change</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Policy Change</td>
+<td>Other Policy Change Events</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Policy Change</td>
+<td>Authentication Policy Change</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Policy Change</td>
+<td>Authorization Policy Change</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>Privilege Use</td>
+<td>Sensitive Privilege Use</td>
+<td>Not configured</td>
+</tr>
+<tr>
+<td>System</td>
+<td>Security State Change</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>System</td>
+<td>Security System Extension</td>
+<td>Success and Failure</td>
+</tr>
+<tr>
+<td>System</td>
+<td>System Integrity</td>
+<td>Success and Failure</td>
+</tr>
+</tbody>
+</table>
+<h2 id="appendix-b---recommended-minimum-registry-system-acl-policy"><a href="" id="bkmk-appendixb"></a>Appendix B - Recommended minimum registry system ACL policy</h2>
+<p>The Run and RunOnce keys are useful for intruders and malware persistence. It allows code to be run (or run only once then removed, respectively) when a user logs into the system.</p>
+<p>This can easily be extended to other Auto-Execution Start Points keys in the registry.</p>
+<p>Use the following figures to see how you can configure those registry keys.</p>
+<p><img src="images/runkey.png" alt="default acl for run key" data-linktype="relative-path"/></p>
+<p><img src="images/runoncekey.png" alt="default acl for runonce key" data-linktype="relative-path"/></p>
+<h2 id="appendix-c---event-channel-settings-enable-and-channel-access-methods"><a href="" id="bkmk-appendixc"></a>Appendix C - Event channel settings (enable and channel access) methods</h2>
+<p>Some channels are disabled by default and have to be enabled. Others, such as Microsoft-Windows-CAPI2/Operational must have the channel access modified to allow the Event Log Readers built-in security group to read from it.</p>
+<p>The recommended and most effective way to do this is to configure the baseline GPO to run a scheduled task to configure the event channels (enable, set maximum size, and adjust channel access.) This will take effect at the next GPO refresh cycle and has minimal impact on the client device.</p>
+<p>The following GPO snippet performs the following:</p>
+<ul>
+<li>Enables the <strong>Microsoft-Windows-Capi2/Operational</strong> event channel.</li>
+<li>Sets the maximum file size for <strong>Microsoft-Windows-Capi2/Operational</strong> to 100MB.</li>
+<li>Sets the maximum file size for <strong>Microsoft-Windows-AppLocker/EXE and DLL</strong> to 100MB.</li>
+<li>Sets the maximum channel access for <strong>Microsoft-Windows-Capi2/Operational</strong> to include the built-in Event Log Readers security group.</li>
+<li>Enables the <strong>Microsoft-Windows-DriverFrameworks-UserMode/Operational</strong> event channel.</li>
+<li>Sets the maximum file size for <strong>Microsoft-Windows-DriverFrameworks-UserMode/Operational</strong> to 50MB.</li>
+</ul>
+<p><img src="images/capi-gpo.png" alt="configure event channels" data-linktype="relative-path"/></p>
+<h2 id="appendix-d---minimum-gpo-for-wef-client-configuration"><a href="" id="bkmk-appendixd"></a>Appendix D - Minimum GPO for WEF Client configuration</h2>
+<p>Here are the minimum steps for WEF to operate:</p>
+<ol>
+<li>Configure the collector URI(s).</li>
+<li>Start the WinRM service.</li>
+<li>Add the Network Service account to the built-in Event Log Readers security group. This allows reading from secured event channel, such as the security event channel.</li>
+</ol>
+<p><img src="images/wef-client-config.png" alt="configure the wef client" data-linktype="relative-path"/></p>
+<h2 id="appendix-e--annotated-baseline-subscription-event-query"><a href="" id="bkmk-appendixe"></a>Appendix E – Annotated baseline subscription event query</h2>
+<pre><code class="lang-xml">&lt;QueryList&gt;
+  &lt;Query Id=&quot;0&quot; Path=&quot;System&quot;&gt;
+    &lt;!-- Anti-malware *old* events, but only detect events (cuts down noise) --&gt;
+    &lt;Select Path=&quot;System&quot;&gt;*[System[Provider[@Name='Microsoft Antimalware'] and (EventID &amp;gt;= 1116 and EventID &amp;lt;= 1119)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;!-- AppLocker EXE events or Script events --&gt;
+  &lt;Query Id=&quot;1&quot; Path=&quot;Microsoft-Windows-AppLocker/EXE and DLL&quot;&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-AppLocker/EXE and DLL&quot;&gt;*[UserData[RuleAndFileData[PolicyName=&quot;EXE&quot;]]]&lt;/Select&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-AppLocker/MSI and Script&quot;&gt;*&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;2&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Wireless Lan 802.1x authentication events with Peer MAC address --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=5632)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;3&quot; Path=&quot;Microsoft-Windows-TaskScheduler/Operational&quot;&gt;
+    &lt;!-- Task scheduler Task Registered (106),  Task Registration Deleted (141), Task Deleted (142) --&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-TaskScheduler/Operational&quot;&gt;*[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]&lt;/Select&gt;
+    &lt;Select Path=&quot;System&quot;&gt;*[System[Provider[@Name='Microsoft-Windows-TaskScheduler'] and (EventID=106 or EventID=141 or EventID=142 )]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;4&quot; Path=&quot;System&quot;&gt;
+    &lt;!-- System startup (12 - includes OS/SP/Version) and shutdown --&gt;
+    &lt;Select Path=&quot;System&quot;&gt;*[System[Provider[@Name='Microsoft-Windows-Kernel-General'] and (EventID=12 or EventID=13)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;5&quot; Path=&quot;System&quot;&gt;
+    &lt;!-- Service Install (7000), service start failure (7045), new service (4697) --&gt;
+    &lt;Select Path=&quot;System&quot;&gt;*[System[Provider[@Name='Service Control Manager'] and (EventID = 7000 or EventID=7045)]]&lt;/Select&gt;
+&lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4697)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;6&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- TS Session reconnect (4778), TS Session disconnect (4779) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4778 or EventID=4779)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;7&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Network share object access without IPC$ and Netlogon shares --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=5140)]] and (*[EventData[Data[@Name=&quot;ShareName&quot;]!=&quot;\\*\IPC$&quot;]]) and (*[EventData[Data[@Name=&quot;ShareName&quot;]!=&quot;\\*\NetLogon&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;8&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- System Time Change (4616)  --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4616)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;9&quot; Path=&quot;System&quot;&gt;
+    &lt;!-- Shutdown initiate requests, with user, process and reason (if supplied) --&gt;
+    &lt;Select Path=&quot;System&quot;&gt;*[System[Provider[@Name='USER32'] and (EventID=1074)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;!-- AppLocker packaged (Modern UI) app execution --&gt;
+  &lt;Query Id=&quot;10&quot; Path=&quot;Microsoft-Windows-AppLocker/Packaged app-Execution&quot;&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-AppLocker/Packaged app-Execution&quot;&gt;*&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;!-- AppLocker packaged (Modern UI) app installation --&gt;
+  &lt;Query Id=&quot;11&quot; Path=&quot;Microsoft-Windows-AppLocker/Packaged app-Deployment&quot;&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-AppLocker/Packaged app-Deployment&quot;&gt;*&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;12&quot; Path=&quot;Application&quot;&gt;
+    &lt;!-- EMET events --&gt;
+    &lt;Select Path=&quot;Application&quot;&gt;*[System[Provider[@Name='EMET']]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;13&quot; Path=&quot;System&quot;&gt;
+    &lt;!-- Event log service events --&gt;
+    &lt;Select Path=&quot;System&quot;&gt;*[System[Provider[@Name='Microsoft-Windows-Eventlog']]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;14&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Local logons without network or service events --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4624)]] and (*[EventData[Data[@Name=&quot;LogonType&quot;]!=&quot;3&quot;]]) and (*[EventData[Data[@Name=&quot;LogonType&quot;]!=&quot;5&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;15&quot; Path=&quot;Application&quot;&gt;
+    &lt;!-- WER events for application crashes only --&gt;
+    &lt;Select Path=&quot;Application&quot;&gt;*[System[Provider[@Name='Windows Error Reporting']]] and (*[EventData[Data[3] =&quot;APPCRASH&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;16&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Security Log cleared events (1102), EventLog Service shutdown (1100)--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=1102 or EventID = 1100)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;17&quot; Path=&quot;System&quot;&gt;
+    &lt;!-- Other Log cleared events (104)--&gt;
+    &lt;Select Path=&quot;System&quot;&gt;*[System[(EventID=104)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;18&quot; Path=&quot;Security&quot;&gt;
+    &lt;!--  user initiated logoff --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4647)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;19&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- user logoff for all non-network logon sessions--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4634)]] and (*[EventData[Data[@Name=&quot;LogonType&quot;] != &quot;3&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;20&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Service logon events if the user account isn't LocalSystem, NetworkService, LocalService --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4624)]] and (*[EventData[Data[@Name=&quot;LogonType&quot;]=&quot;5&quot;]]) and (*[EventData[Data[@Name=&quot;TargetUserSid&quot;] != &quot;S-1-5-18&quot;]]) and (*[EventData[Data[@Name=&quot;TargetUserSid&quot;] != &quot;S-1-5-19&quot;]]) and (*[EventData[Data[@Name=&quot;TargetUserSid&quot;] != &quot;S-1-5-20&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;21&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Network Share create (5142), Network Share Delete (5144)  --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=5142 or EventID=5144)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;22&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Process Create (4688) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[EventID=4688]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;23&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Event log service events specific to Security channel --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[Provider[@Name='Microsoft-Windows-Eventlog']]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;26&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Special Privileges (Admin-equivalent Access) assigned to new logon, excluding LocalSystem--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4672)]]&lt;/Select&gt;
+    &lt;Suppress Path=&quot;Security&quot;&gt;*[EventData[Data[1]=&quot;S-1-5-18&quot;]]&lt;/Suppress&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;27&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- New user added to local security group--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4732)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;28&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- New user added to global security group--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4728)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;29&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- New user added to universal security group--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4756)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;30&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- User removed from local Administrators group--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4733)]] and (*[EventData[Data[@Name=&quot;TargetUserName&quot;]=&quot;Administrators&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;31&quot; Path=&quot;Microsoft-Windows-TerminalServices-RDPClient/Operational&quot;&gt;
+    &lt;!-- Log attempted TS connect to remote server --&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-TerminalServices-RDPClient/Operational&quot;&gt;*[System[(EventID=1024)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;32&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Certificate Services received certificate request (4886), Approved and Certificate issued (4887), Denied request (4888) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4886 or EventID=4887 or EventID=4888)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;34&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- New User Account Created(4720), User Account Enabled (4722), User Account Disabled (4725), User Account Deleted (4726) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4720 or EventID=4722 or EventID=4725 or EventID=4726)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;35&quot; Path=&quot;Microsoft-Windows-SmartCard-Audit/Authentication&quot;&gt;
+    &lt;!-- Gets all Smart-card Card-Holder Verification (CHV) events (success and failure) performed on the host. --&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-SmartCard-Audit/Authentication&quot;&gt;*&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;36&quot; Path=&quot;Microsoft-Windows-SMBClient/Operational&quot;&gt;
+    &lt;!-- get all UNC/mapped drive successful connection --&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-SMBClient/Operational&quot;&gt;*[System[(EventID=30622 or EventID=30624)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;37&quot; Path=&quot;Application&quot;&gt;
+    &lt;!-- User logging on with Temporary profile (1511), cannot create profile, using temporary profile (1518)--&gt;
+    &lt;Select Path=&quot;Application&quot;&gt;*[System[Provider[@Name='Microsoft-Windows-User Profiles Service'] and (EventID=1511 or EventID=1518)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;39&quot; Path=&quot;Microsoft-Windows-Sysmon/Operational&quot;&gt;
+    &lt;!-- Modern SysMon event provider--&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-Sysmon/Operational&quot;&gt;*&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;40&quot; Path=&quot;Application&quot;&gt;
+    &lt;!-- Application crash/hang events, similar to WER/1001. These include full path to faulting EXE/Module.--&gt;
+    &lt;Select Path=&quot;Application&quot;&gt;*[System[Provider[@Name='Application Error'] and (EventID=1000)]]&lt;/Select&gt;
+    &lt;Select Path=&quot;Application&quot;&gt;*[System[Provider[@Name='Application Hang'] and (EventID=1002)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;41&quot; Path=&quot;Microsoft-Windows-Windows Defender/Operational&quot;&gt;
+    &lt;!-- Modern Windows Defender event provider Detection events (1006-1009) and (1116-1119) --&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-Windows Defender/Operational&quot;&gt;*[System[( (EventID &amp;gt;= 1006 and EventID &amp;lt;= 1009) )]]&lt;/Select&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-Windows Defender/Operational&quot;&gt;*[System[( (EventID &amp;gt;= 1116 and EventID &amp;lt;= 1119) )]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;42&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- An account Failed to Log on events --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4625)]] and (*[EventData[Data[@Name=&quot;LogonType&quot;]!=&quot;2&quot;]]) &lt;/Select&gt;
+  &lt;/Query&gt;
+
+&lt;/QueryList&gt;
+</code></pre>
+<h2 id="appendix-f--annotated-suspect-subscription-event-query"><a href="" id="bkmk-appendixf"></a>Appendix F – Annotated Suspect Subscription Event Query</h2>
+<pre><code class="lang-xml">&lt;QueryList&gt;
+  &lt;Query Id=&quot;0&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Network logon events--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4624)]] and (*[EventData[Data[@Name=&quot;LogonType&quot;]=&quot;3&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;1&quot; Path=&quot;System&quot;&gt;
+    &lt;!-- RADIUS authentication events User Assigned IP address (20274), User successfully authenticated (20250), User Disconnected (20275)  --&gt;
+    &lt;Select Path=&quot;System&quot;&gt;*[System[Provider[@Name='RemoteAccess'] and (EventID=20274 or EventID=20250 or EventID=20275)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;2&quot; Path=&quot;Microsoft-Windows-CAPI2/Operational&quot;&gt;
+    &lt;!-- CAPI events Build Chain (11), Private Key accessed (70), X509 object (90)--&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-CAPI2/Operational&quot;&gt;*[System[(EventID=11 or EventID=70 or EventID=90)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;3&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- CA stop/Start events CA Service Stopped (4880), CA Service Started (4881), CA DB row(s) deleted (4896), CA Template loaded (4898) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4880 or EventID = 4881 or EventID = 4896 or EventID = 4898)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;4&quot; Path=&quot;Microsoft-Windows-LSA/Operational&quot;&gt;
+    &lt;!-- Groups assigned to new login (except for well known, built-in accounts)--&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-LSA/Operational&quot;&gt;*[System[(EventID=300)]] and (*[EventData[Data[@Name=&quot;TargetUserSid&quot;] != &quot;S-1-5-20&quot;]]) and (*[EventData[Data[@Name=&quot;TargetUserSid&quot;] != &quot;S-1-5-18&quot;]]) and (*[EventData[Data[@Name=&quot;TargetUserSid&quot;] != &quot;S-1-5-19&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;5&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Logoff events - for Network Logon events--&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4634)]] and (*[EventData[Data[@Name=&quot;LogonType&quot;] = &quot;3&quot;]])&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;6&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- RRAS events – only generated on Microsoft IAS server --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[( (EventID &amp;gt;= 6272 and EventID &amp;lt;= 6280) )]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;7&quot; Path=&quot;Microsoft-Windows-DNS-Client/Operational&quot;&gt;
+    &lt;!-- DNS Client events Query Completed (3008) --&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-DNS-Client/Operational&quot;&gt;*[System[(EventID=3008)]]&lt;/Select&gt;
+&lt;!-- suppresses local machine name resolution events --&gt;
+&lt;Suppress Path=&quot;Microsoft-Windows-DNS-Client/Operational&quot;&gt;*[EventData[Data[@Name=&quot;QueryOptions&quot;]=&quot;140737488355328&quot;]]&lt;/Suppress&gt;
+&lt;!-- suppresses empty name resolution events --&gt;
+&lt;Suppress Path=&quot;Microsoft-Windows-DNS-Client/Operational&quot;&gt;*[EventData[Data[@Name=&quot;QueryResults&quot;]=&quot;&quot;]]&lt;/Suppress&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;8&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Process Terminate (4689) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID = 4689)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;9&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Local credential authentication events (4776), Logon with explicit credentials (4648) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4776 or EventID=4648)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;10&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Registry modified events for Operations: New Registry Value created (%%1904), Existing Registry Value modified (%%1905), Registry Value Deleted (%%1906) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=4657)]] and ((*[EventData[Data[@Name=&quot;OperationType&quot;] = &quot;%%1904&quot;]]) or (*[EventData[Data[@Name=&quot;OperationType&quot;] = &quot;%%1905&quot;]]) or (*[EventData[Data[@Name=&quot;OperationType&quot;] = &quot;%%1906&quot;]]))&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;11&quot; Path=&quot;Security&quot;&gt;
+    &lt;!-- Request made to authenticate to Wireless network (including Peer MAC (5632) --&gt;
+    &lt;Select Path=&quot;Security&quot;&gt;*[System[(EventID=5632)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;12&quot; Path=&quot;Microsoft-Windows-PowerShell/Operational&quot;&gt;
+    &lt;!-- PowerShell execute block activity (4103), Remote Command(4104), Start Command(4105), Stop Command(4106) --&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-PowerShell/Operational&quot;&gt;*[System[(EventID=4103 or EventID=4104 or EventID=4105 or EventID=4106)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+  &lt;Query Id=&quot;13&quot; Path=&quot;Microsoft-Windows-DriverFrameworks-UserMode/Operational&quot;&gt;
+    &lt;!-- Detect User-Mode drivers loaded - for potential BadUSB detection. --&gt;
+    &lt;Select Path=&quot;Microsoft-Windows-DriverFrameworks-UserMode/Operational&quot;&gt;*[System[(EventID=2004)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+&lt;Query Id=&quot;14&quot; Path=&quot;Windows PowerShell&quot;&gt;
+    &lt;!-- Legacy PowerShell pipeline execution details (800) --&gt;
+    &lt;Select Path=&quot;Windows PowerShell&quot;&gt;*[System[(EventID=800)]]&lt;/Select&gt;
+  &lt;/Query&gt;
+&lt;/QueryList&gt;
+</code></pre>
+<h2 id="appendix-g---online-resources"><a href="" id="bkmk-appendixg"></a>Appendix G - Online resources</h2>
+<p>You can get more info with the following links:</p>
+<ul>
+<li><a href="/en-us/previous-versions//aa385231(v=vs.85)" data-linktype="absolute-path">Event Selection</a></li>
+<li><a href="/en-us/previous-versions/bb399427(v=vs.90)" data-linktype="absolute-path">Event Queries and Event XML</a></li>
+<li><a href="/en-us/windows/win32/wes/queryschema-schema" data-linktype="absolute-path">Event Query Schema</a></li>
+<li><a href="/en-us/windows/win32/wec/windows-event-collector" data-linktype="absolute-path">Windows Event Collector</a></li>
+<li><a href="auditing/event-4625" data-linktype="relative-path">4625(F): An account failed to log on</a></li>
+</ul>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+								<div class="is-hidden-desktop border-top has-margin-top-large has-padding-top-large binary-rating-holder">
+									
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small font-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>									</div>
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+<section class="feedback-section position-relative" data-bi-name="feedback-section">
+
+    <h2 id="feedback" class="title is-3 has-margin-top-large">Feedback</h2>
+
+    <div class="alert choose-feedback-type">
+        <p aria-hidden="true" id="send-feedback-about">Submit and view feedback for</p>
+
+        <div class="choose-feedback-buttons margin-top-xs">
+                <a class="button has-external-link-indicator feedback-type-product has-margin-bottom-small" aria-label="Send feedback about this product" href="https://support.microsoft.com/help/4021566/windows-10-send-feedback-to-microsoft-with-feedback-hub-app" data-bi-name="product-feedback">
+                    <span>This product</span>
+                </a>
+
+			<a class="button feedback-type-product has-margin-bottom-small github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
+				<span aria-hidden="true" class="docon docon-brand-github has-padding-right-extra-small"></span>
+				<span>This page</span>
+			</a>
+        </div>
+    </div>
+
+    <div class="action-container display-flex justify-content-flex-end has-margin-top-small has-margin-bottom-small">
+        <a class="view-on-github has-external-link-indicator" data-bi-name="view-on-github" href="https://github.com/MicrosoftDocs/windows-itpro-docs/issues">
+            <span aria-hidden="true" class="docon docon-brand-github"></span>
+            <span>View all page feedback</span>
+        </a>
+    </div>
+</section>
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+								
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

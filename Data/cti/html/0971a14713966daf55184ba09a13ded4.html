@@ -1,0 +1,568 @@
+<!DOCTYPE html><!--[if IE 7]>
+<html class="ie ie7" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<!--<![endif]-->
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sneaky Active Directory Persistence #17: Group Policy &#8211; Active Directory Security</title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Feed" href="https://adsecurity.org/?feed=rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Comments Feed" href="https://adsecurity.org/?feed=comments-rss2" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/adsecurity.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://adsecurity.org/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://adsecurity.org/wp-content/themes/graphene/bootstrap/css/bootstrap.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='https://adsecurity.org/wp-content/themes/graphene/fonts/font-awesome/css/font-awesome.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-css'  href='https://adsecurity.org/wp-content/themes/graphene/style.css?ver=2.8.4' type='text/css' media='screen' />
+<link rel='stylesheet' id='graphene-responsive-css'  href='https://adsecurity.org/wp-content/themes/graphene/responsive.css?ver=2.8.4' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-blocks-css'  href='https://adsecurity.org/wp-content/themes/graphene/blocks.css?ver=2.8.4' type='text/css' media='all' />
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/bootstrap/js/bootstrap.min.js?ver=2.8.4' id='bootstrap-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js?ver=2.8.4' id='bootstrap-hover-dropdown-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-submenu/bootstrap-submenu.min.js?ver=2.8.4' id='bootstrap-submenu-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/jquery.infinitescroll.min.js?ver=2.8.4' id='infinite-scroll-js'></script>
+<script type='text/javascript' id='graphene-js-extra'>
+/* <![CDATA[ */
+var grapheneJS = {"siteurl":"https:\/\/adsecurity.org","ajaxurl":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","templateUrl":"https:\/\/adsecurity.org\/wp-content\/themes\/graphene","isSingular":"1","enableStickyMenu":"","shouldShowComments":"1","commentsOrder":"newest","sliderDisable":"","sliderInterval":"7000","infScrollBtnLbl":"Load more","infScrollOn":"","infScrollCommentsOn":"","totalPosts":"1","postsPerPage":"10","isPageNavi":"","infScrollMsgText":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollMsgTextPlural":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollFinishedText":"All loaded!","commentsPerPage":"50","totalComments":"0","infScrollCommentsMsg":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsMsgPlural":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsFinishedMsg":"All comments loaded!","disableLiveSearch":"1","txtNoResult":"No result found.","isMasonry":""};
+/* ]]> */
+</script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/graphene.js?ver=2.8.4' id='graphene-js'></script>
+<link rel="https://api.w.org/" href="https://adsecurity.org/index.php?rest_route=/" /><link rel="alternate" type="application/json" href="https://adsecurity.org/index.php?rest_route=/wp/v2/posts/2716" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://adsecurity.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://adsecurity.org/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel="canonical" href="https://adsecurity.org/?p=2716" />
+<link rel='shortlink' href='https://adsecurity.org/?p=2716' />
+<link rel="alternate" type="application/json+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D2716" />
+<link rel="alternate" type="text/xml+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D2716&#038;format=xml" />
+		<script type="text/javascript">
+			var _statcounter = _statcounter || [];
+			_statcounter.push({"tags": {"author": "SeanMetcalf"}});
+		</script>
+				<script>
+		   WebFontConfig = {
+		      google: { 
+		      	families: ["Lato:400,400i,700,700i&display=swap"]		      }
+		   };
+
+		   (function(d) {
+		      var wf = d.createElement('script'), s = d.scripts[0];
+		      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+		      wf.async = true;
+		      s.parentNode.insertBefore(wf, s);
+		   })(document);
+		</script>
+	<style type="text/css">
+.header_title, .header_title a, .header_title a:visited, .header_title a:hover, .header_desc {color:#000000}.carousel, .carousel .item{height:400px}@media (max-width: 991px) {.carousel, .carousel .item{height:250px}}#header{max-height:198px}@media (min-width: 1200px) {.container {width:1280px}}
+</style>
+		<script type="application/ld+json">{"@context":"http:\/\/schema.org","@type":"Article","mainEntityOfPage":"https:\/\/adsecurity.org\/?p=2716","publisher":{"@type":"Organization","name":"Active Directory Security"},"headline":"Sneaky Active Directory Persistence #17: Group Policy","datePublished":"2016-03-14T20:28:03+00:00","dateModified":"2016-10-19T09:53:11+00:00","description":"The content in this post describes a method through which an attacker could persist administrative access to Active Directory after having Domain Admin level rights for about 5 minutes. Complete list of Sneaky Active Directory Persistence Tricks posts This post explores how an attacker could leverage the built-in Active Directory management capability called Group Policy ...","author":{"@type":"Person","name":"Sean Metcalf"},"image":["https:\/\/adsecurity.org\/wp-content\/uploads\/2016\/03\/PowerShell-GroupPolicy-Module-Cmdlets.jpg","https:\/\/adsecurity.org\/wp-content\/uploads\/2016\/03\/GPO-GPMC-New-GPOs-Linked-To-Site.jpg","https:\/\/adsecurity.org\/wp-content\/uploads\/2016\/03\/GroupPolicyManagementConsole.jpg"]}</script>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><meta property="og:type" content="article" />
+<meta property="og:title" content="Sneaky Active Directory Persistence #17: Group Policy" />
+<meta property="og:url" content="https://adsecurity.org/?p=2716" />
+<meta property="og:site_name" content="Active Directory Security" />
+<meta property="og:description" content="The content in this post describes a method through which an attacker could persist administrative access to Active Directory after having Domain Admin level rights for about 5 minutes. Complete list of Sneaky Active Directory Persistence Tricks posts This post explores how an attacker could leverage the built-in Active Directory management capability called Group Policy ..." />
+<meta property="og:updated_time" content="2016-10-19T09:53:11+00:00" />
+<meta property="article:modified_time" content="2016-10-19T09:53:11+00:00" />
+<meta property="article:published_time" content="2016-03-14T20:28:03+00:00" />
+<meta property="og:image" content="https://adsecurity.org/wp-content/uploads/2016/03/GroupPolicyManagementConsole.jpg" />
+<meta property="og:image:width" content="1006" />
+<meta property="og:image:height" content="571" />
+    </head>
+    <body class="post-template-default single single-post postid-2716 single-format-standard custom-background wp-embed-responsive layout-boxed two_col_left two-columns singular">
+        
+        <div class="container boxed-wrapper">
+            
+                            <div id="top-bar" class="row clearfix top-bar ">
+                    
+                                                    
+                            <div class="col-md-12 top-bar-items">
+                                
+                                                                                                    	<ul class="social-profiles">
+							
+			            <li class="social-profile social-profile-rss">
+			            	<a href="https://adsecurity.org/?feed=rss2" title="Subscribe to Tech, News, and Other Ideations&#039;s RSS feed" id="social-id-1" class="mysocial social-rss">
+			            				                            <i class="fa fa-rss"></i>
+		                        			            	</a>
+			            </li>
+		            
+		    	    </ul>
+                                    
+                                                                    <button type="button" class="search-toggle navbar-toggle collapsed" data-toggle="collapse" data-target="#top_search">
+                                        <span class="sr-only">Toggle search form</span>
+                                        <i class="fa fa-search-plus"></i>
+                                    </button>
+
+                                    <div id="top_search" class="top-search-form">
+                                        <form class="searchform" method="get" action="https://adsecurity.org">
+	<div class="input-group">
+		<div class="form-group live-search-input">
+			<label for="s" class="screen-reader-text">Search for:</label>
+		    <input type="text" id="s" name="s" class="form-control" placeholder="Search">
+		    		</div>
+	    <span class="input-group-btn">
+	    	<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+	    </span>
+    </div>
+    </form>                                                                            </div>
+                                
+                                                            </div>
+
+                        
+                                    </div>
+            
+
+            <div id="header" class="row">
+
+                <img src="https://adsecurity.org/wp-content/themes/graphene/images/headers/fluid.jpg" alt="Active Directory Security" title="Active Directory Security" width="960" height="198" />                
+                                                                </div>
+
+
+                        <nav class="navbar row navbar-inverse">
+
+                <div class="navbar-header align-center">
+                		                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-menu-wrap, #secondary-menu-wrap">
+	                        <span class="sr-only">Toggle navigation</span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                    </button>
+                	                    
+                    
+                                            <p class="header_title">
+                            <a href="https://adsecurity.org" title="Go back to the front page">                                Active Directory Security                            </a>                        </p>
+                    
+                                                    <p class="header_desc">Active Directory &amp; Enterprise Security, Methods to Secure Active Directory, Attack Methods &amp; Effective Defenses, PowerShell, Tech Notes, &amp; Geek Trivia&#8230;</p>
+                                            
+                                    </div>
+
+                                    <div class="collapse navbar-collapse" id="header-menu-wrap">
+
+            			<ul class="nav navbar-nav flip"><li ><a href="https://adsecurity.org/">Home</a></li><li class="menu-item menu-item-8"><a href="https://adsecurity.org/?page_id=8" >About</a></li><li class="menu-item menu-item-41"><a href="https://adsecurity.org/?page_id=41" >AD Resources</a></li><li class="menu-item menu-item-4031"><a href="https://adsecurity.org/?page_id=4031" >Attack Defense &#038; Detection</a></li><li class="menu-item menu-item-293"><a href="https://adsecurity.org/?page_id=293" >Contact</a></li><li class="menu-item menu-item-1821"><a href="https://adsecurity.org/?page_id=1821" >Mimikatz</a></li><li class="menu-item menu-item-1352"><a href="https://adsecurity.org/?page_id=1352" >Presentations</a></li><li class="menu-item menu-item-195"><a href="https://adsecurity.org/?page_id=195" >Schema Versions</a></li><li class="menu-item menu-item-399"><a href="https://adsecurity.org/?page_id=399" >Security Resources</a></li><li class="menu-item menu-item-183"><a href="https://adsecurity.org/?page_id=183" >SPNs</a></li><li class="menu-item menu-item-2532"><a href="https://adsecurity.org/?page_id=2532" >Top Posts</a></li></ul>                        
+            			                        
+                                            </div>
+                
+                                    
+                            </nav>
+
+            
+            <div id="content" class="clearfix hfeed row">
+                
+                    
+                                        
+                    <div id="content-main" class="clearfix content-main col-md-8">
+                    
+	
+		<div class="post-nav post-nav-top clearfix">
+			<p class="previous col-sm-6"><i class="fa fa-arrow-circle-left"></i> <a href="https://adsecurity.org/?p=2753" rel="prev">Sneaky Active Directory Persistence #16: Computer Accounts &#038; Domain Controller Silver Tickets</a></p>			<p class="next-post col-sm-6"><a href="https://adsecurity.org/?p=2791" rel="next">DarkOperator.com: Using PowerShell to Gather Information from Active Directory</a> <i class="fa fa-arrow-circle-right"></i></p>					</div>
+		        
+<div id="post-2716" class="clearfix post post-2716 type-post status-publish format-standard hentry category-activedirectorysecurity category-microsoft-security category-technical-reference tag-activedirectory tag-badgpo tag-domaincontroller tag-get-adobject tag-get-adorganizationalunit tag-gplink tag-gpo tag-gpp tag-grouppolicy tag-grouppolicyobject tag-grouppolicypersistence tag-grouppolicytemplate tag-maliciousgpo tag-maliciousgrouppolicy tag-powershell-active-directory-module tag-privilegeescalation tag-sitegpos tag-sneakyadpersistence tag-sneakypersistence tag-sysvol item-wrap">
+		
+	<div class="entry clearfix">
+    	
+                    	<div class="post-date date alpha with-year">
+            <p class="default_date">
+            	<span class="month">Mar</span>
+                <span class="day">14</span>
+                	                <span class="year">2016</span>
+                            </p>
+                    </div>
+            
+		        <h1 class="post-title entry-title">
+			Sneaky Active Directory Persistence #17: Group Policy			        </h1>
+		
+			    <ul class="post-meta entry-meta clearfix">
+	    		        <li class="byline">
+	        	By <span class="author"><a href="https://adsecurity.org/?author=2" rel="author">Sean Metcalf</a></span><span class="entry-cat"> in <span class="terms"><a class="term term-category term-565" href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>, <a class="term term-category term-11" href="https://adsecurity.org/?cat=11">Microsoft Security</a>, <a class="term term-category term-2" href="https://adsecurity.org/?cat=2">Technical Reference</a></span></span>	        </li>
+	        	    </ul>
+    
+				
+				<div class="entry-content clearfix">
+							
+										
+						<p>The content in this post describes a method through which an attacker could persist administrative access to Active Directory after having Domain Admin level rights for about 5 minutes.</p>
+<p><a href="https://adsecurity.org/?p=1929">Complete list of Sneaky Active Directory Persistence Tricks posts </a></p>
+<p>This post explores how an attacker could leverage the built-in Active Directory management capability called Group Policy and how to mitigate potential security issues.</p>
+<p><span id="more-2716"></span></p>
+<h4><strong>Group Policy Overview</strong></h4>
+<p>One of the key benefits to Active Directory is its management capability and core to this capability is Group Policy. Group Policy has several parts to it and can be challenging to manage in a large enterprise without third-party tools.</p>
+<p>Group Policy enables administrators to manage computers and users in Active Directory.  Group Policies are saved as Group Policy Objects (GPOs) which are then associated with Active Directory objects such as sites, domains, or organizational units (OUs). Group Policies can include security options, registry keys, software installation, and scripts for startup and shutdown and domain members refresh group policy settings every 90 minutes by default (5 minutes for Domain Controllers). This means that Group Policy enforces configured settings on the targeted computer.</p>
+<p>In most Active Directory implementations, there is at least one GPO configured on the domain defining mandated password, Kerberos, and domain-wide policies; at least one GPO configured for the Domain Controllers OU; and at least one GPO configured for a servers  and workstations OU. These GPOs define security settings specific to the environment and often configure administrative groups, include startup/shutdown scripts, etc.. GPOs can be configured to set organization-defined security requirements at each level, and can be used for installing software and setting file and registry permissions. GPOs only apply to users and computers and can be filtered with groups or more specifically targeted using the Preferences component.  The “No Override” option ensures that the settings in a Group Policy are applied even if a GPO closer to the resource has contradicting settings.</p>
+<p>There are two Group Policy components:</p>
+<p>1. The &#8220;<a href="https://technet.microsoft.com/en-us/library/cc759367%28v=ws.10%29.aspx">Group Policy Container</a>&#8221; is stored in Active Directory (&lt;DOMAIN&gt;, System, Policies)</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-ADUC-GroupPolicyObject-Attributes.jpg" rel="attachment wp-att-2736"><img loading="lazy" class="alignnone wp-image-2736" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-ADUC-GroupPolicyObject-Attributes.jpg" alt="GPO-ADUC-GroupPolicyObject-Attributes" width="489" height="707" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-ADUC-GroupPolicyObject-Attributes.jpg 612w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-ADUC-GroupPolicyObject-Attributes-207x300.jpg 207w" sizes="(max-width: 489px) 100vw, 489px" /></a></p>
+<p>2. The files that actually contain the policy settings (collectively referred to as the &#8220;<a href="https://technet.microsoft.com/en-us/library/cc759367%28v=ws.10%29.aspx">Group Policy Template</a>&#8220;) are stored in SYSVOL.<br />
+All domain Group Policies are stored in the following domain share: \\&lt;DOMAIN&gt;\SYSVOL\&lt;DOMAIN&gt;\Policies\<br />
+<a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-SYSVOL-Policies.jpg" rel="attachment wp-att-2737"><img loading="lazy" class="alignnone wp-image-2737" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-SYSVOL-Policies.jpg" alt="GPO-SYSVOL-Policies" width="457" height="324" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-SYSVOL-Policies.jpg 409w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-SYSVOL-Policies-300x213.jpg 300w" sizes="(max-width: 457px) 100vw, 457px" /></a></p>
+<p>Each Group Policy Object in Active Directory has the following attributes (on the policy object in AD):</p>
+<ul>
+<li>displayName: This is the name given to the GPO by the creator.</li>
+<li>gPCFileSysPath: This points to the location in SYSVOL where the associated GPO files (aka &#8220;Group Policy Template&#8221;) are located.</li>
+<li>gPCMachineExtensionNames: This attribute lists the GPO client side extensions (CSEs) required to by the client process the machine specific Group Policy settings.</li>
+<li>gPCUserExtensionNames: This attribute lists the GPO client side extensions (CSEs) required to by the client process the user specific Group Policy settings.</li>
+</ul>
+<p>Using the <a href="https://technet.microsoft.com/en-us/library/ee617195.aspx">PowerShell Active Directory module</a> cmdlet &#8220;<a href="https://technet.microsoft.com/en-us/library/ee617198.aspx">Get-ADObject</a>&#8220;, we can retrieve key GPO specific attributes for the GPO.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Policy-Object-Attributes-PowerShell-GetADObject.jpg" rel="attachment wp-att-2735"><img loading="lazy" class="alignnone size-full wp-image-2735" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Policy-Object-Attributes-PowerShell-GetADObject.jpg" alt="GPO-Policy-Object-Attributes-PowerShell-GetADObject" width="1067" height="220" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Policy-Object-Attributes-PowerShell-GetADObject.jpg 1067w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-Policy-Object-Attributes-PowerShell-GetADObject-300x62.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-Policy-Object-Attributes-PowerShell-GetADObject-768x158.jpg 768w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-Policy-Object-Attributes-PowerShell-GetADObject-1024x211.jpg 1024w" sizes="(max-width: 1067px) 100vw, 1067px" /></a></p>
+<p>The PowerShell Active Directory module can be easily installed on Windows Server 2008 R2 (and newer) by running the following command in an Administrator PowerShell console:</p>
+<blockquote><p><em>Import-module servermanager ; add-windowsfeature rsat-ad-PowerShell</em></p></blockquote>
+<p>Additionally, every Group Policy has a GPO GUID used to connect GPO components:</p>
+<ul>
+<li>The GPO policy files are stored in a GPO object with the GPO GUID as the name.</li>
+<li>The Group Policy Template files in SYSVOL are stored in a folder with the GPO GUID as the name.</li>
+<li>The GPO policy object Distinguished Name is added to the attribute &#8220;gPLink&#8221; on the Organizational Unit (OU) the GPO is linked to.</li>
+</ul>
+<p>When a new GPO is created, it can be created in AD and not linked (in which case, it does nothing), or linked to an OU, domain, or site. Upon creation, a new Group Policy Object is created in the Group Policy Container (&lt;DOMAIN&gt;, System, Policies) and the associated files are created in SYSVOL structure (based on GPO GUID name). When linking a Group Policy to an OU, for example, the OU&#8217;s &#8220;gPLink&#8221; attribute is updated with the GPO&#8217;s Distinguished Name. This provides a method for the computer to identify what group policies apply to itself as well as any that apply to logging on user(s).</p>
+<p>Using the <a href="https://technet.microsoft.com/en-us/library/ee617195.aspx">PowerShell Active Directory module</a> cmdlet &#8220;<a href="https://technet.microsoft.com/en-us/library/ee617236.aspx">Get-ADOrganizationalUnit</a>&#8220;, we can retrieve the Group Policies linked to the &#8220;Servers&#8221; OU.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-OU-LinkedGPOs-PowerShell-GetADOrganizationalUnit.jpg" rel="attachment wp-att-2738"><img loading="lazy" class="alignnone size-full wp-image-2738" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-OU-LinkedGPOs-PowerShell-GetADOrganizationalUnit.jpg" alt="GPO-OU-LinkedGPOs-PowerShell-GetADOrganizationalUnit" width="1102" height="320" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-OU-LinkedGPOs-PowerShell-GetADOrganizationalUnit.jpg 1102w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-OU-LinkedGPOs-PowerShell-GetADOrganizationalUnit-300x87.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-OU-LinkedGPOs-PowerShell-GetADOrganizationalUnit-768x223.jpg 768w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-OU-LinkedGPOs-PowerShell-GetADOrganizationalUnit-1024x297.jpg 1024w" sizes="(max-width: 1102px) 100vw, 1102px" /></a></p>
+<p><a href="https://technet.microsoft.com/en-us/library/cc778037%28v=ws.10%29.aspx">SYSVOL </a>is the domain-wide share in Active Directory to which all authenticated users have read access. SYSVOL contains logon scripts, group policy data, and other domain-wide data which needs to be available anywhere there is a Domain Controller. The SYSVOL share is automatically synchronized and shared among all Domain Controllers.</p>
+<p>Within this Policies folder are folders for each GPO with the folder name the same as that GPO&#8217;s GUID.<br />
+Each GPO folder in SYSVOL has the following:</p>
+<ul>
+<li>Machine &#8211; this folder contains the machine specific settings for the GPO.</li>
+<li>User &#8211; this folder contains the user specific settings for the GPO.</li>
+<li>GPT.INI &#8211; this file contains the configuration settings for the GPO.</li>
+</ul>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-SYSVOL-Policy-Folder-Contents.jpg" rel="attachment wp-att-2739"><img loading="lazy" class="alignnone size-full wp-image-2739" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-SYSVOL-Policy-Folder-Contents.jpg" alt="GPO-SYSVOL-Policy-Folder-Contents" width="507" height="139" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-SYSVOL-Policy-Folder-Contents.jpg 507w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-SYSVOL-Policy-Folder-Contents-300x82.jpg 300w" sizes="(max-width: 507px) 100vw, 507px" /></a></p>
+<p>Note that the GPO is tracked in AD via the GPO GUID which has a separate AD object GUID for the AD object. There are a few different reasons for this, and one of the key reasons is to ensure there are predictable GUIDs for specific Group Policy Objects regardless of the Active Directory instance. The &#8220;Default Domain Policy&#8221; GPO&#8217;s GUID is &#8220;31B2F340-016D-11D2-945F-00C04FB984F9&#8221; and the &#8220;Default Domain Controller Policy &#8221; GPO&#8217;s GUID is &#8220;6AC1786C-016F-11D2-945F-00C04FB984F9&#8221; by default.</p>
+<p>In this graphic the ObjectGUID attribute is &#8220;0115c3fa-1628-40d0-8a68-2d05530d6f76&#8221; which is obviously not the same as the GPO GUID &#8220;31B2F340-016D-11D2-945F-00C04FB984F9&#8221;.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-DefaultDomainPolicy-GetADObject-02.jpg" rel="attachment wp-att-2776"><img loading="lazy" class="alignnone wp-image-2776" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-DefaultDomainPolicy-GetADObject-02.jpg" alt="GPO-DefaultDomainPolicy-GetADObject-02" width="698" height="443" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-DefaultDomainPolicy-GetADObject-02.jpg 1111w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-DefaultDomainPolicy-GetADObject-02-300x190.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-DefaultDomainPolicy-GetADObject-02-768x487.jpg 768w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-DefaultDomainPolicy-GetADObject-02-1024x650.jpg 1024w" sizes="(max-width: 698px) 100vw, 698px" /></a></p>
+<p>&nbsp;</p>
+<h4><strong>Group Policy Management</strong></h4>
+<p>Group Policy management is often delegated in large enterprises so several different organizations are able to create, modify, and delete Group Policies. This issue with this is that Group Policy quickly gets unruly and difficult to manage since many more than the originally designed (and selected) admins have GPO admin rights. These rights are often delegated at the domain level, so edit (or full) rights apply to all domain GPOs, even those that apply to the Domain (everything) and/or Domain Controllers.</p>
+<p>The Group Policy Management Console (GPMC) is the primary tool for Group Policy administration and there&#8217;s a PowerShell module (GroupPolicy) which is extremely useful for reporting on and backing up GPOs (please backup the domain GPOs regularly) using <a href="https://technet.microsoft.com/en-us/library/ee461052.aspx">Backup-GPO</a>.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GroupPolicyManagementConsole.jpg" rel="attachment wp-att-2732"><img loading="lazy" class="alignnone wp-image-2732" src="https://adsecurity.org/wp-content/uploads/2016/03/GroupPolicyManagementConsole.jpg" alt="GroupPolicyManagementConsole" width="617" height="351" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GroupPolicyManagementConsole.jpg 1006w, https://adsecurity.org/wp-content/uploads/2016/03/GroupPolicyManagementConsole-300x170.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/GroupPolicyManagementConsole-768x436.jpg 768w" sizes="(max-width: 617px) 100vw, 617px" /></a></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/PowerShell-GroupPolicy-Module-Cmdlets.jpg" rel="attachment wp-att-2734"><img loading="lazy" class="alignnone wp-image-2734" src="https://adsecurity.org/wp-content/uploads/2016/03/PowerShell-GroupPolicy-Module-Cmdlets.jpg" alt="PowerShell-GroupPolicy-Module-Cmdlets" width="519" height="483" srcset="https://adsecurity.org/wp-content/uploads/2016/03/PowerShell-GroupPolicy-Module-Cmdlets.jpg 1017w, https://adsecurity.org/wp-content/uploads/2016/03/PowerShell-GroupPolicy-Module-Cmdlets-300x279.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/PowerShell-GroupPolicy-Module-Cmdlets-768x715.jpg 768w" sizes="(max-width: 519px) 100vw, 519px" /></a></p>
+<h4><strong>Group Policy Persistence Capability</strong></h4>
+<p>Group Policy was designed to provide simplified management of resources in a domain, though its capability can also be co-opted by an attacker to push out malware, create/modify scheduled tasks, <a href="https://adsecurity.org/?p=559">downgrade credential protections</a>, add a new local account to all computers that are added to the local Administrators group. and even <a href="https://adsecurity.org/?p=2053">change existing security policies enabling clear-text password extraction</a>.</p>
+<p>Some possibilities:</p>
+<ul>
+<li>Configure a PowerShell or VBS script to set group membership at the domain or server level</li>
+<li>Perform one of the other <a href="https://adsecurity.org/?p=1929">&#8220;Sneaky Persistence Tricks&#8221; I outlined previously</a>.</li>
+<li>Running <a href="https://adsecurity.org/?p=2207">Invoke-Mimikatz</a> on all Domain Controllers as SYSTEM every week.</li>
+<li>Pull the KRBTGT account and then schedule a task that runs DCSync on certain computers throughout the forest using forged Kerberos tickets.</li>
+<li>Install &amp; Re-install malware on every computer in the Domain/Forest.</li>
+<li>Dump all <a href="https://adsecurity.org/?p=1790">Microsoft LAPS</a> passwords for all computer local Administrator accounts by running a PowerShell script automatically on one or all Domain Controllers. There are plenty of options for an attacker once Group Policy is part of their toolkit.</li>
+</ul>
+<p>In fact, the <a href="https://www2.fireeye.com/rs/848-DID-242/images/Mtrends2016.pdf">Mandiant M-Trends 2016 report </a>covering activity in 2015 includes information about how attackers are leveraging Group Policy to deploy malware:</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/Mandiant-MTrends2016-GPO-Persistence.jpg" rel="attachment wp-att-2768"><img loading="lazy" class="alignnone wp-image-2768" src="https://adsecurity.org/wp-content/uploads/2016/03/Mandiant-MTrends2016-GPO-Persistence.jpg" alt="Mandiant-MTrends2016-GPO-Persistence" width="580" height="236" srcset="https://adsecurity.org/wp-content/uploads/2016/03/Mandiant-MTrends2016-GPO-Persistence.jpg 1127w, https://adsecurity.org/wp-content/uploads/2016/03/Mandiant-MTrends2016-GPO-Persistence-300x122.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/Mandiant-MTrends2016-GPO-Persistence-768x313.jpg 768w, https://adsecurity.org/wp-content/uploads/2016/03/Mandiant-MTrends2016-GPO-Persistence-1024x417.jpg 1024w" sizes="(max-width: 580px) 100vw, 580px" /></a></p>
+<p><strong>Note that the person who hacked Haking Team leveraged Group Policy as part of the hack: <a href="http://pastebin.com/raw/0SNSvyjJ">http://pastebin.com/raw/0SNSvyjJ</a></strong><span style="text-decoration: underline;"><br />
+</span></p>
+<p><span style="text-decoration: underline;"><br />
+Red Team Note on Group Policy:</span><br />
+The default Group Policy application behavior is to &#8220;refresh the group policy&#8221; on the client, though this doesn&#8217;t actually mean the GPO settings are re-applied. By default, the GPO&#8217;s settings are only reapplied if the GPO was modified prior to the refresh. This means that one could reverse a GPO enforced setting via the computer&#8217;s registry (typically with admin rights) and the unauthorized setting remains until the GPO is modified, after which the GPO settings are re-applied.</p>
+<p><span style="text-decoration: underline;">Blue Team Defenses:</span><br />
+After testing, change the Group Policy default setting to re-apply GPO settings at every refresh (Process even if the Group Policy objects have not changed). This does have a potential performance hit on the client, but will ensure all GPO enforced settings are re-applied.</p>
+<p><em>Computer Configuration, Policies, Administrative Templates, System, Group Policy, Configure security policy processing</em>: Set to Enabled.<br />
+Also check the box for &#8220;<em>Process even if the Group Policy objects have not changed</em>&#8221;</p>
+<p>It&#8217;s also recommended to configure the same settings for each of the following:</p>
+<ul>
+<li><em>Computer Configuration, Policies, Administrative Templates, System, Group Policy, Configure registry policy processing</em></li>
+<li><em>Computer Configuration, Policies, Administrative Templates, System, Group Policy, Configure scripts policy processing</em></li>
+<li>As well as any other policy settings as needed.</li>
+</ul>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Enforce.jpg" rel="attachment wp-att-2728"><img loading="lazy" class="alignnone wp-image-2728" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Enforce.jpg" alt="GPO-Enforce" width="618" height="716" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Enforce.jpg 760w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-Enforce-259x300.jpg 259w" sizes="(max-width: 618px) 100vw, 618px" /></a></p>
+<p>&nbsp;</p>
+<h4><strong>Group Policy Exploit Capability</strong></h4>
+<p>Though this post focuses on retaining domain-level privileged access (&#8220;Domain Admin&#8221; rights), there are several ways in which an existing organization&#8217;s Group Policy configuration could be used to escalate access. The obvious method is to <a href="https://adsecurity.org/?p=2288">exploit existing Group Policy Preference credentials</a> in the environment which enables an attacker to escalate access from domain user to server/application/OU admin, or even Domain Admin. The less obvious method involves finding GPOs linked at either the domain or a top level OU with custom security settings.</p>
+<p>Based on <a href="http://www.TrimarcSecurity.com">AD security assessments I have performed</a>, I&#8217;ve found that organizations frequently have GPOs linked at a high level with custom security settings providing edit rights to accounts that are not Active Directory Administrators. This provides an avenue for privilege escalation since the GPO can be reconfigured to run a script or change security.</p>
+<p><a href="https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1">PowerView</a>, now integrated into <a href="https://github.com/PowerShellMafia/PowerSploit">PowerSploit</a>, includes some interesting Group Policy enumeration capability via PowerShell.</p>
+<p>The following example shows a Group Policy called &#8220;Full Auditing Policy&#8221; linked at the Domain level which has &#8220;Edit settings&#8221; rights delegated to the &#8220;Han Solo&#8221; (Server Admin) account.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Security-Delegation-NonDA.jpg" rel="attachment wp-att-2741"><img loading="lazy" class="alignnone wp-image-2741" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Security-Delegation-NonDA.jpg" alt="GPO-Domain-GroupPolicy-Security-Delegation-NonDA" width="610" height="504" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Security-Delegation-NonDA.jpg 688w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Security-Delegation-NonDA-300x248.jpg 300w" sizes="(max-width: 610px) 100vw, 610px" /></a></p>
+<p>Han Solo is a member of the &#8220;Server Admins&#8221; group which is not a domain admin group.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-HanSolo-GetADUser-Prop-MemberOf.jpg" rel="attachment wp-att-2743"><img loading="lazy" class="alignnone wp-image-2743" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-HanSolo-GetADUser-Prop-MemberOf.jpg" alt="GPO-HanSolo-GetADUser-Prop-MemberOf" width="588" height="372" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-HanSolo-GetADUser-Prop-MemberOf.jpg 875w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-HanSolo-GetADUser-Prop-MemberOf-300x190.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-HanSolo-GetADUser-Prop-MemberOf-768x486.jpg 768w" sizes="(max-width: 588px) 100vw, 588px" /></a></p>
+<p>Since Han Solo has the rights to edit this domain linked GPO, let&#8217;s modify it.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Exploit-ScheduledTask.jpg" rel="attachment wp-att-2769"><img loading="lazy" class="alignnone wp-image-2769" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Exploit-ScheduledTask.jpg" alt="GPO-Domain-GroupPolicy-Exploit-ScheduledTask" width="575" height="442" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Exploit-ScheduledTask.jpg 1012w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Exploit-ScheduledTask-300x231.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-Domain-GroupPolicy-Exploit-ScheduledTask-768x591.jpg 768w" sizes="(max-width: 575px) 100vw, 575px" /></a></p>
+<p>After editing the Group Policy, this GPO will now add a scheduled task on every computer in the domain, enabling any type of activity the attacker wishes.</p>
+<p>&nbsp;</p>
+<h4><strong>&#8220;Hidden Group Policy&#8221; &#8211; Group Policies Applied to Sites<br />
+</strong></h4>
+<p>We know that Group Policy is typically applied to Organizational Units and we can easily view them in GPMC.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-01.jpg" rel="attachment wp-att-2771"><img loading="lazy" class="alignnone wp-image-2771" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-01.jpg" alt="GPO-GPMC-01" width="702" height="410" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-01.jpg 954w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-01-300x175.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-01-768x448.jpg 768w" sizes="(max-width: 702px) 100vw, 702px" /></a></p>
+<p>However, many admins don&#8217;t realize that while it is not best practice to link Group Policies to sites, there&#8217;s nothing preventing a Domain Admin (Enterprise Admin) from doing so.</p>
+<p>All that&#8217;s needed is to select the AD sites that should be shown in the Group Policy Management Console and link the new/updated Group Policies to the site(s)</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-ShowSites.jpg" rel="attachment wp-att-2773"><img loading="lazy" class="alignnone wp-image-2773" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-ShowSites.jpg" alt="GPO-GPMC-ShowSites" width="300" height="284" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-ShowSites.jpg 402w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-ShowSites-300x284.jpg 300w" sizes="(max-width: 300px) 100vw, 300px" /></a></p>
+<p>Looking at GPMC, we can see there are two Group Policies linked to the HQ Site and both of them were last modified recently (hint, hint).</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-New-GPOs-Linked-To-Site-02.jpg" rel="attachment wp-att-2774"><img loading="lazy" class="alignnone wp-image-2774" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-New-GPOs-Linked-To-Site-02.jpg" alt="GPO-GPMC-New-GPOs-Linked-To-Site-02" width="605" height="447" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-New-GPOs-Linked-To-Site-02.jpg 952w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-New-GPOs-Linked-To-Site-02-300x222.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-GPMC-New-GPOs-Linked-To-Site-02-768x567.jpg 768w" sizes="(max-width: 605px) 100vw, 605px" /></a></p>
+<h5><em>Would your current monitoring system notify on this change?</em></h5>
+<p>&nbsp;</p>
+<h4><strong>Mitigation</strong></h4>
+<p>All Group Policies in the AD environment should be configured for a single purpose and monitored for unauthorized modification, especially GPOs linked to the domain, Domain Controllers OU, and/or a top level OU such as workstations, servers, admins, etc.</p>
+<p>Delegated permissions to Group Policy should be reviewed on a regular basis, especially those linked to top-level OUs. Only Active Directory administrators should have modify rights to GPOs applied to the domain, top-level OUs, and any GPOs linked to critical assets (Domain Controllers, servers, admin computers, etc).</p>
+<p>Additionally, all sites should be reviewed for linked Group Policies since these GPOs can cross domain boundaries enabling privilege escalation across domains in the same AD forest.</p>
+<p>SYSVOL permissions are critical and must remain the same as the default settings since SYSYOL contains the actual Group Policy settings in files that are applied by GPO clients. If a GPO configuration file has permissions that enables some on who is not an Active Directory admin to change the file, and thus change what action the GPO client actually performs, an attacker could quickly escalate permissions up to Domain Admin level.</p>
+<h4><strong>Resources</strong></h4>
+<ul>
+<li><a href="https://blogs.technet.microsoft.com/musings_of_a_technical_tam/2012/02/13/group-policy-basics-part-1-understanding-the-structure-of-a-group-policy-object/">Group Policy Basics – Part 1: Understanding the Structure of a Group Policy Object</a></li>
+<li><a href="http://www.harmj0y.net/blog/redteaming/local-group-enumeration/">Local Group Enumeration using PowerView (includes Group Policy features)</a></li>
+<li><a href="https://technet.microsoft.com/en-us/library/cc725745.aspx">Configure a Scheduled Task</a></li>
+<li><a href="https://technet.microsoft.com/en-us/library/dn581922.aspx">Group Policy Preferences</a></li>
+<li><a href="https://adsecurity.org/?p=2288">Exploit existing Group Policy Preference credentials</a></li>
+<li><a href="https://adsecurity.org/?p=1929">Complete list of Sneaky Active Directory Persistence Tricks posts </a></li>
+</ul>
+<p>&nbsp;</p>
+<div class="tptn_counter" id="tptn_counter_2716">(Visited 18,881 times, 4 visits today)</div>								</div>
+		
+			    <ul class="entry-footer">
+	    		        <li class="post-tags col-sm-8"><i class="fa fa-tags" title="Tags"></i> <span class="terms"><a class="term term-tagpost_tag term-20" href="https://adsecurity.org/?tag=activedirectory">ActiveDirectory</a>, <a class="term term-tagpost_tag term-1043" href="https://adsecurity.org/?tag=badgpo">BadGPO</a>, <a class="term term-tagpost_tag term-101" href="https://adsecurity.org/?tag=domaincontroller">DomainController</a>, <a class="term term-tagpost_tag term-36" href="https://adsecurity.org/?tag=get-adobject">Get-ADObject</a>, <a class="term term-tagpost_tag term-919" href="https://adsecurity.org/?tag=get-adorganizationalunit">Get-ADOrganizationalUnit</a>, <a class="term term-tagpost_tag term-908" href="https://adsecurity.org/?tag=gplink">GPLink</a>, <a class="term term-tagpost_tag term-448" href="https://adsecurity.org/?tag=gpo">GPO</a>, <a class="term term-tagpost_tag term-12" href="https://adsecurity.org/?tag=gpp">GPP</a>, <a class="term term-tagpost_tag term-196" href="https://adsecurity.org/?tag=grouppolicy">GroupPolicy</a>, <a class="term term-tagpost_tag term-909" href="https://adsecurity.org/?tag=grouppolicyobject">GroupPolicyObject</a>, <a class="term term-tagpost_tag term-917" href="https://adsecurity.org/?tag=grouppolicypersistence">GroupPolicyPersistence</a>, <a class="term term-tagpost_tag term-910" href="https://adsecurity.org/?tag=grouppolicytemplate">GroupPolicyTemplate</a>, <a class="term term-tagpost_tag term-1044" href="https://adsecurity.org/?tag=maliciousgpo">MaliciousGPO</a>, <a class="term term-tagpost_tag term-1042" href="https://adsecurity.org/?tag=maliciousgrouppolicy">MaliciousGroupPolicy</a>, <a class="term term-tagpost_tag term-918" href="https://adsecurity.org/?tag=powershell-active-directory-module">PowerShell Active Directory module</a>, <a class="term term-tagpost_tag term-568" href="https://adsecurity.org/?tag=privilegeescalation">PrivilegeEscalation</a>, <a class="term term-tagpost_tag term-916" href="https://adsecurity.org/?tag=sitegpos">SiteGPOs</a>, <a class="term term-tagpost_tag term-596" href="https://adsecurity.org/?tag=sneakyadpersistence">SneakyADPersistence</a>, <a class="term term-tagpost_tag term-622" href="https://adsecurity.org/?tag=sneakypersistence">SneakyPersistence</a>, <a class="term term-tagpost_tag term-621" href="https://adsecurity.org/?tag=sysvol">SYSVOL</a></span></li>
+	        	        <li class="addthis col-sm-8"><div class="add-this"></div></li>
+	        	    </ul>
+    	</div>
+
+</div>
+
+    <div class="entry-author">
+        <div class="row">
+            <div class="author-avatar col-sm-3">
+            	<a href="https://adsecurity.org/?author=2" rel="author">
+					<img alt='' src='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=200&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=400&#038;d=mm&#038;r=g 2x' class='avatar avatar-200 photo' height='200' width='200' loading='lazy'/>                </a>
+            </div>
+
+            <div class="author-bio col-sm-9">
+                <h3 class="section-title-sm">Sean Metcalf</h3>
+                <p>I improve security for enterprises around the world working for TrimarcSecurity.com<br />
+Read the About page (top left) for information about me. :)<br />
+https://adsecurity.org/?page_id=8</p>
+    <ul class="author-social">
+    	        
+			        <li><a href="mailto:sean@adsecurity.org"><i class="fa fa-envelope-o"></i></a></li>
+            </ul>
+                </div>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+            
+  
+
+                </div><!-- #content-main -->
+        
+            
+<div id="sidebar1" class="sidebar sidebar-right widget-area col-md-4">
+
+	
+    
+		<div id="recent-posts-4" class="sidebar-wrap widget_recent_entries">
+		<h3>Recent Posts</h3>
+		<ul>
+											<li>
+					<a href="https://adsecurity.org/?p=4367">Attacking Active Directory Group Managed Service Accounts (GMSAs)</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4277">From Azure AD to Active Directory (via Azure) &#8211; An Unanticipated Attack Path</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4211">What is Azure Active Directory?</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4179">Slides Posted for Black Hat USA 2019 Talk: Attacking &#038; Defending the Microsoft Cloud</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4187">AD Reading: Windows Server 2019 Active Directory Features</a>
+									</li>
+					</ul>
+
+		</div><div id="text-3" class="sidebar-wrap widget_text"><h3>Trimarc Active Directory Security Services</h3>			<div class="textwidget">Have concerns about your Active Directory environment?
+
+Trimarc helps enterprises improve their security posture. <p>
+<a href="http://trimarcsecurity.com/security-services">Find out how...</a> 
+TrimarcSecurity.com</div>
+		</div><div id="widget_tptn_pop-4" class="sidebar-wrap tptn_posts_list_widget"><h3>Popular Posts</h3><div class="tptn_posts  tptn_posts_widget tptn_posts_widget4"><ul><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2362"     class="tptn_link"><span class="tptn_title">Attack Methods for Gaining Domain Admin Rights in&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=478"     class="tptn_link"><span class="tptn_title">PowerShell Encoding &#038; Decoding (Base64)</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=483"     class="tptn_link"><span class="tptn_title">Kerberos &#038; KRBTGT: Active Directory&#8217;s&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3377"     class="tptn_link"><span class="tptn_title">Securing Domain Controllers to Improve Active&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2288"     class="tptn_link"><span class="tptn_title">Finding Passwords in SYSVOL &#038; Exploiting Group&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3299"     class="tptn_link"><span class="tptn_title">Securing Windows Workstations: Developing a Secure Baseline</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1684"     class="tptn_link"><span class="tptn_title">The Most Common Active Directory Security Issues and&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2653"     class="tptn_link"><span class="tptn_title">Building an Effective Active Directory Lab&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1729"     class="tptn_link"><span class="tptn_title">Mimikatz DCSync Usage, Exploitation, and Detection</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1790"     class="tptn_link"><span class="tptn_title">Microsoft Local Administrator Password Solution (LAPS)</span></a></span></li></ul><div class="tptn_clear"></div></div></div><div id="categories-4" class="sidebar-wrap widget_categories"><h3>Categories</h3>
+			<ul>
+					<li class="cat-item cat-item-565"><a href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>
+</li>
+	<li class="cat-item cat-item-55"><a href="https://adsecurity.org/?cat=55">Apple Security</a>
+</li>
+	<li class="cat-item cat-item-431"><a href="https://adsecurity.org/?cat=431">Cloud Security</a>
+</li>
+	<li class="cat-item cat-item-17"><a href="https://adsecurity.org/?cat=17">Continuing Education</a>
+</li>
+	<li class="cat-item cat-item-396"><a href="https://adsecurity.org/?cat=396">Entertainment</a>
+</li>
+	<li class="cat-item cat-item-347"><a href="https://adsecurity.org/?cat=347">Exploit</a>
+</li>
+	<li class="cat-item cat-item-1039"><a href="https://adsecurity.org/?cat=1039">Hacking</a>
+</li>
+	<li class="cat-item cat-item-168"><a href="https://adsecurity.org/?cat=168">Hardware Security</a>
+</li>
+	<li class="cat-item cat-item-172"><a href="https://adsecurity.org/?cat=172">Hypervisor Security</a>
+</li>
+	<li class="cat-item cat-item-126"><a href="https://adsecurity.org/?cat=126">Linux/Unix Security</a>
+</li>
+	<li class="cat-item cat-item-343"><a href="https://adsecurity.org/?cat=343">Malware</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://adsecurity.org/?cat=11">Microsoft Security</a>
+</li>
+	<li class="cat-item cat-item-819"><a href="https://adsecurity.org/?cat=819">Mitigation</a>
+</li>
+	<li class="cat-item cat-item-48"><a href="https://adsecurity.org/?cat=48">Network/System Security</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://adsecurity.org/?cat=7">PowerShell</a>
+</li>
+	<li class="cat-item cat-item-698"><a href="https://adsecurity.org/?cat=698">RealWorld</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="https://adsecurity.org/?cat=21">Security</a>
+</li>
+	<li class="cat-item cat-item-234"><a href="https://adsecurity.org/?cat=234">Security Conference Presentation/Video</a>
+</li>
+	<li class="cat-item cat-item-1045"><a href="https://adsecurity.org/?cat=1045">Security Recommendation</a>
+</li>
+	<li class="cat-item cat-item-24"><a href="https://adsecurity.org/?cat=24">Technical Article</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="https://adsecurity.org/?cat=4">Technical Reading</a>
+</li>
+	<li class="cat-item cat-item-2"><a href="https://adsecurity.org/?cat=2">Technical Reference</a>
+</li>
+	<li class="cat-item cat-item-156"><a href="https://adsecurity.org/?cat=156">TheCloud</a>
+</li>
+	<li class="cat-item cat-item-930"><a href="https://adsecurity.org/?cat=930">Vulnerability</a>
+</li>
+			</ul>
+
+			</div><div id="tag_cloud-3" class="sidebar-wrap widget_tag_cloud"><h3>Tags</h3><div class="tagcloud"><a href="https://adsecurity.org/?tag=activedirectory" class="tag-cloud-link tag-link-20 tag-link-position-1" style="font-size: 22pt;" aria-label="ActiveDirectory (52 items)">ActiveDirectory</a>
+<a href="https://adsecurity.org/?tag=active-directory" class="tag-cloud-link tag-link-75 tag-link-position-2" style="font-size: 10.531914893617pt;" aria-label="Active Directory (8 items)">Active Directory</a>
+<a href="https://adsecurity.org/?tag=activedirectoryattack" class="tag-cloud-link tag-link-537 tag-link-position-3" style="font-size: 8pt;" aria-label="ActiveDirectoryAttack (5 items)">ActiveDirectoryAttack</a>
+<a href="https://adsecurity.org/?tag=activedirectorysecurity" class="tag-cloud-link tag-link-113 tag-link-position-4" style="font-size: 13.957446808511pt;" aria-label="ActiveDirectorySecurity (14 items)">ActiveDirectorySecurity</a>
+<a href="https://adsecurity.org/?tag=active-directory-security" class="tag-cloud-link tag-link-976 tag-link-position-5" style="font-size: 9.7872340425532pt;" aria-label="Active Directory Security (7 items)">Active Directory Security</a>
+<a href="https://adsecurity.org/?tag=adreading" class="tag-cloud-link tag-link-5 tag-link-position-6" style="font-size: 13.510638297872pt;" aria-label="ADReading (13 items)">ADReading</a>
+<a href="https://adsecurity.org/?tag=adsecurity" class="tag-cloud-link tag-link-86 tag-link-position-7" style="font-size: 10.531914893617pt;" aria-label="ADSecurity (8 items)">ADSecurity</a>
+<a href="https://adsecurity.org/?tag=ad-security" class="tag-cloud-link tag-link-100 tag-link-position-8" style="font-size: 8pt;" aria-label="AD Security (5 items)">AD Security</a>
+<a href="https://adsecurity.org/?tag=dcsync" class="tag-cloud-link tag-link-598 tag-link-position-9" style="font-size: 10.531914893617pt;" aria-label="DCSync (8 items)">DCSync</a>
+<a href="https://adsecurity.org/?tag=defcon" class="tag-cloud-link tag-link-518 tag-link-position-10" style="font-size: 8pt;" aria-label="DEFCON (5 items)">DEFCON</a>
+<a href="https://adsecurity.org/?tag=domaincontroller" class="tag-cloud-link tag-link-101 tag-link-position-11" style="font-size: 15.446808510638pt;" aria-label="DomainController (18 items)">DomainController</a>
+<a href="https://adsecurity.org/?tag=emet5" class="tag-cloud-link tag-link-338 tag-link-position-12" style="font-size: 8pt;" aria-label="EMET5 (5 items)">EMET5</a>
+<a href="https://adsecurity.org/?tag=goldenticket" class="tag-cloud-link tag-link-303 tag-link-position-13" style="font-size: 11.276595744681pt;" aria-label="GoldenTicket (9 items)">GoldenTicket</a>
+<a href="https://adsecurity.org/?tag=hyperv" class="tag-cloud-link tag-link-3 tag-link-position-14" style="font-size: 8pt;" aria-label="HyperV (5 items)">HyperV</a>
+<a href="https://adsecurity.org/?tag=invoke-mimikatz" class="tag-cloud-link tag-link-336 tag-link-position-15" style="font-size: 10.531914893617pt;" aria-label="Invoke-Mimikatz (8 items)">Invoke-Mimikatz</a>
+<a href="https://adsecurity.org/?tag=kb3011780" class="tag-cloud-link tag-link-337 tag-link-position-16" style="font-size: 9.7872340425532pt;" aria-label="KB3011780 (7 items)">KB3011780</a>
+<a href="https://adsecurity.org/?tag=kdc" class="tag-cloud-link tag-link-80 tag-link-position-17" style="font-size: 8pt;" aria-label="KDC (5 items)">KDC</a>
+<a href="https://adsecurity.org/?tag=kerberos" class="tag-cloud-link tag-link-81 tag-link-position-18" style="font-size: 15.446808510638pt;" aria-label="Kerberos (18 items)">Kerberos</a>
+<a href="https://adsecurity.org/?tag=kerberoshacking" class="tag-cloud-link tag-link-298 tag-link-position-19" style="font-size: 11.872340425532pt;" aria-label="KerberosHacking (10 items)">KerberosHacking</a>
+<a href="https://adsecurity.org/?tag=krbtgt" class="tag-cloud-link tag-link-394 tag-link-position-20" style="font-size: 9.7872340425532pt;" aria-label="KRBTGT (7 items)">KRBTGT</a>
+<a href="https://adsecurity.org/?tag=laps" class="tag-cloud-link tag-link-631 tag-link-position-21" style="font-size: 9.0425531914894pt;" aria-label="LAPS (6 items)">LAPS</a>
+<a href="https://adsecurity.org/?tag=lsass" class="tag-cloud-link tag-link-71 tag-link-position-22" style="font-size: 11.276595744681pt;" aria-label="LSASS (9 items)">LSASS</a>
+<a href="https://adsecurity.org/?tag=mcm" class="tag-cloud-link tag-link-6 tag-link-position-23" style="font-size: 14.255319148936pt;" aria-label="MCM (15 items)">MCM</a>
+<a href="https://adsecurity.org/?tag=microsoftemet" class="tag-cloud-link tag-link-58 tag-link-position-24" style="font-size: 11.276595744681pt;" aria-label="MicrosoftEMET (9 items)">MicrosoftEMET</a>
+<a href="https://adsecurity.org/?tag=microsoftwindows" class="tag-cloud-link tag-link-102 tag-link-position-25" style="font-size: 9.7872340425532pt;" aria-label="MicrosoftWindows (7 items)">MicrosoftWindows</a>
+<a href="https://adsecurity.org/?tag=mimikatz" class="tag-cloud-link tag-link-207 tag-link-position-26" style="font-size: 18.425531914894pt;" aria-label="mimikatz (29 items)">mimikatz</a>
+<a href="https://adsecurity.org/?tag=ms14068" class="tag-cloud-link tag-link-295 tag-link-position-27" style="font-size: 11.276595744681pt;" aria-label="MS14068 (9 items)">MS14068</a>
+<a href="https://adsecurity.org/?tag=passthehash" class="tag-cloud-link tag-link-44 tag-link-position-28" style="font-size: 9.7872340425532pt;" aria-label="PassTheHash (7 items)">PassTheHash</a>
+<a href="https://adsecurity.org/?tag=powershell" class="tag-cloud-link tag-link-575 tag-link-position-29" style="font-size: 18.872340425532pt;" aria-label="PowerShell (31 items)">PowerShell</a>
+<a href="https://adsecurity.org/?tag=powershellcode" class="tag-cloud-link tag-link-22 tag-link-position-30" style="font-size: 15.148936170213pt;" aria-label="PowerShellCode (17 items)">PowerShellCode</a>
+<a href="https://adsecurity.org/?tag=powershellhacking" class="tag-cloud-link tag-link-68 tag-link-position-31" style="font-size: 8pt;" aria-label="PowerShellHacking (5 items)">PowerShellHacking</a>
+<a href="https://adsecurity.org/?tag=powershellv5" class="tag-cloud-link tag-link-69 tag-link-position-32" style="font-size: 8pt;" aria-label="PowerShellv5 (5 items)">PowerShellv5</a>
+<a href="https://adsecurity.org/?tag=powersploit" class="tag-cloud-link tag-link-232 tag-link-position-33" style="font-size: 10.531914893617pt;" aria-label="PowerSploit (8 items)">PowerSploit</a>
+<a href="https://adsecurity.org/?tag=presentation" class="tag-cloud-link tag-link-422 tag-link-position-34" style="font-size: 9.7872340425532pt;" aria-label="Presentation (7 items)">Presentation</a>
+<a href="https://adsecurity.org/?tag=security" class="tag-cloud-link tag-link-576 tag-link-position-35" style="font-size: 8pt;" aria-label="Security (5 items)">Security</a>
+<a href="https://adsecurity.org/?tag=sidhistory" class="tag-cloud-link tag-link-547 tag-link-position-36" style="font-size: 8pt;" aria-label="SIDHistory (5 items)">SIDHistory</a>
+<a href="https://adsecurity.org/?tag=silverticket" class="tag-cloud-link tag-link-304 tag-link-position-37" style="font-size: 11.276595744681pt;" aria-label="SilverTicket (9 items)">SilverTicket</a>
+<a href="https://adsecurity.org/?tag=sneakyadpersistence" class="tag-cloud-link tag-link-596 tag-link-position-38" style="font-size: 9.0425531914894pt;" aria-label="SneakyADPersistence (6 items)">SneakyADPersistence</a>
+<a href="https://adsecurity.org/?tag=spn" class="tag-cloud-link tag-link-294 tag-link-position-39" style="font-size: 9.0425531914894pt;" aria-label="SPN (6 items)">SPN</a>
+<a href="https://adsecurity.org/?tag=tgs" class="tag-cloud-link tag-link-528 tag-link-position-40" style="font-size: 9.0425531914894pt;" aria-label="TGS (6 items)">TGS</a>
+<a href="https://adsecurity.org/?tag=tgt" class="tag-cloud-link tag-link-529 tag-link-position-41" style="font-size: 9.0425531914894pt;" aria-label="TGT (6 items)">TGT</a>
+<a href="https://adsecurity.org/?tag=windows10" class="tag-cloud-link tag-link-494 tag-link-position-42" style="font-size: 10.531914893617pt;" aria-label="Windows10 (8 items)">Windows10</a>
+<a href="https://adsecurity.org/?tag=windowsserver2008r2" class="tag-cloud-link tag-link-46 tag-link-position-43" style="font-size: 9.0425531914894pt;" aria-label="WindowsServer2008R2 (6 items)">WindowsServer2008R2</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012" class="tag-cloud-link tag-link-47 tag-link-position-44" style="font-size: 11.276595744681pt;" aria-label="WindowsServer2012 (9 items)">WindowsServer2012</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012r2" class="tag-cloud-link tag-link-54 tag-link-position-45" style="font-size: 9.7872340425532pt;" aria-label="WindowsServer2012R2 (7 items)">WindowsServer2012R2</a></div>
+</div>    
+        
+    
+</div><!-- #sidebar1 -->        
+        
+    </div><!-- #content -->
+
+
+    
+        
+    <div id="sidebar_bottom" class="sidebar widget-area row footer-widget-col-3">
+                    <div id="text-2" class="sidebar-wrap widget_text col-sm-4"><h3>Copyright</h3>			<div class="textwidget">Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability.
+The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned.
+
+Content Ownership: All content posted here is intellectual work and under the current law, the poster owns the copyright of the article. Terms of Use Copyright © 2011 - 2020.</div>
+		</div>		
+            </div>
+
+	
+
+<div id="footer" class="row default-footer">
+    
+        
+            
+            <div class="copyright-developer">
+                                    <div id="copyright">
+                        <p>Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability. The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned. </p>
+                    </div>
+                
+                                    <div id="developer">
+                        <p>
+                                                        Made with <i class="fa fa-heart"></i> by <a href="https://www.graphene-theme.com/" rel="nofollow">Graphene Themes</a>.                        </p>
+
+                                            </div>
+                            </div>
+
+        
+                
+    </div><!-- #footer -->
+
+
+</div><!-- #container -->
+
+		<!-- Start of StatCounter Code -->
+		<script>
+			<!--
+			var sc_project=10100711;
+			var sc_security="4b306538";
+			      var sc_invisible=1;
+			var scJsHost = (("https:" == document.location.protocol) ?
+				"https://secure." : "http://www.");
+			//-->
+					</script>
+		
+<script type="text/javascript"
+				src="https://secure.statcounter.com/counter/counter.js"
+				async></script>		<noscript><div class="statcounter"><a title="web analytics" href="https://statcounter.com/"><img class="statcounter" src="https://c.statcounter.com/10100711/0/4b306538/1/" alt="web analytics" /></a></div></noscript>
+		<!-- End of StatCounter Code -->
+				<a href="#" id="back-to-top" title="Back to top"><i class="fa fa-chevron-up"></i></a>
+	<script type='text/javascript' id='tptn_tracker-js-extra'>
+/* <![CDATA[ */
+var ajax_tptn_tracker = {"ajax_url":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","top_ten_id":"2716","top_ten_blog_id":"1","activate_counter":"11","top_ten_debug":"0","tptn_rnd":"1124363034"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://adsecurity.org/wp-content/plugins/top-10/includes/js/top-10-tracker.min.js?ver=1.0' id='tptn_tracker-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+</body>
+</html>

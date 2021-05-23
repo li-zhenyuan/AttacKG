@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="AWSDocsDocPageApp">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <title>Creating an IAM user in your AWS account - AWS Identity and Access Management</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <meta name="assets_root" content="/assets" />
+      <meta name="target_state" content="id_users_create" />
+      <meta name="default_state" content="id_users_create" />
+      <link rel="icon" type="image/ico" href="/assets/images/favicon.ico" />
+      <link rel="shortcut icon" type="image/ico" href="/assets/images/favicon.ico" />
+      <link rel="canonical" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html" />
+      <meta name="description" content="Use the AWS Management Console, AWS CLI, or IAM API commands to create an IAM user and credentials." />
+      <meta name="deployment_region" content="IAD" />
+      <meta name="product" content="AWS Identity and Access Management" />
+      <meta name="guide" content="User Guide" />
+      <meta name="locales" content="de_de:Deutsch/en_us:English/es_es:Español/fr_fr:Français/it_it:Italiano/ja_jp:日本語/ko_kr:한국어/pt_br:Português/zh_cn:中文 (简体)/zh_tw:中文 (繁體)" />
+      <meta name="abstract" content="Control access to your AWS resources with user identity (authentication) and with policies that define specific permissions (authorization)." />
+      <meta name="guide-locale" content="en_us" />
+      <meta name="tocs" content="toc-contents.json" />
+      <meta name="feedback-item" content="IAM" />
+      <meta name="this_doc_product" content="AWS Identity and Access Management" />
+      <meta name="this_doc_guide" content="User Guide" />
+      <link href="/assets/css/vendor4.css?version=2020.09.30" rel="stylesheet" />
+      <link href="/assets/css/awsdocs-common.css?version=2020.09.30" rel="stylesheet" /><script type="text/javascript" src="/assets/js/vendor3.js?version=2020.09.30" defer=""></script><script type="text/javascript" src="/assets/js/vendor4.js?version=2020.09.30" defer=""></script><script type="text/javascript" src="/assets/js/vendor1.js?version=2020.09.30" defer=""></script><script type="text/javascript" src="/assets/js/awsdocs-common.js?version=2020.09.30" defer=""></script><script type="text/javascript" src="/assets/js/awsdocs-doc-app.js?version=2020.09.30" defer=""></script></head>
+   <body class="awsdocs awsui">
+      <div class="awsdocs-container">
+         <awsdocs-header></awsdocs-header>
+         <awsui-app-layout id="app-layout" class="awsui-util-no-gutters" ng-controller="ContentController as $ctrl" header-selector="awsdocs-header" navigation-hide="false" navigation-width="$ctrl.navWidth" navigation-open="$ctrl.navOpen" navigation-change="$ctrl.onNavChange($event)" tools-hide="$ctrl.hideTools" tools-width="$ctrl.toolsWidth" tools-open="$ctrl.toolsOpen" tools-change="$ctrl.onToolsChange($event)">
+            <div id="guide-toc" dom-region="navigation">
+               <awsdocs-toc></awsdocs-toc>
+            </div>
+            <div id="main-column" dom-region="content" tabindex="-1">
+               <awsdocs-view class="awsdocs-view">
+                  <div id="awsdocs-content">
+                     <head>
+                        <title>Creating an IAM user in your AWS account - AWS Identity and Access Management</title>
+                        <meta name="pdf" content="iam-ug.pdf#id_users_create" />
+                        <meta name="kindle" content="https://www.amazon.com/dp/B07642VLTV" />
+                        <meta name="github" content="https://github.com/awsdocs/iam-user-guide/tree/main/doc_source/id_users_create.md" />
+                        <meta name="rss" content="aws-iam-release-notes.rss" />
+                        <meta name="forums" content="http://forums.aws.amazon.com/forum.jspa?forumID=76" />
+                        <meta name="feedback" content="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=IAM&amp;topic_url=http://docs.aws.amazon.com/en_us/IAM/latest/UserGuide/id_users_create.html" />
+                        <meta name="feedback-yes" content="feedbackyes.html?topic_url=http://docs.aws.amazon.com/en_us/IAM/latest/UserGuide/id_users_create.html" />
+                        <meta name="feedback-no" content="feedbackno.html?topic_url=http://docs.aws.amazon.com/en_us/IAM/latest/UserGuide/id_users_create.html" />
+                        <meta name="keywords" content="IAM,AWS Identity and Access Management,IAM user,user,IAM group,group,IAM role,role,permission policy,trust policy,policy,access key,password" />
+                     </head>
+                     <body>
+                        <div id="main">
+                           <div style="display: none"><a href="iam-ug.pdf#id_users_create" target="_blank" title="Open PDF"></a><a target="_blank" href="https://www.amazon.com/dp/B07642VLTV" title="Open Kindle"></a><a href="https://github.com/awsdocs/iam-user-guide/tree/main/doc_source/id_users_create.md" target="_blank" title="Edit this page on GitHub"></a></div>
+                           <div id="breadcrumbs" class="breadcrumb"><a href="http://aws.amazon.com">AWS</a><a href="/index.html">Documentation</a><a href="/iam/index.html">AWS Identity and Access Management</a><a href="introduction.html">User Guide</a></div>
+                           <div id="page-toc-src"><a href="#id_users_create_console">Creating IAM users (console)</a><a href="#id_users_create_cliwpsapi">Creating IAM users (AWS CLI)</a><a href="#id_users_create_api">Creating IAM users (AWS API)</a></div>
+                           <div id="main-content" class="awsui-util-container">
+                              <div id="main-col-body">
+                                 <awsdocs-language-banner data-service="$ctrl.pageService"></awsdocs-language-banner>
+                                 <h1 class="topictitle" id="id_users_create">Creating an IAM user in your AWS account</h1>
+                                 <div class="awsdocs-page-header-container">
+                                    <awsdocs-page-header></awsdocs-page-header>
+                                    <awsdocs-filter-selector id="awsdocs-filter-selector"></awsdocs-filter-selector>
+                                 </div>
+                                 <p>You can create one or more IAM users in your AWS account. You might create an IAM
+                                    user
+                                    when someone joins your team, or when you create a new application that needs to make
+                                    API calls
+                                    to AWS. 
+                                 </p>
+                                 <div class="awsdocs-note awsdocs-important">
+                                    <div class="awsdocs-note-title">
+                                       <awsui-icon name="status-warning" variant="error"></awsui-icon><span>Important</span></div>
+                                    <div class="awsdocs-note-text">
+                                       <p>If you found this page because you are looking for information about the Product
+                                          Advertising API to sell Amazon products on your website, see the <a href="https://webservices.amazon.com/paapi5/documentation/" rel="noopener noreferrer" target="_blank"><span>Product Advertising API 5.0
+                                                Documentation</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.
+                                       </p>
+                                       <p>If you arrived at this page from the IAM console, it is possible that your account
+                                          does
+                                          not include IAM users, even though you are signed in. You could be signed in as the
+                                          AWS account root user, using a role, or signed in with temporary credentials. To learn
+                                          more about these
+                                          IAM identities, see <a href="./id.html">IAM Identities (users, user groups, and roles)</a>.
+                                       </p>
+                                    </div>
+                                 </div>
+                                 <div class="highlights" id="inline-topiclist">
+                                    <p><strong>Topics</strong></p>
+                                    <ul>
+                                       <li><a href="#id_users_create_console">Creating IAM users (console)</a></li>
+                                       <li><a href="#id_users_create_cliwpsapi">Creating IAM users (AWS CLI)</a></li>
+                                       <li><a href="#id_users_create_api">Creating IAM users (AWS API)</a></li>
+                                    </ul>
+                                 </div>
+                                 <p>The process of creating a user and enabling that user to perform work tasks consists
+                                    of the
+                                    following steps:
+                                 </p>
+                                 <div class="orderedlist">
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                    
+                                    <ol>
+                                       <li>
+                                          
+                                          <p>Create the user in the AWS Management Console, the AWS CLI, Tools for Windows PowerShell,
+                                             or using an AWS API operation. If
+                                             you create the user in the AWS Management Console, then steps 1–4 are handled automatically,
+                                             based
+                                             on your choices. If you create the users programmatically, then you must perform each
+                                             of
+                                             those steps individually.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Create credentials for the user, depending on the type of access the user
+                                             requires:
+                                          </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><b>Programmatic access:</b> The IAM user might need to
+                                                      make API calls, use the AWS CLI, or use the Tools for Windows PowerShell. In that
+                                                      case, create an access key
+                                                      (access key ID and a secret access key) for that user.
+                                                   </p>
+                                                   
+                                                </li>
+                                                <li class="listitem">
+                                                   
+                                                   <p><b>AWS Management Console access</b>: If the user needs to access the
+                                                      AWS Management Console, <a href="./id_credentials_passwords_admin-change-user.html">create a password
+                                                         for the user</a>. Disabling console access for a user prevents them from signing in
+                                                      the to the AWS Management Console using their user name and password. It does not
+                                                      change their
+                                                      permissions or prevent them from accessing the console using an assumed role.
+                                                   </p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                          <p>As a best practice, create only the credentials that the user needs. For example,
+                                             for a
+                                             user who requires access only through the AWS Management Console, do not create access
+                                             keys.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Give the user permissions to perform the required tasks by adding the user to one
+                                             or
+                                             more groups. You can also grant permissions by attaching permissions policies directly
+                                             to
+                                             the user. However, we recommend instead that you put your users in groups and manage
+                                             permissions through policies that are attached to those groups. You can also use a
+                                             <a href="./access_policies_boundaries.html">permissions boundary</a> to limit the permissions
+                                             that a user can have, though this is not common. 
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Add metadata to the user by attaching tags. For more information about
+                                             using
+                                             tags in IAM, see <a href="./id_tags.html">Tagging IAM resources</a>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Provide the user with the necessary sign-in information. This includes the password
+                                             and
+                                             the console URL for the account sign-in page where the user provides those credentials.
+                                             For
+                                             more information, see <a href="./id_users_sign-in.html">How IAM users sign in to AWS</a>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Configure <a href="./id_credentials_mfa.html">multi-factor authentication
+                                                (MFA)</a> for the user. MFA requires the user to provide a one-time-use code each time
+                                             he or she signs into the AWS Management Console. 
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Give users permissions to manage their own security credentials. (By default,
+                                             users do not have permissions to manage their own credentials.) For more information,
+                                             see
+                                             <a href="./id_credentials_passwords_enable-user-change.html">Permitting IAM users to change
+                                                their own passwords</a>. 
+                                          </p>
+                                          
+                                       </li>
+                                    </ol>
+                                 </div>
+                                 <p>For information about the permissions that you need in order to create a user, see
+                                    <a href="./access_permissions-required.html">Permissions required to access IAM
+                                       resources</a>. 
+                                 </p>
+                                 
+                                 <h2 id="id_users_create_console">Creating IAM users (console)</h2>
+                                 
+                                 <p>You can use the AWS Management Console to create IAM users.</p>
+                                 
+                                 <div class="procedure">
+                                    <p class="title"><b>To create one or more IAM users (console)</b></p>
+                                    <ol>
+                                       <li>
+                                          <p>Sign in to the AWS Management Console and open the IAM console at <a href="https://console.aws.amazon.com/iam/" rel="noopener noreferrer" target="_blank"><span>https://console.aws.amazon.com/iam/</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>.
+                                          </p>
+                                       </li>
+                                       <li>
+                                          
+                                          <p>In the navigation pane, choose <b>Users</b> and then choose
+                                             <b>Add user</b>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Type the user name for the new user. This is the sign-in name for AWS. If you want
+                                             to add multiple users, choose <b>Add another user</b> for each additional
+                                             user and type their user names. You can add up to 10 users at one time.
+                                          </p>
+                                          
+                                          <div class="awsdocs-note">
+                                             <div class="awsdocs-note-title">
+                                                <awsui-icon name="status-info" variant="link"></awsui-icon><span>Note</span></div>
+                                             <div class="awsdocs-note-text">
+                                                <p>The number and size of IAM resources in an AWS account are limited. For more information,
+                                                   see <a href="./reference_iam-quotas.html">IAM and STS quotas</a>. User names can be a combination of up to 64 letters, digits, and
+                                                   these characters: plus (+), equal (=), comma (,), period (.), at sign (@), underscore
+                                                   (_), and hyphen (-). Names must be unique within an account. They are not distinguished
+                                                   by case. For example, you cannot create two users named <em>TESTUSER</em>
+                                                   and <em>testuser</em>.
+                                                </p>
+                                             </div>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Select the type of access this set of users will have. You can select programmatic
+                                             access, access to the AWS Management Console, or both.
+                                          </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p>Select <b>Programmatic access</b> if the users require access to the
+                                                      API, AWS CLI, or Tools for Windows PowerShell. This creates an access key for each
+                                                      new user. You can view or
+                                                      download the access keys when you get to the <b>Final</b> page.
+                                                   </p>
+                                                   
+                                                </li>
+                                                <li class="listitem">
+                                                   
+                                                   <p>Select <b>AWS Management Console access</b> if the users require access to the
+                                                      AWS Management Console. This creates a password for each new user.
+                                                   </p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                          <ol>
+                                             <li>
+                                                
+                                                <p>For <b>Console password</b>, choose one of the following:
+                                                </p>
+                                                
+                                                <div class="itemizedlist">
+                                                    
+                                                    
+                                                   
+                                                   <ul class="itemizedlist" type="disc">
+                                                      <li class="listitem">
+                                                         
+                                                         <p><b>Autogenerated password</b>. Each user gets a randomly
+                                                            generated password that meets the <a href="./id_credentials_passwords_account-policy.html">account password
+                                                               policy</a>. You can view or download the passwords when you get to the
+                                                            <b>Final</b> page.
+                                                         </p>
+                                                         
+                                                      </li>
+                                                      <li class="listitem">
+                                                         
+                                                         <p><b>Custom password</b>. Each user is assigned the password that
+                                                            you type in the box.
+                                                         </p>
+                                                         
+                                                      </li>
+                                                   </ul>
+                                                </div>
+                                                
+                                             </li>
+                                             <li>
+                                                
+                                                <p>(Optional) We recommend that you select <b>Require password
+                                                      reset</b> to ensure that users are forced to change their password the first
+                                                   time they sign in.
+                                                </p>
+                                                
+                                                <div class="awsdocs-note">
+                                                   <div class="awsdocs-note-title">
+                                                      <awsui-icon name="status-info" variant="link"></awsui-icon><span>Note</span></div>
+                                                   <div class="awsdocs-note-text">
+                                                      <p>If an administrator has enabled <a href="https://console.aws.amazon.com/iam/home?#/account_settings" rel="noopener noreferrer" target="_blank"><span>the <b>Allow users to
+                                                                  change their own password</b> account password policy setting</span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a>,
+                                                         then this check box does nothing. Otherwise, it automatically attaches an AWS
+                                                         managed policy named <a href="https://console.aws.amazon.com/iam/home#policies/arn:aws:iam::aws:policy/IAMUserChangePassword" rel="noopener noreferrer" target="_blank"><span><code class="code">IAMUserChangePassword</code></span><awsui-icon class="awsdocs-link-icon" name="external"></awsui-icon></a> to the new users. The policy grants
+                                                         them permission to change their own passwords.
+                                                      </p>
+                                                   </div>
+                                                </div>
+                                                
+                                             </li>
+                                          </ol>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Choose <b>Next: Permissions</b>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>On the <b>Set permissions</b> page, specify how you want to assign
+                                             permissions to this set of new users. Choose one of the following three options:
+                                          </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                              
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><b>Add user to group</b>. Choose this option if you want to assign
+                                                      the users to one or more groups that already have permissions policies. IAM displays
+                                                      a list of the groups in your account, along with their attached policies. You can
+                                                      select one or more existing groups, or choose <b>Create group</b> to
+                                                      create a new group. For more information, see <a href="./id_users_change-permissions.html">Changing permissions for an IAM user</a>.
+                                                   </p>
+                                                   
+                                                </li>
+                                                <li class="listitem">
+                                                   
+                                                   <p><b>Copy permissions from existing user</b>. Choose this option to
+                                                      copy all of the group memberships, attached managed policies, embedded inline
+                                                      policies, and any existing <a href="./access_policies_boundaries.html">permissions
+                                                         boundaries</a> from an existing user to the new users. IAM displays a list of
+                                                      the users in your account. Select the one whose permissions most closely match the
+                                                      needs of your new users.
+                                                   </p>
+                                                   
+                                                </li>
+                                                <li class="listitem">
+                                                   
+                                                   <p><b>Attach existing policies directly</b>. Choose this option to see
+                                                      a list of the AWS managed and customer managed policies in your account. Select the
+                                                      policies that you want to attach to the new users or choose <b>Create
+                                                         policy</b> to open a new browser tab and create a new policy from scratch.
+                                                      For more information, see step 4 in the procedure <a href="./access_policies_create-console.html#access_policies_create-start">Creating IAM policies</a>. After you create the policy, close that tab and return to your original tab to add
+                                                      the policy to the new user. As a <a href="./best-practices.html#use-groups-for-permissions">best
+                                                         practice</a>, we recommend that you instead attach your policies to a group and
+                                                      then make users members of the appropriate groups.
+                                                   </p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Set a <a href="./access_policies_boundaries.html">permissions
+                                                boundary</a>. This is an advanced feature. 
+                                          </p>
+                                          
+                                          <p>Open the <b>Set permissions boundary</b> section and choose
+                                             <b>Use a permissions boundary to control the maximum user permissions</b>.
+                                             IAM displays a list of the AWS managed and customer managed policies in your account.
+                                             Select the policy to use for the permissions boundary or choose <b>Create
+                                                policy</b> to open a new browser tab and create a new policy from scratch. For
+                                             more information, see step 4 in the procedure <a href="./access_policies_create-console.html#access_policies_create-start">Creating IAM policies</a>. After you create the policy, close that
+                                             tab and return to your original tab to select the policy to use for the permissions
+                                             boundary.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Choose <b>Next: Tags</b>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Add metadata to the user by attaching tags as key-value pairs. For more
+                                             information about using tags in IAM, see <a href="./id_tags.html">Tagging IAM resources</a>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Choose <b>Next: Review</b> to see all of the choices you made up to this
+                                             point. When you are ready to proceed, choose <b>Create user</b>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>To view the users' access keys (access key IDs and secret access keys), choose
+                                             <b>Show</b> next to each password and access key that you want to see. To
+                                             save the access keys, choose <b>Download .csv</b> and then save the file to
+                                             a safe location. 
+                                          </p> 
+                                          
+                                          <div class="awsdocs-note awsdocs-important">
+                                             <div class="awsdocs-note-title">
+                                                <awsui-icon name="status-warning" variant="error"></awsui-icon><span>Important</span></div>
+                                             <div class="awsdocs-note-text">
+                                                <p>This is your only opportunity to view or download the secret access keys, and you
+                                                   must
+                                                   provide this information to your users before they can use the AWS API. Save the user's
+                                                   new access key ID and secret access key in a safe and secure place. <b>You 
+                                                      will not have access to the secret keys again after this step.</b>
+                                                   
+                                                </p>
+                                             </div>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Provide each user with his or her credentials. On the final page you can choose
+                                             <b>Send email</b> next to each user. Your local mail client opens with a
+                                             draft that you can customize and send. The email template includes the following details
+                                             to each user:
+                                          </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p>User name</p>
+                                                   
+                                                </li>
+                                                <li class="listitem">
+                                                   
+                                                   <p>URL to the account sign-in page. Use the following example, substituting the
+                                                      correct account ID number or account alias:
+                                                   </p>
+                                                   <pre class="programlisting"><div class="code-btn-container"><div class="btn-copy-code" title="Copy"><awsui-icon name="copy"></awsui-icon></div></div><code class="nohighlight">https://<code class="replaceable">AWS-account-ID or alias</code>.signin.aws.amazon.com/console</code></pre>
+                                                   </li>
+                                             </ul>
+                                          </div>
+                                          
+                                          <p>For more information, see <a href="./id_users_sign-in.html">How IAM users sign in to AWS</a>.
+                                          </p>
+                                          
+                                          <div class="awsdocs-note awsdocs-important">
+                                             <div class="awsdocs-note-title">
+                                                <awsui-icon name="status-warning" variant="error"></awsui-icon><span>Important</span></div>
+                                             <div class="awsdocs-note-text">
+                                                <p>The user's password is <b><em>not</em></b> included in the generated email. You must provide them to
+                                                   the customer in a way that complies with your organization's security guidelines.
+                                                </p>
+                                             </div>
+                                          </div>
+                                          
+                                       </li>
+                                    </ol>
+                                 </div>
+                                  
+                                 
+                                 <h2 id="id_users_create_cliwpsapi">Creating IAM users (AWS CLI)</h2>
+                                 
+                                 <p>You can use the AWS CLI to create an IAM user.</p>
+                                 
+                                 <div class="procedure">
+                                    <p class="title"><b>To create an IAM user (AWS CLI)</b></p>
+                                    <ol>
+                                       <li>
+                                          
+                                          <p>Create a user.</p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/cli/latest/reference/iam/create-user.html">aws iam create-user</a></p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Give the user access to the AWS Management Console. This requires a password.
+                                             You must
+                                             also give the user the <a href="./id_users_sign-in.html">URL of your account's sign-in
+                                                page.</a></p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p>
+                                                      <a href="https://docs.aws.amazon.com/cli/latest/reference/iam/create-login-profile.html">aws iam
+                                                         create-login-profile</a></p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Give the user programmatic access. This requires access keys. </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                              
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/cli/latest/reference/iam/create-access-key.html">aws iam
+                                                         create-access-key</a></p>
+                                                   
+                                                </li>
+                                                <li class="listitem">
+                                                   
+                                                   <p>Tools for Windows PowerShell: <a href="https://docs.aws.amazon.com/powershell/latest/reference/Index.html?page=New-IAMAccessKey.html&amp;tocid=New-IAMAccessKey">New-IAMAccessKey</a></p>
+                                                   
+                                                </li>
+                                                <li class="listitem">
+                                                   
+                                                   <p>IAM API: <a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html">CreateAccessKey</a></p> 
+                                                   
+                                                   <div class="awsdocs-note awsdocs-important">
+                                                      <div class="awsdocs-note-title">
+                                                         <awsui-icon name="status-warning" variant="error"></awsui-icon><span>Important</span></div>
+                                                      <div class="awsdocs-note-text">
+                                                         <p>This is your only opportunity to view or download the secret access keys, and you
+                                                            must
+                                                            provide this information to your users before they can use the AWS API. Save the user's
+                                                            new access key ID and secret access key in a safe and secure place. <b>You 
+                                                               will not have access to the secret keys again after this step.</b>
+                                                            
+                                                         </p>
+                                                      </div>
+                                                   </div>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Add the user to one or more groups. The groups that you specify should have attached
+                                             policies that grant the appropriate permissions for the user. 
+                                          </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/cli/latest/reference/iam/add-user-to-group.html">aws iam
+                                                         add-user-to-group</a>
+                                                      
+                                                   </p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Attach a policy to the user that defines the user's permissions. <b>Note:</b> We recommend that you manage user permissions by adding the
+                                             user to a group and attaching a policy to the group instead of attaching directly
+                                             to a
+                                             user.
+                                          </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/cli/latest/reference/iam/attach-user-policy.html">aws iam
+                                                         attach-user-policy</a></p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Add custom attributes to the user by attaching tags. For more information,
+                                             see <a href="./id_tags_users.html#id_tags_users_procs-cli-api">Managing tags on IAM users (AWS CLI or AWS
+                                                API)</a>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Give the user permission to manage their own security credentials. For
+                                             more
+                                             information, see <a href="./reference_policies_examples_aws_my-sec-creds-self-manage.html">AWS: Allows
+                                                MFA-authenticated IAM users to manage their own credentials on the My Security
+                                                Credentials page</a>. 
+                                          </p>
+                                          
+                                       </li>
+                                    </ol>
+                                 </div>
+                                  
+                                 
+                                 <h2 id="id_users_create_api">Creating IAM users (AWS API)</h2>
+                                 
+                                 <p>You can use the AWS API to create an IAM user.</p>
+                                 
+                                 <div class="procedure">
+                                    <p class="title"><b>To create an IAM user from the (AWS API)</b></p>
+                                    <ol>
+                                       <li>
+                                          
+                                          <p>Create a user.</p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateUser.html">CreateUser</a></p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Give the user access to the AWS Management Console. This requires a password.
+                                             You must
+                                             also give the user the <a href="./id_users_sign-in.html">URL of your account's sign-in
+                                                page.</a></p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateLoginProfile.html">CreateLoginProfile</a></p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Give the user programmatic access. This requires access keys. </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateAccessKey.html">CreateAccessKey</a></p>
+                                                   
+                                                   
+                                                   <div class="awsdocs-note awsdocs-important">
+                                                      <div class="awsdocs-note-title">
+                                                         <awsui-icon name="status-warning" variant="error"></awsui-icon><span>Important</span></div>
+                                                      <div class="awsdocs-note-text">
+                                                         <p>This is your only opportunity to view or download the secret access keys, and you
+                                                            must
+                                                            provide this information to your users before they can use the AWS API. Save the user's
+                                                            new access key ID and secret access key in a safe and secure place. <b>You 
+                                                               will not have access to the secret keys again after this step.</b>
+                                                            
+                                                         </p>
+                                                      </div>
+                                                   </div>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>Add the user to one or more groups. The groups that you specify should have attached
+                                             policies that grant the appropriate permissions for the user. 
+                                          </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_AddUserToGroup.html">AddUserToGroup</a>
+                                                      
+                                                   </p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Attach a policy to the user that defines the user's permissions. <b>Note:</b> We recommend that you manage user permissions by adding the
+                                             user to a group and attaching a policy to the group instead of attaching directly
+                                             to a
+                                             user.
+                                          </p>
+                                          
+                                          <div class="itemizedlist">
+                                              
+                                             
+                                             <ul class="itemizedlist" type="disc">
+                                                <li class="listitem">
+                                                   
+                                                   <p><a href="https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachUserPolicy.html">AttachUserPolicy</a></p>
+                                                   
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Add custom attributes to the user by attaching tags. For more information,
+                                             see <a href="./id_tags_users.html#id_tags_users_procs-cli-api">Managing tags on IAM users (AWS CLI or AWS
+                                                API)</a>.
+                                          </p>
+                                          
+                                       </li>
+                                       <li>
+                                          
+                                          <p>(Optional) Give the user permission to manage their own security credentials. For
+                                             more
+                                             information, see <a href="./reference_policies_examples_aws_my-sec-creds-self-manage.html">AWS: Allows
+                                                MFA-authenticated IAM users to manage their own credentials on the My Security
+                                                Credentials page</a>.
+                                          </p>
+                                          
+                                       </li>
+                                    </ol>
+                                 </div>
+                                 
+                                 <awsdocs-copyright class="copyright-print"></awsdocs-copyright>
+                                 <awsdocs-thumb-feedback right-edge="{{$ctrl.thumbFeedbackRightEdge}}"></awsdocs-thumb-feedback>
+                              </div>
+                              <noscript>
+                                 <div>
+                                    <div>
+                                       <div>
+                                          <div id="js_error_message">
+                                             <p><img src="https://d1ge0kk1l5kms0.cloudfront.net/images/G/01/webservices/console/warning.png" alt="Warning" /> <strong>Javascript is disabled or is unavailable in your
+                                                   browser.</strong></p>
+                                             <p>To use the AWS Documentation, Javascript must be
+                                                enabled. Please refer to your browser's Help pages for instructions.
+                                             </p>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </noscript>
+                              <div id="main-col-footer" class="awsui-util-font-size-0">
+                                 <div id="doc-conventions"><a target="_top" href="/general/latest/gr/docconventions.html">Document Conventions</a></div>
+                                 <div class="prev-next">
+                                    <div id="previous" class="prev-link" accesskey="p" href="./id_users.html">Users</div>
+                                    <div id="next" class="next-link" accesskey="n" href="./console_controlling-access.html">Controlling user access to the console</div>
+                                 </div>
+                              </div>
+                              <awsdocs-page-utilities></awsdocs-page-utilities>
+                           </div>
+                           <div id="quick-feedback-yes" style="display: none;">
+                              <div class="title">Did this page help you? - Yes</div>
+                              <div class="content">
+                                 <p>Thanks for letting us know we're doing a good
+                                    job!
+                                 </p>
+                                 <p>If you've got a moment, please tell us what we did right
+                                    so we can do more of it.
+                                 </p>
+                                 <p>
+                                    <awsui-button id="fblink" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=IAM&amp;topic_url=https://docs.aws.amazon.com/en_us/IAM/latest/UserGuide/id_users_create.html"></awsui-button>
+                                 </p>
+                              </div>
+                           </div>
+                           <div id="quick-feedback-no" style="display: none;">
+                              <div class="title">Did this page help you? - No</div>
+                              <div class="content">
+                                 <p>Thanks for letting us know this page needs work. We're
+                                    sorry we let you down.
+                                 </p>
+                                 <p>If you've got a moment, please tell us how we can make
+                                    the documentation better.
+                                 </p>
+                                 <p>
+                                    <awsui-button id="fblink" target="_blank" text="Feedback" click="linkClick($event)" href="https://docs.aws.amazon.com/forms/aws-doc-feedback?hidden_service_name=IAM&amp;topic_url=https://docs.aws.amazon.com/en_us/IAM/latest/UserGuide/id_users_create.html"></awsui-button>
+                                 </p>
+                              </div>
+                           </div>
+                        </div>
+                     </body>
+                  </div>
+               </awsdocs-view>
+               <div class="page-loading-indicator" id="page-loading-indicator">
+                  <awsui-spinner size="large"></awsui-spinner>
+               </div>
+            </div>
+            <div id="tools-panel" dom-region="tools">
+               <awsdocs-tools-panel id="awsdocs-tools-panel"></awsdocs-tools-panel>
+            </div>
+         </awsui-app-layout>
+         <awsdocs-cookie-banner class="doc-cookie-banner"></awsdocs-cookie-banner>
+         <!--
+                SiteCatalyst code version: H.25.2.
+                Copyright 1996-2012 Adobe, Inc. All Rights Reserved
+                More info available at http://www.omniture.com
+            --><script language="JavaScript" type="text/javascript">
+var awsdocs = awsdocs || {};
+awsdocs.prop66 = 'AWS Identity and Access Management';
+awsdocs.prop65 =  'User Guide';
+            </script><script src="https://a0.awsstatic.com/s_code/js/3.0/awshome_s_code.js" language="JavaScript" type="text/javascript"></script>
+         <!--/DO NOT REMOVE/-->
+         <!--End SiteCatalyst code version: H.25.2.--></div>
+   </body>
+</html>

@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+ 
+<html lang="en">     
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+    <link rel="icon" href="/etc.clientlibs/pwc/clientlibs/css_common/resources/image/favicon.ico" type="image/x-icon"/>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/etc.clientlibs/clientlibs/granite/jquery.min.8e23e5ad8c1b5c588cca8d71df0aef0b.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/clientlibs/granite/utils.min.308082b4c347f4fec37ffef277d39d0e.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/clientlibs/granite/jquery/granite.min.d9075d4175ab7b0e3ccf4305a4089645.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/foundation/clientlibs/jquery.min.dd9b395c741ce2784096e26619e14910.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/components-digitaldataanalytics.min.046b8b1a000a26481953e8075d9650fc.js"></script>
+
+
+<title>WellMess malware: analysis of its Command and Control (C2) server - PwC UK
+</title>
+<meta http-equiv="content-language" content="en_gb"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta property="og:title" content="WellMess malware: analysis of its Command and Control (C2) server"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="PwC"/>
+<meta property="og:description" content="This analysis details the capabilities and limitations of the first stage WellMess controller, with a more in-depth report available from our private intelligence reporting services."/>
+
+<meta property="og:image" content="https://www.pwc.com/gx/en/brand-simplified/teaser-images-670/technology/damil-gettyimages-973715860-670.jpg"/>
+
+
+<meta name="robots" content="index"/>
+<meta name="keywords" content="Cyber Security, Malware, WellMess"/>
+<meta name="description" content="This analysis details the capabilities and limitations of the first stage WellMess controller, with a more in-depth report available from our private intelligence reporting services."/>
+<meta name="author" content="PricewaterhouseCoopers"/>
+<meta name="pwcTitle" content="WellMess malware: analysis of its Command and Control (C2) server"/>
+
+<meta name="pwcLocale" content="en_gb"/>
+<meta name="pwcCountry" content='gb'/>
+
+
+<meta name="pwcGeo.default" content="UK"/>
+<meta name="pwcLang" content="en"/>
+<meta name="pwcTag" content="Insights||, Homepage||, Cyber Security||">
+<meta name="pwcHideLevel" content="0,2"/>
+<meta name="target" content=""/>
+<meta name="pwcReleaseDate" content="2020-08-17T14:17:00.000+02:00"/>	
+<meta name="pwcLastModifiedDate" content="2020-09-17T11:56:33.260Z"/>	
+<meta name="pwcselectednav" content="3"/>
+<meta name="viewport" id="pwcviewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" href="/content/pwc/script/network/apple-touch-icon.png"/>
+
+<link rel="canonical" href="https://www.pwc.co.uk/issues/cyber-security-services/insights/wellmess-analysis-command-control.html"/>
+<meta property="og:url" content="https://www.pwc.co.uk/issues/cyber-security-services/insights/wellmess-analysis-command-control.html"/>
+
+
+<script>
+    var  page ="WellMess malware: analysis of its Command and Control (C2) server - PwC UK";
+    var anlyticsEscapeTitle = "WellMess malware: analysis of its Command and Control (C2) server";
+    var anlyticsunescapeTitle = $('<textarea />').html(anlyticsEscapeTitle).text();
+    var  templatePath ="/apps/pwc/templates/longform-content-detail";
+    var pwcReleaseDate = "2020-08-17T14:17:00.000+02:00";
+    var pageNameUnescape = $('<textarea />').html(page).text();
+    createObject('page.pageInfo.pageName', pageNameUnescape);
+    createObject("page.pageInfo.pageType",templatePath.substring(templatePath.lastIndexOf('/')  + 1));
+    createObject('page.content.publishDate', pwcReleaseDate);
+    createObject('page.content.contentTitle', anlyticsunescapeTitle);
+    createObject('page.content.contentType', "article");
+    createObject('page.content.contentFullPath',"/content/pwc/uk/en/issues/cyber-security-services/insights/wellmess-analysis-command-control.html")
+    //Added old dataLayer object value in digitalData.site object.
+    digitalData.site ={"SiteValues":{"los":"","industry":"","subLos":"","folderDirectory":"pwc/uk/en/issues/cyber-security-services/insights","contentType":""},"additionalTags":"pwc-uk/content_type/insights|pwc-uk/content_type/homepage","business":{"businessChallenge":"cyber","businessTopic":""},"accountRegistration":false};
+</script>
+<script type="application/ld+json">
+{
+    "@type": "Thing",
+    "@context": "http://schema.org",
+    "image": "https://www.pwc.com/gx/en/brand-simplified/teaser-images-670/technology/damil-gettyimages-973715860-670.jpg",
+    "name":"WellMess malware: analysis of its Command and Control (C2) server - PwC UK",
+    "description":"This analysis details the capabilities and limitations of the first stage WellMess controller, with a more in-depth report available from our private intelligence reporting services."
+}
+</script>
+
+    
+    <script>
+        createObject('page.skipOptanonCall',true);
+    </script>
+    
+    <script type="text/javascript" src="/etc.clientlibs/foundation/clientlibs/shared.min.d8eee0685f08a5253a1d753a2619a08f.js"></script>
+
+    
+    
+    
+        <script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" type="text/javascript" charset="UTF-8" data-domain-script="c9e5cdf3-9e0a-44ec-b4aa-c959c1762603"></script>
+    
+    
+    
+    
+    
+
+
+    
+	
+    
+
+
+
+
+
+    
+
+
+
+    
+    
+        
+            <link rel="stylesheet" href="/etc.clientlibs/pwc/clientlibs/longform/style-colors-rebrand.min.374ccbc68ee0ada8218b69480201aaac.css" type="text/css">
+
+            <link rel="stylesheet" href="/etc.clientlibs/pwc/clientlibs/rebrand-clientlibs/components-colors.min.014301925ecf17b0f8d0ec65b0fd6f1f.css" type="text/css">
+
+            
+        
+        
+    
+    <script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/handlebars.min.4b6cde342715b81c00225413e17fd0e3.js"></script>
+
+
+    
+    
+
+    
+    
+        <script>
+            (function(win, doc, style, timeout) {
+                var STYLE_ID = 'at-body-style';
+                function getParent() {
+                    return doc.getElementsByTagName('head')[0];
+                }
+                function addStyle(parent, id, def) {
+                    if (!parent) {
+                        return;
+                    }
+                    var style = doc.createElement('style');
+                    style.id = id;
+                    style.innerHTML = def;
+                    parent.appendChild(style);
+                }
+                function removeStyle(parent, id) {
+                    if (!parent) {
+                        return;
+                    }
+                    var style = doc.getElementById(id);
+                    if (!style) {
+                        return;
+                    }
+                    parent.removeChild(style);
+                }
+                addStyle(getParent(), STYLE_ID, style);
+                setTimeout(function() {
+                    removeStyle(getParent(), STYLE_ID);
+                }, timeout);
+            }(window, document, "body {opacity: 0 !important}", 3000));
+        </script>
+    
+    
+        <script>
+            var pageTerritoryForDTM = 'uk';
+        </script>
+        <script src="//assets.adobedtm.com/launch-ENbc1afafa8c7a49e38f3d27ad437d1193.min.js" type="text/javascript" async></script>
+        <script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/components-analytics.min.f38e3059f1f9c7410a4b143a372229a9.js"></script>
+
+    
+    
+
+    
+
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+</head>
+
+    	<body class="pwcscrolling longformcontent longform-content-detail-template page-primary-col--rose page-secondary-col--rose page-tertiary-col--rose  standard-spacing  standard-reading"> 
+
+
+		
+                
+                  
+             
+             
+
+        
+        <div id="wrapper"> 
+        <div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="slimHeaderPar iparsys parsys"><div class="slim-page-header parbase section">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header id="menuBarWrapper" class="header fixed slide headroom--top">
+	<div id="menuBar">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 slim-header__flex-wrapper">
+					<div id="topBarLeft">
+						<div id="logoWrapper">
+							<a href="/" id="logo" aria-label='PwC'>PwC</a> | <a href="/" class="slim-header__territory-name" aria-label='UK'>UK</a>
+						</div>
+					</div>
+					<div id="topBarRight">
+						<ul id="menuAdditional" class="menu-additional clearfix">
+							
+							<li>
+								<button id="searchBtn" aria-label='Search'> 
+								<span class="sr-only">Search</span>
+								<svg class="st0" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+	                                viewBox="0 0 26 26">
+	                                <path fill="#3F3F40"
+	                                      d="M10.351,19.949c-5.211,0-9.554-4.344-9.554-9.554c0-5.211,4.343-9.554,9.554-9.554 c5.209,0,9.553,4.343,9.553,9.554C19.904,15.605,15.561,19.949,10.351,19.949z M10.351,2.579c-4.343,0-7.817,3.473-7.817,7.816 c0,4.343,3.474,7.817,7.817,7.817c4.342,0,7.817-3.475,7.817-7.817C18.168,6.052,14.693,2.579,10.351,2.579z"></path>
+	                                <path fill="#3F3F40"
+	                                      d="M17.298,16.127l7.643,7.643c0.351,0.35,0.351,0.871,0,1.215c-0.173,0.174-0.521,0.174-0.694,0.174 c-0.172,0-0.521,0-0.693-0.174l-7.643-7.643L17.298,16.127z"></path>
+	                            </svg>
+
+	                            <svg class="st1" focusable="false" enable-background="new 0 0 256 256" height="26px" id="Layer_1" version="1.1" viewBox="0 0 256 256" width="26px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	                                <path  d="M179.199,38.399c0,1.637-0.625,3.274-1.875,4.524l-85.076,85.075l85.076,85.075c2.5,2.5,2.5,6.55,0,9.05s-6.55,2.5-9.05,0  l-89.601-89.6c-2.5-2.5-2.5-6.551,0-9.051l89.601-89.6c2.5-2.5,6.55-2.5,9.05,0C178.574,35.124,179.199,36.762,179.199,38.399z"/>
+	                            </svg>
+							</button>
+								<div class="menuFlyout">
+									<form role="search" action="/search.html" method="get">
+										<label class="sr-only" for="searchField"> Search </label>
+										<input id="searchField" name="searchfield" type="text" placeholder="Search" tabindex="-1">
+										
+										<input type="hidden" name="tp" value="long" />
+										<input type="hidden" name="pwcGeo" value="UK" />
+										<input type="hidden" name="pwcLang" value="en" />
+										<input type="hidden" name="pwcHideLevel" value="0" />
+										<input type="hidden" value="" name="pwcSiteSection" />
+									</form>
+								</div></li>
+							
+							<li class="hidden-xs social-share-desktop">
+								<button id="shareBtn" aria-label='Share'> <svg
+									xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+									viewBox="0 0 26 26">
+								<path fill="#3F3F40"
+									  d="M4.73,16.465c-1.912,0-3.467-1.557-3.467-3.467c0-1.911,1.555-3.467,3.467-3.467 c1.91,0,3.465,1.556,3.465,3.467C8.195,14.908,6.641,16.465,4.73,16.465z M4.73,11.212c-0.986,0-1.789,0.801-1.789,1.786 c0,0.986,0.803,1.787,1.789,1.787s1.787-0.801,1.787-1.787C6.518,12.013,5.717,11.212,4.73,11.212z"></path>
+								<path fill="#3F3F40"
+									  d="M21.27,24.533c-1.911,0-3.466-1.553-3.466-3.467c0-1.912,1.555-3.467,3.466-3.467 c1.91,0,3.467,1.555,3.467,3.467C24.736,22.98,23.18,24.533,21.27,24.533z M21.27,19.281c-0.986,0-1.788,0.797-1.788,1.785 s0.802,1.785,1.788,1.785s1.787-0.797,1.787-1.785S22.256,19.281,21.27,19.281z"></path>
+								<path fill="#3F3F40"
+									  d="M21.27,8.396c-1.911,0-3.466-1.553-3.466-3.463c0-1.911,1.555-3.466,3.466-3.466 c1.91,0,3.467,1.555,3.467,3.466C24.736,6.843,23.18,8.396,21.27,8.396z M21.27,3.145c-0.986,0-1.788,0.801-1.788,1.788 c0,0.983,0.802,1.784,1.788,1.784s1.787-0.801,1.787-1.784C23.057,3.945,22.256,3.145,21.27,3.145z"></path>
+								<rect x="6.432" y="16.199"
+									  transform="matrix(0.8884 0.459 -0.459 0.8884 9.2716 -4.0689)"
+									  fill="#3F3F40" width="13.148" height="1.675"></rect>
+								<rect x="12.161" y="2.384"
+									  transform="matrix(0.4586 0.8886 -0.8886 0.4586 15.0031 -6.698)"
+									  fill="#3F3F40" width="1.676" height="13.159"></rect>
+							</svg>
+								<span>Share</span>
+							</button>
+								<div class="menuFlyout">
+									
+									<div class="sh"></div>
+								</div></li>
+
+							<li class="hidden-xs"><button id="territoryBtn" aria-label='Territory Selector'>
+								<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+									 viewBox="0 0 26 26">
+									<path fill="#3F3F40"
+										  d="M12.971,25.93c-0.72,0-1.437-0.432-1.868-1.148L5.07,14.438C2.484,9.982,3.777,4.094,8.087,1.507 c1.436-0.86,3.161-1.437,4.884-1.437c3.305,0,6.465,1.725,8.047,4.742c1.579,2.873,1.722,6.32,0,9.193c0,0,0,0,0,0.143 l-6.178,10.775C14.408,25.498,13.689,25.93,12.971,25.93z M12.971,1.507c-1.437,0-2.873,0.433-4.165,1.149 C5.214,4.812,4.065,9.84,6.363,13.574l6.033,10.488c0.145,0.432,0.432,0.432,0.575,0.432s0.432,0,0.573-0.432l6.179-10.631 c0,0,0,0,0-0.145c1.437-2.441,1.437-5.458,0-7.9C18.433,3.088,15.844,1.507,12.971,1.507z"></path>
+									<path fill="#3F3F40"
+										  d="M12.971,13c-2.011,0-3.592-1.579-3.592-3.592c0-2.011,1.581-3.591,3.592-3.591 c2.011,0,3.592,1.58,3.592,3.591C16.563,11.421,14.982,13,12.971,13z M12.971,7.254c-1.149,0-2.155,1.006-2.155,2.154 c0,1.15,1.006,2.156,2.155,2.156c1.148,0,2.154-1.006,2.154-2.156C15.125,8.26,14.119,7.254,12.971,7.254z"></path>
+								</svg>
+							</button>
+								<div class="menuFlyout">
+									<div class="selected-territory" id="selectedTerritory">  </div>
+									<div class="territory-dropdown">
+
+									</div>
+								</div>
+							</li>
+							<li class="hidden-xs language-selector-li">
+							</li>
+						</ul>
+
+
+<input type="hidden" id="enableUserReg" value='false'>
+<a id="skipToContent" href="#" class="sr-only sr-only-focusable skip-content" aria-label='Skip to content'>Skip to content</a>
+<a id="skipToFooter" href="#pgFooter" class="sr-only sr-only-focusable skip-content" aria-label='Skip to footer'>Skip to footer</a>
+
+                    <button id="dropdownTrigger_lg" type="button" class="navbar-toggle slim-header__menu-btn an-hamburger" aria-label='Menu'>
+                        <div>
+                            <span class="icon-bar icon-bar1"></span> 
+                            <span class="icon-bar icon-bar2"></span> 
+                            <span class="icon-bar icon-bar3"></span>
+                        </div>
+                        <span class="hamburger-title"> Menu </span>
+                    </button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+</div>
+<nav id="breadcrumbWrapper">
+    <div class="container">
+        <div class="row">
+			<div class='col-md-12 hidden-xs breadcrumb-main'>
+			</div>
+			<ul id="menuAdditionalMobile" class="col-xs-6 menu-additional clearfix visible-xs-block">
+				<li>
+					<button id="territoryBtnMobile" href="https://www.pwc.com/gx/en/site-information/site-index.html">
+						<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+							<path fill="#3F3F40" d="M12.971,25.93c-0.72,0-1.437-0.432-1.868-1.148L5.07,14.438C2.484,9.982,3.777,4.094,8.087,1.507 c1.436-0.86,3.161-1.437,4.884-1.437c3.305,0,6.465,1.725,8.047,4.742c1.579,2.873,1.722,6.32,0,9.193c0,0,0,0,0,0.143 l-6.178,10.775C14.408,25.498,13.689,25.93,12.971,25.93z M12.971,1.507c-1.437,0-2.873,0.433-4.165,1.149 C5.214,4.812,4.065,9.84,6.363,13.574l6.033,10.488c0.145,0.432,0.432,0.432,0.575,0.432s0.432,0,0.573-0.432l6.179-10.631 c0,0,0,0,0-0.145c1.437-2.441,1.437-5.458,0-7.9C18.433,3.088,15.844,1.507,12.971,1.507z"></path>
+							<path fill="#3F3F40" d="M12.971,13c-2.011,0-3.592-1.579-3.592-3.592c0-2.011,1.581-3.591,3.592-3.591 c2.011,0,3.592,1.58,3.592,3.591C16.563,11.421,14.982,13,12.971,13z M12.971,7.254c-1.149,0-2.155,1.006-2.155,2.154 c0,1.15,1.006,2.156,2.155,2.156c1.148,0,2.154-1.006,2.154-2.156C15.125,8.26,14.119,7.254,12.971,7.254z"></path>
+						</svg>
+					</button>
+					<div class="territory-dropdown">
+					</div>
+				</li>
+				<li class="language-selector-li">
+				</li>
+			</ul>
+			
+		</div>
+	</div>
+    
+        
+        
+            
+        
+    
+        
+            
+                
+            
+
+
+
+
+
+<script>
+    digitalDataUserStatus(false);
+</script>
+
+
+            
+            
+        
+</nav>
+<nav id="navBar">
+    <div class="hamburger-menu">
+        <nav id="breadcrumbWrapperMobile" class="visible-xs-block"></nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-xs-12">
+                    <div class="row hamburger-submenu--mobile">
+                    <div class="panel-group" id="accordion" role="tablist">
+                    </div>
+                </div>
+                </div>
+                <!-- <div class="col-xs-12 hamburger-submenu--mobile visible-xs-block">
+                    <div class="panel-group" id="accordion" role="tablist">
+                    </div>
+                </div> -->
+                <div class="col-sm-4 col-xs-12 level-one-links" id="LevelOneLinks">
+                    <div class="social-share-menu visible-xs-block">
+                        <!-- <div class="utility-mobile"></div> -->
+                        <div class="menuFlyout">
+                            Share this page
+                            <div class="sh"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+</header>
+
+
+
+
+<script id="overlay-template" type="text/x-handlebars-template">
+	<button id="myAccountButton" class="{{#if user.isInternalUserLoggedIn}} internal-user-account{{/if}}" aria-label='Sign in/register'>
+	    <span class="profile-access__icon account-icon"></span>
+		<div class="profile-access__title{{#if user.isInternalUserLoggedIn}} profile-internal-user{{/if}}">
+		    {{#if user.userLoggedIn}}
+		    	<span>
+		    		<span style="font-style: italic;">Hello</span>
+		            {{user.firstName}} {{user.lastName}}
+	            </span>
+		    {{else}}
+				<span> Sign in/register </span>
+	        {{/if}}
+	    </div>
+	</button>
+    
+</script>
+
+<script id="language-selector-template" type="text/x-handlebars-template">
+	<div class="dropdown language-selector" id="languageSelector{{#if isMobile}}Mobile{{/if}}">
+    		<button class="dropdown-toggle language-selector__btn" type="button"  id="languageSelectorDropdown{{#if isMobile}}Mobile{{/if}}">
+        		{{currentLanguageTitle}}
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 16" height="12" width="15"><defs><style>.cls-1{fill:#404041;}</style></defs><title>icon-</title><g id="chevron-horizontal"><path class="cls-1" d="M7.53,11a.53.53,0,0,1-.39-.13L.8,4.57a.54.54,0,0,1,0-.77.55.55,0,0,1,.78,0l6,5.93,5.9-5.92a.55.55,0,0,1,.78.78L7.92,10.87a.52.52,0,0,1-.39.13Z"/></g></svg>
+        </button>
+        <ul class="dropdown-menu language-selector__dropdown-options" aria-labelledby="languageSelectorDropdown{{#if isMobile}}Mobile{{/if}}">
+        		<li><span>Choose a language:</span></li>
+            {{#each alternateLanguages}}
+        <li {{#if this.isCurrentLanguage}} class="selected" {{/if}}><a href="{{this.linkURL}}">{{this.linkText}}</a></li>
+            {{/each}}
+        </ul>
+    </div>
+</script>
+
+<script id="territory-selector-template" type="text/x-handlebars-template">
+	<div class="language-field-container">
+    		<input class="languageField" title='Search Territory' aria-label='Search Territory' type="text" list="PwC_countries">
+    </div>
+
+    <div class="PwC_countries">
+    		<span> Find a country or region</span>
+        {{#each this}}
+			{{#if territoryFinder}}
+        			<a href="{{domain}}" title="{{name}}">{{name}}</a>
+				{{#each alias}}
+					<a href="{{../domain}}" title="{{this}}">{{this}}</a>
+        		{{/each}}
+			{{/if}}
+        {{/each}}
+    </div>
+    <button type="button" class="territorySubmit"></button>
+    <span class="languageField_valid">No match found</span>
+</script>
+
+<script id="breadcrumb-template" type="text/x-handlebars-template">
+    <div class="breadcrumb-component__scroll-pane an-bread-crumb" id="breadcrumbScrollPane{{#if isMobile}}Mobile{{/if}}">
+    		{{#unless isMobile}}<button class="breadcrumb-toggle">
+                <label class="sr-only">Show full breadcrumb</label>
+            </button>{{/unless}}
+            <ul class="{{#unless isMobile}}{{/unless}} breadcrumb full-closed">
+            {{#each breadcrumbs}}
+            <li class="breadcrumbVisible">
+            		<a href="{{this.linkURL}}">{{this.linkText}}</a>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+    <div class="breadcrumb-component__scroll-fade breadcrumb-component__scroll-fade--left"></div>
+    <div class="breadcrumb-component__scroll-fade breadcrumb-component__scroll-fade--right"></div>
+</script>
+
+<!-- <script id="hamburger-template" type="text/x-handlebars-template">
+    {{#ifEquals navigationStrategy "sibling-children"}}
+        {{#if hasSectionTitle}}
+        <h5 class="dynamic-site__heading"><a href="{{addExtensionIfRequired sectionPagePath 'html'}}">{{sectionTitle}}</a></h5>
+        {{/if}}
+        <div class="row hamburger-submenu">
+            <ul class="nav nav-tabs level-two-navs col-md-6">
+                {{#each hamburgerLinks.primary}}
+                <li><a data-tab-pane="secondLevelItem{{math @index '+' '1'}}"
+                       href="{{addExtensionIfRequired this.url 'html'}}">
+                    <span class="level-two-nav__title">{{this.text}}</span>
+                    {{#if this.children.length}}
+                    <span class="level-two-nav__arrow"></span>
+                    {{/if}}
+                </a></li>
+                {{/each}}
+            </ul>
+            {{#if hamburgerLinks.primary.length}}
+            <div class="tab-content level-three-navs col-md-6">
+                {{#each hamburgerLinks.primary}}
+                <div id="secondLevelItem{{math @index '+' '1'}}" class="tab-pane">
+                    <ul>
+                        {{#each this.children}}
+                        <li>
+                            <a href="{{addExtensionIfRequired this.url 'html'}}">{{this.text}}</a>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+        {{/ifEquals}}
+        {{#ifEquals navigationStrategy "manual"}}
+        {{#if hasSectionTitle}}
+        <span class="sectiontitle"><a href="{{addExtensionIfRequired sectionPagePath 'html'}}">{{sectionTitle}}</a></span>
+        {{/if}}
+        <div class="row">
+            {{#if hamburgerLinks.primary.length}}
+            <div class="col-sm-6" id="inPageNavigation">
+                <ul>
+                    {{#each hamburgerLinks.primary}}
+                    <li>
+                        <a href="{{addExtensionIfRequired this.url 'html'}}" class="inPageLink"
+                           target="{{this.targetType}}"><span>{{this.text}}</span></a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+            {{#if hamburgerLinks.secondary.length}}
+            <div class="col-sm-6" id="furtherArticles">
+                <ul>
+                    {{#each hamburgerLinks.secondary}}
+                    <li>
+                        <a href="{{addExtensionIfRequired this.url 'html'}}"
+                           target="{{this.targetType}}"><span>{{this.text}}</span></a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+        </div>
+    {{/ifEquals}}
+</script> -->
+
+<script id="hamburger-levelOne-template" type="text/x-handlebars-template">
+    {{#if levelOneLinks.length}}
+        <div class="h3">Explore PwC
+        </div>
+        <ul class="row">
+            {{#each levelOneLinks}}
+            <li>
+                <a href="{{this.link}}" target="{{#if this.openNewWindow}}_blank{{else}}_self{{/if}}" class="clearfix an-level-one-link">
+                    <span>{{this.title}}</span>
+                </a>
+            </li>
+            {{/each}}
+        </ul>
+    {{/if}}
+</script>
+
+<script id="hamburger-mobile-template" type="text/x-handlebars-template">
+    {{#ifEquals navigationStrategy "nestedNavigation"}}
+    {{#each hamburgerLinks.nestedPrimary}}
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="levelTwoLinks_{{math @index '+' '1'}}">
+            <div class="panel-title h4">
+                <a class="an-primary-nav" role="button" href="{{addExtensionIfRequired this.url 'html'}}"
+                   aria-expanded="false" target="{{this.targetType}}" aria-controls="levelThreeLinks_{{math @index '+' '1'}}">
+                    {{this.text}}
+                </a>
+                {{#if this.children}}
+                <span></span>
+                {{/if}}
+            </div>
+        </div>
+        {{#if this.children}}
+        <div id="levelThreeLinks_{{math @index '+' '1'}}" class="panel-collapse collapse" role="tabpanel"
+             aria-labelledby="levelTwoLinks_{{math @index '+' '1'}}">
+            <div class="panel-body">
+                <ul>
+                    <li class="visible-xs-block visible-sm-block">
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}" target="{{this.targetType}}">{{this.text}}</a>
+                    </li>
+                    {{#each this.children}}
+                    <li>
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}" target="{{this.targetType}}">{{this.text}}</a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+    {{/each}}
+        {{/ifEquals}}
+    {{#ifEquals navigationStrategy "sibling-children"}}
+    		{{#each hamburgerLinks.primary}}
+        		<div class="panel panel-default">
+            		<div class="panel-heading" role="tab" id="levelTwoLinks_{{math @index '+' '1'}}">
+            <div class="panel-title h4">
+                <a class="an-primary-nav" role="button" href="{{addExtensionIfRequired this.url 'html'}}"
+                       		aria-expanded="false" aria-controls="levelThreeLinks_{{math @index '+' '1'}}">
+                        		{{this.text}}
+                    		</a>
+                            {{#if this.children}}
+                    		<span></span>
+                            {{/if}}
+            </div>
+            		</div>
+                    {{#if this.children}}
+            		<div id="levelThreeLinks_{{math @index '+' '1'}}" class="panel-collapse collapse" role="tabpanel"
+                 		aria-labelledby="levelTwoLinks_{{math @index '+' '1'}}">
+                		<div class="panel-body">
+                    		<ul>
+                    <li class="visible-xs-block visible-sm-block">
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}">{{this.text}}</a>
+                                </li>
+                                {{#each this.children}}
+                                    <li>
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}">{{this.text}}</a>
+                                    </li>
+                                {{/each}}
+                    		</ul>
+                		</div>
+            		</div>
+                    {{/if}}
+        		</div>
+    		{{/each}}
+    {{/ifEquals}}
+	{{#ifEquals navigationStrategy "manual"}}
+        {{#if hasSectionTitle}}
+        <span class="sectiontitle"><a href="{{addExtensionIfRequired sectionPagePath 'html'}}">{{sectionTitle}}</a></span>
+        {{/if}}
+        <div class="row">
+            {{#if hamburgerLinks.primary.length}}
+            <div class="col-sm-6" id="inPageNavigation">
+                <ul>
+                    {{#each hamburgerLinks.primary}}
+                    <li>
+                        <a href="{{addExtensionIfRequired this.url 'html'}}" class="inPageLink an-primary-nav"
+                           target="{{this.targetType}}"><span>{{this.text}}</span></a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+            {{#if hamburgerLinks.secondary.length}}
+            <div class="col-sm-6" id="furtherArticles">
+                <ul>
+                    {{#each hamburgerLinks.secondary}}
+                    <li>
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}"
+                           target="{{this.targetType}}"><span>{{this.text}}</span></a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+        </div>
+    {{/ifEquals}}
+</script>
+
+<script id="social-share-template" type="text/x-handlebars-template">
+    {{#each socialShareConfiguration}}
+        {{#ifEquals this "Facebook"}}
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{socialURL}}" aria-label='Share To Facebook'>
+            <span class="sti-btn sti-facebook-btn circle-icon">Share To Facebook</span></a>
+        {{/ifEquals}}
+        {{#ifEquals this "Twitter"}}
+        <a data-url="https://twitter.com/intent/tweet/?url={{socialURL}}" href="javascript:void(0)" class="sh__twitter" aria-label='Share To Twitter'>
+            <span class="sti-btn sti-twitter-btn circle-icon">Share To Twitter</span></a>
+        {{/ifEquals}}
+        {{#ifEquals this "Linkedin"}}
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{socialURL}}" aria-label='Share To Linkedin'>
+            <span class="sti-btn sti-linkedin-btn circle-icon">Share To Linkedin</span></a>
+        {{/ifEquals}}
+        {{#ifEquals this "Weibo"}}
+        <a href="http://v.t.sina.com.cn/share/share.php?url={{socialURL}}" aria-label='Share To Weibo'>
+            <span class="sti-btn sti-weibo-btn circle-icon">Share To Weibo</span></a>
+        {{/ifEquals}}
+    {{/each}}
+</script>
+
+
+<script>
+    var navigationData={"breadcrumbData":{"breadcrumbs":[{"linkURL":"https://www.pwc.co.uk","linkText":"UK home"},{"linkURL":"https://www.pwc.co.uk/issues.html","linkText":"Issues"},{"linkURL":"https://www.pwc.co.uk/issues/cyber-security-services.html","linkText":"Cyber security"},{"linkURL":"https://www.pwc.co.uk/issues/cyber-security-services/insights.html","linkText":"Insights"},{"linkURL":"https://www.pwc.co.uk/issues/cyber-security-services/insights/wellmess-analysis-command-control.html","linkText":"WellMess malware: analysis of its Command and Control (C2) server"}]},"hamburgerData":{"hamburgerLinks":{"secondary":[{"children":[],"targetType":"_self","text":"How to stop malicious insider threats to cyber security with IAM and endpoint monitoring","url":"https://www.pwc.co.uk/issues/cyber-security-services/insights/how-to-stop-insider-threats-to-cyber-security"}],"nestedPrimary":[],"primary":[{"children":[],"targetType":"_self","text":"Cyber security partnership with BT Security","url":"https://www.pwc.co.uk/issues/cyber-security-services/bt-security-partnership"},{"children":[],"targetType":"_self","text":"Cyber security transformation","url":"https://www.pwc.co.uk/issues/cyber-security-services/transformation"},{"children":[],"targetType":"_self","text":"Cyber defence and detection","url":"https://www.pwc.co.uk/issues/cyber-security-services/defence-and-detection"},{"children":[],"targetType":"_self","text":"Cyber security in mergers & acquisitions (M&A)","url":"https://www.pwc.co.uk/issues/cyber-security-services/mergers-and-acquisitions"},{"children":[],"targetType":"_self","text":"Cyber security team contacts","url":"https://www.pwc.co.uk/issues/cyber-security-services/contacts"},{"children":[],"targetType":"_self","text":"Cyber security risk advisory","url":"https://www.pwc.co.uk/issues/cyber-security-services/risk-advisory"},{"children":[],"targetType":"_self","text":"Cyber incident response and recovery","url":"https://www.pwc.co.uk/issues/cyber-security-services/incident-response-and-recovery"},{"children":[{"children":[],"targetType":"_self","text":"How to stop malicious insider threats to cyber security with IAM and endpoint monitoring","url":"https://www.pwc.co.uk/issues/cyber-security-services/insights/how-to-stop-insider-threats-to-cyber-security"}],"targetType":"_self","text":"Insights","url":"https://www.pwc.co.uk/issues/cyber-security-services/insights"}]},"sectionPagePath":"","levelOneLinks":[{"link":"https://www.pwc.co.uk/who-we-are.html","title":"About us","openNewWindow":""},{"link":"https://www.pwc.co.uk/industries.html","title":"Industries","openNewWindow":""},{"link":"https://www.pwc.co.uk/services.html","title":"Services","openNewWindow":""},{"link":"https://www.pwc.co.uk/who-we-are/regional-sites.html","title":"Regions","openNewWindow":""},{"link":"https://www.pwc.co.uk/press-room.html","title":"Media centre","openNewWindow":""},{"link":"https://www.pwc.co.uk/careers.html","title":"Careers","openNewWindow":""},{"link":"https://www.pwc.co.uk/who-we-are/office-locations.html","title":"UK office locations","openNewWindow":""},{"link":"https://www.pwc.co.uk/issues.html","title":"Issues","openNewWindow":""},{"link":"https://www.pwc.co.uk/insights.html","title":"Insights","openNewWindow":""}],"sectionTitle":"","navigationStrategy":"sibling-children"},"socialShareData":{"socialShareConfiguration":["Twitter","Linkedin","Facebook"],"socialURL":"/content/pwc/uk/en/issues/cyber-security-services/insights/wellmess-analysis-command-control"},"territorySelectorData":[{"code":"af","domain":"https://www.pwc.com/af","name":"Afghanistan","territoryFinder":false},{"code":"w4","domain":"https://afrique.pwc.com","name":"Afrique Francophone","territoryFinder":true},{"code":"al","domain":"https://www.pwc.com/al","name":"Albania","territoryFinder":true},{"code":"dz","domain":"https://www.pwc.com/dz","name":"Algeria","territoryFinder":false},{"code":"ad","domain":"https://www.pwc.ad","name":"Andorra","territoryFinder":true},{"code":"ao","domain":"https://www.pwc.com/ao","name":"Angola","territoryFinder":true},{"code":"ag","domain":"https://www.pwc.com/ag","name":"Antigua","territoryFinder":false},{"code":"ar","domain":"https://www.pwc.com.ar","name":"Argentina","territoryFinder":true},{"code":"am","domain":"https://www.pwc.com/am","name":"Armenia","territoryFinder":true},{"code":"aw","domain":"https://www.pwc.com/aw","name":"Aruba","territoryFinder":false},{"code":"w1","domain":"https://customs.pwc.com","name":"Asia Pacific Customs and Trade","territoryFinder":false},{"code":"au","domain":"https://www.pwc.com.au","name":"Australia","territoryFinder":true},{"code":"at","domain":"https://www.pwc.at","name":"Austria","territoryFinder":true},{"code":"az","domain":"https://www.pwc.com/az","name":"Azerbaijan","territoryFinder":true},{"code":"bs","domain":"https://www.pwc.com/bs","name":"Bahamas","territoryFinder":true},{"code":"bh","domain":"https://www.pwc.com/bh","name":"Bahrain","territoryFinder":false},{"code":"bd","domain":"https://www.pwc.com/bd","name":"Bangladesh","territoryFinder":false},{"code":"bb","domain":"https://www.pwc.com/bb","name":"Barbados","territoryFinder":true},{"code":"by","domain":"https://www.pwc.by","name":"Belarus","territoryFinder":true},{"code":"be","domain":"https://www.pwc.be","name":"Belgium","territoryFinder":true,"alias":["Belgique","België"]},{"code":"bj","domain":"https://www.pwc.com/bj","name":"Benin","territoryFinder":false},{"code":"bm","domain":"https://www.pwc.com/bm","name":"Bermuda","territoryFinder":true},{"code":"bo","domain":"https://www.pwc.com/bo","name":"Bolivia","territoryFinder":true},{"code":"bq","domain":"https://www.pwc.com/bq","name":"Bonaire","territoryFinder":false},{"code":"ba","domain":"https://www.pwc.ba","name":"Bosnia and Herzegovina","territoryFinder":true},{"code":"bw","domain":"https://www.pwc.com/bw","name":"Botswana","territoryFinder":true},{"code":"br","domain":"https://www.pwc.com.br","name":"Brasil","territoryFinder":true},{"code":"vg","domain":"https://www.pwc.com/vg","name":"British Virgin Islands","territoryFinder":true},{"code":"bn","domain":"https://www.pwc.com/bn","name":"Brunei","territoryFinder":true},{"code":"bg","domain":"https://www.pwc.bg","name":"Bulgaria","territoryFinder":true},{"code":"bf","domain":"https://www.pwc.com/bf","name":"Burkina Faso","territoryFinder":false},{"code":"bi","domain":"https://www.pwc.com/bi","name":"Burundi","territoryFinder":false},{"code":"kh","domain":"https://www.pwc.com/kh","name":"Cambodia","territoryFinder":true},{"code":"cm","domain":"https://www.pwc.com/cm","name":"Cameroon","territoryFinder":true},{"code":"ca","domain":"https://www.pwc.com/ca","name":"Canada","territoryFinder":true},{"code":"cv","domain":"https://www.pwc.com/cv","name":"Cape Verde","territoryFinder":true},{"code":"cb","domain":"https://www.pwc.com/cb","name":"Caribbean","territoryFinder":true},{"code":"ky","domain":"https://www.pwc.com/ky","name":"Cayman Islands","territoryFinder":true},{"code":"cf","domain":"https://www.pwc.com/cf","name":"Central African Republic","territoryFinder":false},{"code":"xa","domain":"https://www.pwc.com/xa","name":"Central Americas","territoryFinder":false},{"code":"cs","domain":"https://www.pwc.com/cs","name":"Central Asia and Caucasus","territoryFinder":false},{"code":"c1","domain":"https://www.pwc.com/c1","name":"Central and Eastern Europe","territoryFinder":true},{"code":"td","domain":"https://www.pwc.com/td","name":"Chad","territoryFinder":true},{"code":"jg","domain":"https://www.pwc.com/jg","name":"Channel Islands","territoryFinder":true},{"code":"cl","domain":"https://www.pwc.com/cl","name":"Chile","territoryFinder":true},{"code":"cn","domain":"https://www.pwccn.com","name":"China","territoryFinder":true,"alias":["中国"]},{"code":"co","domain":"https://www.pwc.com/co","name":"Colombia","territoryFinder":true},{"code":"km","domain":"https://www.pwc.com/km","name":"Comoros","territoryFinder":false},{"code":"cg","domain":"https://www.pwc.com/cg","name":"Congo (Brazzaville)","territoryFinder":true},{"code":"cd","domain":"https://www.pwc.com/cd","name":"Congo (Dem. Rep.)","territoryFinder":true},{"code":"cr","domain":"https://www.pwc.com/cr","name":"Costa Rica","territoryFinder":true},{"code":"hr","domain":"https://www.pwc.hr","name":"Croatia","territoryFinder":true},{"code":"cy","domain":"https://www.pwc.com.cy","name":"Cyprus","territoryFinder":true},{"code":"cz","domain":"https://www.pwc.com/cz","name":"Czech Republic","territoryFinder":true},{"code":"ci","domain":"https://www.pwc.com/ci","name":"Côte d'Ivoire","territoryFinder":false},{"code":"dk","domain":"https://www.pwc.dk","name":"Denmark","territoryFinder":true},{"code":"dj","domain":"https://www.pwc.com/dj","name":"Djibouti","territoryFinder":false},{"code":"do","domain":"https://www.pwc.com/do","name":"Dominican Republic","territoryFinder":true},{"code":"ec","domain":"https://www.pwc.ec","name":"Ecuador","territoryFinder":true},{"code":"eg","domain":"https://www.pwc.com/eg","name":"Egypt","territoryFinder":false},{"code":"sv","domain":"https://www.pwc.com/sv","name":"El Salvador","territoryFinder":true},{"code":"gq","domain":"https://www.pwc.com/gq","name":"Equatorial Guinea","territoryFinder":true},{"code":"er","domain":"https://www.pwc.com/er","name":"Eritrea","territoryFinder":false},{"code":"ee","domain":"https://www.pwc.com/ee","name":"Estonia","territoryFinder":true},{"code":"et","domain":"https://www.pwc.com/et","name":"Ethiopia","territoryFinder":false},{"code":"fj","domain":"https://www.pwc.com/fj","name":"Fiji","territoryFinder":false},{"code":"fi","domain":"https://www.pwc.fi","name":"Finland","territoryFinder":true},{"code":"fr","domain":"https://www.pwc.fr","name":"France","territoryFinder":true},{"code":"pf","domain":"https://www.pwc.com/pf","name":"French Polynesia","territoryFinder":false},{"code":"ga","domain":"https://www.pwc.com/ga","name":"Gabon","territoryFinder":true},{"code":"gm","domain":"https://www.pwc.com/gm","name":"Gambia","territoryFinder":false},{"code":"ge","domain":"https://www.pwc.com/ge","name":"Georgia","territoryFinder":true},{"code":"de","domain":"https://www.pwc.de","name":"Germany","territoryFinder":true},{"code":"gh","domain":"https://www.pwc.com/gh","name":"Ghana","territoryFinder":true},{"code":"gi","domain":"https://www.pwc.gi","name":"Gibraltar","territoryFinder":true},{"code":"gx","domain":"https://www.pwc.com/gx","name":"Global","territoryFinder":true},{"code":"w3","domain":"https://www.gmsasia.pwc.com","name":"Global Mobility Services","territoryFinder":false},{"code":"gr","domain":"https://www.pwc.com/gr","name":"Greece","territoryFinder":true},{"code":"gl","domain":"https://www.pwc.com/gl","name":"Greenland","territoryFinder":false},{"code":"gt","domain":"https://www.pwc.com/gt","name":"Guatemala","territoryFinder":true},{"code":"xc","domain":"https://www.pwc.com/xc","name":"Guernsey","territoryFinder":false},{"code":"gn","domain":"https://www.pwc.com/gn","name":"Guinea","territoryFinder":true},{"code":"gw","domain":"https://www.pwc.com/gw","name":"Guinea Bissau","territoryFinder":false},{"code":"gy","domain":"https://www.pwc.com/gy","name":"Guyana","territoryFinder":false},{"code":"hn","domain":"https://www.pwc.com/hn","name":"Honduras","territoryFinder":true},{"code":"hk","domain":"https://www.pwchk.com","name":"Hong Kong SAR, China","territoryFinder":true},{"code":"hu","domain":"https://www.pwc.com/hu","name":"Hungary","territoryFinder":true},{"code":"s1","domain":"https://www.ilclegal.com","name":"ILC Legal","territoryFinder":true},{"code":"is","domain":"https://www.pwc.is","name":"Iceland","territoryFinder":true},{"code":"in","domain":"https://www.pwc.in","name":"India","territoryFinder":true},{"code":"id","domain":"https://www.pwc.com/id","name":"Indonesia","territoryFinder":true},{"code":"ia","domain":"https://www.pwc.com/ia","name":"Interaméricas","territoryFinder":true},{"code":"iq","domain":"https://www.pwc.com/iq","name":"Iraq","territoryFinder":false},{"code":"ie","domain":"https://www.pwc.ie","name":"Ireland (Republic of)","territoryFinder":true},{"code":"im","domain":"https://www.pwc.com/im","name":"Isle of Man","territoryFinder":true},{"code":"il","domain":"https://www.pwc.com/il","name":"Israel","territoryFinder":true,"alias":["ישראל"]},{"code":"it","domain":"https://www.pwc.com/it","name":"Italy","territoryFinder":true},{"code":"w2","domain":"https://www.pwc-tls.it","name":"Italy (Tax and Legal Services)","territoryFinder":false},{"code":"jm","domain":"https://www.pwc.com/jm","name":"Jamaica","territoryFinder":true},{"code":"jp","domain":"https://www.pwc.com/jp","name":"Japan","territoryFinder":true,"alias":["日本,Japon,Japón,اليابان"]},{"code":"xd","domain":"https://www.pwc.com/xd","name":"Jersey","territoryFinder":false},{"code":"jo","domain":"https://www.pwc.com/jo","name":"Jordan","territoryFinder":false},{"code":"kz","domain":"https://www.pwc.com/kz","name":"Kazakhstan","territoryFinder":true},{"code":"ke","domain":"https://www.pwc.com/ke","name":"Kenya","territoryFinder":true},{"code":"ks","domain":"https://www.pwc.com/ks","name":"Kosovo","territoryFinder":true},{"code":"kw","domain":"https://www.pwc.com/kw","name":"Kuwait","territoryFinder":false},{"code":"kg","domain":"https://www.pwc.com/kg","name":"Kyrgyzstan","territoryFinder":false},{"code":"la","domain":"https://www.pwc.com/la","name":"Laos","territoryFinder":true},{"code":"lv","domain":"https://www.pwc.com/lv","name":"Latvia","territoryFinder":true},{"code":"lb","domain":"https://www.pwc.com/lb","name":"Lebanon","territoryFinder":false},{"code":"lr","domain":"https://www.pwc.com/lr","name":"Liberia","territoryFinder":true},{"code":"ly","domain":"https://www.pwc.com/ly","name":"Libya","territoryFinder":false},{"code":"li","domain":"https://www.pwc.com/li","name":"Liechtenstein","territoryFinder":false},{"code":"lt","domain":"https://www.pwc.com/lt","name":"Lithuania","territoryFinder":true},{"code":"lu","domain":"https://www.pwc.lu","name":"Luxembourg","territoryFinder":true},{"code":"mo","domain":"https://www.pwc.com/mo","name":"Macau SAR","territoryFinder":false},{"code":"mk","domain":"https://www.pwc.com/mk","name":"Macedonia","territoryFinder":true},{"code":"mg","domain":"https://www.pwc.com/mg","name":"Madagascar","territoryFinder":true},{"code":"mw","domain":"https://www.pwc.com/mw","name":"Malawi","territoryFinder":true},{"code":"my","domain":"https://www.pwc.com/my","name":"Malaysia","territoryFinder":true},{"code":"mv","domain":"https://www.pwc.com/mv","name":"Maldives","territoryFinder":true},{"code":"ml","domain":"https://www.pwc.com/ml","name":"Mali","territoryFinder":false},{"code":"mt","domain":"https://www.pwc.com/mt","name":"Malta","territoryFinder":true},{"code":"mh","domain":"https://www.pwc.com/mh","name":"Marshall Islands","territoryFinder":false},{"code":"mq","domain":"https://www.pwc.com/mq","name":"Martinique","territoryFinder":false},{"code":"mr","domain":"https://www.pwc.com/mr","name":"Mauritania","territoryFinder":false},{"code":"mu","domain":"https://www.pwc.com/mu","name":"Mauritius","territoryFinder":true},{"code":"mx","domain":"https://www.pwc.com/mx","name":"Mexico","territoryFinder":true},{"code":"m1","domain":"https://www.pwc.com/m1/en","name":"Middle East Region","territoryFinder":true,"alias":["Middle East","Bahrain","Egypt","Iraq","Jordan","Kuwait","Lebanon","Libya","Oman","Qatar","Saudi Arabia","United Arab Emirates","West Bank","Gaza"]},{"code":"md","domain":"https://www.pwc.com/md","name":"Moldova","territoryFinder":true},{"code":"mc","domain":"https://www.pwc.com/mc","name":"Monaco (Principality of)","territoryFinder":false},{"code":"mn","domain":"https://www.pwc.com/mn","name":"Mongolia","territoryFinder":true},{"code":"me","domain":"https://www.pwc.com/me/en","name":"Montenegro","territoryFinder":true},{"code":"ma","domain":"https://www.pwc.com/ma","name":"Morocco","territoryFinder":false},{"code":"mz","domain":"https://www.pwc.com/mz","name":"Mozambique","territoryFinder":true},{"code":"na","domain":"https://www.pwc.com/na","name":"Namibia","territoryFinder":true},{"code":"np","domain":"https://www.pwc.com/np","name":"Nepal","territoryFinder":false},{"code":"nl","domain":"https://www.pwc.nl","name":"Netherlands","territoryFinder":true},{"code":"an","domain":"https://www.pwc.com/an","name":"Netherlands Antilles","territoryFinder":true},{"code":"nc","domain":"https://www.pwc.com/nc","name":"New Caledonia","territoryFinder":true},{"code":"nz","domain":"https://www.pwc.co.nz","name":"New Zealand","territoryFinder":true},{"code":"ni","domain":"https://www.pwc.com/ni","name":"Nicaragua","territoryFinder":true},{"code":"ne","domain":"https://www.pwc.com/ne","name":"Niger","territoryFinder":false},{"code":"ng","domain":"https://www.pwc.com/ng","name":"Nigeria","territoryFinder":true},{"code":"no","domain":"https://www.pwc.no","name":"Norway","territoryFinder":true},{"code":"om","domain":"https://www.pwc.com/om","name":"Oman","territoryFinder":false},{"code":"p1","domain":"https://www.pwc.com/p1","name":"PRTM Japan","territoryFinder":false},{"code":"pk","domain":"https://www.pwc.com.pk","name":"Pakistan","territoryFinder":true},{"code":"pa","domain":"https://www.pwc.com/pa","name":"Panama","territoryFinder":true},{"code":"pg","domain":"https://www.pwc.com/pg","name":"Papua New Guinea","territoryFinder":true},{"code":"py","domain":"https://www.pwc.com/py","name":"Paraguay","territoryFinder":true},{"code":"pe","domain":"https://www.pwc.pe","name":"Peru","territoryFinder":true},{"code":"ph","domain":"https://www.pwc.com/ph","name":"Philippines","territoryFinder":true},{"code":"pl","domain":"https://www.pwc.pl","name":"Poland","territoryFinder":true},{"code":"pt","domain":"https://www.pwc.pt","name":"Portugal","territoryFinder":true},{"code":"pr","domain":"https://www.pwc.com/pr","name":"Puerto Rico","territoryFinder":false},{"code":"g1","domain":"https://google.pwc.com","name":"PwC Google","territoryFinder":false},{"code":"qa","domain":"https://www.pwc.com/qa","name":"Qatar","territoryFinder":false},{"code":"rm","domain":"https://www.pwc.com/rm","name":"Remediation","territoryFinder":false},{"code":"r1","domain":"https://www.pwc.com/r1","name":"Remediation1","territoryFinder":false},{"code":"ro","domain":"https://www.pwc.ro","name":"Romania","territoryFinder":true},{"code":"ru","domain":"https://www.pwc.ru","name":"Russia","territoryFinder":true,"alias":["Россия"]},{"code":"rw","domain":"https://www.pwc.com/rw","name":"Rwanda","territoryFinder":true},{"code":"sm","domain":"https://www.pwc.com/sm","name":"San Marino","territoryFinder":false},{"code":"st","domain":"https://www.pwc.com/st","name":"Sao Tome and Principe","territoryFinder":false},{"code":"sa","domain":"https://www.pwc.com/sa","name":"Saudi Arabia","territoryFinder":false},{"code":"sn","domain":"https://www.pwc.com/sn","name":"Senegal","territoryFinder":true},{"code":"rs","domain":"https://www.pwc.rs","name":"Serbia","territoryFinder":true},{"code":"sc","domain":"https://www.pwc.com/sc","name":"Seychelles","territoryFinder":false},{"code":"sl","domain":"https://www.pwc.com/sl","name":"Sierra Leone","territoryFinder":false},{"code":"sg","domain":"https://www.pwc.com/sg","name":"Singapore","territoryFinder":true},{"code":"sk","domain":"https://www.pwc.com/sk","name":"Slovakia","territoryFinder":true},{"code":"si","domain":"https://www.pwc.com/si","name":"Slovenia","territoryFinder":true},{"code":"sb","domain":"https://www.pwc.com/sb","name":"Solomon Islands","territoryFinder":false},{"code":"so","domain":"https://www.pwc.com/so","name":"Somalia","territoryFinder":false},{"code":"za","domain":"https://www.pwc.co.za","name":"South Africa","territoryFinder":true},{"code":"kr","domain":"https://www.pwc.com/kr","name":"South Korea","territoryFinder":true},{"code":"es","domain":"https://www.pwc.es","name":"Spain","territoryFinder":true},{"code":"lk","domain":"https://www.pwc.com/lk","name":"Sri Lanka","territoryFinder":true},{"code":"lc","domain":"https://www.pwc.com/lc","name":"St Lucia","territoryFinder":false},{"code":"kn","domain":"https://www.pwc.com/kn","name":"St. Kitts and Nevis","territoryFinder":false},{"code":"sd","domain":"https://www.pwc.com/sd","name":"Sudan","territoryFinder":false},{"code":"sr","domain":"https://www.pwc.com/sr","name":"Surinam","territoryFinder":false},{"code":"se","domain":"https://www.pwc.se","name":"Sweden","territoryFinder":true},{"code":"ch","domain":"https://www.pwc.ch","name":"Switzerland","territoryFinder":true},{"code":"tw","domain":"https://www.pwc.tw","name":"Taiwan","territoryFinder":true,"alias":["臺灣,台湾"]},{"code":"tj","domain":"https://www.pwc.com/tj","name":"Tajikistan","territoryFinder":false},{"code":"tz","domain":"https://www.pwc.co.tz","name":"Tanzania","territoryFinder":true},{"code":"zz","domain":"https://www.pwc.com/zz","name":"Territory","territoryFinder":false},{"code":"th","domain":"https://www.pwc.com/th","name":"Thailand","territoryFinder":true},{"code":"tg","domain":"https://www.pwc.com/tg","name":"Togo","territoryFinder":false},{"code":"tt","domain":"https://www.pwc.com/tt","name":"Trinidad and Tobago","territoryFinder":true},{"code":"tn","domain":"https://www.pwc.com/tn","name":"Tunisia","territoryFinder":false},{"code":"tr","domain":"https://www.pwc.com.tr","name":"Turkey","territoryFinder":true,"alias":["Türkiye"]},{"code":"tm","domain":"https://www.pwc.com/tm","name":"Turkmenistan","territoryFinder":false},{"code":"tc","domain":"https://www.pwc.com/tc","name":"Turks and Caicos Islands","territoryFinder":false},{"code":"vi","domain":"https://www.pwc.com/vi","name":"US Virgin Islands","territoryFinder":false},{"code":"ux","domain":"https://www.pwc.com/ux","name":"UX","territoryFinder":false},{"code":"ug","domain":"https://www.pwc.com/ug","name":"Uganda","territoryFinder":true},{"code":"ua","domain":"https://www.pwc.com/ua","name":"Ukraine","territoryFinder":true,"alias":["Україна"]},{"code":"ae","domain":"https://www.pwc.com/ae","name":"United Arab Emirates","territoryFinder":false},{"code":"uk","domain":"https://www.pwc.co.uk","name":"United Kingdom","territoryFinder":true,"alias":["UK"]},{"code":"us","domain":"https://www.pwc.com/us","name":"United States","territoryFinder":true,"alias":["US","USA","U.S.","America"]},{"code":"uy","domain":"https://www.pwc.com.uy","name":"Uruguay","territoryFinder":true},{"code":"uz","domain":"https://www.pwc.com/uz","name":"Uzbekistan","territoryFinder":true},{"code":"ve","domain":"https://www.pwc.com/ve","name":"Venezuela ","territoryFinder":true},{"code":"vn","domain":"https://www.pwc.com/vn","name":"Vietnam","territoryFinder":true},{"code":"xg","domain":"https://www.pwc.com/xg","name":"West Bank and Gaza","territoryFinder":false},{"code":"ye","domain":"https://www.pwc.com/ye","name":"Yemen","territoryFinder":false},{"code":"zm","domain":"https://www.pwc.com/zm","name":"Zambia","territoryFinder":true},{"code":"zw","domain":"https://www.pwc.com/zw","name":"Zimbabwe","territoryFinder":true},{"code":"sz","domain":"https://www.pwc.com/sz","name":"eSwatini/Swaziland","territoryFinder":true}],"languageSelectorData":{"alternateLanguages":[],"currentLanguageTitle":"English"}};
+    var showLanguageSelector=true;
+</script>
+<script>
+
+
+	
+	var socialShareData;
+    
+	if (showLanguageSelector) {
+		prepareLanguageSelector(navigationData.languageSelectorData);
+	}    
+	prepareTerritorySelector(navigationData.territorySelectorData);
+    prepareHamburger(navigationData.hamburgerData);
+    prepareBreadcrumb(navigationData.breadcrumbData);
+    socialShareData = navigationData.socialShareData;
+    function createLanguageSelector(languageSelectorData){
+        if (languageSelectorData && languageSelectorData.alternateLanguages && languageSelectorData.alternateLanguages.length > 0) {
+            var languageListTemplate = Handlebars.compile($("#language-selector-template").html());
+            $("#menuAdditional .language-selector-li").append(languageListTemplate(languageSelectorData));
+
+            //prepare markup for mobile
+            languageSelectorData.isMobile=true;
+            $("#menuAdditionalMobile .language-selector-li").append(languageListTemplate(languageSelectorData));
+        }
+    }
+
+    function  prepareLanguageSelector(languageSelectorData){
+        if (languageSelectorData.alternateLanguages.length > 0) {
+            //render alternate language div on page only if alternate language present on page/slim-header.
+            createLanguageSelector(languageSelectorData);
+        }
+    }
+
+    function prepareTerritorySelector(territories){
+        if (territories && territories.length > 0) {
+            var territoryListTemplate = Handlebars.compile($("#territory-selector-template").html());
+            $(".territory-dropdown").append(territoryListTemplate(territories));
+        }
+    }
+
+    function prepareHamburger(hamburgerData){
+        if ((hamburgerData.hamburgerLinks && (hamburgerData.hamburgerLinks.primary.length > 0
+                || hamburgerData.hamburgerLinks.secondary.length > 0 || hamburgerData.hamburgerLinks.nestedPrimary.length > 0)) || (hamburgerData.levelOneLinks && hamburgerData.levelOneLinks.length > 0)) {
+
+           
+            if(hamburgerData.sectionTitle){
+                hamburgerData.hasSectionTitle=true;
+            }
+           // modifyLinks(hamburgerData.hamburgerLinks.primary);
+            //modifyLinks(hamburgerData.hamburgerLinks.secondary);
+            //var hamburgerTemplate = Handlebars.compile($("#hamburger-template").html());
+            //$("div.breadcrumb-main").append(hamburgerTemplate(breadcrumbData));
+
+            //$(".hamburger-menu .col-sm-8").append(hamburgerTemplate(hamburgerData));
+            //populate levelOne links of hamburger
+            var hamburgerLevelOneTemplate = Handlebars.compile($("#hamburger-levelOne-template").html());
+            $("#LevelOneLinks").prepend(hamburgerLevelOneTemplate(hamburgerData));
+            
+            //populate hamburger for both mobile and destop
+            var hamburgerMobileTemplate= Handlebars.compile($("#hamburger-mobile-template").html());
+            $(".hamburger-submenu--mobile .panel-group").append(hamburgerMobileTemplate(hamburgerData));
+            
+        }else {
+            //if levelOne or LevelTwo or LevelThree Links are not present, hamburger button should not be shown.
+            $("#dropdownTrigger_lg").remove();
+            $("#navBar").remove();
+            
+        }
+    }
+
+    function prepareBreadcrumb(breadcrumbData){
+
+        if (breadcrumbData.breadcrumbs && breadcrumbData.breadcrumbs.length > 0) {
+
+            var breadcrumbTemplate = Handlebars.compile($("#breadcrumb-template").html());
+            $("div.breadcrumb-main").append(breadcrumbTemplate(breadcrumbData));
+
+            //prepare markup for mobile
+            breadcrumbData.isMobile=true;
+            $("nav#breadcrumbWrapperMobile").append(breadcrumbTemplate(breadcrumbData));
+        }
+    }
+
+    function prepareSocialShare(socialShareData){
+        if (socialShareData.socialShareConfiguration && socialShareData.socialShareConfiguration.length > 0) {
+
+            var socialShareTemplate = Handlebars.compile($("#social-share-template").html());
+            $(".menuFlyout .sh").append(socialShareTemplate(socialShareData));
+        }else {
+            $(".social-share-menu").remove();
+            $(".social-share-desktop").remove();
+        }
+    }
+    
+    function prepareOverlay(overlayData){
+        if (typeof overlayData != 'undefined') {
+            var overlayTemplate = Handlebars.compile($("#overlay-template").html());
+            $(".profile-access-buttons").append(overlayTemplate(overlayData));
+        }
+    }
+    if (typeof overlayData != 'undefined') {
+    	prepareOverlay(overlayData);
+        //Digital Data analytics for check login user for login header
+        digitalDataUserStatus(overlayData.user.userLoggedIn);
+    }
+    $(document).ready(function(){
+    		PwcCookieConsent.insertScriptFromString('prepareSocialShare(socialShareData);', 'social-share-div',
+				4, null, null, null, null, null, true);
+    })
+
+</script>
+<div id="social-share-div">
+</div>
+<input type="hidden" id="pageTerritory" value="uk"/>
+<script>
+    //Digital Data Analytics For Sign in MyList
+    analyticsClickTrigger("#signInPanel .myaccount-benefits__heading a:first",'readingList.event','sign-in');
+    //Digital Data Analytics For Sign in MyList
+    analyticsClickTrigger("#signInPanel .myaccount-benefits__heading a:last",'readingList.event','create-account');
+    //Digital Data Analytics For Search
+    //Digital Data Analytics For Search
+    searchSubmit("[role=search]","internalSearch.searchTerm");
+
+    //Digital Data For SiteSecton
+    siteSection(navigationData.breadcrumbData);
+
+	var cookieI18nValues = {};
+	cookieI18nValues.cookieDescription = 'We use cookies to personalise content and to provide you with an improved user experience. By continuing to browse this site you consent to the use of cookies. Please visit our <a href=https://www.pwc.co.uk/who-we-are/cookies.html>cookie policy</a> for further details.';
+	cookieI18nValues.cookieAcceptButton = 'I understand';
+</script>
+</div>
+</div>
+</div>
+</div>
+
+        <div class="centerPar"><div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="title" class="no-background__mobile page-section page-section--col-primary page-section--col-dark  fullwidth   videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="title section">
+    
+			
+    <div class="title-strip dpe-component-wrapper primary">
+        <header class="title-strip__wrapper">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h1 class="title-strip__heading"><span>WellMess malware: analysis of its Command and Control (C2) server</span></h1>
+                            
+                            <p class="title-strip__info">
+                                
+                                <span class="title-strip__date ">17/08/20</span>
+                            </p>
+                        </div>
+    
+                        
+                    </div>
+                </div>
+        </header>
+    </div>
+
+		
+	
+</div>
+
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+<div>
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="overview" class=" page-section page-section--col-white     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="html parbase section">
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    
+
+     
+	<div data-custom-code="">
+	
+
+    
+     
+
+	
+
+<div><style>
+table tbody tr + tr td p {
+	overflow-wrap: anywhere;
+}
+</style></div>
+
+
+
+ 
+</div>
+	
+</div>
+<div class="parsys_column pwccol1-longform-left "><div class="parsys_column pwccol1-longform-left-c0"><div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>In July, the National Cyber Security Centre reported that threat actors had been using malware known as WellMess to target organisations involved in COVID-19 vaccine development.</p>
+<p>We previously published <a href="/issues/cyber-security-services/insights/cleaning-up-after-wellmess.html" adhocenable="false">analysis of the WellMess malware</a>, including details of its capability and functionality. During our investigations, we identified another binary from shared Program Database (PDB) paths, which is highly likely a first stage Command and Control (C2) server used to pass data to a second stage C2. This analysis details the capabilities and limitations of the first stage WellMess controller, with a more in-depth report available from our <a href="/issues/cyber-security-services/cyber-threat-intelligence.html" adhocenable="false">private intelligence reporting</a> services.</p>
+
+    </div>
+
+
+    
+<script type="text/javascript" src="/etc.clientlibs/pwc/components/content/text/clientlibs-button.min.84209d7438dd0b2eb90a9ffcb44b8817.js"></script>
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="analysis" class=" page-section page-section--col-light-grey     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform-left "><div class="parsys_column pwccol1-longform-left-c0"><div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h2>WellMess C2 analysis</h2>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>While investigating the WellMess malware family, we identified that most samples contained PDB paths beginning with:</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="html parbase section">
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    
+
+     
+	<div data-custom-code="">
+	
+
+    
+     
+
+	
+
+<div></br>
+<pre>
+C:/Server/BotUI/App_Data/Temp/
+</pre></div>
+
+
+
+ 
+</div>
+	
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>Pivoting on this string returned an additional file that was not in our previous reporting or the <a href="https://www.ncsc.gov.uk/news/advisory-apt29-targets-covid-19-vaccine-development">July 2020 NCSC advisory</a> on WellMess.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="table text parbase striped section">
+
+    
+
+    <div class="text-component" data-emptytext="Edit Table">
+        <table width="100%" cellspacing="0" cellpadding="1" border="1">
+<tbody><tr><td width="66" height="26"><p><b>Filename</b></p>
+</td>
+<td width="498"><p>mwdg.sh</p>
+</td>
+</tr><tr><td width="66" height="26"><p><b>Filetype</b></p>
+</td>
+<td width="498"><p>ELF 64-bit</p>
+</td>
+</tr><tr><td width="66" height="26"><p><b>SHA-256</b></p>
+</td>
+<td width="498"><p>b10fa150e9f022838347115d39fa672440c740a014913947b79464b68dcc2d55</p>
+</td>
+</tr><tr><td width="66" height="44"><p><b>First seen</b></p>
+</td>
+<td width="498"><p>2020-05-04 03:20:12</p>
+</td>
+</tr><tr><td width="66" height="44"><p><b>Go version</b></p>
+</td>
+<td width="498"><p>1.8</p>
+</td>
+</tr></tbody></table>
+
+    </div>
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>This file contains functionality to communicate with the WellMess malware via HTTP and HTTPS communication methods, receiving the initial beacons and then handling and responding to the rc command detailed <a href="/issues/cyber-security-services/insights/cleaning-up-after-wellmess.html" adhocenable="false">in our previous article</a>. This file also contains code to handle additional commands that have previously not been seen in the WellMess malware and are likely commands sent from infrastructure controlled by the threat actor.</p>
+<p>We assess this file is likely to be used as an intermediate C2 server that the WellMess malware communicates with before having data passed on to a second stage C2. It is likely that there are different variants of this first stage C2 software that also support the DNS protocol of WellMess.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="content-free-1-am0v-par" class=" page-section page-section--col-white     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform-left "><div class="parsys_column pwccol1-longform-left-c0"><div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h3>WellMess server</h3>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>The WellMess server is written in Go and imports two packages, lumberjack and garhttp, that are not part of the standard Go packages. The lumberjack package is an open source logging module, which is available <a adhocenable="false" href="https://github.com/natefinch/lumberjack">on github</a>. The garhttp package is not available in open source and contains the functionality used to communicate between the server and WellMess binaries.</p>
+<p>The WellMess server uses the lumberjack package to create a development.log file in the current directory. This file is used to store information about all the connections made to the C2 and what ports and actions were taken. In addition, if the server encounters any errors then the log file will contain the Go error type and related call history that led to it. An example log file with errors is shown in Figure 1.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/issues/assets/images/wellmess-analysis-command-control-log.png" alt="Figure 1 - Error log contents" width="590" height="81.86440677966101%" data-emptytext="Image" style="height:auto; 
+                   padding-top:81.86440677966101%;
+                   max-height:81.86440677966101px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 1 - Error log contents</p>
+
+
+
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>The server uses folders in the current directory to store information sent and received from WellMess backdoors and the folder layout is shown in Figure 2. Additionally, the server uses a private key and certificate located in the current working directory during mutual TLS connections.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/issues/assets/images/wellmess-analysis-command-control-files.png" alt="Figure 2 - Server directory contents" width="540" height="56.2962962962963%" data-emptytext="Image" style="height:auto; 
+                   padding-top:56.2962962962963%;
+                   max-height:56.2962962962963px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 2 - Server directory contents</p>
+
+
+
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>Based on strings in the binary, the folder names likely stand for Answers, Garbage, Questions and Secure. When the server receives communications from a WellMess backdoor in HTTP mode it will use the A folder to store the data received from the malware. It uses the Q folder to store questions or queries that it is ready to send to the WellMess malware and optionally moves the files from the A and Q folders to the G folder once the data has been sent.</p>
+<p>The S folder contains another set of the A, G and Q folders that are used when the server receives and sends data via the HTTPS communication protocol.</p>
+<p>When receiving HTTP commands, the WellMess server is setup to receive POST requests that contain RC6 encrypted cookies. The server decrypts the cookies using a hardcoded RC6 key and expects the decrypted data to contain no more than four tags. As the RC6 key is hardcoded and the server does not have any functionality to modify it at runtime, it is unlikely that the threat actor behind WellMess would change the WellMess malware’s RC6 key after initial access as that would also require changing the server software.</p>
+<p>The four tags correspond with the format previously reported on in the WellMess backdoor with possible tag names being:</p>
+<ul>
+<li>head;</li>
+<li>title;</li>
+<li>service; and,</li>
+<li>body.</li>
+</ul>
+<div>If there are three or four received cookie tags and they all match the regular expression below, then the title tag is checked to see what type of communication is being received with the options detailed in Table 1.</div>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="html parbase section">
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    
+
+     
+	<div data-custom-code="">
+	
+
+    
+     
+
+	
+
+<div></br>
+<pre>
+<;(?P<key>[^;]*?);>(?P<value>[^<]*?)<;[^;]*?;>
+</pre></div>
+
+
+
+ 
+</div>
+	
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h4>Table 1 - Title tag details</h4>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="table text parbase striped section">
+
+    
+
+    <div class="text-component" data-emptytext="Edit Table">
+        <table width="100%" cellspacing="0" cellpadding="1" border="1">
+<tbody><tr><th><p>Tag regular expression</p>
+</th>
+<th><p>Description</p>
+</th>
+</tr><tr><td width="156" height="22"><p>a:\d{1,}_\d{1,}</p>
+</td>
+<td width="408"><p>Saves the received data into the A folder as a .tmp file</p>
+</td>
+</tr><tr><td width="156" height="22"><p>q:\d{1,}_\d{1,}</p>
+</td>
+<td width="408"><p>Saves the received data into the Q folder as a .tmp file</p>
+</td>
+</tr><tr><td width="156" height="22"><p>rc</p>
+</td>
+<td width="408"><p>Checks the Q folder for .tmp files to respond with</p>
+</td>
+</tr><tr><td width="156" height="36"><p>rcc</p>
+</td>
+<td width="408"><p>Checks a folder specified in the service tag for .tmp files to respond with</p>
+</td>
+</tr><tr><td width="156" height="22"><p>rs</p>
+</td>
+<td width="408"><p>Checks the A folder for .tmp files to respond with</p>
+</td>
+</tr><tr><td width="156" height="36"><p>rsc</p>
+</td>
+<td width="408"><p>Checks a folder specified in the service tag for .tmp files to respond with</p>
+</td>
+</tr><tr><td width="156" height="36"><p>del</p>
+</td>
+<td width="408"><p>Deletes a file specified by a relative or absolute filepath in the service tag</p>
+</td>
+</tr></tbody></table>
+
+    </div>
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>The WellMess backdoor supports the a:\d{1,}_\d{1,} and rc commands, as the initial beacons use the title tags a:1_0 and a:1_1 and the request for a command from the server is sent using the rc command. The other values do not appear to be used by the WellMess backdoor and, based on the functionality, are likely used to manage the operation of this intermediate C2 server.</p>
+<p>When the server receives a a:\d{1,}_\d{1,} tag, it creates a folder with the path (relative or absolute) in the head tag. It stores the received information in a file called tmp1_0.tmp with the numbers in the filename being taken from the numbers in the title tag.</p>
+<p>As an example, if the initial beacon had a cookie of:</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="html parbase section">
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    
+
+     
+	<div data-custom-code="">
+	
+
+    
+     
+
+	
+
+<div></br>
+<pre>
+<;head;>MD5_hash/p<;head;><;title;>a:1_0<;title;><;service;>p<;service;>
+</pre></div>
+
+
+
+ 
+</div>
+	
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>Then the title tag would be used to name the file as tmp1_0.tmp and the head tag of MD5_hash/p would be used to create the directories to store the received data.</p>
+<p>The information stored in this file contains newline separated information of the RC6 encrypted and base64 encoded cookie, the IP address and port combination that the POST request came from, the MD5 hash of the received encrypted POST data and the received encrypted POST data. An example is shown in Figure 3.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/issues/assets/images/wellmess-analysis-command-control-log2.png" alt="Figure 3 – Stored initial beacon" width="661" height="22.54160363086233%" data-emptytext="Image" style="height:auto; 
+                   padding-top:22.54160363086233%;
+                   max-height:22.54160363086233px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 3 – Stored initial beacon</p>
+
+
+
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>On receipt of a message with rc in the title tag it will check the Q folder to see if there is a folder with the same name as the hash that is in the head tag of the rc message. If there is, then it expects there to be a subfolder which contains an arbitrary amount of *.tmp files.</p>
+<p>The *.tmp files are expected to have contents with newline separated data of:</p>
+<ul>
+<li>A base64 encrypted cookie; and,</li>
+<li>An obfuscated string to be sent as the content of the 200 OK response.</li>
+</ul>
+<p>The obfuscated string has the same format of character replacement and splitting into space separated chunks as described in our previous reporting[5] and is either random data or AES encrypted data depending on the command specified in the cookie.</p>
+<p>If there is only one *.tmp file in the Q subfolder, then the server will send it with the command specified in the encrypted first line as the Set-Cookie content and the data in the second line to be sent as the body of the POST request. If there are multiple files in the subfolder, then the server will instead send the files as part of a chunked C command.</p>
+<p>The rs command checks the A folder to see if there are any directories containing .tmp files and if it finds any then sends all the .tmp files in the first folder found. It uses the first line of the found file as the Set-Cookie data as in the rc command but also RC6 encrypts and obfuscates the file path of the file that is being sent and puts it at the start of the content of the POST request, along with the remaining lines of the file to be sent.</p>
+<p>The rsc and rcc commands do the same operations as the rs and rc commands respectively, but they also allow the service tag to specify the file path that is to be used to read data from.</p>
+<p>The del command takes a file path in the service tag as the location on the server of a file to delete. If after deleting the file, the folder it was in is empty, then the folder is also deleted.</p>
+<p>In HTTPS mode the server has a hardcoded Certificate Authority (CA) certificate that it uses to verify any certificates that connect to the server. In practice, the certificates of both the server and anyone communicating with it will need to be signed by the same CA. This is due to the fact that the embedded CA certificate in this sample has details, described in Table 2, that match the CA certificate details used in the WellMess backdoors.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h4>Table 2 - CA details</h4>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="table text parbase striped section">
+
+    
+
+    <div class="text-component" data-emptytext="Edit Table">
+        <table width="100%" cellspacing="0" cellpadding="1" border="1">
+<tbody><tr><td width="75" height="36"><p>SHA256 Fingerprint</p>
+</td>
+<td width="521"><p>163C405D87B632EA4E3D79210EAB2417C042CC3B2D8989A1D8ADF2B9A0F39CAF</p>
+</td>
+</tr><tr><td width="75" height="22"><p>Issuer</p>
+</td>
+<td width="521"><p>*, IT, Tunis</p>
+</td>
+</tr><tr><td width="75" height="22"><p>Subject</p>
+</td>
+<td width="521"><p>*, IT, Tunis</p>
+</td>
+</tr><tr><td width="75" height="21"><p>Thumbprint</p>
+</td>
+<td width="521"><p>E80641E4B2661873CBEEDDE46CCDF04A720529C9</p>
+</td>
+</tr></tbody></table>
+
+    </div>
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>When receiving HTTPS commands, the server has a subset of commands available to it. The rcc and rsc commands are not supported and the commands for sending files to be stored in the Q and A folders have tags of just q and a rather than the regular expression as in the HTTP commands.</p>
+<p>When data is saved into the A and Q folders in HTTPS mode, the server creates two files – fileBody.tmp and filemd.tmp – rather than one. The fileBody.tmp file has the contents of the POST request placed into it verbatim and the filemd.tmp file contains the encoded cookie and IP/port combination of the backdoor the message came from.</p>
+<p>The rs command also has slightly different functionality, as it moves the first pair of files in the A folder into the G folder and then sends the data back to the requestor. The response from the server contains two Set-Cookie headers with the first having a name of Cookie1 and the second having a name of Cookie2. The first cookie contains a base64 encoded string of the command received in the POST request for this file and the second cookie contains the metadata of where the file is located in the server, along with an MD5 hash of the POST request contents and the IP and port that the request came from.</p>
+<p>Multiple rs commands will continuously return the data in the G folder if present and only return new files if the G folder has had its contents removed.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="content-free-1-0bue-par" class=" page-section page-section--col-light-grey     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform-left "><div class="parsys_column pwccol1-longform-left-c0"><div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h3>Security considerations<br>
+</h3>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>The threat actor behind this tool has made choices during development that increase the security of this server software.</p>
+<p>The inclusion of mutual TLS in HTTPS communications with a self-signed CA means that there is no opportunity to carry out person-in-the-middle attacks on traffic between the server and the WellMess backdoor, as the server and WellMess backdoor would drop any connections that did not provide a correctly signed certificate.</p>
+<p>In HTTP mode, the server software has no capability to decrypt or encrypt any of the RSA and AES encrypted data that is sent from the WellMess backdoor and so anyone that recovers files from this server without the corresponding encryption keys would not be able to decrypt the contents of the communications between the WellMess backdoor and this server.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="content-free-1-b41s-par" class=" page-section page-section--col-white     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform-left "><div class="parsys_column pwccol1-longform-left-c0"><div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h3>Attribution</h3>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>The NCSC has publicly attributed WellMess to the threat actor we track as Blue Kitsune (a.k.a. APT29). Although we cannot definitively tie the WellMess malware to a particular threat actor based on current information, the WellMess backdoor does share some design similarities with a previous Blue Kitsune tool called Seaduke.<sup><a adhocenable="false" href="#note-1">[1]</a><a adhocenable="false" href="#note-2">[2]</a></sup></p>
+<p>The operation of this WellMess server as an intermediate C2 fits the Seaduke model of using compromised third-party websites or infrastructure to host C2 servers that act as a staging environment to store commands and responses between the threat actor and the backdoor. The implementation details of Seaduke also have some similarities to WellMess, as both use encrypted cookies to transfer metadata about the data being sent and use obfuscated base64 data in HTTP requests as the contents of communications. These techniques are not unique to Blue Kitsune but provide an interesting correlation between the WellMess backdoor and Blue Kitsune tools used since 2015.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="conclusion" class=" page-section page-section--col-light-grey     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform-left "><div class="parsys_column pwccol1-longform-left-c0"><div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h2>Conclusion</h2>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>The WellMess backdoor, along with this C2 software, enables the threat actor to interact with victims in an offline manner and with a level of abstraction between the threat actor and the malicious software. The staging C2 detailed in this report can continuously collect information about any victims and store the results ready for the threat actor to review at a later date. Similarly, should any victims go offline for a period of time, then this C2 software can store the commands that it wishes to run until the victim comes back online.</p>
+<p>The C2 has limited functionality to relay information between itself, the WellMess backdoor and presumably a further threat actor-controlled machine. It lacks the ability to inspect any of the content that is passed through it and relies on either some other local tool or remote commands to manage the transfer of files.</p>
+<p>&nbsp;</p>
+
+    </div>
+
+
+    
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="content-free-1-rzik-par" class=" page-section page-section--col-white     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="tabsnew section">
+
+
+
+
+
+
+
+    
+
+
+
+
+
+<ul class="nav nav-tabs displayTags" role="tablist">
+    
+    
+        
+            
+            
+                
+            
+        
+        <li class="active"><a href="#content-free-1-rzik-par_tabsnew-1645700993home0" role="tab" data-toggle="tab">TTP’s </a></li>
+    
+        
+            
+            
+                
+            
+        
+        <li class=""><a href="#content-free-1-rzik-par_tabsnew-1645700993home1" role="tab" data-toggle="tab">IoC’s </a></li>
+    
+</ul>
+
+<!-- Tab panes -->
+
+<div class="tab-content">
+    
+        
+            
+            
+                
+            
+        
+        <div class="tab-pane active " id="content-free-1-rzik-par_tabsnew-1645700993home0" data-firstActive="false">
+            <span class="tab-count"> </span>
+            <div class="tabs-new__tab-title-print" style="display: none;">TTP’s</div> <!-- This is included for Print -->
+            <div class="0 parsys"><div class="parsys_column pwccol1-longform-left "><div class="parsys_column pwccol1-longform-left-c0"><div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h3>TTPs</h3>
+<ul>
+<li>Obfuscated Files or Information - <a adhocenable="false" href="https://attack.mitre.org/techniques/T1027/">https://attack.mitre.org/techniques/T1027/</a></li>
+<li>Data Staged: Remote Data Staging - <a adhocenable="false" href="https://attack.mitre.org/techniques/T1074/002/">https://attack.mitre.org/techniques/T1074/002/</a></li>
+<li>Application Layer Protocol: Web Protocols -<a href="https://attack.mitre.org/techniques/T1071/001/"> </a><a href="https://attack.mitre.org/techniques/T1071/001/">https://attack.mitre.org/techniques/T1071/001/</a></li>
+<li>Data Encoding: Standard Encoding -<a href="https://attack.mitre.org/techniques/T1132/001/"> </a><a href="https://attack.mitre.org/techniques/T1132/001/">https://attack.mitre.org/techniques/T1132/001/</a></li>
+<li>Data Encoding: Non-Standard Encoding -<a href="https://attack.mitre.org/techniques/T1132/002/"> </a><a href="https://attack.mitre.org/techniques/T1132/002/">https://attack.mitre.org/techniques/T1132/002/</a></li>
+<li>Data Obfuscation: Junk Data -<a href="https://attack.mitre.org/techniques/T1001/001/"> </a><a href="https://attack.mitre.org/techniques/T1001/001/">https://attack.mitre.org/techniques/T1001/001/</a></li>
+<li>Encrypted Channel: Symmetric Cryptography -<a href="https://attack.mitre.org/techniques/T1573/001/"> </a><a href="https://attack.mitre.org/techniques/T1573/001/">https://attack.mitre.org/techniques/T1573/001/</a></li>
+<li>Encrypted Channel: Asymmetric Cryptography -<a href="https://attack.mitre.org/techniques/T1573/002/"> </a><a href="https://attack.mitre.org/techniques/T1573/002/">https://attack.mitre.org/techniques/T1573/002/</a></li>
+<li>Data Transfer Size Limits -<a href="https://attack.mitre.org/techniques/T1030/"> </a><a href="https://attack.mitre.org/techniques/T1030/">https://attack.mitre.org/techniques/T1030/</a></li>
+<li>Exfiltration Over C2 Channel - <a adhocenable="false" href="https://attack.mitre.org/techniques/T1041/">https://attack.mitre.org/techniques/T1041/</a></li>
+</ul>
+
+    </div>
+
+
+    
+
+
+</div>
+</div></div><div style="clear:both"></div>
+</div>
+
+            
+        </div>
+    
+        
+            
+            
+                
+            
+        
+        <div class="tab-pane  " id="content-free-1-rzik-par_tabsnew-1645700993home1" data-firstActive="true">
+            <span class="tab-count"> </span>
+            <div class="tabs-new__tab-title-print" style="display: none;">IoC’s</div> <!-- This is included for Print -->
+            <div class="1 parsys"><div class="parsys_column pwccol1-longform-left "><div class="parsys_column pwccol1-longform-left-c0"><div class="table text parbase striped section">
+
+    
+
+    <div class="text-component" data-emptytext="Edit Table">
+        <table width="100%" cellspacing="0" cellpadding="1" border="1">
+<tbody><tr><th><p>Indicator</p>
+</th>
+<th><p>Type</p>
+</th>
+</tr><tr><td width="539" height="27"><p>b10fa150e9f022838347115d39fa672440c740a014913947b79464b68dcc2d55</p>
+</td>
+<td width="57"><p>SHA256</p>
+</td>
+</tr><tr><td width="539" height="26"><p>baaeafe1e64b034537fd824e56c9adbe56f3706e</p>
+</td>
+<td width="57"><p>SHA1</p>
+</td>
+</tr><tr><td width="539" height="26"><p>0d7cefb89b6d31ab784bd4e0b0f0eaad</p>
+</td>
+<td width="57"><p>MD5</p>
+</td>
+</tr><tr><td width="539" height="25"><p>mwdg.sh</p>
+</td>
+<td width="57"><p>Filename</p>
+</td>
+</tr></tbody></table>
+
+    </div>
+
+</div>
+</div></div><div style="clear:both"></div>
+</div>
+
+            
+        </div>
+    
+</div>
+
+</div>
+
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="content-free-1-f2eb" class=" page-section page-section--col-light-grey     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="text parbase section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><sup><a id="note-1"></a>[1] ‘<a adhocenable="false" href="https://community.broadcom.com/symantecenterprise/communities/community-home/librarydocuments/viewdocument?DocumentKey=6ab66701-25d7-4685-ae9d-93d63708a11c&amp;CommunityKey=1ecf5f55-9545-44d6-b0f4-4e4a7f5f5e68&amp;tab=librarydocuments" target="_blank">“Forkmeiamfamous”: Seaduke, latest weapon in the Duke armory</a>’, Broadcom,&nbsp; (13th July 2015)<br>
+<a id="note-2"></a>[2] ‘<a adhocenable="false" href="https://unit42.paloaltonetworks.com/unit-42-technical-analysis-seaduke/" target="_blank">Unit 42 Technical Analysis: Seaduke</a>’, Unit 42, (14th July 2015)</sup></p>
+
+    </div>
+
+
+    
+
+
+</div>
+
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+<div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="cta-1" class="black page-section page-section--col-primary fullwidth page-section--col-dark " style="height: ">
+        <div class="parsys sectionpar"> 
+            <div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="cta-1-par longform-isection iparsys parsys"></div>
+</div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+<div>
+</div>
+
+<div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="cta-2" class="black page-section page-section--col-primary fullwidth page-section--col-dark " style="height: ">
+        <div class="parsys sectionpar"> 
+            <div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="cta-2-par longform-isection iparsys parsys"></div>
+</div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+
+
+    
+
+    <div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="related-links" class="black page-section page-section--col-white fullwidth  " style="height: ">
+        <div class="parsys sectionpar"> 
+            <div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="related-links-par longform-isection iparsys parsys"></div>
+</div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+    
+    
+
+
+<div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="contact" class="black page-section page-section--col-white   " style="height: ">
+        <div class="parsys sectionpar"> 
+            <div class="pwccol2-longformb longform-isection-twocol">
+    <div class="parsys_column pwccol2-longformb-c0">
+        <div><div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="iparsys parsys"></div>
+</div>
+</div></div>
+    </div>
+    <div class="parsys_column pwccol2-longformb-c1">
+        <div><div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="iparsys parsys"><div class="socialfollow section">
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        
+    
+    
+
+
+<div id="socialfollow" class="socialfollowInner">
+    <span>Follow us</span>
+
+    
+		
+		
+        <a href="https://www.linkedin.com/company/pwc-uk" target="_self" title="Linkedin Follow" class="socialfollow- Linkedin Follow"><img src="/etc/designs/pwc/css_common/image/homefollow-linkedin.gif" alt="Linkedin Follow"/></a>
+    
+		
+		
+        <a href="http://www.facebook.com/PwCUK" target="_self" title="Facebook Follow" class="socialfollow- Facebook Follow"><img src="/etc/designs/pwc/css_common/image/homefollow-facebook.gif" alt="Facebook Follow"/></a>
+    
+		
+		
+        <a href="http://twitter.com/pwc_uk" target="_self" title="Twitter Follow" class="socialfollow- Twitter Follow"><img src="https://www.pwc.com/etc/designs/pwc/css_common/image/homefollow-twitter.gif" alt="Twitter Follow"/></a>
+    
+		
+		
+        <a href="https://www.youtube.com/pwcuk" target="_self" title="Youtube Follow" class="socialfollow- YouTube Follow"><img src="/content/pwc/script/network/follow/follow-youtube.png" alt="Youtube Follow"/></a>
+    
+		
+		
+        <a href="https://www.instagram.com/pwc_uk" target="_self" title="Instagram Follow" class="socialfollow- Instagram Follow"><img src="/content/pwc/script/network/follow/follow_instagram.png" alt="Instagram Follow"/></a>
+    
+</div>
+
+<script>
+	$(document).ready(function(){
+		$("#socialfollow").trigger("socialFollowLoaded");	
+	});
+</script>
+</div>
+</div>
+</div>
+</div></div>
+    </div>
+</div>
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+<div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="bottom-kick-isection" class="black page-section page-section--col-white fullwidth  " style="height: ">
+        <div class="parsys sectionpar"> 
+            
+ 
+
+
+
+<div class="bk-parsys-wrapper container">
+    <div class="row ">
+
+<!--        Bottom-Kick Online Forms Par-->
+        <div class="col-md-8">
+            <div><div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="iparsys parsys"><div class="html parbase section">
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    
+
+     
+	<div data-custom-code="">
+	
+
+    
+     
+
+	
+
+<div><link rel="stylesheet" href="/content/pwc/script/uk/en/sfmc/signup-local-bk.css">
+<script src="/content/pwc/script/uk/en/sfmc/signup-local-bk.js" data-form="https://cloud.uk.info.pwc.com/cyber-security-sign-up-to-updates"></script></div>
+
+
+
+ 
+</div>
+	
+</div>
+</div>
+</div>
+</div></div>
+        </div>
+<!--        Bottom-kick Contacts and List Par-->
+        <div class="col-md-4 online-par-enabled  ">
+
+            <div><div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="iparsys parsys"></div>
+</div>
+</div></div>
+
+            
+        </div>
+    </div>
+</div>
+
+
+
+<div class="dpe-component-wrapper bottom-kick bottom-kick--closed">
+    <div class="bottom-kick-container pinned bottom-kick--hide">
+        <div class="bottom-kick__wrapper bottom-kick--invisible">
+            <div class="bottom-kick__bar">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button class="bottom-kick__bar-wrapper" aria-label="Sign up for our cyber security newsletter">
+                                <span class="bottom-kick__bar-label" aria-hidden="true">Sign up for our cyber security newsletter</span>
+                                
+                                <div class="bottom-kick__btn-wrapper">
+                                    <div class="bottom-kick__btn">
+                                        <span class="bottom-kick__btn-icon"></span>
+                                    </div>
+                                    <span class="bottom-kick__btn-arrow"></span>
+                                </div>
+                            </button>
+                            <span id="bottom-kick__btn-hide" class="bottom-kick__btn-hide" aria-label="Hide">Hide</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    
+        <div class="bottom-kick__content">
+
+            
+
+        </div>
+    </div>
+</div>
+<div class="bottom-kick__overlay"></div>
+
+
+<script>
+    $(".bk-parsys-wrapper").appendTo(".bottom-kick__content");
+    $(function() {
+        bottomKick({
+            scrollPosition: 'afterHero'
+        });
+    });
+    $(".bottom-kick__btn-wrapper").click(function () {
+        var spanEl = $(this).find("span.bottom-kick__btn-arrow")
+        if($(spanEl).hasClass("bottom-kick__btn-arrow--rotate")) {
+            createObject("page.bottomkick.panel", "close");
+        }
+        else {
+                createObject("page.bottomkick.panel", "open");
+        }
+    });
+    analyticsClickTrigger("#bottom-kick__btn-hide","page.bottomkick.panel","close");
+</script>
+
+
+        </div>
+    </section>
+
+
+    
+
+</div></div> 
+        <div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="footerPar iparsys parsys"><div class="newPageFooter parbase section">
+
+
+
+
+
+
+ 
+
+<!-- START Sitemap Footer -->
+    <div class="dpe-component-wrapper glb-footer glb-footer__block--reduced">
+    <div class="container">
+		
+
+	
+
+
+
+
+
+
+ 
+
+<!-- Code from old JSP -->
+
+
+
+<!-- Code from old JSP ends -->
+
+
+
+    
+    
+        <!-- REDUCED Footer items -->
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 ">
+                <div class="glb-footer__block">
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/services/audit.html" aria-label="Audit">Audit</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/services/consulting.html" aria-label="Consulting">Consulting</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/services/deals.html" aria-label="Deals">Deals</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/services/risk.html" aria-label="Risk">Risk</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/services/tax.html" aria-label="Tax">Tax</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/industries.html" aria-label="Industries">Industries</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/who-we-are.html" aria-label="About us">About us</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/who-we-are/office-locations.html" aria-label="Offices">Offices</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/press-room.html" aria-label="Media centre">Media centre</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/careers.html" aria-label="Careers">Careers</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/who-we-are/alumni.html" aria-label="Alumni">Alumni</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/sitemap-content.html" aria-label="Sitemap">Sitemap</a>
+                    
+                </div>
+            </div>
+        </div>
+
+    
+    
+
+
+<!-- START Copyright statement -->
+<div class="row">
+    <div class="col-xs-12  ">
+        <div class="glb-footer__disclaimer">
+            <div class="row">
+                <div class="col-md-8 glb-footer__disclaimer-text">
+                    <a id="slim-footer-logo" href="" aria-label="slim-footer-logo" class="slim-footer-logo"></a>
+                    
+                    
+                    <p>&copy;&nbsp;2015  - 2021 PwC. All rights reserved. PwC refers to the PwC network and/or one or more of its member firms, each of which is a separate legal entity. Please see <a href="http://www.pwc.com/structure">www.pwc.com/structure</a> for further details. </p>
+                    <!-- optional disclaimer links -->
+                    <ul class="glb-footer__disclaimer-links" id="pgFooter">
+                        
+                            
+                                <li><a href="/who-we-are/terms-and-conditions.html" target="" aria-label="Terms and conditions">Terms and conditions</a></li>
+                            
+                                <li><a href="/who-we-are/privacy-statement.html" target="" aria-label="Privacy Statement">Privacy Statement</a></li>
+                            
+                                <li><a href="/who-we-are/cookies.html" target="" aria-label="Cookie info">Cookie info</a></li>
+                            
+                                <li><a href="/who-we-are/legal-disclaimer.html" target="" aria-label="Legal Disclaimer">Legal Disclaimer</a></li>
+                            
+                                <li><a href="/who-we-are/about-site-provider.html" target="" aria-label="About Site Provider">About Site Provider</a></li>
+                            
+                                <li><a href="/who-we-are/provision-of-services.html" target="" aria-label="Provision of Services">Provision of Services</a></li>
+                            
+                                <li><a href="/who-we-are/corporate-sustainability/encouraging-diversity.html" target="" aria-label="Diversity">Diversity</a></li>
+                            
+                                <li><a href="https://www.pwc.co.uk/who-we-are/our-purpose/fair-trusted-business/human-rights-and-modern-slavery.html" target="" aria-label="Human rights and modern slavery">Human rights and modern slavery</a></li>
+                            
+                                <li><a href="/who-we-are/web-accessibility.html" target="" aria-label="Web Accessibility">Web Accessibility</a></li>
+                            
+                    	
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Copyright statement -->
+
+<!-- Code from old JSP -->
+
+<!-- Code from old JSP ends -->
+
+
+
+
+	</div>
+</div>
+
+<!-- END Sitemap Footer -->
+
+</div>
+</div>
+</div>
+</div>
+
+    
+<script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/rebrand-clientlibs/components-colors.min.fbe4c82b1e46df40b550edf4be0bb69a.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/longform/script.min.b858bbeda445ba6c632442972bd7b0eb.js"></script>
+
+
+
+
+
+<script>
+var getCookieByMatch = function(regex) {
+    var _cookies = document.cookie.split(/;\s*/),
+        _cookieArray = [],
+        i;
+    for (i = 0; i < _cookies.length; i++) {
+        if (_cookies[i].match(regex)) {
+            _cookieArray.push(_cookies[i]);
+        }
+    }
+    return _cookieArray;
+};
+
+function getUserMarketingID(value) {
+    const _regex = /^(.*)\|MCMID\|(\d+)\|(.*)/gm;
+    if ((_matchedArray = _regex.exec(value)) !== null && _matchedArray.length >= 3) {
+        return _matchedArray[2];
+    }
+}
+
+function setCookie(cname, cvalue, exdays, path) {
+    var expires = "expires=0"
+    if (exdays != 0) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        expires = "expires=" + d.toGMTString();
+    }
+    document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/;";
+}
+
+$.each(getCookieByMatch('AMCV_'), function(index, val) {
+    var cookie = val.split("=");
+    if (cookie.length >= 2 && typeof Cookies.get('pwc-id') !== 'undefined') {
+        var userID = getUserMarketingID(decodeURIComponent(cookie[1]));
+        var existingID = Cookies.get('userMID');
+        if (typeof existingID === 'undefined' || existingID != userID) {
+            var userMCMObj = new Object();
+            userMCMObj.userMarketingID = userID;
+            userMCMObj.isSetMarketingIDRequest = true;
+            $.ajax('/bin/extendedprofile/update', {
+                data: JSON.stringify(userMCMObj),
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                mimeType: 'application/json; charset=utf-8',
+                success: function(rawData, status, xhr) {
+                    var responseCode = rawData.result.code;
+                    if (responseCode === '1001') {
+                        setCookie('userMID', userID, 1, '/');
+                    }
+                },
+                error: function(xhr) {
+                    console.log("Response is ", xhr);
+                }
+            });
+        }
+    }
+});
+
+$( document ).ready(function() {
+    $.each(getCookieByMatch('AMCV_'), function(index, val) {
+		var cookie = val.split("=");
+        var userID = getUserMarketingID(decodeURIComponent(cookie[1]));
+			$('input[name="userMarketingID"]').each(function() {
+        	  $( this ).val(userID);
+        	});
+    });
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </body>
+</html>

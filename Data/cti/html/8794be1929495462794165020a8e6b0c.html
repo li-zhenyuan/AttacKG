@@ -1,0 +1,1364 @@
+
+<!DOCTYPE html>
+<!--
+Design by
+---------- ^_^)
+
+	AMR GAMAL SADEK | help@bdayh.com | twitter@bdayh
+	Bdaia 🐺 https://themeforest.net/user/bdaia
+
+Woohoo Modish News, Magazine and Blog Theme
+------------------ ^_^)
+
+   Made with love and alot of coffee in Egypt ;)
+   Live demo : http://themes.bdayh.com/?theme=Woohoo
+   Purchase! : http://themeforest.net/item/i/13570398?ref=bdaia
+
+🍺 We are Bdaia, a creative amazingly beautiful wordPress themes 🍻
+-->
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="https://cyberforensicator.com/xmlrpc.php" />
+<title>Silence: Dissecting Malicious CHM Files and Performing Forensic Analysis &#8211; Cyber Forensicator</title>
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Cyber Forensicator &raquo; Feed" href="https://cyberforensicator.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Cyber Forensicator &raquo; Comments Feed" href="https://cyberforensicator.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Cyber Forensicator &raquo; Silence: Dissecting Malicious CHM Files and Performing Forensic Analysis Comments Feed" href="https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/cyberforensicator.com\/wp-includes\/js\/wp-emoji-release.min.js"}};
+			/*! This file is auto-generated */
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,55356,57342,8205,55358,56605,8205,55357,56424,55356,57340],[55357,56424,55356,57342,8203,55358,56605,8203,55357,56424,55356,57340])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='bdaia_shorty-style-css'  href='https://cyberforensicator.com/wp-content/plugins/bdaia-shortcodes/assets/style.css' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-css'  href='https://cyberforensicator.com/wp-includes/css/dist/block-library/style.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='wc-block-style-css'  href='https://cyberforensicator.com/wp-content/plugins/woocommerce/packages/woocommerce-blocks/build/style.css' type='text/css' media='all' />
+<link rel='stylesheet' id='layerslider-css'  href='https://cyberforensicator.com/wp-content/plugins/LayerSlider/static/css/layerslider.css' type='text/css' media='all' />
+<link rel='stylesheet' id='ls-google-fonts-css'  href='https://fonts.googleapis.com/css?family=Lato:100,300,regular,700,900%7COpen+Sans:300%7CIndie+Flower:regular%7COswald:300,regular,700&#038;subset=latin%2Clatin-ext' type='text/css' media='all' />
+<link rel='stylesheet' id='bdaia_shorty_stylesheet-css'  href='https://cyberforensicator.com/wp-content/plugins/bdaia-shortcodes/assets/shortcodes.css' type='text/css' media='all' />
+<link rel='stylesheet' id='contact-form-7-css'  href='https://cyberforensicator.com/wp-content/plugins/contact-form-7/includes/css/styles.css' type='text/css' media='all' />
+<link rel='stylesheet' id='woocommerce-layout-css'  href='https://cyberforensicator.com/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css' type='text/css' media='all' />
+<link rel='stylesheet' id='woocommerce-smallscreen-css'  href='https://cyberforensicator.com/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css' type='text/css' media='only screen and (max-width: 768px)' />
+<link rel='stylesheet' id='woocommerce-general-css'  href='https://cyberforensicator.com/wp-content/plugins/woocommerce/assets/css/woocommerce.css' type='text/css' media='all' />
+<style id='woocommerce-inline-inline-css' type='text/css'>
+.woocommerce form .form-row .required { visibility: visible; }
+</style>
+<link rel='stylesheet' id='Droid+Sans-css'  href='https://fonts.googleapis.com/css?family=Droid+Sans%3Aregular%2C700' type='text/css' media='all' />
+<link rel='stylesheet' id='Oswald-css'  href='https://fonts.googleapis.com/css?family=Oswald%3A300%2Cregular%2C700' type='text/css' media='all' />
+<link rel='stylesheet' id='woohoo-google-fonts-css'  href='https://fonts.googleapis.com/css?family=Oswald%3A400%2C300%2C700%7CLato%3A400%2C300%2C700%2C900%7CWork+Sans%3A400%2C300%2C500%2C600%2C700%2C800%2C900%7COpen+Sans%3A400%2C600%2C700%2C800%7CPlayfair+Display%3A400%2C700%2C900%2C400italic%7CRaleway%3A400%2C300%2C500%2C600%2C700%2C800%2C900%7CRoboto%3A400%2C300%2C100%2C700%7CMontserrat%3A400%2C700&#038;subset=latin%2Cgreek%2Cgreek-ext%2Cvietnamese%2Ccyrillic-ext%2Clatin-ext%2Ccyrillic' type='text/css' media='all' />
+<link rel='stylesheet' id='woohoo-default-css'  href='https://cyberforensicator.com/wp-content/themes/woohoo/style.css' type='text/css' media='all' />
+<link rel='stylesheet' id='wooohoo-ilightbox-skin-css'  href='https://cyberforensicator.com/wp-content/themes/woohoo/css/ilightbox/dark-skin/skin.css' type='text/css' media='all' />
+<link rel='stylesheet' id='wooohoo-ilightbox-skin-black-css'  href='https://cyberforensicator.com/wp-content/themes/woohoo/css/ilightbox/metro-black-skin/skin.css' type='text/css' media='all' />
+<link rel='stylesheet' id='woohoo-woocommerce-css'  href='https://cyberforensicator.com/wp-content/themes/woohoo/css/woocommerce.css' type='text/css' media='all' />
+<script type='text/javascript'>
+/* <![CDATA[ */
+var bd_w_blocks = {"bdaia_w_ajax_url":"https:\/\/cyberforensicator.com\/wp-admin\/admin-ajax.php","bdaia_w_ajax_nonce":"dcfeb455ed"};
+var bd_blocks = {"bdaia_ajax_url":"https:\/\/cyberforensicator.com\/wp-admin\/admin-ajax.php","bdaia_ajaxnonce":"dcfeb455ed"};
+var bd_script = {"post_id":"2643","ajaxurl":"https:\/\/cyberforensicator.com\/wp-admin\/admin-ajax.php"};
+var bd = "{\"nonce\":\"dcfeb455ed\",\"ajaxurl\":\"https:\\\/\\\/cyberforensicator.com\\\/wp-admin\\\/admin-ajax.php\",\"is_singular\":true,\"bd_lazyload\":true,\"mobile_topmenu\":true,\"sticky_sidebar\":true,\"all_lightbox\":false,\"click_to_comments\":true,\"post_reading_position_indicator\":\"1\"}";
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-includes/js/jquery/jquery.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-includes/js/jquery/jquery-migrate.min.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/LayerSlider/static/js/greensock.js'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var LS_Meta = {"v":"5.6.9"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/LayerSlider/static/js/layerslider.kreaturamedia.jquery.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/LayerSlider/static/js/layerslider.transitions.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/bdaia-shortcodes/assets/js/scripts.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/bdaia-shortcodes/assets/js/shorty-min.js'></script>
+<meta name="generator" content="Powered by LayerSlider 5.6.9 - Multi-Purpose, Responsive, Parallax, Mobile-Friendly Slider Plugin for WordPress." />
+<!-- LayerSlider updates and docs at: https://kreaturamedia.com/layerslider-responsive-wordpress-slider-plugin/ -->
+<link rel='https://api.w.org/' href='https://cyberforensicator.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://cyberforensicator.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://cyberforensicator.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='Autopsy 4.10.0 and the Sleuth kit 4.6.5 have been released' href='https://cyberforensicator.com/2019/01/18/autopsy-4-10-0-and-the-sleuth-kit-4-6-5-have-been-released/' />
+<link rel='next' title='Analysis of the AmCache' href='https://cyberforensicator.com/2019/01/22/analysis-of-the-amcache/' />
+<meta name="generator" content="WordPress 5.4.6" />
+<meta name="generator" content="WooCommerce 4.1.1" />
+<link rel="canonical" href="https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/" />
+<link rel='shortlink' href='https://cyberforensicator.com/?p=2643' />
+<link rel="alternate" type="application/json+oembed" href="https://cyberforensicator.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcyberforensicator.com%2F2019%2F01%2F20%2Fsilence-dissecting-malicious-chm-files-and-performing-forensic-analysis%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://cyberforensicator.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcyberforensicator.com%2F2019%2F01%2F20%2Fsilence-dissecting-malicious-chm-files-and-performing-forensic-analysis%2F&#038;format=xml" />
+        <script type="text/javascript">
+            /* <![CDATA[ */
+            var sf_position = '0';
+            var sf_templates = "<a href=\"{search_url_escaped}\"><span class=\"sf_text\">View All Results<\/span><\/a>";
+            var sf_input = '.search-live';
+            jQuery(document).ready(function(){
+                jQuery(sf_input).ajaxyLiveSearch({"expand":false,"searchUrl":"https:\/\/cyberforensicator.com\/?s=%s","text":"Search","delay":500,"iwidth":180,"width":315,"ajaxUrl":"https:\/\/cyberforensicator.com\/wp-admin\/admin-ajax.php","rtl":0});
+                jQuery(".live-search_ajaxy-selective-input").keyup(function() {
+                    var width = jQuery(this).val().length * 8;
+                    if(width < 50) {
+                        width = 50;
+                    }
+                    jQuery(this).width(width);
+                });
+                jQuery(".live-search_ajaxy-selective-search").click(function() {
+                    jQuery(this).find(".live-search_ajaxy-selective-input").focus();
+                });
+                jQuery(".live-search_ajaxy-selective-close").click(function() {
+                    jQuery(this).parent().remove();
+                });
+            });
+            /* ]]> */
+        </script>
+    <link rel="shortcut icon" href="http://cyberforensicator.com/wp-content/uploads/2017/07/LOGO_CF_NEW.png" type="image/x-icon" /><link rel="apple-touch-icon-precomposed" href="http://cyberforensicator.com/wp-content/uploads/2017/07/LOGO_CF_NEW.png" /><link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://cyberforensicator.com/wp-content/uploads/2017/07/LOGO_CF_NEW.png" /><link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://cyberforensicator.com/wp-content/uploads/2017/07/LOGO_CF_NEW.png" /><link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://cyberforensicator.com/wp-content/uploads/2017/07/LOGO_CF_NEW.png" /><script type="text/javascript">
+/* <![CDATA[ */
+var userRating = {"ajaxurl":"https://cyberforensicator.com/wp-admin/admin-ajax.php" , "your_rating":"" , "nonce":"dcfeb455ed"};
+var userLike = {"ajaxurl":"https://cyberforensicator.com/wp-admin/admin-ajax.php" , "nonce":"dcfeb455ed"};
+/* ]]> */
+var bdaia_theme_uri = 'https://cyberforensicator.com/wp-content/themes/woohoo';
+</script>
+<style type="text/css">
+body {}
+a:hover{color:#e01021}
+::selection{background:#e01021}
+a.more-link, button, .btn-link, input[type="button"], input[type="reset"], input[type="submit"] { background-color:#e01021}
+button:active, .btn-link:active, input[type="button"]:active, input[type="reset"]:active, input[type="submit"]:active { background-color:#e01021}
+.gotop:hover { background-color:#e01021}
+.top-search { background-color:#e01021}
+.primary-menu ul#menu-primary > li.current-menu-parent, .primary-menu ul#menu-primary > li.current-menu-ancestor, .primary-menu ul#menu-primary > li.current-menu-item, .primary-menu ul#menu-primary > li.current_page_item { color: #e01021; }
+.primary-menu ul#menu-primary > li.current-menu-parent > a, .primary-menu ul#menu-primary > li.current-menu-ancestor > a, .primary-menu ul#menu-primary > li.current-menu-item > a, .primary-menu ul#menu-primary > li.current_page_item > a { color: #e01021; }
+.primary-menu ul#menu-primary > li:hover > a { color: #e01021; }
+.primary-menu ul#menu-primary li.bd_menu_item ul.sub-menu li:hover > ul.sub-menu, .primary-menu ul#menu-primary li.bd_mega_menu:hover > ul.bd_mega.sub-menu, .primary-menu ul#menu-primary li.bd_menu_item:hover > ul.sub-menu, .primary-menu ul#menu-primary .sub_cats_posts { border-top-color: #e01021; }
+div.nav-menu.primary-menu-dark a.menu-trigger:hover i, div.nav-menu.primary-menu-light a.menu-trigger:hover i, div.nav-menu.primary-menu-light a.menu-trigger.active i, div.nav-menu.primary-menu-dark a.menu-trigger.active i { background: #e01021; }
+span.bd-criteria-percentage { background: #e01021; color: #e01021; }
+.divider-colors { background: #e01021; }
+.blog-v1 article .entry-meta a { color: #e01021; }
+.blog-v1 article .article-formats { background-color: #e01021; }
+.cat-links { background-color: #e01021; }
+.new-box { border-top-color: #e01021; }
+.widget a:hover { color: #e01021; }
+.timeline-article a:hover i {
+    color: #e01021;
+}
+h4.block-title:before {background: #e01021;}
+#header.bdayh-header.a {background: #e01021;}
+.bdaia-load-comments-btn a:hover,
+.bd-more-btn:hover{
+    border-color: #e01021 ;
+    background-color: #e01021 ;
+}
+#bdaia-cats-builder ul.slick-dots li.slick-active button{
+	background: #e01021;
+}
+.bdaia-cats-more-btn,
+.bbd-post-cat-content, .bbd-post-cat-content a,
+.blog-v1 article a.more-link { color: #e01021; }
+#big-grids .flex-next:hover,
+#big-grids .flex-prev:hover,
+.featured-title:hover .featured-cat a,
+.featured-title .featured-comment a,
+.big-grids-container .flex-control-paging li a.flex-active,
+.tagcloud a:hover { background: #e01021; }
+.featured-title:hover .bd-cat-link:before {border-top-color: #e01021;}
+.featured-title .featured-comment a:after {
+    border-color: #e01021 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+}
+ul.tabs_nav li.active a { background: #e01021; }
+.bd-tweets ul.tweet_list li.twitter-item a { color: #e01021; }
+.widget.bd-login .login_user .bio-author-desc a { color: #e01021; }
+.comment-reply-link, .comment-reply-link:link, .comment-reply-link:active { color: #e01021; }
+.gallery-caption { background-color: #e01021; }
+.slider-flex ol.flex-control-paging li a.flex-active { background: #e01021; }
+#folio-main ul#filters li a.selected { background: #e01021; }
+.search-mobile button.search-button { background: #e01021; }
+.bdaia-pagination .current {
+background-color: #e01021;
+border-color: #e01021;
+}
+.gotop{background: #e01021;}
+.ei-slider-thumbs li.ei-slider-element {background: #e01021;}
+.ei-title h2,
+.ei-title h3 {border-right-color: #e01021;}
+.sk-circle .sk-child:before,
+#reading-position-indicator{background: #e01021;}
+#bdCheckAlso{border-top-color: #e01021;}
+.woocommerce .product .onsale, .woocommerce .product a.button:hover, .woocommerce .product #respond input#submit:hover, .woocommerce .checkout input#place_order:hover, .woocommerce .woocommerce.widget .button:hover, .single-product .product .summary .cart .button:hover, .woocommerce-cart .woocommerce table.cart .button:hover, .woocommerce-cart .woocommerce .shipping-calculator-form .button:hover, .woocommerce .woocommerce-message .button:hover, .woocommerce .woocommerce-error .button:hover, .woocommerce .woocommerce-info .button:hover, .woocommerce-checkout .woocommerce input.button:hover, .woocommerce-page .woocommerce a.button:hover, .woocommerce-account div.woocommerce .button:hover, .woocommerce.widget .ui-slider .ui-slider-handle, .woocommerce.widget.widget_layered_nav_filters ul li a {background: none repeat scroll 0 0 #e01021 !important}
+.bdaia-post-content blockquote p,
+blockquote p{
+color: #e01021;
+}
+.bdaia-ns-wrap:after {background:#e01021}
+.bdaia-header-default #navigation .primary-menu ul#menu-primary > li >.bd_mega.sub-menu,
+.bdaia-header-default #navigation .primary-menu ul#menu-primary > li > .sub-menu,
+.bdaia-header-default #navigation .primary-menu ul#menu-primary .sub_cats_posts {border-top-color: #e01021}
+.bdaia-header-default #navigation .primary-menu ul#menu-primary > li:hover > a:after,
+.bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-item > a:after,
+.bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-ancestor > a:after,
+.bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-parent > a:after {background:#e01021}
+.bdaia-header-default #navigation .primary-menu #menu-primary > li:hover > a{color: #e01021}
+.bdayh-click-open{background:#e01021}
+div.bdaia-alert-new-posts-inner,
+.bdaia-header-default .header-wrapper{border-top-color: #e01021}
+.bdaia-post-content blockquote p,
+blockquote p{color: #e01021}
+.bdaia-post-content a {color: #e01021}
+div.widget.bdaia-widget.bdaia-widget-timeline .widget-inner a:hover,
+div.widget.bdaia-widget.bdaia-widget-timeline .widget-inner a:hover span.bdayh-date {
+    color: #e01021;
+}
+div.widget.bdaia-widget.bdaia-widget-timeline .widget-inner a:hover span.bdayh-date:before {
+    background: #e01021;
+    border-color: #e01021;
+}
+#navigation .bdaia-alert-new-posts,
+div.bdaia-tabs.horizontal-tabs ul.nav-tabs li.current:before,
+div.bdaia-toggle h4.bdaia-toggle-head.toggle-head-open span.bdaia-sio {
+    background: #e01021;
+}
+.woocommerce .product .onsale, .woocommerce .product a.button:hover, .woocommerce .product #respond input#submit:hover, .woocommerce .checkout input#place_order:hover, .woocommerce .woocommerce.widget .button:hover, .single-product .product .summary .cart .button:hover, .woocommerce-cart .woocommerce table.cart .button:hover, .woocommerce-cart .woocommerce .shipping-calculator-form .button:hover, .woocommerce .woocommerce-message .button:hover, .woocommerce .woocommerce-error .button:hover, .woocommerce .woocommerce-info .button:hover, .woocommerce-checkout .woocommerce input.button:hover, .woocommerce-page .woocommerce a.button:hover, .woocommerce-account div.woocommerce .button:hover, .woocommerce.widget .ui-slider .ui-slider-handle, .woocommerce.widget.widget_layered_nav_filters ul li a {
+    background: none repeat scroll 0 0 #e01021 !important
+}
+div.bdaia-post-count {border-left-color :#e01021}
+
+aside#bd-MobileSiderbar svg,
+#bdaia-selector #bdaia-selector-toggle {background:#e01021}
+
+div.bdaia-blocks.bdaia-block22 div.block-article hr{background:#e01021}
+div.bdaia-blocks.bdaia-block22 div.block-article .post-more-btn a,
+div.bdaia-blocks.bdaia-block22 div.block-article .post-more-btn a:hover,
+div.bdaia-blocks.bdaia-block22 div.block-article .bdaia-post-cat-list a,
+div.bdaia-blocks.bdaia-block22 div.block-article .bdaia-post-cat-list a:hover{color:#e01021}
+div.woohoo-footer-top-area .tagcloud span,
+div.woohoo-footer-top-area .tagcloud a:hover {background: #e01021;}
+.bdaia-header-default #navigation.mainnav-dark .primary-menu ul#menu-primary > li:hover > a,
+.bdaia-header-default #navigation.mainnav-dark .primary-menu ul#menu-primary > li.current-menu-item > a,
+.bdaia-header-default #navigation.mainnav-dark .primary-menu ul#menu-primary > li.current-menu-ancestor > a,
+.bdaia-header-default #navigation.mainnav-dark .primary-menu ul#menu-primary > li.current-menu-parent > a,
+.bdaia-header-default #navigation.mainnav-dark {background: #e01021;}
+.bdaia-header-default #navigation.dropdown-light .primary-menu ul#menu-primary li.bd_mega_menu div.bd_mega ul.bd_mega.sub-menu li a:hover,
+.bdaia-header-default #navigation.dropdown-light .primary-menu ul#menu-primary li.bd_menu_item ul.sub-menu li a:hover,
+.bdaia-header-default #navigation.dropdown-light .primary-menu ul#menu-primary .sub_cats_posts a:hover {color: #e01021;}
+body{font-family: 'Droid Sans'; font-size : 20px; }
+.bdaia-header-default .topbar .top-nav li a, .bdaia-header-default .topbar .top-nav > li ul.sub-menu li a{font-family: 'Oswald'; }
+.bdaia-header-default .topbar .top-nav > li > a{font-family: 'Oswald'; }
+.bdaia-header-default #navigation .primary-menu #menu-primary > li > a{font-family: 'Oswald'; }
+.bdaia-header-default #navigation .primary-menu ul#menu-primary div.bd_mega ul.bd_mega.sub-menu > li, div.bdaia-anp-inner li a{font-family: 'Oswald'; }
+.bdaia-header-default #navigation .bd-block-mega-menu-post h4, div.bdaia-anp-inner li a{font-family: 'Oswald'; }
+.bdaia-ns-inner #sf_sb .entry-title{font-family: 'Droid Sans'; }
+#bd-MobileSiderbar #mobile-menu a{font-family: 'Droid Sans'; }
+#bd-MobileSiderbar #mobile-menu ul ul a{font-family: 'Droid Sans'; }
+.bdaia-feature-posts.bdaia-fp-s1 .bdaia-post-title .entry-title{font-family: 'Oswald'; }
+.bdaia-feature-posts.bdaia-fp-s2 .big-grids .featured-title h2{font-family: 'Oswald'; }
+.bdaia-feature-posts.bdaia-fp-s2 .big-grids.big-grid1 .big-grid-1 .featured-title h2{font-family: 'Oswald'; }
+.bdaia-feature-posts.bdaia-fp-s3 .big-grids .featured-title h2, div.bdaia-feature-posts.bdaia-fp-grid3 div.featured-title h2.post-title{font-family: 'Oswald'; }
+div.bdaia-feature-posts.bdaia-fp-grid3 div.big-grid-1 div.featured-title h2.post-title, .bdaia-feature-posts.bdaia-fp-s3 .big-grids.big-grid2 .big-grid-1 .featured-title h2, .bdaia-feature-posts.bdaia-fp-s3 .big-grids.big-grid2 .big-grid-2 .featured-title h2{font-family: 'Oswald'; }
+.big-grids .featured-title .bdayh-date, .bd-post-carousel-item article .bd-meta-info, .bdaia-feature-posts .bdaia-meta-info{font-family: 'Oswald'; }
+.bdaia-slider-block .ei-title h2{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block1 .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block2 .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block3 .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block4 .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block5 .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block6 .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block7 .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block8 .block-article.block-first-article .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block8 .block-article.block-other-article .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block9 .block-article.block-first-article .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block9 .block-article.block-other-article .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block10 .block-article.block-first-article .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block10 .block-article.block-other-article .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block11 .block-article.block-first-article .entry-title{font-family: 'Oswald'; }
+.bdaia-blocks.bdaia-block11 .block-article.block-other-article .entry-title{font-family: 'Oswald'; }
+div.bdaia-blocks.bdaia-block22 div.block-article .entry-title{font-family: 'Oswald'; }
+div.bdaia-block-wrap.bdaia-new-timeline .entry-title{font-family: 'Oswald'; }
+#bdCheckAlso h4.block-title, .bd-sidebar h4.block-title, div.bdaia-footer h4.block-title, #bdaia-ralated-posts .bdaia-ralated-posts-head li a, .bdaia-widget-tabs .bdaia-tabs-nav li a{font-family: 'Oswald'; }
+.bdaia-wb-wrap .bwb-article-content-wrapper footer{font-family: 'Droid Sans'; }
+.bdaia-wb-wrap .bdaia-wb-article p.block-exb, .check-also-post p{font-family: 'Droid Sans'; }
+div.widget.bdaia-widget .widget-inner li, div.widget.bdaia-widget .widget-inner h3, div.widget.bdaia-widget .widget-inner h4, div.widget.bdaia-widget.bd-tweets .widget-inner p.twitter-text, .check-also-post .post-title, .bdaia-posts-grid-post.post .entry-title, .bdaia-posts-grid-post h3{font-family: 'Oswald'; }
+.bdaia-wb-wrap .bdaia-wb-article.bdaia-wba-big .entry-title, .bdaia-wb-wrap .bdaia-wb-article.bdaia-wba-bigsh .entry-title{font-family: 'Oswald'; }
+.single .bdaia-meta-info, .page .bdaia-meta-info{font-family: 'Droid Sans'; }
+.bdaia-post-title .entry-title{font-family: 'Oswald'; }
+.single .bdaia-site-content h4.block-title, .page .bdaia-site-content h4.block-title, .bdaia-author-box .authorBlock-header-title{font-family: 'Oswald'; }
+.single .bdaia-site-content .bdaia-post-content, .single .bdaia-site-content .bdaia-post-content p, .page .bdaia-site-content .bdaia-post-content, .page .bdaia-site-content .bdaia-post-content p{font-family: 'Droid Sans'; font-size : 20px; }
+.single .bdaia-site-content .bdaia-post-content blockquote, .single .bdaia-site-content .bdaia-post-content blockquote p, .page .bdaia-site-content .bdaia-post-content blockquote, .page .bdaia-site-content .bdaia-post-content blockquote p{font-family: 'Droid Sans'; font-size : 20px; }
+.bdaia-site-content .bdaia-post-content h1{font-family: 'Droid Sans'; }
+.bdaia-site-content .bdaia-post-content h2{font-family: 'Droid Sans'; }
+.bdaia-site-content .bdaia-post-content h3{font-family: 'Droid Sans'; }
+.bdaia-site-content .bdaia-post-content h4{font-family: 'Droid Sans'; }
+.bdaia-site-content .bdaia-post-content h5{font-family: 'Droid Sans'; }
+.bdaia-site-content .bdaia-post-content h6{font-family: 'Droid Sans'; }
+div.woohoo-footer-top-area .footer-about-us-inner{font-family: 'Droid Sans'; }
+div.bdaia-feature-posts.bdaia-fp-grid4 div.featured-title h2.post-title{font-family: 'Oswald'; }
+div.bdaia-feature-posts.bdaia-fp-grid5 div.featured-title h2.post-title{font-family: 'Oswald'; }
+div.bdaia-feature-posts.bdaia-feature-grid6 div.featured-title h2.post-title{font-family: 'Oswald'; }
+div.big-grids.big-grid7 div.featured-title h2{font-family: 'Oswald'; }
+body.tag.tag-world .bd-main .bdaia-block-wrap {padding-top: 0 !important;}
+
+input.wpcf7-form-control.wpcf7-text {width: 100%; max-width: 100%;}
+
+body.archive.category .bdaia-blocks.bdaia-block6 {margin-top: -30px; }
+
+/* by sinisha */
+.bdaia-header-default #navigation.mainnav-dark .primary-menu ul#menu-primary > li:hover > a, .bdaia-header-default #navigation.mainnav-dark .primary-menu ul#menu-primary > li.current-menu-item > a, .bdaia-header-default #navigation.mainnav-dark .primary-menu ul#menu-primary > li.current-menu-ancestor > a, .bdaia-header-default #navigation.mainnav-dark .primary-menu ul#menu-primary > li.current-menu-parent > a {
+background: #c22811;
+}
+.bdaia-header-default #navigation.mainnav-dark {
+    background: #c22811;
+}
+#navigation .bdaia-alert-new-posts {
+    background-color: #c22811;
+}
+.gotop {
+    background-color: #c22811;
+}
+div.widget.bdaia-widget.bdaia-widget-counter .bdaia-wc-style3 li.social-counter-comments .bdaia-io:before {
+    background: #c22811;
+}
+div.widget.bdaia-widget.bdaia-widget-counter .bdaia-wc-style3 li.social-counter-members .bdaia-io:before {
+    background: #c22811;
+}
+.bdaia-pagination > .current {
+    background-color: #c22811;
+    border-color: #c22811;
+}
+</style><!--[if IE]>
+<script type="text/javascript">jQuery(document).ready(function (){ jQuery(".menu-item").has("ul").children("a").attr("aria-haspopup", "true");});</script>
+<![endif]-->
+<!--[if lt IE 9]>
+<script src="https://cyberforensicator.com/wp-content/themes/woohoo/js/html5.js"></script>
+<script src="https://cyberforensicator.com/wp-content/themes/woohoo/js/selectivizr-min.js"></script>
+<![endif]-->
+<!--[if IE 9]>
+<link rel="stylesheet" type="text/css" media="all" href="https://cyberforensicator.com/wp-content/themes/woohoo/css/ie9.css" />
+<![endif]-->
+<!--[if IE 8]>
+<link rel="stylesheet" type="text/css" media="all" href="https://cyberforensicator.com/wp-content/themes/woohoo/css/ie8.css" />
+<![endif]-->
+<!--[if IE 7]>
+<link rel="stylesheet" type="text/css" media="all" href="https://cyberforensicator.com/wp-content/themes/woohoo/css/ie7.css" />
+<![endif]-->
+		<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
+	<link rel="icon" href="https://cyberforensicator.com/wp-content/uploads/2016/11/cropped-favicon-512-32x32.png" sizes="32x32" />
+<link rel="icon" href="https://cyberforensicator.com/wp-content/uploads/2016/11/cropped-favicon-512-192x192.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://cyberforensicator.com/wp-content/uploads/2016/11/cropped-favicon-512-180x180.png" />
+<meta name="msapplication-TileImage" content="https://cyberforensicator.com/wp-content/uploads/2016/11/cropped-favicon-512-270x270.png" />
+<!-- ## NXS/OG ## --><!-- ## NXSOGTAGS ## --><!-- ## NXS/OG ## -->
+</head>
+<body class="post-template-default single single-post postid-2643 single-format-standard theme-woohoo woocommerce-no-js  of-new-article  ct-comments " itemscope itemtype="http://schema.org/WebPage">
+
+<div class="page-outer bdaia-header-default bdaia-lazyload  sticky-nav-on  bdaia-post-template-default  bdaia-sidebar-right ">
+	<div class="bg-cover"></div>
+			<aside id="bd-MobileSiderbar">
+
+							<div class="search-mobile">
+					<form role="search" method="get" class="search-form" action="https://cyberforensicator.com/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form>				</div>
+			
+			<div id="mobile-menu"></div>
+
+							<div class="widget-social-links bdaia-social-io-colored">
+					<div class="sl-widget-inner">
+						<div class="bdaia-social-io bdaia-social-io-size-35">
+<a class=" bdaia-io-url-facebook" title="Facebook" href="https://www.facebook.com/weare4n6" target="_blank"><span class="bdaia-io bdaia-io-facebook"></span></a>
+<a class=" bdaia-io-url-twitter" title="Twitter" href="https://twitter.com/Weare4n6" target="_blank"><span class="bdaia-io bdaia-io-twitter"></span></a>
+<a class=" bdaia-io-url-linkedin" title="LinkedIn" href="https://www.linkedin.com/groups/8466321" target="_blank"><span class="bdaia-io bdaia-io-linkedin2"></span></a>
+</div>					</div>
+				</div>
+			
+		</aside>
+	
+	<div id="page">
+		<div class="inner-wrapper">
+			<div id="warp" class="clearfix  bdaia-sidebar-right ">
+				
+<div class="header-wrapper bdaia-hibryd-menu" style ="border-top-color: #c22811">
+
+			<div class="bdayh-click-open">
+			<div class="bd-ClickOpen bd-ClickAOpen">
+				<span></span>
+			</div>
+		</div>
+	
+	
+	<div class="cfix"></div>
+	<div class="topbar"  style="background: #040268">
+		<div class="bd-container">
+
+			
+			<div class="top-left-area">
+				<span class="bdaia-current-time"> May 23, 2021</span>
+							</div>
+
+			
+			<div class="top-right-area">
+				<div class="bdaia-social-io bdaia-social-io-size-32">
+<a class=" bdaia-io-url-facebook" title="Facebook" href="https://www.facebook.com/weare4n6" target="_blank"><span class="bdaia-io bdaia-io-facebook"></span></a>
+<a class=" bdaia-io-url-twitter" title="Twitter" href="https://twitter.com/Weare4n6" target="_blank"><span class="bdaia-io bdaia-io-twitter"></span></a>
+<a class=" bdaia-io-url-linkedin" title="LinkedIn" href="https://www.linkedin.com/groups/8466321" target="_blank"><span class="bdaia-io bdaia-io-linkedin2"></span></a>
+</div>			</div>
+		</div>
+	</div>
+	<div class="cfix"></div>
+
+	
+	
+	
+	<style type="text/css">.bdaia-header-default #navigation .primary-menu #menu-primary > li > a, #navigation .bdaia-cart, .bdaia-nav-search, #navigation .bdaia-random-post{color: #ffffff;} .bdaia-header-default #navigation .primary-menu #menu-primary > li.bd_mega_menu > a:before, .bdaia-header-default #navigation .primary-menu #menu-primary > li.menu-item-object-category > a:before, .bdaia-header-default #navigation .primary-menu #menu-primary > li.menu-item-has-children > a:before, .bdaia-header-default #navigation .primary-menu #menu-primary > li.bd_mega_menu > a:before, .bdaia-header-default #navigation .primary-menu #menu-primary > li.menu-item-object-category.bd_cats_menu > a:before, .bdaia-header-default #navigation .primary-menu #menu-primary > li.menu-item-has-children > a:before{border-top-color:#ffffff;}.bdaia-header-default #navigation .primary-menu ul#menu-primary > li:hover > a, .bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-item > a, .bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-ancestor > a, .bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-parent > a, #navigation .bdaia-cart, .bdaia-nav-search, #navigation .bdaia-random-post {background: #c22811; border : 0 none !important; color: ;}.bdaia-header-default #navigation .primary-menu ul#menu-primary > li >.bd_mega.sub-menu, .bdaia-header-default #navigation .primary-menu ul#menu-primary > li > .sub-menu, .bdaia-header-default #navigation .primary-menu ul#menu-primary .sub_cats_posts{border-top-color:#c22811;} .bdaia-ns-wrap:after, .bdaia-header-default #navigation .primary-menu ul#menu-primary > li:hover > a:after, .bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-item > a:after, .bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-ancestor > a:after, .bdaia-header-default #navigation .primary-menu ul#menu-primary > li.current-menu-parent > a:after{background:#c22811;}</style>
+<div class="cfix"></div>
+<nav id="navigation" class="mainnav-dark" style="background: #04043d; border-top-color:transparent !important">
+	<div class="navigation-wrapper" style="background: #04043d; border-top-color:transparent !important">
+		<div class="bd-container">
+			<div class="primary-menu">
+
+				
+									
+    <div class="logo">
+        <h2 class="site-title">                                <a href="https://cyberforensicator.com/" rel="home">
+                <img src="http://cyberforensicator.com/wp-content/uploads/2017/08/CF_LOGO_NEW.png" alt="Cyber Forensicator" />
+            </a>
+                    <script>jQuery(document).ready(function($) { var retina = window.devicePixelRatio > 1 ? true : false; if( retina ) { jQuery('.header-wrapper .logo img').attr('src', 'http://cyberforensicator.com/wp-content/uploads/2017/08/CF_LOGO_NEW.png'); jQuery('.header-wrapper .logo img').attr('width', '250'); } });</script>
+                        </h2>    </div><!-- End Logo -->
+				
+				<ul id="menu-primary">
+					<li id="menu-item-554" class=" menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/articles/">  <span class="menu-label" style="" >Articles</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-557" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/books/">  <span class="menu-label" style="" >Books</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-562" class=" menu-item menu-item-type-post_type menu-item-object-page bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/contact/">  <span class="menu-label" style="" >Contact</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-558" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/howto/">  <span class="menu-label" style="" >How To</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-556" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/news/">  <span class="menu-label" style="" >News</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-1128" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/presentations/">  <span class="menu-label" style="" >Presentations</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-1076" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/science/">  <span class="menu-label" style="" >Science</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-559" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/software/">  <span class="menu-label" style="" >Software</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-561" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/tips-and-tricks/">  <span class="menu-label" style="" >Tips &#038; Tricks</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-1075" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/videos/">  <span class="menu-label" style="" >Videos</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-560" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/webinars/">  <span class="menu-label" style="" >Webinars</span></a>
+
+<div class="mega-menu-content">
+</div><li id="menu-item-1083" class=" menu-item menu-item-type-taxonomy menu-item-object-category bd_depth- bd_menu_item " ><a href="https://cyberforensicator.com/category/white-papers/">  <span class="menu-label" style="" >White Papers</span></a>
+
+<div class="mega-menu-content">
+</div>				</ul>
+			</div>
+
+			
+							<div class="bdaia-nav-search">
+					<span class="bdaia-ns-btn bdaia-io bdaia-io-search"></span>
+					<div class="bdaia-ns-wrap">
+						<div class="bdaia-ns-content">
+							<div class="bdaia-ns-inner">
+								<form method="get" id="searchform" action="https://cyberforensicator.com/">
+									<input type="text" class="bbd-search-field search-live" id="s" name="s" value="Search" onfocus="if (this.value == 'Search') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search';}"  />
+									<button type="submit" class="bbd-search-btn"><span class="bdaia-io bdaia-io-search"></span></button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+			
+			
+			
+			
+			<div class="cfix"></div>
+		</div>
+	</div>
+</nav>
+<div class="cfix"></div>
+
+</div>
+
+
+
+								
+								
+									<div class="cfix"></div>
+					<div class="bdaia-hibryd-e3">
+						
+					</div>
+					<div class="cfix"></div>
+																				<div class="bdMain">
+
+<div class="bd-container bdaia-post-template">
+	<div class="bd-main bdaia-site-content" id="bdaia-primary">
+		<div id="content" role="main">
+
+			<div xmlns:v="http://rdf.data-vocabulary.org/#"  class="bdaia-crumb-container"><span typeof="v:Breadcrumb"><a rel="v:url" property="v:title" class="crumbs-home" href="https://cyberforensicator.com">Home</a></span> <span class="delimiter"><span class="bdaia-io bdaia-io-angle-double-right"></span></span> <span typeof="v:Breadcrumb"><a rel="v:url" property="v:title" href="https://cyberforensicator.com/category/articles/">Articles</a></span> <span class="delimiter"><span class="bdaia-io bdaia-io-angle-double-right"></span></span> <span class="current">Silence: Dissecting Malicious CHM Files and Performing Forensic Analysis</span></div><div class="bdayh-clearfix"></div><!-- END breadcrumbs. -->
+							<article id="post-2643" class="hentry post-2643 post type-post status-publish format-standard has-post-thumbnail category-articles"  itemscope itemtype="https://schema.org/Article">
+
+					<header class="bdaia-post-header">
+
+													<div class="bdaia-category">
+								<a class="bd-cat-link bd-cat-7" href="https://cyberforensicator.com/category/articles/">Articles</a>
+							</div>
+							<!-- END category. -->
+						
+						<div class="bdaia-post-title">
+							<h1 class="post-title entry-title"><span>Silence: Dissecting Malicious CHM Files and Performing Forensic Analysis</span></h1>
+						</div>
+						<!-- END Post Title. -->
+
+						
+<div class="bdaia-meta-info">
+
+	
+			<div class="bdaia-post-date"><span class='bdaia-io bdaia-io-calendar'></span>Posted on&nbsp;<span class="bdayh-date">January 20, 2019</span></div>
+	
+	
+			<div class="bdaia-post-comment"><span class='bdaia-io bdaia-io-bubbles4'></span><a href="https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/#respond">0</a></div>
+	
+			<div class="bdaia-post-like"><span class="post-like"><a href="#" data-post_id="2643">
+					<span  title="I like this article"class="qtip like"><span class="bdaia-io bdaia-io-heart"></span></span>
+				</a><em class="count">0</em></span></div>
+	
+			<div class="bdaia-post-view">
+			<span class='bdaia-io bdaia-io-eye4'></span>
+			8,527		</div>
+	
+</div>
+<!-- END Meta Info. -->
+					</header>
+
+					
+					<div class="bdaia-post-content">
+						
+						
+
+						
+						
+<p>Let&#8217;s continue to dissect unusual malicious email attachments used by modern APT. This time I&#8217;m going to focus on malicious CHM files used by Silence APT. If you haven&#8217;t heard about it for some reason, I would recommend to read <a rel="noreferrer noopener" aria-label="this detailed report by&nbsp;Group-IB (opens in a new tab)" href="https://www.group-ib.com/resources/threat-research/silence.html" target="_blank">this detailed report by&nbsp;Group-IB</a>, as this APT attacks not only Russian banks, but also banks in more than 25 countries.</p>
+
+
+
+<p>In this post I&#8217;ll focus on two recent campaigns &#8211; in both of them the attackers used weaponized CHM files:</p>
+
+
+
+<p>Maket dizayna debitovoy korp karty.CHM (Debit corporate card design template)</p>
+
+
+
+<p>SHA256:  <br>ff8b4ceb6b27a339c8ce0ee949f569cfe285d55366dc8763db69e87fa0815dab </p>
+
+
+
+<p>Приглашение на конференцию 13012019.chm (Conference invitation 13012019)</p>
+
+
+
+<p>SHA256:  <br>c46b1fb735529986b51b789507106b8a81abba5bbdceb9263e99dd87c1866729</p>
+
+
+
+<p>Let&#8217;s start from what CHM files are. These are Microsoft Compiled HTML Help files. CHM files consist of a collection of HTML pages, an index and other navigation tools. As they are compressed, we can use, for example, 7-Zip to browse their contents, let&#8217;s start from the first file, &#8220;Maket dizayna debitovoy korp karty.CHM&#8221;:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_1.png" alt="" class="wp-image-2645" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_1.png 667w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_1-300x246.png 300w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_1-600x491.png 600w" sizes="(max-width: 667px) 100vw, 667px" /></figure></div>
+
+
+
+<p>The most interesting file is start.htm, it can be examined with a text or hex editor of your choice, here I use 010 Editor, let&#8217;s look at the most interesting part of the file:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_2-1024x87.png" alt="" class="wp-image-2646" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_2-1024x87.png 1024w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_2-300x25.png 300w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_2-768x65.png 768w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_2-850x72.png 850w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_2-600x51.png 600w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_2.png 1061w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure></div>
+
+
+
+<p>As you can see, we already got quite a lot of info that can help us to create IoC (Indicators of Compromise) list, but it looks a bit obfuscated. The thing is &#8211; the attackers used an environment variable string substitution, obfuscation technique FIN7 started to use in June 2017. We can easily deobfuscate it using echo command:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_3.png" alt="" class="wp-image-2647" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_3.png 938w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_3-300x33.png 300w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_3-768x85.png 768w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_3-850x94.png 850w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_3-600x67.png 600w" sizes="(max-width: 938px) 100vw, 938px" /></figure></div>
+
+
+
+<p>So, once the victim opens the file, the script inside uses schtasks.exe to create a task with the name &#8220;4&#8221;, which downloads and runs &#8220;mnms&#8221; from 146.0.77[.]104, then the task is deleted. What&#8217;s &#8220;mnms&#8221;? It&#8217;s a VB script, which will download the next stage.</p>
+
+
+
+<p>Let&#8217;s look inside another CHM file:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_4-1024x83.png" alt="" class="wp-image-2648" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_4-1024x83.png 1024w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_4-300x24.png 300w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_4-768x63.png 768w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_4-850x69.png 850w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_4-600x49.png 600w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_4.png 1043w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure></div>
+
+
+
+<p>We see the same environment variable string substitution trick here, we can use echo command again to deobfuscate it:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_5.png" alt="" class="wp-image-2649" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_5.png 1012w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_5-300x31.png 300w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_5-768x79.png 768w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_5-850x87.png 850w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_5-600x62.png 600w" sizes="(max-width: 1012px) 100vw, 1012px" /></figure></div>
+
+
+
+<p>This time there is no tasks, but still something interesting. Once opened by the victim, the script inside the CHM file will copy cmd.exe to %APPDATA% as dmw.exe, then it uses it to download and run &#8220;rogr.php&#8221; from 185.70.186[.]146. Again, &#8220;rogr.php&#8221; is a VB script, which will download the next stage.</p>
+
+
+
+<p>If we compare both &#8220;start.htm&#8221; files, we can see that they have a lot in common. Of course, a good start is environment variable string substitution used for obfuscation in both files, it&#8217;s not very common technique. Also, some parts of the files are almost the same, but at the same time they are quite unique, it seems the attackers used the same template or software to create them. For example, let&#8217;s look at the beginnings of both files:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_6-1024x173.png" alt="" class="wp-image-2650" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_6-1024x173.png 1024w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_6-300x51.png 300w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_6-768x130.png 768w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_6-850x144.png 850w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_6-600x102.png 600w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_6.png 1046w" sizes="(max-width: 1024px) 100vw, 1024px" /><figcaption> <br>Maket dizayna debitovoy korp karty.CHM </figcaption></figure></div>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_7-1024x170.png" alt="" class="wp-image-2651" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_7-1024x170.png 1024w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_7-300x50.png 300w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_7-768x127.png 768w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_7-850x141.png 850w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_7-600x100.png 600w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_7.png 1037w" sizes="(max-width: 1024px) 100vw, 1024px" /><figcaption> <br>Приглашение на конференцию 13012019.chm </figcaption></figure></div>
+
+
+
+<p>As you can see, they are almost the same. Let&#8217;s continue with a bit of forensic analysis. Usually it takes some time for the attackers to finish the attack. Sometimes it&#8217;s a week or two, sometimes it&#8217;s three months. It means that there may be no artifacts of file opening, like MRU or LNK. Of course, CHM files are not very common, so you have good chances of finding quite a lot of artifacts of opening these files by the users. Anyway, I would like to focus on most unique artifacts left from execution of files under analysis.</p>
+
+
+
+<p>Let&#8217;s go back to our first file, &#8220;Maket dizayna debitovoy korp karty.CHM&#8221;. It creates a task and then deletes it. It means we can hardly find task file under C:\Windows\System32\Tasks, same can be said about VSCs, as it&#8217;s created, ran and deleted immediatelly. But it can be a good idea to check Microsoft-Windows-TaskScheduler%4Operational.evtx, as it records everything regarding scheduled tasks, here is a good example:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_8.png" alt="" class="wp-image-2653" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_8.png 556w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_8-300x157.png 300w" sizes="(max-width: 556px) 100vw, 556px" /></figure></div>
+
+
+
+<p>As for the second file, &#8220;Приглашение на конференцию 13012019.chm&#8221;, as you remember, it creates a file called &#8220;dmw.exe&#8221;, that is a copy of &#8220;cmd.exe&#8221;. As it doesn&#8217;t delete it, this can be used as an IoC:</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img src="http://cyberforensicator.com/wp-content/uploads/2019/01/Silence_9-1024x150.png" alt="" class="wp-image-2654" srcset="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_9-1024x150.png 1024w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_9-300x44.png 300w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_9-768x112.png 768w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_9-850x124.png 850w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_9-600x88.png 600w, https://cyberforensicator.com/wp-content/uploads/2019/01/Silence_9.png 1170w" sizes="(max-width: 1024px) 100vw, 1024px" /></figure></div>
+
+
+
+<p>Even if this file was deleted, you still have quite a lot of evedence sources of its execution, like Prefetch, Shimcache, etc.</p>
+
+
+
+<h4>About the author</h4>
+
+
+
+<p><a rel="noreferrer noopener" href="https://www.linkedin.com/in/oleg-skulkin/" target="_blank">Oleg Skulkin</a>, GCFA, MCFE, ACE, a DFIR enthusional (enthusiast + professional),&nbsp;<a rel="noreferrer noopener" href="https://www.amazon.com/Windows-Forensics-Cookbook-Oleg-Skulkin/dp/1784390496" target="_blank">Windows Forensics Cookbook,</a>&nbsp;<a rel="noreferrer noopener" href="https://www.amazon.com/Practical-Mobile-Forensics-Rohit-Tamma/dp/1788839196/" target="_blank">Practical Mobile Forensics</a>&nbsp;and&nbsp;<a href="https://www.amazon.com/Learning-Android-Forensics-forensic-techniques-ebook/dp/B07JM2JLW2/" target="_blank" rel="noreferrer noopener">Learning Android Forensics</a>&nbsp;co-author.</p>
+
+						
+						
+					</div><!-- END Post Content. -->
+
+					<footer>
+						
+						<script type="text/javascript">
+	window.___gcfg = {lang: 'en-US'};
+	(function(w, d, s) {
+		function go(){
+			var js, fjs = d.getElementsByTagName(s)[0], load = function(url, id) {
+				if (d.getElementById(id)) {return;}
+				js = d.createElement(s); js.src = url; js.id = id;
+				fjs.parentNode.insertBefore(js, fjs);
+			};
+			load('//connect.facebook.net/en/all.js#xfbml=1', 'fbjssdk');
+			load('https://apis.google.com/js/plusone.js', 'gplus1js');
+			load('//platform.twitter.com/widgets.js', 'tweetjs');
+		}
+		if (w.addEventListener) { w.addEventListener("load", go, false); }
+		else if (w.attachEvent) { w.attachEvent("onload",go); }
+	}(window, document, 'script'));
+</script>
+
+<div class="bdaia-post-sharing bdaia-post-sharing-bottom">
+
+	<ul>
+					<li class="facebook">
+				<a  title="facebook" onClick="window.open('http://www.facebook.com/sharer.php?u=https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/','Facebook','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://www.facebook.com/sharer.php?u=https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/">
+					<span class="bdaia-io bdaia-io-facebook"></span>
+					<span>Share on Facebook</span>
+				</a>
+			</li>
+		
+					<li class="twitter">
+				<a  title="twitter" onClick="window.open('http://twitter.com/share?url=https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/&amp;text=Silence:%20Dissecting%20Malicious%20CHM%20Files%20and%20Performing%20Forensic%20Analysis','Twitter share','width=600,height=300,left='+(screen.availWidth/2-300)+',top='+(screen.availHeight/2-150)+''); return false;" href="http://twitter.com/share?url=https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/&amp;text=Silence:%20Dissecting%20Malicious%20CHM%20Files%20and%20Performing%20Forensic%20Analysis">
+					<span class="bdaia-io bdaia-io-twitter"></span>
+					<span>Share on Twitter</span>
+				</a>
+			</li>
+		
+		
+					<li class="reddit">
+				<a  title="reddit" onClick="window.open('http://reddit.com/submit?url=https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/&amp;title=Silence:%20Dissecting%20Malicious%20CHM%20Files%20and%20Performing%20Forensic%20Analysis','Reddit','width=617,height=514,left='+(screen.availWidth/2-308)+',top='+(screen.availHeight/2-257)+''); return false;" href="http://reddit.com/submit?url=https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/&amp;title=Silence:%20Dissecting%20Malicious%20CHM%20Files%20and%20Performing%20Forensic%20Analysis">
+					<span class="bdaia-io bdaia-io-reddit"></span>
+					<span>Share on Reddit</span>
+				</a>
+			</li>
+		
+		
+					<li class="linkedin">
+				<a  title="linkedin" onClick="window.open('http://www.linkedin.com/shareArticle?mini=true&amp;url=https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/','Linkedin','width=863,height=500,left='+(screen.availWidth/2-431)+',top='+(screen.availHeight/2-250)+''); return false;" href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/">
+					<span class="bdaia-io bdaia-io-linkedin2"></span>
+					<span>Share on Linkedin</span>
+				</a>
+			</li>
+		
+		
+		<li class="whatsapp">
+			<a href="whatsapp://send?text=Silence%3A+Dissecting+Malicious+CHM+Files+and+Performing+Forensic+Analysis%20-%20https%3A%2F%2Fcyberforensicator.com%2F2019%2F01%2F20%2Fsilence-dissecting-malicious-chm-files-and-performing-forensic-analysis%2F" ><span class="bdaia-io bdaia-io-whatsapp"></span></a>		</li>
+
+		<li class="telegram">
+			<a href="tg://msg?text=Silence%3A+Dissecting+Malicious+CHM+Files+and+Performing+Forensic+Analysis%20-%20https%3A%2F%2Fcyberforensicator.com%2F2019%2F01%2F20%2Fsilence-dissecting-malicious-chm-files-and-performing-forensic-analysis%2F" ><span class="bdaia-io bdaia-io-telegram"></span></a>		</li>
+	</ul>
+</div>
+<!-- END Post Sharing -->
+
+						
+						
+
+						
+											</footer>
+
+					<span style=display:none itemprop=author itemscope itemtype="https://schema.org/Person">
+	<meta itemprop=name content="Admin">
+</span>
+
+<meta itemprop=interactionCount content="UserComments:0">
+
+<meta itemprop=datePublished content="2019-01-20T09:53:36+00:00">
+<meta itemprop=dateModified content="2019-01-20T09:53:36+00:00">
+
+<meta itemscope itemprop=mainEntityOfPage itemtype="https://schema.org/WebPage" itemid="https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/">
+<span style=display:none itemprop=publisher itemscope itemtype="https://schema.org/Organization">
+	<span style=display:none itemprop=logo itemscope itemtype="https://schema.org/ImageObject">
+		<meta itemprop="url" content="http://cyberforensicator.com/wp-content/uploads/2017/08/CF_LOGO_NEW.png">
+	</span>
+	<meta itemprop=name content="Cyber Forensicator">
+</span>
+<meta itemprop=headline content="Silence: Dissecting Malicious CHM Files and Performing Forensic Analysis">
+<span style=display:none itemprop=image itemscope itemtype="https://schema.org/ImageObject">
+	<meta itemprop=url content="https://cyberforensicator.com/wp-content/uploads/2019/01/Silence-APT-malicious-CHM-cyber-forensicator.png">
+	<meta itemprop=width content=1240>
+	<meta itemprop=height content=540>
+</span>
+				</article>
+
+				
+<div class="bdayh-clearfix"></div>
+<section id="bdaia-ralated-posts" class="bdaia-ralated-posts">
+
+    <div class="bdaia-ralated-posts-head">
+        <ul>
+                            <li id="nav-more-ralated">
+                    <a href="#content-more-ralated">Related Articles</a>
+                </li>
+            
+            
+                            <li id="nav-more-cat">
+                    <a href="#content-more-cat">
+                        More In&nbsp;Articles                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+    
+<div class="bdaia-ralated-content bdaia-posts-grid light grid-3col" id="content-more-ralated">
+    <ul class="bdaia-posts-grid-list">
+        <li class="bdaia-posts-grid-post post-item post-id post post-3419 type-post status-publish format-standard has-post-thumbnail hentry category-articles tag-belkasoft tag-belkasoft-evidence-center tag-digital-evidence tag-digital-forensics tag-graphical-timeline tag-qbot tag-ransomware tag-ransomware-forensics tag-timeline">
+	<div class="bdaia-posts-grid-post-inner">
+					<div class="post-image">
+				
+				<a href="https://cyberforensicator.com/2021/03/04/find-out-what-happened-during-a-ransomware-attack-on-computer/">
+					<img width="320" height="220" src="https://cyberforensicator.com/wp-content/uploads/2021/03/ransomware-2320793_1920-320x220.jpg" class="attachment-bdaia-widget size-bdaia-widget wp-post-image" alt="" />				</a>
+			</div>
+				<div class="bdayh-post-header">
+			<h3 class="entry-title"><a href="https://cyberforensicator.com/2021/03/04/find-out-what-happened-during-a-ransomware-attack-on-computer/" >Find out what happened during a ransomware attack on computer</a></h3>			<div class="bdaia-post-excerpt">Introduction The encryption pandemic has swept the world. No commercial companies or gover&#8230;</div>			<div class="bbd-post-cat">
+				<div class="bbd-post-cat-content">
+					<div class="bdayh-post-meta-date">
+						<span class="bdayh-date">March 4, 2021</span>					</div>
+					<span class="bdayh-post-meta-time-read"><span class='bdaia-io bdaia-io-clock'></span> 11&nbsp;min read</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</li><li class="bdaia-posts-grid-post post-item post-id post post-3378 type-post status-publish format-standard has-post-thumbnail hentry category-articles tag-analyzing-video-streams tag-belkasoft tag-belkasoft-evidence-center tag-digital-evidence tag-forensic-tools tag-keyframe-analysis tag-keyframe-extraction tag-media-player tag-video tag-video-analisys tag-video-files-forensics tag-video-forensics tag-video-streams tag-video-streams-forensics tag-vlc-media-player">
+	<div class="bdaia-posts-grid-post-inner">
+					<div class="post-image">
+				
+				<a href="https://cyberforensicator.com/2021/01/24/analyzing-videos-with-multiple-video-streams-in-digital-forensics/">
+					<img width="320" height="220" src="https://cyberforensicator.com/wp-content/uploads/2021/01/13-320x220.png" class="attachment-bdaia-widget size-bdaia-widget wp-post-image" alt="" />				</a>
+			</div>
+				<div class="bdayh-post-header">
+			<h3 class="entry-title"><a href="https://cyberforensicator.com/2021/01/24/analyzing-videos-with-multiple-video-streams-in-digital-forensics/" >Analyzing videos with multiple video streams in digital forensics</a></h3>			<div class="bdaia-post-excerpt">In this article, we will review a special case of video files: files with multiple video s&#8230;</div>			<div class="bbd-post-cat">
+				<div class="bbd-post-cat-content">
+					<div class="bdayh-post-meta-date">
+						<span class="bdayh-date">January 24, 2021</span>					</div>
+					<span class="bdayh-post-meta-time-read"><span class='bdaia-io bdaia-io-clock'></span> 16&nbsp;min read</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</li><li class="bdaia-posts-grid-post post-item post-id post post-3363 type-post status-publish format-standard has-post-thumbnail hentry category-articles tag-ace-lab tag-acelab tag-data-recovery tag-dfir tag-encase tag-forensics tag-forensics-data-recovery tag-magnet-axiom tag-pc-3000 tag-pc3000-portable tag-pc3000-portable-iii tag-raid tag-ssd tag-windows-10-forensics tag-windows-forensics">
+	<div class="bdaia-posts-grid-post-inner">
+					<div class="post-image">
+				
+				<a href="https://cyberforensicator.com/2020/12/19/pc3000-portable-iii-in-digital-forensics/">
+					<img width="320" height="220" src="https://cyberforensicator.com/wp-content/uploads/2020/12/hard-drive-656128_960_720-320x220.jpg" class="attachment-bdaia-widget size-bdaia-widget wp-post-image" alt="" />				</a>
+			</div>
+				<div class="bdayh-post-header">
+			<h3 class="entry-title"><a href="https://cyberforensicator.com/2020/12/19/pc3000-portable-iii-in-digital-forensics/" >PC3000 Portable III in Digital Forensics</a></h3>			<div class="bdaia-post-excerpt">Introduction Sooner or later, most forensics experts have to deal with damaged hard drives&#8230;</div>			<div class="bbd-post-cat">
+				<div class="bbd-post-cat-content">
+					<div class="bdayh-post-meta-date">
+						<span class="bdayh-date">December 19, 2020</span>					</div>
+					<span class="bdayh-post-meta-time-read"><span class='bdaia-io bdaia-io-clock'></span> 23&nbsp;min read</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</li>    </ul>
+    <div class="cfix"></div>
+
+		    <div class="bdayh-posts-load-wait">
+	        <div class="sk-circle"><div class="sk-circle1 sk-child"></div><div class="sk-circle2 sk-child"></div><div class="sk-circle3 sk-child"></div><div class="sk-circle4 sk-child"></div><div class="sk-circle5 sk-child"></div><div class="sk-circle6 sk-child"></div><div class="sk-circle7 sk-child"></div><div class="sk-circle8 sk-child"></div><div class="sk-circle9 sk-child"></div><div class="sk-circle10 sk-child"></div><div class="sk-circle11 sk-child"></div><div class="sk-circle12 sk-child"></div></div>
+	    </div>
+	    <div class="bdayh-load-more-btn">
+	        <div class="bdaia-grid-loadmore-btn bd-more-btn">
+	            Load More Related Articles<span class="bdaia-io bdaia-io-angle-down"></span>
+	        </div>
+	    </div>
+	</div>
+
+	<script type="text/javascript">
+	    jQuery(document).ready(function($) {
+	        jQuery('#content-more-ralated .bdayh-load-more-btn .bdaia-grid-loadmore-btn').click(function(){
+	            woohoo_more_related();
+	        });
+	    });
+	    var _bdPages = 1;
+	    function woohoo_more_related() {
+	        _bdPages+=1;
+
+		    var bd_content = jQuery("#content-more-ralated ul.bdaia-posts-grid-list");
+
+	        jQuery("#content-more-ralated .bdayh-posts-load-wait").css("display","block");
+	        jQuery("#content-more-ralated .bdayh-load-more-btn").css("display","none");
+	        jQuery.ajax({
+	            url : "https://cyberforensicator.com/wp-admin/admin-ajax.php",
+	            type : "POST",
+	            data : "action=woohoo_related_articles_fun&page_no="+_bdPages+"&tag_id=&post_id=2643&numpost=3",
+	            success: function(data) {
+	                jQuery("#content-more-ralated .bdayh-posts-load-wait").css("display","none");
+	                if (data.trim()!="") {
+	                    var content = jQuery(data);
+		                bd_content.append(content);
+	                    jQuery("#content-more-ralated .bdayh-load-more-btn").css("display","block");
+		                var bd_re   = bd_content.find( '.post-image' );
+		                bd_re.addClass( 'bdaia-img-show' );
+		                i_refresh.refresh();
+	                }
+	            }
+	        }, 'html');
+	        return false;
+	    }
+	</script>
+        
+<div class="bdaia-ralated-content bdaia-posts-grid light grid-3col" id="content-more-cat">
+    <ul class="bdaia-posts-grid-list">
+        <li class="bdaia-posts-grid-post post-item post-id post post-3419 type-post status-publish format-standard has-post-thumbnail hentry category-articles tag-belkasoft tag-belkasoft-evidence-center tag-digital-evidence tag-digital-forensics tag-graphical-timeline tag-qbot tag-ransomware tag-ransomware-forensics tag-timeline">
+	<div class="bdaia-posts-grid-post-inner">
+					<div class="post-image">
+				
+				<a href="https://cyberforensicator.com/2021/03/04/find-out-what-happened-during-a-ransomware-attack-on-computer/">
+					<img width="320" height="220" src="https://cyberforensicator.com/wp-content/uploads/2021/03/ransomware-2320793_1920-320x220.jpg" class="attachment-bdaia-widget size-bdaia-widget wp-post-image" alt="" />				</a>
+			</div>
+				<div class="bdayh-post-header">
+			<h3 class="entry-title"><a href="https://cyberforensicator.com/2021/03/04/find-out-what-happened-during-a-ransomware-attack-on-computer/" >Find out what happened during a ransomware attack on computer</a></h3>			<div class="bdaia-post-excerpt">Introduction The encryption pandemic has swept the world. No commercial companies or gover&#8230;</div>			<div class="bbd-post-cat">
+				<div class="bbd-post-cat-content">
+					<div class="bdayh-post-meta-date">
+						<span class="bdayh-date">March 4, 2021</span>					</div>
+					<span class="bdayh-post-meta-time-read"><span class='bdaia-io bdaia-io-clock'></span> 11&nbsp;min read</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</li><li class="bdaia-posts-grid-post post-item post-id post post-3378 type-post status-publish format-standard has-post-thumbnail hentry category-articles tag-analyzing-video-streams tag-belkasoft tag-belkasoft-evidence-center tag-digital-evidence tag-forensic-tools tag-keyframe-analysis tag-keyframe-extraction tag-media-player tag-video tag-video-analisys tag-video-files-forensics tag-video-forensics tag-video-streams tag-video-streams-forensics tag-vlc-media-player">
+	<div class="bdaia-posts-grid-post-inner">
+					<div class="post-image">
+				
+				<a href="https://cyberforensicator.com/2021/01/24/analyzing-videos-with-multiple-video-streams-in-digital-forensics/">
+					<img width="320" height="220" src="https://cyberforensicator.com/wp-content/uploads/2021/01/13-320x220.png" class="attachment-bdaia-widget size-bdaia-widget wp-post-image" alt="" />				</a>
+			</div>
+				<div class="bdayh-post-header">
+			<h3 class="entry-title"><a href="https://cyberforensicator.com/2021/01/24/analyzing-videos-with-multiple-video-streams-in-digital-forensics/" >Analyzing videos with multiple video streams in digital forensics</a></h3>			<div class="bdaia-post-excerpt">In this article, we will review a special case of video files: files with multiple video s&#8230;</div>			<div class="bbd-post-cat">
+				<div class="bbd-post-cat-content">
+					<div class="bdayh-post-meta-date">
+						<span class="bdayh-date">January 24, 2021</span>					</div>
+					<span class="bdayh-post-meta-time-read"><span class='bdaia-io bdaia-io-clock'></span> 16&nbsp;min read</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</li><li class="bdaia-posts-grid-post post-item post-id post post-3363 type-post status-publish format-standard has-post-thumbnail hentry category-articles tag-ace-lab tag-acelab tag-data-recovery tag-dfir tag-encase tag-forensics tag-forensics-data-recovery tag-magnet-axiom tag-pc-3000 tag-pc3000-portable tag-pc3000-portable-iii tag-raid tag-ssd tag-windows-10-forensics tag-windows-forensics">
+	<div class="bdaia-posts-grid-post-inner">
+					<div class="post-image">
+				
+				<a href="https://cyberforensicator.com/2020/12/19/pc3000-portable-iii-in-digital-forensics/">
+					<img width="320" height="220" src="https://cyberforensicator.com/wp-content/uploads/2020/12/hard-drive-656128_960_720-320x220.jpg" class="attachment-bdaia-widget size-bdaia-widget wp-post-image" alt="" />				</a>
+			</div>
+				<div class="bdayh-post-header">
+			<h3 class="entry-title"><a href="https://cyberforensicator.com/2020/12/19/pc3000-portable-iii-in-digital-forensics/" >PC3000 Portable III in Digital Forensics</a></h3>			<div class="bdaia-post-excerpt">Introduction Sooner or later, most forensics experts have to deal with damaged hard drives&#8230;</div>			<div class="bbd-post-cat">
+				<div class="bbd-post-cat-content">
+					<div class="bdayh-post-meta-date">
+						<span class="bdayh-date">December 19, 2020</span>					</div>
+					<span class="bdayh-post-meta-time-read"><span class='bdaia-io bdaia-io-clock'></span> 23&nbsp;min read</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</li>    </ul>
+    <div class="cfix"></div>
+
+		    <div class="bdayh-posts-load-wait">
+	        <div class="sk-circle"><div class="sk-circle1 sk-child"></div><div class="sk-circle2 sk-child"></div><div class="sk-circle3 sk-child"></div><div class="sk-circle4 sk-child"></div><div class="sk-circle5 sk-child"></div><div class="sk-circle6 sk-child"></div><div class="sk-circle7 sk-child"></div><div class="sk-circle8 sk-child"></div><div class="sk-circle9 sk-child"></div><div class="sk-circle10 sk-child"></div><div class="sk-circle11 sk-child"></div><div class="sk-circle12 sk-child"></div></div>
+	    </div>
+
+	    <div class="bdayh-load-more-btn">
+	        <div class="bdaia-grid-loadmore-btn bd-more-btn">
+	            Load More In&nbsp;Articles		        <span class="bdaia-io bdaia-io-angle-down"></span>
+	        </div>
+	    </div>
+	</div>
+
+	<script type="text/javascript">
+	    jQuery(document).ready(function($) {
+	        jQuery('#content-more-cat .bdayh-load-more-btn .bdaia-grid-loadmore-btn').click(function(){
+	            woohoo_more_cat();
+	        });
+	    });
+	    var _bdCatPages = 1;
+	    function woohoo_more_cat() {
+	        _bdCatPages+=1;
+
+		    var bd_content = jQuery("#content-more-cat ul.bdaia-posts-grid-list");
+
+	        jQuery("#content-more-cat .bdayh-posts-load-wait").css("display","block");
+	        jQuery("#content-more-cat .bdayh-load-more-btn").css("display","none");
+	        jQuery.ajax({
+	            url : "https://cyberforensicator.com/wp-admin/admin-ajax.php",
+	            type : "POST",
+	            data : "action=woohoo_related_cat_fun&page_no="+_bdCatPages+"&cat_id=7&post_id=2643&numpost=3",
+	            success: function(data) {
+	                jQuery("#content-more-cat .bdayh-posts-load-wait").css("display","none");
+	                if (data.trim()!="") {
+	                    var content = jQuery(data);
+		                bd_content.append(content);
+	                    jQuery("#content-more-cat .bdayh-load-more-btn").css("display","block");
+		                var bd_re   = bd_content.find( '.post-image' );
+		                bd_re.addClass( 'bdaia-img-show' );
+		                i_refresh.refresh();
+	                }
+	            }
+	        }, 'html');
+	        return false;
+	    }
+	</script>
+
+    <script>
+        jQuery(document).ready(function()
+        {
+            $ralated_content     = jQuery( "#bdaia-ralated-posts .bdaia-ralated-content" );
+            $ralated_li          = jQuery( "#bdaia-ralated-posts .bdaia-ralated-posts-head ul li" );
+
+            $ralated_content.hide();
+            jQuery( "#bdaia-ralated-posts .bdaia-ralated-posts-head ul li:first" ).addClass( "active" ).show();
+            jQuery( "#bdaia-ralated-posts .bdaia-ralated-content:first" ).show();
+
+            $ralated_li.click(function()
+            {
+                $ralated_li.removeClass( "active" );
+                jQuery(this).addClass("active");
+                $ralated_content.hide();
+
+                var activeTab = jQuery(this).find( "a" ).attr( "href" );
+                jQuery(activeTab).fadeIn( "fast" );
+
+                return false;
+            });
+        });
+    </script>
+</section>
+<div class="bdayh-clearfix"></div>
+<!--/ .bdaia-ralated-posts /-->
+
+				<div class='woohoo-comments-closed'>Comments are closed.</div>
+				
+					</div>
+
+	</div><!-- END Content. -->
+
+	
+<div class="bd-sidebar theia_sticky">
+	<div class="cfix"></div>
+	<div class="theiaStickySidebar">
+		<div id="search-3" class="widget bdaia-widget widget_search">
+<h4 class="block-title"><span> </span></h4>
+<div class="widget-inner">
+<form role="search" method="get" class="search-form" action="https://cyberforensicator.com/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form></div>
+</div><div id="custom_html-3" class="widget_text widget bdaia-widget widget_custom_html">
+<h4 class="block-title"><span> </span></h4>
+<div class="widget-inner">
+<div class="textwidget custom-html-widget"><a href="https://bit.ly/373FOXG" target="_blank" rel="noopener noreferrer">
+<img src="http://cyberforensicator.com/wp-content/uploads/2021/01/try-now-belkasoft.png">
+</a></div></div>
+</div><div id="tag_cloud-4" class="widget bdaia-widget widget_tag_cloud">
+<h4 class="block-title"><span>Tags</span></h4>
+<div class="widget-inner">
+<div class="tagcloud"><a href="https://cyberforensicator.com/tag/android-forensics/" class="tag-cloud-link tag-link-61 tag-link-position-1" style="font-size: 14.422680412371pt;" aria-label="android forensics (54 items)">android forensics</a>
+<a href="https://cyberforensicator.com/tag/apfs-forensics/" class="tag-cloud-link tag-link-371 tag-link-position-2" style="font-size: 10.164948453608pt;" aria-label="APFS forensics (13 items)">APFS forensics</a>
+<a href="https://cyberforensicator.com/tag/autopsy/" class="tag-cloud-link tag-link-148 tag-link-position-3" style="font-size: 10.742268041237pt;" aria-label="Autopsy (16 items)">Autopsy</a>
+<a href="https://cyberforensicator.com/tag/belkasoft/" class="tag-cloud-link tag-link-107 tag-link-position-4" style="font-size: 10.164948453608pt;" aria-label="Belkasoft (13 items)">Belkasoft</a>
+<a href="https://cyberforensicator.com/tag/blue-team/" class="tag-cloud-link tag-link-214 tag-link-position-5" style="font-size: 8.360824742268pt;" aria-label="blue team (7 items)">blue team</a>
+<a href="https://cyberforensicator.com/tag/cloud-forensics/" class="tag-cloud-link tag-link-103 tag-link-position-6" style="font-size: 12.618556701031pt;" aria-label="cloud forensics (30 items)">cloud forensics</a>
+<a href="https://cyberforensicator.com/tag/computer-forensics/" class="tag-cloud-link tag-link-63 tag-link-position-7" style="font-size: 20.917525773196pt;" aria-label="computer forensics (440 items)">computer forensics</a>
+<a href="https://cyberforensicator.com/tag/computer-forensics-software/" class="tag-cloud-link tag-link-88 tag-link-position-8" style="font-size: 18.103092783505pt;" aria-label="computer forensics software (178 items)">computer forensics software</a>
+<a href="https://cyberforensicator.com/tag/cyber-crime/" class="tag-cloud-link tag-link-151 tag-link-position-9" style="font-size: 12.185567010309pt;" aria-label="cyber crime (26 items)">cyber crime</a>
+<a href="https://cyberforensicator.com/tag/cyber-forensics/" class="tag-cloud-link tag-link-86 tag-link-position-10" style="font-size: 21.278350515464pt;" aria-label="cyber forensics (487 items)">cyber forensics</a>
+<a href="https://cyberforensicator.com/tag/dfir/" class="tag-cloud-link tag-link-58 tag-link-position-11" style="font-size: 22pt;" aria-label="DFIR (614 items)">DFIR</a>
+<a href="https://cyberforensicator.com/tag/digital-forensics/" class="tag-cloud-link tag-link-59 tag-link-position-12" style="font-size: 21.855670103093pt;" aria-label="digital forensics (586 items)">digital forensics</a>
+<a href="https://cyberforensicator.com/tag/digital-forensics-software/" class="tag-cloud-link tag-link-87 tag-link-position-13" style="font-size: 17.814432989691pt;" aria-label="digital forensics software (163 items)">digital forensics software</a>
+<a href="https://cyberforensicator.com/tag/digital-investigations/" class="tag-cloud-link tag-link-95 tag-link-position-14" style="font-size: 20.051546391753pt;" aria-label="digital investigations (327 items)">digital investigations</a>
+<a href="https://cyberforensicator.com/tag/event-logs-forensics/" class="tag-cloud-link tag-link-159 tag-link-position-15" style="font-size: 8.7216494845361pt;" aria-label="event logs forensics (8 items)">event logs forensics</a>
+<a href="https://cyberforensicator.com/tag/forensic-imaging/" class="tag-cloud-link tag-link-178 tag-link-position-16" style="font-size: 8.7216494845361pt;" aria-label="forensic imaging (8 items)">forensic imaging</a>
+<a href="https://cyberforensicator.com/tag/forensic-tools/" class="tag-cloud-link tag-link-57 tag-link-position-17" style="font-size: 19.041237113402pt;" aria-label="forensic tools (238 items)">forensic tools</a>
+<a href="https://cyberforensicator.com/tag/incident-response/" class="tag-cloud-link tag-link-66 tag-link-position-18" style="font-size: 16.587628865979pt;" aria-label="incident response (108 items)">incident response</a>
+<a href="https://cyberforensicator.com/tag/ios-forensics/" class="tag-cloud-link tag-link-62 tag-link-position-19" style="font-size: 13.556701030928pt;" aria-label="ios forensics (41 items)">ios forensics</a>
+<a href="https://cyberforensicator.com/tag/iot-forensics/" class="tag-cloud-link tag-link-234 tag-link-position-20" style="font-size: 9.8762886597938pt;" aria-label="IoT forensics (12 items)">IoT forensics</a>
+<a href="https://cyberforensicator.com/tag/ir/" class="tag-cloud-link tag-link-65 tag-link-position-21" style="font-size: 16.298969072165pt;" aria-label="IR (99 items)">IR</a>
+<a href="https://cyberforensicator.com/tag/linux-forensics/" class="tag-cloud-link tag-link-130 tag-link-position-22" style="font-size: 13.123711340206pt;" aria-label="linux forensics (35 items)">linux forensics</a>
+<a href="https://cyberforensicator.com/tag/macos-forensics/" class="tag-cloud-link tag-link-232 tag-link-position-23" style="font-size: 14.278350515464pt;" aria-label="macOS forensics (52 items)">macOS forensics</a>
+<a href="https://cyberforensicator.com/tag/mac-os-x-forensics/" class="tag-cloud-link tag-link-298 tag-link-position-24" style="font-size: 13.123711340206pt;" aria-label="Mac OS X forensics (35 items)">Mac OS X forensics</a>
+<a href="https://cyberforensicator.com/tag/magnet-forensics/" class="tag-cloud-link tag-link-241 tag-link-position-25" style="font-size: 8.7216494845361pt;" aria-label="Magnet Forensics (8 items)">Magnet Forensics</a>
+<a href="https://cyberforensicator.com/tag/malware-analysis/" class="tag-cloud-link tag-link-83 tag-link-position-26" style="font-size: 14.927835051546pt;" aria-label="malware analysis (63 items)">malware analysis</a>
+<a href="https://cyberforensicator.com/tag/malware-forensics/" class="tag-cloud-link tag-link-82 tag-link-position-27" style="font-size: 16.371134020619pt;" aria-label="malware forensics (101 items)">malware forensics</a>
+<a href="https://cyberforensicator.com/tag/malware-hunting/" class="tag-cloud-link tag-link-64 tag-link-position-28" style="font-size: 14.711340206186pt;" aria-label="malware hunting (59 items)">malware hunting</a>
+<a href="https://cyberforensicator.com/tag/memory-forensics/" class="tag-cloud-link tag-link-67 tag-link-position-29" style="font-size: 14.783505154639pt;" aria-label="memory forensics (60 items)">memory forensics</a>
+<a href="https://cyberforensicator.com/tag/memory-forensics-software/" class="tag-cloud-link tag-link-68 tag-link-position-30" style="font-size: 10.164948453608pt;" aria-label="memory forensics software (13 items)">memory forensics software</a>
+<a href="https://cyberforensicator.com/tag/mobile-forensics/" class="tag-cloud-link tag-link-60 tag-link-position-31" style="font-size: 15.505154639175pt;" aria-label="mobile forensics (77 items)">mobile forensics</a>
+<a href="https://cyberforensicator.com/tag/network-forensics/" class="tag-cloud-link tag-link-153 tag-link-position-32" style="font-size: 10.525773195876pt;" aria-label="network forensics (15 items)">network forensics</a>
+<a href="https://cyberforensicator.com/tag/os-x-forensics/" class="tag-cloud-link tag-link-85 tag-link-position-33" style="font-size: 13.701030927835pt;" aria-label="OS X forensics (43 items)">OS X forensics</a>
+<a href="https://cyberforensicator.com/tag/powershell-forensics/" class="tag-cloud-link tag-link-278 tag-link-position-34" style="font-size: 8.360824742268pt;" aria-label="PowerShell forensics (7 items)">PowerShell forensics</a>
+<a href="https://cyberforensicator.com/tag/registry-forensics/" class="tag-cloud-link tag-link-316 tag-link-position-35" style="font-size: 10.164948453608pt;" aria-label="registry forensics (13 items)">registry forensics</a>
+<a href="https://cyberforensicator.com/tag/richard-davis/" class="tag-cloud-link tag-link-297 tag-link-position-36" style="font-size: 11.39175257732pt;" aria-label="Richard Davis (20 items)">Richard Davis</a>
+<a href="https://cyberforensicator.com/tag/sans/" class="tag-cloud-link tag-link-222 tag-link-position-37" style="font-size: 12.041237113402pt;" aria-label="SANS (25 items)">SANS</a>
+<a href="https://cyberforensicator.com/tag/the-sleuth-kit/" class="tag-cloud-link tag-link-149 tag-link-position-38" style="font-size: 9.659793814433pt;" aria-label="The Sleuth Kit (11 items)">The Sleuth Kit</a>
+<a href="https://cyberforensicator.com/tag/threat-hunting/" class="tag-cloud-link tag-link-169 tag-link-position-39" style="font-size: 10.742268041237pt;" aria-label="threat hunting (16 items)">threat hunting</a>
+<a href="https://cyberforensicator.com/tag/usb-forensics/" class="tag-cloud-link tag-link-183 tag-link-position-40" style="font-size: 9.0824742268041pt;" aria-label="usb forensics (9 items)">usb forensics</a>
+<a href="https://cyberforensicator.com/tag/volatility/" class="tag-cloud-link tag-link-114 tag-link-position-41" style="font-size: 10.525773195876pt;" aria-label="Volatility (15 items)">Volatility</a>
+<a href="https://cyberforensicator.com/tag/web-browser-forensics/" class="tag-cloud-link tag-link-144 tag-link-position-42" style="font-size: 8.7216494845361pt;" aria-label="web browser forensics (8 items)">web browser forensics</a>
+<a href="https://cyberforensicator.com/tag/windows-10-forensics/" class="tag-cloud-link tag-link-132 tag-link-position-43" style="font-size: 16.082474226804pt;" aria-label="Windows 10 forensics (92 items)">Windows 10 forensics</a>
+<a href="https://cyberforensicator.com/tag/windows-forensics/" class="tag-cloud-link tag-link-141 tag-link-position-44" style="font-size: 16.587628865979pt;" aria-label="windows forensics (109 items)">windows forensics</a>
+<a href="https://cyberforensicator.com/tag/windows-mobile-forensics/" class="tag-cloud-link tag-link-273 tag-link-position-45" style="font-size: 8pt;" aria-label="windows mobile forensics (6 items)">windows mobile forensics</a></div>
+</div>
+</div>	</div>
+</div>
+
+</div>
+
+						</div>
+						                                                <div class="bdaia-footer">
+	                        
+		<div class="bdaia-footer-widgets" style ="background-color:#04043d;">
+		<div class="bd-container">
+			<div class="bdaia-footer-widgets-area footer-col-three">
+
+									<div id="footer-first" class="footer-widget-inner">
+						<div id="bdaia-social-links-2" class="widget bdaia-widget bdaia-social-links">
+<h4 class="block-title"><span>Follow Us</span></h4>
+<div class="widget-inner">
+			<div class="widget-social-links bdaia-social-io-colored">
+				<div class="bdaia-social-io bdaia-social-io-size-35">
+<a class="none bdaia-io-url-facebook" title="Facebook" href="https://www.facebook.com/weare4n6" target="_blank"><span class="bdaia-io bdaia-io-facebook"></span></a>
+<a class="none bdaia-io-url-twitter" title="Twitter" href="https://twitter.com/Weare4n6" target="_blank"><span class="bdaia-io bdaia-io-twitter"></span></a>
+<a class="none bdaia-io-url-linkedin" title="LinkedIn" href="https://www.linkedin.com/groups/8466321" target="_blank"><span class="bdaia-io bdaia-io-linkedin2"></span></a>
+</div>			</div>
+		</div>
+</div><div id="bdaia-widget-html-2" class="widget bdaia-widget bdaia-widget-html "><h4 class="block-title"><span>About Us</span></h4>
+<div class="widget-inner">
+Cyber Forensicator is a web-project by Igor Mikhaylov and Oleg Skulkin aiming on collecting all most interesting and important cyber and digital forensics news, articles, presentations, and so on, in one place.</div>
+</div>					</div>
+				
+									<div id="footer-second" class="footer-widget-inner">
+						<div id="bdaia-widget-box1-2" class="widget bdaia-widget bdaia-box1"><h4 class="block-title"><span>Popular Posts</span></h4><div class="widget-inner">
+		<div class="bdaia-wb-wrap bdaia-wb1 bdaia-wb-idWzPcK bdaia-ajax-pagination-" data-box_nu="wb1" data-box_id="bdaia-wb-idWzPcK" data-paged="1" data-sort_order="popular" data-ajax_pagination="" data-num_posts="3" data-tag_slug="" data-cat_uid="" data-cat_uids="" data-max_nu="218" data-total_posts_num="653" data-posts="" data-com_meta="" data-thumbnail="" data-author_meta="" data-date_meta="true" data-review="" >
+
+			<div class="bdaia-wb-content">
+				<div class="bdaia-wb-inner">
+					
+		<div class="bdaia-wb-article bdaia-wba-small bdaiaFadeIn">
+			<article class="with-thumb">
+
+									<div class="bwb-article-img-container">
+													
+							<a href="https://cyberforensicator.com/2017/10/20/open-sourcing-ja3-ssltls-client-fingerprinting-for-malware-detection/">
+								<img width="104" height="74" src="https://cyberforensicator.com/wp-content/uploads/2017/07/hunting_fileless_malware_cyber_forensicator-104x74.jpg" class="attachment-bdaia-small size-bdaia-small wp-post-image" alt="" />							</a>
+											</div>
+				
+				<div class="bwb-article-content-wrapper">
+					<header>
+						<h3 class="entry-title"><a href="https://cyberforensicator.com/2017/10/20/open-sourcing-ja3-ssltls-client-fingerprinting-for-malware-detection/"><span>Open Sourcing JA3: SSL/TLS Client Fingerprinting for Malware Detection</span></a></h3>
+					</header>
+
+					<footer>
+						
+							
+															<div class="bdaia-post-date"><span class="bdayh-date">October 20, 2017</span></div>
+							
+							
+											</footer>
+				</div>
+			</article>
+		</div>
+
+		
+		<div class="bdaia-wb-article bdaia-wba-small bdaiaFadeIn">
+			<article class="with-thumb">
+
+									<div class="bwb-article-img-container">
+													
+							<a href="https://cyberforensicator.com/2018/04/15/cloud-forensics-analyzing-megasync/">
+								<img width="104" height="74" src="https://cyberforensicator.com/wp-content/uploads/2018/04/mega-forensics-104x74.png" class="attachment-bdaia-small size-bdaia-small wp-post-image" alt="" />							</a>
+											</div>
+				
+				<div class="bwb-article-content-wrapper">
+					<header>
+						<h3 class="entry-title"><a href="https://cyberforensicator.com/2018/04/15/cloud-forensics-analyzing-megasync/"><span>Cloud Forensics: Analyzing MEGASync</span></a></h3>
+					</header>
+
+					<footer>
+						
+							
+															<div class="bdaia-post-date"><span class="bdayh-date">April 15, 2018</span></div>
+							
+							
+											</footer>
+				</div>
+			</article>
+		</div>
+
+		
+		<div class="bdaia-wb-article bdaia-wba-small bdaiaFadeIn">
+			<article class="with-thumb">
+
+									<div class="bwb-article-img-container">
+													
+							<a href="https://cyberforensicator.com/2018/06/03/windows-phone-physical-imaging-without-jtag-and-chip-off/">
+								<img width="104" height="74" src="https://cyberforensicator.com/wp-content/uploads/2018/06/Windows-Phone-Forensics-WPinternals-104x74.jpg" class="attachment-bdaia-small size-bdaia-small wp-post-image" alt="" />							</a>
+											</div>
+				
+				<div class="bwb-article-content-wrapper">
+					<header>
+						<h3 class="entry-title"><a href="https://cyberforensicator.com/2018/06/03/windows-phone-physical-imaging-without-jtag-and-chip-off/"><span>Windows Phone Physical Imaging Without JTAG and Chip-off</span></a></h3>
+					</header>
+
+					<footer>
+						
+							
+															<div class="bdaia-post-date"><span class="bdayh-date">June 3, 2018</span></div>
+							
+							
+											</footer>
+				</div>
+			</article>
+		</div>
+
+						</div>
+				<div class="bdayh-posts-load-wait">
+					<div class="sk-circle"><div class="sk-circle1 sk-child"></div><div class="sk-circle2 sk-child"></div><div class="sk-circle3 sk-child"></div><div class="sk-circle4 sk-child"></div><div class="sk-circle5 sk-child"></div><div class="sk-circle6 sk-child"></div><div class="sk-circle7 sk-child"></div><div class="sk-circle8 sk-child"></div><div class="sk-circle9 sk-child"></div><div class="sk-circle10 sk-child"></div><div class="sk-circle11 sk-child"></div><div class="sk-circle12 sk-child"></div></div>
+				</div>
+			</div>
+
+					</div>
+
+		</div></div>					</div>
+				
+									<div id="footer-third" class="footer-widget-inner">
+						<div id="bdaia-widget-timeline-2" class="widget bdaia-widget bdaia-widget-timeline">
+<h4 class="block-title"><span>Timeline</span></h4>
+<div class="widget-inner">
+			<ul>
+										<li>
+							<a href="https://cyberforensicator.com/2021/03/04/find-out-what-happened-during-a-ransomware-attack-on-computer/">
+								<span class="bdayh-date">March 4, 2021</span>								<h3>Find out what happened during a ransomware attack on computer</h3>
+							</a>
+						</li>
+												<li>
+							<a href="https://cyberforensicator.com/2021/01/24/analyzing-videos-with-multiple-video-streams-in-digital-forensics/">
+								<span class="bdayh-date">January 24, 2021</span>								<h3>Analyzing videos with multiple video streams in digital forensics</h3>
+							</a>
+						</li>
+												<li>
+							<a href="https://cyberforensicator.com/2020/12/19/pc3000-portable-iii-in-digital-forensics/">
+								<span class="bdayh-date">December 19, 2020</span>								<h3>PC3000 Portable III in Digital Forensics</h3>
+							</a>
+						</li>
+												<li>
+							<a href="https://cyberforensicator.com/2020/12/18/how-to-analyze-different-types-of-devices-and-find-connections-between-them/">
+								<span class="bdayh-date">December 18, 2020</span>								<h3>How to analyze different types of devices and find connections between them</h3>
+							</a>
+						</li>
+												<li>
+							<a href="https://cyberforensicator.com/2020/07/05/threat-hunting-what-it-is-and-what-it-is-not/">
+								<span class="bdayh-date">July 5, 2020</span>								<h3>Threat Hunting: What it Is, and What it Is Not</h3>
+							</a>
+						</li>
+									</ul>
+		</div>
+</div>					</div>
+				
+				
+			</div>
+		</div>
+	</div><!--Widgets/-->
+
+	                        <style type="text/css">div.bdaia-footer div.bdaia-footer-area, div.bdaia-footer div.bdaia-footer-area a{color: #ffffff;}</style>
+	                        
+	                        <div class="bdaia-footer-area" style ="background-color:#04043d;">
+		                        <div class="bd-container">
+			                        <div class="bdaia-footer-area-l">
+				                        <span class="copyright"><a href="http://cyberforensicator.com">CyberForensicator.com</a> © Copyright 2016-2021, All Rights Reserved</span>			                        </div>
+			                        <div class="bdaia-footer-area-r">
+				                        					                        <div class="bdaia-social-io bdaia-social-io-size-32">
+<a class=" bdaia-io-url-facebook" title="Facebook" href="https://www.facebook.com/weare4n6" target="_blank"><span class="bdaia-io bdaia-io-facebook"></span></a>
+<a class=" bdaia-io-url-twitter" title="Twitter" href="https://twitter.com/Weare4n6" target="_blank"><span class="bdaia-io bdaia-io-twitter"></span></a>
+<a class=" bdaia-io-url-linkedin" title="LinkedIn" href="https://www.linkedin.com/groups/8466321" target="_blank"><span class="bdaia-io bdaia-io-linkedin2"></span></a>
+</div>				                        			                        </div>
+		                        </div>
+	                        </div>
+                        </div><!--.bdaia-footer/-->
+                    </div>
+                </div>
+            </div><!-- #page/-->
+        </div><!-- .page-outer/-->
+
+		<div id="woohoo-login-join">
+			<div class="woohoo-login-join-wrapper woohoo-login-join-onlogin">
+				<div class="woohoo-login-join-inner">
+					<div class="woohoo-login-join-nav">
+						<p class="woohoo-login-join-nav-title">Login</p>
+						<p class="woohoo-login-join-nav-icon"><span class="bdaia-io bdaia-io-user"></span></p>
+					</div>
+					<div class="woohoo-login-join-contnet">
+						<div class="woohoo-login-join-container" id="woohoo-login" >
+							<div class="woohoo-loginform">
+											<div class="woohoo-loginform-welcome">
+				<span class="we">Welcome!</span><span>Log into your account</span>			</div>
+			
+		<form name="loginform" id="loginform" action="https://cyberforensicator.com/wp-login.php" method="post">
+			
+			<p class="login-username">
+				<label for="user_login">Username or Email Address</label>
+				<input type="text" name="log" id="user_login" class="input" value="" size="20" />
+			</p>
+			<p class="login-password">
+				<label for="user_pass">Password</label>
+				<input type="password" name="pwd" id="user_pass" class="input" value="" size="20" />
+			</p>
+			
+			<p class="login-remember"><label><input name="rememberme" type="checkbox" id="rememberme" value="forever" /> Remember Me</label></p>
+			<p class="login-submit">
+				<input type="submit" name="wp-submit" id="wp-submit" class="button button-primary" value="Log In" />
+				<input type="hidden" name="redirect_to" value="https://cyberforensicator.com/2019/01/20/silence-dissecting-malicious-chm-files-and-performing-forensic-analysis/" />
+			</p>
+			
+		</form>							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <div class="gotop" title="Go Top"><span class="bdaia-io bdaia-io-chevron-up"></span></div><div id="reading-position-indicator"></div>
+<script>
+    </script>	<script type="text/javascript">
+		var c = document.body.className;
+		c = c.replace(/woocommerce-no-js/, 'woocommerce-js');
+		document.body.className = c;
+	</script>
+	<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/widget-ajax.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/framework/shorty/js/blocks.js'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var wpcf7 = {"apiSettings":{"root":"https:\/\/cyberforensicator.com\/wp-json\/contact-form-7\/v1","namespace":"contact-form-7\/v1"}};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/contact-form-7/includes/js/scripts.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var wc_add_to_cart_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","i18n_view_cart":"View cart","cart_url":"https:\/\/cyberforensicator.com\/?page_id=6","is_cart":"","cart_redirect_after_add":"no"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.min.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var woocommerce_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var wc_cart_fragments_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","cart_hash_key":"wc_cart_hash_5bce3f2ff91d7de2cb9b195d346d558b","fragment_name":"wc_fragments_5bce3f2ff91d7de2cb9b195d346d558b","request_timeout":"5000"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/plugins/woocommerce/assets/js/frontend/cart-fragments.min.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/matchMedia.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/matchMedia.addListener.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/jquery.placeholder.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/theia-sticky.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/ilightbox.packed.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/enquire.min.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/min.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/userRating.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/main.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-includes/js/wp-embed.min.js'></script>
+<script type='text/javascript' src='https://cyberforensicator.com/wp-content/themes/woohoo/js/search.js'></script>
+    </body>
+</html>

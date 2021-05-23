@@ -1,0 +1,3219 @@
+<!DOCTYPE html>
+<html dir='ltr' lang='en'>
+<head>
+<meta content='width=device-width, initial-scale=1' name='viewport'/>
+<title>Abusing Windows 10 Narrator&#39;s &#39;Feedback-Hub&#39; URI for Fileless Persistence</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+<!-- Chrome, Firefox OS and Opera -->
+<meta content='#4c5bf0' name='theme-color'/>
+<!-- Windows Phone -->
+<meta content='#4c5bf0' name='msapplication-navbutton-color'/>
+<meta content='blogger' name='generator'/>
+<link href='https://giuliocomi.blogspot.com/favicon.ico' rel='icon' type='image/x-icon'/>
+<link href='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' rel='canonical'/>
+<link rel="alternate" type="application/atom+xml" title="Defensive and offensive security in a nutshell - Atom" href="https://giuliocomi.blogspot.com/feeds/posts/default" />
+<link rel="alternate" type="application/rss+xml" title="Defensive and offensive security in a nutshell - RSS" href="https://giuliocomi.blogspot.com/feeds/posts/default?alt=rss" />
+<link rel="service.post" type="application/atom+xml" title="Defensive and offensive security in a nutshell - Atom" href="https://www.blogger.com/feeds/7173201226003923060/posts/default" />
+
+<link rel="alternate" type="application/atom+xml" title="Defensive and offensive security in a nutshell - Atom" href="https://giuliocomi.blogspot.com/feeds/8188931971017209417/comments/default" />
+<!--Can't find substitution for tag [blog.ieCssRetrofitLinks]-->
+<link href='https://i.ytimg.com/vi/oPKnYO9V8-M/hqdefault.jpg' rel='image_src'/>
+<meta content='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' property='og:url'/>
+<meta content='Abusing Windows 10 Narrator&#39;s &#39;Feedback-Hub&#39; URI for Fileless Persistence' property='og:title'/>
+<meta content='Penetration testing
+Web, Wireless, Network Security' property='og:description'/>
+<meta content='https://lh5.googleusercontent.com/proxy/R4B_SMNfdmjDz_rHeFbIDvSj4rMUhf_2nzKnueGLy43O095tnevTtWg-aA-pud9XsiU6P6CwWyT81YVom-OF8rcATmY=w1200-h630-n-k-no-nu' property='og:image'/>
+<!--[if IE]> <script> (function() { var html5 = ("abbr,article,aside,audio,canvas,datalist,details," + "figure,footer,header,hgroup,mark,menu,meter,nav,output," + "progress,section,time,video").split(','); for (var i = 0; i < html5.length; i++) { document.createElement(html5[i]); } try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {} })(); </script> <![endif]-->
+<style type='text/css'>@font-face{font-family:'Playfair Display';font-style:normal;font-weight:900;src:url(//fonts.gstatic.com/s/playfairdisplay/v22/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKfsunDXbtU.woff)format('woff');}@font-face{font-family:'Roboto';font-style:italic;font-weight:300;src:url(//fonts.gstatic.com/s/roboto/v27/KFOjCnqEu92Fr1Mu51TjASc6CsI.woff)format('woff');}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;src:url(//fonts.gstatic.com/s/roboto/v27/KFOmCnqEu92Fr1Mu4mxM.woff)format('woff');}</style>
+<style id='page-skin-1' type='text/css'><!--
+/*! normalize.css v3.0.1 | MIT License | git.io/normalize */html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:bold}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-0.5em}sub{bottom:-0.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:.35em .625em .75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:bold}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+/*!************************************************
+* Blogger Template Style
+* Name: Contempo
+**************************************************/
+body{
+overflow-wrap:break-word;
+word-break:break-word;
+word-wrap:break-word
+}
+.hidden{
+display:none
+}
+.invisible{
+visibility:hidden
+}
+.container::after,.float-container::after{
+clear:both;
+content:"";
+display:table
+}
+.clearboth{
+clear:both
+}
+#comments .comment .comment-actions,.subscribe-popup .FollowByEmail .follow-by-email-submit,.widget.Profile .profile-link,.widget.Profile .profile-link.visit-profile{
+background:0 0;
+border:0;
+box-shadow:none;
+color:#091380;
+cursor:pointer;
+font-size:14px;
+font-weight:700;
+outline:0;
+text-decoration:none;
+text-transform:uppercase;
+width:auto
+}
+.dim-overlay{
+background-color:rgba(0,0,0,.54);
+height:100vh;
+left:0;
+position:fixed;
+top:0;
+width:100%
+}
+#sharing-dim-overlay{
+background-color:transparent
+}
+input::-ms-clear{
+display:none
+}
+.blogger-logo,.svg-icon-24.blogger-logo{
+fill:#ff9800;
+opacity:1
+}
+.loading-spinner-large{
+-webkit-animation:mspin-rotate 1.568s infinite linear;
+animation:mspin-rotate 1.568s infinite linear;
+height:48px;
+overflow:hidden;
+position:absolute;
+width:48px;
+z-index:200
+}
+.loading-spinner-large>div{
+-webkit-animation:mspin-revrot 5332ms infinite steps(4);
+animation:mspin-revrot 5332ms infinite steps(4)
+}
+.loading-spinner-large>div>div{
+-webkit-animation:mspin-singlecolor-large-film 1333ms infinite steps(81);
+animation:mspin-singlecolor-large-film 1333ms infinite steps(81);
+background-size:100%;
+height:48px;
+width:3888px
+}
+.mspin-black-large>div>div,.mspin-grey_54-large>div>div{
+background-image:url(https://www.blogblog.com/indie/mspin_black_large.svg)
+}
+.mspin-white-large>div>div{
+background-image:url(https://www.blogblog.com/indie/mspin_white_large.svg)
+}
+.mspin-grey_54-large{
+opacity:.54
+}
+@-webkit-keyframes mspin-singlecolor-large-film{
+from{
+-webkit-transform:translateX(0);
+transform:translateX(0)
+}
+to{
+-webkit-transform:translateX(-3888px);
+transform:translateX(-3888px)
+}
+}
+@keyframes mspin-singlecolor-large-film{
+from{
+-webkit-transform:translateX(0);
+transform:translateX(0)
+}
+to{
+-webkit-transform:translateX(-3888px);
+transform:translateX(-3888px)
+}
+}
+@-webkit-keyframes mspin-rotate{
+from{
+-webkit-transform:rotate(0);
+transform:rotate(0)
+}
+to{
+-webkit-transform:rotate(360deg);
+transform:rotate(360deg)
+}
+}
+@keyframes mspin-rotate{
+from{
+-webkit-transform:rotate(0);
+transform:rotate(0)
+}
+to{
+-webkit-transform:rotate(360deg);
+transform:rotate(360deg)
+}
+}
+@-webkit-keyframes mspin-revrot{
+from{
+-webkit-transform:rotate(0);
+transform:rotate(0)
+}
+to{
+-webkit-transform:rotate(-360deg);
+transform:rotate(-360deg)
+}
+}
+@keyframes mspin-revrot{
+from{
+-webkit-transform:rotate(0);
+transform:rotate(0)
+}
+to{
+-webkit-transform:rotate(-360deg);
+transform:rotate(-360deg)
+}
+}
+.skip-navigation{
+background-color:#fff;
+box-sizing:border-box;
+color:#000;
+display:block;
+height:0;
+left:0;
+line-height:50px;
+overflow:hidden;
+padding-top:0;
+position:fixed;
+text-align:center;
+top:0;
+-webkit-transition:box-shadow .3s,height .3s,padding-top .3s;
+transition:box-shadow .3s,height .3s,padding-top .3s;
+width:100%;
+z-index:900
+}
+.skip-navigation:focus{
+box-shadow:0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12),0 2px 4px -1px rgba(0,0,0,.2);
+height:50px
+}
+#main{
+outline:0
+}
+.main-heading{
+position:absolute;
+clip:rect(1px,1px,1px,1px);
+padding:0;
+border:0;
+height:1px;
+width:1px;
+overflow:hidden
+}
+.Attribution{
+margin-top:1em;
+text-align:center
+}
+.Attribution .blogger img,.Attribution .blogger svg{
+vertical-align:bottom
+}
+.Attribution .blogger img{
+margin-right:.5em
+}
+.Attribution div{
+line-height:24px;
+margin-top:.5em
+}
+.Attribution .copyright,.Attribution .image-attribution{
+font-size:.7em;
+margin-top:1.5em
+}
+.BLOG_mobile_video_class{
+display:none
+}
+.bg-photo{
+background-attachment:scroll!important
+}
+body .CSS_LIGHTBOX{
+z-index:900
+}
+.extendable .show-less,.extendable .show-more{
+border-color:#091380;
+color:#091380;
+margin-top:8px
+}
+.extendable .show-less.hidden,.extendable .show-more.hidden{
+display:none
+}
+.inline-ad{
+display:none;
+max-width:100%;
+overflow:hidden
+}
+.adsbygoogle{
+display:block
+}
+#cookieChoiceInfo{
+bottom:0;
+top:auto
+}
+iframe.b-hbp-video{
+border:0
+}
+.post-body img{
+max-width:100%
+}
+.post-body iframe{
+max-width:100%
+}
+.post-body a[imageanchor="1"]{
+display:inline-block
+}
+.byline{
+margin-right:1em
+}
+.byline:last-child{
+margin-right:0
+}
+.link-copied-dialog{
+max-width:520px;
+outline:0
+}
+.link-copied-dialog .modal-dialog-buttons{
+margin-top:8px
+}
+.link-copied-dialog .goog-buttonset-default{
+background:0 0;
+border:0
+}
+.link-copied-dialog .goog-buttonset-default:focus{
+outline:0
+}
+.paging-control-container{
+margin-bottom:16px
+}
+.paging-control-container .paging-control{
+display:inline-block
+}
+.paging-control-container .comment-range-text::after,.paging-control-container .paging-control{
+color:#091380
+}
+.paging-control-container .comment-range-text,.paging-control-container .paging-control{
+margin-right:8px
+}
+.paging-control-container .comment-range-text::after,.paging-control-container .paging-control::after{
+content:"\b7";
+cursor:default;
+padding-left:8px;
+pointer-events:none
+}
+.paging-control-container .comment-range-text:last-child::after,.paging-control-container .paging-control:last-child::after{
+content:none
+}
+.byline.reactions iframe{
+height:20px
+}
+.b-notification{
+color:#000;
+background-color:#fff;
+border-bottom:solid 1px #000;
+box-sizing:border-box;
+padding:16px 32px;
+text-align:center
+}
+.b-notification.visible{
+-webkit-transition:margin-top .3s cubic-bezier(.4,0,.2,1);
+transition:margin-top .3s cubic-bezier(.4,0,.2,1)
+}
+.b-notification.invisible{
+position:absolute
+}
+.b-notification-close{
+position:absolute;
+right:8px;
+top:8px
+}
+.no-posts-message{
+line-height:40px;
+text-align:center
+}
+@media screen and (max-width:800px){
+body.item-view .post-body a[imageanchor="1"][style*="float: left;"],body.item-view .post-body a[imageanchor="1"][style*="float: right;"]{
+float:none!important;
+clear:none!important
+}
+body.item-view .post-body a[imageanchor="1"] img{
+display:block;
+height:auto;
+margin:0 auto
+}
+body.item-view .post-body>.separator:first-child>a[imageanchor="1"]:first-child{
+margin-top:20px
+}
+.post-body a[imageanchor]{
+display:block
+}
+body.item-view .post-body a[imageanchor="1"]{
+margin-left:0!important;
+margin-right:0!important
+}
+body.item-view .post-body a[imageanchor="1"]+a[imageanchor="1"]{
+margin-top:16px
+}
+}
+.item-control{
+display:none
+}
+#comments{
+border-top:1px dashed rgba(0,0,0,.54);
+margin-top:20px;
+padding:20px
+}
+#comments .comment-thread ol{
+margin:0;
+padding-left:0;
+padding-left:0
+}
+#comments .comment .comment-replybox-single,#comments .comment-thread .comment-replies{
+margin-left:60px
+}
+#comments .comment-thread .thread-count{
+display:none
+}
+#comments .comment{
+list-style-type:none;
+padding:0 0 30px;
+position:relative
+}
+#comments .comment .comment{
+padding-bottom:8px
+}
+.comment .avatar-image-container{
+position:absolute
+}
+.comment .avatar-image-container img{
+border-radius:50%
+}
+.avatar-image-container svg,.comment .avatar-image-container .avatar-icon{
+border-radius:50%;
+border:solid 1px #5e5e5e;
+box-sizing:border-box;
+fill:#5e5e5e;
+height:35px;
+margin:0;
+padding:7px;
+width:35px
+}
+.comment .comment-block{
+margin-top:10px;
+margin-left:60px;
+padding-bottom:0
+}
+#comments .comment-author-header-wrapper{
+margin-left:40px
+}
+#comments .comment .thread-expanded .comment-block{
+padding-bottom:20px
+}
+#comments .comment .comment-header .user,#comments .comment .comment-header .user a{
+color:#000000;
+font-style:normal;
+font-weight:700
+}
+#comments .comment .comment-actions{
+bottom:0;
+margin-bottom:15px;
+position:absolute
+}
+#comments .comment .comment-actions>*{
+margin-right:8px
+}
+#comments .comment .comment-header .datetime{
+bottom:0;
+color:rgba(0,0,0,.54);
+display:inline-block;
+font-size:13px;
+font-style:italic;
+margin-left:8px
+}
+#comments .comment .comment-footer .comment-timestamp a,#comments .comment .comment-header .datetime a{
+color:rgba(0,0,0,.54)
+}
+#comments .comment .comment-content,.comment .comment-body{
+margin-top:12px;
+word-break:break-word
+}
+.comment-body{
+margin-bottom:12px
+}
+#comments.embed[data-num-comments="0"]{
+border:0;
+margin-top:0;
+padding-top:0
+}
+#comments.embed[data-num-comments="0"] #comment-post-message,#comments.embed[data-num-comments="0"] div.comment-form>p,#comments.embed[data-num-comments="0"] p.comment-footer{
+display:none
+}
+#comment-editor-src{
+display:none
+}
+.comments .comments-content .loadmore.loaded{
+max-height:0;
+opacity:0;
+overflow:hidden
+}
+.extendable .remaining-items{
+height:0;
+overflow:hidden;
+-webkit-transition:height .3s cubic-bezier(.4,0,.2,1);
+transition:height .3s cubic-bezier(.4,0,.2,1)
+}
+.extendable .remaining-items.expanded{
+height:auto
+}
+.svg-icon-24,.svg-icon-24-button{
+cursor:pointer;
+height:24px;
+width:24px;
+min-width:24px
+}
+.touch-icon{
+margin:-12px;
+padding:12px
+}
+.touch-icon:active,.touch-icon:focus{
+background-color:rgba(153,153,153,.4);
+border-radius:50%
+}
+svg:not(:root).touch-icon{
+overflow:visible
+}
+html[dir=rtl] .rtl-reversible-icon{
+-webkit-transform:scaleX(-1);
+-ms-transform:scaleX(-1);
+transform:scaleX(-1)
+}
+.svg-icon-24-button,.touch-icon-button{
+background:0 0;
+border:0;
+margin:0;
+outline:0;
+padding:0
+}
+.touch-icon-button .touch-icon:active,.touch-icon-button .touch-icon:focus{
+background-color:transparent
+}
+.touch-icon-button:active .touch-icon,.touch-icon-button:focus .touch-icon{
+background-color:rgba(153,153,153,.4);
+border-radius:50%
+}
+.Profile .default-avatar-wrapper .avatar-icon{
+border-radius:50%;
+border:solid 1px #5e5e5e;
+box-sizing:border-box;
+fill:#5e5e5e;
+margin:0
+}
+.Profile .individual .default-avatar-wrapper .avatar-icon{
+padding:25px
+}
+.Profile .individual .avatar-icon,.Profile .individual .profile-img{
+height:120px;
+width:120px
+}
+.Profile .team .default-avatar-wrapper .avatar-icon{
+padding:8px
+}
+.Profile .team .avatar-icon,.Profile .team .default-avatar-wrapper,.Profile .team .profile-img{
+height:40px;
+width:40px
+}
+.snippet-container{
+margin:0;
+position:relative;
+overflow:hidden
+}
+.snippet-fade{
+bottom:0;
+box-sizing:border-box;
+position:absolute;
+width:96px
+}
+.snippet-fade{
+right:0
+}
+.snippet-fade:after{
+content:"\2026"
+}
+.snippet-fade:after{
+float:right
+}
+.post-bottom{
+-webkit-box-align:center;
+-webkit-align-items:center;
+-ms-flex-align:center;
+align-items:center;
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex;
+-webkit-flex-wrap:wrap;
+-ms-flex-wrap:wrap;
+flex-wrap:wrap
+}
+.post-footer{
+-webkit-box-flex:1;
+-webkit-flex:1 1 auto;
+-ms-flex:1 1 auto;
+flex:1 1 auto;
+-webkit-flex-wrap:wrap;
+-ms-flex-wrap:wrap;
+flex-wrap:wrap;
+-webkit-box-ordinal-group:2;
+-webkit-order:1;
+-ms-flex-order:1;
+order:1
+}
+.post-footer>*{
+-webkit-box-flex:0;
+-webkit-flex:0 1 auto;
+-ms-flex:0 1 auto;
+flex:0 1 auto
+}
+.post-footer .byline:last-child{
+margin-right:1em
+}
+.jump-link{
+-webkit-box-flex:0;
+-webkit-flex:0 0 auto;
+-ms-flex:0 0 auto;
+flex:0 0 auto;
+-webkit-box-ordinal-group:3;
+-webkit-order:2;
+-ms-flex-order:2;
+order:2
+}
+.centered-top-container.sticky{
+left:0;
+position:fixed;
+right:0;
+top:0;
+width:auto;
+z-index:50;
+-webkit-transition-property:opacity,-webkit-transform;
+transition-property:opacity,-webkit-transform;
+transition-property:transform,opacity;
+transition-property:transform,opacity,-webkit-transform;
+-webkit-transition-duration:.2s;
+transition-duration:.2s;
+-webkit-transition-timing-function:cubic-bezier(.4,0,.2,1);
+transition-timing-function:cubic-bezier(.4,0,.2,1)
+}
+.centered-top-placeholder{
+display:none
+}
+.collapsed-header .centered-top-placeholder{
+display:block
+}
+.centered-top-container .Header .replaced h1,.centered-top-placeholder .Header .replaced h1{
+display:none
+}
+.centered-top-container.sticky .Header .replaced h1{
+display:block
+}
+.centered-top-container.sticky .Header .header-widget{
+background:0 0
+}
+.centered-top-container.sticky .Header .header-image-wrapper{
+display:none
+}
+.centered-top-container img,.centered-top-placeholder img{
+max-width:100%
+}
+.collapsible{
+-webkit-transition:height .3s cubic-bezier(.4,0,.2,1);
+transition:height .3s cubic-bezier(.4,0,.2,1)
+}
+.collapsible,.collapsible>summary{
+display:block;
+overflow:hidden
+}
+.collapsible>:not(summary){
+display:none
+}
+.collapsible[open]>:not(summary){
+display:block
+}
+.collapsible:focus,.collapsible>summary:focus{
+outline:0
+}
+.collapsible>summary{
+cursor:pointer;
+display:block;
+padding:0
+}
+.collapsible:focus>summary,.collapsible>summary:focus{
+background-color:transparent
+}
+.collapsible>summary::-webkit-details-marker{
+display:none
+}
+.collapsible-title{
+-webkit-box-align:center;
+-webkit-align-items:center;
+-ms-flex-align:center;
+align-items:center;
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex
+}
+.collapsible-title .title{
+-webkit-box-flex:1;
+-webkit-flex:1 1 auto;
+-ms-flex:1 1 auto;
+flex:1 1 auto;
+-webkit-box-ordinal-group:1;
+-webkit-order:0;
+-ms-flex-order:0;
+order:0;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
+}
+.collapsible-title .chevron-down,.collapsible[open] .collapsible-title .chevron-up{
+display:block
+}
+.collapsible-title .chevron-up,.collapsible[open] .collapsible-title .chevron-down{
+display:none
+}
+.flat-button{
+cursor:pointer;
+display:inline-block;
+font-weight:700;
+text-transform:uppercase;
+border-radius:2px;
+padding:8px;
+margin:-8px
+}
+.flat-icon-button{
+background:0 0;
+border:0;
+margin:0;
+outline:0;
+padding:0;
+margin:-12px;
+padding:12px;
+cursor:pointer;
+box-sizing:content-box;
+display:inline-block;
+line-height:0
+}
+.flat-icon-button,.flat-icon-button .splash-wrapper{
+border-radius:50%
+}
+.flat-icon-button .splash.animate{
+-webkit-animation-duration:.3s;
+animation-duration:.3s
+}
+.overflowable-container{
+max-height:46px;
+overflow:hidden;
+position:relative
+}
+.overflow-button{
+cursor:pointer
+}
+#overflowable-dim-overlay{
+background:0 0
+}
+.overflow-popup{
+box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+background-color:#fff8f6;
+left:0;
+max-width:calc(100% - 32px);
+position:absolute;
+top:0;
+visibility:hidden;
+z-index:101
+}
+.overflow-popup ul{
+list-style:none
+}
+.overflow-popup .tabs li,.overflow-popup li{
+display:block;
+height:auto
+}
+.overflow-popup .tabs li{
+padding-left:0;
+padding-right:0
+}
+.overflow-button.hidden,.overflow-popup .tabs li.hidden,.overflow-popup li.hidden{
+display:none
+}
+.pill-button{
+background:0 0;
+border:1px solid;
+border-radius:12px;
+cursor:pointer;
+display:inline-block;
+padding:4px 16px;
+text-transform:uppercase
+}
+.ripple{
+position:relative
+}
+.ripple>*{
+z-index:1
+}
+.splash-wrapper{
+bottom:0;
+left:0;
+overflow:hidden;
+pointer-events:none;
+position:absolute;
+right:0;
+top:0;
+z-index:0
+}
+.splash{
+background:#ccc;
+border-radius:100%;
+display:block;
+opacity:.6;
+position:absolute;
+-webkit-transform:scale(0);
+-ms-transform:scale(0);
+transform:scale(0)
+}
+.splash.animate{
+-webkit-animation:ripple-effect .4s linear;
+animation:ripple-effect .4s linear
+}
+@-webkit-keyframes ripple-effect{
+100%{
+opacity:0;
+-webkit-transform:scale(2.5);
+transform:scale(2.5)
+}
+}
+@keyframes ripple-effect{
+100%{
+opacity:0;
+-webkit-transform:scale(2.5);
+transform:scale(2.5)
+}
+}
+.search{
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex;
+line-height:24px;
+width:24px
+}
+.search.focused{
+width:100%
+}
+.search.focused .section{
+width:100%
+}
+.search form{
+z-index:101
+}
+.search h3{
+display:none
+}
+.search form{
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex;
+-webkit-box-flex:1;
+-webkit-flex:1 0 0;
+-ms-flex:1 0 0px;
+flex:1 0 0;
+border-bottom:solid 1px transparent;
+padding-bottom:8px
+}
+.search form>*{
+display:none
+}
+.search.focused form>*{
+display:block
+}
+.search .search-input label{
+display:none
+}
+.centered-top-placeholder.cloned .search form{
+z-index:30
+}
+.search.focused form{
+border-color:#ffffff;
+position:relative;
+width:auto
+}
+.collapsed-header .centered-top-container .search.focused form{
+border-bottom-color:transparent
+}
+.search-expand{
+-webkit-box-flex:0;
+-webkit-flex:0 0 auto;
+-ms-flex:0 0 auto;
+flex:0 0 auto
+}
+.search-expand-text{
+display:none
+}
+.search-close{
+display:inline;
+vertical-align:middle
+}
+.search-input{
+-webkit-box-flex:1;
+-webkit-flex:1 0 1px;
+-ms-flex:1 0 1px;
+flex:1 0 1px
+}
+.search-input input{
+background:0 0;
+border:0;
+box-sizing:border-box;
+color:#ffffff;
+display:inline-block;
+outline:0;
+width:calc(100% - 48px)
+}
+.search-input input.no-cursor{
+color:transparent;
+text-shadow:0 0 0 #ffffff
+}
+.collapsed-header .centered-top-container .search-action,.collapsed-header .centered-top-container .search-input input{
+color:#000000
+}
+.collapsed-header .centered-top-container .search-input input.no-cursor{
+color:transparent;
+text-shadow:0 0 0 #000000
+}
+.collapsed-header .centered-top-container .search-input input.no-cursor:focus,.search-input input.no-cursor:focus{
+outline:0
+}
+.search-focused>*{
+visibility:hidden
+}
+.search-focused .search,.search-focused .search-icon{
+visibility:visible
+}
+.search.focused .search-action{
+display:block
+}
+.search.focused .search-action:disabled{
+opacity:.3
+}
+.widget.Sharing .sharing-button{
+display:none
+}
+.widget.Sharing .sharing-buttons li{
+padding:0
+}
+.widget.Sharing .sharing-buttons li span{
+display:none
+}
+.post-share-buttons{
+position:relative
+}
+.centered-bottom .share-buttons .svg-icon-24,.share-buttons .svg-icon-24{
+fill:#707070
+}
+.sharing-open.touch-icon-button:active .touch-icon,.sharing-open.touch-icon-button:focus .touch-icon{
+background-color:transparent
+}
+.share-buttons{
+background-color:#fff8f6;
+border-radius:2px;
+box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+color:#5e5e5e;
+list-style:none;
+margin:0;
+padding:8px 0;
+position:absolute;
+top:-11px;
+min-width:200px;
+z-index:101
+}
+.share-buttons.hidden{
+display:none
+}
+.sharing-button{
+background:0 0;
+border:0;
+margin:0;
+outline:0;
+padding:0;
+cursor:pointer
+}
+.share-buttons li{
+margin:0;
+height:48px
+}
+.share-buttons li:last-child{
+margin-bottom:0
+}
+.share-buttons li .sharing-platform-button{
+box-sizing:border-box;
+cursor:pointer;
+display:block;
+height:100%;
+margin-bottom:0;
+padding:0 16px;
+position:relative;
+width:100%
+}
+.share-buttons li .sharing-platform-button:focus,.share-buttons li .sharing-platform-button:hover{
+background-color:rgba(128,128,128,.1);
+outline:0
+}
+.share-buttons li svg[class*=" sharing-"],.share-buttons li svg[class^=sharing-]{
+position:absolute;
+top:10px
+}
+.share-buttons li span.sharing-platform-button{
+position:relative;
+top:0
+}
+.share-buttons li .platform-sharing-text{
+display:block;
+font-size:16px;
+line-height:48px;
+white-space:nowrap
+}
+.share-buttons li .platform-sharing-text{
+margin-left:56px
+}
+.sidebar-container{
+background-color:#eff1ff;
+max-width:284px;
+overflow-y:auto;
+-webkit-transition-property:-webkit-transform;
+transition-property:-webkit-transform;
+transition-property:transform;
+transition-property:transform,-webkit-transform;
+-webkit-transition-duration:.3s;
+transition-duration:.3s;
+-webkit-transition-timing-function:cubic-bezier(0,0,.2,1);
+transition-timing-function:cubic-bezier(0,0,.2,1);
+width:284px;
+z-index:101;
+-webkit-overflow-scrolling:touch
+}
+.sidebar-container .navigation{
+line-height:0;
+padding:16px
+}
+.sidebar-container .sidebar-back{
+cursor:pointer
+}
+.sidebar-container .widget{
+background:0 0;
+margin:0 16px;
+padding:16px 0
+}
+.sidebar-container .widget .title{
+color:#000000;
+margin:0
+}
+.sidebar-container .widget ul{
+list-style:none;
+margin:0;
+padding:0
+}
+.sidebar-container .widget ul ul{
+margin-left:1em
+}
+.sidebar-container .widget li{
+font-size:16px;
+line-height:normal
+}
+.sidebar-container .widget+.widget{
+border-top:1px dashed #c7c7c7
+}
+.BlogArchive li{
+margin:16px 0
+}
+.BlogArchive li:last-child{
+margin-bottom:0
+}
+.Label li a{
+display:inline-block
+}
+.BlogArchive .post-count,.Label .label-count{
+float:right;
+margin-left:.25em
+}
+.BlogArchive .post-count::before,.Label .label-count::before{
+content:"("
+}
+.BlogArchive .post-count::after,.Label .label-count::after{
+content:")"
+}
+.widget.Translate .skiptranslate>div{
+display:block!important
+}
+.widget.Profile .profile-link{
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex
+}
+.widget.Profile .team-member .default-avatar-wrapper,.widget.Profile .team-member .profile-img{
+-webkit-box-flex:0;
+-webkit-flex:0 0 auto;
+-ms-flex:0 0 auto;
+flex:0 0 auto;
+margin-right:1em
+}
+.widget.Profile .individual .profile-link{
+-webkit-box-orient:vertical;
+-webkit-box-direction:normal;
+-webkit-flex-direction:column;
+-ms-flex-direction:column;
+flex-direction:column
+}
+.widget.Profile .team .profile-link .profile-name{
+-webkit-align-self:center;
+-ms-flex-item-align:center;
+align-self:center;
+display:block;
+-webkit-box-flex:1;
+-webkit-flex:1 1 auto;
+-ms-flex:1 1 auto;
+flex:1 1 auto
+}
+.dim-overlay{
+background-color:rgba(0,0,0,.54);
+z-index:100
+}
+body.sidebar-visible{
+overflow-y:hidden
+}
+@media screen and (max-width:1439px){
+.sidebar-container{
+bottom:0;
+position:fixed;
+top:0;
+left:0;
+right:auto
+}
+.sidebar-container.sidebar-invisible{
+-webkit-transition-timing-function:cubic-bezier(.4,0,.6,1);
+transition-timing-function:cubic-bezier(.4,0,.6,1);
+-webkit-transform:translateX(-284px);
+-ms-transform:translateX(-284px);
+transform:translateX(-284px)
+}
+}
+@media screen and (min-width:1440px){
+.sidebar-container{
+position:absolute;
+top:0;
+left:0;
+right:auto
+}
+.sidebar-container .navigation{
+display:none
+}
+}
+.dialog{
+box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+background:#eff1ff;
+box-sizing:border-box;
+color:#656565;
+padding:30px;
+position:fixed;
+text-align:center;
+width:calc(100% - 24px);
+z-index:101
+}
+.dialog input[type=email],.dialog input[type=text]{
+background-color:transparent;
+border:0;
+border-bottom:solid 1px rgba(101,101,101,.12);
+color:#656565;
+display:block;
+font-family:Roboto, sans-serif;
+font-size:16px;
+line-height:24px;
+margin:auto;
+padding-bottom:7px;
+outline:0;
+text-align:center;
+width:100%
+}
+.dialog input[type=email]::-webkit-input-placeholder,.dialog input[type=text]::-webkit-input-placeholder{
+color:#656565
+}
+.dialog input[type=email]::-moz-placeholder,.dialog input[type=text]::-moz-placeholder{
+color:#656565
+}
+.dialog input[type=email]:-ms-input-placeholder,.dialog input[type=text]:-ms-input-placeholder{
+color:#656565
+}
+.dialog input[type=email]::-ms-input-placeholder,.dialog input[type=text]::-ms-input-placeholder{
+color:#656565
+}
+.dialog input[type=email]::placeholder,.dialog input[type=text]::placeholder{
+color:#656565
+}
+.dialog input[type=email]:focus,.dialog input[type=text]:focus{
+border-bottom:solid 2px #091380;
+padding-bottom:6px
+}
+.dialog input.no-cursor{
+color:transparent;
+text-shadow:0 0 0 #656565
+}
+.dialog input.no-cursor:focus{
+outline:0
+}
+.dialog input.no-cursor:focus{
+outline:0
+}
+.dialog input[type=submit]{
+font-family:Roboto, sans-serif
+}
+.dialog .goog-buttonset-default{
+color:#091380
+}
+.subscribe-popup{
+max-width:364px
+}
+.subscribe-popup h3{
+color:#000000;
+font-size:1.8em;
+margin-top:0
+}
+.subscribe-popup .FollowByEmail h3{
+display:none
+}
+.subscribe-popup .FollowByEmail .follow-by-email-submit{
+color:#091380;
+display:inline-block;
+margin:0 auto;
+margin-top:24px;
+width:auto;
+white-space:normal
+}
+.subscribe-popup .FollowByEmail .follow-by-email-submit:disabled{
+cursor:default;
+opacity:.3
+}
+@media (max-width:800px){
+.blog-name div.widget.Subscribe{
+margin-bottom:16px
+}
+body.item-view .blog-name div.widget.Subscribe{
+margin:8px auto 16px auto;
+width:100%
+}
+}
+.tabs{
+list-style:none
+}
+.tabs li{
+display:inline-block
+}
+.tabs li a{
+cursor:pointer;
+display:inline-block;
+font-weight:700;
+text-transform:uppercase;
+padding:12px 8px
+}
+.tabs .selected{
+border-bottom:4px solid #ffffff
+}
+.tabs .selected a{
+color:#ffffff
+}
+body#layout .bg-photo,body#layout .bg-photo-overlay{
+display:none
+}
+body#layout .page_body{
+padding:0;
+position:relative;
+top:0
+}
+body#layout .page{
+display:inline-block;
+left:inherit;
+position:relative;
+vertical-align:top;
+width:540px
+}
+body#layout .centered{
+max-width:954px
+}
+body#layout .navigation{
+display:none
+}
+body#layout .sidebar-container{
+display:inline-block;
+width:40%
+}
+body#layout .hamburger-menu,body#layout .search{
+display:none
+}
+.centered-top-container .svg-icon-24,body.collapsed-header .centered-top-placeholder .svg-icon-24{
+fill:#ffffff
+}
+.sidebar-container .svg-icon-24{
+fill:#5e5e5e
+}
+.centered-bottom .svg-icon-24,body.collapsed-header .centered-top-container .svg-icon-24{
+fill:#5e5e5e
+}
+.centered-bottom .share-buttons .svg-icon-24,.share-buttons .svg-icon-24{
+fill:#707070
+}
+body{
+background-color:#4c5bf0;
+color:#656565;
+font:15px Roboto, sans-serif;
+margin:0;
+min-height:100vh
+}
+img{
+max-width:100%
+}
+h3{
+color:#656565;
+font-size:16px
+}
+a{
+text-decoration:none;
+color:#091380
+}
+a:visited{
+color:#B33a0d
+}
+a:hover{
+color:#B33a0d
+}
+blockquote{
+color:#000000;
+font:italic 300 15px Roboto, sans-serif;
+font-size:x-large;
+text-align:center
+}
+.pill-button{
+font-size:12px
+}
+.bg-photo-container{
+height:480px;
+overflow:hidden;
+position:absolute;
+width:100%;
+z-index:1
+}
+.bg-photo{
+background:#06004c url(//themes.googleusercontent.com/image?id=1RUMOzjWeRA832TdLQnkO89yQ4381KWiRGRGdfqXIo-81BN4kWkPZpymfS4uw8h5g03IE) no-repeat fixed top center /* Credit: merrymoonmary (http://www.istockphoto.com/file_closeup.php?id=5721536&platform=blogger) */;
+background-attachment:scroll;
+background-size:cover;
+-webkit-filter:blur(0px);
+filter:blur(0px);
+height:calc(100% + 2 * 0px);
+left:0px;
+position:absolute;
+top:0px;
+width:calc(100% + 2 * 0px)
+}
+.bg-photo-overlay{
+background:rgba(0,0,0,.26);
+background-size:cover;
+height:480px;
+position:absolute;
+width:100%;
+z-index:2
+}
+.hamburger-menu{
+float:left;
+margin-top:0
+}
+.sticky .hamburger-menu{
+float:none;
+position:absolute
+}
+.search{
+border-bottom:solid 1px rgba(255, 255, 255, 0);
+float:right;
+position:relative;
+-webkit-transition-property:width;
+transition-property:width;
+-webkit-transition-duration:.5s;
+transition-duration:.5s;
+-webkit-transition-timing-function:cubic-bezier(.4,0,.2,1);
+transition-timing-function:cubic-bezier(.4,0,.2,1);
+z-index:101
+}
+.search .dim-overlay{
+background-color:transparent
+}
+.search form{
+height:36px;
+-webkit-transition-property:border-color;
+transition-property:border-color;
+-webkit-transition-delay:.5s;
+transition-delay:.5s;
+-webkit-transition-duration:.2s;
+transition-duration:.2s;
+-webkit-transition-timing-function:cubic-bezier(.4,0,.2,1);
+transition-timing-function:cubic-bezier(.4,0,.2,1)
+}
+.search.focused{
+width:calc(100% - 48px)
+}
+.search.focused form{
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex;
+-webkit-box-flex:1;
+-webkit-flex:1 0 1px;
+-ms-flex:1 0 1px;
+flex:1 0 1px;
+border-color:#ffffff;
+margin-left:-24px;
+padding-left:36px;
+position:relative;
+width:auto
+}
+.item-view .search,.sticky .search{
+right:0;
+float:none;
+margin-left:0;
+position:absolute
+}
+.item-view .search.focused,.sticky .search.focused{
+width:calc(100% - 50px)
+}
+.item-view .search.focused form,.sticky .search.focused form{
+border-bottom-color:#757575
+}
+.centered-top-placeholder.cloned .search form{
+z-index:30
+}
+.search_button{
+-webkit-box-flex:0;
+-webkit-flex:0 0 24px;
+-ms-flex:0 0 24px;
+flex:0 0 24px;
+-webkit-box-orient:vertical;
+-webkit-box-direction:normal;
+-webkit-flex-direction:column;
+-ms-flex-direction:column;
+flex-direction:column
+}
+.search_button svg{
+margin-top:0
+}
+.search-input{
+height:48px
+}
+.search-input input{
+display:block;
+color:#ffffff;
+font:16px Roboto, sans-serif;
+height:48px;
+line-height:48px;
+padding:0;
+width:100%
+}
+.search-input input::-webkit-input-placeholder{
+color:#ffffff;
+opacity:.3
+}
+.search-input input::-moz-placeholder{
+color:#ffffff;
+opacity:.3
+}
+.search-input input:-ms-input-placeholder{
+color:#ffffff;
+opacity:.3
+}
+.search-input input::-ms-input-placeholder{
+color:#ffffff;
+opacity:.3
+}
+.search-input input::placeholder{
+color:#ffffff;
+opacity:.3
+}
+.search-action{
+background:0 0;
+border:0;
+color:#ffffff;
+cursor:pointer;
+display:none;
+height:48px;
+margin-top:0
+}
+.sticky .search-action{
+color:#757575
+}
+.search.focused .search-action{
+display:block
+}
+.search.focused .search-action:disabled{
+opacity:.3
+}
+.page_body{
+position:relative;
+z-index:20
+}
+.page_body .widget{
+margin-bottom:16px
+}
+.page_body .centered{
+box-sizing:border-box;
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex;
+-webkit-box-orient:vertical;
+-webkit-box-direction:normal;
+-webkit-flex-direction:column;
+-ms-flex-direction:column;
+flex-direction:column;
+margin:0 auto;
+max-width:922px;
+min-height:100vh;
+padding:24px 0
+}
+.page_body .centered>*{
+-webkit-box-flex:0;
+-webkit-flex:0 0 auto;
+-ms-flex:0 0 auto;
+flex:0 0 auto
+}
+.page_body .centered>#footer{
+margin-top:auto
+}
+.blog-name{
+margin:24px 0 16px 0
+}
+.item-view .blog-name,.sticky .blog-name{
+box-sizing:border-box;
+margin-left:36px;
+min-height:48px;
+opacity:1;
+padding-top:12px
+}
+.blog-name .subscribe-section-container{
+margin-bottom:32px;
+text-align:center;
+-webkit-transition-property:opacity;
+transition-property:opacity;
+-webkit-transition-duration:.5s;
+transition-duration:.5s
+}
+.item-view .blog-name .subscribe-section-container,.sticky .blog-name .subscribe-section-container{
+margin:0 0 8px 0
+}
+.blog-name .PageList{
+margin-top:16px;
+padding-top:8px;
+text-align:center
+}
+.blog-name .PageList .overflowable-contents{
+width:100%
+}
+.blog-name .PageList h3.title{
+color:#ffffff;
+margin:8px auto;
+text-align:center;
+width:100%
+}
+.centered-top-container .blog-name{
+-webkit-transition-property:opacity;
+transition-property:opacity;
+-webkit-transition-duration:.5s;
+transition-duration:.5s
+}
+.item-view .return_link{
+margin-bottom:12px;
+margin-top:12px;
+position:absolute
+}
+.item-view .blog-name{
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex;
+-webkit-flex-wrap:wrap;
+-ms-flex-wrap:wrap;
+flex-wrap:wrap;
+margin:0 48px 27px 48px
+}
+.item-view .subscribe-section-container{
+-webkit-box-flex:0;
+-webkit-flex:0 0 auto;
+-ms-flex:0 0 auto;
+flex:0 0 auto
+}
+.item-view #header,.item-view .Header{
+margin-bottom:5px;
+margin-right:15px
+}
+.item-view .sticky .Header{
+margin-bottom:0
+}
+.item-view .Header p{
+margin:10px 0 0 0;
+text-align:left
+}
+.item-view .post-share-buttons-bottom{
+margin-right:16px
+}
+.sticky{
+background:#eff1ff;
+box-shadow:0 0 20px 0 rgba(0,0,0,.7);
+box-sizing:border-box;
+margin-left:0
+}
+.sticky #header{
+margin-bottom:8px;
+margin-right:8px
+}
+.sticky .centered-top{
+margin:4px auto;
+max-width:890px;
+min-height:48px
+}
+.sticky .blog-name{
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex;
+margin:0 48px
+}
+.sticky .blog-name #header{
+-webkit-box-flex:0;
+-webkit-flex:0 1 auto;
+-ms-flex:0 1 auto;
+flex:0 1 auto;
+-webkit-box-ordinal-group:2;
+-webkit-order:1;
+-ms-flex-order:1;
+order:1;
+overflow:hidden
+}
+.sticky .blog-name .subscribe-section-container{
+-webkit-box-flex:0;
+-webkit-flex:0 0 auto;
+-ms-flex:0 0 auto;
+flex:0 0 auto;
+-webkit-box-ordinal-group:3;
+-webkit-order:2;
+-ms-flex-order:2;
+order:2
+}
+.sticky .Header h1{
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+margin-right:-10px;
+margin-bottom:-10px;
+padding-right:10px;
+padding-bottom:10px
+}
+.sticky .Header p{
+display:none
+}
+.sticky .PageList{
+display:none
+}
+.search-focused>*{
+visibility:visible
+}
+.search-focused .hamburger-menu{
+visibility:visible
+}
+.item-view .search-focused .blog-name,.sticky .search-focused .blog-name{
+opacity:0
+}
+.centered-bottom,.centered-top-container,.centered-top-placeholder{
+padding:0 16px
+}
+.centered-top{
+position:relative
+}
+.item-view .centered-top.search-focused .subscribe-section-container,.sticky .centered-top.search-focused .subscribe-section-container{
+opacity:0
+}
+.page_body.has-vertical-ads .centered .centered-bottom{
+display:inline-block;
+width:calc(100% - 176px)
+}
+.Header h1{
+color:#ffffff;
+font:900 44px Playfair Display, serif;
+line-height:normal;
+margin:0 0 13px 0;
+text-align:center;
+width:100%
+}
+.Header h1 a,.Header h1 a:hover,.Header h1 a:visited{
+color:#ffffff
+}
+.item-view .Header h1,.sticky .Header h1{
+font-size:24px;
+line-height:24px;
+margin:0;
+text-align:left
+}
+.sticky .Header h1{
+color:#757575
+}
+.sticky .Header h1 a,.sticky .Header h1 a:hover,.sticky .Header h1 a:visited{
+color:#757575
+}
+.Header p{
+color:#ffffff;
+margin:0 0 13px 0;
+opacity:.8;
+text-align:center
+}
+.widget .title{
+line-height:28px
+}
+.BlogArchive li{
+font-size:16px
+}
+.BlogArchive .post-count{
+color:#757575
+}
+#page_body .FeaturedPost,.Blog .blog-posts .post-outer-container{
+background:#eff1ff;
+min-height:40px;
+padding:30px 40px;
+width:auto
+}
+.Blog .blog-posts .post-outer-container:last-child{
+margin-bottom:0
+}
+.Blog .blog-posts .post-outer-container .post-outer{
+border:0;
+position:relative;
+padding-bottom:.25em
+}
+.post-outer-container{
+margin-bottom:16px
+}
+.post:first-child{
+margin-top:0
+}
+.post .thumb{
+float:left;
+height:20%;
+width:20%
+}
+.post-share-buttons-bottom,.post-share-buttons-top{
+float:right
+}
+.post-share-buttons-bottom{
+margin-right:24px
+}
+.post-footer,.post-header{
+clear:left;
+color:rgba(0, 0, 0, 0.54);
+margin:0;
+width:inherit
+}
+.blog-pager{
+text-align:center
+}
+.blog-pager a{
+color:#656565
+}
+.blog-pager a:visited{
+color:#B33a0d
+}
+.blog-pager a:hover{
+color:#B33a0d
+}
+.post-title{
+font:900 28px Playfair Display, serif;
+float:left;
+margin:0 0 8px 0;
+max-width:calc(100% - 48px)
+}
+.post-title a{
+font:900 36px Playfair Display, serif
+}
+.post-title,.post-title a,.post-title a:hover,.post-title a:visited{
+color:#000000
+}
+.post-body{
+color:#757575;
+font:15px Roboto, sans-serif;
+line-height:1.6em;
+margin:1.5em 0 2em 0;
+display:block
+}
+.post-body img{
+height:inherit
+}
+.post-body .snippet-thumbnail{
+float:left;
+margin:0;
+margin-right:2em;
+max-height:128px;
+max-width:128px
+}
+.post-body .snippet-thumbnail img{
+max-width:100%
+}
+.main .FeaturedPost .widget-content{
+border:0;
+position:relative;
+padding-bottom:.25em
+}
+.FeaturedPost img{
+margin-top:2em
+}
+.FeaturedPost .snippet-container{
+margin:2em 0
+}
+.FeaturedPost .snippet-container p{
+margin:0
+}
+.FeaturedPost .snippet-thumbnail{
+float:none;
+height:auto;
+margin-bottom:2em;
+margin-right:0;
+overflow:hidden;
+max-height:calc(600px + 2em);
+max-width:100%;
+text-align:center;
+width:100%
+}
+.FeaturedPost .snippet-thumbnail img{
+max-width:100%;
+width:100%
+}
+.byline{
+color:rgba(0, 0, 0, 0.54);
+display:inline-block;
+line-height:24px;
+margin-top:8px;
+vertical-align:top
+}
+.byline.post-author:first-child{
+margin-right:0
+}
+.byline.reactions .reactions-label{
+line-height:22px;
+vertical-align:top
+}
+.byline.post-share-buttons{
+position:relative;
+display:inline-block;
+margin-top:0;
+width:100%
+}
+.byline.post-share-buttons .sharing{
+float:right
+}
+.flat-button.ripple:hover{
+background-color:rgba(9,19,128,.12)
+}
+.flat-button.ripple .splash{
+background-color:rgba(9,19,128,.4)
+}
+a.timestamp-link,a:active.timestamp-link,a:visited.timestamp-link{
+color:inherit;
+font:inherit;
+text-decoration:inherit
+}
+.post-share-buttons{
+margin-left:0
+}
+.clear-sharing{
+min-height:24px
+}
+.comment-link{
+color:#091380;
+position:relative
+}
+.comment-link .num_comments{
+margin-left:8px;
+vertical-align:top
+}
+#comment-holder .continue{
+display:none
+}
+#comment-editor{
+margin-bottom:20px;
+margin-top:20px
+}
+#comments .comment-form h4,#comments h3.title{
+position:absolute;
+clip:rect(1px,1px,1px,1px);
+padding:0;
+border:0;
+height:1px;
+width:1px;
+overflow:hidden
+}
+.post-filter-message{
+background-color:rgba(0,0,0,.7);
+color:#fff;
+display:table;
+margin-bottom:16px;
+width:100%
+}
+.post-filter-message div{
+display:table-cell;
+padding:15px 28px
+}
+.post-filter-message div:last-child{
+padding-left:0;
+text-align:right
+}
+.post-filter-message a{
+white-space:nowrap
+}
+.post-filter-message .search-label,.post-filter-message .search-query{
+font-weight:700;
+color:#091380
+}
+#blog-pager{
+margin:2em 0
+}
+#blog-pager a{
+color:#ffffff;
+font-size:14px
+}
+.subscribe-button{
+border-color:#ffffff;
+color:#ffffff
+}
+.sticky .subscribe-button{
+border-color:#757575;
+color:#757575
+}
+.tabs{
+margin:0 auto;
+padding:0
+}
+.tabs li{
+margin:0 8px;
+vertical-align:top
+}
+.tabs .overflow-button a,.tabs li a{
+color:#c7c7c7;
+font:700 normal 15px Roboto, sans-serif;
+line-height:18px
+}
+.tabs .overflow-button a{
+padding:12px 8px
+}
+.overflow-popup .tabs li{
+text-align:left
+}
+.overflow-popup li a{
+color:#757575;
+display:block;
+padding:8px 20px
+}
+.overflow-popup li.selected a{
+color:#212121
+}
+a.report_abuse{
+font-weight:400
+}
+.Label li,.Label span.label-size,.byline.post-labels a{
+background-color:#0d00ab;
+border:1px solid #0d00ab;
+border-radius:15px;
+display:inline-block;
+margin:4px 4px 4px 0;
+padding:3px 8px
+}
+.Label a,.byline.post-labels a{
+color:#ffffff
+}
+.Label ul{
+list-style:none;
+padding:0
+}
+.PopularPosts{
+background-color:#fff8f6;
+padding:30px 40px
+}
+.PopularPosts .item-content{
+color:#757575;
+margin-top:24px
+}
+.PopularPosts a,.PopularPosts a:hover,.PopularPosts a:visited{
+color:#B33a0d
+}
+.PopularPosts .post-title,.PopularPosts .post-title a,.PopularPosts .post-title a:hover,.PopularPosts .post-title a:visited{
+color:#212121;
+font-size:18px;
+font-weight:700;
+line-height:24px
+}
+.PopularPosts,.PopularPosts h3.title a{
+color:#757575;
+font:15px Roboto, sans-serif
+}
+.main .PopularPosts{
+padding:16px 40px
+}
+.PopularPosts h3.title{
+font-size:14px;
+margin:0
+}
+.PopularPosts h3.post-title{
+margin-bottom:0
+}
+.PopularPosts .byline{
+color:rgba(0, 0, 0, 0.54)
+}
+.PopularPosts .jump-link{
+float:right;
+margin-top:16px
+}
+.PopularPosts .post-header .byline{
+font-size:.9em;
+font-style:italic;
+margin-top:6px
+}
+.PopularPosts ul{
+list-style:none;
+padding:0;
+margin:0
+}
+.PopularPosts .post{
+padding:20px 0
+}
+.PopularPosts .post+.post{
+border-top:1px dashed #c7c7c7
+}
+.PopularPosts .item-thumbnail{
+float:left;
+margin-right:32px
+}
+.PopularPosts .item-thumbnail img{
+height:88px;
+padding:0;
+width:88px
+}
+.inline-ad{
+margin-bottom:16px
+}
+.desktop-ad .inline-ad{
+display:block
+}
+.adsbygoogle{
+overflow:hidden
+}
+.vertical-ad-container{
+float:right;
+margin-right:16px;
+width:128px
+}
+.vertical-ad-container .AdSense+.AdSense{
+margin-top:16px
+}
+.inline-ad-placeholder,.vertical-ad-placeholder{
+background:#eff1ff;
+border:1px solid #000;
+opacity:.9;
+vertical-align:middle;
+text-align:center
+}
+.inline-ad-placeholder span,.vertical-ad-placeholder span{
+margin-top:290px;
+display:block;
+text-transform:uppercase;
+font-weight:700;
+color:#000000
+}
+.vertical-ad-placeholder{
+height:600px
+}
+.vertical-ad-placeholder span{
+margin-top:290px;
+padding:0 40px
+}
+.inline-ad-placeholder{
+height:90px
+}
+.inline-ad-placeholder span{
+margin-top:36px
+}
+.Attribution{
+color:#d9d9d9
+}
+.Attribution a,.Attribution a:hover,.Attribution a:visited{
+color:#ffffff
+}
+.Attribution svg{
+fill:#ffffff
+}
+.sidebar-container{
+box-shadow:1px 1px 3px rgba(0,0,0,.1)
+}
+.sidebar-container,.sidebar-container .sidebar_bottom{
+background-color:#eff1ff
+}
+.sidebar-container .navigation,.sidebar-container .sidebar_top_wrapper{
+background-color:#eff1ff
+}
+.sidebar-container .sidebar_top{
+overflow:auto
+}
+.sidebar-container .sidebar_bottom{
+width:100%;
+padding-top:16px
+}
+.sidebar-container .widget:first-child{
+padding-top:0
+}
+.sidebar_top .widget.Profile{
+padding-bottom:16px
+}
+.widget.Profile{
+margin:0;
+width:100%
+}
+.widget.Profile h2{
+display:none
+}
+.widget.Profile h3.title{
+color:rgba(0, 0, 0, 0.52);
+margin:16px 32px
+}
+.widget.Profile .individual{
+text-align:center
+}
+.widget.Profile .individual .profile-link{
+padding:1em
+}
+.widget.Profile .individual .default-avatar-wrapper .avatar-icon{
+margin:auto
+}
+.widget.Profile .team{
+margin-bottom:32px;
+margin-left:32px;
+margin-right:32px
+}
+.widget.Profile ul{
+list-style:none;
+padding:0
+}
+.widget.Profile li{
+margin:10px 0
+}
+.widget.Profile .profile-img{
+border-radius:50%;
+float:none
+}
+.widget.Profile .profile-link{
+color:#212121;
+font-size:.9em;
+margin-bottom:1em;
+opacity:.87;
+overflow:hidden
+}
+.widget.Profile .profile-link.visit-profile{
+border-style:solid;
+border-width:1px;
+border-radius:12px;
+cursor:pointer;
+font-size:12px;
+font-weight:400;
+padding:5px 20px;
+display:inline-block;
+line-height:normal
+}
+.widget.Profile dd{
+color:rgba(0, 0, 0, 0.54);
+margin:0 16px
+}
+.widget.Profile location{
+margin-bottom:1em
+}
+.widget.Profile .profile-textblock{
+font-size:14px;
+line-height:24px;
+position:relative
+}
+body.sidebar-visible .page_body{
+overflow-y:scroll
+}
+body.sidebar-visible .bg-photo-container{
+overflow-y:scroll
+}
+@media screen and (min-width:1440px){
+.sidebar-container{
+margin-top:480px;
+min-height:calc(100% - 480px);
+overflow:visible;
+z-index:32
+}
+.sidebar-container .sidebar_top_wrapper{
+background-color:#eff1ff;
+height:480px;
+margin-top:-480px
+}
+.sidebar-container .sidebar_top{
+display:-webkit-box;
+display:-webkit-flex;
+display:-ms-flexbox;
+display:flex;
+height:480px;
+-webkit-box-orient:horizontal;
+-webkit-box-direction:normal;
+-webkit-flex-direction:row;
+-ms-flex-direction:row;
+flex-direction:row;
+max-height:480px
+}
+.sidebar-container .sidebar_bottom{
+max-width:284px;
+width:284px
+}
+body.collapsed-header .sidebar-container{
+z-index:15
+}
+.sidebar-container .sidebar_top:empty{
+display:none
+}
+.sidebar-container .sidebar_top>:only-child{
+-webkit-box-flex:0;
+-webkit-flex:0 0 auto;
+-ms-flex:0 0 auto;
+flex:0 0 auto;
+-webkit-align-self:center;
+-ms-flex-item-align:center;
+align-self:center;
+width:100%
+}
+.sidebar_top_wrapper.no-items{
+display:none
+}
+}
+.post-snippet.snippet-container{
+max-height:120px
+}
+.post-snippet .snippet-item{
+line-height:24px
+}
+.post-snippet .snippet-fade{
+background:-webkit-linear-gradient(left,#eff1ff 0,#eff1ff 20%,rgba(239, 241, 255, 0) 100%);
+background:linear-gradient(to left,#eff1ff 0,#eff1ff 20%,rgba(239, 241, 255, 0) 100%);
+color:#656565;
+height:24px
+}
+.popular-posts-snippet.snippet-container{
+max-height:72px
+}
+.popular-posts-snippet .snippet-item{
+line-height:24px
+}
+.PopularPosts .popular-posts-snippet .snippet-fade{
+color:#656565;
+height:24px
+}
+.main .popular-posts-snippet .snippet-fade{
+background:-webkit-linear-gradient(left,#fff8f6 0,#fff8f6 20%,rgba(255, 248, 246, 0) 100%);
+background:linear-gradient(to left,#fff8f6 0,#fff8f6 20%,rgba(255, 248, 246, 0) 100%)
+}
+.sidebar_bottom .popular-posts-snippet .snippet-fade{
+background:-webkit-linear-gradient(left,#eff1ff 0,#eff1ff 20%,rgba(239, 241, 255, 0) 100%);
+background:linear-gradient(to left,#eff1ff 0,#eff1ff 20%,rgba(239, 241, 255, 0) 100%)
+}
+.profile-snippet.snippet-container{
+max-height:192px
+}
+.has-location .profile-snippet.snippet-container{
+max-height:144px
+}
+.profile-snippet .snippet-item{
+line-height:24px
+}
+.profile-snippet .snippet-fade{
+background:-webkit-linear-gradient(left,#eff1ff 0,#eff1ff 20%,rgba(239, 241, 255, 0) 100%);
+background:linear-gradient(to left,#eff1ff 0,#eff1ff 20%,rgba(239, 241, 255, 0) 100%);
+color:rgba(0, 0, 0, 0.54);
+height:24px
+}
+@media screen and (min-width:1440px){
+.profile-snippet .snippet-fade{
+background:-webkit-linear-gradient(left,#eff1ff 0,#eff1ff 20%,rgba(239, 241, 255, 0) 100%);
+background:linear-gradient(to left,#eff1ff 0,#eff1ff 20%,rgba(239, 241, 255, 0) 100%)
+}
+}
+@media screen and (max-width:800px){
+.blog-name{
+margin-top:0
+}
+body.item-view .blog-name{
+margin:0 48px
+}
+.centered-bottom{
+padding:8px
+}
+body.item-view .centered-bottom{
+padding:0
+}
+.page_body .centered{
+padding:10px 0
+}
+body.item-view #header,body.item-view .widget.Header{
+margin-right:0
+}
+body.collapsed-header .centered-top-container .blog-name{
+display:block
+}
+body.collapsed-header .centered-top-container .widget.Header h1{
+text-align:center
+}
+.widget.Header header{
+padding:0
+}
+.widget.Header h1{
+font-size:23.467px;
+line-height:23.467px;
+margin-bottom:13px
+}
+body.item-view .widget.Header h1{
+text-align:center
+}
+body.item-view .widget.Header p{
+text-align:center
+}
+.blog-name .widget.PageList{
+padding:0
+}
+body.item-view .centered-top{
+margin-bottom:5px
+}
+.search-action,.search-input{
+margin-bottom:-8px
+}
+.search form{
+margin-bottom:8px
+}
+body.item-view .subscribe-section-container{
+margin:5px 0 0 0;
+width:100%
+}
+#page_body.section div.widget.FeaturedPost,div.widget.PopularPosts{
+padding:16px
+}
+div.widget.Blog .blog-posts .post-outer-container{
+padding:16px
+}
+div.widget.Blog .blog-posts .post-outer-container .post-outer{
+padding:0
+}
+.post:first-child{
+margin:0
+}
+.post-body .snippet-thumbnail{
+margin:0 3vw 3vw 0
+}
+.post-body .snippet-thumbnail img{
+height:20vw;
+width:20vw;
+max-height:128px;
+max-width:128px
+}
+div.widget.PopularPosts div.item-thumbnail{
+margin:0 3vw 3vw 0
+}
+div.widget.PopularPosts div.item-thumbnail img{
+height:20vw;
+width:20vw;
+max-height:88px;
+max-width:88px
+}
+.post-title{
+line-height:1
+}
+.post-title,.post-title a{
+font-size:20px
+}
+#page_body.section div.widget.FeaturedPost h3 a{
+font-size:22px
+}
+.mobile-ad .inline-ad{
+display:block
+}
+.page_body.has-vertical-ads .vertical-ad-container,.page_body.has-vertical-ads .vertical-ad-container ins{
+display:none
+}
+.page_body.has-vertical-ads .centered .centered-bottom,.page_body.has-vertical-ads .centered .centered-top{
+display:block;
+width:auto
+}
+div.post-filter-message div{
+padding:8px 16px
+}
+}
+@media screen and (min-width:1440px){
+body{
+position:relative
+}
+body.item-view .blog-name{
+margin-left:48px
+}
+.page_body{
+margin-left:284px
+}
+.search{
+margin-left:0
+}
+.search.focused{
+width:100%
+}
+.sticky{
+padding-left:284px
+}
+.hamburger-menu{
+display:none
+}
+body.collapsed-header .page_body .centered-top-container{
+padding-left:284px;
+padding-right:0;
+width:100%
+}
+body.collapsed-header .centered-top-container .search.focused{
+width:100%
+}
+body.collapsed-header .centered-top-container .blog-name{
+margin-left:0
+}
+body.collapsed-header.item-view .centered-top-container .search.focused{
+width:calc(100% - 50px)
+}
+body.collapsed-header.item-view .centered-top-container .blog-name{
+margin-left:40px
+}
+}
+
+--></style>
+<style id='template-skin-1' type='text/css'><!--
+body#layout .hidden,
+body#layout .invisible {
+display: inherit;
+}
+body#layout .navigation {
+display: none;
+}
+body#layout .page,
+body#layout .sidebar_top,
+body#layout .sidebar_bottom {
+display: inline-block;
+left: inherit;
+position: relative;
+vertical-align: top;
+}
+body#layout .page {
+float: right;
+margin-left: 20px;
+width: 55%;
+}
+body#layout .sidebar-container {
+float: right;
+width: 40%;
+}
+body#layout .hamburger-menu {
+display: none;
+}
+--></style>
+<style>
+    .bg-photo {background-image:url(\/\/themes.googleusercontent.com\/image?id=1RUMOzjWeRA832TdLQnkO89yQ4381KWiRGRGdfqXIo-81BN4kWkPZpymfS4uw8h5g03IE);}
+    
+@media (max-width: 480px) { .bg-photo {background-image:url(\/\/themes.googleusercontent.com\/image?id=1RUMOzjWeRA832TdLQnkO89yQ4381KWiRGRGdfqXIo-81BN4kWkPZpymfS4uw8h5g03IE&options=w480);}}
+@media (max-width: 640px) and (min-width: 481px) { .bg-photo {background-image:url(\/\/themes.googleusercontent.com\/image?id=1RUMOzjWeRA832TdLQnkO89yQ4381KWiRGRGdfqXIo-81BN4kWkPZpymfS4uw8h5g03IE&options=w640);}}
+@media (max-width: 800px) and (min-width: 641px) { .bg-photo {background-image:url(\/\/themes.googleusercontent.com\/image?id=1RUMOzjWeRA832TdLQnkO89yQ4381KWiRGRGdfqXIo-81BN4kWkPZpymfS4uw8h5g03IE&options=w800);}}
+@media (max-width: 1200px) and (min-width: 801px) { .bg-photo {background-image:url(\/\/themes.googleusercontent.com\/image?id=1RUMOzjWeRA832TdLQnkO89yQ4381KWiRGRGdfqXIo-81BN4kWkPZpymfS4uw8h5g03IE&options=w1200);}}
+/* Last tag covers anything over one higher than the previous max-size cap. */
+@media (min-width: 1201px) { .bg-photo {background-image:url(\/\/themes.googleusercontent.com\/image?id=1RUMOzjWeRA832TdLQnkO89yQ4381KWiRGRGdfqXIo-81BN4kWkPZpymfS4uw8h5g03IE&options=w1600);}}
+  </style>
+<script async='async' src='https://www.gstatic.com/external_hosted/clipboardjs/clipboard.min.js'></script>
+<link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=7173201226003923060&amp;zx=12b8c741-657a-4da4-95d4-f742e8c05a66' media='none' onload='if(media!=&#39;all&#39;)media=&#39;all&#39;' rel='stylesheet'/><noscript><link href='https://www.blogger.com/dyn-css/authorization.css?targetBlogID=7173201226003923060&amp;zx=12b8c741-657a-4da4-95d4-f742e8c05a66' rel='stylesheet'/></noscript>
+
+</head>
+<body class='item-view version-1-3-3 variant-indie_orange'>
+<a class='skip-navigation' href='#main' tabindex='0'>
+Skip to main content
+</a>
+<div class='page'>
+<div class='bg-photo-overlay'></div>
+<div class='bg-photo-container'>
+<div class='bg-photo'></div>
+</div>
+<div class='page_body'>
+<div class='centered'>
+<div class='centered-top-placeholder'></div>
+<header class='centered-top-container' role='banner'>
+<div class='centered-top'>
+<a class='return_link' href='https://giuliocomi.blogspot.com/'>
+<button class='svg-icon-24-button back-button rtl-reversible-icon flat-icon-button ripple'>
+<svg class='svg-icon-24'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_arrow_back_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+</button>
+</a>
+<div class='search'>
+<button aria-label='Search' class='search-expand touch-icon-button'>
+<div class='flat-icon-button ripple'>
+<svg class='svg-icon-24 search-expand-icon'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_search_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+</div>
+</button>
+<div class='section' id='search_top' name='Search (Top)'><div class='widget BlogSearch' data-version='2' id='BlogSearch1'>
+<h3 class='title'>
+Search This Blog
+</h3>
+<div class='widget-content' role='search'>
+<form action='https://giuliocomi.blogspot.com/search' target='_top'>
+<div class='search-input'>
+<input aria-label='Search this blog' autocomplete='off' name='q' placeholder='Search this blog' value=''/>
+</div>
+<input class='search-action flat-button' type='submit' value='Search'/>
+</form>
+</div>
+</div></div>
+</div>
+<div class='clearboth'></div>
+<div class='blog-name container'>
+<div class='container section' id='header' name='Header'><div class='widget Header' data-version='2' id='Header1'>
+<div class='header-widget'>
+<div>
+<h1>
+<a href='https://giuliocomi.blogspot.com/'>
+Defensive and offensive security in a nutshell
+</a>
+</h1>
+</div>
+<p>
+</p>
+</div>
+</div></div>
+<nav role='navigation'>
+<div class='clearboth no-items section' id='page_list_top' name='Page List (Top)'>
+</div>
+</nav>
+</div>
+</div>
+</header>
+<div>
+<div class='vertical-ad-container no-items section' id='ads' name='Ads'>
+</div>
+<main class='centered-bottom' id='main' role='main' tabindex='-1'>
+<div class='main section' id='page_body' name='Page Body'>
+<div class='widget Blog' data-version='2' id='Blog1'>
+<div class='blog-posts hfeed container'>
+<article class='post-outer-container'>
+<div class='post-outer'>
+<div class='post'>
+<script type='application/ld+json'>{
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html"
+  },
+  "headline": "Abusing Windows 10 Narrator's 'Feedback-Hub' URI for Fileless Persistence","description": "Novel Accessibility Feature Abuse technique  While investigating Ease of Access options in Windows 10 for new persistence techniques, I have...","datePublished": "2019-10-19T14:16:00-07:00",
+  "dateModified": "2019-10-19T14:24:42-07:00","image": {
+    "@type": "ImageObject","url": "https://lh5.googleusercontent.com/proxy/R4B_SMNfdmjDz_rHeFbIDvSj4rMUhf_2nzKnueGLy43O095tnevTtWg-aA-pud9XsiU6P6CwWyT81YVom-OF8rcATmY=w1200-h630-n-k-no-nu",
+    "height": 630,
+    "width": 1200},"publisher": {
+    "@type": "Organization",
+    "name": "Blogger",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://lh3.googleusercontent.com/ULB6iBuCeTVvSjjjU1A-O8e9ZpVba6uvyhtiWRti_rBAs9yMYOFBujxriJRZ-A=h60",
+      "width": 206,
+      "height": 60
+    }
+  },"author": {
+    "@type": "Person",
+    "name": "Giulio Comi"
+  }
+}</script>
+<a name='8188931971017209417'></a>
+<h3 class='post-title entry-title'>
+Abusing Windows 10 Narrator's 'Feedback-Hub' URI for Fileless Persistence
+</h3>
+<div class='post-share-buttons post-share-buttons-top'>
+<div class='byline post-share-buttons goog-inline-block'>
+<div aria-owns='sharing-popup-Blog1-byline-8188931971017209417' class='sharing' data-title='Abusing Windows 10 Narrator&#39;s &#39;Feedback-Hub&#39; URI for Fileless Persistence'>
+<button aria-controls='sharing-popup-Blog1-byline-8188931971017209417' aria-label='Share' class='sharing-button touch-icon-button' id='sharing-button-Blog1-byline-8188931971017209417' role='button'>
+<div class='flat-icon-button ripple'>
+<svg class='svg-icon-24'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_share_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+</div>
+</button>
+<div class='share-buttons-container'>
+<ul aria-hidden='true' aria-label='Share' class='share-buttons hidden' id='sharing-popup-Blog1-byline-8188931971017209417' role='menu'>
+<li>
+<span aria-label='Get link' class='sharing-platform-button sharing-element-link' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Get link'>
+<svg class='svg-icon-24 touch-icon sharing-link'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_link_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Get link</span>
+</span>
+</li>
+<li>
+<span aria-label='Share to Facebook' class='sharing-platform-button sharing-element-facebook' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=facebook' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Share to Facebook'>
+<svg class='svg-icon-24 touch-icon sharing-facebook'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_facebook_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Facebook</span>
+</span>
+</li>
+<li>
+<span aria-label='Share to Twitter' class='sharing-platform-button sharing-element-twitter' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=twitter' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Share to Twitter'>
+<svg class='svg-icon-24 touch-icon sharing-twitter'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_twitter_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Twitter</span>
+</span>
+</li>
+<li>
+<span aria-label='Share to Pinterest' class='sharing-platform-button sharing-element-pinterest' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=pinterest' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Share to Pinterest'>
+<svg class='svg-icon-24 touch-icon sharing-pinterest'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_pinterest_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Pinterest</span>
+</span>
+</li>
+<li>
+<span aria-label='Email' class='sharing-platform-button sharing-element-email' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=email' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Email'>
+<svg class='svg-icon-24 touch-icon sharing-email'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_email_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Email</span>
+</span>
+</li>
+<li aria-hidden='true' class='hidden'>
+<span aria-label='Share to other apps' class='sharing-platform-button sharing-element-other' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Share to other apps'>
+<svg class='svg-icon-24 touch-icon sharing-sharingOther'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_more_horiz_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Other Apps</span>
+</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class='post-header'>
+<div class='post-header-line-1'>
+<span class='byline post-timestamp'>
+-
+<meta content='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html'/>
+<a class='timestamp-link' href='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' rel='bookmark' title='permanent link'>
+<time class='published' datetime='2019-10-19T14:16:00-07:00' title='2019-10-19T14:16:00-07:00'>
+October 19, 2019
+</time>
+</a>
+</span>
+</div>
+</div>
+<div class='post-body entry-content float-container' id='post-body-8188931971017209417'>
+Novel Accessibility Feature Abuse technique<br />
+While investigating Ease of Access options in Windows 10 for new
+persistence techniques, I have actually found an undocumented one via
+'Provide Narrator feedback' functionality.<br />
+<div class="western">
+Behind the scenes the Narrator feedback consists
+in launching the custom handler via URI scheme &#8216;feedback-hub&#8217;.
+However, in a post exploitation scenario is possible to trivially
+backdoor this component with fileless payloads hosted in the
+registry.</div>
+<div class="western">
+Even if there is no security boundary between
+windows logon screen and the default user desktop (indeed both part
+of the same window station WinSta0) the possibility of the
+interaction between the Narrator instance running in the environment
+of the locked out users and the Windows logon screen opens the chance
+to trigger the malicious command defined in the registry as soon as
+the 'Provide Narrator feedback' combination keys are pressed in the
+latter context.</div>
+<div class="western">
+The novel technique presented in this article has
+the following advantages in respect to already known Ease of Use
+abuses (see next paragraph):</div>
+<ul>
+<li>fileless (Living off the Land approach)</li>
+<li>no
+administrative privileges required (if
+physical access scenario and victim user is locked out)</li>
+</ul>
+<div>
+Demo video</div>
+<div class="western">
+<span style="color: black;"><span style="font-size: small;"><iframe allowfullscreen="true" frameborder="0" height="470" src="https://www.youtube.com/embed/oPKnYO9V8-M" width="800"></iframe></span></span></div>
+<div class="western">
+<span style="color: black;"><span style="font-size: small;"></span></span></div>
+<div class="western">
+For the insights, have a look at the documentation for Universal App URI schemes persistence:<br />
+<a href="https://github.com/giuliocomi/backoori">https://github.com/giuliocomi/backoori</a><br />
+<h3 class="western">
+Quick recap of Accessibility Features for Red Teamers</h3>
+<div>
+<div>
+The Windows Accessibility Features, a set of tools available in the Windows logon screen (like Sticky Keys),&nbsp; are designed to be launched via predefined combination of keys to assist the end users. These Windows features are also quite famous because have been abused by <a href="https://attack.mitre.org/techniques/T1015/#examples">APT groups for backdooring target systems</a> in the past. Having administrative privileges is a requirement in order to replace the genuine Windows binary of the tool ('sethc.exe' or 'narrator.exe', 'magnify.exe', etc.) with an ad-hoc binary.</div>
+<div>
+</div>
+<div>
+Moreover, Microsoft has started monitoring this category of issues via Windows Defender in September 2018 (<a href="https://www.microsoft.com/en-us/wdsi/threats/threat-search?query=Trojan:Win32/AccessibilityEscalation.A">https://www.microsoft.com/en-us/wdsi/threats/threat-search?query=Trojan:Win32/AccessibilityEscalation.A</a>).</div>
+<div>
+</div>
+<div>
+This novel technique I have discovered overcomes the admin privileges condition (provided that it is physical access scenario and the victim account is locked), is fileless and currently not monitored by security detection tools.</div>
+</div>
+</div>
+<h3 class="western">
+Overview of the Universal Apps URI
+			schemes persistence</h3>
+<div class="western">
+The Accessibility feature is a specific case of the more comprehensive URI persistence technique that affects all Universal Apps URI, which is applicable to every URI protocol listed in the Settings under &#8220;Choose default apps by protocol&#8221;. Some of these protocols are very interesting, like &#8216;https&#8217; because in this case it will be possible to trigger the payload from a crafted web pages (with for example an &lt;a&gt; tag link) and the payload will be &#8220;MiTM&#8221; for the request by executing itself and transparently forwarding the arguments to the legitimate default browser of the unaware victim (for more details have a look at <a href="https://github.com/giuliocomi/backoori">backoori</a>).</div>
+<div class="western" style="line-height: 100%; margin-bottom: 0in;">
+<h3 class="western">
+Tweaking Narrator's settings of the compromised user</h3>
+<div class="western">
+</div>
+But let&#8217;s not digress, the focus of this walk-through is on the
+Narrator feature abuse.</div>
+<div>
+<div class="western">
+Every time the &#8216;feedback-hub&#8217; URI is triggered
+via:</div>
+<ul>
+<li><div class="western" style="line-height: 0.14in;">
+<span style="color: black;"><span style="font-size: 11pt;"><span lang="en-US">s</span></span></span><span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: black;"><span style="font-size: 11pt;"><span lang="en-US">hortcut
+	key for Feedback Hub</span></span></span></span><span style="font-size: 11pt;">
+	in the desktop environment</span></div>
+</li>
+<li><div class="western" style="line-height: 0.14in;">
+<span style="font-size: 11pt;">the
+	task manager &#8216;Send feedback&#8217; option</span></div>
+</li>
+<li><div class="western" style="line-height: 0.14in;">
+&#8216;<span style="font-size: 11pt;">explorer.exe
+	feedback-hub:&#8217; command</span></div>
+</li>
+<li><div class="western" style="line-height: 0.14in;">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: black;"><span style="font-size: 11pt;"><span lang="en-US">Narrator
+	Ease of Use feedback in the windows logon desktop</span></span></span></span></div>
+</li>
+</ul>
+<div class="western" style="line-height: 0.14in;">
+the defined payload will get executed.<br />
+<br /></div>
+</div>
+For backdooring the last option, the one that involves the Narrator, it is recommended to apply the configuration displayed in the screenshots below. The reason is that the Narrator does not start automatically, it is very loudly and its cursor catches the yes of the victims. Moreover, as said before the Narrator abuse works out of the box for locked out victims (therefore physical persistence), but for signed out users it is necessary to also enable &#8220;Start Narrator before sign-in for everyone&#8221; with a compromised administrative account.<br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-cvc0A8nqJ9A/XatsflxrILI/AAAAAAAAKoQ/7zLj7_uIyhsXcgE3AZdB48NZ3hnrjB8mQCNcBGAsYHQ/s1600/1.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="405" data-original-width="390" src="https://1.bp.blogspot.com/-cvc0A8nqJ9A/XatsflxrILI/AAAAAAAAKoQ/7zLj7_uIyhsXcgE3AZdB48NZ3hnrjB8mQCNcBGAsYHQ/s1600/1.png" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-gynOpEvGwlM/Xatsfg2FaOI/AAAAAAAAKoM/tXsC6BIaiYwx3AHhCPSoEFX6zzH5E2cmQCNcBGAsYHQ/s1600/2.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="277" data-original-width="380" src="https://1.bp.blogspot.com/-gynOpEvGwlM/Xatsfg2FaOI/AAAAAAAAKoM/tXsC6BIaiYwx3AHhCPSoEFX6zzH5E2cmQCNcBGAsYHQ/s1600/2.PNG" /></a></div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-Ls2LhWLv2iI/Xatsga4jTgI/AAAAAAAAKoY/cdT1qPoqVOcAoYPbbTgMCiTbSiTOJWP2QCNcBGAsYHQ/s1600/3.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="287" data-original-width="330" src="https://1.bp.blogspot.com/-Ls2LhWLv2iI/Xatsga4jTgI/AAAAAAAAKoY/cdT1qPoqVOcAoYPbbTgMCiTbSiTOJWP2QCNcBGAsYHQ/s1600/3.PNG" /></a>&nbsp;</div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-f0uYUdcXHLI/XatsgmAPOyI/AAAAAAAAKoc/38SeimcDH9wkQ8JyufJY2Q_lQAoVj_8hACNcBGAsYHQ/s1600/4.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="227" data-original-width="396" src="https://1.bp.blogspot.com/-f0uYUdcXHLI/XatsgmAPOyI/AAAAAAAAKoc/38SeimcDH9wkQ8JyufJY2Q_lQAoVj_8hACNcBGAsYHQ/s1600/4.PNG" /></a></div>
+<div class="western">
+&nbsp;And choose a shortcut key for the &#8216;Provide Narrator feedback&#8217;
+setting.</div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-LCausW8k_mo/Xatsg9gVtdI/AAAAAAAAKog/yB-uCLyJjB4qztrLI3EggK-LDOaH29uJQCNcBGAsYHQ/s1600/5.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="377" data-original-width="360" src="https://1.bp.blogspot.com/-LCausW8k_mo/Xatsg9gVtdI/AAAAAAAAKog/yB-uCLyJjB4qztrLI3EggK-LDOaH29uJQCNcBGAsYHQ/s1600/5.PNG" /></a></div>
+<h3 class="western">
+Backdooring &#8216;Feedback-Hub&#8217; URI
+			functionality</h3>
+<div class="western">
+&nbsp;There are two approaches, the expected way is to develop a Universal
+App and set it as default handler and the more smoothly one based on
+the editing of registry keys. Let&#8217;s focus on the second one.</div>
+<div class="western">
+We need to track down the essential keys to
+modify in the Registry in order to point the Feedback Hub Microsoft
+URI scheme to our own payload.</div>
+<div class="western">
+To have a better insights on the few steps
+involved, have a look at
+<span style="color: navy;"><span lang="zxx"><u><a href="https://github.com/giuliocomi/backoori/blob/master/agent/agent_plate.ps1">agent_plate.ps1</a></u></span></span>,
+the agent template part of the tool created as PoC to automate this
+persistence technique for arbitrary specified URLs.</div>
+<div class="western">
+By looking up the registry for &#8216;feedback-hub&#8217;
+key, we find out one registered Universal App Id:</div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-family: , &quot;consolas&quot; , &quot;liberation mono&quot; , &quot;menlo&quot; , monospace;"><span style="font-size: 9pt;"><span lang="en-US">HKCR:Local
+Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\PackageRepository\Extensions\windows.protocol\f</span></span></span></span></span><span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-family: , &quot;consolas&quot; , &quot;liberation mono&quot; , &quot;menlo&quot; , monospace;"><span style="font-size: 9pt;">eedback-hub</span></span></span></span><br />
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-kf0v4ai7WS4/XatshOqonbI/AAAAAAAAKok/C9JGOejgTToFCobbLKfUZeyggXBmIqewQCNcBGAsYHQ/s1600/6.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="160" data-original-width="871" height="117" src="https://1.bp.blogspot.com/-kf0v4ai7WS4/XatshOqonbI/AAAAAAAAKok/C9JGOejgTToFCobbLKfUZeyggXBmIqewQCNcBGAsYHQ/s640/6.PNG" width="640" /></a></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-family: , &quot;consolas&quot; , &quot;liberation mono&quot; , &quot;menlo&quot; , monospace;"><span style="font-size: 9pt;"></span></span>
+</span></span>
+<div class="western">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">&nbsp;In case the default handler was already explicitly chosen by the user
+it will be under key:</span></span></span></span></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;">
+</span>
+<div class="western">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-family: , &quot;consolas&quot; , &quot;liberation mono&quot; , &quot;menlo&quot; , monospace;"><span style="font-size: 9pt;"><span lang="en-US">Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\feedback-hub\UserChoice</span></span></span></span></span></span></span></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="western">
+</div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="separator" style="clear: both; text-align: center;">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><a href="https://1.bp.blogspot.com/-tYQtYvnwBpc/XatshWrTfYI/AAAAAAAAKoo/v9D8_uR3u5USxrROsoUNW1GUDRtpB4LBACNcBGAsYHQ/s1600/7.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="282" data-original-width="811" height="222" src="https://1.bp.blogspot.com/-tYQtYvnwBpc/XatshWrTfYI/AAAAAAAAKoo/v9D8_uR3u5USxrROsoUNW1GUDRtpB4LBACNcBGAsYHQ/s640/7.PNG" width="640" /></a></span></span></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="western">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-family: , &quot;consolas&quot; , &quot;liberation mono&quot; , &quot;menlo&quot; , monospace;"><span style="font-size: 9pt;"><span lang="en-US"></span></span></span></span></span></span></span></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="western">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">&nbsp;And then again, by looking under</span></span></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="western">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<span style="font-family: , &quot;consolas&quot; , &quot;liberation mono&quot; , &quot;menlo&quot; , monospace;"><span style="font-size: 9pt;"><span lang="en-US">Computer\HKEY_CURRENT_USER\Software\Classes\Appxypsaf9f1qserqevf0sws76dx4k9a5206
+</span></span></span></span></span>
+</span></span></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="western">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;"><span style="font-variant-east-asian: normal; font-variant-numeric: normal;">
+</span></span></span></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="western">
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">we get the following configuration (by the way it
+is the standard one for all Universal Apps):</span></span></div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="separator" style="clear: both; text-align: center;">
+</div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<a href="https://1.bp.blogspot.com/-Bv75D8qjmn8/Xatshid4b9I/AAAAAAAAKos/fYUYDyzOAsMs_NyjRa6cfwcomuhWmXP6QCNcBGAsYHQ/s1600/8.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em; text-align: center;"><img border="0" data-original-height="248" data-original-width="837" height="189" src="https://1.bp.blogspot.com/-Bv75D8qjmn8/Xatshid4b9I/AAAAAAAAKos/fYUYDyzOAsMs_NyjRa6cfwcomuhWmXP6QCNcBGAsYHQ/s640/8.PNG" width="640" /></a>
+<div class="western">
+</div>
+<span style="font-variant-east-asian: normal; font-variant-numeric: normal;"><span style="color: #24292e;">
+<div class="western">
+&nbsp;Turned out after a not-so &#8220;educated&#8221; guess that by getting rid of the "DelegateExecute"&nbsp;entry and then adding a Powershell payload
+for the &#8216;Default&#8217; value we will open rooms for this fileless
+persistence technique:</div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-iFxBaDP8lE4/Xatshw8cv7I/AAAAAAAAKow/qpjrSv6vljUGXTg61iws6tr6Tfgm8P6ZQCNcBGAsYHQ/s1600/9.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="383" data-original-width="870" height="280" src="https://1.bp.blogspot.com/-iFxBaDP8lE4/Xatshw8cv7I/AAAAAAAAKow/qpjrSv6vljUGXTg61iws6tr6Tfgm8P6ZQCNcBGAsYHQ/s640/9.PNG" width="640" /></a></div>
+<div class="western">
+</div>
+<div class="western">
+&nbsp;The payload will be executed by pressing the &#8216;Provide Narrator
+feedback&#8217; shortcut.</div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="https://1.bp.blogspot.com/-_m2SJT85qmw/Xatsfpw1TSI/AAAAAAAAKoU/MOldp08WprYQbQNYMwUBort9xJ6NI6UTACNcBGAsYHQ/s1600/10.PNG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="544" data-original-width="872" height="398" src="https://1.bp.blogspot.com/-_m2SJT85qmw/Xatsfpw1TSI/AAAAAAAAKoU/MOldp08WprYQbQNYMwUBort9xJ6NI6UTACNcBGAsYHQ/s640/10.PNG" width="640" /></a></div>
+<div class="western">
+<br /></div>
+<div class="western">
+Full video here: <span style="color: navy;"><span lang="zxx"><u><a href="https://youtu.be/oPKnYO9V8-M">https://youtu.be/oPKnYO9V8-M</a></u></span></span><br />
+<h3>
+Conclusion</h3>
+</div>
+<div class="western">
+The feedback survey feature should not be
+available in the Windows logon screen, despite not being a trust
+boundary misconfiguration, because it is a graphic window with a form
+to send. The possibility to trigger the &#8216;feedback-hub&#8217; URI scheme
+in this context exposes Windows 10 users to an additional
+Accessibility Feature abuse that has the main advantage of being
+fileless.</div>
+</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>
+</div>
+<div class='post-bottom'>
+<div class='post-footer float-container'>
+<div class='post-footer-line post-footer-line-1'>
+</div>
+<div class='post-footer-line post-footer-line-2'>
+</div>
+<div class='post-footer-line post-footer-line-3'>
+</div>
+</div>
+<div class='post-share-buttons post-share-buttons-bottom invisible'>
+<div class='byline post-share-buttons goog-inline-block'>
+<div aria-owns='sharing-popup-Blog1-byline-8188931971017209417' class='sharing' data-title='Abusing Windows 10 Narrator&#39;s &#39;Feedback-Hub&#39; URI for Fileless Persistence'>
+<button aria-controls='sharing-popup-Blog1-byline-8188931971017209417' aria-label='Share' class='sharing-button touch-icon-button' id='sharing-button-Blog1-byline-8188931971017209417' role='button'>
+<div class='flat-icon-button ripple'>
+<svg class='svg-icon-24'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_share_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+</div>
+</button>
+<div class='share-buttons-container'>
+<ul aria-hidden='true' aria-label='Share' class='share-buttons hidden' id='sharing-popup-Blog1-byline-8188931971017209417' role='menu'>
+<li>
+<span aria-label='Get link' class='sharing-platform-button sharing-element-link' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Get link'>
+<svg class='svg-icon-24 touch-icon sharing-link'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_link_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Get link</span>
+</span>
+</li>
+<li>
+<span aria-label='Share to Facebook' class='sharing-platform-button sharing-element-facebook' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=facebook' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Share to Facebook'>
+<svg class='svg-icon-24 touch-icon sharing-facebook'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_facebook_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Facebook</span>
+</span>
+</li>
+<li>
+<span aria-label='Share to Twitter' class='sharing-platform-button sharing-element-twitter' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=twitter' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Share to Twitter'>
+<svg class='svg-icon-24 touch-icon sharing-twitter'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_twitter_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Twitter</span>
+</span>
+</li>
+<li>
+<span aria-label='Share to Pinterest' class='sharing-platform-button sharing-element-pinterest' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=pinterest' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Share to Pinterest'>
+<svg class='svg-icon-24 touch-icon sharing-pinterest'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_pinterest_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Pinterest</span>
+</span>
+</li>
+<li>
+<span aria-label='Email' class='sharing-platform-button sharing-element-email' data-href='https://www.blogger.com/share-post.g?blogID=7173201226003923060&postID=8188931971017209417&target=email' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Email'>
+<svg class='svg-icon-24 touch-icon sharing-email'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_24_email_dark' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Email</span>
+</span>
+</li>
+<li aria-hidden='true' class='hidden'>
+<span aria-label='Share to other apps' class='sharing-platform-button sharing-element-other' data-url='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html' role='menuitem' tabindex='-1' title='Share to other apps'>
+<svg class='svg-icon-24 touch-icon sharing-sharingOther'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_more_horiz_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<span class='platform-sharing-text'>Other Apps</span>
+</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section class='comments embed' data-num-comments='0' id='comments'>
+<a name='comments'></a>
+<h3 class='title'>Comments</h3>
+<div id='Blog1_comments-block-wrapper'>
+</div>
+<div class='footer'>
+<div class='comment-form'>
+<a name='comment-form'></a>
+<h4 id='comment-post-message'>Post a Comment</h4>
+<a href='https://www.blogger.com/comment-iframe.g?blogID=7173201226003923060&postID=8188931971017209417&skin=contempo' id='comment-editor-src'></a>
+<iframe allowtransparency='allowtransparency' class='blogger-iframe-colorize blogger-comment-from-post' frameborder='0' height='410px' id='comment-editor' name='comment-editor' src='' width='100%'></iframe>
+<script src='https://www.blogger.com/static/v1/jsbin/1706263374-comment_from_post_iframe.js' type='text/javascript'></script>
+<script type='text/javascript'>
+      BLOG_CMT_createIframe('https://www.blogger.com/rpc_relay.html');
+    </script>
+</div>
+</div>
+</section>
+</article>
+</div>
+</div><div class='widget PopularPosts' data-version='2' id='PopularPosts1'>
+<h3 class='title'>
+Popular posts from this blog
+</h3>
+<div class='widget-content'>
+<div role='feed'>
+<article class='post' role='article'>
+<h3 class='post-title'><a href='https://giuliocomi.blogspot.com/2018/06/wpa2-psk-vs-wpa2-enterprise-hacking-and.html'>WPA2-PSK vs WPA2-Enterprise: hacking and hardening</a></h3>
+<div class='post-header'>
+<div class='post-header-line-1'>
+<span class='byline post-timestamp'>
+-
+<meta content='https://giuliocomi.blogspot.com/2018/06/wpa2-psk-vs-wpa2-enterprise-hacking-and.html'/>
+<a class='timestamp-link' href='https://giuliocomi.blogspot.com/2018/06/wpa2-psk-vs-wpa2-enterprise-hacking-and.html' rel='bookmark' title='permanent link'>
+<time class='published' datetime='2018-06-15T00:16:00-07:00' title='2018-06-15T00:16:00-07:00'>
+June 15, 2018
+</time>
+</a>
+</span>
+</div>
+</div>
+<div class='item-content float-container'>
+<div class='item-thumbnail'>
+<a href='https://giuliocomi.blogspot.com/2018/06/wpa2-psk-vs-wpa2-enterprise-hacking-and.html'>
+<img alt='Image' sizes='72px' src='https://1.bp.blogspot.com/-yz93hJuzKa8/WyGPjqYcysI/AAAAAAAADt8/Kw_N5s0aXvsiHkIAxPeyPK4t4PWcndMHQCLcBGAs/s640/decrypted_password_with_asleap_user.PNG' srcset='https://1.bp.blogspot.com/-yz93hJuzKa8/WyGPjqYcysI/AAAAAAAADt8/Kw_N5s0aXvsiHkIAxPeyPK4t4PWcndMHQCLcBGAs/w72-h72-p-k-no-nu/decrypted_password_with_asleap_user.PNG 72w, https://1.bp.blogspot.com/-yz93hJuzKa8/WyGPjqYcysI/AAAAAAAADt8/Kw_N5s0aXvsiHkIAxPeyPK4t4PWcndMHQCLcBGAs/w144-h144-p-k-no-nu/decrypted_password_with_asleap_user.PNG 144w'/>
+</a>
+</div>
+<div class='popular-posts-snippet snippet-container r-snippet-container'>
+<div class='snippet-item r-snippetized'>
+    This post has the aim to summarise the security aspects of WPA2, with a focus on WPA2-Enterprise hacking. At the end, EAP-TLS is presented as a pretty secure implementation.      WPA2 in brief    The Wi-Fi Protected Access is a wireless technology designed to secure the communiciations between stations and the Access Point from eavesdropping and tampering attacks. It is defined in 802.11i standard and has been adopted in home, small business (WPA2-Personal) and enterprises (WPA2-Enterprise) since 2004.&#160;     The WPA2 implementation is based on the 4-way handshake.   The PMK (pairwise master key) is the value that both station and AP know and from which the PTK (pairwise transient key) is calculated and valid for the session. The station MAC, the AP MAC and two nonces (A-Nonce, S-Nonce) that are exchanged during the 4-way handshake are also part of the PTK generation process.                From an offensive point of view, capturing the messages of the 4-way handshake that are transm
+</div>
+<a class='snippet-fade r-snippet-fade hidden' href='https://giuliocomi.blogspot.com/2018/06/wpa2-psk-vs-wpa2-enterprise-hacking-and.html'></a>
+</div>
+<div class='jump-link flat-button ripple'>
+<a href='https://giuliocomi.blogspot.com/2018/06/wpa2-psk-vs-wpa2-enterprise-hacking-and.html' title='WPA2-PSK vs WPA2-Enterprise: hacking and hardening'>
+Read more
+</a>
+</div>
+</div>
+</article>
+<article class='post' role='article'>
+<h3 class='post-title'><a href='https://giuliocomi.blogspot.com/2019/08/insecure-secrets-encryption-at-rest.html'>Weak credentials encryption at rest with DPAPI: NordVPN case study</a></h3>
+<div class='post-header'>
+<div class='post-header-line-1'>
+<span class='byline post-timestamp'>
+-
+<meta content='https://giuliocomi.blogspot.com/2019/08/insecure-secrets-encryption-at-rest.html'/>
+<a class='timestamp-link' href='https://giuliocomi.blogspot.com/2019/08/insecure-secrets-encryption-at-rest.html' rel='bookmark' title='permanent link'>
+<time class='published' datetime='2019-08-25T00:25:00-07:00' title='2019-08-25T00:25:00-07:00'>
+August 25, 2019
+</time>
+</a>
+</span>
+</div>
+</div>
+<div class='item-content float-container'>
+<div class='item-thumbnail'>
+<a href='https://giuliocomi.blogspot.com/2019/08/insecure-secrets-encryption-at-rest.html'>
+<img alt='Image' sizes='72px' src='https://1.bp.blogspot.com/-vdnL_LwjdWY/XWBZaUp7vqI/AAAAAAAAJ08/ubYWntg7fysp9j9s60KKPi60m-nEn-g_gCLcBGAs/s1600/1.PNG' srcset='https://1.bp.blogspot.com/-vdnL_LwjdWY/XWBZaUp7vqI/AAAAAAAAJ08/ubYWntg7fysp9j9s60KKPi60m-nEn-g_gCLcBGAs/w72-h72-p-k-no-nu/1.PNG 72w, https://1.bp.blogspot.com/-vdnL_LwjdWY/XWBZaUp7vqI/AAAAAAAAJ08/ubYWntg7fysp9j9s60KKPi60m-nEn-g_gCLcBGAs/w144-h144-p-k-no-nu/1.PNG 144w'/>
+</a>
+</div>
+<div class='popular-posts-snippet snippet-container r-snippet-container'>
+<div class='snippet-item r-snippetized'>
+TL;DR The Windows client of&#160; NordVPN &#160;leverages DPAPI (Data Protection API ) to effortlessly save the login credentials of the customers. This is a suitable way for developers to avoid common pitfalls regarding cryptographic implementation and key management. However, this simplistic solution entails trivial plain-text password recovery. The goal of this article is to provide a walk-through on how easy is to dump the VPN credentials in a post exploitation scenario with the help of the mighty&#160; Mimikatz .      Analyzing the encryption and decryption routines of NordVPN   Few days ago I was playing with what I already consider to be the best .NET debugger,&#160; dnSpy , and the first application I happened to open was NordVPN client v6.23.11.0. After a quick code review I decided to focus on the login routine that auto-connects the VPN at startup.   This routine is demanded to the third-party DLL &#39;Liberation.OS&#39;, that in turn, is also developed in .NET.      Have a look for the documen
+</div>
+<a class='snippet-fade r-snippet-fade hidden' href='https://giuliocomi.blogspot.com/2019/08/insecure-secrets-encryption-at-rest.html'></a>
+</div>
+<div class='jump-link flat-button ripple'>
+<a href='https://giuliocomi.blogspot.com/2019/08/insecure-secrets-encryption-at-rest.html' title='Weak credentials encryption at rest with DPAPI: NordVPN case study'>
+Read more
+</a>
+</div>
+</div>
+</article>
+</div>
+</div>
+</div></div>
+</main>
+</div>
+<footer class='footer section' id='footer' name='Footer'><div class='widget Attribution' data-version='2' id='Attribution1'>
+<div class='widget-content'>
+<div class='blogger'>
+<a href='https://www.blogger.com' rel='nofollow'>
+<svg class='svg-icon-24'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_post_blogger_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+Powered by Blogger
+</a>
+</div>
+<div class='image-attribution'>
+Theme images by <a href="http://www.istockphoto.com/file_closeup.php?id=5721536&platform=blogger">merrymoonmary</a>
+</div>
+</div>
+</div></footer>
+</div>
+</div>
+</div>
+<aside class='sidebar-container container sidebar-invisible' role='complementary'>
+<div class='navigation'>
+<button class='svg-icon-24-button flat-icon-button ripple sidebar-back'>
+<svg class='svg-icon-24'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_arrow_back_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+</button>
+</div>
+<div class='sidebar_top_wrapper'>
+<div class='sidebar_top section' id='sidebar_top' name='Sidebar (Top)'><div class='widget Profile' data-version='2' id='Profile1'>
+<div class='wrapper solo'>
+<div class='widget-content individual'>
+<a href='https://www.blogger.com/profile/08094072814220999749' rel='nofollow'>
+<img alt='My photo' class='profile-img' height='120' src='//3.bp.blogspot.com/-g7b6j-Swko4/XLNSkmvHihI/AAAAAAAAFC0/dx0g9fuPbCIQ6nSPxsZkDdF9ewAjl-VAACK4BGAYYCw/s120-pf/YTBcGdNs_400x400.jpg' width='120'/>
+</a>
+<div class='profile-info'>
+<dl class='profile-datablock'>
+<dt class='profile-data'>
+<a class='profile-link g-profile' href='https://www.blogger.com/profile/08094072814220999749' rel='author nofollow'>
+Giulio Comi
+</a>
+</dt>
+</dl>
+<a class='profile-link visit-profile pill-button' href='https://www.blogger.com/profile/08094072814220999749' rel='author'>
+Visit profile
+</a>
+</div>
+</div>
+</div>
+</div></div>
+</div>
+<div class='sidebar_bottom section' id='sidebar_bottom' name='Sidebar (Bottom)'><div class='widget BlogArchive' data-version='2' id='BlogArchive1'>
+<details class='collapsible extendable'>
+<summary>
+<div class='collapsible-title'>
+<h3 class='title'>
+Articles
+</h3>
+<svg class='svg-icon-24 chevron-down'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_expand_more_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+<svg class='svg-icon-24 chevron-up'>
+<use xlink:href='/responsive/sprite_v1_6.css.svg#ic_expand_less_black_24dp' xmlns:xlink='http://www.w3.org/1999/xlink'></use>
+</svg>
+</div>
+</summary>
+<div class='widget-content'>
+<div id='ArchiveList'>
+<div id='BlogArchive1_ArchiveList'>
+<div class='first-items'>
+<ul class='hierarchy'>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2019/'>
+2019
+<span class='post-count'>3</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+<ul class='hierarchy'>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2019/10/'>
+October
+<span class='post-count'>1</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+<ul class='posts hierarchy'>
+<li>
+<a href='https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html'>Abusing Windows 10 Narrator&#39;s &#39;Feedback-Hub&#39; URI f...</a>
+</li>
+</ul>
+</div>
+</li>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2019/08/'>
+August
+<span class='post-count'>1</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+</div>
+</li>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2019/03/'>
+March
+<span class='post-count'>1</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class='remaining-items'>
+<ul class='hierarchy'>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2018/'>
+2018
+<span class='post-count'>5</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+<ul class='hierarchy'>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2018/10/'>
+October
+<span class='post-count'>1</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+</div>
+</li>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2018/08/'>
+August
+<span class='post-count'>1</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+</div>
+</li>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2018/06/'>
+June
+<span class='post-count'>2</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+</div>
+</li>
+<li class='archivedate'>
+<div class='hierarchy-title'>
+<a class='post-count-link' href='https://giuliocomi.blogspot.com/2018/05/'>
+May
+<span class='post-count'>1</span>
+</a>
+</div>
+<div class='hierarchy-content'>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<span class='show-more pill-button'>Show more</span>
+<span class='show-less hidden pill-button'>Show less</span>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class='widget ReportAbuse' data-version='2' id='ReportAbuse1'>
+<h3 class='title'>
+<a class='report_abuse' href='https://www.blogger.com/go/report-abuse' rel='noopener nofollow' target='_blank'>
+Report Abuse
+</a>
+</h3>
+</div>
+</div>
+</aside>
+<script type="text/javascript" src="https://resources.blogblog.com/blogblog/data/res/1130467574-indie_compiled.js" async="true"></script>
+
+<script type="text/javascript" src="https://www.blogger.com/static/v1/widgets/3464975383-widgets.js"></script>
+<script type='text/javascript'>
+window['__wavt'] = 'AOuZoY5-KhUdfiSFvsJgnlBjcjLjTuE2hQ:1621735217136';_WidgetManager._Init('//www.blogger.com/rearrange?blogID\x3d7173201226003923060','//giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html','7173201226003923060');
+_WidgetManager._SetDataContext([{'name': 'blog', 'data': {'blogId': '7173201226003923060', 'title': 'Defensive and offensive security in a nutshell', 'url': 'https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html', 'canonicalUrl': 'https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html', 'homepageUrl': 'https://giuliocomi.blogspot.com/', 'searchUrl': 'https://giuliocomi.blogspot.com/search', 'canonicalHomepageUrl': 'https://giuliocomi.blogspot.com/', 'blogspotFaviconUrl': 'https://giuliocomi.blogspot.com/favicon.ico', 'bloggerUrl': 'https://www.blogger.com', 'hasCustomDomain': false, 'httpsEnabled': true, 'enabledCommentProfileImages': true, 'gPlusViewType': 'FILTERED_POSTMOD', 'adultContent': false, 'analyticsAccountNumber': '', 'encoding': 'UTF-8', 'locale': 'en', 'localeUnderscoreDelimited': 'en', 'languageDirection': 'ltr', 'isPrivate': false, 'isMobile': false, 'isMobileRequest': false, 'mobileClass': '', 'isPrivateBlog': false, 'isDynamicViewsAvailable': true, 'feedLinks': '\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Defensive and offensive security in a nutshell - Atom\x22 href\x3d\x22https://giuliocomi.blogspot.com/feeds/posts/default\x22 /\x3e\n\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/rss+xml\x22 title\x3d\x22Defensive and offensive security in a nutshell - RSS\x22 href\x3d\x22https://giuliocomi.blogspot.com/feeds/posts/default?alt\x3drss\x22 /\x3e\n\x3clink rel\x3d\x22service.post\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Defensive and offensive security in a nutshell - Atom\x22 href\x3d\x22https://www.blogger.com/feeds/7173201226003923060/posts/default\x22 /\x3e\n\n\x3clink rel\x3d\x22alternate\x22 type\x3d\x22application/atom+xml\x22 title\x3d\x22Defensive and offensive security in a nutshell - Atom\x22 href\x3d\x22https://giuliocomi.blogspot.com/feeds/8188931971017209417/comments/default\x22 /\x3e\n', 'meTag': '', 'adsenseHostId': 'ca-host-pub-1556223355139109', 'adsenseHasAds': false, 'adsenseAutoAds': false, 'view': '', 'dynamicViewsCommentsSrc': '//www.blogblog.com/dynamicviews/4224c15c4e7c9321/js/comments.js', 'dynamicViewsScriptSrc': '//www.blogblog.com/dynamicviews/751ccdc09ff31f1f', 'plusOneApiSrc': 'https://apis.google.com/js/plusone.js', 'disableGComments': true, 'sharing': {'platforms': [{'name': 'Get link', 'key': 'link', 'shareMessage': 'Get link', 'target': ''}, {'name': 'Facebook', 'key': 'facebook', 'shareMessage': 'Share to Facebook', 'target': 'facebook'}, {'name': 'BlogThis!', 'key': 'blogThis', 'shareMessage': 'BlogThis!', 'target': 'blog'}, {'name': 'Twitter', 'key': 'twitter', 'shareMessage': 'Share to Twitter', 'target': 'twitter'}, {'name': 'Pinterest', 'key': 'pinterest', 'shareMessage': 'Share to Pinterest', 'target': 'pinterest'}, {'name': 'Email', 'key': 'email', 'shareMessage': 'Email', 'target': 'email'}], 'disableGooglePlus': true, 'googlePlusShareButtonWidth': 300, 'googlePlusBootstrap': '\x3cscript type\x3d\x22text/javascript\x22\x3ewindow.___gcfg \x3d {\x27lang\x27: \x27en\x27};\x3c/script\x3e'}, 'hasCustomJumpLinkMessage': false, 'jumpLinkMessage': 'Read more', 'pageType': 'item', 'postId': '8188931971017209417', 'postImageThumbnailUrl': 'https://i.ytimg.com/vi/oPKnYO9V8-M/default.jpg', 'postImageUrl': 'https://i.ytimg.com/vi/oPKnYO9V8-M/hqdefault.jpg', 'pageName': 'Abusing Windows 10 Narrator\x27s \x27Feedback-Hub\x27 URI for Fileless Persistence', 'pageTitle': 'Defensive and offensive security in a nutshell: Abusing Windows 10 Narrator\x27s \x27Feedback-Hub\x27 URI for Fileless Persistence', 'metaDescription': ''}}, {'name': 'features', 'data': {'sharing_get_link_dialog': 'true', 'sharing_native': 'false'}}, {'name': 'messages', 'data': {'edit': 'Edit', 'linkCopiedToClipboard': 'Link copied to clipboard!', 'ok': 'Ok', 'postLink': 'Post Link'}}, {'name': 'template', 'data': {'name': 'Contempo', 'localizedName': 'Contempo', 'isResponsive': true, 'isAlternateRendering': false, 'isCustom': false, 'variant': 'indie_orange', 'variantId': 'indie_orange'}}, {'name': 'view', 'data': {'classic': {'name': 'classic', 'url': '?view\x3dclassic'}, 'flipcard': {'name': 'flipcard', 'url': '?view\x3dflipcard'}, 'magazine': {'name': 'magazine', 'url': '?view\x3dmagazine'}, 'mosaic': {'name': 'mosaic', 'url': '?view\x3dmosaic'}, 'sidebar': {'name': 'sidebar', 'url': '?view\x3dsidebar'}, 'snapshot': {'name': 'snapshot', 'url': '?view\x3dsnapshot'}, 'timeslide': {'name': 'timeslide', 'url': '?view\x3dtimeslide'}, 'isMobile': false, 'title': 'Abusing Windows 10 Narrator\x27s \x27Feedback-Hub\x27 URI for Fileless Persistence', 'description': 'Penetration testing\nWeb, Wireless, Network Security', 'featuredImage': 'https://lh5.googleusercontent.com/proxy/R4B_SMNfdmjDz_rHeFbIDvSj4rMUhf_2nzKnueGLy43O095tnevTtWg-aA-pud9XsiU6P6CwWyT81YVom-OF8rcATmY', 'url': 'https://giuliocomi.blogspot.com/2019/10/abusing-windows-10-narrators-feedback.html', 'type': 'item', 'isSingleItem': true, 'isMultipleItems': false, 'isError': false, 'isPage': false, 'isPost': true, 'isHomepage': false, 'isArchive': false, 'isLabelSearch': false, 'postId': 8188931971017209417}}, {'name': 'widgets', 'data': [{'title': 'Search This Blog', 'type': 'BlogSearch', 'sectionId': 'search_top', 'id': 'BlogSearch1'}, {'title': 'Defensive and offensive security in a nutshell (Header)', 'type': 'Header', 'sectionId': 'header', 'id': 'Header1'}, {'title': '', 'type': 'FeaturedPost', 'sectionId': 'page_body', 'id': 'FeaturedPost1', 'postId': '8188931971017209417'}, {'title': 'Blog Posts', 'type': 'Blog', 'sectionId': 'page_body', 'id': 'Blog1', 'posts': [{'id': '8188931971017209417', 'title': 'Abusing Windows 10 Narrator\x27s \x27Feedback-Hub\x27 URI for Fileless Persistence', 'featuredImage': 'https://lh5.googleusercontent.com/proxy/R4B_SMNfdmjDz_rHeFbIDvSj4rMUhf_2nzKnueGLy43O095tnevTtWg-aA-pud9XsiU6P6CwWyT81YVom-OF8rcATmY', 'showInlineAds': false}], 'headerByline': {'regionName': 'header1', 'items': [{'name': 'share', 'label': ''}, {'name': 'timestamp', 'label': '-'}]}, 'footerBylines': [{'regionName': 'footer1', 'items': [{'name': 'comments', 'label': 'comments'}, {'name': 'icons', 'label': ''}]}, {'regionName': 'footer2', 'items': [{'name': 'labels', 'label': ''}]}, {'regionName': 'footer3', 'items': [{'name': 'location', 'label': 'Location:'}]}], 'allBylineItems': [{'name': 'share', 'label': ''}, {'name': 'timestamp', 'label': '-'}, {'name': 'comments', 'label': 'comments'}, {'name': 'icons', 'label': ''}, {'name': 'labels', 'label': ''}, {'name': 'location', 'label': 'Location:'}]}, {'title': '', 'type': 'PopularPosts', 'sectionId': 'page_body', 'id': 'PopularPosts1', 'posts': [{'title': 'WPA2-PSK vs WPA2-Enterprise: hacking and hardening', 'id': 3686971088324443215}, {'title': 'Abusing Windows 10 Narrator\x27s \x27Feedback-Hub\x27 URI for Fileless Persistence', 'id': 8188931971017209417}, {'title': 'Weak credentials encryption at rest with DPAPI: NordVPN case study', 'id': 6585844849054091772}]}, {'type': 'Attribution', 'sectionId': 'footer', 'id': 'Attribution1'}, {'title': 'Contacts', 'type': 'Profile', 'sectionId': 'sidebar_top', 'id': 'Profile1'}, {'title': 'Articles', 'type': 'BlogArchive', 'sectionId': 'sidebar_bottom', 'id': 'BlogArchive1'}, {'title': '', 'type': 'ReportAbuse', 'sectionId': 'sidebar_bottom', 'id': 'ReportAbuse1'}]}]);
+_WidgetManager._RegisterWidget('_BlogSearchView', new _WidgetInfo('BlogSearch1', 'search_top', document.getElementById('BlogSearch1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_HeaderView', new _WidgetInfo('Header1', 'header', document.getElementById('Header1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_FeaturedPostView', new _WidgetInfo('FeaturedPost1', 'page_body', document.getElementById('FeaturedPost1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_BlogView', new _WidgetInfo('Blog1', 'page_body', document.getElementById('Blog1'), {'cmtInteractionsEnabled': false, 'lightboxEnabled': true, 'lightboxModuleUrl': 'https://www.blogger.com/static/v1/jsbin/840662228-lbx.js', 'lightboxCssUrl': 'https://www.blogger.com/static/v1/v-css/1050234869-lightbox_bundle.css'}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_PopularPostsView', new _WidgetInfo('PopularPosts1', 'page_body', document.getElementById('PopularPosts1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_AttributionView', new _WidgetInfo('Attribution1', 'footer', document.getElementById('Attribution1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_ProfileView', new _WidgetInfo('Profile1', 'sidebar_top', document.getElementById('Profile1'), {}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_BlogArchiveView', new _WidgetInfo('BlogArchive1', 'sidebar_bottom', document.getElementById('BlogArchive1'), {'languageDirection': 'ltr', 'loadingMessage': 'Loading\x26hellip;'}, 'displayModeFull'));
+_WidgetManager._RegisterWidget('_ReportAbuseView', new _WidgetInfo('ReportAbuse1', 'sidebar_bottom', document.getElementById('ReportAbuse1'), {}, 'displayModeFull'));
+</script>
+</body>
+</html>

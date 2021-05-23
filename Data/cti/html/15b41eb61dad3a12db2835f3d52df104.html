@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+ 
+<html lang="en">     
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+    <link rel="icon" href="/etc.clientlibs/pwc/clientlibs/css_common/resources/image/favicon.ico" type="image/x-icon"/>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/etc.clientlibs/clientlibs/granite/jquery.min.8e23e5ad8c1b5c588cca8d71df0aef0b.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/clientlibs/granite/utils.min.308082b4c347f4fec37ffef277d39d0e.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/clientlibs/granite/jquery/granite.min.d9075d4175ab7b0e3ccf4305a4089645.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/foundation/clientlibs/jquery.min.dd9b395c741ce2784096e26619e14910.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/components-digitaldataanalytics.min.046b8b1a000a26481953e8075d9650fc.js"></script>
+
+
+<title>The KeyBoys are back in town - PwC UK
+</title>
+<meta http-equiv="content-language" content="en_gb"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta property="og:title" content="The KeyBoys are back in town"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="PwC"/>
+<meta property="og:description" content="In this blog post, we detail our analysis of a recent campaign that we attribute, with high confidence, to KeyBoy, a threat actor believed to be based in or operating from China. KeyBoy has been most recently reported on by CitizenLab in 2016, and now appears to have returned. "/>
+
+<meta property="og:image" content="https://www.pwc.co.uk/assets/images/longform/related-content/intelligent-digital/cover-043.jpg"/>
+
+
+<meta name="robots" content="index"/>
+<meta name="keywords" content=""/>
+<meta name="description" content="In this blog post, we detail our analysis of a recent campaign that we attribute, with high confidence, to KeyBoy, a threat actor believed to be based in or operating from China. KeyBoy has been most recently reported on by CitizenLab in 2016, and now appears to have returned. "/>
+<meta name="author" content="PricewaterhouseCoopers"/>
+<meta name="pwcTitle" content="The KeyBoys are back in town"/>
+
+<meta name="pwcLocale" content="en_gb"/>
+<meta name="pwcCountry" content='gb'/>
+
+
+<meta name="pwcGeo.default" content="UK"/>
+<meta name="pwcLang" content="en"/>
+<meta name="pwcTag" content="Technical Research||, Cyber Security||">
+<meta name="pwcHideLevel" content="0,2"/>
+<meta name="target" content=""/>
+<meta name="pwcReleaseDate" content="2017-11-02T15:52:00.000+01:00"/>	
+<meta name="pwcLastModifiedDate" content="2020-06-08T10:36:12.787Z"/>	
+<meta name="pwcselectednav" content="3"/>
+<meta name="viewport" id="pwcviewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" href="/content/pwc/script/network/apple-touch-icon.png"/>
+
+<link rel="canonical" href="https://www.pwc.co.uk/issues/cyber-security-services/research/the-keyboys-are-back-in-town.html"/>
+<meta property="og:url" content="https://www.pwc.co.uk/issues/cyber-security-services/research/the-keyboys-are-back-in-town.html"/>
+
+
+<script>
+    var  page ="The KeyBoys are back in town - PwC UK";
+	var  templatePath ="/apps/pwc/templates/longform-content-detail";
+    var pwcReleaseDate = "2017-11-02T15:52:00.000+01:00";
+	createObject('page.pageInfo.pageName', page);
+	createObject("page.pageInfo.pageType",templatePath.substring(templatePath.lastIndexOf('/')  + 1));
+ 	createObject('page.content.publishDate', pwcReleaseDate);
+    createObject('page.content.contentTitle', "The KeyBoys are back in town");
+    createObject('page.content.contentType', "article");
+    createObject('page.content.contentFullPath',"/content/pwc/uk/en/issues/cyber-security-services/research/the-keyboys-are-back-in-town.html")
+    //Added old dataLayer object value in digitalData.site object.
+    digitalData.site ={"SiteValues":{"los":"","industry":"","subLos":"","folderDirectory":"pwc/uk/en/issues/cyber-security-services/research","contentType":""},"additionalTags":"","business":{"businessChallenge":"cyber/technical_research|cyber","businessTopic":""},"accountRegistration":false};
+</script>
+<script type="application/ld+json">
+{
+    "@type": "Thing",
+    "@context": "http://schema.org",
+    "image": "https://www.pwc.co.uk/assets/images/longform/related-content/intelligent-digital/cover-043.jpg",
+    "name":"The KeyBoys are back in town - PwC UK",
+    "description":"In this blog post, we detail our analysis of a recent campaign that we attribute, with high confidence, to KeyBoy, a threat actor believed to be based in or operating from China. KeyBoy has been most recently reported on by CitizenLab in 2016, and now appears to have returned. "
+}
+</script>
+
+    
+    <script>
+        createObject('page.skipOptanonCall',true);
+    </script>
+    
+    <script type="text/javascript" src="/etc.clientlibs/foundation/clientlibs/shared.min.d8eee0685f08a5253a1d753a2619a08f.js"></script>
+
+    
+    
+    
+        <script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" type="text/javascript" charset="UTF-8" data-domain-script="c9e5cdf3-9e0a-44ec-b4aa-c959c1762603"></script>
+    
+    
+    
+    
+    
+
+
+    
+	
+    
+
+
+
+
+
+    
+
+
+
+    
+    
+        
+            <link rel="stylesheet" href="/etc.clientlibs/pwc/clientlibs/longform/style-colors-rebrand.min.374ccbc68ee0ada8218b69480201aaac.css" type="text/css">
+
+            <link rel="stylesheet" href="/etc.clientlibs/pwc/clientlibs/rebrand-clientlibs/components-colors.min.014301925ecf17b0f8d0ec65b0fd6f1f.css" type="text/css">
+
+            
+        
+        
+    
+    <script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/handlebars.min.4b6cde342715b81c00225413e17fd0e3.js"></script>
+
+
+    
+    
+
+    
+    
+        <script>
+            (function(win, doc, style, timeout) {
+                var STYLE_ID = 'at-body-style';
+                function getParent() {
+                    return doc.getElementsByTagName('head')[0];
+                }
+                function addStyle(parent, id, def) {
+                    if (!parent) {
+                        return;
+                    }
+                    var style = doc.createElement('style');
+                    style.id = id;
+                    style.innerHTML = def;
+                    parent.appendChild(style);
+                }
+                function removeStyle(parent, id) {
+                    if (!parent) {
+                        return;
+                    }
+                    var style = doc.getElementById(id);
+                    if (!style) {
+                        return;
+                    }
+                    parent.removeChild(style);
+                }
+                addStyle(getParent(), STYLE_ID, style);
+                setTimeout(function() {
+                    removeStyle(getParent(), STYLE_ID);
+                }, timeout);
+            }(window, document, "body {opacity: 0 !important}", 3000));
+        </script>
+    
+    
+        <script>
+            var pageTerritoryForDTM = 'uk';
+        </script>
+        <script src="//assets.adobedtm.com/launch-ENbc1afafa8c7a49e38f3d27ad437d1193.min.js" type="text/javascript" async></script>
+        <script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/components-analytics.min.f38e3059f1f9c7410a4b143a372229a9.js"></script>
+
+    
+    
+
+    
+
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+                    <script>var w=window;if(w.performance||w.mozPerformance||w.msPerformance||w.webkitPerformance){var d=document;AKSB=w.AKSB||{},AKSB.q=AKSB.q||[],AKSB.mark=AKSB.mark||function(e,_){AKSB.q.push(["mark",e,_||(new Date).getTime()])},AKSB.measure=AKSB.measure||function(e,_,t){AKSB.q.push(["measure",e,_,t||(new Date).getTime()])},AKSB.done=AKSB.done||function(e){AKSB.q.push(["done",e])},AKSB.mark("firstbyte",(new Date).getTime()),AKSB.prof={custid:"407291",ustr:"",originlat:"0",clientrtt:"6",ghostip:"23.32.29.28",ipv6:false,pct:"10",clientip:"122.11.202.14",requestid:"1b621ea7",region:"24408",protocol:"",blver:14,akM:"x",akN:"ae",akTT:"O",akTX:"1",akTI:"1b621ea7",ai:"256044",ra:"false",pmgn:"",pmgi:"",pmp:"",qc:""},function(e){var _=d.createElement("script");_.async="async",_.src=e;var t=d.getElementsByTagName("script"),t=t[t.length-1];t.parentNode.insertBefore(_,t)}(("https:"===d.location.protocol?"https:":"http:")+"//ds-aksb-a.akamaihd.net/aksb.min.js")}</script>
+                    </head>
+
+    	<body class="pwcscrolling longformcontent longform-content-detail-template page-primary-col--rose page-secondary-col--rose page-tertiary-col--rose  standard-spacing  standard-reading"> 
+
+
+		
+                
+                  
+             
+             
+
+        
+        <div id="wrapper"> 
+        <div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="slimHeaderPar iparsys parsys"><div class="slim-page-header parbase section">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header id="menuBarWrapper" class="header fixed slide headroom--top">
+	<div id="menuBar">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 slim-header__flex-wrapper">
+					<div id="topBarLeft">
+						<div id="logoWrapper">
+							<a href="/" id="logo" aria-label='PwC'>PwC</a> | <a href="/" class="slim-header__territory-name" aria-label='UK'>UK</a>
+						</div>
+					</div>
+					<div id="topBarRight">
+						<ul id="menuAdditional" class="menu-additional clearfix">
+							
+							<li>
+								<button id="searchBtn" aria-label='Search'> 
+								<span class="sr-only">Search</span>
+								<svg class="st0" xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+	                                viewBox="0 0 26 26">
+	                                <path fill="#3F3F40"
+	                                      d="M10.351,19.949c-5.211,0-9.554-4.344-9.554-9.554c0-5.211,4.343-9.554,9.554-9.554 c5.209,0,9.553,4.343,9.553,9.554C19.904,15.605,15.561,19.949,10.351,19.949z M10.351,2.579c-4.343,0-7.817,3.473-7.817,7.816 c0,4.343,3.474,7.817,7.817,7.817c4.342,0,7.817-3.475,7.817-7.817C18.168,6.052,14.693,2.579,10.351,2.579z"></path>
+	                                <path fill="#3F3F40"
+	                                      d="M17.298,16.127l7.643,7.643c0.351,0.35,0.351,0.871,0,1.215c-0.173,0.174-0.521,0.174-0.694,0.174 c-0.172,0-0.521,0-0.693-0.174l-7.643-7.643L17.298,16.127z"></path>
+	                            </svg>
+
+	                            <svg class="st1" focusable="false" enable-background="new 0 0 256 256" height="26px" id="Layer_1" version="1.1" viewBox="0 0 256 256" width="26px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	                                <path  d="M179.199,38.399c0,1.637-0.625,3.274-1.875,4.524l-85.076,85.075l85.076,85.075c2.5,2.5,2.5,6.55,0,9.05s-6.55,2.5-9.05,0  l-89.601-89.6c-2.5-2.5-2.5-6.551,0-9.051l89.601-89.6c2.5-2.5,6.55-2.5,9.05,0C178.574,35.124,179.199,36.762,179.199,38.399z"/>
+	                            </svg>
+							</button>
+								<div class="menuFlyout">
+									<form role="search" action="/search.html" method="get">
+										<label class="sr-only" for="searchField"> Search </label>
+										<input id="searchField" name="searchfield" type="text" placeholder="Search" tabindex="-1">
+										
+										<input type="hidden" name="tp" value="long" />
+										<input type="hidden" name="pwcGeo" value="UK" />
+										<input type="hidden" name="pwcLang" value="en" />
+										<input type="hidden" name="pwcHideLevel" value="0" />
+										<input type="hidden" value="" name="pwcSiteSection" />
+									</form>
+								</div></li>
+							
+							<li class="hidden-xs social-share-desktop">
+								<button id="shareBtn" aria-label='Share'> <svg
+									xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+									viewBox="0 0 26 26">
+								<path fill="#3F3F40"
+									  d="M4.73,16.465c-1.912,0-3.467-1.557-3.467-3.467c0-1.911,1.555-3.467,3.467-3.467 c1.91,0,3.465,1.556,3.465,3.467C8.195,14.908,6.641,16.465,4.73,16.465z M4.73,11.212c-0.986,0-1.789,0.801-1.789,1.786 c0,0.986,0.803,1.787,1.789,1.787s1.787-0.801,1.787-1.787C6.518,12.013,5.717,11.212,4.73,11.212z"></path>
+								<path fill="#3F3F40"
+									  d="M21.27,24.533c-1.911,0-3.466-1.553-3.466-3.467c0-1.912,1.555-3.467,3.466-3.467 c1.91,0,3.467,1.555,3.467,3.467C24.736,22.98,23.18,24.533,21.27,24.533z M21.27,19.281c-0.986,0-1.788,0.797-1.788,1.785 s0.802,1.785,1.788,1.785s1.787-0.797,1.787-1.785S22.256,19.281,21.27,19.281z"></path>
+								<path fill="#3F3F40"
+									  d="M21.27,8.396c-1.911,0-3.466-1.553-3.466-3.463c0-1.911,1.555-3.466,3.466-3.466 c1.91,0,3.467,1.555,3.467,3.466C24.736,6.843,23.18,8.396,21.27,8.396z M21.27,3.145c-0.986,0-1.788,0.801-1.788,1.788 c0,0.983,0.802,1.784,1.788,1.784s1.787-0.801,1.787-1.784C23.057,3.945,22.256,3.145,21.27,3.145z"></path>
+								<rect x="6.432" y="16.199"
+									  transform="matrix(0.8884 0.459 -0.459 0.8884 9.2716 -4.0689)"
+									  fill="#3F3F40" width="13.148" height="1.675"></rect>
+								<rect x="12.161" y="2.384"
+									  transform="matrix(0.4586 0.8886 -0.8886 0.4586 15.0031 -6.698)"
+									  fill="#3F3F40" width="1.676" height="13.159"></rect>
+							</svg>
+								<span>Share</span>
+							</button>
+								<div class="menuFlyout">
+									
+									<div class="sh"></div>
+								</div></li>
+
+							<li class="hidden-xs"><button id="territoryBtn" aria-label='Territory Selector'>
+								<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"
+									 viewBox="0 0 26 26">
+									<path fill="#3F3F40"
+										  d="M12.971,25.93c-0.72,0-1.437-0.432-1.868-1.148L5.07,14.438C2.484,9.982,3.777,4.094,8.087,1.507 c1.436-0.86,3.161-1.437,4.884-1.437c3.305,0,6.465,1.725,8.047,4.742c1.579,2.873,1.722,6.32,0,9.193c0,0,0,0,0,0.143 l-6.178,10.775C14.408,25.498,13.689,25.93,12.971,25.93z M12.971,1.507c-1.437,0-2.873,0.433-4.165,1.149 C5.214,4.812,4.065,9.84,6.363,13.574l6.033,10.488c0.145,0.432,0.432,0.432,0.575,0.432s0.432,0,0.573-0.432l6.179-10.631 c0,0,0,0,0-0.145c1.437-2.441,1.437-5.458,0-7.9C18.433,3.088,15.844,1.507,12.971,1.507z"></path>
+									<path fill="#3F3F40"
+										  d="M12.971,13c-2.011,0-3.592-1.579-3.592-3.592c0-2.011,1.581-3.591,3.592-3.591 c2.011,0,3.592,1.58,3.592,3.591C16.563,11.421,14.982,13,12.971,13z M12.971,7.254c-1.149,0-2.155,1.006-2.155,2.154 c0,1.15,1.006,2.156,2.155,2.156c1.148,0,2.154-1.006,2.154-2.156C15.125,8.26,14.119,7.254,12.971,7.254z"></path>
+								</svg>
+							</button>
+								<div class="menuFlyout">
+									<div class="selected-territory" id="selectedTerritory">  </div>
+									<div class="territory-dropdown">
+
+									</div>
+								</div>
+							</li>
+							<li class="hidden-xs language-selector-li">
+							</li>
+						</ul>
+
+
+<input type="hidden" id="enableUserReg" value='false'>
+<a id="skipToContent" href="#" class="sr-only sr-only-focusable skip-content" aria-label='Skip to content'>Skip to content</a>
+<a id="skipToFooter" href="#pgFooter" class="sr-only sr-only-focusable skip-content" aria-label='Skip to footer'>Skip to footer</a>
+
+                    <button id="dropdownTrigger_lg" type="button" class="navbar-toggle slim-header__menu-btn an-hamburger" aria-label='Menu'>
+                        <div>
+                            <span class="icon-bar icon-bar1"></span> 
+                            <span class="icon-bar icon-bar2"></span> 
+                            <span class="icon-bar icon-bar3"></span>
+                        </div>
+                        <span class="hamburger-title"> Menu </span>
+                    </button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+</div>
+<nav id="breadcrumbWrapper">
+    <div class="container">
+        <div class="row">
+			<div class='col-md-12 hidden-xs breadcrumb-main'>
+			</div>
+			<ul id="menuAdditionalMobile" class="col-xs-6 menu-additional clearfix visible-xs-block">
+				<li>
+					<button id="territoryBtnMobile" href="https://www.pwc.com/gx/en/site-information/site-index.html">
+						<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+							<path fill="#3F3F40" d="M12.971,25.93c-0.72,0-1.437-0.432-1.868-1.148L5.07,14.438C2.484,9.982,3.777,4.094,8.087,1.507 c1.436-0.86,3.161-1.437,4.884-1.437c3.305,0,6.465,1.725,8.047,4.742c1.579,2.873,1.722,6.32,0,9.193c0,0,0,0,0,0.143 l-6.178,10.775C14.408,25.498,13.689,25.93,12.971,25.93z M12.971,1.507c-1.437,0-2.873,0.433-4.165,1.149 C5.214,4.812,4.065,9.84,6.363,13.574l6.033,10.488c0.145,0.432,0.432,0.432,0.575,0.432s0.432,0,0.573-0.432l6.179-10.631 c0,0,0,0,0-0.145c1.437-2.441,1.437-5.458,0-7.9C18.433,3.088,15.844,1.507,12.971,1.507z"></path>
+							<path fill="#3F3F40" d="M12.971,13c-2.011,0-3.592-1.579-3.592-3.592c0-2.011,1.581-3.591,3.592-3.591 c2.011,0,3.592,1.58,3.592,3.591C16.563,11.421,14.982,13,12.971,13z M12.971,7.254c-1.149,0-2.155,1.006-2.155,2.154 c0,1.15,1.006,2.156,2.155,2.156c1.148,0,2.154-1.006,2.154-2.156C15.125,8.26,14.119,7.254,12.971,7.254z"></path>
+						</svg>
+					</button>
+					<div class="territory-dropdown">
+					</div>
+				</li>
+				<li class="language-selector-li">
+				</li>
+			</ul>
+			
+		</div>
+	</div>
+    
+        
+        
+            
+        
+    
+        
+            
+                
+            
+
+
+
+
+
+<script>
+    digitalDataUserStatus(false);
+</script>
+
+
+            
+            
+        
+</nav>
+<nav id="navBar">
+    <div class="hamburger-menu">
+        <nav id="breadcrumbWrapperMobile" class="visible-xs-block"></nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-xs-12">
+                    <div class="row hamburger-submenu--mobile">
+                    <div class="panel-group" id="accordion" role="tablist">
+                    </div>
+                </div>
+                </div>
+                <!-- <div class="col-xs-12 hamburger-submenu--mobile visible-xs-block">
+                    <div class="panel-group" id="accordion" role="tablist">
+                    </div>
+                </div> -->
+                <div class="col-sm-4 col-xs-12 level-one-links" id="LevelOneLinks">
+                    <div class="social-share-menu visible-xs-block">
+                        <!-- <div class="utility-mobile"></div> -->
+                        <div class="menuFlyout">
+                            Share this page
+                            <div class="sh"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+</header>
+
+
+
+
+<script id="overlay-template" type="text/x-handlebars-template">
+	<button id="myAccountButton" class="{{#if user.isInternalUserLoggedIn}} internal-user-account{{/if}}" aria-label='Sign in/register'>
+	    <span class="profile-access__icon account-icon"></span>
+		<div class="profile-access__title{{#if user.isInternalUserLoggedIn}} profile-internal-user{{/if}}">
+		    {{#if user.userLoggedIn}}
+		    	<span>
+		    		<span style="font-style: italic;">Hello</span>
+		            {{user.firstName}} {{user.lastName}}
+	            </span>
+		    {{else}}
+				<span> Sign in/register </span>
+	        {{/if}}
+	    </div>
+	</button>
+    
+</script>
+
+<script id="language-selector-template" type="text/x-handlebars-template">
+	<div class="dropdown language-selector" id="languageSelector{{#if isMobile}}Mobile{{/if}}">
+    		<button class="dropdown-toggle language-selector__btn" type="button"  id="languageSelectorDropdown{{#if isMobile}}Mobile{{/if}}">
+        		{{currentLanguageTitle}}
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 16" height="12" width="15"><defs><style>.cls-1{fill:#404041;}</style></defs><title>icon-</title><g id="chevron-horizontal"><path class="cls-1" d="M7.53,11a.53.53,0,0,1-.39-.13L.8,4.57a.54.54,0,0,1,0-.77.55.55,0,0,1,.78,0l6,5.93,5.9-5.92a.55.55,0,0,1,.78.78L7.92,10.87a.52.52,0,0,1-.39.13Z"/></g></svg>
+        </button>
+        <ul class="dropdown-menu language-selector__dropdown-options" aria-labelledby="languageSelectorDropdown{{#if isMobile}}Mobile{{/if}}">
+        		<li><span>Choose a language:</span></li>
+            {{#each alternateLanguages}}
+        <li {{#if this.isCurrentLanguage}} class="selected" {{/if}}><a href="{{this.linkURL}}">{{this.linkText}}</a></li>
+            {{/each}}
+        </ul>
+    </div>
+</script>
+
+<script id="territory-selector-template" type="text/x-handlebars-template">
+	<div class="language-field-container">
+    		<input class="languageField" title='Search Territory' aria-label='Search Territory' type="text" list="PwC_countries">
+    </div>
+
+    <div class="PwC_countries">
+    		<span> Find a country or region</span>
+        {{#each this}}
+			{{#if territoryFinder}}
+        			<a href="{{domain}}" title="{{name}}">{{name}}</a>
+				{{#each alias}}
+					<a href="{{../domain}}" title="{{this}}">{{this}}</a>
+        		{{/each}}
+			{{/if}}
+        {{/each}}
+    </div>
+    <button type="button" class="territorySubmit"></button>
+    <span class="languageField_valid">No match found</span>
+</script>
+
+<script id="breadcrumb-template" type="text/x-handlebars-template">
+    <div class="breadcrumb-component__scroll-pane an-bread-crumb" id="breadcrumbScrollPane{{#if isMobile}}Mobile{{/if}}">
+    		{{#unless isMobile}}<button class="breadcrumb-toggle">
+                <label class="sr-only">Show full breadcrumb</label>
+            </button>{{/unless}}
+            <ul class="{{#unless isMobile}}{{/unless}} breadcrumb full-closed">
+            {{#each breadcrumbs}}
+            <li class="breadcrumbVisible">
+            		<a href="{{this.linkURL}}">{{this.linkText}}</a>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+    <div class="breadcrumb-component__scroll-fade breadcrumb-component__scroll-fade--left"></div>
+    <div class="breadcrumb-component__scroll-fade breadcrumb-component__scroll-fade--right"></div>
+</script>
+
+<!-- <script id="hamburger-template" type="text/x-handlebars-template">
+    {{#ifEquals navigationStrategy "sibling-children"}}
+        {{#if hasSectionTitle}}
+        <h5 class="dynamic-site__heading"><a href="{{addExtensionIfRequired sectionPagePath 'html'}}">{{sectionTitle}}</a></h5>
+        {{/if}}
+        <div class="row hamburger-submenu">
+            <ul class="nav nav-tabs level-two-navs col-md-6">
+                {{#each hamburgerLinks.primary}}
+                <li><a data-tab-pane="secondLevelItem{{math @index '+' '1'}}"
+                       href="{{addExtensionIfRequired this.url 'html'}}">
+                    <span class="level-two-nav__title">{{this.text}}</span>
+                    {{#if this.children.length}}
+                    <span class="level-two-nav__arrow"></span>
+                    {{/if}}
+                </a></li>
+                {{/each}}
+            </ul>
+            {{#if hamburgerLinks.primary.length}}
+            <div class="tab-content level-three-navs col-md-6">
+                {{#each hamburgerLinks.primary}}
+                <div id="secondLevelItem{{math @index '+' '1'}}" class="tab-pane">
+                    <ul>
+                        {{#each this.children}}
+                        <li>
+                            <a href="{{addExtensionIfRequired this.url 'html'}}">{{this.text}}</a>
+                        </li>
+                        {{/each}}
+                    </ul>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+        {{/ifEquals}}
+        {{#ifEquals navigationStrategy "manual"}}
+        {{#if hasSectionTitle}}
+        <span class="sectiontitle"><a href="{{addExtensionIfRequired sectionPagePath 'html'}}">{{sectionTitle}}</a></span>
+        {{/if}}
+        <div class="row">
+            {{#if hamburgerLinks.primary.length}}
+            <div class="col-sm-6" id="inPageNavigation">
+                <ul>
+                    {{#each hamburgerLinks.primary}}
+                    <li>
+                        <a href="{{addExtensionIfRequired this.url 'html'}}" class="inPageLink"
+                           target="{{this.targetType}}"><span>{{this.text}}</span></a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+            {{#if hamburgerLinks.secondary.length}}
+            <div class="col-sm-6" id="furtherArticles">
+                <ul>
+                    {{#each hamburgerLinks.secondary}}
+                    <li>
+                        <a href="{{addExtensionIfRequired this.url 'html'}}"
+                           target="{{this.targetType}}"><span>{{this.text}}</span></a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+        </div>
+    {{/ifEquals}}
+</script> -->
+
+<script id="hamburger-levelOne-template" type="text/x-handlebars-template">
+    {{#if levelOneLinks.length}}
+        <div class="h3">Explore PwC
+        </div>
+        <ul class="row">
+            {{#each levelOneLinks}}
+            <li>
+                <a href="{{this.link}}" target="{{#if this.openNewWindow}}_blank{{else}}_self{{/if}}" class="clearfix an-level-one-link">
+                    <span>{{this.title}}</span>
+                </a>
+            </li>
+            {{/each}}
+        </ul>
+    {{/if}}
+</script>
+
+<script id="hamburger-mobile-template" type="text/x-handlebars-template">
+    {{#ifEquals navigationStrategy "nestedNavigation"}}
+    {{#each hamburgerLinks.nestedPrimary}}
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="levelTwoLinks_{{math @index '+' '1'}}">
+            <div class="panel-title h4">
+                <a class="an-primary-nav" role="button" href="{{addExtensionIfRequired this.url 'html'}}"
+                   aria-expanded="false" target="{{this.targetType}}" aria-controls="levelThreeLinks_{{math @index '+' '1'}}">
+                    {{this.text}}
+                </a>
+                {{#if this.children}}
+                <span></span>
+                {{/if}}
+            </div>
+        </div>
+        {{#if this.children}}
+        <div id="levelThreeLinks_{{math @index '+' '1'}}" class="panel-collapse collapse" role="tabpanel"
+             aria-labelledby="levelTwoLinks_{{math @index '+' '1'}}">
+            <div class="panel-body">
+                <ul>
+                    <li class="visible-xs-block visible-sm-block">
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}" target="{{this.targetType}}">{{this.text}}</a>
+                    </li>
+                    {{#each this.children}}
+                    <li>
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}" target="{{this.targetType}}">{{this.text}}</a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+    {{/each}}
+        {{/ifEquals}}
+    {{#ifEquals navigationStrategy "sibling-children"}}
+    		{{#each hamburgerLinks.primary}}
+        		<div class="panel panel-default">
+            		<div class="panel-heading" role="tab" id="levelTwoLinks_{{math @index '+' '1'}}">
+            <div class="panel-title h4">
+                <a class="an-primary-nav" role="button" href="{{addExtensionIfRequired this.url 'html'}}"
+                       		aria-expanded="false" aria-controls="levelThreeLinks_{{math @index '+' '1'}}">
+                        		{{this.text}}
+                    		</a>
+                            {{#if this.children}}
+                    		<span></span>
+                            {{/if}}
+            </div>
+            		</div>
+                    {{#if this.children}}
+            		<div id="levelThreeLinks_{{math @index '+' '1'}}" class="panel-collapse collapse" role="tabpanel"
+                 		aria-labelledby="levelTwoLinks_{{math @index '+' '1'}}">
+                		<div class="panel-body">
+                    		<ul>
+                    <li class="visible-xs-block visible-sm-block">
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}">{{this.text}}</a>
+                                </li>
+                                {{#each this.children}}
+                                    <li>
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}">{{this.text}}</a>
+                                    </li>
+                                {{/each}}
+                    		</ul>
+                		</div>
+            		</div>
+                    {{/if}}
+        		</div>
+    		{{/each}}
+    {{/ifEquals}}
+	{{#ifEquals navigationStrategy "manual"}}
+        {{#if hasSectionTitle}}
+        <span class="sectiontitle"><a href="{{addExtensionIfRequired sectionPagePath 'html'}}">{{sectionTitle}}</a></span>
+        {{/if}}
+        <div class="row">
+            {{#if hamburgerLinks.primary.length}}
+            <div class="col-sm-6" id="inPageNavigation">
+                <ul>
+                    {{#each hamburgerLinks.primary}}
+                    <li>
+                        <a href="{{addExtensionIfRequired this.url 'html'}}" class="inPageLink an-primary-nav"
+                           target="{{this.targetType}}"><span>{{this.text}}</span></a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+            {{#if hamburgerLinks.secondary.length}}
+            <div class="col-sm-6" id="furtherArticles">
+                <ul>
+                    {{#each hamburgerLinks.secondary}}
+                    <li>
+                        <a class="an-secondary-nav" href="{{addExtensionIfRequired this.url 'html'}}"
+                           target="{{this.targetType}}"><span>{{this.text}}</span></a>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            {{/if}}
+        </div>
+    {{/ifEquals}}
+</script>
+
+<script id="social-share-template" type="text/x-handlebars-template">
+    {{#each socialShareConfiguration}}
+        {{#ifEquals this "Facebook"}}
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{socialURL}}" aria-label='Share To Facebook'>
+            <span class="sti-btn sti-facebook-btn circle-icon">Share To Facebook</span></a>
+        {{/ifEquals}}
+        {{#ifEquals this "Twitter"}}
+        <a data-url="https://twitter.com/intent/tweet/?url={{socialURL}}" href="javascript:void(0)" class="sh__twitter" aria-label='Share To Twitter'>
+            <span class="sti-btn sti-twitter-btn circle-icon">Share To Twitter</span></a>
+        {{/ifEquals}}
+        {{#ifEquals this "Linkedin"}}
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{socialURL}}" aria-label='Share To Linkedin'>
+            <span class="sti-btn sti-linkedin-btn circle-icon">Share To Linkedin</span></a>
+        {{/ifEquals}}
+        {{#ifEquals this "Weibo"}}
+        <a href="http://v.t.sina.com.cn/share/share.php?url={{socialURL}}" aria-label='Share To Weibo'>
+            <span class="sti-btn sti-weibo-btn circle-icon">Share To Weibo</span></a>
+        {{/ifEquals}}
+    {{/each}}
+</script>
+
+
+<script>
+    var navigationData={"breadcrumbData":{"breadcrumbs":[{"linkURL":"https://www.pwc.co.uk","linkText":"UK home"},{"linkURL":"https://www.pwc.co.uk/issues.html","linkText":"Issues"},{"linkURL":"https://www.pwc.co.uk/issues/cyber-security-services.html","linkText":"Cyber security"},{"linkURL":"https://www.pwc.co.uk/issues/cyber-security-services/research.html","linkText":"Research"},{"linkURL":"https://www.pwc.co.uk/issues/cyber-security-services/research/the-keyboys-are-back-in-town.html","linkText":"The KeyBoys are back in town"}]},"hamburgerData":{"hamburgerLinks":{"secondary":[{"children":[],"targetType":"_self","text":"Data-driven cyber risk management using Tanium","url":"https://www.pwc.co.uk/issues/cyber-security-services/research/data-driven-cyber-risk-management-using-tanium"}],"nestedPrimary":[],"primary":[{"children":[],"targetType":"_self","text":"Cyber security partnership with BT Security","url":"https://www.pwc.co.uk/issues/cyber-security-services/bt-security-partnership"},{"children":[],"targetType":"_self","text":"Cyber security transformation","url":"https://www.pwc.co.uk/issues/cyber-security-services/transformation"},{"children":[],"targetType":"_self","text":"Cyber defence and detection","url":"https://www.pwc.co.uk/issues/cyber-security-services/defence-and-detection"},{"children":[],"targetType":"_self","text":"Cyber security in mergers & acquisitions (M&A)","url":"https://www.pwc.co.uk/issues/cyber-security-services/mergers-and-acquisitions"},{"children":[],"targetType":"_self","text":"Cyber security team contacts","url":"https://www.pwc.co.uk/issues/cyber-security-services/contacts"},{"children":[],"targetType":"_self","text":"Cyber security risk advisory","url":"https://www.pwc.co.uk/issues/cyber-security-services/risk-advisory"},{"children":[],"targetType":"_self","text":"Cyber incident response and recovery","url":"https://www.pwc.co.uk/issues/cyber-security-services/incident-response-and-recovery"},{"children":[{"children":[],"targetType":"_self","text":"How to stop malicious insider threats to cyber security with IAM and endpoint monitoring","url":"https://www.pwc.co.uk/issues/cyber-security-services/insights/how-to-stop-insider-threats-to-cyber-security"}],"targetType":"_self","text":"Insights","url":"https://www.pwc.co.uk/issues/cyber-security-services/insights"}]},"sectionPagePath":"","levelOneLinks":[{"link":"https://www.pwc.co.uk/who-we-are.html","title":"About us","openNewWindow":""},{"link":"https://www.pwc.co.uk/industries.html","title":"Industries","openNewWindow":""},{"link":"https://www.pwc.co.uk/services.html","title":"Services","openNewWindow":""},{"link":"https://www.pwc.co.uk/who-we-are/regional-sites.html","title":"Regions","openNewWindow":""},{"link":"https://www.pwc.co.uk/press-room.html","title":"Media centre","openNewWindow":""},{"link":"https://www.pwc.co.uk/careers.html","title":"Careers","openNewWindow":""},{"link":"https://www.pwc.co.uk/who-we-are/office-locations.html","title":"UK office locations","openNewWindow":""},{"link":"https://www.pwc.co.uk/issues.html","title":"Issues","openNewWindow":""},{"link":"https://www.pwc.co.uk/insights.html","title":"Insights","openNewWindow":""}],"sectionTitle":"","navigationStrategy":"sibling-children"},"socialShareData":{"socialShareConfiguration":["Twitter","Linkedin","Facebook"],"socialURL":"/content/pwc/uk/en/issues/cyber-security-services/research/the-keyboys-are-back-in-town"},"territorySelectorData":[{"code":"af","domain":"https://www.pwc.com/af","name":"Afghanistan","territoryFinder":false},{"code":"w4","domain":"https://afrique.pwc.com","name":"Afrique Francophone","territoryFinder":true},{"code":"al","domain":"https://www.pwc.com/al","name":"Albania","territoryFinder":true},{"code":"dz","domain":"https://www.pwc.com/dz","name":"Algeria","territoryFinder":false},{"code":"ad","domain":"https://www.pwc.ad","name":"Andorra","territoryFinder":true},{"code":"ao","domain":"https://www.pwc.com/ao","name":"Angola","territoryFinder":true},{"code":"ag","domain":"https://www.pwc.com/ag","name":"Antigua","territoryFinder":false},{"code":"ar","domain":"https://www.pwc.com.ar","name":"Argentina","territoryFinder":true},{"code":"am","domain":"https://www.pwc.com/am","name":"Armenia","territoryFinder":true},{"code":"aw","domain":"https://www.pwc.com/aw","name":"Aruba","territoryFinder":false},{"code":"w1","domain":"https://customs.pwc.com","name":"Asia Pacific Customs and Trade","territoryFinder":false},{"code":"au","domain":"https://www.pwc.com.au","name":"Australia","territoryFinder":true},{"code":"at","domain":"https://www.pwc.at","name":"Austria","territoryFinder":true},{"code":"az","domain":"https://www.pwc.com/az","name":"Azerbaijan","territoryFinder":true},{"code":"bs","domain":"https://www.pwc.com/bs","name":"Bahamas","territoryFinder":true},{"code":"bh","domain":"https://www.pwc.com/bh","name":"Bahrain","territoryFinder":false},{"code":"bd","domain":"https://www.pwc.com/bd","name":"Bangladesh","territoryFinder":false},{"code":"bb","domain":"https://www.pwc.com/bb","name":"Barbados","territoryFinder":true},{"code":"by","domain":"https://www.pwc.by","name":"Belarus","territoryFinder":true},{"code":"be","domain":"https://www.pwc.be","name":"Belgium","territoryFinder":true,"alias":["Belgique","België"]},{"code":"bj","domain":"https://www.pwc.com/bj","name":"Benin","territoryFinder":false},{"code":"bm","domain":"https://www.pwc.com/bm","name":"Bermuda","territoryFinder":true},{"code":"bo","domain":"https://www.pwc.com/bo","name":"Bolivia","territoryFinder":true},{"code":"bq","domain":"https://www.pwc.com/bq","name":"Bonaire","territoryFinder":false},{"code":"ba","domain":"https://www.pwc.ba","name":"Bosnia and Herzegovina","territoryFinder":true},{"code":"bw","domain":"https://www.pwc.com/bw","name":"Botswana","territoryFinder":true},{"code":"br","domain":"https://www.pwc.com.br","name":"Brasil","territoryFinder":true},{"code":"vg","domain":"https://www.pwc.com/vg","name":"British Virgin Islands","territoryFinder":true},{"code":"bn","domain":"https://www.pwc.com/bn","name":"Brunei","territoryFinder":true},{"code":"bg","domain":"https://www.pwc.bg","name":"Bulgaria","territoryFinder":true},{"code":"bf","domain":"https://www.pwc.com/bf","name":"Burkina Faso","territoryFinder":false},{"code":"bi","domain":"https://www.pwc.com/bi","name":"Burundi","territoryFinder":false},{"code":"kh","domain":"https://www.pwc.com/kh","name":"Cambodia","territoryFinder":true},{"code":"cm","domain":"https://www.pwc.com/cm","name":"Cameroon","territoryFinder":true},{"code":"ca","domain":"https://www.pwc.com/ca","name":"Canada","territoryFinder":true},{"code":"cv","domain":"https://www.pwc.com/cv","name":"Cape Verde","territoryFinder":true},{"code":"cb","domain":"https://www.pwc.com/cb","name":"Caribbean","territoryFinder":true},{"code":"ky","domain":"https://www.pwc.com/ky","name":"Cayman Islands","territoryFinder":true},{"code":"cf","domain":"https://www.pwc.com/cf","name":"Central African Republic","territoryFinder":false},{"code":"xa","domain":"https://www.pwc.com/xa","name":"Central Americas","territoryFinder":false},{"code":"cs","domain":"https://www.pwc.com/cs","name":"Central Asia and Caucasus","territoryFinder":false},{"code":"c1","domain":"https://www.pwc.com/c1","name":"Central and Eastern Europe","territoryFinder":true},{"code":"td","domain":"https://www.pwc.com/td","name":"Chad","territoryFinder":true},{"code":"jg","domain":"https://www.pwc.com/jg","name":"Channel Islands","territoryFinder":true},{"code":"cl","domain":"https://www.pwc.com/cl","name":"Chile","territoryFinder":true},{"code":"cn","domain":"https://www.pwccn.com","name":"China","territoryFinder":true,"alias":["中国"]},{"code":"co","domain":"https://www.pwc.com/co","name":"Colombia","territoryFinder":true},{"code":"km","domain":"https://www.pwc.com/km","name":"Comoros","territoryFinder":false},{"code":"cg","domain":"https://www.pwc.com/cg","name":"Congo (Brazzaville)","territoryFinder":true},{"code":"cd","domain":"https://www.pwc.com/cd","name":"Congo (Dem. Rep.)","territoryFinder":true},{"code":"cr","domain":"https://www.pwc.com/cr","name":"Costa Rica","territoryFinder":true},{"code":"hr","domain":"https://www.pwc.hr","name":"Croatia","territoryFinder":true},{"code":"cy","domain":"https://www.pwc.com.cy","name":"Cyprus","territoryFinder":true},{"code":"cz","domain":"https://www.pwc.com/cz","name":"Czech Republic","territoryFinder":true},{"code":"ci","domain":"https://www.pwc.com/ci","name":"Côte d'Ivoire","territoryFinder":false},{"code":"dk","domain":"https://www.pwc.dk","name":"Denmark","territoryFinder":true},{"code":"dj","domain":"https://www.pwc.com/dj","name":"Djibouti","territoryFinder":false},{"code":"do","domain":"https://www.pwc.com/do","name":"Dominican Republic","territoryFinder":true},{"code":"ec","domain":"https://www.pwc.ec","name":"Ecuador","territoryFinder":true},{"code":"eg","domain":"https://www.pwc.com/eg","name":"Egypt","territoryFinder":false},{"code":"sv","domain":"https://www.pwc.com/sv","name":"El Salvador","territoryFinder":true},{"code":"gq","domain":"https://www.pwc.com/gq","name":"Equatorial Guinea","territoryFinder":true},{"code":"er","domain":"https://www.pwc.com/er","name":"Eritrea","territoryFinder":false},{"code":"ee","domain":"https://www.pwc.com/ee","name":"Estonia","territoryFinder":true},{"code":"et","domain":"https://www.pwc.com/et","name":"Ethiopia","territoryFinder":false},{"code":"fj","domain":"https://www.pwc.com/fj","name":"Fiji","territoryFinder":false},{"code":"fi","domain":"https://www.pwc.fi","name":"Finland","territoryFinder":true},{"code":"fr","domain":"https://www.pwc.fr","name":"France","territoryFinder":true},{"code":"pf","domain":"https://www.pwc.com/pf","name":"French Polynesia","territoryFinder":false},{"code":"ga","domain":"https://www.pwc.com/ga","name":"Gabon","territoryFinder":true},{"code":"gm","domain":"https://www.pwc.com/gm","name":"Gambia","territoryFinder":false},{"code":"ge","domain":"https://www.pwc.com/ge","name":"Georgia","territoryFinder":true},{"code":"de","domain":"https://www.pwc.de","name":"Germany","territoryFinder":true},{"code":"gh","domain":"https://www.pwc.com/gh","name":"Ghana","territoryFinder":true},{"code":"gi","domain":"https://www.pwc.gi","name":"Gibraltar","territoryFinder":true},{"code":"gx","domain":"https://www.pwc.com/gx","name":"Global","territoryFinder":true},{"code":"w3","domain":"https://www.gmsasia.pwc.com","name":"Global Mobility Services","territoryFinder":false},{"code":"gr","domain":"https://www.pwc.com/gr","name":"Greece","territoryFinder":true},{"code":"gl","domain":"https://www.pwc.com/gl","name":"Greenland","territoryFinder":false},{"code":"gt","domain":"https://www.pwc.com/gt","name":"Guatemala","territoryFinder":true},{"code":"xc","domain":"https://www.pwc.com/xc","name":"Guernsey","territoryFinder":false},{"code":"gn","domain":"https://www.pwc.com/gn","name":"Guinea","territoryFinder":true},{"code":"gw","domain":"https://www.pwc.com/gw","name":"Guinea Bissau","territoryFinder":false},{"code":"gy","domain":"https://www.pwc.com/gy","name":"Guyana","territoryFinder":false},{"code":"hn","domain":"https://www.pwc.com/hn","name":"Honduras","territoryFinder":true},{"code":"hk","domain":"https://www.pwchk.com","name":"Hong Kong SAR, China","territoryFinder":true},{"code":"hu","domain":"https://www.pwc.com/hu","name":"Hungary","territoryFinder":true},{"code":"s1","domain":"https://www.ilclegal.com","name":"ILC Legal","territoryFinder":true},{"code":"is","domain":"https://www.pwc.is","name":"Iceland","territoryFinder":true},{"code":"in","domain":"https://www.pwc.in","name":"India","territoryFinder":true},{"code":"id","domain":"https://www.pwc.com/id","name":"Indonesia","territoryFinder":true},{"code":"ia","domain":"https://www.pwc.com/ia","name":"Interaméricas","territoryFinder":true},{"code":"iq","domain":"https://www.pwc.com/iq","name":"Iraq","territoryFinder":false},{"code":"ie","domain":"https://www.pwc.ie","name":"Ireland (Republic of)","territoryFinder":true},{"code":"im","domain":"https://www.pwc.com/im","name":"Isle of Man","territoryFinder":true},{"code":"il","domain":"https://www.pwc.com/il","name":"Israel","territoryFinder":true,"alias":["ישראל"]},{"code":"it","domain":"https://www.pwc.com/it","name":"Italy","territoryFinder":true},{"code":"w2","domain":"https://www.pwc-tls.it","name":"Italy (Tax and Legal Services)","territoryFinder":false},{"code":"jm","domain":"https://www.pwc.com/jm","name":"Jamaica","territoryFinder":true},{"code":"jp","domain":"https://www.pwc.com/jp","name":"Japan","territoryFinder":true,"alias":["日本,Japon,Japón,اليابان"]},{"code":"xd","domain":"https://www.pwc.com/xd","name":"Jersey","territoryFinder":false},{"code":"jo","domain":"https://www.pwc.com/jo","name":"Jordan","territoryFinder":false},{"code":"kz","domain":"https://www.pwc.com/kz","name":"Kazakhstan","territoryFinder":true},{"code":"ke","domain":"https://www.pwc.com/ke","name":"Kenya","territoryFinder":true},{"code":"ks","domain":"https://www.pwc.com/ks","name":"Kosovo","territoryFinder":true},{"code":"kw","domain":"https://www.pwc.com/kw","name":"Kuwait","territoryFinder":false},{"code":"kg","domain":"https://www.pwc.com/kg","name":"Kyrgyzstan","territoryFinder":false},{"code":"la","domain":"https://www.pwc.com/la","name":"Laos","territoryFinder":true},{"code":"lv","domain":"https://www.pwc.com/lv","name":"Latvia","territoryFinder":true},{"code":"lb","domain":"https://www.pwc.com/lb","name":"Lebanon","territoryFinder":false},{"code":"lr","domain":"https://www.pwc.com/lr","name":"Liberia","territoryFinder":true},{"code":"ly","domain":"https://www.pwc.com/ly","name":"Libya","territoryFinder":false},{"code":"li","domain":"https://www.pwc.com/li","name":"Liechtenstein","territoryFinder":false},{"code":"lt","domain":"https://www.pwc.com/lt","name":"Lithuania","territoryFinder":true},{"code":"lu","domain":"https://www.pwc.lu","name":"Luxembourg","territoryFinder":true},{"code":"mo","domain":"https://www.pwc.com/mo","name":"Macau SAR","territoryFinder":false},{"code":"mk","domain":"https://www.pwc.com/mk","name":"Macedonia","territoryFinder":true},{"code":"mg","domain":"https://www.pwc.com/mg","name":"Madagascar","territoryFinder":true},{"code":"mw","domain":"https://www.pwc.com/mw","name":"Malawi","territoryFinder":true},{"code":"my","domain":"https://www.pwc.com/my","name":"Malaysia","territoryFinder":true},{"code":"mv","domain":"https://www.pwc.com/mv","name":"Maldives","territoryFinder":true},{"code":"ml","domain":"https://www.pwc.com/ml","name":"Mali","territoryFinder":false},{"code":"mt","domain":"https://www.pwc.com/mt","name":"Malta","territoryFinder":true},{"code":"mh","domain":"https://www.pwc.com/mh","name":"Marshall Islands","territoryFinder":false},{"code":"mq","domain":"https://www.pwc.com/mq","name":"Martinique","territoryFinder":false},{"code":"mr","domain":"https://www.pwc.com/mr","name":"Mauritania","territoryFinder":false},{"code":"mu","domain":"https://www.pwc.com/mu","name":"Mauritius","territoryFinder":true},{"code":"mx","domain":"https://www.pwc.com/mx","name":"Mexico","territoryFinder":true},{"code":"m1","domain":"https://www.pwc.com/m1/en","name":"Middle East Region","territoryFinder":true,"alias":["Middle East","Bahrain","Egypt","Iraq","Jordan","Kuwait","Lebanon","Libya","Oman","Qatar","Saudi Arabia","United Arab Emirates","West Bank","Gaza"]},{"code":"md","domain":"https://www.pwc.com/md","name":"Moldova","territoryFinder":true},{"code":"mc","domain":"https://www.pwc.com/mc","name":"Monaco (Principality of)","territoryFinder":false},{"code":"mn","domain":"https://www.pwc.com/mn","name":"Mongolia","territoryFinder":true},{"code":"me","domain":"https://www.pwc.com/me/en","name":"Montenegro","territoryFinder":true},{"code":"ma","domain":"https://www.pwc.com/ma","name":"Morocco","territoryFinder":false},{"code":"mz","domain":"https://www.pwc.com/mz","name":"Mozambique","territoryFinder":true},{"code":"na","domain":"https://www.pwc.com/na","name":"Namibia","territoryFinder":true},{"code":"np","domain":"https://www.pwc.com/np","name":"Nepal","territoryFinder":false},{"code":"nl","domain":"https://www.pwc.nl","name":"Netherlands","territoryFinder":true},{"code":"an","domain":"https://www.pwc.com/an","name":"Netherlands Antilles","territoryFinder":true},{"code":"nc","domain":"https://www.pwc.com/nc","name":"New Caledonia","territoryFinder":true},{"code":"nz","domain":"https://www.pwc.co.nz","name":"New Zealand","territoryFinder":true},{"code":"ni","domain":"https://www.pwc.com/ni","name":"Nicaragua","territoryFinder":true},{"code":"ne","domain":"https://www.pwc.com/ne","name":"Niger","territoryFinder":false},{"code":"ng","domain":"https://www.pwc.com/ng","name":"Nigeria","territoryFinder":true},{"code":"no","domain":"https://www.pwc.no","name":"Norway","territoryFinder":true},{"code":"om","domain":"https://www.pwc.com/om","name":"Oman","territoryFinder":false},{"code":"p1","domain":"https://www.pwc.com/p1","name":"PRTM Japan","territoryFinder":false},{"code":"pk","domain":"https://www.pwc.com.pk","name":"Pakistan","territoryFinder":true},{"code":"pa","domain":"https://www.pwc.com/pa","name":"Panama","territoryFinder":true},{"code":"pg","domain":"https://www.pwc.com/pg","name":"Papua New Guinea","territoryFinder":true},{"code":"py","domain":"https://www.pwc.com/py","name":"Paraguay","territoryFinder":true},{"code":"pe","domain":"https://www.pwc.pe","name":"Peru","territoryFinder":true},{"code":"ph","domain":"https://www.pwc.com/ph","name":"Philippines","territoryFinder":true},{"code":"pl","domain":"https://www.pwc.pl","name":"Poland","territoryFinder":true},{"code":"pt","domain":"https://www.pwc.pt","name":"Portugal","territoryFinder":true},{"code":"pr","domain":"https://www.pwc.com/pr","name":"Puerto Rico","territoryFinder":false},{"code":"g1","domain":"https://google.pwc.com","name":"PwC Google","territoryFinder":false},{"code":"qa","domain":"https://www.pwc.com/qa","name":"Qatar","territoryFinder":false},{"code":"rm","domain":"https://www.pwc.com/rm","name":"Remediation","territoryFinder":false},{"code":"r1","domain":"https://www.pwc.com/r1","name":"Remediation1","territoryFinder":false},{"code":"ro","domain":"https://www.pwc.ro","name":"Romania","territoryFinder":true},{"code":"ru","domain":"https://www.pwc.ru","name":"Russia","territoryFinder":true,"alias":["Россия"]},{"code":"rw","domain":"https://www.pwc.com/rw","name":"Rwanda","territoryFinder":true},{"code":"sm","domain":"https://www.pwc.com/sm","name":"San Marino","territoryFinder":false},{"code":"st","domain":"https://www.pwc.com/st","name":"Sao Tome and Principe","territoryFinder":false},{"code":"sa","domain":"https://www.pwc.com/sa","name":"Saudi Arabia","territoryFinder":false},{"code":"sn","domain":"https://www.pwc.com/sn","name":"Senegal","territoryFinder":true},{"code":"rs","domain":"https://www.pwc.rs","name":"Serbia","territoryFinder":true},{"code":"sc","domain":"https://www.pwc.com/sc","name":"Seychelles","territoryFinder":false},{"code":"sl","domain":"https://www.pwc.com/sl","name":"Sierra Leone","territoryFinder":false},{"code":"sg","domain":"https://www.pwc.com/sg","name":"Singapore","territoryFinder":true},{"code":"sk","domain":"https://www.pwc.com/sk","name":"Slovakia","territoryFinder":true},{"code":"si","domain":"https://www.pwc.com/si","name":"Slovenia","territoryFinder":true},{"code":"sb","domain":"https://www.pwc.com/sb","name":"Solomon Islands","territoryFinder":false},{"code":"so","domain":"https://www.pwc.com/so","name":"Somalia","territoryFinder":false},{"code":"za","domain":"https://www.pwc.co.za","name":"South Africa","territoryFinder":true},{"code":"kr","domain":"https://www.pwc.com/kr","name":"South Korea","territoryFinder":true},{"code":"es","domain":"https://www.pwc.es","name":"Spain","territoryFinder":true},{"code":"lk","domain":"https://www.pwc.com/lk","name":"Sri Lanka","territoryFinder":true},{"code":"lc","domain":"https://www.pwc.com/lc","name":"St Lucia","territoryFinder":false},{"code":"kn","domain":"https://www.pwc.com/kn","name":"St. Kitts and Nevis","territoryFinder":false},{"code":"sd","domain":"https://www.pwc.com/sd","name":"Sudan","territoryFinder":false},{"code":"sr","domain":"https://www.pwc.com/sr","name":"Surinam","territoryFinder":false},{"code":"se","domain":"https://www.pwc.se","name":"Sweden","territoryFinder":true},{"code":"ch","domain":"https://www.pwc.ch","name":"Switzerland","territoryFinder":true},{"code":"tw","domain":"https://www.pwc.tw","name":"Taiwan","territoryFinder":true,"alias":["臺灣,台湾"]},{"code":"tj","domain":"https://www.pwc.com/tj","name":"Tajikistan","territoryFinder":false},{"code":"tz","domain":"https://www.pwc.co.tz","name":"Tanzania","territoryFinder":true},{"code":"zz","domain":"https://www.pwc.com/zz","name":"Territory","territoryFinder":false},{"code":"th","domain":"https://www.pwc.com/th","name":"Thailand","territoryFinder":true},{"code":"tg","domain":"https://www.pwc.com/tg","name":"Togo","territoryFinder":false},{"code":"tt","domain":"https://www.pwc.com/tt","name":"Trinidad and Tobago","territoryFinder":true},{"code":"tn","domain":"https://www.pwc.com/tn","name":"Tunisia","territoryFinder":false},{"code":"tr","domain":"https://www.pwc.com.tr","name":"Turkey","territoryFinder":true,"alias":["Türkiye"]},{"code":"tm","domain":"https://www.pwc.com/tm","name":"Turkmenistan","territoryFinder":false},{"code":"tc","domain":"https://www.pwc.com/tc","name":"Turks and Caicos Islands","territoryFinder":false},{"code":"vi","domain":"https://www.pwc.com/vi","name":"US Virgin Islands","territoryFinder":false},{"code":"ux","domain":"https://www.pwc.com/ux","name":"UX","territoryFinder":false},{"code":"ug","domain":"https://www.pwc.com/ug","name":"Uganda","territoryFinder":true},{"code":"ua","domain":"https://www.pwc.com/ua","name":"Ukraine","territoryFinder":true,"alias":["Україна"]},{"code":"ae","domain":"https://www.pwc.com/ae","name":"United Arab Emirates","territoryFinder":false},{"code":"uk","domain":"https://www.pwc.co.uk","name":"United Kingdom","territoryFinder":true,"alias":["UK"]},{"code":"us","domain":"https://www.pwc.com/us","name":"United States","territoryFinder":true,"alias":["US","USA","U.S.","America"]},{"code":"uy","domain":"https://www.pwc.com.uy","name":"Uruguay","territoryFinder":true},{"code":"uz","domain":"https://www.pwc.com/uz","name":"Uzbekistan","territoryFinder":true},{"code":"ve","domain":"https://www.pwc.com/ve","name":"Venezuela ","territoryFinder":true},{"code":"vn","domain":"https://www.pwc.com/vn","name":"Vietnam","territoryFinder":true},{"code":"xg","domain":"https://www.pwc.com/xg","name":"West Bank and Gaza","territoryFinder":false},{"code":"ye","domain":"https://www.pwc.com/ye","name":"Yemen","territoryFinder":false},{"code":"zm","domain":"https://www.pwc.com/zm","name":"Zambia","territoryFinder":true},{"code":"zw","domain":"https://www.pwc.com/zw","name":"Zimbabwe","territoryFinder":true},{"code":"sz","domain":"https://www.pwc.com/sz","name":"eSwatini/Swaziland","territoryFinder":true}],"languageSelectorData":{"alternateLanguages":[],"currentLanguageTitle":"English"}};
+    var showLanguageSelector=true;
+</script>
+<script>
+
+
+	
+	var socialShareData;
+    
+	if (showLanguageSelector) {
+		prepareLanguageSelector(navigationData.languageSelectorData);
+	}    
+	prepareTerritorySelector(navigationData.territorySelectorData);
+    prepareHamburger(navigationData.hamburgerData);
+    prepareBreadcrumb(navigationData.breadcrumbData);
+    socialShareData = navigationData.socialShareData;
+    function createLanguageSelector(languageSelectorData){
+        if (languageSelectorData && languageSelectorData.alternateLanguages && languageSelectorData.alternateLanguages.length > 0) {
+            var languageListTemplate = Handlebars.compile($("#language-selector-template").html());
+            $("#menuAdditional .language-selector-li").append(languageListTemplate(languageSelectorData));
+
+            //prepare markup for mobile
+            languageSelectorData.isMobile=true;
+            $("#menuAdditionalMobile .language-selector-li").append(languageListTemplate(languageSelectorData));
+        }
+    }
+
+    function  prepareLanguageSelector(languageSelectorData){
+        if (languageSelectorData.alternateLanguages.length > 0) {
+            //render alternate language div on page only if alternate language present on page/slim-header.
+            createLanguageSelector(languageSelectorData);
+        }
+    }
+
+    function prepareTerritorySelector(territories){
+        if (territories && territories.length > 0) {
+            var territoryListTemplate = Handlebars.compile($("#territory-selector-template").html());
+            $(".territory-dropdown").append(territoryListTemplate(territories));
+        }
+    }
+
+    function prepareHamburger(hamburgerData){
+        if ((hamburgerData.hamburgerLinks && (hamburgerData.hamburgerLinks.primary.length > 0
+                || hamburgerData.hamburgerLinks.secondary.length > 0 || hamburgerData.hamburgerLinks.nestedPrimary.length > 0)) || (hamburgerData.levelOneLinks && hamburgerData.levelOneLinks.length > 0)) {
+
+           
+            if(hamburgerData.sectionTitle){
+                hamburgerData.hasSectionTitle=true;
+            }
+           // modifyLinks(hamburgerData.hamburgerLinks.primary);
+            //modifyLinks(hamburgerData.hamburgerLinks.secondary);
+            //var hamburgerTemplate = Handlebars.compile($("#hamburger-template").html());
+            //$("div.breadcrumb-main").append(hamburgerTemplate(breadcrumbData));
+
+            //$(".hamburger-menu .col-sm-8").append(hamburgerTemplate(hamburgerData));
+            //populate levelOne links of hamburger
+            var hamburgerLevelOneTemplate = Handlebars.compile($("#hamburger-levelOne-template").html());
+            $("#LevelOneLinks").prepend(hamburgerLevelOneTemplate(hamburgerData));
+            
+            //populate hamburger for both mobile and destop
+            var hamburgerMobileTemplate= Handlebars.compile($("#hamburger-mobile-template").html());
+            $(".hamburger-submenu--mobile .panel-group").append(hamburgerMobileTemplate(hamburgerData));
+            
+        }else {
+            //if levelOne or LevelTwo or LevelThree Links are not present, hamburger button should not be shown.
+            $("#dropdownTrigger_lg").remove();
+            $("#navBar").remove();
+            
+        }
+    }
+
+    function prepareBreadcrumb(breadcrumbData){
+
+        if (breadcrumbData.breadcrumbs && breadcrumbData.breadcrumbs.length > 0) {
+
+            var breadcrumbTemplate = Handlebars.compile($("#breadcrumb-template").html());
+            $("div.breadcrumb-main").append(breadcrumbTemplate(breadcrumbData));
+
+            //prepare markup for mobile
+            breadcrumbData.isMobile=true;
+            $("nav#breadcrumbWrapperMobile").append(breadcrumbTemplate(breadcrumbData));
+        }
+    }
+
+    function prepareSocialShare(socialShareData){
+        if (socialShareData.socialShareConfiguration && socialShareData.socialShareConfiguration.length > 0) {
+
+            var socialShareTemplate = Handlebars.compile($("#social-share-template").html());
+            $(".menuFlyout .sh").append(socialShareTemplate(socialShareData));
+        }else {
+            $(".social-share-menu").remove();
+            $(".social-share-desktop").remove();
+        }
+    }
+    
+    function prepareOverlay(overlayData){
+        if (typeof overlayData != 'undefined') {
+            var overlayTemplate = Handlebars.compile($("#overlay-template").html());
+            $(".profile-access-buttons").append(overlayTemplate(overlayData));
+        }
+    }
+    if (typeof overlayData != 'undefined') {
+    	prepareOverlay(overlayData);
+        //Digital Data analytics for check login user for login header
+        digitalDataUserStatus(overlayData.user.userLoggedIn);
+    }
+    $(document).ready(function(){
+    		PwcCookieConsent.insertScriptFromString('prepareSocialShare(socialShareData);', 'social-share-div',
+				4, null, null, null, null, null, true);
+    })
+
+</script>
+<div id="social-share-div">
+</div>
+<input type="hidden" id="pageTerritory" value="uk"/>
+<script>
+    //Digital Data Analytics For Sign in MyList
+    analyticsClickTrigger("#signInPanel .myaccount-benefits__heading a:first",'readingList.event','sign-in');
+    //Digital Data Analytics For Sign in MyList
+    analyticsClickTrigger("#signInPanel .myaccount-benefits__heading a:last",'readingList.event','create-account');
+    //Digital Data Analytics For Search
+    //Digital Data Analytics For Search
+    searchSubmit("[role=search]","internalSearch.searchTerm");
+
+    //Digital Data For SiteSecton
+    siteSection(navigationData.breadcrumbData);
+
+	var cookieI18nValues = {};
+	cookieI18nValues.cookieDescription = 'We use cookies to personalise content and to provide you with an improved user experience. By continuing to browse this site you consent to the use of cookies. Please visit our <a href=https://www.pwc.co.uk/who-we-are/cookies.html>cookie policy</a> for further details.';
+	cookieI18nValues.cookieAcceptButton = 'I understand';
+</script>
+</div>
+</div>
+</div>
+</div>
+
+        <div class="centerPar"><div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="title" class="no-background__mobile page-section page-section--col-primary page-section--col-dark  fullwidth   videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="title section">
+    
+			
+    <div class="title-strip dpe-component-wrapper ">
+        <header class="title-strip__wrapper">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h1 class="title-strip__heading"><span>The KeyBoys are back in town</span></h1>
+                            
+                            <p class="title-strip__info">
+                                
+                                <span class="title-strip__date ">02/11/17</span>
+                            </p>
+                        </div>
+    
+                        
+                    </div>
+                </div>
+        </header>
+    </div>
+
+		
+	
+</div>
+
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+<div>
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="content-free-1-197a" class=" page-section page-section--col-light-grey     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform "><div class="parsys_column pwccol1-longform-c0"><div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p>In this blog post, we detail our analysis of a recent campaign that we attribute, with high confidence, to KeyBoy, a threat actor believed to be based in or operating from China. KeyBoy has been most recently reported on by <a adhocenable="false" href="https://citizenlab.ca/2016/11/parliament-keyboy/" target="_blank">CitizenLab</a> in 2016, and now appears to have returned.</p>
+
+    </div>
+
+
+    
+<script type="text/javascript" src="/etc.clientlibs/pwc/components/content/text/clientlibs-button.min.84209d7438dd0b2eb90a9ffcb44b8817.js"></script>
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="content-free-1-hlij-par" class=" page-section page-section--col-white     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform "><div class="parsys_column pwccol1-longform-c0"><div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h2>Analysis</h2><p>Our analysis starts with a Microsoft Word document named 2017 Q4 Work Plan.docx (with a hash of 292843976600e8ad2130224d70356bfc), which was created on 2017-10-11 by a user called “Admin’’, and first uploaded to VirusTotal, a website and file scanning service, on the same day, by a user in South Africa.</p><p>Curiously, the Word document does not contain any macros, or even an exploit. Rather, it uses a technique recently reported on by <a adhocenable="false" href="https://sensepost.com/blog/2017/macro-less-code-exec-in-msword/" target="_blank">SensePost</a>, which allows an attacker to craft a specifically created Microsoft Word document, which uses the Dynamic Data Exchange (DDE) protocol. DDE traditionally allows for the sending of messages between applications that share data, for example from Word to Excel or vice versa. In the case reported on by SensePost, this allowed for the fetching or downloading of remote payloads, using PowerShell for example.</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-1.png" alt="Figure 1 – Word Error" width="665" height="39.097744360902254%" data-emptytext="Image" style="height:auto; 
+                   padding-top:39.097744360902254%;
+                   max-height:39.097744360902254px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 1 – Word Error</p>
+
+
+
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>Once we extract the initial document, using 7-zip for example, we can observe the usual structure, and inside, a file called document.xml is of interest. In this XML, a remote payload, in this case a DLL, will be downloaded using PowerShell, moved to the user’s temporary folder, and run using rundll32.exe, starting in the HOK function or export. Figure 2 shows the relevant part in our XML file.</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-2.png" alt="Figure 2 - Download and payload execution" width="665" height="8.421052631578947%" data-emptytext="Image" style="height:auto; 
+                   padding-top:8.421052631578947%;
+                   max-height:8.421052631578947px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 2 - Download and payload execution</p>
+
+
+
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>This debug.dll is a PE32 binary file with the following properties:</p><ul><li>md5 hash: 64b2ac701a0d67da134e13b2efc46900</li><li>sha1 hash: 1bb516d70591a5a0eb55ee71f9f38597f3640b14</li><li>sha256 hash: f3f55c3df39b85d934121355bed439b53501f996e9b39d4abed14c7fe8081d92</li><li>size: 531,456 bytes</li><li>internal DLL name: InstallClient.dll</li><li>compiler: Microsoft</li><li>linker: Microsoft Linker(14.0)[DLL32]</li><li>compilation time: 2017-07-06 08:50:10</li></ul><p>This DLL serves as a dropper for the actual payload, and as such the internal name of ‘InstallClient’ is an apt choice by the threat actor. Developing a Yara rule for the simple dropper DLL, yielded several new binaries:</p><p style="margin-left: 80px;">1dbbdd99cb8d7089ab31efb5dcf09706<br>5708e0320879de6f9ac928046b1e4f4e<br>a6903d93f9d6f328bcfe3e196fd8c78b<br>cf6f333f99ee6342d6735ac2f6a37c1e<br>ac9b8c82651eafff9a3bbe7c69d69447<br>d6ddecdb823de235dd650c0f7a2f3d8f</p><p>We have analysed d6ddecdb823de235dd650c0f7a2f3d8f, which also has InstallClient.dll as its internal name, as it seems to be the earliest dropper DLL used in this campaign, and does not appear to be very different from any of the other DLLs so far uncovered.</p><p>The DLL starts in the function named Insys, which performs some simple checks, for example, if the current user account is an administrator, and will subsequently call the function named SSSS, which is the main function.</p><p>A substantial amount of actions will follow according to what’s defined in the SSSS function, as follows:</p><ul><li>Prepare target DLL, in this case rasauto.dll, for replacement in C:\Windows\System32;</li><li>Stop the service belonging to the target DLL, and use the takeown and icacls commands to gain full permissions for the system service DLL;</li><li>Disable Windows File Protection, which normally prevents software or users from replacing critical Windows files;</li><li>Suppress any error messages from Windows from popping up on boot;</li><li>Copy the target DLL, rasauto.dll, to a new file named rasauto32.dll;</li><li>Replace the target DLL with the malware’s DLL, which is time-stomped in order to evade detection;</li><li>Start the now malicious service using net.exe and net1.exe; and,</li><li>Create configuration and keylogs in C:\Windows\system32, using an uncommon extension, in this case .tsp, and additionally create a folder in C:\Programdata for the purpose of screen captures.</li></ul><p>The malware will also, in some observed cases, output debug or error messages in a newly created file in the user’s Application Data folder as DebugLog.TXT, for example:</p><p>\AppData\Roaming\Microsoft\Windows\Cookies\DebugLog.TXT</p><p>Then, the original dropper DLL will then be deleted, using a simple batch file that runs in a loop. In Figures 3 to 5, the target DLL, the original and new DLL, as well as the full process flow are shown.</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-3.png" alt="Figure 3 - Target DLL, config and keylog file built dynamically on the stack" width="348" height="83.33333333333334%" data-emptytext="Image" style="height:auto; 
+                   padding-top:83.33333333333334%;
+                   max-height:83.33333333333334px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 3 - Target DLL, config and keylog file built dynamically on the stack</p>
+
+
+
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-4.png" alt="Figure 4 - Real and fake rasauto.dll (rasauto32.dll is the real or original DLL)" width="464" height="7.758620689655173%" data-emptytext="Image" style="height:auto; 
+                   padding-top:7.758620689655173%;
+                   max-height:7.758620689655173px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 4 - Real and fake rasauto.dll (rasauto32.dll is the real or original DLL)</p>
+
+
+
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-5.png" alt="Figure 5 - Complete process flow" width="1725" height="43.36231884057971%" data-emptytext="Image" style="height:auto; 
+                   padding-top:43.36231884057971%;
+                   max-height:43.36231884057971px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 5 - Complete process flow</p>
+
+
+
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>While visually there is apparently no difference, due to the malware being time-stomped (altering the created and modified dates of a file or folder), we can however observe a few subtle differences in the real and malicious binary.</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-6.png" alt="Figure 6 - Subtle differences" width="502" height="123.90438247011953%" data-emptytext="Image" style="height:auto; 
+                   padding-top:123.90438247011953%;
+                   max-height:123.90438247011953px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 6 - Subtle differences</p>
+
+
+
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>As can be seen in Figure 6, the fake DLL has a different link date, some minor spelling mistakes, and does not include the build in the file version details. As the malware also disables Windows File Protection and thus any pop-ups, it may not be immediately obvious to system administrators that a legitimate DLL was actually replaced. The following commands are issued in order to achieve persistence:</p><ul><li>reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v SFCDisable /t REG_DWORD /d 4 /f</li><li>reg add "HKLM\SYSTEM\CurrentControlSet\Control\Windows" /v NoPopUpsOnBoot /t REG_DWORD /d 1 /f       </li></ul><p>Taking a look at the Windows registry for our service, RasAuto, short for Remote Access Auto Connection Manager and historically used for connecting dial-up modems to the internet for example, reveals no specific additional modifications.</p><p>Dllhost.exe is additionally seen to call back or phone home to a hardcoded range of C2 servers, on ports 53, 80, and 443.</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-7.png" alt="Figure 7 - Dllhost connecting to a remote address" width="491" height="7.535641547861507%" data-emptytext="Image" style="height:auto; 
+                   padding-top:7.535641547861507%;
+                   max-height:7.535641547861507px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 7 - Dllhost connecting to a remote address</p>
+
+
+
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>Dllhost usually has no need to connect to the internet or WAN, and as such it is a possible indicator of malicious activity.</p><p>Attaching a debugger to dllhost.exe, reveals the keylogger files and configuration, replaced DLL file, as well as another folder, which is likely used to store screenshots and other data. Another ASCII string can be discovered in the DLL’s config, MDDEFGEGETGIZ, which likely pertains to the specific KeyBoy campaign, or target.</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-8.png" alt="Figure 8 - ASCII dump" width="566" height="28.4452296819788%" data-emptytext="Image" style="height:auto; 
+                   padding-top:28.4452296819788%;
+                   max-height:28.4452296819788px;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 8 - ASCII dump</p>
+
+
+
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>The malware leveraged by KeyBoy has a plethora of functionality, including, but not limited to:<br></p><ul><li>Screen grabbing/taking screenshots;</li><li>Determine public or WAN IP address (using a public IP service), likely for determining a suited target;</li><li>Gather extended system information, such as information about the operating system, disks, memory and so on;</li><li>A ‘file browser’ or explorer;</li><li>Shutdown and reboot commands (in addition to the point below);</li><li>Launching interactive shells for communicating with the victim machine;</li><li>Download and upload functionality; and</li><li>Usage of custom SSL libraries for masquerading C2 traffic.</li></ul><p>Interestingly enough, the malware developers left several unique debug messages, for example:</p><ul><li>GetScreenCmd from file:%s</li><li>Take Screen Error,May no user login!</li><li>Take Screen Error,service dll not exists</li></ul><p>Earlier, we mentioned the threat actor uses custom SSL libraries to communicate to the C2. While we have been unable to observe this behavior in any traffic logs, we were able to extract a certificate, which can be found in <a adhocenable="false" href="#appendix">Appendix B</a>. Converting this certificate to the DER format, we find strings pointing to jessma.org, and an email address, ldcsaa@21cn.com. These belong to projects by a Chinese developer, where one of the tools or libraries is named <a adhocenable="false" href="https://github.com/ldcsaa/HP-Socket" target="_blank">HP-Socket</a>, which is a ‘High Performance TCP/UDP Socket Component’.</p><p>Additionally, said library sported an interesting debug path:</p><p>D:\Work\VS\Horse\TSSL\TSSL_v0.3.1_20170722\TClient\Release\TClient.pdb</p><p>In addition to writing a Yara rule for the dropper DLL and finding additional samples as mentioned above, we repeated the same process for the payload DLL. In Table 1 below, you may find other payloads, with their related and fake, or replaced Windows DLL or service.</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="table text parbase line striped section">
+
+    
+
+    <div class="text-component" data-emptytext="Edit Table">
+        <table width="100%" cellspacing="0" cellpadding="1" border="1">
+<tbody><tr><td><b>Hash</b></td>
+<td><b>Impersonated DLL</b></td>
+<td><b>Impersonated service</b></td>
+</tr><tr><td>a55b0c98ac3965067d0270a95e60e87e</td>
+<td>ikeext.dll</td>
+<td>IKE and AuthIP IPsec Keying Modules</td>
+</tr><tr><td>2e04cdf98aead9dd9a5210d7e601cca7</td>
+<td>rasauto.dll</td>
+<td>Remote Access Auto Connection Manager</td>
+</tr><tr><td>d6ddecdb823de235dd650c0f7a2f3d8f</td>
+<td>rasauto.dll</td>
+<td>Remote Access Auto Connection Manager</td>
+</tr><tr><td>1dbbdd99cb8d7089ab31efb5dcf09706</td>
+<td>sinet.dll</td>
+<td>Unknown</td>
+</tr><tr><td>581ddf0208038a90f8bc2cdc75833425</td>
+<td>sinet.dll</td>
+<td>Unknown</td>
+</tr></tbody></table>
+
+    </div>
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p style="text-align: center;">Table 1 - Impersonated DLLs</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>Sinet.dll may relate to <a adhocenable="false" href="https://github.com/tomasen/splayer" target="_blank">SPlayer</a>, a popular video player in China.</p><h2>Related samples</h2><p>Hunting further, we have discovered similar samples to the ones described above, with additional interesting debug paths:</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="table text parbase line striped section">
+
+    
+
+    <div class="text-component" data-emptytext="Edit Table">
+        <table width="100%" cellspacing="0" cellpadding="1" border="1">
+<tbody><tr><td><b>Hash</b></td>
+<td><b>Debug path</b></td>
+</tr><tr><td>7d39cef34bdc751e9cf9d46d2f0bef95</td>
+<td>D:\work\vs\UsbFerry_v2\bin\UsbFerry.pdb</td>
+</tr><tr><td>29e44cfa7bcde079e9c7afb23ca8ef86</td>
+<td>E:\Work\VS Project\cyassl-3.3.0\out\SSLClient_x64.pdb</td>
+</tr></tbody></table>
+
+    </div>
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p style="text-align: center;">Table 2 - Other debug paths</p>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>Both samples include references to a “work” folder, and a “VS” or “VS Project”. The latter likely points to a Visual Studio project short name, or VS. While the connection initially seems rather weak, it did hit the same Yara rule as mentioned before and the sample with hash 29e44cfa7bcde079e9c7afb23ca8ef86 additionally includes an SSL certificate, which, when converted, points to another custom SSL library, called <a adhocenable="false" href="https://github.com/wolfSSL/wolfssl" target="_blank">WolfSSL</a>, which is a “a small, fast, portable implementation of TLS/SSL for embedded devices to the cloud”. The same hash or binary also includes what we assess to be a campaign name or KeyBoy version identifier, which is weblogic20170727.</p><p>Another sample which hit our Yara rule is 7aea7486e3a7a839f49ebc61f1680ba3, which was first uploaded to VirusTotal on 2017-08-25. This sample appears to be an older variant of KeyBoy, as there are several plain-text strings present, which are consistent with CitizenLab’s report referenced in the introduction.</p><p>All samples (hashes) and other indicators are provided in <a adhocenable="false" href="#appendix">Appendix A</a>.</p><h2>Infrastructure</h2><p>We have mapped out the complete infrastructure that we have discovered, using Maltego, as shown in Figure 9.</p>
+    </div>
+
+
+    
+
+
+</div>
+<div class="image parbase img-alignment-center section">
+
+
+ 
+   <div class="asset-sharing-component image-asset ">
+     
+        <img class="js-lazy-loading image-component_background " data-image="/cyber-security/assets/images/keyboys-figure-9.png" alt="Figure 9 - C2 graphing" height="NaN%" data-emptytext="Image" style="height:auto; 
+                   padding-top:;
+                   max-height:NaNpx;"/>
+              
+                        
+    
+    
+    
+    
+
+
+</div>
+
+
+<p>Figure 9 - C2 graphing</p>
+
+
+
+
+
+</div>
+<div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <p><br>
+There was some overlap with the samples and infrastructure, and one email address appears to jump out, which is linked to several domains: 657603405@qq[.]com. This email address does not appear to have been observed before.</p>
+<p>One other relevant point to note in regards to the infrastructure, is the use of dates, likely relating to campaign names, as part of the C2 servers. Examples include:</p>
+<ul>
+<li>Weblogic727.xxuz[.]com (2017-07-27 campaign); and,</li>
+<li>Weblogic1709.zzux[.]com (2017-09-17 campaign).</li>
+</ul>
+<p><a adhocenable="false" href="#appendix">All C2’s are provided in Appendix A.</a></p>
+
+    </div>
+
+
+    
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="content-free-1-1ed7" class=" page-section page-section--col-light-grey     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform "><div class="parsys_column pwccol1-longform-c0"><div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h2>Conclusion</h2>
+<p>In this report, we have analysed what we assess with high confidence, to be (part of) the latest KeyBoy campaign, a threat actor that has been active for several years, and displays at least a medium level of technical and operational know-how.</p>
+<p>Several connections can be made to CitizenLab’s report from 2016, such as the continued usage of fake services and related DLLs, powerful capabilities, several exports and strings present in the (sometimes decrypted) DLLs, as well as campaign or version identifiers which are reminiscent and consistent with earlier reported identifiers.</p>
+<p>While we do not have a clear visibility of targeting, it does appear that this latest campaign targets at least some Western organisations, likely for corporate espionage purposes. Organisations can refer to <a adhocenable="false" href="#appendixA">Appendix A</a>, in order to search of any possible indicators of compromise. Additionally, organisations may wish to disable default administrator credentials, which will prevent unauthorised services to be installed.</p>
+<h2>Further Information</h2>
+<p>Clients who are part of our threat intelligence subscription services, can refer to our latest report CTO-TIB-20171019-01A - KeyBoy's new toys, which includes more information as well as ruling in order to detect KeyBoy’s latest campaign. If you would like more information on any of the threats discussed in this alert, or you suspect you may be compromised, please feel free to get in touch, by emailing <a adhocenable="false" href="mailto:threatintelligence@uk.pwc.com" target="_blank">threatintelligence@uk.pwc.com</a>.</p>
+
+    </div>
+
+
+    
+
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+    <div>
+    
+    
+    
+        
+    
+
+    
+        
+           
+             
+
+    
+        
+    <section id="appendix" class=" page-section page-section--col-white     videobghost " data-wcmmode="false" data-parallax="true" style="
+                    height:;
+                    background-size:inherit;                    
+                    background-position:center top; 
+                    background-image:; 
+                    background-color:;                                 
+                    ">
+
+                
+        <div class="parsys sectionpar"> 
+            <div class="parsys_column pwccol1-longform "><div class="parsys_column pwccol1-longform-c0"><div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h2>Appendix</h2>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="tabsnew section">
+
+
+
+
+
+
+
+    
+
+
+
+
+
+<ul class="nav nav-tabs displayTags" role="tablist">
+    
+    
+        
+            
+            
+                
+            
+        
+        <li class="active"><a href="#content-free-1-lxg9-par_tabsnewhome0" role="tab" data-toggle="tab">Appendix A </a></li>
+    
+        
+            
+            
+                
+            
+        
+        <li class=""><a href="#content-free-1-lxg9-par_tabsnewhome1" role="tab" data-toggle="tab">Appendix B </a></li>
+    
+</ul>
+
+<!-- Tab panes -->
+
+<div class="tab-content">
+    
+        
+            
+            
+                
+            
+        
+        <div class="tab-pane active " id="content-free-1-lxg9-par_tabsnewhome0" data-firstActive="false">
+            <span class="tab-count"> </span>
+            <div class="tabs-new__tab-title-print" style="display: none;">Appendix A</div> <!-- This is included for Print -->
+            <div class="0 parsys"><div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h3><a name="appendixA"></a>Indicators</h3>
+
+    </div>
+
+
+    
+
+
+</div>
+<div class="table text parbase line striped section">
+
+    
+
+    <div class="text-component" data-emptytext="Edit Table">
+        <table width="100%" cellspacing="0" cellpadding="1" border="1">
+<tbody><tr><th><b>Indicator</b></th>
+<th><b>Type</b></th>
+</tr><tr><td>101.200.135.85</td>
+<td>IP address</td>
+</tr><tr><td>103.215.81.196</td>
+<td>IP address</td>
+</tr><tr><td>103.215.83.193</td>
+<td>IP address</td>
+</tr><tr><td>103.86.86.177</td>
+<td>IP address</td>
+</tr><tr><td>118.163.165.20</td>
+<td>IP address</td>
+</tr><tr><td>142.4.34.92</td>
+<td>IP address</td>
+</tr><tr><td>144.48.8.68</td>
+<td>IP address</td>
+</tr><tr><td>174.139.29.6</td>
+<td>IP address</td>
+</tr><tr><td>180.101.75.169</td>
+<td>IP address</td>
+</tr><tr><td>213.183.51.187</td>
+<td>IP address</td>
+</tr><tr><td>23.234.27.100</td>
+<td>IP address</td>
+</tr><tr><td>27.126.186.74</td>
+<td>IP address</td>
+</tr><tr><td>47.89.58.141</td>
+<td>IP address</td>
+</tr><tr><td>http://213.183.51[.]187/debug.dll</td>
+<td>URI</td>
+</tr><tr><td>dumblamb.zzux.com</td>
+<td>Domain</td>
+</tr><tr><td>foxsay.mefound.com</td>
+<td>Domain</td>
+</tr><tr><td>greentree.yourtrap.com</td>
+<td>Domain</td>
+</tr><tr><td>kawayi.zzux.com</td>
+<td>Domain</td>
+</tr><tr><td>mianliu.party</td>
+<td>Domain</td>
+</tr><tr><td>mianliu.video</td>
+<td>Domain</td>
+</tr><tr><td>mir2dun.cn</td>
+<td>Domain</td>
+</tr><tr><td>weblogic.ddns.mobi</td>
+<td>Domain</td>
+</tr><tr><td>weblogic.xxuz.com</td>
+<td>Domain</td>
+</tr><tr><td>weblogic1709.justdied.com</td>
+<td>Domain</td>
+</tr><tr><td>weblogic1709.my03.com</td>
+<td>Domain</td>
+</tr><tr><td>weblogic1709.zzux.com</td>
+<td>Domain</td>
+</tr><tr><td>weblogic727.2waky.com</td>
+<td>Domain</td>
+</tr><tr><td>weblogic727.dumb1.com</td>
+<td>Domain</td>
+</tr><tr><td>www.yierzhi.com</td>
+<td>Domain</td>
+</tr><tr><td>xiaomayun.online</td>
+<td>Domain</td>
+</tr><tr><td>yunmian.loan</td>
+<td>Domain</td>
+</tr><tr><td>yunmian.party</td>
+<td>Domain</td>
+</tr><tr><td>yunmian.video</td>
+<td>Domain</td>
+</tr><tr><td>yunnian.online</td>
+<td>Domain</td>
+</tr><tr><td>yunnian.top</td>
+<td>Domain</td>
+</tr><tr><td>657603405@qq.com</td>
+<td>Email address</td>
+</tr><tr><td>sensr9.dat</td>
+<td>Filename</td>
+</tr><tr><td>sensr3.dat</td>
+<td>Filename</td>
+</tr><tr><td>netis9.tsp</td>
+<td>Filename</td>
+</tr><tr><td>netis3.tsp</td>
+<td>Filename</td>
+</tr><tr><td>52d11a0a5142f0b37aa2d288321ba099</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>581ddf0208038a90f8bc2cdc75833425</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>64b2ac701a0d67da134e13b2efc46900</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>1dbbdd99cb8d7089ab31efb5dcf09706</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>7aea7486e3a7a839f49ebc61f1680ba3</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>a55b0c98ac3965067d0270a95e60e87e</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>7d39cef34bdc751e9cf9d46d2f0bef95</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>5708e0320879de6f9ac928046b1e4f4e</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>a6903d93f9d6f328bcfe3e196fd8c78b</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>292843976600e8ad2130224d70356bfc</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>2e04cdf98aead9dd9a5210d7e601cca7</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>cf6f333f99ee6342d6735ac2f6a37c1e</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>ac9b8c82651eafff9a3bbe7c69d69447</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>29e44cfa7bcde079e9c7afb23ca8ef86</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>d6ddecdb823de235dd650c0f7a2f3d8f</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>42c63de7dac16366dfea14fa9ddac3cd</td>
+<td>Hash (MD5)</td>
+</tr><tr><td>f21e3b927d269b0622d94c55db9d2808758379aa413c10971fa745cd6e0503c0</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>f15d2e9deaeb495fe8a62c05993b9f69bf07331910ed2483e1bab7d31d30231b</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>f3f55c3df39b85d934121355bed439b53501f996e9b39d4abed14c7fe8081d92</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>750f4a9ae44438bf053ffb344b959000ea624d1964306e4b3806250f4de94bc8</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>12dfb83a3866c93cd1c08652ed0a16a492777355985a973ef50973896795eb34</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>5d0aef905c9f8f74bb82eba89c11ec5b27d35e560b5cacf81087fca0775a8bfa</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>b4535aa71da630992392c3c202d59274ce49a3fe4f1ac01d7434f1dceeda47e5</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>34f740e5d845710ede1d942560f503e117600bcc7c5c17e03c09bfc66556196c</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>a6e9951583073ab2598680b17b8b99bab280d6dca86906243bafaf3febdf1565</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>d5c27308f50a9c6d8ccd01269ca09a7a13e1615945b8047c4e55c610718e317e</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>b5782f67054df36c49d9394c12c8bbbca69bfd0f9ccdcf934bc402c6881eca66</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>1d716cee0f318ee14d7c3b946a4626a1afe6bb47f69668065e00e099be362e22</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>0f9a7efcd3a2b1441834dae7b43cd8d48b4fc1daeb2c081f908ac5a1369de753</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>97fa07a035f7b9ad9cc5c7fd3a5df4b8692e748ca5c40067446632f9a3c25952</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>fc84856814307a475300d2a44e8d15635dedd02dc09a088a47d1db03bc309925</td>
+<td>Hash (SHA-256)</td>
+</tr><tr><td>842cb2bed58459445cd4c6f22acf4b6f77f8b93c9ce202aa54539c1d2b0d45c1</td>
+<td>Hash (SHA-256)</td>
+</tr></tbody></table>
+
+    </div>
+
+</div>
+
+</div>
+
+            
+        </div>
+    
+        
+            
+            
+                
+            
+        
+        <div class="tab-pane  " id="content-free-1-lxg9-par_tabsnewhome1" data-firstActive="true">
+            <span class="tab-count"> </span>
+            <div class="tabs-new__tab-title-print" style="display: none;">Appendix B</div> <!-- This is included for Print -->
+            <div class="1 parsys"><div class="text parbase nobg section">
+
+
+    
+
+    <div class="text-component " data-emptytext="Edit Text">
+        <h3><a name="appendixB"></a>Embedded SSL certificate</h3>
+<p>-----BEGIN CERTIFICATE-----<br>
+MIID0TCCArmgAwIBAgIJALFGobpzN5MdMA0GCSqGSIb3DQEBCwUAMH8xCzAJBgNV BAYTAkNOMQswCQYDVQQIDAJHRDELMAkGA1UEBwwCR1oxDDAKBgNVBAoMA1NTVDEP MA0GA1UECwwGSmVzc01BMRcwFQYDVQQDDA53d3cuamVzc21hLm9yZzEeMBwGCSqG SIb3DQEJARYPbGRjc2FhQDIxY24uY29tMB4XDTE2MDQwMTE1MDIwMFoXDTI0MDYx ODE1MDIwMFowfzELMAkGA1UEBhMCQ04xCzAJBgNVBAgMAkdEMQswCQYDVQQHDAJH WjEMMAoGA1UECgwDU1NUMQ8wDQYDVQQLDAZKZXNzTUExFzAVBgNVBAMMDnd3dy5q ZXNzbWEub3JnMR4wHAYJKoZIhvcNAQkBFg9sZGNzYWFAMjFjbi5jb20wggEiMA0G CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDht6llexLtFkV8ijjdJGaHXXQysWOJ UM/YQFYP52nviurJSpMbWSXnuaDlfidk76B66Np5mlnN5BiHqbBj34GCVKz5VQtx 3kMY1y30YWyiHAEZiV3PLQc8/A9MnJM/q/mHaulmTuJi8A85TWadqUNXgiaIMkqz bKaauR1/GCxXuEVroqtyR99RCWhfakTz04KfIbt83QR0imWC6uhmvD/DXJ03XFzd XkK5aNp+ef1sBQgFKjeXV6EMuq+UgEDPXlCDUJAqsZt6W/ohrCAHWQYZ/RSvvaMJ O7aWROGAC/lh6ATOIbFlGVppw6zUGdIDkB5FVF1MC7CyDndncFrY+OJzAgMBAAGj UDBOMB0GA1UdDgQWBBT8fu6QFIfxlQvMWjl5pmfBjL6ciDAfBgNVHSMEGDAWgBT8 fu6QFIfxlQvMWjl5pmfBjL6ciDAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUA A4IBAQDI+f6GMBJxRJNKrgbUYLD1U6LWEQJQ50g2NxGy0j+TL6oypoo/kyME3tOR EmXEDzytGcSaQ78xYcg97UQd8OhXYQr0qwZ/JLarmhCVK/bfbGTIn4Mk4ZgDqcOU 46jsJeEZwUSrrq7svKO5d7+wV0VGPO+Ww4yzRCPwm2puXFY1+KpTxYX31+wwMB8p 7GuJEDgV08qzLfcBAfSFFYiOHL3tJ+XNKFNRqigjeYrWuAMphOhpYfYnU0d0upe8 wWx9Unm8qSkc7hiS/vvs1v7Pv1sqMFRBoaKOTqZ7Wz/5AySGPQjeMV/atmArDEkx z58OEgTzg1J/Keztxwj7I2KnYHyH<br>
+-----END CERTIFICATE-----</p>
+
+    </div>
+
+
+    
+
+
+</div>
+
+</div>
+
+            
+        </div>
+    
+</div>
+
+</div>
+</div></div><div style="clear:both"></div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+<div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="cta-1" class="black page-section page-section--col-primary fullwidth page-section--col-dark " style="height: ">
+        <div class="parsys sectionpar"> 
+            <div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="cta-1-par longform-isection iparsys parsys"></div>
+</div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+<div>
+</div>
+
+<div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="cta-2" class="black page-section page-section--col-primary fullwidth page-section--col-dark " style="height: ">
+        <div class="parsys sectionpar"> 
+            <div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="cta-2-par longform-isection iparsys parsys"></div>
+</div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+
+
+    
+
+    <div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="related-links" class="black page-section page-section--col-white fullwidth  " style="height: ">
+        <div class="parsys sectionpar"> 
+            <div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="related-links-par longform-isection iparsys parsys"></div>
+</div>
+
+        </div>
+    </section>
+
+
+    
+
+</div>
+    
+    
+
+
+<div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="contact" class="black page-section page-section--col-light-grey   " style="height: ">
+        <div class="parsys sectionpar"> 
+            <div class="pwccol2-longformb longform-isection-twocol">
+    <div class="parsys_column pwccol2-longformb-c0">
+        <div><div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="iparsys parsys"></div>
+</div>
+</div></div>
+    </div>
+    <div class="parsys_column pwccol2-longformb-c1">
+        <div><div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="iparsys parsys"><div class="socialfollow section">
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        
+    
+    
+
+
+<div id="socialfollow" class="socialfollowInner">
+    <span>Follow us</span>
+
+    
+		
+		
+        <a href="https://www.linkedin.com/company/pwc-uk" target="_self" title="Linkedin Follow" class="socialfollow- Linkedin Follow"><img src="/etc/designs/pwc/css_common/image/homefollow-linkedin.gif" alt="Linkedin Follow"/></a>
+    
+		
+		
+        <a href="http://www.facebook.com/PwCUK" target="_self" title="Facebook Follow" class="socialfollow- Facebook Follow"><img src="/etc/designs/pwc/css_common/image/homefollow-facebook.gif" alt="Facebook Follow"/></a>
+    
+		
+		
+        <a href="http://twitter.com/pwc_uk" target="_self" title="Twitter Follow" class="socialfollow- Twitter Follow"><img src="https://www.pwc.com/etc/designs/pwc/css_common/image/homefollow-twitter.gif" alt="Twitter Follow"/></a>
+    
+		
+		
+        <a href="https://www.youtube.com/pwcuk" target="_self" title="Youtube Follow" class="socialfollow- YouTube Follow"><img src="/content/pwc/script/network/follow/follow-youtube.png" alt="Youtube Follow"/></a>
+    
+		
+		
+        <a href="https://www.instagram.com/pwc_uk" target="_self" title="Instagram Follow" class="socialfollow- Instagram Follow"><img src="/content/pwc/script/network/follow/follow_instagram.png" alt="Instagram Follow"/></a>
+    
+</div>
+
+<script>
+	$(document).ready(function(){
+		$("#socialfollow").trigger("socialFollowLoaded");	
+	});
+</script>
+</div>
+</div>
+</div>
+</div></div>
+    </div>
+</div>
+        </div>
+    </section>
+
+
+    
+
+</div>
+
+<div>
+    
+
+    
+        
+
+    
+
+    
+        
+           
+             
+
+    <section id="bottom-kick-isection" class="black page-section page-section--col-white fullwidth  " style="height: ">
+        <div class="parsys sectionpar"> 
+            
+ 
+
+
+
+<div class="bk-parsys-wrapper container">
+    <div class="row ">
+
+<!--        Bottom-Kick Online Forms Par-->
+        <div class="col-md-8">
+            <div><div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="iparsys parsys"><div class="html parbase section">
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+    
+
+     
+	<div data-custom-code="">
+	
+
+    
+     
+
+	
+
+<div><link rel="stylesheet" href="/content/pwc/script/uk/en/sfmc/signup-local-bk.css">
+<script src="/content/pwc/script/uk/en/sfmc/signup-local-bk.js" data-form="https://cloud.uk.info.pwc.com/cyber-security-sign-up-to-updates"></script></div>
+
+
+
+ 
+</div>
+	
+</div>
+</div>
+</div>
+</div></div>
+        </div>
+<!--        Bottom-kick Contacts and List Par-->
+        <div class="col-md-4 online-par-enabled  ">
+
+            <div><div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="iparsys parsys"></div>
+</div>
+</div></div>
+
+            
+        </div>
+    </div>
+</div>
+
+
+
+<div class="dpe-component-wrapper bottom-kick bottom-kick--closed">
+    <div class="bottom-kick-container pinned bottom-kick--hide">
+        <div class="bottom-kick__wrapper bottom-kick--invisible">
+            <div class="bottom-kick__bar">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button class="bottom-kick__bar-wrapper" aria-label="Sign up for our cyber security newsletter">
+                                <span class="bottom-kick__bar-label" aria-hidden="true">Sign up for our cyber security newsletter</span>
+                                
+                                <div class="bottom-kick__btn-wrapper">
+                                    <div class="bottom-kick__btn">
+                                        <span class="bottom-kick__btn-icon"></span>
+                                    </div>
+                                    <span class="bottom-kick__btn-arrow"></span>
+                                </div>
+                            </button>
+                            <span id="bottom-kick__btn-hide" class="bottom-kick__btn-hide" aria-label="Hide">Hide</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    
+        <div class="bottom-kick__content">
+
+            
+
+        </div>
+    </div>
+</div>
+<div class="bottom-kick__overlay"></div>
+
+
+<script>
+    $(".bk-parsys-wrapper").appendTo(".bottom-kick__content");
+    $(function() {
+        bottomKick({
+            scrollPosition: 'afterHero'
+        });
+    });
+    $(".bottom-kick__btn-wrapper").click(function () {
+        var spanEl = $(this).find("span.bottom-kick__btn-arrow")
+        if($(spanEl).hasClass("bottom-kick__btn-arrow--rotate")) {
+            createObject("page.bottomkick.panel", "close");
+        }
+        else {
+                createObject("page.bottomkick.panel", "open");
+        }
+    });
+    analyticsClickTrigger("#bottom-kick__btn-hide","page.bottomkick.panel","close");
+</script>
+
+
+        </div>
+    </section>
+
+
+    
+
+</div></div> 
+        <div><div class="section"><div class="new">
+        </div>
+</div><div class="iparys_inherited"><div class="footerPar iparsys parsys"><div class="newPageFooter parbase section">
+
+
+
+
+
+
+ 
+
+<!-- START Sitemap Footer -->
+    <div class="dpe-component-wrapper glb-footer glb-footer__block--reduced">
+    <div class="container">
+		
+
+	
+
+
+
+
+
+
+ 
+
+<!-- Code from old JSP -->
+
+
+
+<!-- Code from old JSP ends -->
+
+
+
+    
+    
+        <!-- REDUCED Footer items -->
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 ">
+                <div class="glb-footer__block">
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/services/audit.html" aria-label="Audit">Audit</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/services/consulting.html" aria-label="Consulting">Consulting</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/services/deals.html" aria-label="Deals">Deals</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/services/risk.html" aria-label="Risk">Risk</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/services/tax.html" aria-label="Tax">Tax</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/industries.html" aria-label="Industries">Industries</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/who-we-are.html" aria-label="About us">About us</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="_blank" href="/who-we-are/office-locations.html" aria-label="Offices">Offices</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/press-room.html" aria-label="Media centre">Media centre</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/careers.html" aria-label="Careers">Careers</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/who-we-are/alumni.html" aria-label="Alumni">Alumni</a>
+                    
+                    <a class="serif glb-footer__link glb-footer__link--l1" target="" href="/sitemap-content.html" aria-label="Sitemap">Sitemap</a>
+                    
+                </div>
+            </div>
+        </div>
+
+    
+    
+
+
+<!-- START Copyright statement -->
+<div class="row">
+    <div class="col-xs-12  ">
+        <div class="glb-footer__disclaimer">
+            <div class="row">
+                <div class="col-md-8 glb-footer__disclaimer-text">
+                    <a id="slim-footer-logo" href="" aria-label="slim-footer-logo" class="slim-footer-logo"></a>
+                    
+                    
+                    <p>&copy;&nbsp;2015  - 2021 PwC. All rights reserved. PwC refers to the PwC network and/or one or more of its member firms, each of which is a separate legal entity. Please see <a href="http://www.pwc.com/structure">www.pwc.com/structure</a> for further details. </p>
+                    <!-- optional disclaimer links -->
+                    <ul class="glb-footer__disclaimer-links" id="pgFooter">
+                        
+                            
+                                <li><a href="/who-we-are/terms-and-conditions.html" target="" aria-label="Terms and conditions">Terms and conditions</a></li>
+                            
+                                <li><a href="/who-we-are/privacy-statement.html" target="" aria-label="Privacy Statement">Privacy Statement</a></li>
+                            
+                                <li><a href="/who-we-are/cookies.html" target="" aria-label="Cookie info">Cookie info</a></li>
+                            
+                                <li><a href="/who-we-are/legal-disclaimer.html" target="" aria-label="Legal Disclaimer">Legal Disclaimer</a></li>
+                            
+                                <li><a href="/who-we-are/about-site-provider.html" target="" aria-label="About Site Provider">About Site Provider</a></li>
+                            
+                                <li><a href="/who-we-are/provision-of-services.html" target="" aria-label="Provision of Services">Provision of Services</a></li>
+                            
+                                <li><a href="/who-we-are/corporate-sustainability/encouraging-diversity.html" target="" aria-label="Diversity">Diversity</a></li>
+                            
+                                <li><a href="https://www.pwc.co.uk/who-we-are/our-purpose/fair-trusted-business/human-rights-and-modern-slavery.html" target="" aria-label="Human rights and modern slavery">Human rights and modern slavery</a></li>
+                            
+                                <li><a href="/who-we-are/web-accessibility.html" target="" aria-label="Web Accessibility">Web Accessibility</a></li>
+                            
+                    	
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Copyright statement -->
+
+<!-- Code from old JSP -->
+
+<!-- Code from old JSP ends -->
+
+
+
+
+	</div>
+</div>
+
+<!-- END Sitemap Footer -->
+
+</div>
+</div>
+</div>
+</div>
+
+    
+<script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/rebrand-clientlibs/components-colors.min.fbe4c82b1e46df40b550edf4be0bb69a.js"></script>
+<script type="text/javascript" src="/etc.clientlibs/pwc/clientlibs/longform/script.min.b858bbeda445ba6c632442972bd7b0eb.js"></script>
+
+
+
+
+
+<script>
+var getCookieByMatch = function(regex) {
+    var _cookies = document.cookie.split(/;\s*/),
+        _cookieArray = [],
+        i;
+    for (i = 0; i < _cookies.length; i++) {
+        if (_cookies[i].match(regex)) {
+            _cookieArray.push(_cookies[i]);
+        }
+    }
+    return _cookieArray;
+};
+
+function getUserMarketingID(value) {
+    const _regex = /^(.*)\|MCMID\|(\d+)\|(.*)/gm;
+    if ((_matchedArray = _regex.exec(value)) !== null && _matchedArray.length >= 3) {
+        return _matchedArray[2];
+    }
+}
+
+function setCookie(cname, cvalue, exdays, path) {
+    var expires = "expires=0"
+    if (exdays != 0) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        expires = "expires=" + d.toGMTString();
+    }
+    document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/;";
+}
+
+$.each(getCookieByMatch('AMCV_'), function(index, val) {
+    var cookie = val.split("=");
+    if (cookie.length >= 2 && typeof Cookies.get('pwc-id') !== 'undefined') {
+        var userID = getUserMarketingID(decodeURIComponent(cookie[1]));
+        var existingID = Cookies.get('userMID');
+        if (typeof existingID === 'undefined' || existingID != userID) {
+            var userMCMObj = new Object();
+            userMCMObj.userMarketingID = userID;
+            userMCMObj.isSetMarketingIDRequest = true;
+            $.ajax('/bin/extendedprofile/update', {
+                data: JSON.stringify(userMCMObj),
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                mimeType: 'application/json; charset=utf-8',
+                success: function(rawData, status, xhr) {
+                    var responseCode = rawData.result.code;
+                    if (responseCode === '1001') {
+                        setCookie('userMID', userID, 1, '/');
+                    }
+                },
+                error: function(xhr) {
+                    console.log("Response is ", xhr);
+                }
+            });
+        }
+    }
+});
+
+$( document ).ready(function() {
+    $.each(getCookieByMatch('AMCV_'), function(index, val) {
+		var cookie = val.split("=");
+        var userID = getUserMarketingID(decodeURIComponent(cookie[1]));
+			$('input[name="userMarketingID"]').each(function() {
+        	  $( this ).val(userID);
+        	});
+    });
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </body>
+</html>

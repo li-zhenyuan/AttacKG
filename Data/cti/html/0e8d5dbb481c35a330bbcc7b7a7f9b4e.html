@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en-US" itemscope itemtype="http://schema.org/WebPage">
+<head>
+<meta charset="UTF-8" />
+<link rel="profile" href="http://gmpg.org/xfn/11">
+<link rel="pingback" href="">
+<script>document.documentElement.className = 'js html--js'</script>
+<meta name="generator" content="Total WordPress Theme v5.0.6">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+	<!-- This site is optimized with the Yoast SEO plugin v15.1.1 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Behind the scenes in the Expel SOC: Alert-to-fix in AWS - Expel</title>
+	<meta name="description" content="Wonder what real-life investigation and response looks like in the cloud? Buckle up! Our team walks you through a coin-mining attack in AWS that they recently foiled – all the way from alert to fix." />
+	<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+	<link rel="canonical" href="https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Behind the scenes in the Expel SOC: Alert-to-fix in AWS" />
+	<meta property="og:description" content="Wonder what real-life investigation and response looks like in the cloud? Buckle up! Our team walks you through a coin-mining attack in AWS that they recently foiled – all the way from alert to fix." />
+	<meta property="og:url" content="https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/" />
+	<meta property="og:site_name" content="Expel" />
+	<meta property="article:publisher" content="https://www.facebook.com/expel.io/" />
+	<meta property="article:published_time" content="2020-07-28T13:42:15+00:00" />
+	<meta property="article:modified_time" content="2020-12-04T18:48:59+00:00" />
+	<meta property="og:image" content="https://expel.io/wp-content/uploads/2020/07/twitter-1024x512-Behind-the-scenes-in-the-Expel-SOC-Alert-to-fix-in-AWS-072820jpg.jpg" />
+	<meta property="og:image:width" content="2048" />
+	<meta property="og:image:height" content="1024" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Behind the scenes in the Expel SOC: Alert-to-fix in AWS" />
+	<meta name="twitter:description" content="Wonder what real-life investigation and response looks like in the cloud? Buckle up! Our team walks you through a coin-mining attack in AWS that they recently foiled – all the way from alert to fix." />
+	<meta name="twitter:image" content="https://expel.io/wp-content/uploads/2020/07/twitter-1024x512-Behind-the-scenes-in-the-Expel-SOC-Alert-to-fix-in-AWS-072820jpg.jpg" />
+	<meta name="twitter:creator" content="@expel_io" />
+	<meta name="twitter:site" content="@expel_io" />
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://expel.io/#organization","name":"Expel","url":"https://expel.io/","sameAs":["https://www.facebook.com/expel.io/","https://www.linkedin.com/company/expel/","https://twitter.com/expel_io"],"logo":{"@type":"ImageObject","@id":"https://expel.io/#logo","inLanguage":"en-US","url":"https://expel.io/wp-content/uploads/2017/10/expel-io-logo-dark.svg","caption":"Expel"},"image":{"@id":"https://expel.io/#logo"}},{"@type":"WebSite","@id":"https://expel.io/#website","url":"https://expel.io/","name":"Expel","description":"","publisher":{"@id":"https://expel.io/#organization"},"potentialAction":[{"@type":"SearchAction","target":"https://expel.io/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#primaryimage","inLanguage":"en-US","url":"https://expel.io/wp-content/uploads/2020/07/hero-1100x244-Behind-the-scenes-in-the-Expel-SOC-Alert-to-fix-in-AWS-072820.jpg","width":2200,"height":489},{"@type":"WebPage","@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#webpage","url":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/","name":"Behind the scenes in the Expel SOC: Alert-to-fix in AWS - Expel","isPartOf":{"@id":"https://expel.io/#website"},"primaryImageOfPage":{"@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#primaryimage"},"datePublished":"2020-07-28T13:42:15+00:00","dateModified":"2020-12-04T18:48:59+00:00","description":"Wonder what real-life investigation and response looks like in the cloud? Buckle up! Our team walks you through a coin-mining attack in AWS that they recently foiled \u2013 all the way from alert to fix.","breadcrumb":{"@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/"]}]},{"@type":"BreadcrumbList","@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://expel.io/","url":"https://expel.io/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/","url":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/","name":"Behind the scenes in the Expel SOC: Alert-to-fix in AWS"}}]},{"@type":"Article","@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#article","isPartOf":{"@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#webpage"},"author":{"@id":"https://expel.io/#/schema/person/e2a94668c44899e43d942e626f1f4a39"},"headline":"Behind the scenes in the Expel SOC: Alert-to-fix in AWS","datePublished":"2020-07-28T13:42:15+00:00","dateModified":"2020-12-04T18:48:59+00:00","mainEntityOfPage":{"@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#webpage"},"publisher":{"@id":"https://expel.io/#organization"},"image":{"@id":"https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws/#primaryimage"},"keywords":"Cloud security,How to,Managed detection and response,Managed security,SOC","articleSection":"Security operations","inLanguage":"en-US"},{"@type":"Person","@id":"https://expel.io/#/schema/person/e2a94668c44899e43d942e626f1f4a39","name":"Sam Lipton","image":{"@type":"ImageObject","@id":"https://expel.io/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/a46aa70ebd1b9ebe71928ceab6c585ac?s=96&d=mm&r=g","caption":"Sam Lipton"}}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N547FHV');</script>
+<!-- End Google Tag Manager -->
+<link rel='dns-prefetch' href='//expel.io' />
+<link rel="alternate" type="application/rss+xml" title="Expel &raquo; Feed" href="https://expel.io/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Expel &raquo; Comments Feed" href="https://expel.io/comments/feed/" />
+<link rel='stylesheet' id='wp-quicklatex-format-css'  href='https://expel.io/wp-content/plugins/wp-quicklatex/css/quicklatex-format.css?ver=5.5.1' media='all' />
+<link rel='stylesheet' id='js_composer_front-css'  href='https://expel.io/wp-content/plugins/js_composer/assets/css/js_composer.min.css?ver=6.4.1' media='all' />
+<link rel='stylesheet' id='carousel-anything-css-css'  href='https://expel.io/wp-content/plugins/carousel-anything-for-vc/carousel-anything/css/style.css?ver=1.12' media='all' />
+<link rel='stylesheet' id='carousel-anything-owl-css'  href='https://expel.io/wp-content/plugins/carousel-anything-for-vc/carousel-anything/css/owl.theme.default.css?ver=1.12' media='all' />
+<link rel='stylesheet' id='carousel-anything-transitions-css'  href='https://expel.io/wp-content/plugins/carousel-anything-for-vc/carousel-anything/css/owl.carousel.css?ver=1.12' media='all' />
+<link rel='stylesheet' id='carousel-anything-animate-css'  href='https://expel.io/wp-content/plugins/carousel-anything-for-vc/carousel-anything/css/animate.css?ver=1.12' media='all' />
+<link rel='stylesheet' id='gcp-owl-carousel-css-css'  href='https://expel.io/wp-content/plugins/carousel-anything-for-vc/carousel-anything/css/style.css?ver=1.12' media='all' />
+<link rel='stylesheet' id='carousel-anything-single-post-css'  href='https://expel.io/wp-content/plugins/carousel-anything-for-vc/carousel-anything/css/single-post.css?ver=1.12' media='all' />
+<link rel='stylesheet' id='ivory-search-styles-css'  href='https://expel.io/wp-content/plugins/add-search-to-menu/public/css/ivory-search.min.css?ver=4.5.9' media='all' />
+<link rel='stylesheet' id='wpex-style-css'  href='https://expel.io/wp-content/themes/Total/style.css?ver=5.0.6' media='all' />
+<link rel='stylesheet' id='wpex-mobile-menu-breakpoint-max-css'  href='https://expel.io/wp-content/themes/Total/assets/css/wpex-mobile-menu-breakpoint-max.css?ver=5.0.6' media='only screen and (max-width:959px)' />
+<link rel='stylesheet' id='wpex-mobile-menu-breakpoint-min-css'  href='https://expel.io/wp-content/themes/Total/assets/css/wpex-mobile-menu-breakpoint-min.css?ver=5.0.6' media='only screen and (min-width:960px)' />
+<link rel='stylesheet' id='wpex-wpbakery-css'  href='https://expel.io/wp-content/themes/Total/assets/css/wpex-wpbakery.css?ver=5.0.6' media='all' />
+<link rel='stylesheet' id='ticons-css'  href='https://expel.io/wp-content/themes/Total/assets/lib/ticons/css/ticons.min.css?ver=5.0.6' media='all' />
+<link rel='stylesheet' id='vcex-shortcodes-css'  href='https://expel.io/wp-content/themes/Total/assets/css/vcex-shortcodes.css?ver=5.0.6' media='all' />
+<link rel='stylesheet' id='nouislider-css'  href='https://expel.io/wp-content/themes/expel-2017/css/nouislider.min.css?ver=5.0.6' media='all' />
+<link rel='stylesheet' id='epic-style-prod-css'  href='https://expel.io/wp-content/themes/expel-2017/css/main.prod.css?ver=1621717663' media='all' />
+<script src='https://expel.io/wp-includes/js/jquery/jquery.js?ver=1.12.4-wp' id='jquery-core-js'></script>
+<script src='https://expel.io/wp-content/plugins/carousel-anything-for-vc/carousel-anything/js/min/owl.carousel2-min.js?ver=1.3.3' id='carousel-anything-owl-js'></script>
+<script src='https://expel.io/wp-content/plugins/carousel-anything-for-vc/carousel-anything/js/min/script-min.js?ver=1.12' id='carousel-anything-js'></script>
+<script src='https://expel.io/wp-includes/js/jquery/ui/core.min.js?ver=1.11.4' id='jquery-ui-core-js'></script>
+<script src='https://expel.io/wp-includes/js/jquery/ui/widget.min.js?ver=1.11.4' id='jquery-ui-widget-js'></script>
+<script src='https://expel.io/wp-includes/js/jquery/ui/mouse.min.js?ver=1.11.4' id='jquery-ui-mouse-js'></script>
+<script src='https://expel.io/wp-includes/js/jquery/ui/sortable.min.js?ver=1.11.4' id='jquery-ui-sortable-js'></script>
+<script src='https://expel.io/wp-includes/js/jquery/ui/resizable.min.js?ver=1.11.4' id='jquery-ui-resizable-js'></script>
+<script src='https://expel.io/wp-content/plugins/advanced-custom-fields-pro/assets/js/acf-input.min.js?ver=5.8.0' id='acf-input-js'></script>
+<script src='https://expel.io/wp-content/plugins/ACF-Conditional-Taxonomy-Rules/includes/input_conditional_taxonomy.js?ver=3.0.0' id='acf-input-conditional-taxonomy-js'></script>
+<script src='https://expel.io/wp-content/plugins/wp-quicklatex/js/wp-quicklatex-frontend.js?ver=1.0' id='wp-quicklatex-frontend-js'></script>
+<link rel="https://api.w.org/" href="https://expel.io/wp-json/" /><link rel="alternate" type="application/json" href="https://expel.io/wp-json/wp/v2/posts/6459" /><meta name="generator" content="WordPress 5.5.1" />
+<link rel='shortlink' href='https://expel.io/?p=6459' />
+<link rel="preload" href="https://expel.io/wp-content/uploads/2018/08/expel-io-logo-dark-registered.svg" as="image"><link rel="preload" href="https://expel.io/wp-content/themes/Total/assets/lib/ticons/fonts/ticons-webfont.woff2" type="font/woff2" as="font" crossorigin><style>.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><noscript><style>body .wpex-vc-row-stretched, body .vc_row-o-full-height { visibility: visible; }</style></noscript>		<style id="wp-custom-css">
+			#content .alm-listing li{padding:0;margin:0}.blog-post-cta--callout{margin:20px 0 50px 20px !important}.lens-mobile,.magnify,.magnify-mobile,.magnify>.magnify-lens{-webkit-animation:none;-webkit-transform:none;min-width:0;min-height:0;margin:0;padding:0;float:none;overflow:visible;transform:none;border:none;outline:none;text-indent:0;animation:none;opacity:1;transition:none}.magnify{display:inline-block;z-index:inherit;position:relative;width:auto;height:auto;box-shadow:none}.magnify>.magnify-lens{display:none;z-index:99;position:absolute;width:200px;height:200px;border-radius:100%;box-shadow:0 0 0 7px hsla(0,0%,100%,.85),0 0 7px 7px rgba(0,0,0,.25),inset 0 0 40px 2px rgba(0,0,0,.25);cursor:none}.magnify--always-active .magnify>.magnify-lens{display:block!important;opacity:1!important}.single-post .blog-post-single .blog-title{color:#000}.archive.category #primary{width:100%}		</style>
+		<noscript><style> .wpb_animate_when_almost_visible { opacity: 1; }</style></noscript><style data-type="wpex-css" id="wpex-css">/*TYPOGRAPHY*/h1,h2,h3,h4,h5,h6,.theme-heading,.page-header-title,.wpex-heading,.vcex-heading,.entry-title{color:#2c2829}/*ADVANCED STYLING CSS*//*Shrink Fixed header*/.shrink-sticky-header #site-logo img{max-height:52px !important}.sticky-header-shrunk #site-header-inner{height:60px}.shrink-sticky-header.sticky-header-shrunk .navbar-style-five .dropdown-menu >li >a{height:40px}.shrink-sticky-header.sticky-header-shrunk #site-logo img{max-height:40px !important}/*Logo Height*/#site-logo img{max-height:52px}/*CUSTOMIZER STYLING*/.container,.boxed-main-layout #wrap{width:1180px}.vc_column-inner{margin-bottom:40px}</style>
+<script>
+  (function(){'use strict';var f,g=[];function l(a){g.push(a);1==g.length&&f()}function m(){for(;g.length;)g[0](),g.shift()}f=function(){setTimeout(m)};function n(a){this.a=p;this.b=void 0;this.f=[];var b=this;try{a(function(a){q(b,a)},function(a){r(b,a)})}catch(c){r(b,c)}}var p=2;function t(a){return new n(function(b,c){c(a)})}function u(a){return new n(function(b){b(a)})}function q(a,b){if(a.a==p){if(b==a)throw new TypeError;var c=!1;try{var d=b&&b.then;if(null!=b&&"object"==typeof b&&"function"==typeof d){d.call(b,function(b){c||q(a,b);c=!0},function(b){c||r(a,b);c=!0});return}}catch(e){c||r(a,e);return}a.a=0;a.b=b;v(a)}}
+function r(a,b){if(a.a==p){if(b==a)throw new TypeError;a.a=1;a.b=b;v(a)}}function v(a){l(function(){if(a.a!=p)for(;a.f.length;){var b=a.f.shift(),c=b[0],d=b[1],e=b[2],b=b[3];try{0==a.a?"function"==typeof c?e(c.call(void 0,a.b)):e(a.b):1==a.a&&("function"==typeof d?e(d.call(void 0,a.b)):b(a.b))}catch(h){b(h)}}})}n.prototype.g=function(a){return this.c(void 0,a)};n.prototype.c=function(a,b){var c=this;return new n(function(d,e){c.f.push([a,b,d,e]);v(c)})};
+function w(a){return new n(function(b,c){function d(c){return function(d){h[c]=d;e+=1;e==a.length&&b(h)}}var e=0,h=[];0==a.length&&b(h);for(var k=0;k<a.length;k+=1)u(a[k]).c(d(k),c)})}function x(a){return new n(function(b,c){for(var d=0;d<a.length;d+=1)u(a[d]).c(b,c)})};window.Promise||(window.Promise=n,window.Promise.resolve=u,window.Promise.reject=t,window.Promise.race=x,window.Promise.all=w,window.Promise.prototype.then=n.prototype.c,window.Promise.prototype["catch"]=n.prototype.g);}());
+
+(function(){function m(a,b){document.addEventListener?a.addEventListener("scroll",b,!1):a.attachEvent("scroll",b)}function n(a){document.body?a():document.addEventListener?document.addEventListener("DOMContentLoaded",function c(){document.removeEventListener("DOMContentLoaded",c);a()}):document.attachEvent("onreadystatechange",function l(){if("interactive"==document.readyState||"complete"==document.readyState)document.detachEvent("onreadystatechange",l),a()})};function t(a){this.a=document.createElement("div");this.a.setAttribute("aria-hidden","true");this.a.appendChild(document.createTextNode(a));this.b=document.createElement("span");this.c=document.createElement("span");this.h=document.createElement("span");this.f=document.createElement("span");this.g=-1;this.b.style.cssText="max-width:none;display:inline-block;position:absolute;height:100%;width:100%;overflow:scroll;font-size:16px;";this.c.style.cssText="max-width:none;display:inline-block;position:absolute;height:100%;width:100%;overflow:scroll;font-size:16px;";
+this.f.style.cssText="max-width:none;display:inline-block;position:absolute;height:100%;width:100%;overflow:scroll;font-size:16px;";this.h.style.cssText="display:inline-block;width:200%;height:200%;font-size:16px;max-width:none;";this.b.appendChild(this.h);this.c.appendChild(this.f);this.a.appendChild(this.b);this.a.appendChild(this.c)}
+function x(a,b){a.a.style.cssText="max-width:none;min-width:20px;min-height:20px;display:inline-block;overflow:hidden;position:absolute;width:auto;margin:0;padding:0;top:-999px;left:-999px;white-space:nowrap;font-synthesis:none;font:"+b+";"}function y(a){var b=a.a.offsetWidth,c=b+100;a.f.style.width=c+"px";a.c.scrollLeft=c;a.b.scrollLeft=a.b.scrollWidth+100;return a.g!==b?(a.g=b,!0):!1}function z(a,b){function c(){var a=l;y(a)&&a.a.parentNode&&b(a.g)}var l=a;m(a.b,c);m(a.c,c);y(a)};function A(a,b){var c=b||{};this.family=a;this.style=c.style||"normal";this.weight=c.weight||"normal";this.stretch=c.stretch||"normal"}var B=null,C=null,E=null,F=null;function I(){if(null===E){var a=document.createElement("div");try{a.style.font="condensed 100px sans-serif"}catch(b){}E=""!==a.style.font}return E}function J(a,b){return[a.style,a.weight,I()?a.stretch:"","100px",b].join(" ")}
+A.prototype.load=function(a,b){var c=this,l=a||"BESbswy",r=0,D=b||3E3,G=(new Date).getTime();return new Promise(function(a,b){var e;null===F&&(F=!!document.fonts);if(e=F)null===C&&(C=/OS X.*Version\/10\.0.*Safari/.test(window.navigator.userAgent)&&/Apple/.test(window.navigator.vendor)),e=!C;if(e){e=new Promise(function(a,b){function f(){(new Date).getTime()-G>=D?b():document.fonts.load(J(c,'"'+c.family+'"'),l).then(function(c){1<=c.length?a():setTimeout(f,25)},function(){b()})}f()});var K=new Promise(function(a,
+c){r=setTimeout(c,D)});Promise.race([K,e]).then(function(){clearTimeout(r);a(c)},function(){b(c)})}else n(function(){function e(){var b;if(b=-1!=g&&-1!=h||-1!=g&&-1!=k||-1!=h&&-1!=k)(b=g!=h&&g!=k&&h!=k)||(null===B&&(b=/AppleWebKit\/([0-9]+)(?:\.([0-9]+))/.exec(window.navigator.userAgent),B=!!b&&(536>parseInt(b[1],10)||536===parseInt(b[1],10)&&11>=parseInt(b[2],10))),b=B&&(g==u&&h==u&&k==u||g==v&&h==v&&k==v||g==w&&h==w&&k==w)),b=!b;b&&(d.parentNode&&d.parentNode.removeChild(d),clearTimeout(r),a(c))}
+function H(){if((new Date).getTime()-G>=D)d.parentNode&&d.parentNode.removeChild(d),b(c);else{var a=document.hidden;if(!0===a||void 0===a)g=f.a.offsetWidth,h=p.a.offsetWidth,k=q.a.offsetWidth,e();r=setTimeout(H,50)}}var f=new t(l),p=new t(l),q=new t(l),g=-1,h=-1,k=-1,u=-1,v=-1,w=-1,d=document.createElement("div");d.dir="ltr";x(f,J(c,"sans-serif"));x(p,J(c,"serif"));x(q,J(c,"monospace"));d.appendChild(f.a);d.appendChild(p.a);d.appendChild(q.a);document.body.appendChild(d);u=f.a.offsetWidth;v=p.a.offsetWidth;
+w=q.a.offsetWidth;H();z(f,function(a){g=a;e()});x(f,J(c,'"'+c.family+'",sans-serif'));z(p,function(a){h=a;e()});x(p,J(c,'"'+c.family+'",serif'));z(q,function(a){k=a;e()});x(q,J(c,'"'+c.family+'",monospace'))})})};"undefined"!==typeof module?module.exports=A:(window.FontFaceObserver=A,window.FontFaceObserver.prototype.load=A.prototype.load);}());
+    if ( parseInt(sessionStorage.fontLoadedPrimary, 10) ) {
+      window.document.documentElement.className += ' html__font-loaded--primary';
+    } else {
+      new FontFaceObserver('proxima-nova').load(null, 5000).then( function() {
+        window.document.documentElement.className += ' html__font-loaded--primary';
+        sessionStorage.fontLoadedPrimary = 1;
+      } ).catch(function() {
+        sessionStorage.fontLoadedPrimary = 0;
+      });
+		}
+</script>
+
+    
+      
+</head>
+
+<!-- Begin Body -->
+<body class="post-template-default single single-post postid-6459 single-format-standard wp-custom-logo wp-embed-responsive Total wpex-theme wpex-responsive full-width-main-layout no-composer wpex-live-site content-right-sidebar has-sidebar post-in-category-security-operations hasnt-overlay-header page-header-disabled wpex-mobile-toggle-menu-icon_buttons has-mobile-menu wpex-share-p-horizontal wpex-disable-mm-focus-styles wpb-js-composer js-comp-ver-6.4.1 vc_responsive">
+
+<div class="sprite-wrap"><?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg"><defs><style>.ar-cls-1{fill:#e77724}</style><style>.cs-cls-1{fill:#aadb1e}</style><style>.checkmark-cls-1{fill:#fff}</style><style>.cls-customer-story-1{fill:#e87722;stroke:#e87722;stroke-miterlimit:10;stroke-width:.76px}</style><style>.ds2-cls-1{fill:#0ac775}</style><style>.how-to-cls-1{fill:#e87722;stroke:#e87722;stroke-miterlimit:10;stroke-width:.25px}</style><style>.cls-1{fill:#69b3e7}</style></defs><symbol id="analyst-report" viewBox="0 0 36.75 50.5"><g data-name="Layer 2"><g data-name="Layer 1"><path d="M8.85 14.26h9.53a1.49 1.49 0 1 0 0-3H8.85a1.49 1.49 0 1 0 0 3z"/><path d="M35.09 9.32L27.62 1.7A6.33 6.33 0 0 0 23.56 0H3.25A3.25 3.25 0 0 0 0 3.25v44a3.25 3.25 0 0 0 3.25 3.25H33.5a3.25 3.25 0 0 0 3.25-3.25V13.38a6.47 6.47 0 0 0-1.66-4.06zm-5.79 3.8h4.46v34.13a.28.28 0 0 1-.27.27H3.25a.28.28 0 0 1-.25-.27v-44A.27.27 0 0 1 3.25 3h20.58v4.71a5.45 5.45 0 0 0 5.47 5.41zm-2.49-5.41V5.14l4.9 5H29.3a2.49 2.49 0 0 1-2.49-2.43z"/><path d="M7.36 19a1.49 1.49 0 0 0 1.49 1.5H27.9a1.49 1.49 0 1 0 0-3H8.85A1.49 1.49 0 0 0 7.36 19zM23.44 24.81l-.1-.06-.16-.06a10.1 10.1 0 0 0-8.88 0l-.16.06-.1.07a10.22 10.22 0 1 0 13.25 14.67v-.09a10.19 10.19 0 0 0-3.93-14.55zM18.74 26a7.85 7.85 0 0 1 2.46.4l-2.46 4.9-2.46-4.9a7.83 7.83 0 0 1 2.46-.4zm-7.89 7.89a7.88 7.88 0 0 1 3.35-6.44l3.24 6.43-3.32 6.39a7.88 7.88 0 0 1-3.27-6.38zm7.89 7.89a7.83 7.83 0 0 1-2.56-.44l3-5.78 5.46 3.54a7.86 7.86 0 0 1-5.9 2.68zm7.18-4.63l-5.67-3.67 3-6a7.85 7.85 0 0 1 2.63 9.7z"/></g></g></symbol><symbol id="analyst-reprint" viewBox="0 0 64 45.12"><title>Announcement</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="ar-cls-1" d="M58.43 5.36a1.49 1.49 0 0 0-2.11 2.11 16.08 16.08 0 0 1 0 22.72 1.49 1.49 0 1 0 2.11 2.11 19.07 19.07 0 0 0 0-26.94zM42.56 14.36V1.49a1.49 1.49 0 0 0-2.63-1C39.86.61 32.52 9.1 22 9.1H7.94a1.49 1.49 0 0 0-1.4 1L5.82 12l-4.43.32A1.49 1.49 0 0 0 0 13.8v11.67A1.49 1.49 0 0 0 1.39 27l4.77.34.38 1a1.49 1.49 0 0 0 1.4 1H11l5 14.53a2.07 2.07 0 0 0 2.22 1.3c2.06 0 7.84-1.8 9.11-3.58a1.85 1.85 0 0 0 .29-1.72l-3.53-10.46c9.39 1 15.77 8.38 15.84 8.46a1.49 1.49 0 0 0 2.63-1V24a5.27 5.27 0 0 0 0-9.67zM3 24.08v-8.89l3.84-.28a32.71 32.71 0 0 0-.28 4.28A32 32 0 0 0 7 24.36zm6 2.22l-.24-.64A28.89 28.89 0 0 1 8 19.2a28.87 28.87 0 0 1 .7-6.49l.3-.62h12.16V26.3zm15.6 13.76a19.6 19.6 0 0 1-6 2l-4.39-12.77h6.68zm15-6.71c-3.22-2.77-9.21-6.78-16.92-7V12c7.69-.22 13.7-4.23 16.92-7z"/><path class="ar-cls-1" d="M53.77 10a1.49 1.49 0 0 0-2.11 2.11 9.5 9.5 0 0 1 0 13.41 1.49 1.49 0 1 0 2.11 2.11 12.48 12.48 0 0 0 0-17.63z"/></g></g></symbol><symbol id="blog-post" viewBox="0 0 56.35 45.69"><g data-name="Layer 2"><path d="M50.34 13.62a3.87 3.87 0 1 0-3.87 3.87 3.87 3.87 0 0 0 3.87-3.87zm-5.94 0a2.07 2.07 0 1 1 2.07 2.07 2.07 2.07 0 0 1-2.07-2.07zM55.15 0h-36A1.2 1.2 0 0 0 18 1.2v8.65h2.4V2.4H54v22.45h-3.47a1.2 1.2 0 0 0-1.18 1.4l.75 4.43L41.61 25a1.2 1.2 0 0 0-.66-.2h-.79v2.4h.42l9.77 6.48a1.79 1.79 0 0 0 1 .32 1.43 1.43 0 0 0 1.1-.5 1.66 1.66 0 0 0 .33-1.39l-.83-4.91h3.2a1.2 1.2 0 0 0 1.2-1.2V1.2a1.2 1.2 0 0 0-1.2-1.2zm-18 11.64H1.2a1.2 1.2 0 0 0-1.2 1.2v24.85a1.2 1.2 0 0 0 1.2 1.2h3.2l-.83 4.91a1.66 1.66 0 0 0 .33 1.39 1.43 1.43 0 0 0 1.1.5 1.79 1.79 0 0 0 1-.32l9.77-6.48h21.4a1.2 1.2 0 0 0 1.2-1.2V12.84a1.2 1.2 0 0 0-1.2-1.2zM36 36.49H15.4a1.21 1.21 0 0 0-.66.2l-8.49 5.63.75-4.43a1.2 1.2 0 0 0-1.18-1.4H2.4V14H36zM9.88 29.13A3.87 3.87 0 1 0 6 25.26a3.87 3.87 0 0 0 3.88 3.87zm0-5.94a2.07 2.07 0 1 1-2.07 2.07 2.08 2.08 0 0 1 2.07-2.07zm9.87 5.94a3.87 3.87 0 1 0-3.87-3.87 3.87 3.87 0 0 0 3.87 3.87zm0-5.94a2.07 2.07 0 1 1-2.07 2.07 2.07 2.07 0 0 1 2.07-2.07zm9.87 5.94a3.87 3.87 0 1 0-3.87-3.87 3.87 3.87 0 0 0 3.86 3.87zm0-5.94a2.07 2.07 0 1 1-2.07 2.07 2.07 2.07 0 0 1 2.06-2.07z" data-name="Layer 1"/></g></symbol><symbol id="case-study" viewBox="0 0 50 50"><title>Case Study</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cs-cls-1" d="M40.05 9.95a11.69 11.69 0 1 0 0 16.54 11.61 11.61 0 0 0 0-16.54z"/><circle class="cs-cls-1" cx="6.42" cy="43.56" r="1.42"/><path class="cs-cls-1" d="M44.66 5.34a18.22 18.22 0 0 0-29.42 20.51L2.33 38.77A6.32 6.32 0 0 0 6.34 50a6.23 6.23 0 0 0 4.78-2.21l13-13a18.31 18.31 0 0 0 7.64 1.67 18.21 18.21 0 0 0 12.9-31.12zM9.14 46a3.63 3.63 0 0 1-2.79 1.3 3.65 3.65 0 0 1-3.65-3.64 3.73 3.73 0 0 1 1.45-2.89l9.54-9.54 5.1 5.1zm33.62-16.81a15.42 15.42 0 0 1-11 4.54 15.57 15.57 0 0 1-7.27-1.8 1.35 1.35 0 0 0-1.58.24l-3.19 3.2-5.1-5.1 3.2-3.2a1.35 1.35 0 0 0 .24-1.58 15.52 15.52 0 1 1 24.69 3.7z"/></g></g></symbol><symbol id="checkmark" viewBox="0 0 27 27"><title>Checkmark</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="checkmark-cls-1" d="M13.5 27A13.49 13.49 0 0 1 0 13.5 13.49 13.49 0 0 1 13.5 0 13.49 13.49 0 0 1 27 13.5 13.49 13.49 0 0 1 13.5 27zm0-24.44A10.94 10.94 0 1 0 24.44 13.5 11 11 0 0 0 13.5 2.56z"/><path class="checkmark-cls-1" d="M18.58 8.09l-7.48 7.47-2.68-2.68a1.57 1.57 0 0 0-2.23 0 1.57 1.57 0 0 0 0 2.23l2.68 2.68 1.37 1.37a1.22 1.22 0 0 0 1.73 0l1.37-1.37 7.47-7.47a1.57 1.57 0 0 0 0-2.23 1.57 1.57 0 0 0-2.23 0z"/></g></g></symbol><symbol id="customer-story" viewBox="0 0 27.4 24.25"><title>customer-story-icon</title><path class="cls-customer-story-1" d="M26.17 1.52H3.83a2.15 2.15 0 0 0-2.15 2.15v13.75a2.15 2.15 0 0 0 2.15 2.15h15.29L24 24.48v-4.91h2.15a2.15 2.15 0 0 0 2.15-2.15V3.67a2.15 2.15 0 0 0-2.13-2.15zm1.29 15.9a1.29 1.29 0 0 1-1.29 1.29h-3v3.69l-3.69-3.69H3.83a1.29 1.29 0 0 1-1.29-1.29V3.67a1.29 1.29 0 0 1 1.29-1.29h22.34a1.29 1.29 0 0 1 1.29 1.29z" transform="translate(-1.3 -1.14)"/><path class="cls-customer-story-1" d="M7.26 8.97h12.89v.86H7.26zM7.26 4.68h12.89v.86H7.26zM7.26 13.27h8.59v.86H7.26z"/></symbol><symbol id="datasheet-2" viewBox="0 0 48 49.67"><title>Data Sheet</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="ds2-cls-1" d="M35.89 41.14h6.18a3 3 0 0 0 3-3V14.09a3 3 0 0 0-3-3h-6.18a3 3 0 0 0-3 3v24.1a3 3 0 0 0 3 2.95zm-.27-27.05a.27.27 0 0 1 .27-.27h6.18a.27.27 0 0 1 .27.27v24.1a.27.27 0 0 1-.27.27h-6.18a.27.27 0 0 1-.27-.27zM46.66 47H1.34a1.34 1.34 0 1 0 0 2.68h45.32a1.34 1.34 0 1 0 0-2.68zM20.91 41.14h6.18a3 3 0 0 0 3-3V3a3 3 0 0 0-3-3h-6.18a3 3 0 0 0-3 3v35.18a3 3 0 0 0 3 2.96zM20.64 3a.27.27 0 0 1 .27-.27h6.18a.27.27 0 0 1 .27.27v35.18a.27.27 0 0 1-.27.27h-6.18a.27.27 0 0 1-.27-.27zM5.94 41.14h6.18a3 3 0 0 0 3-3v-9.41a3 3 0 0 0-3-3H5.94a3 3 0 0 0-3 3v9.46a3 3 0 0 0 3 2.95zm-.28-12.41a.27.27 0 0 1 .27-.27h6.18a.27.27 0 0 1 .27.27v9.46a.27.27 0 0 1-.27.27H5.94a.27.27 0 0 1-.27-.27z"/></g></g></symbol><symbol id="datasheet" viewBox="0 0 40.52 50"><g data-name="Layer 2"><path d="M37.84 6.08v40.68a.57.57 0 0 1-.56.56H6.08A3.24 3.24 0 0 0 9.27 50h28a3.24 3.24 0 0 0 3.24-3.24V9.27a3.24 3.24 0 0 0-2.67-3.19zm-3.35 34.65V3.24A3.24 3.24 0 0 0 31.25 0h-28A3.24 3.24 0 0 0 0 3.24v37.49A3.24 3.24 0 0 0 3.24 44h28a3.24 3.24 0 0 0 3.25-3.27zm-31.81 0V3.24a.57.57 0 0 1 .56-.56h28a.57.57 0 0 1 .56.56v37.49a.57.57 0 0 1-.56.56h-28a.57.57 0 0 1-.56-.56zM26.88 9H7.62v2.68h19.26zm0 9.62H15.32v2.68h11.56zm-11.56 13v2.68h11.57v-2.65zm0-3.87h11.56v-2.63H15.32zm-7.7 0h4.08v-2.63H7.62zm0 6.53h4.08v-2.63H7.62zm0-13h4.08v-2.63H7.62z" data-name="Layer 1"/></g></symbol><symbol id="documentation" viewBox="0 0 40.52 50"><g data-name="Layer 2"><path d="M37.84 6.08v40.68a.57.57 0 0 1-.56.56H6.08A3.24 3.24 0 0 0 9.27 50h28a3.24 3.24 0 0 0 3.24-3.24V9.27a3.24 3.24 0 0 0-2.67-3.19zm-3.35 34.65V3.24A3.24 3.24 0 0 0 31.25 0h-28A3.24 3.24 0 0 0 0 3.24v37.49A3.24 3.24 0 0 0 3.24 44h28a3.24 3.24 0 0 0 3.25-3.27zm-31.81 0V3.24a.57.57 0 0 1 .56-.56h28a.57.57 0 0 1 .56.56v37.49a.57.57 0 0 1-.56.56h-28a.57.57 0 0 1-.56-.56zM26.88 9H7.62v2.68h19.26zm0 9.62H15.32v2.68h11.56zm-11.56 13v2.68h11.57v-2.65zm0-3.87h11.56v-2.63H15.32zm-7.7 0h4.08v-2.63H7.62zm0 6.53h4.08v-2.63H7.62zm0-13h4.08v-2.63H7.62z" data-name="Layer 1"/></g></symbol><symbol id="event" viewBox="0 0 50.5 46.31"><g data-name="Layer 2"><g data-name="Layer 1"><path d="M12.95 10.62a1.48 1.48 0 0 0 1.48-1.48V1.48a1.48 1.48 0 1 0-3 0v7.66a1.48 1.48 0 0 0 1.52 1.48zM37.55 10.62A1.48 1.48 0 0 0 39 9.14V1.48a1.48 1.48 0 1 0-3 0v7.66a1.48 1.48 0 0 0 1.55 1.48z"/><path class="cls-1" d="M17.01 4.44h16.47v2.97H17.01z"/><path d="M32 37.25a2.29 2.29 0 0 1-1.64-.53 3.27 3.27 0 0 1-.78-1.83v-.21h-3.13v.27a5.88 5.88 0 0 0 1.47 3.67 5.57 5.57 0 0 0 4.11 1.47 5.47 5.47 0 0 0 4-1.5 5.07 5.07 0 0 0 1.25-2 9.85 9.85 0 0 0 .38-3c0-2.32-.56-4-1.65-5.15a4.74 4.74 0 0 0-3.49-1.29 4.56 4.56 0 0 0-2.78.82v-4.1h7.53V21H26.89v10.56h2.83l.06-.16a2.24 2.24 0 0 1 2.36-1.47 2.11 2.11 0 0 1 1.87.81 5.07 5.07 0 0 1 .6 2.82 4.54 4.54 0 0 1-.78 3 2.39 2.39 0 0 1-1.83.69z"/><path d="M49 4.44h-7.4v3h5.92V14H3V7.41h5.88v-3h-7.4A1.48 1.48 0 0 0 0 5.92v38.9a1.48 1.48 0 0 0 1.48 1.48H49a1.48 1.48 0 0 0 1.48-1.48V5.92A1.48 1.48 0 0 0 49 4.44zM47.54 17v26.34H3V17z"/><path d="M24.21 37.09H17l5.44-6.68a9.41 9.41 0 0 0 1.41-2.12 5.11 5.11 0 0 0 .38-2 5.23 5.23 0 0 0-1.54-3.91 5.54 5.54 0 0 0-4-1.49 6 6 0 0 0-3.17.83 5 5 0 0 0-2 2.36A7 7 0 0 0 13 26.3v.26h3.14v-.24c.08-1.76.89-2.61 2.47-2.61a2.34 2.34 0 0 1 1.79.67 2.56 2.56 0 0 1 .66 1.87 3.6 3.6 0 0 1-.93 2.3L13 37.25v2.69h11.21z"/></g></g></symbol><symbol id="how_to" viewBox="0 0 25.76 33.4"><title>how-to-logo</title><path class="how-to-cls-1" d="M14.5.93a12.74 12.74 0 0 0-7.17 23.28 2.52 2.52 0 0 1 1.1 2.09v3.93a1.93 1.93 0 0 0 1.93 1.93h.31a4.8 4.8 0 0 0 7.66 0h.31a1.93 1.93 0 0 0 1.93-1.93V26.3a2.53 2.53 0 0 1 1.11-2.09A12.74 12.74 0 0 0 14.5.93zm4.14 29.91H18a.68.68 0 0 0-.56.3 3.45 3.45 0 0 1-5.84 0 .68.68 0 0 0-.56-.3h-.66a.61.61 0 0 1-.61-.61V29h9.5v1.2a.61.61 0 0 1-.63.64zm2.29-7.72a3.85 3.85 0 0 0-1.68 3.18V28h-9.5v-1.7a3.83 3.83 0 0 0-1.68-3.18 11.43 11.43 0 1 1 12.86 0z" transform="translate(-1.62 -.8)"/><path class="how-to-cls-1" d="M14.5 10.92a3 3 0 1 0 3 3.05 3 3 0 0 0-3-3.05zm0 5.09a2 2 0 1 1 2.05-2A2 2 0 0 1 14.5 16z" transform="translate(-1.62 -.8)"/><path class="how-to-cls-1" d="M20.86 12.23H20a.52.52 0 0 1-.37-.89l.59-.59a.48.48 0 0 0 0-.7l-1.8-1.8a.5.5 0 0 0-.7 0l-.59.59a.54.54 0 0 1-.57.11.53.53 0 0 1-.32-.48v-.83a.5.5 0 0 0-.5-.5h-2.51a.5.5 0 0 0-.5.5v.83a.53.53 0 0 1-.32.48.54.54 0 0 1-.57-.11l-.59-.59a.48.48 0 0 0-.7 0l-1.8 1.8a.48.48 0 0 0 0 .7l.59.59a.52.52 0 0 1-.37.89h-.83a.5.5 0 0 0-.5.5v2.54a.5.5 0 0 0 .5.5H9a.52.52 0 0 1 .37.89l-.59.59a.48.48 0 0 0 0 .7l1.8 1.8a.49.49 0 0 0 .7 0l.59-.59a.54.54 0 0 1 .57-.11.53.53 0 0 1 .32.48v.83a.5.5 0 0 0 .5.5h2.54a.5.5 0 0 0 .5-.5v-.83a.52.52 0 0 1 .89-.37l.59.59a.49.49 0 0 0 .7 0l1.8-1.8a.48.48 0 0 0 0-.7l-.59-.59a.52.52 0 0 1 .37-.89h.83a.5.5 0 0 0 .5-.5v-2.54a.5.5 0 0 0-.53-.5zm-.49 2.55H20a1.51 1.51 0 0 0-1 2.58l.24.24-1.1 1.1-.24-.24a1.53 1.53 0 0 0-1.65-.33 1.49 1.49 0 0 0-.93 1.4v.34h-1.6v-.34a1.49 1.49 0 0 0-.93-1.4 1.53 1.53 0 0 0-1.65.33l-.24.24-1.1-1.1.24-.24A1.51 1.51 0 0 0 9 14.78h-.37v-1.56H9a1.51 1.51 0 0 0 1-2.58l-.2-.24 1.1-1.1.24.24a1.51 1.51 0 0 0 2.58-1.07v-.34h1.56v.34a1.51 1.51 0 0 0 .93 1.4 1.53 1.53 0 0 0 1.65-.33l.24-.24 1.1 1.1-.24.24A1.51 1.51 0 0 0 20 13.22h.34z" transform="translate(-1.62 -.8)"/></symbol><symbol id="infographic" viewBox="0 0 49.96 50"><g data-name="Layer 2"><path d="M43 7a24 24 0 0 0-28.3-4.16 1.34 1.34 0 0 0-.54 1.81l10.7 19.94a1.33 1.33 0 0 0 .54.54l19.94 10.7a1.34 1.34 0 0 0 1.81-.54A24.11 24.11 0 0 0 43 7zM17.16 4.6a21.4 21.4 0 0 1 5.67-1.68L18.55 7.2zm2.71 5.05l7-7a21.38 21.38 0 0 1 3.3.38l-9 9zm3.88 7.24l-1.28-2.39L33.1 3.87A21 21 0 0 1 35.67 5zm1.32 2.46l13-13A21.37 21.37 0 0 1 40.1 8L26.36 21.74zm3.17 4.28L42 9.89A20.78 20.78 0 0 1 43.59 12l-13 13zm4.85 2.6L45 14.33a21.42 21.42 0 0 1 1.09 2.58l-10.6 10.6zm12.29 6.6l-2.6-1.39L47 27.18a21 21 0 0 1-1.61 5.65zm-5.06-2.71l-2.39-1.28 8.94-8.94a21.69 21.69 0 0 1 .39 3.29zm.74 6.41l-18-9.64-9.64-18a1.33 1.33 0 0 0-1.81-.55 22.12 22.12 0 1 0 30 30 1.34 1.34 0 0 0-.54-1.82zM8.36 14.12a19.62 19.62 0 0 1 3.4-2.72l8.71 16.23-13 13a19.48 19.48 0 0 1 .89-26.51zm27.51 27.51a19.44 19.44 0 0 1-26.53.91l13-13 16.23 8.7a19.67 19.67 0 0 1-2.7 3.39z" data-name="Layer 1"/></g></symbol><symbol id="news" viewBox="0 0 45.93 50"><g data-name="Layer 2"><path d="M42.79 0H10.63a3.15 3.15 0 0 0-3.14 3.14v12.78H1.3a1.3 1.3 0 0 0-1.3 1.3v24.64c0 4 1.87 5.95 3.45 6.9A9.47 9.47 0 0 0 8.21 50h34.56a3.15 3.15 0 0 0 3.14-3.14V3.14A3.15 3.15 0 0 0 42.79 0zM7.49 47.37a6.38 6.38 0 0 1-2.69-.83c-1.48-.9-2.19-2.42-2.19-4.68V18.52h4.88zm35.84-.53a.55.55 0 0 1-.54.54H10.63a.55.55 0 0 1-.54-.54V3.14a.55.55 0 0 1 .54-.54h32.16a.55.55 0 0 1 .54.54zm-12.17-8.52H16.59a1.3 1.3 0 0 0 0 2.6h14.57a1.3 1.3 0 0 0 0-2.6zm0-6.33H16.59a1.3 1.3 0 0 0 0 2.6h14.57a1.3 1.3 0 0 0 0-2.6zM37 32a1.3 1.3 0 0 0-1.3 1.3v6.33a1.3 1.3 0 1 0 2.6 0v-6.34A1.3 1.3 0 0 0 37 32zm-20.41-4h20.23a1.3 1.3 0 1 0 0-2.6H16.59a1.3 1.3 0 0 0 0 2.6zM37 9.06H16.59a1.3 1.3 0 0 0-1.3 1.3v9.74a1.3 1.3 0 0 0 1.3 1.3H37a1.3 1.3 0 0 0 1.3-1.3v-9.74a1.3 1.3 0 0 0-1.3-1.3zm-1.3 9.74H17.89v-7.14h17.82z" data-name="Layer 1"/></g></symbol><symbol id="posts" viewBox="0 0 51.18 50.07"><title>posts</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path class="cls-1" d="M33.16 16.5a1 1 0 0 1 0 1.4l-3 3 2 2 3-3a3.78 3.78 0 0 0 0-5.34l-.8-.8-2 2zM36.31 21a1.2 1.2 0 0 1-.31 1.12l-2.94 2.94 2 2 2.94-3c1.25-1.25 1.68-3.62.28-5L37.18 18l-2 2z"/><path class="cls-1" d="M50.34 38.9L39.78 28.34l.7-.7a3.54 3.54 0 0 0 .14-4.87l-.35-.35-2 2 .35.35a.8.8 0 0 1-.14.93l-7.3 7.3c-4.6 4.41-6.44 4.48-8.38 4.55h-1.2L11.27 48.07l2 2 9.57-9.69h.08a10.53 10.53 0 0 0 6.85-2.46l10.79 10.76a3 3 0 0 0 4.09 0L50.34 43a2.9 2.9 0 0 0 0-4.09zm-1.94 2a.11.11 0 0 1 0 .08l-5.69 5.69a.11.11 0 0 1-.16 0l-3.25-3.25 5.84-5.84zm-9.16-1.39l-1.94 1.94-5.38-5.35q.57-.51 1.2-1.11l4.69-4.69 5.34 5.34-1.94 1.94-4.84-4.84-2 2zM13.24 28.75a11.93 11.93 0 0 1 1.2-6.68 4.86 4.86 0 0 0 5.34-1l8.58-8.58a1.07 1.07 0 0 1 1.51-.11l.11.11a1 1 0 0 1-.07 1.59l-2.75 2.72 2 2 2.72-2.8a3.9 3.9 0 1 0-5.46-5.56l-2.26 2.26-8.92-8.9L3.81.08a1.65 1.65 0 0 0-2.07 2.07l3.72 11.43 6.75 6.75a15.21 15.21 0 0 0-1.8 8.1L0 39l2 2 11.33-11.58zM11.55 6a4.15 4.15 0 0 0-1.21 2.7 4.15 4.15 0 0 0-2.7 1.21 4.1 4.1 0 0 0-.34.38L5.28 4l.41-.41 6.24 2a4.19 4.19 0 0 0-.38.41zm-1.94 5.86a1.37 1.37 0 0 1 1.94 0L17.68 18l2-2-6.16-6.11A1.37 1.37 0 1 1 15.46 8l6.74 6.74-4.39 4.39a2.06 2.06 0 0 1-2.91 0l-5.29-5.34a1.37 1.37 0 0 1 0-1.93z"/></g></g></g></g></symbol><symbol id="presentation" viewBox="0 0 53.74 50.05"><g data-name="Layer 2"><path d="M52.36 2.42H27.91v-1a1.38 1.38 0 0 0-2.76 0v1H1.38A1.38 1.38 0 0 0 0 3.8v5.13a1.38 1.38 0 0 0 1.38 1.38h2.47v22.11a1.38 1.38 0 0 0 1.38 1.38h19.92v3.77l-14.28 10a1.38 1.38 0 0 0-.34 1.92 1.42 1.42 0 0 0 1.92.34l12.7-8.87v5.12a1.38 1.38 0 0 0 2.76 0v-5.14l12.7 8.87a1.38 1.38 0 1 0 1.58-2.26l-14.28-10V33.8h19.92a1.38 1.38 0 0 0 1.38-1.38V10.31h3.15a1.38 1.38 0 0 0 1.38-1.38V3.8a1.38 1.38 0 0 0-1.38-1.38zm-5.91 7.89V31H6.61V10.31zM51 5.18v2.37H2.76V5.18z" data-name="Layer 1"/></g></symbol><symbol id="press-release" viewBox="0 0 52.63 47.05"><g data-name="Layer 2"><path d="M47.64 13h-1.55V1.38A1.38 1.38 0 0 0 44.19.1L25.5 7.79H9.9a9.91 9.91 0 0 0-9.9 9.9v3.19a9.91 9.91 0 0 0 9.9 9.9h2l4.32 14.44A2.58 2.58 0 0 0 18.69 47a2.55 2.55 0 0 0 .73-.11l3.85-1.15A2.56 2.56 0 0 0 25 42.6l-3.54-11.81h4l18.69 7.69a1.38 1.38 0 0 0 1.9-1.28V25.61h1.54a5 5 0 0 0 5-5V18a5 5 0 0 0-4.95-5zm0 9.88h-1.55v-7.15h1.54A2.24 2.24 0 0 1 49.88 18v2.65a2.24 2.24 0 0 1-2.24 2.2zM43.33 3.44v31.7l-16.18-6.66V10.1zM18.58 30.79l3.71 12.41-3.47 1-4-13.45zm5.82-20.23V28H9.9a7.15 7.15 0 0 1-7.14-7.14v-3.17a7.15 7.15 0 0 1 7.14-7.14z" data-name="Layer 1"/></g></symbol><symbol id="release_note" viewBox="0 0 36.75 50.5"><g data-name="Layer 2"><g data-name="Layer 1"><path d="M8.85 14.26h9.53a1.49 1.49 0 1 0 0-3H8.85a1.49 1.49 0 1 0 0 3zM27.9 30H8.85a1.49 1.49 0 1 0 0 3H27.9a1.49 1.49 0 1 0 0-3zM27.9 36.24H8.85a1.49 1.49 0 1 0 0 3H27.9a1.49 1.49 0 1 0 0-3z"/><path d="M35.09 9.32L27.62 1.7A6.33 6.33 0 0 0 23.56 0H3.25A3.25 3.25 0 0 0 0 3.25v44a3.25 3.25 0 0 0 3.25 3.25H33.5a3.25 3.25 0 0 0 3.25-3.25V13.38a6.47 6.47 0 0 0-1.66-4.06zm-5.79 3.8h4.46v34.13a.28.28 0 0 1-.27.27H3.25a.28.28 0 0 1-.25-.27v-44A.27.27 0 0 1 3.25 3h20.58v4.71a5.45 5.45 0 0 0 5.47 5.41zm-2.49-5.41V5.14l4.9 5H29.3a2.49 2.49 0 0 1-2.49-2.43z"/><path d="M7.36 19a1.49 1.49 0 0 0 1.49 1.5H27.9a1.49 1.49 0 1 0 0-3H8.85A1.49 1.49 0 0 0 7.36 19zM27.9 23.76H8.85a1.49 1.49 0 1 0 0 3H27.9a1.49 1.49 0 1 0 0-3z"/></g></g></symbol><symbol id="security_advisory" viewBox="0 0 52.63 47.05"><g data-name="Layer 2"><path d="M47.64 13h-1.55V1.38A1.38 1.38 0 0 0 44.19.1L25.5 7.79H9.9a9.91 9.91 0 0 0-9.9 9.9v3.19a9.91 9.91 0 0 0 9.9 9.9h2l4.32 14.44A2.58 2.58 0 0 0 18.69 47a2.55 2.55 0 0 0 .73-.11l3.85-1.15A2.56 2.56 0 0 0 25 42.6l-3.54-11.81h4l18.69 7.69a1.38 1.38 0 0 0 1.9-1.28V25.61h1.54a5 5 0 0 0 5-5V18a5 5 0 0 0-4.95-5zm0 9.88h-1.55v-7.15h1.54A2.24 2.24 0 0 1 49.88 18v2.65a2.24 2.24 0 0 1-2.24 2.2zM43.33 3.44v31.7l-16.18-6.66V10.1zM18.58 30.79l3.71 12.41-3.47 1-4-13.45zm5.82-20.23V28H9.9a7.15 7.15 0 0 1-7.14-7.14v-3.17a7.15 7.15 0 0 1 7.14-7.14z" data-name="Layer 1"/></g></symbol><symbol id="video" viewBox="0 0 65.47 50"><g data-name="Layer 2"><path d="M13.87 5a1.86 1.86 0 1 0 1.86 1.86A1.86 1.86 0 0 0 13.87 5zM7.69 5a1.86 1.86 0 1 0 1.86 1.89A1.86 1.86 0 0 0 7.69 5zM20 5a1.86 1.86 0 1 0 1.9 1.89A1.86 1.86 0 0 0 20 5zm28.65 11.37a16.81 16.81 0 1 0 16.82 16.82 16.83 16.83 0 0 0-16.82-16.82zm0 31a14.16 14.16 0 1 1 14.17-14.18 14.18 14.18 0 0 1-14.17 14.16zm9.18-15.29L45 24.23a1.32 1.32 0 0 0-2 1.13V41a1.32 1.32 0 0 0 2 1.13l12.82-7.83a1.32 1.32 0 0 0 0-2.26zm-12.19 6.6V27.72l9 5.46zm-43 .49V13.39H50V1.32A1.33 1.33 0 0 0 48.7 0H1.32A1.32 1.32 0 0 0 0 1.32v39.15a1.32 1.32 0 0 0 1.32 1.33h29.51a19.73 19.73 0 0 1-1.05-2.65zm0-36.5h44.74v8.09H2.65z" data-name="Layer 1"/></g></symbol><symbol id="white-paper" viewBox="0 0 36.75 50.5"><g data-name="Layer 2"><g data-name="Layer 1"><path d="M8.85 14.26h9.53a1.49 1.49 0 1 0 0-3H8.85a1.49 1.49 0 1 0 0 3zM27.9 30H8.85a1.49 1.49 0 1 0 0 3H27.9a1.49 1.49 0 1 0 0-3zM27.9 36.24H8.85a1.49 1.49 0 1 0 0 3H27.9a1.49 1.49 0 1 0 0-3z"/><path d="M35.09 9.32L27.62 1.7A6.33 6.33 0 0 0 23.56 0H3.25A3.25 3.25 0 0 0 0 3.25v44a3.25 3.25 0 0 0 3.25 3.25H33.5a3.25 3.25 0 0 0 3.25-3.25V13.38a6.47 6.47 0 0 0-1.66-4.06zm-5.79 3.8h4.46v34.13a.28.28 0 0 1-.27.27H3.25a.28.28 0 0 1-.25-.27v-44A.27.27 0 0 1 3.25 3h20.58v4.71a5.45 5.45 0 0 0 5.47 5.41zm-2.49-5.41V5.14l4.9 5H29.3a2.49 2.49 0 0 1-2.49-2.43z"/><path d="M7.36 19a1.49 1.49 0 0 0 1.49 1.5H27.9a1.49 1.49 0 1 0 0-3H8.85A1.49 1.49 0 0 0 7.36 19zM27.9 23.76H8.85a1.49 1.49 0 1 0 0 3H27.9a1.49 1.49 0 1 0 0-3z"/></g></g></symbol><symbol id="workbench" viewBox="0 0 65.47 50"><g data-name="Layer 2"><path d="M13.87 5a1.86 1.86 0 1 0 1.86 1.86A1.86 1.86 0 0 0 13.87 5zM7.69 5a1.86 1.86 0 1 0 1.86 1.89A1.86 1.86 0 0 0 7.69 5zM20 5a1.86 1.86 0 1 0 1.9 1.89A1.86 1.86 0 0 0 20 5zm28.65 11.37a16.81 16.81 0 1 0 16.82 16.82 16.83 16.83 0 0 0-16.82-16.82zm0 31a14.16 14.16 0 1 1 14.17-14.18 14.18 14.18 0 0 1-14.17 14.16zm9.18-15.29L45 24.23a1.32 1.32 0 0 0-2 1.13V41a1.32 1.32 0 0 0 2 1.13l12.82-7.83a1.32 1.32 0 0 0 0-2.26zm-12.19 6.6V27.72l9 5.46zm-43 .49V13.39H50V1.32A1.33 1.33 0 0 0 48.7 0H1.32A1.32 1.32 0 0 0 0 1.32v39.15a1.32 1.32 0 0 0 1.32 1.33h29.51a19.73 19.73 0 0 1-1.05-2.65zm0-36.5h44.74v8.09H2.65z" data-name="Layer 1"/></g></symbol></svg></div>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N547FHV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) --><div class="wpex-site-overlay"></div>
+<a href="#content" class="skip-to-content">skip to Main Content</a><span data-ls_id="#site_top"></span>
+<div id="outer-wrap" class="clr">
+
+	
+		<div id="wrap" class="clr">
+
+        
+            <header class="wrapper--header header header--primary">
+                
+
+<header id="site-header" class="header-one fixed-scroll shrink-sticky-header anim-shrink-header dyn-styles wpex-clr" itemscope="itemscope" itemtype="http://schema.org/WPHeader">
+
+	
+	<div id="site-header-inner" class="container clr">
+
+		
+<div id="site-logo" class="site-branding header-one-logo wpex-clr">
+	<div id="site-logo-inner" class="wpex-clr"><a href="https://expel.io/" rel="home" class="main-logo"><img src="https://expel.io/wp-content/uploads/2018/08/expel-io-logo-dark-registered.svg" alt="Expel" class="logo-img" data-no-retina data-skip-lazy height="52" /></a></div>
+
+</div>
+	
+	<div id="site-navigation-wrap" class="navbar-style-one wpex-dropdowns-caret hide-at-mm-breakpoint wpex-clr">
+
+		<nav id="site-navigation" class="navigation main-navigation main-navigation-one wpex-clr" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement" aria-label="Main menu">
+
+			
+				<ul id="menu-primary-menu" class="dropdown-menu main-navigation-ul sf-menu"><li id="menu-item-33" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown menu-item-33"><a href="https://expel.io/managed-security/"><span class="link-inner">What we do</span></a>
+<ul class="sub-menu">
+	<li id="menu-item-1344" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1344"><a href="https://expel.io/managed-security/"><span class="link-inner">Overview</span></a></li>
+	<li id="menu-item-5518" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5518"><a href="https://expel.io/managed-security/why-we-are-different/"><span class="link-inner">Why we&#8217;re different</span></a></li>
+	<li id="menu-item-1055" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1055"><a href="https://expel.io/managed-security/demo/"><span class="link-inner">Demo</span></a></li>
+	<li id="menu-item-7558" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7558"><a href="/customers/"><span class="link-inner">Our customers</span></a></li>
+	<li id="menu-item-7559" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7559"><a href="/managed-security/tech-we-plug-into/"><span class="link-inner">Tech we plug into</span></a></li>
+</ul>
+</li>
+<li id="menu-item-7555" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown menu-item-7555"><a href="https://expel.io/buy/"><span class="link-inner">What you can buy</span></a>
+<ul class="sub-menu">
+	<li id="menu-item-7561" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7561"><a href="https://expel.io/buy/"><span class="link-inner">Overview</span></a></li>
+	<li id="menu-item-7562" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children dropdown menu-item-7562"><a href="/buy/managed-detection-response"><span class="link-inner">Expel MDR<span class="nav-arrow second-level ticon ticon-angle-right" aria-hidden="true"></span></span></a>
+	<ul class="sub-menu">
+		<li id="menu-item-7563" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7563"><a href="/buy/mdr-on-prem"><span class="link-inner">On-prem infrastructure</span></a></li>
+		<li id="menu-item-7564" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7564"><a href="/buy/mdr-cloud"><span class="link-inner">Cloud infrastructure</span></a></li>
+		<li id="menu-item-7565" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7565"><a href="/buy/mdr-saas-apps/"><span class="link-inner">SaaS apps</span></a></li>
+		<li id="menu-item-8571" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8571"><a href="https://expel.io/buy/hunting/"><span class="link-inner">Expel Hunting</span></a></li>
+	</ul>
+</li>
+	<li id="menu-item-7566" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7566"><a href="/buy/workbench-aws"><span class="link-inner">Expel Workbench for AWS</span></a></li>
+	<li id="menu-item-7567" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7567"><a href="/buy/managed-phishing-service/"><span class="link-inner">Expel Managed Phishing</span></a></li>
+	<li id="menu-item-7118" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7118"><a href="https://expel.io/pricing/"><span class="link-inner">Pricing</span></a></li>
+</ul>
+</li>
+<li id="menu-item-7557" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown menu-item-7557"><a href="https://expel.io/solutions/"><span class="link-inner">Problems we solve</span></a>
+<ul class="sub-menu">
+	<li id="menu-item-7560" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7560"><a href="https://expel.io/solutions/"><span class="link-inner">Overview</span></a></li>
+	<li id="menu-item-7568" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7568"><a href="/solutions/securing-the-cloud/"><span class="link-inner">Secure the cloud fast</span></a></li>
+	<li id="menu-item-7570" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7570"><a href="/solutions/soc-overnight/"><span class="link-inner">Get a SOC overnight</span></a></li>
+	<li id="menu-item-7569" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7569"><a href="/solutions/replace-my-mssp/"><span class="link-inner">Replace my MSSP</span></a></li>
+</ul>
+</li>
+<li id="menu-item-30" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children dropdown menu-item-30"><a href="https://expel.io/about/"><span class="link-inner">About Expel</span></a>
+<ul class="sub-menu">
+	<li id="menu-item-1716" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1716"><a href="https://expel.io/about/"><span class="link-inner">Overview</span></a></li>
+	<li id="menu-item-7556" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7556"><a href="https://expel.io/about/resources/"><span class="link-inner">Resources</span></a></li>
+	<li id="menu-item-1715" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1715"><a href="https://expel.io/about/careers/"><span class="link-inner">Careers</span></a></li>
+</ul>
+</li>
+<li id="menu-item-6729" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6729"><a href="https://expel.io/blog/"><span class="link-inner">Blog</span></a></li>
+<li id="menu-item-28" class="nav-cta menu-item menu-item-type-post_type menu-item-object-page menu-item-28"><a href="https://expel.io/about/contact-us/"><span class="link-inner">Contact us</span></a></li>
+<li class="menu-item--search-form"><div class="search-form-container">
+<form method="get" class="searchform" action="https://expel.io/">
+	<label>
+		<span class="screen-reader-text">Search</span>
+		<input type="search" class="field" name="s" placeholder="Search" />
+	</label>
+			<button type="submit" class="searchform-submit"><span class="ticon ticon-search" aria-hidden="true"></span><span class="screen-reader-text">Submit</span></button>
+<input type="hidden" name="id" value="4674" /></form></div></li></ul>
+			
+		</nav>
+
+	</div>
+
+	
+
+<div id="mobile-menu" class="wpex-mobile-menu-toggle show-at-mm-breakpoint">
+	<div class="wpex-inline-flex wpex-items-center">
+						<a href="#" class="mobile-menu-toggle" role="button" aria-label="Toggle Mobile menu" aria-expanded="false"><span class="wpex-bars" aria-hidden="true"><span></span></span></a>			</div>
+</div>
+
+                <div class="site-header--search-container"><div class="search-form-container">
+<form method="get" class="searchform" action="https://expel.io/">
+	<label>
+		<span class="screen-reader-text">Search</span>
+		<input type="search" class="field" name="s" placeholder="Search" />
+	</label>
+			<button type="submit" class="searchform-submit"><span class="ticon ticon-search" aria-hidden="true"></span><span class="screen-reader-text">Submit</span></button>
+<input type="hidden" name="id" value="4674" /></form></div></div>
+        	</div><!-- #site-header-inner -->
+
+	
+</header><!-- #header -->
+
+
+                            </header>
+
+        
+		<main id="main" class="site-main clr">
+
+			
+  <div class="content-area" style="background-image: url();">
+    <main id="main" class="site-main" role="main">
+    	<div class="container">
+                    <div class="entry-featured-image">
+            	<img src="https://expel.io/wp-content/uploads/2020/07/hero-1100x244-Behind-the-scenes-in-the-Expel-SOC-Alert-to-fix-in-AWS-072820.jpg" alt="blog-header-image">
+            </div>
+	              <div class="blog-post-single">
+  				<div class="meta-info">
+  					<div class="meta-category">
+						<a href="/blog/category/security-operations">Security operations</a>					</div>
+					<div class="meta-read"><span>|</span>
+            11 min read
+          </div>
+
+          <div class="meta-date"><span>|</span> Jul 28, 2020</div>
+          <div class="meta-author"><span>|</span>
+            <i>by Sam Lipton, Lori Easterly, Anthony Randazzo and Jon Hencinski</i>
+          </div>
+
+          <div class="meta-tags"> <span>|</span><span><i class="fa fa-tag" aria-hidden="true"></i> Tags: </span><ul><li><a href="https://expel.io/blog/tag/cloud-security/">Cloud security</a><span>,</span></li><li><a href="https://expel.io/blog/tag/how-to/">How to</a><span>,</span></li><li><a href="https://expel.io/blog/tag/managed-detection-and-response/">Managed detection and response</a><span>,</span></li><li><a href="https://expel.io/blog/tag/managed-security/">Managed security</a><span>,</span></li><li><a href="https://expel.io/blog/tag/soc/">SOC</a><span>,</span></li></ul></div>
+				</div>
+
+				<h1 class="blog-title">Behind the scenes in the Expel SOC: Alert-to-fix in AWS</h1>
+
+				<hr>
+
+				<div class="blog-text">
+					<p>Over the July 4th holiday weekend our SOC spotted a coin-mining attack in a customer’s Amazon Web Services (AWS) environment. The attacker compromised the <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html" target="_blank" rel="noopener noreferrer">root IAM user </a>access key and used it to enumerate the environment and spin up ten (10) c5.4xlarge EC2s to mine <a href="https://web.getmonero.org/get-started/mining/" target="_blank" rel="noopener noreferrer">Monero</a>.</p>
+<p>While this was <em>just</em> a coin miner, it was root key exposure. The situation could have easily gotten out of control pretty quickly. It took our SOC 37 minutes to go from alert-to-fix. That’s 37 minutes to triage the initial lead (a custom AWS rule using <a href="https://expel.io/blog/following-cloudtrail-generating-aws-security-signals-sumo-logic/" target="_blank" rel="noopener noreferrer">CloudTrail logs</a>), declare an incident and tell our customer how to stop the attack.</p>
+<hr />
+<p><strong>Jon’s take: Alert-to-fix in 37 minutes is quite good. Recent industry reporting indicates that most incidents are contained on a time basis measured in days not minutes. Our target is that 75 percent of the time we go from alert-to-fix in less than 30 minutes. Anything above that automatically goes through a review process that we’ll talk about more in a bit.</strong></p>
+<hr />
+<p>How’d we pull it off so quickly? Teamwork.</p>
+<p>We get a lot of questions about what detection and response looks like in AWS, so we thought this would be a great opportunity to take you behind the scenes. In this post we’ll walk you through the process from alert-to-fix in AWS over a holiday weekend. You’ll hear from the SOC analysts and Global Response Team who worked on the incident.</p>
+<p>Before we tell you how it went down, here’s the high level play-by-play:</p>
+<p><img loading="lazy" class="aligncenter size-full wp-image-6485" src="https://expel.io/wp-content/uploads/2020/07/image-Expel-alert_to_fix_timeline.png" sizes="(max-width: 1307px) 100vw, 1307px" srcset="https://expel.io/wp-content/uploads/2020/07/image-Expel-alert_to_fix_timeline.png 1307w, https://expel.io/wp-content/uploads/2020/07/image-Expel-alert_to_fix_timeline-300x218.png 300w, https://expel.io/wp-content/uploads/2020/07/image-Expel-alert_to_fix_timeline-768x558.png 768w, https://expel.io/wp-content/uploads/2020/07/image-Expel-alert_to_fix_timeline-1024x744.png 1024w, https://expel.io/wp-content/uploads/2020/07/image-Expel-alert_to_fix_timeline-420x305.png 420w" alt="" width="1307" height="949" /></p>
+<p><span style="font-size: 14px;"><em>Triage, investigation and remediation timeline</em></span></p>
+<p>Now we’ll let the team tell the story.</p>
+<h2>Saturday, July 4, 2020</h2>
+<h4>Initial Lead: 12:19:37 AM ET</h4>
+<p><em>By Sam Lipton and Lori Easterly – SOC analysts</em></p>
+<style>.blog-post-cta--callout{width: 280px; float: right; margin: 20px 0 50px; padding: 20px; border: 1px solid #d2d8dc;}.blog-post-cta--callout .callout-subheading{margin: 5px 0; color: #e87722; font-size: 16px; font-weight: 600;}.blog-post-cta--callout .callout-title{margin-bottom: 15px; font-size: 24px; font-weight: 400; line-height: 1.2;}.blog-post-cta--callout .c-button{width: 100%; margin-bottom: 0;}@media screen and (max-width:768px){.blog-post-cta--callout{float: none; margin: 0 auto; clear: both;}}</style><div class="blog-post-cta--callout"><div class="callout-img"><img src="https://expel.io/wp-content/uploads/2020/11/thumbnail-500x300-AWS-mind-map.jpg" /></div><div class="callout-subheading">MITRE ATT&CK in AWS</div><div class="callout-title">A defender&#8217;s cheat sheet &#038; mind map kit</div><div class="callout-button"><a href="https://info.expel.io/expel-mitre-attack-in-AWS-toolkit.html?utm_medium=website&utm_source=blog" class="vcex-button theme-button inline theme-button c-button animate-on-hover"><span class="theme-button-inner">Download the kit</span></a></div></div>Our shift started at 08:45 pm ET on Friday, July 3. Like many organizations, <a href="https://expel.io/blog/seven-habits-highly-effective-remote-socs/" target="_blank" rel="noopener noreferrer">we’ve been working fully remotely since the middle of March</a>. We jumped on the Zoom call for shift handoff, reviewed open investigations, weekly alert trending and general info for situational awareness. Things were (seemingly) calm.</p>
+<p>We anticipated a quieter shift. On a typical Friday night into Saturday morning, we’ll handle about 100 alerts. It’s not uncommon for us to spot an incident on Friday evening/Saturday morning, but it’s not the norm. It’s usually slower on the weekend; there are fewer active users and devices.</p>
+<p>Our shift started as we expected, slow and steady. Then suddenly, as is the case in security operations, that all changed.</p>
+<p>We spotted an AWS alert based on <a href="https://expel.io/blog/following-cloudtrail-generating-aws-security-signals-sumo-logic/" target="_blank" rel="noopener noreferrer">CloudTrail logs</a> that told us that EC2 SSH access keys were generated for the root access key from a suspicious source IP address using the AWS Golang SDK:</p>
+<p><img loading="lazy" class="aligncenter size-full wp-image-6486" src="https://expel.io/wp-content/uploads/2020/07/image-Expel-suspicious_ssh_key_pair.png" sizes="(max-width: 1307px) 100vw, 1307px" srcset="https://expel.io/wp-content/uploads/2020/07/image-Expel-suspicious_ssh_key_pair.png 1307w, https://expel.io/wp-content/uploads/2020/07/image-Expel-suspicious_ssh_key_pair-300x275.png 300w, https://expel.io/wp-content/uploads/2020/07/image-Expel-suspicious_ssh_key_pair-768x703.png 768w, https://expel.io/wp-content/uploads/2020/07/image-Expel-suspicious_ssh_key_pair-1024x938.png 1024w, https://expel.io/wp-content/uploads/2020/07/image-Expel-suspicious_ssh_key_pair-420x385.png 420w" alt="" width="1307" height="1197" /></p>
+<p><span style="font-size: 14px;"><em>Initial lead into the AWS coin-mining incident</em></span></p>
+<p>The source IP address in question was allocated to a cloud hosting provider that we hadn’t previously seen create SSH key pairs via the <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ImportKeyPair.html" target="_blank" rel="noopener noreferrer">ImportKeyPair API</a> in this customer’s AWS environment (especially from the root account!). The SSH key pair alert was followed shortly thereafter by <a href="https://expel.io/blog/making-sense-amazon-guardduty-alerts/" target="_blank" rel="noopener noreferrer">AWS GuardDuty alerts</a> for an <a href="https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-ec2.html#cryptocurrency-ec2-bitcointoolbdns" target="_blank" rel="noopener noreferrer">EC2 instance communicating with a cryptocurrency server</a> (monerohash[.]com on TCP port 7777).</p>
+<p>We jumped into the SIEM, queried CloudTrail logs and quickly found that the EC2 instances communicating with monerohash[.]com were the same EC2 instances associated with the SSH key pairs that were just detected.</p>
+<p><img loading="lazy" class="aligncenter size-full wp-image-6487" src="https://expel.io/wp-content/uploads/2020/07/image-Expel-guardduty_coin_mining.png" sizes="(max-width: 1307px) 100vw, 1307px" srcset="https://expel.io/wp-content/uploads/2020/07/image-Expel-guardduty_coin_mining.png 1307w, https://expel.io/wp-content/uploads/2020/07/image-Expel-guardduty_coin_mining-300x130.png 300w, https://expel.io/wp-content/uploads/2020/07/image-Expel-guardduty_coin_mining-768x334.png 768w, https://expel.io/wp-content/uploads/2020/07/image-Expel-guardduty_coin_mining-1024x445.png 1024w, https://expel.io/wp-content/uploads/2020/07/image-Expel-guardduty_coin_mining-420x183.png 420w" alt="" width="1307" height="568" /></p>
+<p><img loading="lazy" class="alignright wp-image-6488" src="https://expel.io/wp-content/uploads/2020/07/hi-ruxie-300x300.png" sizes="(max-width: 280px) 100vw, 280px" srcset="https://expel.io/wp-content/uploads/2020/07/hi-ruxie-300x300.png 300w, https://expel.io/wp-content/uploads/2020/07/hi-ruxie-150x150.png 150w, https://expel.io/wp-content/uploads/2020/07/hi-ruxie-768x768.png 768w, https://expel.io/wp-content/uploads/2020/07/hi-ruxie-1024x1024.png 1024w, https://expel.io/wp-content/uploads/2020/07/hi-ruxie-420x420.png 420w, https://expel.io/wp-content/uploads/2020/07/hi-ruxie.png 1200w" alt="" width="280" height="280" /></p>
+<p><span style="font-size: 14px;"><em>Corroborating AWS GuardDuty alert</em></span></p>
+<p>As our CTO <a href="https://expel.io/company/leadership/pete-silberman/" target="_blank" rel="noopener noreferrer">Peter Silberman</a> says, it was time to buckle up and “pour some Go Fast” on this.</p>
+<p>We’ve talked about our Expel robots in a <a href="https://expel.io/blog/finding-evil-in-aws/" target="_blank" rel="noopener noreferrer">previous post</a>. As a quick refresher, our robot Ruxie (yes– we give our robots names) automates investigative workflows to surface up more details to our analysts. In this event, Ruxie pulled up API calls made by the principal (interesting in this context is mostly anything that isn’t Get*, List*, Describe* and Head*).</p>
+<p><img loading="lazy" class="aligncenter size-full wp-image-6489" src="https://expel.io/wp-content/uploads/2020/07/image-Expel-aws_robotic_action.png" sizes="(max-width: 1307px) 100vw, 1307px" srcset="https://expel.io/wp-content/uploads/2020/07/image-Expel-aws_robotic_action.png 1307w, https://expel.io/wp-content/uploads/2020/07/image-Expel-aws_robotic_action-300x171.png 300w, https://expel.io/wp-content/uploads/2020/07/image-Expel-aws_robotic_action-768x437.png 768w, https://expel.io/wp-content/uploads/2020/07/image-Expel-aws_robotic_action-1024x583.png 1024w, https://expel.io/wp-content/uploads/2020/07/image-Expel-aws_robotic_action-420x239.png 420w" alt="" width="1307" height="744" /></p>
+<p><span style="font-size: 14px;"><em>AWS alert decision support – Tell me what other interesting API calls this AWS principal made</em></span></p>
+<p>This made it easy for us to understand what happened:</p>
+<ul>
+<li>The root AWS access key was potentially compromised.</li>
+<li>The root access key was used to access the AWS environment from a cloud hosting environment using the AWS Golang SDK. It was then used to create SSH keys, spin up EC2 instances via the <a href="https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html" target="_blank" rel="noopener noreferrer">RunInstances</a> API call and created new security groups likely to allow inbound access from the Internet.</li>
+<li>We inferred that the root access key was likely compromised and used to deploy coin miners.</li>
+</ul>
+<p>Yep, time to escalate this to an incident, take a deeper look, engage the customer and notify the on-call Global Response Team Incident Handler.</p>
+<h4>PagerDuty escalation to Global Response Team: 12:37:00 AM ET</h4>
+<p>Our Global Response Team (GRT) consists of senior and principal-level analysts who serve as incident responders for critical incidents. AWS root key exposure introduces a high level of risk for any customer, so we made the call to engage the GRT on call using <a href="https://www.pagerduty.com/" target="_blank" rel="noopener noreferrer">PagerDuty</a>. The escalation goes out to a Slack channel that’s monitored by the management team to track utilization.</p>
+<p><img loading="lazy" class="aligncenter size-full wp-image-6490" src="https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_escalation.png" sizes="(max-width: 1307px) 100vw, 1307px" srcset="https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_escalation.png 1307w, https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_escalation-300x90.png 300w, https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_escalation-768x230.png 768w, https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_escalation-1024x306.png 1024w, https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_escalation-420x126.png 420w" alt="" width="1307" height="391" /></p>
+<p><span style="font-size: 14px;"><em>PagerDuty escalation out to the GRT on-call</em></span></p>
+<h4>Incident declaration: 12:39:21 AM ET</h4>
+<p>A few minutes after the initial lead landed in Expel Workbench – 19 minutes to be exact – we notified the customer that there was a critical security incident in their AWS environment involving the root access key. And that access key was used to spin up new EC2 instances to perform coin mining. Simultaneously, we jumped into our SIEM and queried CloudTrail logs to help answer:</p>
+<ul>
+<li>Did the attacker compromise any other AWS accounts?</li>
+<li>How long has the attacker had access?</li>
+<li>What did the attacker do with the access?</li>
+<li>How did the attacker compromise the root AWS access key?</li>
+</ul>
+<p>At 12:56:43 ET we provided the first remediation actions to our customer to help contain the incident in AWS based on what we knew. This included:</p>
+<ul>
+<li>Steps on how to delete and remove the stolen root access key; and</li>
+<li>Instructions on how to terminate EC2 instances spun up by the attacker.</li>
+</ul>
+<p>We felt pretty good at this point – we had a good understanding of what happened. The customer acknowledged the critical incident and started working on remediation, while the GRT Incident Handler was inbound to perform a risk assessment.</p>
+<p>Alert-to-fix in 37 minutes. Not a bad start to our shift.</p>
+<h2>Global Response Team enters the chat: 12:42:00 AM ET</h2>
+<div id="attachment_6484" class="wp-caption alignright"></div>
+<figure id="attachment_6484" aria-describedby="caption-attachment-6484" style="width: 167px" class="wp-caption alignright"><img loading="lazy" class="wp-image-6484" src="https://expel.io/wp-content/uploads/2020/07/IK41Wkms_400x400.jpg" alt="Anthony Randazzo" width="167" height="167" srcset="https://expel.io/wp-content/uploads/2020/07/IK41Wkms_400x400.jpg 327w, https://expel.io/wp-content/uploads/2020/07/IK41Wkms_400x400-150x150.jpg 150w, https://expel.io/wp-content/uploads/2020/07/IK41Wkms_400x400-300x300.jpg 300w" sizes="(max-width: 167px) 100vw, 167px" /><figcaption id="caption-attachment-6484" class="wp-caption-text"><a class="twitter-follow-button" href="https://twitter.com/amrandazz?ref_src=twsrc%5Etfw" data-size="large" data-show-count="false">Follow @amrandazz</a><script src="https://platform.twitter.com/widgets.js" async="" charset="utf-8"></script></figcaption></figure>
+<p><em>By Anthony Randazzo – Global Response Team Lead</em></p>
+<p>I usually keep my phone on silent, but <a href="https://support.pagerduty.com/docs/notification-phone-numbers" target="_blank" rel="noopener noreferrer">PagerDuty has a vCard</a> that allows you to set an emergency contact. This bypasses your phone’s notifications setting so that if you receive a call from this contact, your phone rings (whether it’s in silent mode or not).</p>
+<p>We call it the SOC “<a href="https://gfycat.com/chubbyheartyirishterrier" target="_blank" rel="noopener noreferrer">bat phone</a>.”</p>
+<p>This wasn’t the first time I was paged in the middle of the night. I grabbed my phone, saw the PagerDuty icon and answered.</p>
+<p>There’s a lot of trust in our SOC. I knew immediately that if I was being paged, then the shift analysts were confident that there was something brewing that needed my attention.</p>
+<p>I made my way downstairs to my office and hopped on Zoom to get a quick debrief from the analysts about what alerts came in and what they were able to discover through their initial response. Now that I’m finally awake, it’s time to surgically determine the full extent of what happened.</p>
+<p>As the GRT incident handler, it’s important to not only perform a proper technical response to the incident, but also understand the risk. That way, we can thoroughly communicate with our customer at any given time throughout the incident, and continue to do so until we’re able to declare that the incident is fully contained.</p>
+<p>At this point, we have the answers to most of our <a href="https://expel.io/blog/finding-evil-in-aws/" target="_blank" rel="noopener noreferrer">investigative questions</a>, courtesy of the SOC shift analysts:</p>
+<ul>
+<li>Did the attacker compromise any other AWS accounts? <strong>There is no evidence of this.</strong></li>
+<li>How long has the attacker had access? <strong>This access key was not observed in use for the previous 30 days.</strong></li>
+<li>What did the attacker do with the access? <strong>The attacker generated a bunch of EC2 instances and enabled an ingress rule to SSH in and install CoinMiner malware.</strong></li>
+<li>How did the attacker compromise the root AWS access key? <strong>We don’t know and <a href="https://expel.io/blog/finding-evil-in-aws/#credentials" target="_blank" rel="noopener noreferrer">may never know</a>.</strong></li>
+</ul>
+<p>My biggest concern at this point was communicating to the customer that the access key remediation needs to occur as soon as possible. While this attack was an automated coin miner bot, there was still an unauthorized attacker with an intent of financial gain that had root access to an AWS account containing proprietary and potentially sensitive information lurking somewhere.</p>
+<p>There are a lot of “what ifs” floating around in my head. What if the attacker realizes they have a root access key? What if the attacker decides to start copying our customer’s <a href="https://aws.amazon.com/ebs/?ebs-whats-new.sort-by=item.additionalFields.postDateTime&amp;ebs-whats-new.sort-order=desc" target="_blank" rel="noopener noreferrer">EBS</a> volumes or <a href="https://aws.amazon.com/rds/" target="_blank" rel="noopener noreferrer">RDS</a> snapshots?</p>
+<h4>Incident contained: 02:00:00 AM ET</h4>
+<p>By 2:00 am ET we had the incident fully scoped which meant we understood:</p>
+<ul>
+<li>When the attack started</li>
+<li>How many IAM principals the attacker compromised</li>
+<li>AWS EC2 instances compromised by the attacker</li>
+<li>IP addresses used by the attacker to access AWS (ASN: AS135629)</li>
+<li>Domain and IP address resolutions to coin mining pool (monerohash[.]com:7777)</li>
+<li>And API calls made by the attacker using the root access key</li>
+</ul>
+<p>At this point I focused on using what we understood about the attack to deliver complete remediation steps to our customer. This included:</p>
+<ol>
+<li>A full list of all EC2 instances spun up by the attacker with details on how to <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html" target="_blank" rel="noopener noreferrer">terminate them</a></li>
+<li>AWS security groups created by the attacker and how to remove them</li>
+<li>Checking in on the status of the compromised root access key</li>
+</ol>
+<p>I provided a summary of everything we knew about the attack to our customer, did one last review of the remediation steps for accuracy and chatted with the SOC over Zoom to make sure we set the team up for success if the attacker came back.</p>
+<p>For reference, below are the MITRE ATT&amp;CK Enterprise and Cloud Tactics observed during Expel’s response:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table class="generic-table vc-table">
+<thead>
+<tr>
+<th style="text-align: center;" width="100%">MITRE ATT&amp;CK Enterprise and Cloud Tactics observed during Expel&#8217;s response</th>
+</tr>
+</thead>
+</table>
+<table class="generic-table vc-table">
+<tbody>
+<tr>
+<td style="text-align: center;">Initial Access</td>
+<td style="text-align: center;">Valid Accounts</td>
+</tr>
+<tr>
+<td style="text-align: center;">Execution</td>
+<td style="text-align: center;">Scripting</td>
+</tr>
+<tr>
+<td style="text-align: center;">Persistence</td>
+<td style="text-align: center;">Valid Accounts, Redundant Access</td>
+</tr>
+<tr>
+<td style="text-align: center;">Command and Control</td>
+<td style="text-align: center;">Uncommonly Used Port</td>
+</tr>
+</tbody>
+</table>
+<p></br><br />
+With the incident now under control, I resolved the PagerDuty escalation and called it a morning.</p>
+<p><img loading="lazy" class="aligncenter size-full wp-image-6491" src="https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_resolution.png" sizes="(max-width: 1307px) 100vw, 1307px" srcset="https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_resolution.png 1307w, https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_resolution-300x90.png 300w, https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_resolution-768x230.png 768w, https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_resolution-1024x306.png 1024w, https://expel.io/wp-content/uploads/2020/07/image-Expel-pager_duty_resolution-420x126.png 420w" alt="" width="1307" height="391" /></p>
+<p><span style="font-size: 14px;"><em>PagerDuty escalation resolution at 2:07am ET</em></span></p>
+<h2>Tuesday, July 7th</h2>
+<figure id="attachment_6415" aria-describedby="caption-attachment-6415" style="width: 161px" class="wp-caption alignright"><img loading="lazy" class="wp-image-6415" src="https://expel.io/wp-content/uploads/2020/07/tb-DYKiR_400x400.jpg" alt="Jon Hencinksi" width="161" height="161" srcset="https://expel.io/wp-content/uploads/2020/07/tb-DYKiR_400x400.jpg 400w, https://expel.io/wp-content/uploads/2020/07/tb-DYKiR_400x400-150x150.jpg 150w, https://expel.io/wp-content/uploads/2020/07/tb-DYKiR_400x400-300x300.jpg 300w" sizes="(max-width: 161px) 100vw, 161px" /><figcaption id="caption-attachment-6415" class="wp-caption-text"><a class="twitter-follow-button" href="https://twitter.com/jhencinski?ref_src=twsrc%5Etfw" data-size="large" data-show-count="false">Follow @jhencinski</a><script src="https://platform.twitter.com/widgets.js" async="" charset="utf-8"></script></figcaption></figure>
+<p><em>By Jon Hencinski – Director of Global Security Operations</em></p>
+<h4>Critical incident hot wash: 10:00:00 AM ET</h4>
+<p>For every critical incident we’ll perform a lightweight 15-minute “hot wash.” We use this time to come together as a team to reflect and learn. <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf" target="_blank" rel="noopener noreferrer">NIST has some opinions on what you should ask</a>, at Expel we mainly focus on asking ourselves:</p>
+<ul>
+<li>How quickly did we detect and respond? Was this within our internal target?</li>
+<li>Did we provide the right remediation actions to our customer?</li>
+<li>Did we follow the process and was it effective?</li>
+<li>Did we fully scope the incident?</li>
+<li>Is any training required?</li>
+<li>Were we effective? If not, what steps do we need to take to improve?</li>
+</ul>
+<p>If you’re looking for an easy way to get started with a repeatable incident hot wash, steal this:</p>
+<p><img loading="lazy" class="aligncenter size-full wp-image-6516" src="https://expel.io/wp-content/uploads/2020/07/image-Expel-hotwash.png" alt="" width="1308" height="305" srcset="https://expel.io/wp-content/uploads/2020/07/image-Expel-hotwash.png 1308w, https://expel.io/wp-content/uploads/2020/07/image-Expel-hotwash-300x70.png 300w, https://expel.io/wp-content/uploads/2020/07/image-Expel-hotwash-768x179.png 768w, https://expel.io/wp-content/uploads/2020/07/image-Expel-hotwash-1024x239.png 1024w, https://expel.io/wp-content/uploads/2020/07/image-Expel-hotwash-420x98.png 420w" sizes="(max-width: 1308px) 100vw, 1308px" /></p>
+<p><span style="font-size: 14px;"><em>Incident hot wash document template. Steal me! </em></span></p>
+<p>The bottom line: celebrate what went well and don’t be afraid to talk about where you need to improve. Each incident is an opportunity to advance your skills and train your investigative muscle.</p>
+<h2>Lessons Learned</h2>
+<p>We were able to help our customer get the situation under control pretty quickly but there were still some really interesting observations:</p>
+<ul>
+<li>It’s entirely possible that the root access key was scraped and passed off to the bot to spin up miners right before this was detected. We didn’t see any CLI, console or other interactive activity, fortunately.</li>
+<li>The attacker definitely wasn’t worried about setting off any sort of billing or performance alarms given the size of these EC2s.</li>
+<li>This was the first time we saw an attacker bring their own SSH key pairs that were uniquely named. Usually we see these generated in the bot automation run via the CreateKeyPair API.</li>
+<li>The CoinMiner was likely installed via SSH remote access (as a part of the bot). We didn’t have local EC2 visibility to confirm, but an ingress rule was created in the bot automation to allow SSH from the Internet.</li>
+<li>This was also the first time we’d observed a bot written in the AWS Golang software development kit (SDK). This is interesting because as defenders, it’s easy to suppress alert-based on user-agents, particularly SDKs we don’t expect to be used in attacks.</li>
+</ul>
+<p>We’ll apply these lessons learned, continue to improve our ability to spot evil quickly in AWS and mature are response procedures.</p>
+<p>While we felt good about taking 37 minutes to go from alert-to-fix in AWS in the early morning hours, especially during a holiday, we don’t plan on letting it get to our heads. We hold that <a href="https://expel.io/blog/7-habits-highly-effective-socs/" target="_blank" rel="noopener noreferrer">highly effective SOCs</a> are the right combination of people, tech and process.</p>
+<p>Really great security is a process, there is no end state – the work to improve is never done!</p>
+<p>Did you find this behind-the-scenes look into our detection and response process helpful? If so, <a href="https://expel.io/about/contact-us/" target="_blank" rel="noopener noreferrer">let us know</a> and we’ll plan to continue pulling the curtain back in the future!</p>
+				</div>
+
+        <hr>
+
+        <div class="u-text-align-center">
+          <a class="theme-button c-button c-button--green js-modal-content" href="#subscribe">Subscribe</a>
+          <div id="subscribe" class="o-modal-content mfp-hide">
+
+
+			  <div id="SubscribeForm" class="marketo-form marketo-form--dark marketo-form--blog"><script src="//app-ab40.marketo.com/js/forms2/js/forms2.min.js"></script><form id="mktoForm_1036"></form><script>MktoForms2.loadForm("//app-ab40.marketo.com", "986-VWL-068", 1036);
+
+					  MktoForms2.whenReady(function (form){
+
+						  //Add an onSuccess handler
+
+						  form.onSuccess(function(values, followUpUrl){
+
+							  //get the form's jQuery element and hide it
+
+							  form.getFormElem().hide();
+
+							  document.getElementById('confirmform').style.visibility = 'visible';
+
+							  //return false to prevent the submission handler from taking the lead to the follow up url.
+
+							  return false;
+
+						  });
+
+					  });
+
+				  </script>
+				  <div id="confirmform" style="visibility: hidden;">
+					  <p style="text-align: center;"><strong>You must really like the blog. Thanks for subscribing!</strong></p>
+
+				  </div></div>
+
+
+          </div>
+        </div>
+
+    		     		<div class="blog-next-prev">
+					<div class="prev"><a href="https://expel.io/blog/terraforming-better-engineering-experience-with-atlantis/">&lsaquo; Last Post</a></div>					<div class="next"><a href="https://expel.io/blog/prioritizing-suspicious-powershell-activity-with-machine-learning/">Next Post &rsaquo;</a></div>					<div class="all"><a href="/blog/">All Posts</a></div>
+				</div>
+      </div>
+
+      
+      <div class="c-promo-box  has-image">
+                  <div class="c-promo-box--image e-frame">
+            <figure class="wpb_wrapper vc_figure">
+              <div class="vc_single_image-wrapper vc_box_border_grey">
+                <img src="https://expel.io/wp-content/uploads/2020/06/thumbnail-500x300-Expel-Spotting-suspicious-logins-at-scale-060220-01.png" alt="" />              </div>
+            </figure>
+          </div>
+                <div class="c-promo-box--content">
+          <h4>Spotting suspicious logins at scale: (Alert) pathways to success</h4>
+          <div class="c-promo-box--excerpt">
+            Spoiler alert: We improved the median time it takes to investigate and report suspicious login activity by 75 percent between October 2019 and March 2020. We did it by reviewing the investigative patterns of our SOC analysts and deploying a&hellip;          </div>
+          <a href="https://expel.io/blog/spotting-suspicious-logins-at-scale/" class="vcex-button theme-button inline theme-button c-button animate-on-hover" target=""><span class="theme-button-inner">Read More</span></a>
+        </div>
+      </div>
+		<style>
+			#main .container {position: relative;}
+			#main .social-bar ul {list-style: none; margin: 0;}
+			.social-bar {position: fixed; top: 250px; left: 0px;}
+			.social-bar ul li a {transition: all 0.2s ease; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;}
+			.social-bar-mobile ul li a {transition: all 0.2s ease; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto;}
+			.social-bar ul li a:hover {transform: scale(1.2);}
+			.social-bar .tw-share, .social-bar-mobile .tw-share {background: #55acee;}
+			.social-bar .tw-share img {width: 35px;}
+			.social-bar-mobile .tw-share img {width: 35px;}
+			.social-bar .li-share, .social-bar-mobile .li-share {background: #0077b5;}
+			.social-bar .li-share img {width: 40px;}
+			.social-bar-mobile .li-share img {width: 40px;}
+			.social-bar .fb-share, .social-bar-mobile .fb-share {background: #4267B2;}
+			.social-bar .fb-share img {width: 40px;}
+			.social-bar-mobile .fb-share img {width: 40px;}
+			.social-bar .re-share, .social-bar-mobile .re-share {background: #ff4500;}
+			.social-bar .re-share img {width: 30px;}
+			.social-bar-mobile .re-share img {width: 30px;}
+			.social-bar-mobile {display: none; position: fixed; bottom: 70px; left: 0; width: 100%;}
+			.social-bar-mobile .social-icon {background: #000; padding: 15px; height: 60px; width: 60px; position: absolute; left: 0; bottom: -70px; cursor: pointer;}
+			.social-bar-mobile .social-icon path {fill: #fff !important;}
+			.social-bar-mobile .social-buttons {display: none; position: absolute; width: 100%; top: -70px;}
+			#main .social-bar-mobile .social-buttons ul {list-style: none; margin: 0; display: flex; height: 90px; background: #fff; align-items: center; justify-content: center; padding: 0 30px;}
+			.social-bar-mobile .social-buttons ul li {width: 25%; text-align: center;}
+			.social-bar-mobile .social-buttons .share-bar {background: #000; color: #fff; padding: 10px; position: relative; text-align: center;}
+			.social-bar-mobile .social-buttons .share-bar span {position: absolute; top: 0; right: 25px; font-size: 30px; cursor: pointer;}
+			@media screen and (max-width:1295px){
+				.social-bar {left: 0 !important;}
+			}
+			@media screen and (max-width:768px){
+				.social-bar {display: none;}
+				.social-bar-mobile {display: block;}
+			}
+		</style>
+				<div class="social-bar">
+			<ul>
+				<li><a class="tw-share" href="https://twitter.com/share?text=Behind the scenes in the Expel SOC: Alert-to-fix in AWS via @expel_io&url=https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws" target="_blank"><img src="/wp-content/themes/expel-2017/images/twitter.svg" /></a></li>
+				<li><a class="li-share" href="http://www.linkedin.com/shareArticle?url=https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws&title=Behind the scenes in the Expel SOC: Alert-to-fix in AWS" target="_blank"><img src="/wp-content/themes/expel-2017/images/linkedin.svg" /></a></li>
+				<li><a class="fb-share" href="https://www.facebook.com/sharer/sharer.php?u=https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws&title=Behind the scenes in the Expel SOC: Alert-to-fix in AWS" target="_blank"><img src="/wp-content/themes/expel-2017/images/facebook.svg" /></a></li>
+				<li><a class="re-share" href="https://reddit.com/submit?url=https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws&title=Behind the scenes in the Expel SOC: Alert-to-fix in AWS" target="_blank"><img src="/wp-content/themes/expel-2017/images/reddit.svg" /></a></li>
+			</ul>
+		</div>
+    </main><!-- #main -->
+  </div>
+<div class="social-bar-mobile">
+	<div class="social-icon"><svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 473.932 473.932" style="enable-background:new 0 0 473.932 473.932;" xml:space="preserve"><g><g><path style="fill:#010002;" d="M385.513,301.214c-27.438,0-51.64,13.072-67.452,33.09l-146.66-75.002c1.92-7.161,3.3-14.56,3.3-22.347c0-8.477-1.639-16.458-3.926-24.224l146.013-74.656c15.725,20.924,40.553,34.6,68.746,34.6c47.758,0,86.391-38.633,86.391-86.348C471.926,38.655,433.292,0,385.535,0c-47.65,0-86.326,38.655-86.326,86.326c0,7.809,1.381,15.229,3.322,22.412L155.892,183.74c-15.833-20.039-40.079-33.154-67.56-33.154c-47.715,0-86.326,38.676-86.326,86.369s38.612,86.348,86.326,86.348c28.236,0,53.043-13.719,68.832-34.664l145.948,74.656c-2.287,7.744-3.947,15.79-3.947,24.289c0,47.693,38.676,86.348,86.326,86.348c47.758,0,86.391-38.655,86.391-86.348C471.904,339.848,433.271,301.214,385.513,301.214z"/></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg></div>
+	<div class="social-buttons">
+		<div class="share-bar">Share This <span>x</span></div>
+		<ul>
+				<li><a class="tw-share" href="https://twitter.com/share?url=https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws&text=Behind the scenes in the Expel SOC: Alert-to-fix in AWS via @expel_io" target="_blank"><img src="/wp-content/themes/expel-2017/images/twitter.svg" /></a></li>
+				<li><a class="li-share" href="http://www.linkedin.com/shareArticle?url=https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws&title=Behind the scenes in the Expel SOC: Alert-to-fix in AWS" target="_blank"><img src="/wp-content/themes/expel-2017/images/linkedin.svg" /></a></li>
+				<li><a class="fb-share" href="https://www.facebook.com/sharer/sharer.php?u=https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws&title=Behind the scenes in the Expel SOC: Alert-to-fix in AWS" target="_blank"><img src="/wp-content/themes/expel-2017/images/facebook.svg" /></a></li>
+				<li><a class="re-share" href="https://reddit.com/submit?url=https://expel.io/blog/behind-the-scenes-expel-soc-alert-aws&title=Behind the scenes in the Expel SOC: Alert-to-fix in AWS" target="_blank"><img src="/wp-content/themes/expel-2017/images/reddit.svg" /></a></li>
+		</ul>
+	</div>
+</div>
+<script>
+			(function($){
+				$('.social-bar ul li a').click(function(e) {
+        			e.preventDefault();
+					window.open($(this).attr('href'), 'fbShareWindow', 'height=500, width=700, top=' + ($(window).height() / 2 - 275) + ', left=' + ($(window).width() / 2 - 225) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+        			return false;
+    			});
+				$('.social-bar-mobile .social-icon').click(function(){
+					$(this).fadeOut();
+					$('.social-bar-mobile .social-buttons').fadeIn();
+				});
+				$('.social-bar-mobile .social-buttons .share-bar span').click(function(){
+					$('.social-bar-mobile .social-buttons').fadeOut();
+					$('.social-bar-mobile .social-icon').fadeIn();
+				});
+				if($(window).width() > 768){
+				var $side = $('#main .container').offset();
+				var $left = $side.left - 50;
+				$('.social-bar').css('left',$left);
+				$(window).resize(function(){
+					var $side = $('#main .container').offset();
+					var $left = $side.left - 50;
+					$('.social-bar').css('left',$left);
+				});
+				}
+			})(jQuery);
+</script>
+
+
+	<div class="post-pagination-wrap wpex-py-20 wpex-border-solid wpex-border-t wpex-border-main">
+
+		<ul class="post-pagination container wpex-flex wpex-justify-between wpex-list-none"><li class="post-prev wpex-flex-grow wpex-mr-10"><a href="https://expel.io/blog/spotting-suspicious-logins-at-scale/" rel="prev"><span class="ticon ticon-angle-double-left wpex-mr-10" aria-hidden="true"></span><span class="screen-reader-text">previous post: </span>Spotting suspicious logins at scale: (Alert) pathways to success</a></li><li class="post-next wpex-flex-grow wpex-ml-10 wpex-text-right"><a href="https://expel.io/blog/the-myth-of-co-managed-siems/" rel="next"><span class="screen-reader-text">next post: </span>The myth of co-managed SIEMs<span class="ticon ticon-angle-double-right wpex-ml-10" aria-hidden="true"></span></a></li></ul>
+
+	</div>
+
+
+</main><!-- #main-content -->
+
+
+
+<footer class="footer wrapper--footer footer--primary">
+<section class="footer__container">
+
+  <div class="widget c-social-media c-social-media--footer">
+              <div class="widget__content"><a class="c-social-media__link fa fa-twitter" href="https://twitter.com/expel_io" target="_blank" rel="noopener">Twitter</a>
+<a class="c-social-media__link fa fa-linkedin" href="https://www.linkedin.com/company/expel" target="_blank" rel="noopener">LinkedIn</a></div>
+      </div>
+
+<ul id="menu-footer-secondary" class="footer__menu"><li id="menu-item-712" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-712"><a href="https://expel.io/for-customers/report-vulnerability/">Report vulnerability</a></li>
+<li id="menu-item-914" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-914"><a href="https://expel.io/about/careers/">Careers</a></li>
+<li id="menu-item-711" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-711"><a href="https://expel.io/managed-security/faq/">Common questions</a></li>
+</ul>
+
+
+
+
+
+	
+
+
+
+
+	<div id="footer-bottom" class="wpex-bg-gray-900 wpex-py-20 wpex-text-gray-500 wpex-text-sm wpex-text-center wpex-md-text-left">
+
+		
+		<div id="footer-bottom-inner" class="container"><div class="footer-bottom-flex wpex-md-flex wpex-md-justify-between wpex-md-items-center">
+<div id="copyright" class="wpex-last-mb-0">© Expel, Inc.</div>
+<div id="footer-bottom-menu" class="wpex-mt-10 wpex-md-mt-0" aria-label="Footer menu">
+	<div class="menu-footer-container"><ul id="menu-footer" class="menu"><li id="menu-item-36" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-36"><a href="https://expel.io/about/contact-us/">Contact us</a></li>
+<li id="menu-item-6212" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6212"><a href="https://expel.io/notices/">Privacy policy</a></li>
+<li id="menu-item-39" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-39"><a target="_blank" rel="noopener noreferrer" href="https://atre.net">Site credits</a></li>
+</ul></div></div></div></div>
+
+		
+	</div>
+
+
+
+  <div class="widget c-footer-certification">
+              <div class="widget__content"><img class="size-full wp-image-3347 aligncenter" style="display: inline-block; margin: 0 15px; vertical-align: middle !important;" src="https://expel.io/wp-content/uploads/2018/08/aicpa-soc.png" alt="AICPA SOC" width="129" height="129" />
+<img src="https://expel.io/wp-content/uploads/2018/08/iso27001_seal_grey_webversion_150x50px_png.png" alt="" width="150" height="50" class="alignnone size-full wp-image-8038" style="display: inline-block; margin: 0 15px; vertical-align: middle !important;" />
+<img class="alignnone size-full wp-image-4650" style="display: inline-block; margin: 0 15px; vertical-align: middle !important;" src="https://expel.io/wp-content/uploads/2018/08/BPTW-logo.png" alt="BPTW" width="131" height="131" /></div>
+      </div>
+</section>
+</footer>
+
+</div><!-- #wrap -->
+
+
+</div><!-- .outer-wrap -->
+
+
+
+
+<a href="#outer-wrap" id="site-scroll-top" class="wpex-block wpex-fixed wpex-round wpex-text-center wpex-box-content wpex-transition-all wpex-duration-200 wpex-bottom-0 wpex-right-0 wpex-mr-25 wpex-mb-25 wpex-no-underline wpex-bg-gray-100 wpex-text-gray-500 wpex-hover-bg-accent wpex-hover-text-white" data-scroll-speed="1000" data-scroll-offset="100" data-scroll-easing="easeInOutExpo">
+	<span class="ticon ticon-chevron-up" aria-hidden="true"></span><span class="screen-reader-text">Back To Top</span>
+</a>
+
+
+<script>
+(function($){
+
+$('.wpex-lightbox').click(function(){
+var $title = $(this).attr("title");
+if(!$('.modal-title').length){
+$('.vcex-post-type-entry-video-wrap').prepend('<div class="modal-title">'+$title+'</div>');
+}else{
+$('.modal-title').text($title);
+}
+});
+
+})(jQuery);
+</script><script src='https://expel.io/wp-content/themes/Total/assets/js/core/hoverIntent.min.js?ver=1.10.1' id='wpex-hoverintent-js'></script>
+<script src='https://expel.io/wp-content/themes/Total/assets/js/core/supersubs.min.js?ver=0.3b' id='wpex-supersubs-js'></script>
+<script src='https://expel.io/wp-content/themes/Total/assets/js/core/superfish.min.js?ver=1.7.4' id='wpex-superfish-js'></script>
+<script src='https://expel.io/wp-content/themes/Total/assets/js/core/jquery.easing.min.js?ver=1.3.2' id='wpex-easing-js'></script>
+<script id='wpex-core-js-extra'>
+var wpexLocalize = {"ajaxurl":"https:\/\/expel.io\/wp-admin\/admin-ajax.php","isRTL":"","mainLayout":"full-width","menuSearchStyle":"disabled","siteHeaderStyle":"one","megaMenuJS":"1","superfishDelay":"600","superfishSpeed":"fast","superfishSpeedOut":"fast","menuWidgetAccordion":"1","hasMobileMenu":"1","mobileMenuBreakpoint":"959","mobileMenuStyle":"toggle","mobileMenuToggleStyle":"icon_buttons","mobileMenuAriaLabel":"Mobile menu","mobileMenuCloseAriaLabel":"Toggle Mobile menu","responsiveDataBreakpoints":{"tl":"1024px","tp":"959px","pl":"767px","pp":"479px"},"i18n":{"openSubmenu":"Open submenu of %s","closeSubmenu":"Close submenu of %s"},"loadMore":{"text":"Load More","loadingText":"Loading&hellip;","failedText":"Failed to load posts."},"hasStickyHeader":"1","stickyheaderCustomLogo":"https:\/\/expel.io\/wp-content\/uploads\/2018\/08\/expel-io-logo-dark-registered.svg","stickyHeaderStyle":"shrink_animated","hasStickyMobileHeader":"","overlayHeaderStickyTop":"0","stickyHeaderBreakPoint":"960","shrinkHeaderHeight":"60","animateMobileToggle":"1","mobileToggleMenuPosition":"afterheader","customSelects":".widget_categories form,.widget_archive select,.vcex-form-shortcode select","scrollToHash":"1","scrollToHashTimeout":"500","localScrollTargets":"li.local-scroll a, a.local-scroll, .local-scroll-link, .local-scroll-link > a","localScrollUpdateHash":"","localScrollHighlight":"1","localScrollSpeed":"1000","localScrollEasing":"easeInOutExpo"};
+</script>
+<script src='https://expel.io/wp-content/themes/Total/assets/js/total.min.js?ver=5.0.6' id='wpex-core-js'></script>
+<script id='ivory-search-scripts-js-extra'>
+var IvorySearchVars = {"is_analytics_enabled":"1"};
+</script>
+<script src='https://expel.io/wp-content/plugins/add-search-to-menu/public/js/ivory-search.min.js?ver=4.5.9' id='ivory-search-scripts-js'></script>
+<script src='https://expel.io/wp-content/themes/expel-2017/js/libs/slick.js?ver=1' id='slick-carousel-js'></script>
+<script src='https://expel.io/wp-content/plugins/js_composer/assets/lib/bower/isotope/dist/isotope.pkgd.min.js?ver=6.4.1' id='isotope-js'></script>
+<script src='https://expel.io/wp-content/themes/expel-2017/js/bundle.prod.js?ver=1621717663' id='epic-js-prod-js'></script>
+<script src='https://expel.io/wp-content/plugins/total-theme-core/inc/wpbakery/assets/js/vcex-shortcodes.min.js?ver=1.2.5' id='vcex-shortcodes-js'></script>
+
+
+</body>
+</html>

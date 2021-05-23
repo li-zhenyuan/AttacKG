@@ -1,0 +1,630 @@
+<!DOCTYPE html><!--[if IE 7]>
+<html class="ie ie7" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<!--<![endif]-->
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Detecting Forged Kerberos Ticket (Golden Ticket &#038; Silver Ticket) Use in Active Directory &#8211; Active Directory Security</title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Feed" href="https://adsecurity.org/?feed=rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Comments Feed" href="https://adsecurity.org/?feed=comments-rss2" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/adsecurity.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://adsecurity.org/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://adsecurity.org/wp-content/themes/graphene/bootstrap/css/bootstrap.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='https://adsecurity.org/wp-content/themes/graphene/fonts/font-awesome/css/font-awesome.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-css'  href='https://adsecurity.org/wp-content/themes/graphene/style.css?ver=2.8.4' type='text/css' media='screen' />
+<link rel='stylesheet' id='graphene-responsive-css'  href='https://adsecurity.org/wp-content/themes/graphene/responsive.css?ver=2.8.4' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-blocks-css'  href='https://adsecurity.org/wp-content/themes/graphene/blocks.css?ver=2.8.4' type='text/css' media='all' />
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/bootstrap/js/bootstrap.min.js?ver=2.8.4' id='bootstrap-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js?ver=2.8.4' id='bootstrap-hover-dropdown-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-submenu/bootstrap-submenu.min.js?ver=2.8.4' id='bootstrap-submenu-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/jquery.infinitescroll.min.js?ver=2.8.4' id='infinite-scroll-js'></script>
+<script type='text/javascript' id='graphene-js-extra'>
+/* <![CDATA[ */
+var grapheneJS = {"siteurl":"https:\/\/adsecurity.org","ajaxurl":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","templateUrl":"https:\/\/adsecurity.org\/wp-content\/themes\/graphene","isSingular":"1","enableStickyMenu":"","shouldShowComments":"1","commentsOrder":"newest","sliderDisable":"","sliderInterval":"7000","infScrollBtnLbl":"Load more","infScrollOn":"","infScrollCommentsOn":"","totalPosts":"1","postsPerPage":"10","isPageNavi":"","infScrollMsgText":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollMsgTextPlural":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollFinishedText":"All loaded!","commentsPerPage":"50","totalComments":"0","infScrollCommentsMsg":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsMsgPlural":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsFinishedMsg":"All comments loaded!","disableLiveSearch":"1","txtNoResult":"No result found.","isMasonry":""};
+/* ]]> */
+</script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/graphene.js?ver=2.8.4' id='graphene-js'></script>
+<link rel="https://api.w.org/" href="https://adsecurity.org/index.php?rest_route=/" /><link rel="alternate" type="application/json" href="https://adsecurity.org/index.php?rest_route=/wp/v2/posts/1515" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://adsecurity.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://adsecurity.org/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel="canonical" href="https://adsecurity.org/?p=1515" />
+<link rel='shortlink' href='https://adsecurity.org/?p=1515' />
+<link rel="alternate" type="application/json+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D1515" />
+<link rel="alternate" type="text/xml+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D1515&#038;format=xml" />
+		<script type="text/javascript">
+			var _statcounter = _statcounter || [];
+			_statcounter.push({"tags": {"author": "SeanMetcalf"}});
+		</script>
+				<script>
+		   WebFontConfig = {
+		      google: { 
+		      	families: ["Lato:400,400i,700,700i&display=swap"]		      }
+		   };
+
+		   (function(d) {
+		      var wf = d.createElement('script'), s = d.scripts[0];
+		      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+		      wf.async = true;
+		      s.parentNode.insertBefore(wf, s);
+		   })(document);
+		</script>
+	<style type="text/css">
+.header_title, .header_title a, .header_title a:visited, .header_title a:hover, .header_desc {color:#000000}.carousel, .carousel .item{height:400px}@media (max-width: 991px) {.carousel, .carousel .item{height:250px}}#header{max-height:198px}@media (min-width: 1200px) {.container {width:1280px}}
+</style>
+		<script type="application/ld+json">{"@context":"http:\/\/schema.org","@type":"Article","mainEntityOfPage":"https:\/\/adsecurity.org\/?p=1515","publisher":{"@type":"Organization","name":"Active Directory Security"},"headline":"Detecting Forged Kerberos Ticket (Golden Ticket &#038; Silver Ticket) Use in Active Directory","datePublished":"2015-05-03T15:17:33+00:00","dateModified":"2017-12-04T13:54:33+00:00","description":"Over the last 6 months, I have been researching forged Kerberos tickets, specifically Golden Tickets, Silver Tickets, and TGTs generated by MS14-068 exploit code (a type of Golden Ticket). I generated forged Kerberos tickets using Mimikatz (Mimikatz Command Reference) and MS14-068 exploits and logged the results. Over the course of several weeks, I identified anomalies ...","author":{"@type":"Person","name":"Sean Metcalf"},"image":["https:\/\/adsecurity.org\/wp-content\/uploads\/2015\/05\/Mimikatz-GoldenTicket-DomainField-201511-02.jpg","https:\/\/adsecurity.org\/wp-content\/uploads\/2015\/04\/Visio-SilverTicket-Comms.png"]}</script>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><meta property="og:type" content="article" />
+<meta property="og:title" content="Detecting Forged Kerberos Ticket (Golden Ticket &#038; Silver Ticket) Use in Active Directory" />
+<meta property="og:url" content="https://adsecurity.org/?p=1515" />
+<meta property="og:site_name" content="Active Directory Security" />
+<meta property="og:description" content="Over the last 6 months, I have been researching forged Kerberos tickets, specifically Golden Tickets, Silver Tickets, and TGTs generated by MS14-068 exploit code (a type of Golden Ticket). I generated forged Kerberos tickets using Mimikatz (Mimikatz Command Reference) and MS14-068 exploits and logged the results. Over the course of several weeks, I identified anomalies ..." />
+<meta property="og:updated_time" content="2017-12-04T13:54:33+00:00" />
+<meta property="article:modified_time" content="2017-12-04T13:54:33+00:00" />
+<meta property="article:published_time" content="2015-05-03T15:17:33+00:00" />
+<meta property="og:image" content="https://adsecurity.org/wp-content/uploads/2015/04/Visio-SilverTicket-Comms.png" />
+<meta property="og:image:width" content="1197" />
+<meta property="og:image:height" content="597" />
+    </head>
+    <body class="post-template-default single single-post postid-1515 single-format-standard custom-background wp-embed-responsive layout-boxed two_col_left two-columns singular">
+        
+        <div class="container boxed-wrapper">
+            
+                            <div id="top-bar" class="row clearfix top-bar ">
+                    
+                                                    
+                            <div class="col-md-12 top-bar-items">
+                                
+                                                                                                    	<ul class="social-profiles">
+							
+			            <li class="social-profile social-profile-rss">
+			            	<a href="https://adsecurity.org/?feed=rss2" title="Subscribe to Tech, News, and Other Ideations&#039;s RSS feed" id="social-id-1" class="mysocial social-rss">
+			            				                            <i class="fa fa-rss"></i>
+		                        			            	</a>
+			            </li>
+		            
+		    	    </ul>
+                                    
+                                                                    <button type="button" class="search-toggle navbar-toggle collapsed" data-toggle="collapse" data-target="#top_search">
+                                        <span class="sr-only">Toggle search form</span>
+                                        <i class="fa fa-search-plus"></i>
+                                    </button>
+
+                                    <div id="top_search" class="top-search-form">
+                                        <form class="searchform" method="get" action="https://adsecurity.org">
+	<div class="input-group">
+		<div class="form-group live-search-input">
+			<label for="s" class="screen-reader-text">Search for:</label>
+		    <input type="text" id="s" name="s" class="form-control" placeholder="Search">
+		    		</div>
+	    <span class="input-group-btn">
+	    	<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+	    </span>
+    </div>
+    </form>                                                                            </div>
+                                
+                                                            </div>
+
+                        
+                                    </div>
+            
+
+            <div id="header" class="row">
+
+                <img src="https://adsecurity.org/wp-content/themes/graphene/images/headers/fluid.jpg" alt="Active Directory Security" title="Active Directory Security" width="960" height="198" />                
+                                                                </div>
+
+
+                        <nav class="navbar row navbar-inverse">
+
+                <div class="navbar-header align-center">
+                		                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-menu-wrap, #secondary-menu-wrap">
+	                        <span class="sr-only">Toggle navigation</span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                    </button>
+                	                    
+                    
+                                            <p class="header_title">
+                            <a href="https://adsecurity.org" title="Go back to the front page">                                Active Directory Security                            </a>                        </p>
+                    
+                                                    <p class="header_desc">Active Directory &amp; Enterprise Security, Methods to Secure Active Directory, Attack Methods &amp; Effective Defenses, PowerShell, Tech Notes, &amp; Geek Trivia&#8230;</p>
+                                            
+                                    </div>
+
+                                    <div class="collapse navbar-collapse" id="header-menu-wrap">
+
+            			<ul class="nav navbar-nav flip"><li ><a href="https://adsecurity.org/">Home</a></li><li class="menu-item menu-item-8"><a href="https://adsecurity.org/?page_id=8" >About</a></li><li class="menu-item menu-item-41"><a href="https://adsecurity.org/?page_id=41" >AD Resources</a></li><li class="menu-item menu-item-4031"><a href="https://adsecurity.org/?page_id=4031" >Attack Defense &#038; Detection</a></li><li class="menu-item menu-item-293"><a href="https://adsecurity.org/?page_id=293" >Contact</a></li><li class="menu-item menu-item-1821"><a href="https://adsecurity.org/?page_id=1821" >Mimikatz</a></li><li class="menu-item menu-item-1352"><a href="https://adsecurity.org/?page_id=1352" >Presentations</a></li><li class="menu-item menu-item-195"><a href="https://adsecurity.org/?page_id=195" >Schema Versions</a></li><li class="menu-item menu-item-399"><a href="https://adsecurity.org/?page_id=399" >Security Resources</a></li><li class="menu-item menu-item-183"><a href="https://adsecurity.org/?page_id=183" >SPNs</a></li><li class="menu-item menu-item-2532"><a href="https://adsecurity.org/?page_id=2532" >Top Posts</a></li></ul>                        
+            			                        
+                                            </div>
+                
+                                    
+                            </nav>
+
+            
+            <div id="content" class="clearfix hfeed row">
+                
+                    
+                                        
+                    <div id="content-main" class="clearfix content-main col-md-8">
+                    
+	
+		<div class="post-nav post-nav-top clearfix">
+			<p class="previous col-sm-6"><i class="fa fa-arrow-circle-left"></i> <a href="https://adsecurity.org/?p=1508" rel="prev">SPN Scanning &#8211; Service Discovery without Network Port Scanning</a></p>			<p class="next-post col-sm-6"><a href="https://adsecurity.org/?p=1538" rel="next">Windows Server 2016 Technical Preview 2 Now Available for Download</a> <i class="fa fa-arrow-circle-right"></i></p>					</div>
+		        
+<div id="post-1515" class="clearfix post post-1515 type-post status-publish format-standard hentry category-microsoft-security tag-activedirectory tag-activedirectorysecurity tag-adsecurity tag-detectgoldenticket tag-detectingforgedkerberosticket tag-detectsilverticket tag-forgedkerberosticket tag-goldenticket tag-silverticket item-wrap">
+		
+	<div class="entry clearfix">
+    	
+                    	<div class="post-date date alpha with-year">
+            <p class="default_date">
+            	<span class="month">May</span>
+                <span class="day">03</span>
+                	                <span class="year">2015</span>
+                            </p>
+                    </div>
+            
+		        <h1 class="post-title entry-title">
+			Detecting Forged Kerberos Ticket (Golden Ticket &#038; Silver Ticket) Use in Active Directory			        </h1>
+		
+			    <ul class="post-meta entry-meta clearfix">
+	    		        <li class="byline">
+	        	By <span class="author"><a href="https://adsecurity.org/?author=2" rel="author">Sean Metcalf</a></span><span class="entry-cat"> in <span class="terms"><a class="term term-category term-11" href="https://adsecurity.org/?cat=11">Microsoft Security</a></span></span>	        </li>
+	        	    </ul>
+    
+				
+				<div class="entry-content clearfix">
+							
+										
+						<p>Over the last 6 months, I have been researching forged Kerberos tickets, specifically <a href="https://adsecurity.org/?p=1640">Golden Tickets</a>, <a href="https://adsecurity.org/?p=2011">Silver Tickets</a>, and <a href="https://adsecurity.org/?p=676">TGTs generated by MS14-068 exploit code</a> (a type of Golden Ticket). I generated forged Kerberos tickets using Mimikatz (<a href="https://adsecurity.org/?page_id=1821">Mimikatz Command Reference</a>) and MS14-068 exploits and logged the results. Over the course of several weeks, I identified anomalies in the event logs that are clear indication of forged ticket use in an Active Directory environment.</p>
+<p><strong>Update1/5/2016:</strong><br />
+Around this time last year (early January 2015), I shared with customers these indicators for detecting forged Kerberos tickets and subsequently presented this information at BSides Charm 2015. Soon after, Mimikatz was updated with a domain field that was set to static values, usually containing the string &#8220;eo.oe&#8221;. As of the <a href="https://github.com/gentilkiwi/mimikatz">Mimikatz update dated 1/5/2016</a>, forged Kerberos tickets no longer include a domain anomaly since <a href="https://github.com/gentilkiwi/mimikatz/commit/fbb32cdcfa688892ab91b98044c453414193bb74#diff-60c3d6f46631121e0d6f97c2a2e143c9R602">the netbios domain name is placed in the domain component of the Kerberos ticket</a>.</p>
+<p>Mimikatz code diff:<br />
+<a href="https://adsecurity.org/wp-content/uploads/2015/05/GT-DomainFieldUpdate-20150105.jpg" rel="attachment wp-att-2486"><img loading="lazy" class="alignnone size-full wp-image-2486" src="https://adsecurity.org/wp-content/uploads/2015/05/GT-DomainFieldUpdate-20150105.jpg" alt="GT-DomainFieldUpdate-20150105" width="1495" height="121" srcset="https://adsecurity.org/wp-content/uploads/2015/05/GT-DomainFieldUpdate-20150105.jpg 1495w, https://adsecurity.org/wp-content/uploads/2015/05/GT-DomainFieldUpdate-20150105-300x24.jpg 300w, https://adsecurity.org/wp-content/uploads/2015/05/GT-DomainFieldUpdate-20150105-768x62.jpg 768w, https://adsecurity.org/wp-content/uploads/2015/05/GT-DomainFieldUpdate-20150105-1024x83.jpg 1024w" sizes="(max-width: 1495px) 100vw, 1495px" /></a></p>
+<p>More information on the difficulty of detecting forged Kerberos tickets (Golden Tickets, Silver Tickets, etc) in the in the <a href="https://adsecurity.org/?p=1515#DetectingForgedKerberosTickets">Detecting Forged Kerberos Tickets section</a> below.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>Kerberos Overview &amp; Communication Process:</strong></span></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms.png"><img loading="lazy" class="alignnone wp-image-1516" src="https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms.png" alt="Visio-KerberosComms" width="948" height="473" srcset="https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms.png 1197w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms-300x150.png 300w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-KerberosComms-1024x511.png 1024w" sizes="(max-width: 948px) 100vw, 948px" /></a></p>
+<p>User logs on with username &amp; password.</p>
+<p>1a. Password converted to NTLM hash, a timestamp is encrypted with the hash and sent to the KDC as an authenticator in the authentication ticket (TGT) request (AS-REQ).<br />
+1b. The Domain Controller (KDC) checks user information (logon restrictions, group membership, etc) &amp; creates Ticket-Granting Ticket (TGT).</p>
+<p>2. The TGT is encrypted, signed, &amp; delivered to the user (AS-REP). <i>Only the Kerberos service (KRBTGT) in the domain can open and read TGT data.</i></p>
+<p>3. The User presents the TGT to the DC when requesting a Ticket Granting Service (TGS) ticket (TGS-REQ). The DC opens the TGT &amp; validates PAC checksum – If the DC can open the ticket &amp; the checksum check out, TGT = valid. The data in the TGT is effectively copied to create the TGS ticket.</p>
+<p>4. The TGS is encrypted using the target service accounts’ NTLM password hash and sent to the user (TGS-REP).</p>
+<p>5.The user connects to the server hosting the service on the appropriate port &amp; presents the TGS (AP-REQ). The service opens the TGS ticket using its NTLM password hash.</p>
+<p>6. If mutual authentication is required by the client (think MS15-011: the Group Policy patch from February that added UNC hardening).</p>
+<p>Unless PAC validation is required (rare), the service accepts all data in the TGS ticket with <span style="text-decoration: underline;">no</span> communication to the DC.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>Active Directory Kerberos Key Points:</strong></span></p>
+<ul>
+<li>Microsoft uses the NTLM password hash for Kerberos RC4 encryption.</li>
+<li>Kerberos policy is only checked when the TGT is created &amp; the TGT is the user authenticator to the DC.</li>
+<li>The DC only checks the user account after the TGT is 20 minutes old to verify the account is valid or enabled. TGS PAC Validation only occurs in specific circumstances. When it does, LSASS on the server sends the PAC Validation request to the DC’s netlogon service (using NRPC)</li>
+<li>If it runs as a service, PAC validation is optional (disabled). If a service runs as System, it performs server signature verification on the PAC (computer account long-term key).</li>
+</ul>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>Forging Kerberos Tickets:</strong></span></p>
+<ul>
+<li>Forging Kerberos tickets depends on the password hash available to the attacker</li>
+<li>Golden Ticket requires the KRBTGT password hash.</li>
+<li>Silver ticket requires the Service Account (either the computer account or user account) password hash.</li>
+<li>Create anywhere and user anywhere on the network, without elevated rights.</li>
+<li>Spoof access without modifying AD groups.</li>
+<li>Once the KRBTGT account password is disclosed, the only way to prevent Golden Tickets is to change the KRBTGT password twice, since the current and previous passwords are kept for this account.</li>
+</ul>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>Golden Tickets:</strong></span></p>
+<p><span id="more-1515"></span></p>
+<p>Golden Tickets are forged Ticket-Granting Tickets (TGTs), also called authentication tickets.<br />
+As shown in the following graphic, there is no AS-REQ or AS-REP (steps 1 &amp; 2) communication with the Domain Controller. Since a Golden Ticket is a forged TGT, it is sent to the Domain Controller as part of the TGS-REQ to get a service ticket.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms.png"><img loading="lazy" class="alignnone wp-image-1518" src="https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms.png" alt="Visio-GoldenTicket-Comms" width="851" height="425" srcset="https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms.png 1197w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms-300x150.png 300w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-GoldenTicket-Comms-1024x511.png 1024w" sizes="(max-width: 851px) 100vw, 851px" /></a></p>
+<ul>
+<li>The <strong>Kerberos Golden Ticket</strong> is a valid TGT Kerberos ticket since it is encrypted/signed by the <a href="https://adsecurity.org/?p=483">domain Kerberos account (KRBTGT)</a>. The TGT is only used to prove to the KDC service on the Domain Controller that the user was authenticated by another Domain Controller. The fact that the TGT is encrypted by the KRBTGT password hash and can be decrypted by any KDC service in the domain proves it is valid.</li>
+<li>Golden Ticket Requirements:<br />
+* <strong>Domain Name</strong> [AD PowerShell module: (Get-ADDomain).DNSRoot]<br />
+* <strong>Domain SID</strong>  [AD PowerShell module: (Get-ADDomain).DomainSID.Value]<br />
+* <strong>Domain KRBTGT Account NTLM password hash</strong><br />
+* <strong>UserID for impersonation</strong>.</li>
+<li>The Domain Controller KDC service doesn’t validate the user account in the TGT until the <a href="http://passing-the-hash.blogspot.com/2014/09/pac-validation-20-minute-rule-and.html">TGT is older than 20 minutes old, </a>which means the attacker can use a disabled/deleted account or even a fictional account that doesn&#8217;t exist in Active Directory.
+<div><em>Microsoft’s MS-KILE specification (section 5.1.3 ): </em></div>
+<div><em>    </em><i>“Kerberos V5 does not provide account revocation checking for TGS requests, which allows TGT renewals and service tickets to be issued as long as the TGT is valid even if the account has been revoked. KILE provides a check account policy (section 3.3.5.7.1) that limits the exposure to a shorter time. KILE KDCs in the account domain are required to check accounts when the TGT is older than 20 minutes. This limits the period that a client can get a ticket with a revoked account while limiting the performance cost for AD queries.”</i></div>
+</li>
+<li>Since the domain Kerberos policy is set on the ticket when generated by the KDC service on the Domain Controller, when the ticket is provided, systems trust the ticket validity. This means that even if the domain policy states a Kerberos logon ticket (TGT) is only valid for 10 hours, if the ticket states it is valid for 10 <em>years</em>, it is accepted as such.</li>
+<li>The <a href="https://adsecurity.org/?p=483">KRBTGT</a> account password<a href="https://adsecurity.org/?p=483"> is never changed*</a> and the attacker can create Golden Tickets until the KRBTGT password is changed (twice). Note that a Golden Ticket created to impersonate a user persists even if the impersonated user changes their password.</li>
+<li>It bypasses SmartCard authentication requirement since it bypasses the usual checks the DC performs before creating the TGT.</li>
+<li>This crafted TGT requires an attacker to have the Active Directory domain’s KRBTGT password hash (<a href="https://adsecurity.org/?p=451">typically dumped from a Domain Controller</a>).</li>
+<li>The KRBTGT NTLM hash can be used to generate a valid TGT (using RC4) to impersonate any user with access to any resource in Active Directory.</li>
+<li>The Golden Ticket (TGT) be generated and used on any machine, even one not domain-joined.</li>
+<li>Used to get valid TGS tickets from DCs in the AD forest and provides a great method of persisting on a domain with access to EVERYTHING!</li>
+</ul>
+<p><strong>Mitigation</strong>:<br />
+Limit Domain Admins from logging on to any other computers other than Domain Controllers and a handful of Admin servers (don’t let other admins log on to these servers) Delegate all other rights to custom admin groups. This greatly reduces the ability of an attacker to gain access to a Domain Controller’s Active Directory database. If the attacker can’t access the AD database (ntds.dit file), they can’t get the KRBTGT account password data.</p>
+<p>The KRBTGT account is disabled and stores the current password as well as the previous one. The KRBTGT password hash is used to sign the PAC in Kerberos tickets as well as encrypt the TGT (Authentication ticket). If a ticket is signed/encrypted with a different key (password) then the DC (KDC) is expecting, it checks the KRBTGT previous password to see if that is successful. This is the reason why both passwords are kept.</p>
+<p>It&#8217;s advisable to regularly change the KRBTGT password (it is an admin account after all). Changing it once, then letting AD replicate, and changing it a second time about 12 to 24 hours later, will update both of the KRBTGT passwords (current and previous) in a manner that doesn&#8217;t invalidate every existing Kerberos ticket. This process should have no negative impact on the environment (but as always, test first). This process should be the standard method for ensuring the KRBTGT password changes at least once a year (and when an AD admin leaves the organization, loss of control of AD backup media, etc).</p>
+<p>Once an attacker has gained access to the KRBTGT account password hash(es), they can create Golden Tickets at will. Invalidate any existing Golden Tickets (and all active Kerberos tickets) by changing the KRBTGT password twice rapidly (aka &#8220;double-tap&#8221;). This invalidates all Kerberos tickets and removes the attacker ability to create valid Golden Tickets with their KRBTGT (assuming they don&#8217;t have the ability to pull the updated KRBTGT pw hashes). This KRBTGT password &#8220;double-tap&#8221; is required when in a breach scenario and there&#8217;s an active attacker operating on the network. Contact an Incidence Response company if you are in this situation first.</p>
+<p><b>Using Mimikatz to Forge Kerberos Tickets</b>:</p>
+<p>The Mimikatz command <a href="https://adsecurity.org/?page_id=1821#KERBEROSGolden">Kerberos:Golden</a> is used to create the &#8220;Golden Ticket&#8221; (forged TGT authentication ticket).<br />
+Mimikatz command example:<br />
+<em><a href="https://adsecurity.org/?page_id=1821#KERBEROSGolden">kerberos::golden /admin:ADMIINACCOUNTNAME /domain:DOMAINFQDN /id:ACCOUNTRID /sid:DOMAINSID /krbtgt:KRBTGTPASSWORDHASH /ptt</a></em></p>
+<p><img loading="lazy" class="alignnone size-full wp-image-1889" src="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-CreateGoldenTicket-DarthVader2.png" sizes="(max-width: 963px) 100vw, 963px" srcset="https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-CreateGoldenTicket-DarthVader2-300x159.png 300w, https://adsecurity.org/wp-content/uploads/2015/09/Mimikatz-CreateGoldenTicket-DarthVader2.png 963w" alt="Mimikatz-CreateGoldenTicket-DarthVader2" width="963" height="510" /></p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>Silver Tickets:</strong></span></p>
+<p>Silver Tickets are forged Ticket Granting Service tickets, also called service tickets.<br />
+As shown in the following graphic, there is no AS-REQ / AS-REP (steps 1 &amp; 2) and no TGS-REQ / TGS-REP (steps 3 &amp; 4) communication with the Domain Controller. Since a Silver Ticket is a forged TGS, there is <strong><span style="text-decoration: underline;">no</span></strong> communication with a Domain Controller.</p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/04/Visio-SilverTicket-Comms.png"><img loading="lazy" class="alignnone wp-image-1519" src="https://adsecurity.org/wp-content/uploads/2015/04/Visio-SilverTicket-Comms.png" alt="Visio-SilverTicket-Comms" width="855" height="426" srcset="https://adsecurity.org/wp-content/uploads/2015/04/Visio-SilverTicket-Comms.png 1197w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-SilverTicket-Comms-300x150.png 300w, https://adsecurity.org/wp-content/uploads/2015/04/Visio-SilverTicket-Comms-1024x511.png 1024w" sizes="(max-width: 855px) 100vw, 855px" /></a></p>
+<ul>
+<li>Alluded to at BlackHat during the “Golden Ticket” presentation (Duckwall/Delpy) and discussed partly during Tim Medin’s DerbyCon 2014 talk. Skip &amp; Benjamin have provided additional information on Silver Tickets since, but confusion remains.</li>
+<li>The <strong>Kerberos Silver Ticket</strong> is a valid Ticket Granting Service (TGS) Kerberos ticket since it is encrypted/signed by the service account configured with a <a href="https://adsecurity.org/?p=230">Service Principal Name</a> for each server the Kerberos-authenticating service runs on.</li>
+<li>While a Golden ticket is a forged TGT valid for gaining access to any Kerberos service, the silver ticket is a forged TGS. This means the Silver Ticket scope is limited to whatever service is targeted on a specific server.</li>
+<li>While a Golden ticket is encrypted/signed with the domain Kerberos service account (<a href="https://adsecurity.org/?p=483">KRBTGT)</a>, a Silver Ticket is encrypted/signed by the service account (computer account credential extracted from the computer&#8217;s local SAM or service account credential).</li>
+<li>Most services don&#8217;t validate the PAC (by sending the PAC checksum to the Domain Controller for PAC validation), so a valid TGS generated with the service account password hash can include a PAC that is entirely fictitious &#8211; even claiming the user is a Domain Admin without challenge or correction.</li>
+<li>The attacker needs the service account password hash</li>
+<li>TGS is forged, so no associated TGT, meaning the DC is never contacted.</li>
+<li>Any event logs are on the targeted server.</li>
+</ul>
+<p><em>In my opinion, Silver Tickets can be more dangerous than Golden Tickets &#8211; while the scope is more limited than Golden Tickets, the required hash is easier to get and there is no communication with a DC when using them, so detection is more difficult than Golden Tickets</em></p>
+<p>The following <a href="https://adsecurity.org/?page_id=1821#SilverTicket">Mimikatz command creates a Silver Ticket</a> for the CIFS service on the server adsmswin2k8r2.lab.adsecurity.org. In order for this Silver Ticket to be successfully created, the AD computer account password hash for adsmswin2k8r2.lab.adsecurity.org needs to be discovered, either from an AD domain dump or by running Mimikatz on the local system as shown above (<em>Mimikatz “privilege::debug” “sekurlsa::logonpasswords” exit</em>). The NTLM password hash is used with the /rc4 paramteer. The service SPN type also needs to be identified in the /service parameter. Finally, the target computer’s fully-qualified domain name needs to be provided in the /target parameter. Don’t forget the domain SID in the /sid parameter.</p>
+<p><em><a href="https://adsecurity.org/?page_id=1821#SilverTicket">mimikatz “kerberos::golden /admin:LukeSkywalker /id:1106 /domain:lab.adsecurity.org /sid:S-1-5-21-1473643419-774954089-2222329127 /target:adsmswin2k8r2.lab.adsecurity.org /rc4:d7e2b80507ea074ad59f152a1ba20458 /service:cifs /ptt” exit</a></em></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/09/SilverTicketUsage-MemberServer-CIFS-AdminShare2.png"><img loading="lazy" class="alignnone size-full wp-image-1890" src="https://adsecurity.org/wp-content/uploads/2015/09/SilverTicketUsage-MemberServer-CIFS-AdminShare2.png" alt="SilverTicketUsage-MemberServer-CIFS-AdminShare2" width="961" height="343" srcset="https://adsecurity.org/wp-content/uploads/2015/09/SilverTicketUsage-MemberServer-CIFS-AdminShare2.png 961w, https://adsecurity.org/wp-content/uploads/2015/09/SilverTicketUsage-MemberServer-CIFS-AdminShare2-300x107.png 300w" sizes="(max-width: 961px) 100vw, 961px" /></a></p>
+<p><a id="DetectingForgedKerberosTickets"></a><br />
+<span style="text-decoration: underline;"><strong> Detecting Forged Kerberos Tickets:</strong></span></p>
+<p>Most logon &amp; logoff events include the following detail. Normal, valid account logon event data structure:</p>
+<ul>
+<li>Security ID:  DOMAIN\AccountID</li>
+<li>Account Name:  AccountID</li>
+<li>Account Domain:  DOMAIN</li>
+</ul>
+<p>I discovered that the domain field in many events in the Windows security event log are not properly populated when forged Kerberos tickets are used. The key indicator is that the domain field is blank or contains the FQDN instead of the short (netbios) name and depending on the tool used to generate the Kerberos tickets, other domain field anomalies may be present in the events.<br />
+The likely reason for the anomalies is that third party tools that create Kerberos tickets (TGT &amp; TGS) don&#8217;t format the tickets exactly the same way as Windows does.</p>
+<p>The following includes some of the events I have identified that are logged when forged Kerberos tickets are used.<br />
+Note that Silver Ticket events could be logged on any computer in the AD domain depending on what the target is, workstations, member servers, or Domain Controllers. Golden Tickets and MS14-068 exploit tickets, all of which are TGTs, will have events logged on the Domain Controller.</p>
+<p><em>NOTE: As of 4/16/2015: Mimikatz generated tickets may include the string &#8220;<a href="https://github.com/gentilkiwi/mimikatz/commit/55e292f89582ab917a1b13dad8841c8784e329d2">eo.oe.kiwi : ) </a>&#8221; in the domain field.<br />
+NOTE: As of 6/29/2015: Mimikatz generated tickets may include the string “<a href="https://twitter.com/cnotin/status/639791642170556416">&lt;3 eo.oe &#8211; ANSSI E&gt;</a>” in the domain field.<br />
+</em></p>
+<p>As stated at the top of this post, as of January 5th, 2016, Mimikatz no longer includes static values in Kerberos ticket domain fields which previously may have had anomalies from being blank to containing the string &#8220;eo.oe&#8221;. As of the <a href="https://github.com/gentilkiwi/mimikatz">Mimikatz update dated 1/5/2016</a>, forged Kerberos tickets no longer include a domain anomaly since <a href="https://github.com/gentilkiwi/mimikatz/commit/fbb32cdcfa688892ab91b98044c453414193bb74#diff-60c3d6f46631121e0d6f97c2a2e143c9R602">the netbios domain name is placed in the domain component of the Kerberos ticket</a>. This means that attackers using the Mimikatz version dated 1/5/2016 and/or Invoke-Mimikatz with this updated DLL will not trigger alerts based on the invalid domain fields I identified in the past.</p>
+<p>One method that is reliable is to look for RC4 encrypted Kerberos ticket usage.  These should be rare on a modern network since Windows Vista &amp; Windows Sever 2008 and newer support AES Kerberos encryption.<br />
+Note that if the attacker uses the NTLM password hash when creating the Golden Ticket, the TGT ticket will have RC4 encryption. If the Golden Ticket is created using the AES string, the TGT ticket will use AES, and will be very difficult to find. Read more about this in the <a href="https://adsecurity.org/?page_id=1821">Mimikatz guide</a>.</p>
+<p><em><strong>User behavior analysis tools such as <a href="https://adsecurity.org/?p=1583">Microsoft Advanced Threat Analytics (ATA)</a> is the best current method to detect this and other attack types </strong>(though these methods also tend to involve ticket encryption type in the detection techniques).<br />
+<strong>The best way to detect Golden Tickets is to correlate TGS requests to prior TGT requests. Since a TGT request should always preceed a TGS request, if there&#8217;s no prior TGT request (within a threshold), then the TGS request may be related to a Golden Ticket.</strong><strong><br />
+</strong></em></p>
+<p><strong>Golden Ticket event from using Mimikatz dated (11/2015): Has the an invalid domain value (&#8220;<em><a href="https://twitter.com/cnotin/status/639791642170556416">&lt;3 eo.oe &#8211; ANSSI E&gt;</a></em>&#8220;)</strong></p>
+<p><a href="https://adsecurity.org/wp-content/uploads/2015/05/Mimikatz-GoldenTicket-DomainField-201511-02.jpg" rel="attachment wp-att-2491"><img loading="lazy" class="alignnone wp-image-2491" src="https://adsecurity.org/wp-content/uploads/2015/05/Mimikatz-GoldenTicket-DomainField-201511-02.jpg" alt="Mimikatz-GoldenTicket-DomainField-201511-02" width="368" height="460" srcset="https://adsecurity.org/wp-content/uploads/2015/05/Mimikatz-GoldenTicket-DomainField-201511-02.jpg 592w, https://adsecurity.org/wp-content/uploads/2015/05/Mimikatz-GoldenTicket-DomainField-201511-02-240x300.jpg 240w" sizes="(max-width: 368px) 100vw, 368px" /></a><br />
+<strong>Golden Ticket event from using Mimikatz dated (1//05/2015):</strong>  Has the correct domain value (&#8220;RD&#8221;)<a href="https://adsecurity.org/wp-content/uploads/2015/05/Mimikatz-GoldenTicket-DomainFieldUpdate-20160105-02.jpg" rel="attachment wp-att-2492"><img loading="lazy" class="alignnone wp-image-2492" src="https://adsecurity.org/wp-content/uploads/2015/05/Mimikatz-GoldenTicket-DomainFieldUpdate-20160105-02.jpg" alt="Mimikatz-GoldenTicket-DomainFieldUpdate-20160105-02" width="393" height="492" srcset="https://adsecurity.org/wp-content/uploads/2015/05/Mimikatz-GoldenTicket-DomainFieldUpdate-20160105-02.jpg 590w, https://adsecurity.org/wp-content/uploads/2015/05/Mimikatz-GoldenTicket-DomainFieldUpdate-20160105-02-240x300.jpg 240w" sizes="(max-width: 393px) 100vw, 393px" /></a></p>
+<p>&nbsp;</p>
+<p><em>Expect that Mimikatz will continue to have different values in this field and that attackers may update this field to match the targeted environment. </em><strong><em>While these indicators may continue to have some value, they can&#8217;t be relied on as primary detection of forged Kerberos ticket use. With that noted, monitoring events for domain field anomalies may still be the best and easiest way to detect forged Kerberos tickets other than looking for &#8220;special logon events&#8221; involving non-admins &#8211; these events are logged when accounts with admin rights log on.<br />
+</em></strong></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>The following is left here for historic purposes and may be removed at a later date.</p>
+<p><strong><span style="text-decoration: underline;">SILVER TICKET DETECTION<br />
+</span></strong></p>
+<p>Silver Ticket events may have one of these issues:</p>
+<ul>
+<li>The Account Domain field is <span style="text-decoration: underline;">blank</span> when it should be <span style="text-decoration: underline;">DOMAIN</span></li>
+<li>The Account Domain field is <span style="text-decoration: underline;">DOMAIN FQDN</span> when it should be <span style="text-decoration: underline;">DOMAIN</span>.</li>
+</ul>
+<p><span style="text-decoration: underline;">Event ID: 4624 (Account Logon)</span></p>
+<p>Account Domain is FQDN &amp; should be short domain name</p>
+<p>Account Domain:        LAB.ADSECURITY.ORG   [ADSECLAB]<br />
+<span style="text-decoration: underline;">Event ID: 4634 (Account Logoff)</span></p>
+<p>Account Domain is blank &amp; should be short domain name</p>
+<p>Account Domain:        _______________   [ADSECLAB]<br />
+<span style="text-decoration: underline;">Event ID: 4672 (Admin Logon)</span></p>
+<p>Account Domain is blank &amp; should be short domain name</p>
+<p>Account Domain:        _______________   [ADSECLAB]</p>
+<p>&nbsp;</p>
+<p><strong><span style="text-decoration: underline;">GOLDEN TICKET DETECTION</span></strong></p>
+<p>Golden Ticket events may have one of these issues:</p>
+<ul>
+<li>The Account Domain field is <span style="text-decoration: underline;">blank</span> when it should be <span style="text-decoration: underline;">DOMAIN</span></li>
+<li>The Account Domain field is <span style="text-decoration: underline;">DOMAIN FQDN</span> when it should be <span style="text-decoration: underline;">DOMAIN</span>.</li>
+</ul>
+<p><span style="text-decoration: underline;">Event ID: 4624 (Account Logon)</span></p>
+<p>Account Domain is FQDN &amp; should be short domain name</p>
+<p>Account Domain:        LAB.ADSECURITY.ORG   [ADSECLAB]</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;">Event ID: 4672 (Admin Logon)</span></p>
+<p>Account Domain is blank &amp; should be short domain name</p>
+<p>Account Domain:        _______________   [ADSECLAB]</p>
+<p>&nbsp;</p>
+<p><strong><span style="text-decoration: underline;">MS14-068 Exploit Ticket Detection</span></strong></p>
+<p>MS14-068 events may have one of these issues:</p>
+<ul>
+<li>The Account Domain field is <span style="text-decoration: underline;">blank</span> when it should be <span style="text-decoration: underline;">DOMAIN</span></li>
+<li>The Account Domain field is <span style="text-decoration: underline;">DOMAIN FQDN</span> when it should be <span style="text-decoration: underline;">DOMAIN</span>.</li>
+<li>Account Name is a different account from the Security ID.</li>
+</ul>
+<p><strong><br />
+PYKEK Events<br />
+</strong></p>
+<p><span style="text-decoration: underline;">Event ID: 4624 (Account Logon)</span></p>
+<p>The Account Domain field is <span style="text-decoration: underline;">DOMAIN FQDN</span> when it should be <span style="text-decoration: underline;">DOMAIN</span>.</p>
+<p>Account Name is a different account from the Security ID</p>
+<p><span style="text-decoration: underline;"> Event ID: 4672 (Admin Logon)</span></p>
+<p>The Account Domain field is <span style="text-decoration: underline;">DOMAIN FQDN</span> when it should be <span style="text-decoration: underline;">DOMAIN</span>.</p>
+<p>Account Name is a different account from the Security ID</p>
+<p><span style="text-decoration: underline;">Event ID: 4768 (Kerberos TGS Request)</span></p>
+<p>The Account Domain field is <span style="text-decoration: underline;">DOMAIN FQDN</span> when it should be <span style="text-decoration: underline;">DOMAIN</span>.</p>
+<p><strong><br />
+KEKEO Events<br />
+</strong></p>
+<p><span style="text-decoration: underline;">Event ID: 4624 (Account Logon)</span></p>
+<p>The Account Domain field is <span style="text-decoration: underline;">DOMAIN FQDN</span> when it should be <span style="text-decoration: underline;">DOMAIN</span>.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;">Event ID: 4672 (Admin Logon)</span></p>
+<p>Account Domain is <span style="text-decoration: underline;">blank</span> &amp; should be <span style="text-decoration: underline;">DOMAIN</span>.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;">Event ID: 4768 (Kerberos TGS Request)</span></p>
+<p>The Account Domain field is <span style="text-decoration: underline;">DOMAIN FQDN</span> when it should be <span style="text-decoration: underline;">DOMAIN</span>.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div class="tptn_counter" id="tptn_counter_1515">(Visited 84,374 times, 25 visits today)</div>								</div>
+		
+			    <ul class="entry-footer">
+	    		        <li class="post-tags col-sm-8"><i class="fa fa-tags" title="Tags"></i> <span class="terms"><a class="term term-tagpost_tag term-20" href="https://adsecurity.org/?tag=activedirectory">ActiveDirectory</a>, <a class="term term-tagpost_tag term-113" href="https://adsecurity.org/?tag=activedirectorysecurity">ActiveDirectorySecurity</a>, <a class="term term-tagpost_tag term-86" href="https://adsecurity.org/?tag=adsecurity">ADSecurity</a>, <a class="term term-tagpost_tag term-481" href="https://adsecurity.org/?tag=detectgoldenticket">DetectGoldenTicket</a>, <a class="term term-tagpost_tag term-480" href="https://adsecurity.org/?tag=detectingforgedkerberosticket">DetectingForgedKerberosTicket</a>, <a class="term term-tagpost_tag term-482" href="https://adsecurity.org/?tag=detectsilverticket">DetectSilverTicket</a>, <a class="term term-tagpost_tag term-479" href="https://adsecurity.org/?tag=forgedkerberosticket">ForgedKerberosTicket</a>, <a class="term term-tagpost_tag term-303" href="https://adsecurity.org/?tag=goldenticket">GoldenTicket</a>, <a class="term term-tagpost_tag term-304" href="https://adsecurity.org/?tag=silverticket">SilverTicket</a></span></li>
+	        	        <li class="addthis col-sm-8"><div class="add-this"></div></li>
+	        	    </ul>
+    	</div>
+
+</div>
+
+    <div class="entry-author">
+        <div class="row">
+            <div class="author-avatar col-sm-3">
+            	<a href="https://adsecurity.org/?author=2" rel="author">
+					<img alt='' src='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=200&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=400&#038;d=mm&#038;r=g 2x' class='avatar avatar-200 photo' height='200' width='200' loading='lazy'/>                </a>
+            </div>
+
+            <div class="author-bio col-sm-9">
+                <h3 class="section-title-sm">Sean Metcalf</h3>
+                <p>I improve security for enterprises around the world working for TrimarcSecurity.com<br />
+Read the About page (top left) for information about me. :)<br />
+https://adsecurity.org/?page_id=8</p>
+    <ul class="author-social">
+    	        
+			        <li><a href="mailto:sean@adsecurity.org"><i class="fa fa-envelope-o"></i></a></li>
+            </ul>
+                </div>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+            
+  
+
+                </div><!-- #content-main -->
+        
+            
+<div id="sidebar1" class="sidebar sidebar-right widget-area col-md-4">
+
+	
+    
+		<div id="recent-posts-4" class="sidebar-wrap widget_recent_entries">
+		<h3>Recent Posts</h3>
+		<ul>
+											<li>
+					<a href="https://adsecurity.org/?p=4367">Attacking Active Directory Group Managed Service Accounts (GMSAs)</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4277">From Azure AD to Active Directory (via Azure) &#8211; An Unanticipated Attack Path</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4211">What is Azure Active Directory?</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4179">Slides Posted for Black Hat USA 2019 Talk: Attacking &#038; Defending the Microsoft Cloud</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4187">AD Reading: Windows Server 2019 Active Directory Features</a>
+									</li>
+					</ul>
+
+		</div><div id="text-3" class="sidebar-wrap widget_text"><h3>Trimarc Active Directory Security Services</h3>			<div class="textwidget">Have concerns about your Active Directory environment?
+
+Trimarc helps enterprises improve their security posture. <p>
+<a href="http://trimarcsecurity.com/security-services">Find out how...</a> 
+TrimarcSecurity.com</div>
+		</div><div id="widget_tptn_pop-4" class="sidebar-wrap tptn_posts_list_widget"><h3>Popular Posts</h3><div class="tptn_posts  tptn_posts_widget tptn_posts_widget4"><ul><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2362"     class="tptn_link"><span class="tptn_title">Attack Methods for Gaining Domain Admin Rights in&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=478"     class="tptn_link"><span class="tptn_title">PowerShell Encoding &#038; Decoding (Base64)</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=483"     class="tptn_link"><span class="tptn_title">Kerberos &#038; KRBTGT: Active Directory&#8217;s&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3377"     class="tptn_link"><span class="tptn_title">Securing Domain Controllers to Improve Active&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2288"     class="tptn_link"><span class="tptn_title">Finding Passwords in SYSVOL &#038; Exploiting Group&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3299"     class="tptn_link"><span class="tptn_title">Securing Windows Workstations: Developing a Secure Baseline</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1684"     class="tptn_link"><span class="tptn_title">The Most Common Active Directory Security Issues and&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2653"     class="tptn_link"><span class="tptn_title">Building an Effective Active Directory Lab&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1729"     class="tptn_link"><span class="tptn_title">Mimikatz DCSync Usage, Exploitation, and Detection</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1790"     class="tptn_link"><span class="tptn_title">Microsoft Local Administrator Password Solution (LAPS)</span></a></span></li></ul><div class="tptn_clear"></div></div></div><div id="categories-4" class="sidebar-wrap widget_categories"><h3>Categories</h3>
+			<ul>
+					<li class="cat-item cat-item-565"><a href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>
+</li>
+	<li class="cat-item cat-item-55"><a href="https://adsecurity.org/?cat=55">Apple Security</a>
+</li>
+	<li class="cat-item cat-item-431"><a href="https://adsecurity.org/?cat=431">Cloud Security</a>
+</li>
+	<li class="cat-item cat-item-17"><a href="https://adsecurity.org/?cat=17">Continuing Education</a>
+</li>
+	<li class="cat-item cat-item-396"><a href="https://adsecurity.org/?cat=396">Entertainment</a>
+</li>
+	<li class="cat-item cat-item-347"><a href="https://adsecurity.org/?cat=347">Exploit</a>
+</li>
+	<li class="cat-item cat-item-1039"><a href="https://adsecurity.org/?cat=1039">Hacking</a>
+</li>
+	<li class="cat-item cat-item-168"><a href="https://adsecurity.org/?cat=168">Hardware Security</a>
+</li>
+	<li class="cat-item cat-item-172"><a href="https://adsecurity.org/?cat=172">Hypervisor Security</a>
+</li>
+	<li class="cat-item cat-item-126"><a href="https://adsecurity.org/?cat=126">Linux/Unix Security</a>
+</li>
+	<li class="cat-item cat-item-343"><a href="https://adsecurity.org/?cat=343">Malware</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://adsecurity.org/?cat=11">Microsoft Security</a>
+</li>
+	<li class="cat-item cat-item-819"><a href="https://adsecurity.org/?cat=819">Mitigation</a>
+</li>
+	<li class="cat-item cat-item-48"><a href="https://adsecurity.org/?cat=48">Network/System Security</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://adsecurity.org/?cat=7">PowerShell</a>
+</li>
+	<li class="cat-item cat-item-698"><a href="https://adsecurity.org/?cat=698">RealWorld</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="https://adsecurity.org/?cat=21">Security</a>
+</li>
+	<li class="cat-item cat-item-234"><a href="https://adsecurity.org/?cat=234">Security Conference Presentation/Video</a>
+</li>
+	<li class="cat-item cat-item-1045"><a href="https://adsecurity.org/?cat=1045">Security Recommendation</a>
+</li>
+	<li class="cat-item cat-item-24"><a href="https://adsecurity.org/?cat=24">Technical Article</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="https://adsecurity.org/?cat=4">Technical Reading</a>
+</li>
+	<li class="cat-item cat-item-2"><a href="https://adsecurity.org/?cat=2">Technical Reference</a>
+</li>
+	<li class="cat-item cat-item-156"><a href="https://adsecurity.org/?cat=156">TheCloud</a>
+</li>
+	<li class="cat-item cat-item-930"><a href="https://adsecurity.org/?cat=930">Vulnerability</a>
+</li>
+			</ul>
+
+			</div><div id="tag_cloud-3" class="sidebar-wrap widget_tag_cloud"><h3>Tags</h3><div class="tagcloud"><a href="https://adsecurity.org/?tag=activedirectory" class="tag-cloud-link tag-link-20 tag-link-position-1" style="font-size: 22pt;" aria-label="ActiveDirectory (52 items)">ActiveDirectory</a>
+<a href="https://adsecurity.org/?tag=active-directory" class="tag-cloud-link tag-link-75 tag-link-position-2" style="font-size: 10.531914893617pt;" aria-label="Active Directory (8 items)">Active Directory</a>
+<a href="https://adsecurity.org/?tag=activedirectoryattack" class="tag-cloud-link tag-link-537 tag-link-position-3" style="font-size: 8pt;" aria-label="ActiveDirectoryAttack (5 items)">ActiveDirectoryAttack</a>
+<a href="https://adsecurity.org/?tag=activedirectorysecurity" class="tag-cloud-link tag-link-113 tag-link-position-4" style="font-size: 13.957446808511pt;" aria-label="ActiveDirectorySecurity (14 items)">ActiveDirectorySecurity</a>
+<a href="https://adsecurity.org/?tag=active-directory-security" class="tag-cloud-link tag-link-976 tag-link-position-5" style="font-size: 9.7872340425532pt;" aria-label="Active Directory Security (7 items)">Active Directory Security</a>
+<a href="https://adsecurity.org/?tag=adreading" class="tag-cloud-link tag-link-5 tag-link-position-6" style="font-size: 13.510638297872pt;" aria-label="ADReading (13 items)">ADReading</a>
+<a href="https://adsecurity.org/?tag=adsecurity" class="tag-cloud-link tag-link-86 tag-link-position-7" style="font-size: 10.531914893617pt;" aria-label="ADSecurity (8 items)">ADSecurity</a>
+<a href="https://adsecurity.org/?tag=ad-security" class="tag-cloud-link tag-link-100 tag-link-position-8" style="font-size: 8pt;" aria-label="AD Security (5 items)">AD Security</a>
+<a href="https://adsecurity.org/?tag=dcsync" class="tag-cloud-link tag-link-598 tag-link-position-9" style="font-size: 10.531914893617pt;" aria-label="DCSync (8 items)">DCSync</a>
+<a href="https://adsecurity.org/?tag=defcon" class="tag-cloud-link tag-link-518 tag-link-position-10" style="font-size: 8pt;" aria-label="DEFCON (5 items)">DEFCON</a>
+<a href="https://adsecurity.org/?tag=domaincontroller" class="tag-cloud-link tag-link-101 tag-link-position-11" style="font-size: 15.446808510638pt;" aria-label="DomainController (18 items)">DomainController</a>
+<a href="https://adsecurity.org/?tag=emet5" class="tag-cloud-link tag-link-338 tag-link-position-12" style="font-size: 8pt;" aria-label="EMET5 (5 items)">EMET5</a>
+<a href="https://adsecurity.org/?tag=goldenticket" class="tag-cloud-link tag-link-303 tag-link-position-13" style="font-size: 11.276595744681pt;" aria-label="GoldenTicket (9 items)">GoldenTicket</a>
+<a href="https://adsecurity.org/?tag=hyperv" class="tag-cloud-link tag-link-3 tag-link-position-14" style="font-size: 8pt;" aria-label="HyperV (5 items)">HyperV</a>
+<a href="https://adsecurity.org/?tag=invoke-mimikatz" class="tag-cloud-link tag-link-336 tag-link-position-15" style="font-size: 10.531914893617pt;" aria-label="Invoke-Mimikatz (8 items)">Invoke-Mimikatz</a>
+<a href="https://adsecurity.org/?tag=kb3011780" class="tag-cloud-link tag-link-337 tag-link-position-16" style="font-size: 9.7872340425532pt;" aria-label="KB3011780 (7 items)">KB3011780</a>
+<a href="https://adsecurity.org/?tag=kdc" class="tag-cloud-link tag-link-80 tag-link-position-17" style="font-size: 8pt;" aria-label="KDC (5 items)">KDC</a>
+<a href="https://adsecurity.org/?tag=kerberos" class="tag-cloud-link tag-link-81 tag-link-position-18" style="font-size: 15.446808510638pt;" aria-label="Kerberos (18 items)">Kerberos</a>
+<a href="https://adsecurity.org/?tag=kerberoshacking" class="tag-cloud-link tag-link-298 tag-link-position-19" style="font-size: 11.872340425532pt;" aria-label="KerberosHacking (10 items)">KerberosHacking</a>
+<a href="https://adsecurity.org/?tag=krbtgt" class="tag-cloud-link tag-link-394 tag-link-position-20" style="font-size: 9.7872340425532pt;" aria-label="KRBTGT (7 items)">KRBTGT</a>
+<a href="https://adsecurity.org/?tag=laps" class="tag-cloud-link tag-link-631 tag-link-position-21" style="font-size: 9.0425531914894pt;" aria-label="LAPS (6 items)">LAPS</a>
+<a href="https://adsecurity.org/?tag=lsass" class="tag-cloud-link tag-link-71 tag-link-position-22" style="font-size: 11.276595744681pt;" aria-label="LSASS (9 items)">LSASS</a>
+<a href="https://adsecurity.org/?tag=mcm" class="tag-cloud-link tag-link-6 tag-link-position-23" style="font-size: 14.255319148936pt;" aria-label="MCM (15 items)">MCM</a>
+<a href="https://adsecurity.org/?tag=microsoftemet" class="tag-cloud-link tag-link-58 tag-link-position-24" style="font-size: 11.276595744681pt;" aria-label="MicrosoftEMET (9 items)">MicrosoftEMET</a>
+<a href="https://adsecurity.org/?tag=microsoftwindows" class="tag-cloud-link tag-link-102 tag-link-position-25" style="font-size: 9.7872340425532pt;" aria-label="MicrosoftWindows (7 items)">MicrosoftWindows</a>
+<a href="https://adsecurity.org/?tag=mimikatz" class="tag-cloud-link tag-link-207 tag-link-position-26" style="font-size: 18.425531914894pt;" aria-label="mimikatz (29 items)">mimikatz</a>
+<a href="https://adsecurity.org/?tag=ms14068" class="tag-cloud-link tag-link-295 tag-link-position-27" style="font-size: 11.276595744681pt;" aria-label="MS14068 (9 items)">MS14068</a>
+<a href="https://adsecurity.org/?tag=passthehash" class="tag-cloud-link tag-link-44 tag-link-position-28" style="font-size: 9.7872340425532pt;" aria-label="PassTheHash (7 items)">PassTheHash</a>
+<a href="https://adsecurity.org/?tag=powershell" class="tag-cloud-link tag-link-575 tag-link-position-29" style="font-size: 18.872340425532pt;" aria-label="PowerShell (31 items)">PowerShell</a>
+<a href="https://adsecurity.org/?tag=powershellcode" class="tag-cloud-link tag-link-22 tag-link-position-30" style="font-size: 15.148936170213pt;" aria-label="PowerShellCode (17 items)">PowerShellCode</a>
+<a href="https://adsecurity.org/?tag=powershellhacking" class="tag-cloud-link tag-link-68 tag-link-position-31" style="font-size: 8pt;" aria-label="PowerShellHacking (5 items)">PowerShellHacking</a>
+<a href="https://adsecurity.org/?tag=powershellv5" class="tag-cloud-link tag-link-69 tag-link-position-32" style="font-size: 8pt;" aria-label="PowerShellv5 (5 items)">PowerShellv5</a>
+<a href="https://adsecurity.org/?tag=powersploit" class="tag-cloud-link tag-link-232 tag-link-position-33" style="font-size: 10.531914893617pt;" aria-label="PowerSploit (8 items)">PowerSploit</a>
+<a href="https://adsecurity.org/?tag=presentation" class="tag-cloud-link tag-link-422 tag-link-position-34" style="font-size: 9.7872340425532pt;" aria-label="Presentation (7 items)">Presentation</a>
+<a href="https://adsecurity.org/?tag=security" class="tag-cloud-link tag-link-576 tag-link-position-35" style="font-size: 8pt;" aria-label="Security (5 items)">Security</a>
+<a href="https://adsecurity.org/?tag=sidhistory" class="tag-cloud-link tag-link-547 tag-link-position-36" style="font-size: 8pt;" aria-label="SIDHistory (5 items)">SIDHistory</a>
+<a href="https://adsecurity.org/?tag=silverticket" class="tag-cloud-link tag-link-304 tag-link-position-37" style="font-size: 11.276595744681pt;" aria-label="SilverTicket (9 items)">SilverTicket</a>
+<a href="https://adsecurity.org/?tag=sneakyadpersistence" class="tag-cloud-link tag-link-596 tag-link-position-38" style="font-size: 9.0425531914894pt;" aria-label="SneakyADPersistence (6 items)">SneakyADPersistence</a>
+<a href="https://adsecurity.org/?tag=spn" class="tag-cloud-link tag-link-294 tag-link-position-39" style="font-size: 9.0425531914894pt;" aria-label="SPN (6 items)">SPN</a>
+<a href="https://adsecurity.org/?tag=tgs" class="tag-cloud-link tag-link-528 tag-link-position-40" style="font-size: 9.0425531914894pt;" aria-label="TGS (6 items)">TGS</a>
+<a href="https://adsecurity.org/?tag=tgt" class="tag-cloud-link tag-link-529 tag-link-position-41" style="font-size: 9.0425531914894pt;" aria-label="TGT (6 items)">TGT</a>
+<a href="https://adsecurity.org/?tag=windows10" class="tag-cloud-link tag-link-494 tag-link-position-42" style="font-size: 10.531914893617pt;" aria-label="Windows10 (8 items)">Windows10</a>
+<a href="https://adsecurity.org/?tag=windowsserver2008r2" class="tag-cloud-link tag-link-46 tag-link-position-43" style="font-size: 9.0425531914894pt;" aria-label="WindowsServer2008R2 (6 items)">WindowsServer2008R2</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012" class="tag-cloud-link tag-link-47 tag-link-position-44" style="font-size: 11.276595744681pt;" aria-label="WindowsServer2012 (9 items)">WindowsServer2012</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012r2" class="tag-cloud-link tag-link-54 tag-link-position-45" style="font-size: 9.7872340425532pt;" aria-label="WindowsServer2012R2 (7 items)">WindowsServer2012R2</a></div>
+</div>    
+        
+    
+</div><!-- #sidebar1 -->        
+        
+    </div><!-- #content -->
+
+
+    
+        
+    <div id="sidebar_bottom" class="sidebar widget-area row footer-widget-col-3">
+                    <div id="text-2" class="sidebar-wrap widget_text col-sm-4"><h3>Copyright</h3>			<div class="textwidget">Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability.
+The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned.
+
+Content Ownership: All content posted here is intellectual work and under the current law, the poster owns the copyright of the article. Terms of Use Copyright © 2011 - 2020.</div>
+		</div>		
+            </div>
+
+	
+
+<div id="footer" class="row default-footer">
+    
+        
+            
+            <div class="copyright-developer">
+                                    <div id="copyright">
+                        <p>Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability. The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned. </p>
+                    </div>
+                
+                                    <div id="developer">
+                        <p>
+                                                        Made with <i class="fa fa-heart"></i> by <a href="https://www.graphene-theme.com/" rel="nofollow">Graphene Themes</a>.                        </p>
+
+                                            </div>
+                            </div>
+
+        
+                
+    </div><!-- #footer -->
+
+
+</div><!-- #container -->
+
+		<!-- Start of StatCounter Code -->
+		<script>
+			<!--
+			var sc_project=10100711;
+			var sc_security="4b306538";
+			      var sc_invisible=1;
+			var scJsHost = (("https:" == document.location.protocol) ?
+				"https://secure." : "http://www.");
+			//-->
+					</script>
+		
+<script type="text/javascript"
+				src="https://secure.statcounter.com/counter/counter.js"
+				async></script>		<noscript><div class="statcounter"><a title="web analytics" href="https://statcounter.com/"><img class="statcounter" src="https://c.statcounter.com/10100711/0/4b306538/1/" alt="web analytics" /></a></div></noscript>
+		<!-- End of StatCounter Code -->
+				<a href="#" id="back-to-top" title="Back to top"><i class="fa fa-chevron-up"></i></a>
+	<script type='text/javascript' id='tptn_tracker-js-extra'>
+/* <![CDATA[ */
+var ajax_tptn_tracker = {"ajax_url":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","top_ten_id":"1515","top_ten_blog_id":"1","activate_counter":"11","top_ten_debug":"0","tptn_rnd":"751692838"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://adsecurity.org/wp-content/plugins/top-10/includes/js/top-10-tracker.min.js?ver=1.0' id='tptn_tracker-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+</body>
+</html>

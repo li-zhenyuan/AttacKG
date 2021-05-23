@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+    <meta name="author" content="Outflank">
+    <meta name="description" content="<p>At BlackHat Asia we released Evil Clippy, a tool which assists red teamers and security testers in creating malicious MS Office documents. Amongst others, Evil Clippy can hide VBA macros, stomp VBA code (via p-code) and confuse popular macro analysis tools. It runs on Linux, OSX and Windows. In this blog post we will explore&hellip;</p>
+">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <!-- You can use open graph tags to customize link previews.
+    Learn more: https://developers.facebook.com/docs/sharing/webmasters -->
+    <meta property="og:url"           content="http://www.outflank.nl/publications" />
+    <meta property="og:type"          content="website" />
+    <meta property="og:title"         content="Evil Clippy: MS Office maldoc assistant | Outflank Blog" />
+    <meta property="og:description"   content="<p>At BlackHat Asia we released Evil Clippy, a tool which assists red teamers and security testers in creating malicious MS Office documents. Amongst others, Evil Clippy can hide VBA macros, stomp VBA code (via p-code) and confuse popular macro analysis tools. It runs on Linux, OSX and Windows. In this blog post we will explore&hellip;</p>
+" />
+    <meta property="og:image"         content="images/thumbnail.jpg" />
+
+    <title>Publications | Outflank</title>
+
+    <!-- Style sheets -->
+    <link rel="stylesheet" href="/main.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/png" href="//www.outflank.nl/favicon.png">
+
+	<!-- wordpress -->
+	<link rel="stylesheet" type="text/css" href="https://outflank.nl/blog/wp-content/themes/supersimple/style.css" />
+	<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Outflank Blog &raquo; Feed" href="https://outflank.nl/blog/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Outflank Blog &raquo; Comments Feed" href="https://outflank.nl/blog/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Outflank Blog &raquo; Evil Clippy: MS Office maldoc assistant Comments Feed" href="https://outflank.nl/blog/2019/05/05/evil-clippy-ms-office-maldoc-assistant/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/outflank.nl\/blog\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.6.4"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://outflank.nl/blog/wp-includes/css/dist/block-library/style.min.css?ver=5.6.4' type='text/css' media='all' />
+<link rel='stylesheet' id='uaf_client_css-css'  href='https://outflank.nl/blog/wp-content/uploads/useanyfont/uaf.css?ver=1553825440' type='text/css' media='all' />
+<script type='text/javascript' src='https://outflank.nl/blog/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://outflank.nl/blog/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script type='text/javascript' src='https://outflank.nl/blog/wp-content/themes/supersimple/videos.js?ver=5.6.4' id='supersimple-videos-js'></script>
+<link rel="https://api.w.org/" href="https://outflank.nl/blog/wp-json/" /><link rel="alternate" type="application/json" href="https://outflank.nl/blog/wp-json/wp/v2/posts/646" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://outflank.nl/blog/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://outflank.nl/blog/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.6.4" />
+<link rel="canonical" href="https://outflank.nl/blog/2019/05/05/evil-clippy-ms-office-maldoc-assistant/" />
+<link rel='shortlink' href='https://outflank.nl/blog/?p=646' />
+<link rel="alternate" type="application/json+oembed" href="https://outflank.nl/blog/wp-json/oembed/1.0/embed?url=https%3A%2F%2Foutflank.nl%2Fblog%2F2019%2F05%2F05%2Fevil-clippy-ms-office-maldoc-assistant%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://outflank.nl/blog/wp-json/oembed/1.0/embed?url=https%3A%2F%2Foutflank.nl%2Fblog%2F2019%2F05%2F05%2Fevil-clippy-ms-office-maldoc-assistant%2F&#038;format=xml" />
+<script type="text/javascript">
+jQuery(document).ready(function($){
+$("#wrapper").vids();
+});
+</script>
+
+</head>
+
+<body>
+
+
+
+
+<header class="header js-header">
+    <section class="header__body">
+        <a href="/" class="header__logo">
+            <!-- LOGO-->
+<svg width="718" height="122" viewBox="0 0 718 122" xmlns="http://www.w3.org/2000/svg"><title>logo</title><g fill="#000" fill-rule="evenodd"><path d="M50.57 4.53C42.68.586 35.024.47 34.177.47c-.848 0-8.505.115-16.394 4.06C9.997 8.423.715 16.684.715 33.932c0 3.53 2.863 6.394 6.394 6.394 3.53 0 6.393-2.862 6.393-6.394 0-8.582 3.163-14.404 9.67-17.797 5.34-2.784 10.98-2.876 10.97-2.877.057 0 5.698.093 11.037 2.877 6.51 3.393 9.672 9.215 9.672 17.797v54.103c0 .057-.093 5.697-2.877 11.037-3.393 6.506-9.215 9.67-17.764 9.67-.055 0-5.695-.094-11.035-2.875-6.507-3.395-9.67-9.215-9.67-17.8V61c0-3.53-2.863-6.394-6.395-6.394C3.58 54.606.715 57.47.715 61v27.068c0 17.248 9.282 25.51 17.068 29.404 7.89 3.943 15.546 4.057 16.394 4.057 17.248 0 25.51-9.283 29.403-17.07 3.944-7.89 4.058-15.545 4.058-16.393V33.93c0-17.246-9.28-25.51-17.067-29.4zm44.883 2.335v27.067c0 3.53 2.862 6.394 6.394 6.394s6.394-2.862 6.394-6.394V6.865c0-3.53-2.86-6.395-6.392-6.395-3.533 0-6.394 2.865-6.394 6.395zM155.983.47c-3.533 0-6.396 2.865-6.396 6.396v27.067c0 3.53 2.862 6.394 6.395 6.394 3.53 0 6.394-2.862 6.394-6.394V6.865c0-3.53-2.862-6.394-6.394-6.394zm0 54.136c-3.53 0-6.396 2.863-6.396 6.394v47.742h-20.64c-.057 0-5.698-.094-11.037-2.875-6.508-3.395-9.67-9.215-9.67-17.8V61c0-3.53-2.863-6.394-6.395-6.394-3.532 0-6.394 2.863-6.394 6.394v27.068c0 17.248 9.283 25.51 17.07 29.404 7.89 3.943 15.546 4.057 16.393 4.057h27.068c3.53 0 6.395-2.863 6.395-6.395V61c.002-3.53-2.86-6.394-6.392-6.394zM250.72.47h-54.136c-3.53 0-6.395 2.865-6.395 6.396 0 3.53 2.86 6.394 6.393 6.394h54.135c3.53 0 6.393-2.862 6.393-6.394 0-3.53-2.862-6.395-6.393-6.395h.003zm-20.675 114.667V33.933c0-3.53-2.862-6.394-6.394-6.394-3.53 0-6.393 2.86-6.393 6.392v81.204c0 3.53 2.863 6.393 6.395 6.393 3.532 0 6.395-2.863 6.395-6.394h-.002zm60.825-47.743h27.068c3.53 0 6.394-2.86 6.394-6.394 0-3.53-2.862-6.394-6.394-6.394H290.87c-3.53 0-6.394 2.863-6.394 6.394 0 3.532 2.863 6.394 6.394 6.394zm0 54.136c3.532 0 6.395-2.862 6.395-6.394V88.068c0-3.53-2.862-6.395-6.395-6.395-3.53 0-6.394 2.863-6.394 6.395v27.068c0 3.532 2.863 6.393 6.394 6.393zm0-81.204c3.532 0 6.395-2.862 6.395-6.394 0-8.582 3.163-14.404 9.67-17.797 5.34-2.784 10.98-2.876 11.004-2.877h19.547c3.53 0 6.394-2.862 6.394-6.394 0-3.53-2.86-6.395-6.393-6.395h-19.55c-.847 0-8.504.113-16.393 4.06-7.786 3.89-17.068 12.152-17.068 29.4 0 3.533 2.862 6.395 6.393 6.395zM373.385 67.394c3.53 0 6.395-2.86 6.395-6.394V6.865c0-3.53-2.863-6.395-6.395-6.395-3.532 0-6.395 2.864-6.395 6.395V61c0 3.532 2.864 6.394 6.395 6.394zm27.068 41.348H379.78V88.068c0-3.53-2.864-6.395-6.396-6.395s-6.395 2.863-6.395 6.395v27.068c0 3.53 2.86 6.393 6.393 6.393h27.068c3.53 0 6.394-2.863 6.394-6.395 0-3.532-2.86-6.394-6.392-6.394v.002zM440.262 40.326c3.53 0 6.394-2.862 6.394-6.394 0-8.582 3.163-14.404 9.67-17.797 5.34-2.784 10.98-2.876 10.972-2.877.056 0 5.696.093 11.036 2.877 6.507 3.393 9.67 9.215 9.67 17.797v54.345c0 15.314 10.354 27.51 19.974 32.36.923.464 1.905.685 2.873.685 2.34 0 4.593-1.287 5.717-3.518 1.59-3.152.32-6.998-2.83-8.588-5.203-2.62-12.943-10.363-12.943-20.94V33.932c0-17.248-9.282-25.51-17.068-29.402C475.836.586 468.18.47 467.332.47c-.846 0-8.503.115-16.392 4.06-7.787 3.893-17.068 12.154-17.068 29.402-.002 3.532 2.86 6.394 6.392 6.394h-.002z"/><path d="M467.717 67.394c3.53 0 6.395-2.86 6.395-6.394 0-3.53-2.863-6.394-6.395-6.394-17.25 0-25.51 9.282-29.403 17.068-3.945 7.89-4.058 15.546-4.058 16.394 0 17.248 9.28 25.51 17.067 29.404 7.89 3.943 15.547 4.057 16.394 4.057 2.64 0 5.18-.23 7.556-.67 3.47-.65 5.758-3.994 5.106-7.465-.65-3.47-3.99-5.76-7.465-5.107-1.596.3-3.338.45-5.182.452-.195-.004-5.75-.13-11.02-2.875-6.508-3.395-9.672-9.215-9.672-17.766 0-.055.094-5.698 2.878-11.038 3.392-6.505 9.214-9.67 17.797-9.67l.002.002zM602.716 81.674c-3.53 0-6.394 2.863-6.394 6.395v27.066c0 3.53 2.863 6.393 6.394 6.393 3.53 0 6.395-2.86 6.395-6.394V88.07c0-3.533-2.862-6.396-6.393-6.396zm0-81.204c-3.53 0-6.394 2.865-6.394 6.396v38.7l-43.22-43.222c-1.83-1.83-4.58-2.375-6.968-1.386-2.39.99-3.948 3.32-3.948 5.907v108.27c0 3.532 2.863 6.394 6.395 6.394 3.533 0 6.396-2.863 6.396-6.395V22.3l43.22 43.22c1.83 1.83 4.58 2.377 6.97 1.387 2.388-.99 3.946-3.32 3.946-5.907V6.865c0-3.53-2.863-6.394-6.394-6.394h-.002zM710.89.47c-3.53 0-6.394 2.865-6.394 6.396v24.42l-23.323 23.32h-24.418c-3.53 0-6.395 2.864-6.395 6.395v54.14c0 3.53 2.863 6.392 6.395 6.392 3.53 0 6.394-2.86 6.394-6.392V67.397h18.022l23.323 23.323v24.42c0 3.53 2.863 6.393 6.394 6.393 3.53 0 6.394-2.86 6.394-6.392V88.07c0-1.697-.675-3.322-1.873-4.522L692.865 61l22.547-22.546c1.2-1.2 1.875-2.825 1.875-4.52V6.864c0-3.53-2.863-6.393-6.394-6.393zm-54.135 39.856c3.53 0 6.394-2.862 6.394-6.394V6.865c0-3.53-2.865-6.395-6.396-6.395-3.53 0-6.395 2.864-6.395 6.395v27.067c0 3.532 2.863 6.394 6.394 6.394z"/></g></svg>        </a>
+        <span class="header__tagline">
+            Clear advice with a hacker mindset
+        </span>
+
+<button class="burger-menu js-burger">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<nav class="navigation js-navigation">
+    <ul class="list">
+
+            <li class="navigation__item">
+                <a href="/services/">Services</a>
+            </li>
+            <li class="navigation__item">
+                <a href="/company/">Company</a>
+            </li>
+            <li class="navigation__item">
+                <a href="/services/outflank-security-tooling">Tools</a>
+            </li>
+            <li class="navigation__item">
+                <a href="/blog/">Publications</a>
+            </li>
+            <li class="navigation__item">
+                <a href="/contact/">Contact</a>
+            </li>
+
+        <li class="navigation__item">
+            <button class="navigation__incident button--outline has-icon js-incident-overlay-trigger">
+<svg xmlns="http://www.w3.org/2000/svg" width="283.464" height="283.464" viewBox="0 0 283.464 283.464">
+    <path fill="#F04F43" d="M148.207 179.921v-11.75c0-3.576-2.898-6.477-6.474-6.477-3.578 0-6.478 2.9-6.478 6.477v11.75c0 3.578 2.899 6.477 6.478 6.477 3.575 0 6.474-2.898 6.474-6.477zM165.234 196.947H118.23c-3.577 0-6.477 2.9-6.477 6.479 0 3.576 2.899 6.477 6.477 6.477H165.234c3.578 0 6.477-2.9 6.477-6.477-.001-3.579-2.899-6.479-6.477-6.479zM212.238 144.068h-23.502c-3.576 0-6.479 2.9-6.479 6.479 0 3.576 2.902 6.477 6.479 6.477h23.502c3.578 0 6.477-2.9 6.477-6.477-.001-3.579-2.899-6.479-6.477-6.479zM94.728 144.068H71.227c-3.577 0-6.477 2.9-6.477 6.479 0 3.576 2.9 6.477 6.477 6.477h23.501c3.577 0 6.477-2.9 6.477-6.477 0-3.579-2.9-6.479-6.477-6.479zM199.191 93.085c-2.529-2.529-6.631-2.529-9.16 0l-17.627 17.627c-2.527 2.529-2.527 6.631 0 9.16 1.266 1.265 2.922 1.896 4.58 1.896s3.314-.632 4.58-1.896l17.627-17.627c2.529-2.529 2.529-6.629 0-9.16zM87.557 98.961c-2.529-2.528-6.631-2.528-9.16 0-2.529 2.53-2.529 6.63 0 9.16l17.627 17.626c1.265 1.264 2.922 1.896 4.58 1.896s3.315-.633 4.581-1.896c2.528-2.529 2.528-6.63 0-9.159L87.557 98.961zM141.733 115.894c3.575 0 6.474-2.899 6.474-6.477V80.041c0-3.578-2.898-6.478-6.474-6.478-3.578 0-6.478 2.899-6.478 6.478v29.377c0 3.577 2.9 6.476 6.478 6.476z"/>
+    <path fill="#F04F43" d="M156.38 130.064c-7.041-3.521-13.893-3.621-14.647-3.621-12.056 0-21.415 5.443-26.358 15.331-3.52 7.038-3.622 13.89-3.622 14.646v17.627c0 3.578 2.899 6.477 6.477 6.477s6.477-2.898 6.477-6.477V156.46c0-.047.088-4.777 2.418-9.215 2.773-5.276 7.544-7.844 14.587-7.85.215.004 4.841.129 9.196 2.418 5.281 2.775 7.85 7.553 7.85 14.605v17.627c0 3.578 2.898 6.477 6.477 6.477s6.477-2.898 6.477-6.477v-17.627c-.002-12.051-5.447-21.412-15.332-26.354z"/>
+</svg>
+                Incident?
+            </button>
+            <button class="navigation__incident--mobile button--highlight has-icon js-incident-overlay-trigger">
+<svg xmlns="http://www.w3.org/2000/svg" width="283.464" height="283.464" viewBox="0 0 283.464 283.464">
+    <path fill="#F04F43" d="M148.207 179.921v-11.75c0-3.576-2.898-6.477-6.474-6.477-3.578 0-6.478 2.9-6.478 6.477v11.75c0 3.578 2.899 6.477 6.478 6.477 3.575 0 6.474-2.898 6.474-6.477zM165.234 196.947H118.23c-3.577 0-6.477 2.9-6.477 6.479 0 3.576 2.899 6.477 6.477 6.477H165.234c3.578 0 6.477-2.9 6.477-6.477-.001-3.579-2.899-6.479-6.477-6.479zM212.238 144.068h-23.502c-3.576 0-6.479 2.9-6.479 6.479 0 3.576 2.902 6.477 6.479 6.477h23.502c3.578 0 6.477-2.9 6.477-6.477-.001-3.579-2.899-6.479-6.477-6.479zM94.728 144.068H71.227c-3.577 0-6.477 2.9-6.477 6.479 0 3.576 2.9 6.477 6.477 6.477h23.501c3.577 0 6.477-2.9 6.477-6.477 0-3.579-2.9-6.479-6.477-6.479zM199.191 93.085c-2.529-2.529-6.631-2.529-9.16 0l-17.627 17.627c-2.527 2.529-2.527 6.631 0 9.16 1.266 1.265 2.922 1.896 4.58 1.896s3.314-.632 4.58-1.896l17.627-17.627c2.529-2.529 2.529-6.629 0-9.16zM87.557 98.961c-2.529-2.528-6.631-2.528-9.16 0-2.529 2.53-2.529 6.63 0 9.16l17.627 17.626c1.265 1.264 2.922 1.896 4.58 1.896s3.315-.633 4.581-1.896c2.528-2.529 2.528-6.63 0-9.159L87.557 98.961zM141.733 115.894c3.575 0 6.474-2.899 6.474-6.477V80.041c0-3.578-2.898-6.478-6.474-6.478-3.578 0-6.478 2.899-6.478 6.478v29.377c0 3.577 2.9 6.476 6.478 6.476z"/>
+    <path fill="#F04F43" d="M156.38 130.064c-7.041-3.521-13.893-3.621-14.647-3.621-12.056 0-21.415 5.443-26.358 15.331-3.52 7.038-3.622 13.89-3.622 14.646v17.627c0 3.578 2.899 6.477 6.477 6.477s6.477-2.898 6.477-6.477V156.46c0-.047.088-4.777 2.418-9.215 2.773-5.276 7.544-7.844 14.587-7.85.215.004 4.841.129 9.196 2.418 5.281 2.775 7.85 7.553 7.85 14.605v17.627c0 3.578 2.898 6.477 6.477 6.477s6.477-2.898 6.477-6.477v-17.627c-.002-12.051-5.447-21.412-15.332-26.354z"/>
+</svg>
+                Incident?
+            </button>
+        </li>
+        <!-- <li class="navigation__item">
+            <button class="navigation__language">
+                NL
+            </button>
+        </li> -->
+    </ul>
+</nav>
+    </section>
+</header>
+
+    <main>
+
+
+<section class="medium-header">
+    <div class="dots"></div>
+    <div class="gradient"></div>
+
+    <h1 class="medium-header__title color--white">Publications</h1>
+</section>
+
+
+<section class="container ">
+
+<div class="wordpress">
+
+    <div class="row">
+        <div class="col-s-12 col-l-7 margin-bottom--lg">
+<section id="content" role="main">
+<article id="post-646" class="post-646 post type-post status-publish format-standard hentry category-uncategorized">
+<header>
+<h1 class="entry-title"><a href="https://outflank.nl/blog/2019/05/05/evil-clippy-ms-office-maldoc-assistant/" title="Evil Clippy: MS Office maldoc assistant" rel="bookmark">Evil Clippy: MS Office maldoc assistant</a></h1> <section class="entry-meta">
+<span class="author vcard"><a href="https://outflank.nl/blog/author/stan/" title="Posts by Stan Hegt" rel="author">Stan Hegt</a></span>
+<span class="meta-sep"> | </span>
+<span class="entry-date">May 5, 2019</span>
+</section></header>
+<section class="entry-content">
+
+<p>At <a href="https://i.blackhat.com/asia-19/Thu-March-28/bh-asia-Hegt-MS-Office-in-Wonderland.pdf">BlackHat Asia</a> we released Evil Clippy, a tool which assists red teamers and security testers in creating malicious MS Office documents. Amongst others, Evil Clippy can hide VBA macros, stomp VBA code (via p-code) and confuse popular macro analysis tools. It runs on Linux, OSX and Windows.</p>
+
+
+
+<p>In this blog post we will explore the features of Evil Clippy and the technology behind it. The latest source code of the tool can be found here:</p>
+
+
+
+<p><a href="https://github.com/outflanknl/EvilClippy">https://github.com/outflanknl/EvilClippy</a></p>
+
+
+
+<p>Latest binary releases are available at:</p>
+
+
+
+<p><a href="https://github.com/outflanknl/EvilClippy/releases">https://github.com/outflanknl/EvilClippy/releases</a></p>
+
+
+
+<span id="more-646"></span>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><img loading="lazy" width="1030" height="802" src="https://outflank.nl/blog/wp-content/uploads/2019/05/EvilClippy-1030x802.png" alt="" class="wp-image-649" srcset="https://outflank.nl/blog/wp-content/uploads/2019/05/EvilClippy-1030x802.png 1030w, https://outflank.nl/blog/wp-content/uploads/2019/05/EvilClippy-300x234.png 300w, https://outflank.nl/blog/wp-content/uploads/2019/05/EvilClippy-768x598.png 768w, https://outflank.nl/blog/wp-content/uploads/2019/05/EvilClippy.png 1056w" sizes="(max-width: 1030px) 100vw, 1030px" /></figure></div>
+
+
+
+<h3>Use cases</h3>
+
+
+
+<p>At the time of writing, this tool is capable of getting malicious macros to bypass all major antivirus products and most maldoc analysis tools. It achieves this by manipulating MS Office files on a file format level.</p>
+
+
+
+<p>The following screenshot shows detection rates of a default <a href="https://www.cobaltstrike.com/help-office-macro-attack">Cobalt Strike VBA macro</a> <em>before</em> Evil Clippy is applied. This is a basic process injection macro which is obviously malicious and is detected by practically all major antivirus vendors.</p>
+
+
+
+<div class="wp-block-image"><a href="https://outflank.nl/blog/wp-content/uploads/2019/05/before_evilclippy-1030x670.png"><figure class="aligncenter"><img src="https://outflank.nl/blog/wp-content/uploads/2019/05/before_evilclippy-1030x670.png" width="100%" alt="" class="wp-image-658" srcset="https://outflank.nl/blog/wp-content/uploads/2019/05/before_evilclippy-1030x670.png 1030w, https://outflank.nl/blog/wp-content/uploads/2019/05/before_evilclippy-300x195.png 300w, https://outflank.nl/blog/wp-content/uploads/2019/05/before_evilclippy-768x500.png 768w, https://outflank.nl/blog/wp-content/uploads/2019/05/before_evilclippy.png 1756w" sizes="(max-width: 1030px) 100vw, 1030px" /></figure></a></div>
+
+
+
+<p>After applying Evil Clippy to this document (EvilClippy.exe -s fake.vbs -g -r cobaltstrike.doc), all major antivirus engines fail to detect this macro.</p>
+
+
+
+<a href="https://outflank.nl/blog/wp-content/uploads/2019/05/after_evilclippy-1-1030x670.png"><figure><img src="https://outflank.nl/blog/wp-content/uploads/2019/05/after_evilclippy-1-1030x670.png" alt="" width="100%" data-id="662" data-link="https://outflank.nl/blog/?attachment_id=662" class="wp-image-662" srcset="https://outflank.nl/blog/wp-content/uploads/2019/05/after_evilclippy-1-1030x670.png 1030w, https://outflank.nl/blog/wp-content/uploads/2019/05/after_evilclippy-1-300x195.png 300w, https://outflank.nl/blog/wp-content/uploads/2019/05/after_evilclippy-1-768x500.png 768w, https://outflank.nl/blog/wp-content/uploads/2019/05/after_evilclippy-1.png 1756w" sizes="(max-width: 1030px) 100vw, 1030px" /></figure></a>
+
+
+
+<p>Note that Evil Clippy only focuses on evasion of static analysis. A combination which can be particularly effective for initial compromise during red teaming operations is to deliver malicious documents generated with Evil Clippy via <a href="https://outflank.nl/blog/2018/08/14/html-smuggling-explained/">HTML smuggling</a> (which helps you bypass perimeter defenses). If you need to evade dynamic analysis of macros, then read our blog on <a href="https://outflank.nl/blog/2019/04/17/bypassing-amsi-for-vba/">bypassing AMSI for VBA</a>.</p>
+
+
+
+<p>Evil Clippy is written in C#. The code compiles perfectly fine with the Mono C# compiler and has been tested on Linux, OSX and Windows. Compilation and usage instructions can be found in the <a href="https://github.com/outflanknl/EvilClippy/blob/master/README.md">readme</a>.<a href="https://github.com/outflanknl/EvilClippy#technology"></a></p>
+
+
+
+<h3>Technology</h3>
+
+
+
+<p>In order to understand how Evil Clippy works, we need to dive into the <a href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-cfb/53989ce4-7b05-4f8d-829b-d08d6148375b">Compound File Binary Format</a> (CFBF). This file format is used abundantly in MS Office. Evil Clippy supports the following two MS Office file types:</p>
+
+
+
+<ul><li><em>97 &#8211; 2003 format</em> (.doc and .xls), these files are entirely in the CFBF file format.</li><li><em>2007+ format</em> (.docm and .xlsm), these files are actually ZIP containers.  If you unzip the file, you will find a file named &#8220;vbaProject.bin&#8221; in the &#8220;word&#8221; (.docm) or &#8220;xl&#8221; (.xlsm) directories. This file is a CFBF file which contains the macro information for the document.</li></ul>
+
+
+
+<p>Evil Clippy uses the <a href="https://github.com/ironfede/openmcdf/">OpenMCDF library</a> to manipulate CFBF files. If you want to manipulate CFBF files manually, then <a href="http://www.flexhex.com/">FlexHEX</a> is one of the best editors for this.</p>
+
+
+
+<div class="wp-block-image"><figure class="aligncenter"><a href="https://outflank.nl/blog/wp-content/uploads/2019/05/FlexHEX_cfbf-1030x717.png"><img src="https://outflank.nl/blog/wp-content/uploads/2019/05/FlexHEX_cfbf-1030x717.png" width="100%" alt="" class="wp-image-664" srcset="https://outflank.nl/blog/wp-content/uploads/2019/05/FlexHEX_cfbf-1030x717.png 1030w, https://outflank.nl/blog/wp-content/uploads/2019/05/FlexHEX_cfbf-300x209.png 300w, https://outflank.nl/blog/wp-content/uploads/2019/05/FlexHEX_cfbf-768x534.png 768w, https://outflank.nl/blog/wp-content/uploads/2019/05/FlexHEX_cfbf.png 1643w" sizes="(max-width: 1030px) 100vw, 1030px" /></a></figure></div>
+
+
+
+<p>The pane on the bottom left shows the structure of this particular CFBF file. A CFBF file is like a file system in a single file: there are streams (think of them as &#8220;files&#8221;) which can be stored in containers (think of them as &#8220;directories&#8221;).</p>
+
+
+
+<p>The &#8220;macros&#8221; container contains all subcontainers and streams related to VBA macros in a MS Word document. In MS Excel files this container is called &#8220;_VBA_PROJECT_CUR&#8221;. The structure and contents of this container are explained by Microsoft in a lengthy and complex specification called <a href="https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/">MS-OVBA</a>. </p>
+
+
+
+<p>The most important streams in the macros container are:</p>
+
+
+
+<ul><li><a href="https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/d88cb9d8-a475-423d-b370-cc0caaf78628">PROJECT</a>: a stream with text data specifying project information. It can be regarded as a configuration file with CRLF separated lines which instruct the VBA editor GUI (amongst others).</li><li><a href="https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/ef7087ac-3974-4452-aab2-7dba2214d239">_VBA_PROJECT</a>: a stream with binary data which instructs the VBA engine. There is no official documentation on the contents of this stream, but it is crucial in how macros are interpreted (which we will see later in this post).</li><li><a href="https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/3d07f2c3-dee0-4ae3-b91f-3e32b789c534">Dir</a>: a stream which contains the VBA project layout. This stream is compressed and its format is rather well documented.</li><li><a href="https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/c66b58a6-f8ba-4141-9382-0612abce9926">Module streams</a>: in the screenshot above there are two module streams named &#8220;ThisDocument&#8221; and &#8220;Module1&#8221;. These contain the actual code that is going to run. Each module stream consist of two parts: a PerformanceCache, which is undocumented, and CompressedSourceCode, which contains the VBA macro source code in a compressed format.</li></ul>
+
+
+
+<p>Note that some streams contain compressed data (most notably the dir and module streams), using a custom <a href="https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/ba73e565-41c7-4aa5-8c10-b869aa136f66">compression algorithm</a>. Evil Clippy reuses code from <a href="https://github.com/rossknudsen/Kavod.Vba.Compression">Kavod.VBA.Compression</a> to implement the compression algorithm.</p>
+
+
+
+<p>For more information on this file format, watch our TROOPERS19 presentation titled <a href="https://www.youtube.com/watch?v=iXvvQ5XML7g">MS Office File Format Sorcery</a>. If you dive deeper into the MS-OVBA specifications, you will soon note the following issues:</p>
+
+
+
+<ul><li>There are many features which are <strong>not documented</strong> (for example, the PerformanceCache mentioned above). It turns out however that many of these functions are critical for how VBA macros are actually processed and interpreted. More on this in the &#8220;VBA stomping&#8221; section below.</li><li>The specifications lead to <strong>ambiguity</strong>. For example, module names are stored in multiple places. The section &#8220;Confusing analysis tools&#8221; later in this blog post will deal with this aspect.</li><li>The specifications are <strong>very long and complex</strong>. What happens when you slightly deviate from the specs? We found that MS Office is much more robust and forgiving to such deviations than most analysis tools (<a href="https://github.com/decalage2/oletools/issues/401">example</a>).</li></ul>
+
+
+
+<p>Evil Clippy exploits these issues to evade static analysis by antivirus engines as well as manual VBA macro analysis tools.</p>
+
+
+
+<h3>VBA stomping (via p-code)</h3>
+
+
+
+<p>The most powerful technique of Evil Clippy is &#8220;VBA stomping&#8221;. VBA stomping abuses a feature which is not officially documented: the undocumented PerformanceCache part of each module stream contains compiled pseudo-code (p-code) for the VBA engine. If the MS Office version specified in the _VBA_PROJECT stream matches the MS Office version of the host program (Word or Excel) then the VBA source code in the module stream is ignored and the p-code is executed instead.</p>
+
+
+
+<p>In summary: if we know the version of MS Office of a target system (e.g. Office 2016, 32 bit), we can replace our malicious VBA source code with fake code, while the malicious code will still get executed via p-code. In the meantime, any tool analyzing the VBA source code (such as antivirus) is completely fooled.</p>
+
+
+
+<p>Vesselin Bontchev was the first to <a href="https://github.com/bontchev/pcodedmp">publicly document this technique</a> (<a href="http://bontchev.my.contact.bg/poc2.zip">samples here</a>). The security team from Walmart has gathered great resources on this topic <a href="https://vbastomp.com/">here</a>. We briefly discussed this technique in our talk &#8220;<a href="https://www.youtube.com/watch?v=xY2DIRfqNvA">The MS Office Magic Show</a>&#8221; at DerbyCon. Evil Clippy is the first tool to fully weaponize this technique for red teamers and security testers.</p>
+
+
+
+<p>For example, in order to replace the VBA source code in your malicious document with fake code and to have the malicious p-code run on 32 bit installs of Office 2016, run Evil Clippy with the following command line:</p>
+
+
+
+<code><pre><p>EvilClippy.exe -s fakecode.vba -t 2016x86 macrofile.doc</p></pre></code>
+
+
+
+<p>After executing this command, a file named &#8220;macrofile_EvilClippy.doc&#8221; will be created. Any common VBA analysis tools such as OleVBA, OleDump or VirusTotal will tell you that this file contains the fake code. However, if the file is opened on a 32 bit install of Office 2016 (our target version), the malicious p-code is executed instead.</p>
+
+
+
+<p>So in order to make this attack work, we need to know the MS Office version of our target. Achieving this is not as difficult as it sounds. A common trick is to send the victim an email that contains a tracking pixel. If the pixel is retrieved by MS Outlook (which is usually part of the same MS Office install), the headers of this HTTP request will disclose the MS Office version number and whether it is a 32 or 64 bit install.</p>
+
+
+
+<p>Evil Clippy can also automate the target version identification for you using a templating trick. The process hereto is as follows:</p>
+
+
+
+<ul><li>You create a MS Word template (.dot / .dotm) that includes a malicious macro.</li><li>Run the Evil Clippy tool with the &#8211;webserver option and point it to the malicious template file. It will then spin up a web server that listens for incoming connections on the port you specified. </li><li>You subsequently create another document that points to this template document via a URL by referencing it as a template from the developer toolbar in Word (you can use an arbitrary extension, .dot extension is not required!).</li><li>If this document is opened, MS Office will reach out to the web server to fetch the template. Evil Clippy will identify the target MS Office version from the HTTP header and will patch the version bytes in the _VBA_PROJECT stream of the malicious template before serving it.</li></ul>
+
+
+
+<p>Make sure to read the caveats in the <a href="https://github.com/outflanknl/EvilClippy/blob/master/README.md">readme</a> before you use this option! The following screenshots shows this feature in action:</p>
+
+
+
+<figure class="wp-block-image"><a href="https://outflank.nl/blog/wp-content/uploads/2019/05/evilclippy_webserver-1030x357.png"><img src="https://outflank.nl/blog/wp-content/uploads/2019/05/evilclippy_webserver-1030x357.png" alt="" class="wp-image-683" width="100%" srcset="https://outflank.nl/blog/wp-content/uploads/2019/05/evilclippy_webserver-1030x357.png 1030w, https://outflank.nl/blog/wp-content/uploads/2019/05/evilclippy_webserver-300x104.png 300w, https://outflank.nl/blog/wp-content/uploads/2019/05/evilclippy_webserver-768x266.png 768w, https://outflank.nl/blog/wp-content/uploads/2019/05/evilclippy_webserver.png 2018w" sizes="(max-width: 1030px) 100vw, 1030px" /></a></figure>
+
+
+
+<figure class="wp-block-image"><a href="https://outflank.nl/blog/wp-content/uploads/2019/05/template-1030x755.png"><img src="https://outflank.nl/blog/wp-content/uploads/2019/05/template-1030x755.png" alt="" class="wp-image-697" width="100%" srcset="https://outflank.nl/blog/wp-content/uploads/2019/05/template-1030x755.png 1030w, https://outflank.nl/blog/wp-content/uploads/2019/05/template-300x220.png 300w, https://outflank.nl/blog/wp-content/uploads/2019/05/template-768x563.png 768w, https://outflank.nl/blog/wp-content/uploads/2019/05/template.png 1560w" sizes="(max-width: 1030px) 100vw, 1030px" /></a></figure>
+
+
+
+<h3>Hiding macros</h3>
+
+
+
+<p>Note that <em>after</em> running a macro using p-code in MS Office, the VBA engine will reconstruct the VBA source code from p-code and display it in the VBA editor GUI when opened. Hence, we need an additional trick to hide our malicious code from prying eyes.</p>
+
+
+
+<p>One technique to achieve this is to modify the PROJECT stream. As mentioned above, this stream can be regarded as a configuration file for the VBA editor GUI. By simply removing a line such as &#8220;Module=Module1&#8221; we can make the module named &#8220;Module1&#8221; disappear in the VBA editor. Note that this does <em>not</em> work with the default &#8220;ThisDocument&#8221; or &#8220;ThisWorkbook&#8221; modules, so you have to place your malicious code in a separate module in order to make this trick work.</p>
+
+
+
+<figure class="wp-block-image"><a href="https://outflank.nl/blog/wp-content/uploads/2019/05/hide_module-1030x200.png"><img src="https://outflank.nl/blog/wp-content/uploads/2019/05/hide_module-1030x200.png" alt="" class="wp-image-706" width="100%" srcset="https://outflank.nl/blog/wp-content/uploads/2019/05/hide_module-1030x200.png 1030w, https://outflank.nl/blog/wp-content/uploads/2019/05/hide_module-300x58.png 300w, https://outflank.nl/blog/wp-content/uploads/2019/05/hide_module-768x149.png 768w, https://outflank.nl/blog/wp-content/uploads/2019/05/hide_module.png 1272w" sizes="(max-width: 1030px) 100vw, 1030px" /></a></figure>
+
+
+
+<p>Evil Clippy can automatically hide all modules with the -g flag:</p>
+
+
+
+<code><pre><p>EvilClippy.exe -g macrofile.doc</p></pre></code>
+
+
+
+<p>Another trick to make macro code unaccessible is to mark the project as locked and unviewable. This feature has been added to Evil Clippy by <a href="https://twitter.com/oroneequalsone">Carrie Robberts</a> from Walmart and can be used with the -u flag. Carrie has written a <a href="https://medium.com/walmartlabs/vba-project-locked-project-is-unviewable-4d6a0b2e7cac">detailed blog</a> on this topic.</p>
+
+
+
+<h3>Confusing analysis tools</h3>
+
+
+
+<p>Although the -g and -u flags can hide our malicious code from human eyes, they do not protect against security tools which analyse our file on a file format level. For example, <a href="https://github.com/bontchev/pcodedmp">pcodedmp</a> can be used by an analyst to extract p-code from a document. However, we can use the ambiguity and complexity of the MS-OVBA specification to confuse various analysis tools, including pcodedmp.</p>
+
+
+
+<p>Evil Clippy can confuse pcodedmp and many other analysis tools with the -r flag.</p>
+
+
+
+<code><pre><p>EvilClippy.exe -r macrofile.doc</p></pre></code>
+
+
+
+<p>After running pcodedmp on this file, it crashes with a &#8220;file not found&#8221; error and empty list of module names:</p>
+
+
+
+<figure class="wp-block-image"><a href="https://outflank.nl/blog/wp-content/uploads/2019/05/pcodedmp_crash-1030x329.png"><img src="https://outflank.nl/blog/wp-content/uploads/2019/05/pcodedmp_crash-1030x329.png" alt="" class="wp-image-712" width="100%" srcset="https://outflank.nl/blog/wp-content/uploads/2019/05/pcodedmp_crash-1030x329.png 1030w, https://outflank.nl/blog/wp-content/uploads/2019/05/pcodedmp_crash-300x96.png 300w, https://outflank.nl/blog/wp-content/uploads/2019/05/pcodedmp_crash-768x245.png 768w, https://outflank.nl/blog/wp-content/uploads/2019/05/pcodedmp_crash.png 1706w" sizes="(max-width: 1030px) 100vw, 1030px" /></a></figure>
+
+
+
+<p>How does it achieve this? With the -r flag Evil Clippy sets random ASCII module names in the Dir stream. Most analyst tools use the module names specified here, while MS Office parses module names from the undocumented _VBA_PROJECT stream. By setting a random ASCII module name most P-code and VBA analysis tools crash, while the actual P-code and VBA still runs fine in Word and Excel. More information about the root cause of this issue can be read in <a href="https://twitter.com/VessOnSecurity/status/1112045001410781186">this Twitter thread</a> by Vesselin Bontchev, the author of pcodedmp.<br></p>
+
+
+
+<h3>Detection and mitigation</h3>
+
+
+
+<p>Evil Clippy only scratches the surface of issues resulting from the gap between official Microsoft specifications on VBA macros (MS-OVBA) and its actual implementation in MS Office. Since malicious macros are one of the most common methods for initial compromise by threat actors, proper defense against such macros is crucial. We believe that the lack of adequate specifications of how macros actually work in MS Office severely hinders the work of antivirus vendors and security analysts. This blog post serves as a call to Microsoft to change this for the better.</p>
+
+
+
+<p>In the meantime there are several things that you can do to make the life of a malicious macro much harder:</p>
+
+
+
+<ul><li>For users and teams in your organisation that do not use macros, turn them off.</li><li>For users that <em>do</em> require working with macros, <a href="https://www.microsoft.com/security/blog/2016/03/22/new-feature-in-office-2016-can-block-macros-and-help-prevent-infection/">consider disabling macros in documents that are downloaded from the internet</a>. Note that this feature is available in MS Office 2013 and 2016, and can be controlled via GPO.</li><li>Use <a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-exploit-guard/attack-surface-reduction-exploit-guard">Attack Surface Reduction rules</a> to limit the impact of malicious macros. Note that the most important rules can already be turned on with an E3 license. If you fear the impact of these rules in blocking mode, then consider enabling them in audit mode for monitoring.</li><li>Deploy an antivirus product that hooks into the <a href="https://www.microsoft.com/security/blog/2018/09/12/office-vba-amsi-parting-the-veil-on-malicious-macros/">AMSI for VBA engine</a>. Although this implementation of AMSI is <a href="https://outflank.nl/blog/2019/04/17/bypassing-amsi-for-vba/">far from perfect</a>, it will raise the bar for malicious macros.</li><li>Monitor the execution of macros <a href="https://outflank.nl/blog/2018/01/16/hunting-for-evil-detect-macros-being-executed/">via our Sysmon trick</a>, which can help you in hunting evil macros.</li></ul>
+
+
+
+<h3>Authors and contributions</h3>
+
+
+
+<p>Evil Clippy is maintained by Stan Hegt (<a href="https://twitter.com/StanHacked">@StanHacked</a>).</p>
+
+
+
+<p>After its initial release, the project has received significant code contributions from the security team at Walmart, especially from Carrie Robberts (<a href="https://twitter.com/OrOneEqualsOne">@OrOneEqualsOne</a>). If you want to contribute to Evil Clippy, we are happy to receive your <a href="https://github.com/outflanknl/EvilClippy/pulls">pull request</a>.</p>
+
+
+
+<p>Special thanks to Nick Landers from Silent Break Security (<a href="https://twitter.com/monoxgas">@monoxgas</a>) for pointing us towards <a href="https://github.com/ironfede/openmcdf">OpenMCDF</a>.</p>
+<div class="entry-links"></div>
+</section><footer class="entry-footer">
+<!-- <span class="cat-links">Categories: <a href="https://outflank.nl/blog/category/uncategorized/" rel="category tag">Uncategorized</a></span> -->
+<span class="tag-links"></span>
+</footer> </article><section id="comments">
+</section><footer class="footer">
+<nav id="nav-below" class="navigation" role="navigation">
+<div class="nav-previous"><a href="https://outflank.nl/blog/2019/04/17/bypassing-amsi-for-vba/" rel="prev"><span class="meta-nav">&larr;</span> Bypassing AMSI for VBA</a></div>
+<div class="nav-next"><a href="https://outflank.nl/blog/2019/06/19/red-team-tactics-combining-direct-system-calls-and-srdi-to-bypass-av-edr/" rel="next">Red Team Tactics: Combining Direct System Calls and sRDI to bypass AV/EDR <span class="meta-nav">&rarr;</span></a></div>
+</nav></footer>
+</section>
+<!-- close div block from header -->
+</div>
+
+<div class="col-s-12 col-l-offset-1 col-l-4">
+	<section class="content-block">
+
+	<aside id="sidebar" role="complementary">
+		<div id="primary" class="widget-area">
+		<ul class="wp-sidebar-item" style="list-style: none;">
+			<li id="text-6" class="widget-container widget_text"><h3 class="widget-title">Outflank blog</h3>			<div class="textwidget"><p>A blog about red teaming, attack simulation and other IT security stories from the trenches.</p>
+<p><strong>About us</strong><br />
+Outflank is an IT security company with deep expertise in red teaming and attack simulation. We are hackers and seasoned professionals.</p>
+<p><strong>Contact us<br />
+</strong><a href="https://www.outflank.nl">www.outflank.nl</a><br />
+<a href="mailto:info@outflank.nl">info@outflank.nl</a></p>
+</div>
+		</li>		</ul>
+	</div>
+		</aside>
+</div>
+<!-- Close wordpress div -->
+</div></div>
+
+<div class="incident-overlay js-incident-overlay">
+    <aside class="incident-overlay__background js-incident-overlay-trigger"></aside>
+    <div class="dots"></div>
+    <div class="gradient"></div>
+
+    <button class="incident-overlay__close js-incident-overlay-trigger">
+        <span></span>
+        <span></span>
+    </button>
+
+    <section class="incident-overlay__content">
+        <h2>Need help right away? <br> Call our emergency number</h2>
+        <a href="tel:0202618996" class="button button--highlight">+31 20 2618996</a>
+        <p>Or send us an <a href="mailto:info@outflank.nl?subject=[Incident - www.outflank.nl]">email</a> and we'll get back to you as soon as possible</p>
+    </section>
+</div>
+
+    </main>
+
+<footer class="container container--fluid container--bg-dark footer">
+    <div class="dots"></div>
+    <div class="gradient gradient--dark"></div>
+
+    <div class="container">
+        <div class="row row--semi-flush">
+            <div class="col-s-12 col-m-10 col-l-4 footer__col padding-right--lg">
+                <a href="/" class="footer__logo">
+<svg width="718" height="122" viewBox="0 0 718 122" xmlns="http://www.w3.org/2000/svg"><title>logo</title><g fill="#000" fill-rule="evenodd"><path d="M50.57 4.53C42.68.586 35.024.47 34.177.47c-.848 0-8.505.115-16.394 4.06C9.997 8.423.715 16.684.715 33.932c0 3.53 2.863 6.394 6.394 6.394 3.53 0 6.393-2.862 6.393-6.394 0-8.582 3.163-14.404 9.67-17.797 5.34-2.784 10.98-2.876 10.97-2.877.057 0 5.698.093 11.037 2.877 6.51 3.393 9.672 9.215 9.672 17.797v54.103c0 .057-.093 5.697-2.877 11.037-3.393 6.506-9.215 9.67-17.764 9.67-.055 0-5.695-.094-11.035-2.875-6.507-3.395-9.67-9.215-9.67-17.8V61c0-3.53-2.863-6.394-6.395-6.394C3.58 54.606.715 57.47.715 61v27.068c0 17.248 9.282 25.51 17.068 29.404 7.89 3.943 15.546 4.057 16.394 4.057 17.248 0 25.51-9.283 29.403-17.07 3.944-7.89 4.058-15.545 4.058-16.393V33.93c0-17.246-9.28-25.51-17.067-29.4zm44.883 2.335v27.067c0 3.53 2.862 6.394 6.394 6.394s6.394-2.862 6.394-6.394V6.865c0-3.53-2.86-6.395-6.392-6.395-3.533 0-6.394 2.865-6.394 6.395zM155.983.47c-3.533 0-6.396 2.865-6.396 6.396v27.067c0 3.53 2.862 6.394 6.395 6.394 3.53 0 6.394-2.862 6.394-6.394V6.865c0-3.53-2.862-6.394-6.394-6.394zm0 54.136c-3.53 0-6.396 2.863-6.396 6.394v47.742h-20.64c-.057 0-5.698-.094-11.037-2.875-6.508-3.395-9.67-9.215-9.67-17.8V61c0-3.53-2.863-6.394-6.395-6.394-3.532 0-6.394 2.863-6.394 6.394v27.068c0 17.248 9.283 25.51 17.07 29.404 7.89 3.943 15.546 4.057 16.393 4.057h27.068c3.53 0 6.395-2.863 6.395-6.395V61c.002-3.53-2.86-6.394-6.392-6.394zM250.72.47h-54.136c-3.53 0-6.395 2.865-6.395 6.396 0 3.53 2.86 6.394 6.393 6.394h54.135c3.53 0 6.393-2.862 6.393-6.394 0-3.53-2.862-6.395-6.393-6.395h.003zm-20.675 114.667V33.933c0-3.53-2.862-6.394-6.394-6.394-3.53 0-6.393 2.86-6.393 6.392v81.204c0 3.53 2.863 6.393 6.395 6.393 3.532 0 6.395-2.863 6.395-6.394h-.002zm60.825-47.743h27.068c3.53 0 6.394-2.86 6.394-6.394 0-3.53-2.862-6.394-6.394-6.394H290.87c-3.53 0-6.394 2.863-6.394 6.394 0 3.532 2.863 6.394 6.394 6.394zm0 54.136c3.532 0 6.395-2.862 6.395-6.394V88.068c0-3.53-2.862-6.395-6.395-6.395-3.53 0-6.394 2.863-6.394 6.395v27.068c0 3.532 2.863 6.393 6.394 6.393zm0-81.204c3.532 0 6.395-2.862 6.395-6.394 0-8.582 3.163-14.404 9.67-17.797 5.34-2.784 10.98-2.876 11.004-2.877h19.547c3.53 0 6.394-2.862 6.394-6.394 0-3.53-2.86-6.395-6.393-6.395h-19.55c-.847 0-8.504.113-16.393 4.06-7.786 3.89-17.068 12.152-17.068 29.4 0 3.533 2.862 6.395 6.393 6.395zM373.385 67.394c3.53 0 6.395-2.86 6.395-6.394V6.865c0-3.53-2.863-6.395-6.395-6.395-3.532 0-6.395 2.864-6.395 6.395V61c0 3.532 2.864 6.394 6.395 6.394zm27.068 41.348H379.78V88.068c0-3.53-2.864-6.395-6.396-6.395s-6.395 2.863-6.395 6.395v27.068c0 3.53 2.86 6.393 6.393 6.393h27.068c3.53 0 6.394-2.863 6.394-6.395 0-3.532-2.86-6.394-6.392-6.394v.002zM440.262 40.326c3.53 0 6.394-2.862 6.394-6.394 0-8.582 3.163-14.404 9.67-17.797 5.34-2.784 10.98-2.876 10.972-2.877.056 0 5.696.093 11.036 2.877 6.507 3.393 9.67 9.215 9.67 17.797v54.345c0 15.314 10.354 27.51 19.974 32.36.923.464 1.905.685 2.873.685 2.34 0 4.593-1.287 5.717-3.518 1.59-3.152.32-6.998-2.83-8.588-5.203-2.62-12.943-10.363-12.943-20.94V33.932c0-17.248-9.282-25.51-17.068-29.402C475.836.586 468.18.47 467.332.47c-.846 0-8.503.115-16.392 4.06-7.787 3.893-17.068 12.154-17.068 29.402-.002 3.532 2.86 6.394 6.392 6.394h-.002z"/><path d="M467.717 67.394c3.53 0 6.395-2.86 6.395-6.394 0-3.53-2.863-6.394-6.395-6.394-17.25 0-25.51 9.282-29.403 17.068-3.945 7.89-4.058 15.546-4.058 16.394 0 17.248 9.28 25.51 17.067 29.404 7.89 3.943 15.547 4.057 16.394 4.057 2.64 0 5.18-.23 7.556-.67 3.47-.65 5.758-3.994 5.106-7.465-.65-3.47-3.99-5.76-7.465-5.107-1.596.3-3.338.45-5.182.452-.195-.004-5.75-.13-11.02-2.875-6.508-3.395-9.672-9.215-9.672-17.766 0-.055.094-5.698 2.878-11.038 3.392-6.505 9.214-9.67 17.797-9.67l.002.002zM602.716 81.674c-3.53 0-6.394 2.863-6.394 6.395v27.066c0 3.53 2.863 6.393 6.394 6.393 3.53 0 6.395-2.86 6.395-6.394V88.07c0-3.533-2.862-6.396-6.393-6.396zm0-81.204c-3.53 0-6.394 2.865-6.394 6.396v38.7l-43.22-43.222c-1.83-1.83-4.58-2.375-6.968-1.386-2.39.99-3.948 3.32-3.948 5.907v108.27c0 3.532 2.863 6.394 6.395 6.394 3.533 0 6.396-2.863 6.396-6.395V22.3l43.22 43.22c1.83 1.83 4.58 2.377 6.97 1.387 2.388-.99 3.946-3.32 3.946-5.907V6.865c0-3.53-2.863-6.394-6.394-6.394h-.002zM710.89.47c-3.53 0-6.394 2.865-6.394 6.396v24.42l-23.323 23.32h-24.418c-3.53 0-6.395 2.864-6.395 6.395v54.14c0 3.53 2.863 6.392 6.395 6.392 3.53 0 6.394-2.86 6.394-6.392V67.397h18.022l23.323 23.323v24.42c0 3.53 2.863 6.393 6.394 6.393 3.53 0 6.394-2.86 6.394-6.392V88.07c0-1.697-.675-3.322-1.873-4.522L692.865 61l22.547-22.546c1.2-1.2 1.875-2.825 1.875-4.52V6.864c0-3.53-2.863-6.393-6.394-6.393zm-54.135 39.856c3.53 0 6.394-2.862 6.394-6.394V6.865c0-3.53-2.865-6.395-6.396-6.395-3.53 0-6.395 2.864-6.395 6.395v27.067c0 3.532 2.863 6.394 6.394 6.394z"/></g></svg>                </a>
+                <p class="footer__text">
+                    Clear advice with a hacker mindset
+                </p>
+            </div>
+
+                <div class="col-s-12 col-m-3 col-l-2 footer__col padding-right--sm">
+                    <h4 class="footer__title">
+                        <a href="/services/">Services</a>
+                    </h4>
+                    <ul class="list">
+                        <li>
+                            <a href="/services/red-teaming">Red teaming</a>
+                        </li>
+                        <li>
+                            <a href="/services/outflank-security-tooling">OST toolkit</a>
+                        </li>
+                        <li>
+                            <a href="/services/threat-information">Threat information</a>
+                        </li>
+                        <li>
+                            <a href="/services/security-tests">Security testing</a>
+                        </li>
+                        <li>
+                            <a href="/services/soc-training">Training</a>
+                        </li>
+                        <li>
+                            <a href="/services/security-advice">Consultancy</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-s-12 col-m-3 col-l-2 footer__col padding-right--sm">
+                    <h4 class="footer__title">
+                        <a href="/company/">Company</a>
+                    </h4>
+                    <ul class="list">
+                        <li>
+                            <a href="/company/mark-bergman">Mark Bergman</a>
+                        </li>
+                        <li>
+                            <a href="/company/pieter-ceelen">Pieter Ceelen</a>
+                        </li>
+                        <li>
+                            <a href="/company/stan-hegt">Stan Hegt</a>
+                        </li>
+                        <li>
+                            <a href="/company/marc-smeets">Marc Smeets</a>
+                        </li>
+                        <li>
+                            <a href="/company/jarno-van-de-moosdijk">Jarno van de Moosdijk</a>
+                        </li>
+                        <li>
+                            <a href="/company/cornelis-de-plaa">Cornelis de Plaa</a>
+                        </li>
+                        <li>
+                            <a href="/company/dima-van-de-wouw">Dima van de Wouw</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-s-12 col-m-3 col-l-2 footer__col padding-right--sm">
+                    <h4 class="footer__title">
+                        <a href="/blog/">Publications</a>
+                    </h4>
+                    <ul class="list">
+                    </ul>
+                </div>
+
+
+            <div class="col-s-12 col-m-3 col-l-2 footer__col padding-right--sm">
+                <h4 class="footer__title">
+                    <a href="/contact/">Contact</a>
+                </h4>
+                <p>
+                    <a href="mailto:info@outflank.nl">info@outflank.nl</a>
+                    <br>
+                    <a href="tel:+31 20 2618996">+31 20 2618996</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-76176453-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+<script src="/main.js"></script>
+
+</body>
+
+<!-- name: Outflank, version: 1.0.0 -->
+</html>

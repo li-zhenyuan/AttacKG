@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title> Leveraging Emond on macOS For Persistence —  &raquo;  Xor'd</title>
+<meta name="description" content="Random Infosec Ramblings">
+<meta name="keywords" content="">
+<link rel="canonical" href="https://www.xorrior.com/emond-persistence/">
+        
+
+
+
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Leveraging Emond on macOS For Persistence" />
+<meta name="twitter:description" content="Random Infosec Ramblings" />
+<meta name="twitter:image" content="https://www.xorrior.com" />
+
+<!-- Google plus -->
+<meta name="author" content="">
+<link rel="author" href="">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leveraging Emond on macOS For Persistence">
+<meta property="og:description" content="Random Infosec Ramblings">
+<meta property="og:url" content="https://www.xorrior.com/emond-persistence/">
+<meta property="og:site_name" content="Xor'd">
+
+        <link href='https://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="/assets/vendor/normalize-css/normalize.css">
+<link rel="stylesheet" href="/css/main.css">
+
+  <link rel="stylesheet" href="/assets/vendor/highlight/styles/solarized_dark.css">
+
+<link rel="stylesheet" href="/assets/vendor/font-awesome/css/font-awesome.css">
+
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <header class="header">
+    <div class="navigation">
+        <a href="/" class="logo">Xor'd</a>
+
+        <ul class="menu">
+            <li class="menu__entry"><a href="/about">About</a></li>
+            <li class="menu__entry"><a href="/">Blog</a></li>
+        </ul>
+    </div>
+
+    <ul class="social-links">
+        
+            <a href="https://github.com/xorrior" class="social-links__entry" target="_blank">
+                <i class="fa fa-github"></i>
+            </a>
+        
+
+        
+            <a href="https://twitter.com/xorrior" class="social-links__entry" target="_blank">
+                <i class="fa fa-twitter"></i>
+            </a>
+        
+    </ul>
+</header>
+
+            <h1 class="page-title post-title">
+    <div class="page-title__text post-title__text">Leveraging Emond on macOS For Persistence</div>
+    <div class="page-title__subtitle post-title__subtitle"></div>
+</h1>
+
+<div class="content">
+    <p>NOTE: This binary was described in the recently released, <a href="https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X">“*OS Internals, Volume I, User Space”</a> textbook by Jonathan Levin. This book has already proven to be a great resource and I would highly recommend it if you have an interest in macOS security research.</p>
+
+<p>The event monitor daemon (emond), according to <a href="https://developer.apple.com/legacy/library/documentation/Darwin/Reference/ManPages/man8/emond.8.html">Apple</a>, “accepts events from various services, runs them through a simple rules engine, and takes action. The actions can run commands; send email, or SMS messages”. Sounds interesting right? Emond has been available since OS X 10.7, so the details discussed in this post are applicable to the most recent version of macOS (10.13.2).</p>
+
+<p>This binary functions as a normal daemon and is executed by launchd every time the OS starts up.  There are a few on-disk components to emond as well. The launchd config file is located where other system daemons reside: /System/Library/LaunchDaemons/com.apple.emond.plist. This determines when the emond binary is executed along with any desired options that are regularly used with LaunchDaemons.  The emond.plist config file is located in the /etc/emond.d/ directory. This file defines the locations for rules paths, UID/GID filters, error and event log paths, and a few other options.</p>
+
+<p><strong><em>Figure 1: emond.plist contents</em></strong></p>
+
+<p><img src="https://www.xorrior.com/images/emond-plist.png" alt="emond plist contents" /></p>
+
+<p>For rules, they’re stored in the /etc/emond.d/rules/ directory and they should be in plist format. There is an example rules file already present in this directory (<a href="https://gist.github.com/xorrior/510b765d3d46c53618c5b15de7046633">SampleRules.plist</a>). The example defines the name, eventType, and the action once the event triggers. There are several event types (<em>startup, periodic, auth.success, auth.failure, etc.</em>) but for this demonstration we will only use <em>startup</em>. The <em>startup</em> event type will trigger the rule once it has been loaded by emond. The <em>periodic</em> event type will only trigger once the defined ‘startTime’ has elapsed. The <em>auth.success</em> event type will only trigger once a user successfully authenticates, and <em>auth.failure</em> will trigger on authentication failure events. There are references to other event types <a href="http://www.magnusviri.com/Mac/what-is-emond.html">here</a>, but I have not found any additional documentation at this time. Actions define what emond will do once the event has fired. Also note that multiple actions can be defined within a rule. There are only a few interesting actions that could be abused for nefarious purposes, like <em>run command</em> and <em>send email</em>. As you might have guessed, <em>run command</em> allows you to execute any arbitrary system command. The <em>send email</em> action is self-explanatory. For this walkthrough, we’ll focus on the <em>run command</em> action.</p>
+
+<p>Now, we can demonstrate how to leverage the event monitor daemon to establish persistence. The mechanics of emond are similar to any other LaunchDaemon. Launchd is responsible for executing all LaunchDaemons and LaunchAgents during the boot process. Since emond is started during the boot process, when using the <em>run command</em> action, you should be conscious of what command you’re executing and at which point during the boot process your command is going to be executed. This is important because while testing various commands, it became apparent that networking may not be available at the time an event fires and triggers an action. Thus, any commands that require network access will not work. Next, we will show how to create a rules file.</p>
+
+<p>To craft a rule file, we will utilize the SampleRule.plist file that already exists and modify it as necessary.</p>
+
+<p><strong>Figure 2: SampleRules.plist</strong></p>
+
+<p><img src="https://www.xorrior.com/images/SampleRules.png" alt="SampleRules.plist" /></p>
+
+<p>The sample contains some of the values that we need for our rules file. Specifically, we can remove the “allowPartialCriterionMatch” key and change the name if desired. The defined actions need to be modified for the *run command *action type. A complete example is shown below and also available as a <a href="https://gist.github.com/xorrior/4c80abf0bf396ba93276ebb84abac54d">gist</a>.</p>
+
+<p><strong>Figure 3: Example persistence rule</strong></p>
+
+<p><img src="https://www.xorrior.com/images/persistence1.png" alt="persistence rule" /><img src="https://www.xorrior.com/images/persistence2.png" alt="persistence rule 2" /></p>
+
+<p>Notice that the first action is to sleep for 10 seconds in order to wait with the hope that network access will become available. The amount of time is just a rough estimate and may vary across hosts. The second action will just curl a hosted Empire stager and pipe it to Python. The ampersand symbol is an xml entity and needs to be escaped appropriately. There is one last oddity with this persistence mechanism: launchd will execute emond during the boot process, but the service will remain inactive until there is a file present within the <em>QueueDirectories</em> path. This is specified in the LaunchDaemon configuration file, /System/Library/LaunchDaemons/com.apple.emond.plist. The file that is placed in the <em>QueueDirectories</em> path does not need to follow a particular naming scheme and can be empty.</p>
+
+<p><strong>Figure 4: QueueDirectories path in com.apple.emond.plist</strong></p>
+
+<p><img src="https://www.xorrior.com/images/QueueDirectory.png" alt="Queue Directory" /></p>
+
+<p>Once you place your rule plist file in the rules directory, the emond error log will show that the service is started. You won’t see any entries about your rule file specifically but emond will stop complaining about not finding any rules.</p>
+
+<p><strong>Figure 5: emond error log after starting the service</strong></p>
+
+<p><img src="https://www.xorrior.com/images/emond-starting.png" alt="starting emond" /></p>
+
+<p>Once the service has started, if you have defined a startup event type, your event will immediately fire and trigger any actions. Now, we should see the request for an Empire stager and then a new agent.</p>
+
+<p><strong>Figure 6: Hosted stager and web request from emond</strong></p>
+
+<p><img src="https://www.xorrior.com/images/contents-and-request.png" alt="Hosted Stager" /></p>
+
+<p><strong>Figure 7: New agent</strong></p>
+
+<p><img src="https://www.xorrior.com/images/new-agent.png" alt="image alt text" /></p>
+
+<p>Emond is not a novel mechanism for event monitoring on OSX, but it is in terms of offensive use cases. To my recollection, this persistence method has not been mentioned in any macOS threat reports that I’ve read at the time of writing. It’s certainly possible that this is being used in the wild and just not being reported for a lack of notoriety.</p>
+
+<p><strong>Detection</strong></p>
+
+<p>This method of persistence is predicated on several changes to the file system. Fortunately, macOS offers the <a href="https://developer.apple.com/library/content/documentation/Darwin/Conceptual/FSEvents_ProgGuide/UsingtheFSEventsFramework/UsingtheFSEventsFramework.html">fsevents API</a> to capture file system events. In essence, fsevents records all events for the file system in each volume. Initially, events are stored in memory and then written to disk once the memory buffer becomes full or before the volume is unmounted. FSEvent log files are stored in a gzip compressed format and follow a hexadecimal naming scheme. All log files are stored in a hidden directory: /.fseventsd/. Root privileges are required to access this directory. Another caveat for fsevents are that timestamps are not included with entries in the log file. With access to the API, we can use Python or Objective-C to sift through all received events and alert once an event for file creation/modification occurs in the rules directory or the QueueDirectory.</p>
+
+<p>For a simple example, we can use the fswatch open-source project to monitor for changes. It offers support for multiple platforms, thorough documentation, and the project is actively maintained. You can review the project <a href="https://github.com/emcrisostomo/fswatch">here</a>. So, after installing the application via homebrew, we can setup a monitor for the emond rules directory.</p>
+
+<p><strong>Figure 8:<a href="https://gist.github.com/xorrior/80c5609e199e12755740317c9a58e55a">Example</a> fswatch rule for emond rules directory</strong></p>
+
+<p><img src="https://www.xorrior.com/images/example-fswatch.png" alt="Example Fswatch Rule" /></p>
+
+<p>This rule specifies the output format for an event. You’ll notice that fswatch has the ability to provide timestamps when an event is triggered. Additionally, you can pipe the output to any other command line to you desire for further processing. You can also specify multiple directories to monitor. <em>Figure 9</em> shows that once we drop a plist file in the rules the directory, fswatch will display the event details in a nicely formatted JSON string.</p>
+
+<p><strong>Figure 9:<a href="https://gist.github.com/xorrior/80c5609e199e12755740317c9a58e55a">Output</a> When Event Fires</strong></p>
+
+<p><img src="https://www.xorrior.com/images/EventFired.png" alt="Output When Event Fires" /></p>
+
+<p>This is a very rudimentary example and may not be the best solution in a large macOS environment with multiple deployments. A more applicable alternative would be osquery. Osquery offers File Integrity Monitoring which uses the fsevents api to log file system changes to specific directories and/or files. Additional information can be found <a href="https://osquery.readthedocs.io/en/stable/deployment/file-integrity-monitoring/">here</a>. After installing osquery, you will need to provide a configuration file to monitor file system events. You can see a simple example to monitor all file system events within the rules directory below. All events will be queried at 60 second intervals.</p>
+
+<p><strong>Figure 10: Example osquery config</strong></p>
+
+<p><img src="https://www.xorrior.com/images/osquery-config.png" alt="osquery config" /></p>
+
+<p>For the sake of brevity, we’ll start the osquery daemon from the command line and specify our config file with the <em>–config_path</em> flag. Once we create our plist file and place it in the rules directory, after 60 seconds has elapsed, there should be an entry in the osquery log file. Results are logged to <em>/var/log/osquery/osqueryd.results.log</em> by default. The output will include the path, host identifier, timestamp, type of file event, and the MD5 hash amongst other fields.</p>
+
+<p><strong>Figure 11: Log file contents for osquery</strong></p>
+
+<p><img src="https://www.xorrior.com/images/osquerylogfile.png" alt="osquery log file" /></p>
+
+<p>The log entry shown above is also available <a href="https://gist.github.com/xorrior/80c5609e199e12755740317c9a58e55a">here</a>. These methods of detection are not meant to be a silver bullet for malicious use of emond, but they should suffice as an adequate starting point.</p>
+
+<p><strong>References</strong></p>
+
+<p>Levin, J. (2017) <em>OS Internals, Volume I: User Space</em>. North Castle, NY: 
+	Technologeeks.com</p>
+
+<p>Reynolds, J. (2016, April). <em>What is emond?</em>. Retrieved from: 
+	http://www.magnusviri.com/Mac/what-is-emond.html</p>
+
+
+</div>
+
+<div class="about">
+    <div class="about__devider">*****</div>
+    <div class="about__text">
+        Written by <strong>  Chris Ross </strong>
+        on <strong>17 January 2018</strong>
+    </div>
+</div>
+
+
+        </div>
+
+        <script src="/assets/vendor/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+        
+        <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-55902745-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    </body>
+</html>

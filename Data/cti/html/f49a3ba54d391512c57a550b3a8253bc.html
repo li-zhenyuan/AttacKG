@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="Hooks Overview - Win32 apps" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/windows/win32/winmsg/about-hooks" />
+			<meta property="og:description" content="This topic discusses how hooks should be used." />
+		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
+		<meta property="og:image:alt" content="Microsoft Logo" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="author" content="hickeys" />
+<meta name="breadcrumb_path" content="/windows/desktop/breadcrumb/toc.json" />
+<meta name="depot_name" content="MSDN.win32" />
+<meta name="description" content="This topic discusses how hooks should be used." />
+<meta name="document_id" content="184ec25e-7dac-9247-8aff-dd51c3a2eccc" />
+<meta name="document_version_independent_id" content="1a2f75fd-3eca-49df-1fe1-4b8f51e53bb4" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/win32-pr/blob/6049abf0171bb435f5636f9dc83fe869420c45fc/desktop-src/winmsg/about-hooks.md" />
+<meta name="locale" content="en-us" />
+<meta name="ms.assetid" content="9ced0ac4-e602-425f-b954-6af9c741699a" />
+<meta name="ms.author" content="hickeys" />
+<meta name="ms.date" content="05/31/2018" />
+<meta name="ms.prod" content="desktop" />
+<meta name="ms.technology" content="desktop-app-ui" />
+<meta name="ms.topic" content="article" />
+<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/win32-pr/blob/live/desktop-src/winmsg/about-hooks.md" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="win32" />
+<meta name="search.ms_product" content="MSDN" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="uhfHeaderId" content="MSDocsHeader-WinDevCenter" />
+<meta name="updated_at" content="2021-01-07 08:47 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="toc.json" />
+<meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/MSDN.win32/{branchName}{pdfName}" />
+<meta name="word_count" content="1822" />
+
+
+	<meta name="scope" content="Windows, Desktop" />
+<link href="https://docs.microsoft.com/en-us/windows/win32/winmsg/about-hooks" rel="canonical">
+	<title>Hooks Overview - Win32 apps | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: true,
+			hasGithubIssues: false,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/winmsg/about-hooks.md',
+			extendBreadcrumb: false,
+			isEditDisplayable: true,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+			contributors: [
+						{ name: "hickeys", url: "https://github.com/hickeys" },
+						{ name: "v-kents", url: "https://github.com/v-kents" },
+						{ name: "DCtheGeek", url: "https://github.com/DCtheGeek" },
+						{ name: "justanotheranonymoususer", url: "https://github.com/justanotheranonymoususer" },
+						{ name: "drewbatgit", url: "https://github.com/drewbatgit" },
+						{ name: "twilmoth", url: "https://github.com/twilmoth" },
+						{ name: "mijacobs", url: "https://github.com/mijacobs" },
+						{ name: "msatranjr", url: "https://github.com/msatranjr" }
+],
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="nav-bar border-top is-hidden-mobile"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+								<li id="contenteditbtn">
+									<a href="https://github.com/MicrosoftDocs/win32/blob/docs/desktop-src/winmsg/about-hooks.md" class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit" data-original_content_git_url="https://github.com/MicrosoftDocs/win32-pr/blob/live/desktop-src/winmsg/about-hooks.md" data-original_content_git_url_template="{repo}/blob/{branch}/desktop-src/winmsg/about-hooks.md" data-pr_repo="" data-pr_branch="">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-edit-outline"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
+								</a>
+							</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="hooks-overview">Hooks Overview</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2018-05-31T00:00:00.000Z" data-article-date-source="ms.date">05/31/2018</time>
+							</li>
+									<li class="readingTime">9 minutes to read</li>
+								<li class="contributors-holder">
+									<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
+														<li class="facepile-item">
+															<a href="https://github.com/hickeys" title="hickeys" aria-label="hickeysGithub profile" data-src="https://github.com/hickeys.png?size=32" data-contributor-name="hickeys" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/hickeys.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">h</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/v-kents" title="v-kents" aria-label="v-kentsGithub profile" data-src="https://github.com/v-kents.png?size=32" data-contributor-name="v-kents" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-kents.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">v</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/DCtheGeek" title="DCtheGeek" aria-label="DCtheGeekGithub profile" data-src="https://github.com/DCtheGeek.png?size=32" data-contributor-name="DCtheGeek" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/DCtheGeek.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">D</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/justanotheranonymoususer" title="justanotheranonymoususer" aria-label="justanotheranonymoususerGithub profile" data-src="https://github.com/justanotheranonymoususer.png?size=32" data-contributor-name="justanotheranonymoususer" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/justanotheranonymoususer.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">j</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/drewbatgit" title="drewbatgit" aria-label="drewbatgitGithub profile" data-src="https://github.com/drewbatgit.png?size=32" data-contributor-name="drewbatgit" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/drewbatgit.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">d</span>
+															</a>
+														</li>
+											<li class="facepile-item">
+													<button aria-label="View all contributors" class="facepile-item-more" title="View all contributors">
+														<div class="facepile-item-coin" aria-hidden="true">
+															<span class="facepile-item-coin-text" aria-hidden="true">
+																+3
+															</span>
+														</div>
+													</button>
+											</li>
+									</ul>
+								</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p>A <em>hook</em> is a mechanism by which an application can intercept events, such as messages, mouse actions, and keystrokes. A function that intercepts a particular type of event is known as a <em>hook procedure</em>. A hook procedure can act on each event it receives, and then modify or discard the event.</p>
+<p>The following some example uses for hooks:</p>
+<ul>
+<li>Monitor messages for debugging purposes</li>
+<li>Provide support for recording and playback of macros</li>
+<li>Provide support for a help key (F1)</li>
+<li>Simulate mouse and keyboard input</li>
+<li>Implement a computer-based training (CBT) application</li>
+</ul>
+<div class="NOTE">
+<p>Note</p>
+<p>Hooks tend to slow down the system because they increase the amount of processing the system must perform for each message. You should install a hook only when necessary, and remove it as soon as possible.</p>
+</div>
+<p> </p>
+<p>This section discusses the following:</p>
+<ul>
+<li><a href="#hook-chains" data-linktype="self-bookmark">Hook Chains</a></li>
+<li><a href="#hook-procedures" data-linktype="self-bookmark">Hook Procedures</a></li>
+<li><a href="#hook-types" data-linktype="self-bookmark">Hook Types</a>
+<ul>
+<li><a href="#wh_callwndproc-and-wh_callwndprocret" data-linktype="self-bookmark">WH_CALLWNDPROC and WH_CALLWNDPROCRET</a></li>
+<li><a href="#wh_cbt" data-linktype="self-bookmark">WH_CBT</a></li>
+<li><a href="#wh_debug" data-linktype="self-bookmark">WH_DEBUG</a></li>
+<li><a href="#wh_foregroundidle" data-linktype="self-bookmark">WH_FOREGROUNDIDLE</a></li>
+<li><a href="#wh_getmessage" data-linktype="self-bookmark">WH_GETMESSAGE</a></li>
+<li><a href="#wh_journalplayback" data-linktype="self-bookmark">WH_JOURNALPLAYBACK</a></li>
+<li><a href="#wh_journalrecord" data-linktype="self-bookmark">WH_JOURNALRECORD</a></li>
+<li><a href="#wh_keyboard_ll" data-linktype="self-bookmark">WH_KEYBOARD_LL</a></li>
+<li><a href="#wh_keyboard" data-linktype="self-bookmark">WH_KEYBOARD</a></li>
+<li><a href="#wh_mouse_ll" data-linktype="self-bookmark">WH_MOUSE_LL</a></li>
+<li><a href="#wh_mouse" data-linktype="self-bookmark">WH_MOUSE</a></li>
+<li><a href="#wh_msgfilter-and-wh_sysmsgfilter" data-linktype="self-bookmark">WH_MSGFILTER and WH_SYSMSGFILTER</a></li>
+<li><a href="#wh_shell" data-linktype="self-bookmark">WH_SHELL</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="hook-chains">Hook Chains</h2>
+<p>The system supports many different types of hooks; each type provides access to a different aspect of its message-handling mechanism. For example, an application can use the <a href="#wh_mouse" data-linktype="self-bookmark">WH_MOUSE</a> hook to monitor the message traffic for mouse messages.</p>
+<p>The system maintains a separate hook chain for each type of hook. A <em>hook chain</em> is a list of pointers to special, application-defined callback functions called <em>hook procedures</em>. When a message occurs that is associated with a particular type of hook, the system passes the message to each hook procedure referenced in the hook chain, one after the other. The action a hook procedure can take depends on the type of hook involved. The hook procedures for some types of hooks can only monitor messages; others can modify messages or stop their progress through the chain, preventing them from reaching the next hook procedure or the destination window.</p>
+<h2 id="hook-procedures">Hook Procedures</h2>
+<p>To take advantage of a particular type of hook, the developer provides a hook procedure and uses the <a href="/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexa" data-linktype="absolute-path"><strong>SetWindowsHookEx</strong></a> function to install it into the chain associated with the hook. A hook procedure must have the following syntax:</p>
+<pre><code class="lang-syntax">LRESULT CALLBACK HookProc(
+  int nCode, 
+  WPARAM wParam, 
+  LPARAM lParam
+)
+{
+   // process event
+   ...
+
+   return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+</code></pre>
+<p><em>HookProc</em> is a placeholder for an application-defined name.</p>
+<p>The <em>nCode</em> parameter is a hook code that the hook procedure uses to determine the action to perform. The value of the hook code depends on the type of the hook; each type has its own characteristic set of hook codes. The values of the <em>wParam</em> and <em>lParam</em> parameters depend on the hook code, but they typically contain information about a message that was sent or posted.</p>
+<p>The <a href="/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexa" data-linktype="absolute-path"><strong>SetWindowsHookEx</strong></a> function always installs a hook procedure at the beginning of a hook chain. When an event occurs that is monitored by a particular type of hook, the system calls the procedure at the beginning of the hook chain associated with the hook. Each hook procedure in the chain determines whether to pass the event to the next procedure. A hook procedure passes an event to the next procedure by calling the <a href="/en-us/windows/win32/api/winuser/nf-winuser-callnexthookex" data-linktype="absolute-path"><strong>CallNextHookEx</strong></a> function.</p>
+<p>Note that the hook procedures for some types of hooks can only monitor messages. the system passes messages to each hook procedure, regardless of whether a particular procedure calls <a href="/en-us/windows/win32/api/winuser/nf-winuser-callnexthookex" data-linktype="absolute-path"><strong>CallNextHookEx</strong></a>.</p>
+<p>A <em>global hook</em> monitors messages for all threads in the same desktop as the calling thread. A <em>thread-specific hook</em> monitors messages for only an individual thread. A global hook procedure can be called in the context of any application in the same desktop as the calling thread, so the procedure must be in a separate DLL module. A thread-specific hook procedure is called only in the context of the associated thread. If an application installs a hook procedure for one of its own threads, the hook procedure can be in either the same module as the rest of the application's code or in a DLL. If the application installs a hook procedure for a thread of a different application, the procedure must be in a DLL. For information, see <a href="../dlls/dynamic-link-libraries" data-linktype="relative-path">Dynamic-Link Libraries</a>.</p>
+<div class="NOTE">
+<p>Note</p>
+<p>You should use global hooks only for debugging purposes; otherwise, you should avoid them. Global hooks hurt system performance and cause conflicts with other applications that implement the same type of global hook.</p>
+</div>
+<p> </p>
+<h2 id="hook-types">Hook Types</h2>
+<p>Each type of hook enables an application to monitor a different aspect of the system's message-handling mechanism. The following sections describe the available hooks.</p>
+<ul>
+<li><a href="#wh_callwndproc-and-wh_callwndprocret" data-linktype="self-bookmark">WH_CALLWNDPROC and WH_CALLWNDPROCRET</a></li>
+<li><a href="#wh_cbt" data-linktype="self-bookmark">WH_CBT</a></li>
+<li><a href="#wh_debug" data-linktype="self-bookmark">WH_DEBUG</a></li>
+<li><a href="#wh_foregroundidle" data-linktype="self-bookmark">WH_FOREGROUNDIDLE</a></li>
+<li><a href="#wh_getmessage" data-linktype="self-bookmark">WH_GETMESSAGE</a></li>
+<li><a href="#wh_journalplayback" data-linktype="self-bookmark">WH_JOURNALPLAYBACK</a></li>
+<li><a href="#wh_journalrecord" data-linktype="self-bookmark">WH_JOURNALRECORD</a></li>
+<li><a href="#wh_keyboard_ll" data-linktype="self-bookmark">WH_KEYBOARD_LL</a></li>
+<li><a href="#wh_keyboard" data-linktype="self-bookmark">WH_KEYBOARD</a></li>
+<li><a href="#wh_mouse_ll" data-linktype="self-bookmark">WH_MOUSE_LL</a></li>
+<li><a href="#wh_mouse" data-linktype="self-bookmark">WH_MOUSE</a></li>
+<li><a href="#wh_msgfilter-and-wh_sysmsgfilter" data-linktype="self-bookmark">WH_MSGFILTER and WH_SYSMSGFILTER</a></li>
+<li><a href="#wh_shell" data-linktype="self-bookmark">WH_SHELL</a></li>
+</ul>
+<h3 id="wh_callwndproc-and-wh_callwndprocret">WH_CALLWNDPROC and WH_CALLWNDPROCRET</h3>
+<p>The <strong>WH_CALLWNDPROC</strong> and <strong>WH_CALLWNDPROCRET</strong> hooks enable you to monitor messages sent to window procedures. The system calls a <strong>WH_CALLWNDPROC</strong> hook procedure before passing the message to the receiving window procedure, and calls the <strong>WH_CALLWNDPROCRET</strong> hook procedure after the window procedure has processed the message.</p>
+<p>The <strong>WH_CALLWNDPROCRET</strong> hook passes a pointer to a <a href="/en-us/windows/win32/api/winuser/ns-winuser-cwpretstruct" data-linktype="absolute-path"><strong>CWPRETSTRUCT</strong></a> structure to the hook procedure. The structure contains the return value from the window procedure that processed the message, as well as the message parameters associated with the message. Subclassing the window does not work for messages set between processes.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644975(v=vs.85)" data-linktype="absolute-path"><em>CallWndProc</em></a> and <a href="/en-us/windows/win32/api/winuser/nc-winuser-hookproc" data-linktype="absolute-path"><em>CallWndRetProc</em></a> callback functions.</p>
+<h3 id="wh_cbt">WH_CBT</h3>
+<p>The system calls a <strong>WH_CBT</strong> hook procedure before activating, creating, destroying, minimizing, maximizing, moving, or sizing a window; before completing a system command; before removing a mouse or keyboard event from the system message queue; before setting the input focus; or before synchronizing with the system message queue. The value the hook procedure returns determines whether the system allows or prevents one of these operations. The <strong>WH_CBT</strong> hook is intended primarily for computer-based training (CBT) applications.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644977(v=vs.85)" data-linktype="absolute-path"><em>CBTProc</em></a> callback function.</p>
+<p>For information, see <a href="/en-us/windows/desktop/WinAuto/winevents-infrastructure" data-linktype="absolute-path">WinEvents</a>.</p>
+<h3 id="wh_debug">WH_DEBUG</h3>
+<p>The system calls a <strong>WH_DEBUG</strong> hook procedure before calling hook procedures associated with any other hook in the system. You can use this hook to determine whether to allow the system to call hook procedures associated with other types of hooks.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644978(v=vs.85)" data-linktype="absolute-path"><em>DebugProc</em></a> callback function.</p>
+<h3 id="wh_foregroundidle">WH_FOREGROUNDIDLE</h3>
+<p>The <strong>WH_FOREGROUNDIDLE</strong> hook enables you to perform low priority tasks during times when its foreground thread is idle. The system calls a <strong>WH_FOREGROUNDIDLE</strong> hook procedure when the application's foreground thread is about to become idle.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644980(v=vs.85)" data-linktype="absolute-path"><em>ForegroundIdleProc</em></a> callback function.</p>
+<h3 id="wh_getmessage">WH_GETMESSAGE</h3>
+<p>The <strong>WH_GETMESSAGE</strong> hook enables an application to monitor messages about to be returned by the <a href="/en-us/windows/win32/api/winuser/nf-winuser-getmessage" data-linktype="absolute-path"><strong>GetMessage</strong></a> or <a href="/en-us/windows/win32/api/winuser/nf-winuser-peekmessagea" data-linktype="absolute-path"><strong>PeekMessage</strong></a> function. You can use the <strong>WH_GETMESSAGE</strong> hook to monitor mouse and keyboard input and other messages posted to the message queue.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644981(v=vs.85)" data-linktype="absolute-path"><em>GetMsgProc</em></a> callback function.</p>
+<h3 id="wh_journalplayback">WH_JOURNALPLAYBACK</h3>
+<p>The <strong>WH_JOURNALPLAYBACK</strong> hook enables an application to insert messages into the system message queue. You can use this hook to play back a series of mouse and keyboard events recorded earlier by using <a href="#wh_journalrecord" data-linktype="self-bookmark">WH_JOURNALRECORD</a>. Regular mouse and keyboard input is disabled as long as a <strong>WH_JOURNALPLAYBACK</strong> hook is installed. A <strong>WH_JOURNALPLAYBACK</strong> hook is a global hook—it cannot be used as a thread-specific hook.</p>
+<p>The <strong>WH_JOURNALPLAYBACK</strong> hook returns a time-out value. This value tells the system how many milliseconds to wait before processing the current message from the playback hook. This enables the hook to control the timing of the events it plays back.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644982(v=vs.85)" data-linktype="absolute-path"><em>JournalPlaybackProc</em></a> callback function.</p>
+<h3 id="wh_journalrecord">WH_JOURNALRECORD</h3>
+<p>The <strong>WH_JOURNALRECORD</strong> hook enables you to monitor and record input events. Typically, you use this hook to record a sequence of mouse and keyboard events to play back later by using <a href="#wh_journalplayback" data-linktype="self-bookmark">WH_JOURNALPLAYBACK</a>. The <strong>WH_JOURNALRECORD</strong> hook is a global hook—it cannot be used as a thread-specific hook.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644983(v=vs.85)" data-linktype="absolute-path"><em>JournalRecordProc</em></a> callback function.</p>
+<h3 id="wh_keyboard_ll">WH_KEYBOARD_LL</h3>
+<p>The <strong>WH_KEYBOARD_LL</strong> hook enables you to monitor keyboard input events about to be posted in a thread input queue.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644985(v=vs.85)" data-linktype="absolute-path"><em>LowLevelKeyboardProc</em></a> callback function.</p>
+<h3 id="wh_keyboard">WH_KEYBOARD</h3>
+<p>The <strong>WH_KEYBOARD</strong> hook enables an application to monitor message traffic for <a href="/en-us/windows/desktop/inputdev/wm-keydown" data-linktype="absolute-path"><strong>WM_KEYDOWN</strong></a> and <a href="/en-us/windows/desktop/inputdev/wm-keyup" data-linktype="absolute-path"><strong>WM_KEYUP</strong></a> messages about to be returned by the <a href="/en-us/windows/win32/api/winuser/nf-winuser-getmessage" data-linktype="absolute-path"><strong>GetMessage</strong></a> or <a href="/en-us/windows/win32/api/winuser/nf-winuser-peekmessagea" data-linktype="absolute-path"><strong>PeekMessage</strong></a> function. You can use the <strong>WH_KEYBOARD</strong> hook to monitor keyboard input posted to a message queue.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644984(v=vs.85)" data-linktype="absolute-path"><em>KeyboardProc</em></a> callback function.</p>
+<h3 id="wh_mouse_ll">WH_MOUSE_LL</h3>
+<p>The <strong>WH_MOUSE_LL</strong> hook enables you to monitor mouse input events about to be posted in a thread input queue.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644986(v=vs.85)" data-linktype="absolute-path"><em>LowLevelMouseProc</em></a> callback function.</p>
+<h3 id="wh_mouse">WH_MOUSE</h3>
+<p>The <strong>WH_MOUSE</strong> hook enables you to monitor mouse messages about to be returned by the <a href="/en-us/windows/win32/api/winuser/nf-winuser-getmessage" data-linktype="absolute-path"><strong>GetMessage</strong></a> or <a href="/en-us/windows/win32/api/winuser/nf-winuser-peekmessagea" data-linktype="absolute-path"><strong>PeekMessage</strong></a> function. You can use the <strong>WH_MOUSE</strong> hook to monitor mouse input posted to a message queue.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644988(v=vs.85)" data-linktype="absolute-path"><em>MouseProc</em></a> callback function.</p>
+<h3 id="wh_msgfilter-and-wh_sysmsgfilter">WH_MSGFILTER and WH_SYSMSGFILTER</h3>
+<p>The <strong>WH_MSGFILTER</strong> and <strong>WH_SYSMSGFILTER</strong> hooks enable you to monitor messages about to be processed by a menu, scroll bar, message box, or dialog box, and to detect when a different window is about to be activated as a result of the user's pressing the ALT+TAB or ALT+ESC key combination. The <strong>WH_MSGFILTER</strong> hook can only monitor messages passed to a menu, scroll bar, message box, or dialog box created by the application that installed the hook procedure. The <strong>WH_SYSMSGFILTER</strong> hook monitors such messages for all applications.</p>
+<p>The <strong>WH_MSGFILTER</strong> and <strong>WH_SYSMSGFILTER</strong> hooks enable you to perform message filtering during modal loops that is equivalent to the filtering done in the main message loop. For example, an application often examines a new message in the main loop between the time it retrieves the message from the queue and the time it dispatches the message, performing special processing as appropriate. However, during a modal loop, the system retrieves and dispatches messages without allowing an application the chance to filter the messages in its main message loop. If an application installs a <strong>WH_MSGFILTER</strong> or <strong>WH_SYSMSGFILTER</strong> hook procedure, the system calls the procedure during the modal loop.</p>
+<p>An application can call the <strong>WH_MSGFILTER</strong> hook directly by calling the <a href="/en-us/windows/win32/api/winuser/nf-winuser-callmsgfiltera" data-linktype="absolute-path"><strong>CallMsgFilter</strong></a> function. By using this function, the application can use the same code to filter messages during modal loops as it uses in the main message loop. To do so, encapsulate the filtering operations in a <strong>WH_MSGFILTER</strong> hook procedure and call <strong>CallMsgFilter</strong> between the calls to the <a href="/en-us/windows/win32/api/winuser/nf-winuser-getmessage" data-linktype="absolute-path"><strong>GetMessage</strong></a> and <a href="/en-us/windows/win32/api/winuser/nf-winuser-dispatchmessage" data-linktype="absolute-path"><strong>DispatchMessage</strong></a> functions.</p>
+<pre><code class="lang-syntax">while (GetMessage(&amp;msg, (HWND) NULL, 0, 0)) 
+{ 
+    if (!CallMsgFilter(&amp;qmsg, 0)) 
+        DispatchMessage(&amp;qmsg); 
+} 
+</code></pre>
+<p>The last argument of <a href="/en-us/windows/win32/api/winuser/nf-winuser-callmsgfiltera" data-linktype="absolute-path"><strong>CallMsgFilter</strong></a> is simply passed to the hook procedure; you can enter any value. The hook procedure, by defining a constant such as <strong>MSGF_MAINLOOP</strong>, can use this value to determine where the procedure was called from.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644987(v=vs.85)" data-linktype="absolute-path"><em>MessageProc</em></a> and <a href="/en-us/previous-versions/windows/desktop/legacy/ms644992(v=vs.85)" data-linktype="absolute-path"><em>SysMsgProc</em></a> callback functions.</p>
+<h3 id="wh_shell">WH_SHELL</h3>
+<p>A shell application can use the <strong>WH_SHELL</strong> hook to receive important notifications. The system calls a <strong>WH_SHELL</strong> hook procedure when the shell application is about to be activated and when a top-level window is created or destroyed.</p>
+<p>Note that custom shell applications do not receive <strong>WH_SHELL</strong> messages. Therefore, any application that registers itself as the default shell must call the <a href="/en-us/windows/desktop/api/winuser/nf-winuser-systemparametersinfoa" data-linktype="absolute-path"><strong>SystemParametersInfo</strong></a> function before it (or any other application) can receive <strong>WH_SHELL</strong> messages. This function must be called with <strong>SPI_SETMINIMIZEDMETRICS</strong> and a <a href="/en-us/windows/win32/api/winuser/ns-winuser-minimizedmetrics" data-linktype="absolute-path"><strong>MINIMIZEDMETRICS</strong></a> structure. Set the <strong>iArrange</strong> member of this structure to <strong>ARW_HIDE</strong>.</p>
+<p>For more information, see the <a href="/en-us/previous-versions/windows/desktop/legacy/ms644991(v=vs.85)" data-linktype="absolute-path"><em>ShellProc</em></a> callback function.</p>
+<p> </p>
+<p> </p>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+								<div class="is-hidden-desktop border-top has-margin-top-large has-padding-top-large binary-rating-holder">
+									
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small font-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-desktop">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>									</div>
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+								
+	
+	
+
+	<div class="feedback-verbatim border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-mobile">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
+		    </div>
+			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
+                <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden" tabindex="-1">
+        <p>Thank you.</p>
+    </div>
+</div>							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

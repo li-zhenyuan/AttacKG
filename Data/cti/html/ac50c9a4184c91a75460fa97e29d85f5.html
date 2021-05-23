@@ -1,0 +1,321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Chapter 10. Detecting and Subverting Firewalls and Intrusion Detection Systems | Nmap Network Scanning</title><link rel="stylesheet" type="text/css" href="/shared/css/insecdb.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="start" href="toc.html" title="Nmap Network Scanning"><link rel="up" href="toc.html" title="Nmap Network Scanning"><link rel="prev" href="nse-implementation.html" title="Implementation Details"><link rel="next" href="firewalls-ids-justification.html" title="Why Would Ethical Professionals (White-hats) Ever Do This?"><link rel="preface" href="preface.html" title="Preface"><link rel="chapter" href="intro.html" title="Chapter 1. Getting Started with Nmap"><link rel="chapter" href="install.html" title="Chapter 2. Obtaining, Compiling, Installing, and Removing Nmap"><link rel="chapter" href="host-discovery.html" title="Chapter 3. Host Discovery (“Ping Scanning”)"><link rel="chapter" href="port-scanning.html" title="Chapter 4. Port Scanning Overview"><link rel="chapter" href="scan-methods.html" title="Chapter 5. Port Scanning Techniques and Algorithms"><link rel="chapter" href="performance.html" title="Chapter 6. Optimizing Nmap Performance"><link rel="chapter" href="vscan.html" title="Chapter 7. Service and Application Version Detection"><link rel="chapter" href="osdetect.html" title="Chapter 8. Remote OS Detection"><link rel="chapter" href="nse.html" title="Chapter 9. Nmap Scripting Engine"><link rel="chapter" href="firewalls.html" title="Chapter 10. Detecting and Subverting Firewalls and Intrusion Detection Systems"><link rel="chapter" href="defenses.html" title="Chapter 11. Defenses Against Nmap"><link rel="chapter" href="zenmap.html" title="Chapter 12. Zenmap GUI Users' Guide"><link rel="chapter" href="output.html" title="Chapter 13. Nmap Output Formats"><link rel="chapter" href="data-files.html" title="Chapter 14. Understanding and Customizing Nmap Data Files"><link rel="chapter" href="man.html" title="Chapter 15. Nmap Reference Guide"><link rel="chapter" href="ndiff-man.html" title="Chapter 16. Ndiff Reference Guide"><link rel="chapter" href="ncat-man.html" title="Chapter 17. Ncat Reference Guide"><link rel="chapter" href="nping-man.html" title="Chapter 18. Nping Reference Guide"><link rel="appendix" href="app-nmap-dtd.html" title="Appendix A. Nmap XML Output DTD"><link rel="index" href="idx.html" title="Index"><link rel="section" href="firewalls.html#firewalls-ids-intro" title="Introduction"><link rel="section" href="firewalls-ids-justification.html" title="Why Would Ethical Professionals (White-hats) Ever Do This?"><link rel="section" href="determining-firewall-rules.html" title="Determining Firewall Rules"><link rel="section" href="firewall-subversion.html" title="Bypassing Firewall Rules"><link rel="section" href="subvert-ids.html" title="Subverting Intrusion Detection Systems"><link rel="section" href="firewall-ids-packet-forgery.html" title="Detecting Packet Forgery by Firewall and Intrusion Detection Systems"><link REL="SHORTCUT ICON" HREF="/shared/images/tiny-eyeicon.png" TYPE="image/png">
+<META NAME="ROBOTS" CONTENT="NOARCHIVE">
+<meta name="theme-color" content="#2A0D45">
+<link rel="stylesheet" href="/shared/css/insecdb.css" type="text/css">
+<!--Google Analytics Code-->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-11009417-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<!--END Google Analytics Code-->
+
+<!--Google Custom Site Search boilerplate Javascript-->
+<script type="text/javascript">
+  (function() {
+    var cx = 'partner-pub-0078565546631069:bx60rb-fytx';
+    var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
+    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+        '//www.google.com/cse/cse.js?cx=' + cx;
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(gcse, s);
+  })();
+</script>
+<!--End Google Custom Site Search boilerplate Javascript-->
+
+</HEAD>
+<BODY BGCOLOR="#2A0D45" TEXT="#000000">
+
+<TABLE CELLPADDING="0" WIDTH="100%" CELLSPACING="0">
+<TR><TD ALIGN="left"><A HREF="/"><IMG BORDER=0 ALT="Home page logo"
+SRC="/images/sitelogo.png" HEIGHT=90 WIDTH=168></A></TD>
+<TD VALIGN="bottom" ALIGN="right">
+  <!-- Begin TopBanner Code -->
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- TopBanner728x90 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-0078565546631069"
+     data-ad-slot="4776164010"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- AdSpeed.com Serving Code 7.9.6 for [Zone] TopBanner [Any Dimension] -->
+<!-- <script type="text/javascript" src="//g.adspeed.net/ad.php?do=js&amp;zid=14678&amp;wd=-1&amp;ht=-1&amp;target=_blank"></script> -->
+<!-- AdSpeed.com End -->
+<!-- End Banner Code -->
+
+</TD></TR></TABLE>
+<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0"><TR>
+<TD ALIGN="left" WIDTH="130" VALIGN="top" class="sidebar">
+
+<!-- SECWIKI PORTAL INSERT -->
+
+<ul>
+<li><a href="https://nmap.org/">Nmap Security Scanner</a>
+<ul>
+<li><a href="https://nmap.org/">Intro</a></li>
+<li><a href="https://nmap.org/book/man.html">Ref Guide</a></li>
+<li><a href="https://nmap.org/book/install.html">Install Guide</a></li>
+<li><a href="https://nmap.org/download.html">Download</a></li>
+<li><a href="https://nmap.org/changelog.html">Changelog</a></li>
+<li><a href="https://nmap.org/book/">Book</a></li>
+<li><a href="https://nmap.org/docs.html">Docs</a></li>
+</ul>
+<li><a href="https://seclists.org/">Security Lists</a>
+<ul>
+<li><a href="https://seclists.org/nmap-announce/">Nmap Announce</a></li>
+<li><a href="https://seclists.org/nmap-dev/">Nmap Dev</a></li>
+<li><a href="https://seclists.org/bugtraq/">Bugtraq</a></li>
+<li><a href="https://seclists.org/fulldisclosure/">Full Disclosure</a></li>
+<li><a href="https://seclists.org/pen-test/">Pen Test</a></li>
+<li><a href="https://seclists.org/basics/">Basics</a></li>
+<li><a href="https://seclists.org/">More</a></li>
+</ul>
+<li><a href="https://sectools.org">Security Tools</a>
+<ul>
+<li><a href="https://sectools.org/tag/pass-audit/">Password audit</a></li>
+<li><a href="https://sectools.org/tag/sniffers/">Sniffers</a></li>
+<li><a href="https://sectools.org/tag/vuln-scanners/">Vuln scanners</a></li>
+<li><a href="https://sectools.org/tag/web-scanners/">Web scanners</a></li>
+<li><a href="https://sectools.org/tag/wireless/">Wireless</a></li>
+<li><a href="https://sectools.org/tag/sploits/">Exploitation</a></li>
+<li><a href="https://sectools.org/tag/packet-crafters/">Packet crafters</a></li>
+<li><a href="https://sectools.org/">More</a></li>
+</ul>
+<li><a href="https://insecure.org/">Site News</a></li>
+<li><a href="https://insecure.org/advertising.html">Advertising</a></li>
+<li><a href="https://insecure.org/fyodor/">About/Contact</a></li>
+<li>
+<!-- SiteSearch Google -->
+<form action="https://nmap.org/search.html" id="cse-search-box-sidebar">
+  <div>
+    <input type="hidden" name="cx" value="partner-pub-0078565546631069:bx60rb-fytx">
+    <input type="hidden" name="cof" value="FORID:9">
+    <input type="hidden" name="ie" value="ISO-8859-1">
+    <input type="text" name="q" size="16">
+    <input type="submit" name="sa" value="Site Search">
+  </div>
+</form>
+<!-- End SiteSearch Google -->
+</li>
+<!-- These can come back if I ever update them ...
+<li><a href="https://insecure.org/links.html">Exceptional Links</a></li>
+<li><a href="https://insecure.org/reading.html">Good Reading</a></li>
+<li><a href="https://insecure.org/sploits.html">Exploit World</a></li>
+-->
+<li><a href="https://insecure.org/advertising.html">Sponsors:</a>
+  <br><br>
+  
+<!-- Begin Google Sidebar Banner Code -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- SidebarSkyScraper -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:120px;height:600px"
+     data-ad-client="ca-pub-0078565546631069"
+     data-ad-slot="9829251079"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Google Sidebar Banner Code -->
+
+</li>
+</ul>
+
+</TD>
+<TD BGCOLOR="#FFFFFF" VALIGN="top" ALIGN="left"><IMG
+SRC="/shared/images/topleftcurve.gif" alt="/"><TABLE CELLPADDING="4" WIDTH="100%" style="table-layout: fixed;"><TR><TD BGCOLOR="#FFFFFF">
+<CENTER>
+
+<TABLE CELLSPACING="5">
+<TR VALIGN="top"><TD VALIGN="top"><A HREF="/zenmap/images/zenmap-multi-1220x700.png"><IMG WIDTH=150 HEIGHT=150 SRC="/zenmap/images/zenmap-thumb-150x150.png" alt="Zenmap screenshot"></A></TD>
+<TD VALIGN="top" ALIGN="center">
+<!-- Begin Banner Code -->
+<!-- Modified random image selection code - original version at 
+     http://www.bravenet.com/reviews/archives/tips.php?view=8 -->
+
+<SCRIPT type="text/javascript"> 
+<!--
+var imagenumber = 11 ; 
+var randomnumber = Math.random() ; 
+var rand1 = Math.round( (imagenumber-1) * randomnumber) + 1 ; 
+images = new Array 
+images[1] = "images/nmap_bnr2.jpg" 
+images[2] = "images/nmap_bnr_euroboy.jpg" 
+images[3] = "images/nmap_bnr_ai.jpg" 
+images[4] = "images/nmap_bnr_kyra1.gif" 
+images[5] = "images/nmap_bnr_kyra2.gif" 
+images[6] = "images/nmap_bnr_kyra3.gif" 
+images[7] = "images/nmap_bnr_kyra4.gif" 
+images[8] = "images/nmap_bnr_kyra5.gif" 
+images[9] = "images/nmap_bnr_i_amgod3.jpg" 
+images[10] = "images/nmap_bnr_mouse.gif" 
+images[11] = "images/nmap_bnr_m4rc3l0-2.jpg" 
+
+var myimage = images[rand1] 
+var mylink = "/"
+document.write('<A HREF="' + mylink + '"><IMG src="/' + myimage + '" BORDER=0 alt="Nmap promo banner"><\/A>') 
+//  --> 
+</SCRIPT> 
+<NOSCRIPT>
+<A HREF="/"><IMG SRC="/images/nmap_bnr_euroboy.jpg" BORDER=0 HEIGHT=60 WIDTH=468 alt="Nmap promo banner"></A>
+</NOSCRIPT>
+
+<table class="pagemap" width=468>
+  <tr>
+
+<td><A HREF="/">Intro</A></td>
+
+
+
+<td><A HREF="/book/man.html">Reference Guide</A></td>
+
+
+
+<td><A HREF="/book/">Book</A></td>
+
+
+
+<td><A HREF="/book/install.html">Install Guide</A></td>
+
+
+</tr><tr>
+
+<td><A HREF="/download.html">Download</A></td>
+
+
+
+
+<td><A HREF="/changelog">Changelog</A></td>
+
+
+
+
+<td><A HREF="/zenmap/">Zenmap GUI</A></td>
+
+
+
+<td><A HREF="/docs.html">Docs</A></td>
+
+
+</tr><tr>
+
+<td><A HREF="/book/man-bugs.html">Bug Reports</A></td>
+
+
+
+
+<td><A HREF="/book/osdetect.html">OS Detection</A></td>
+
+
+
+
+<td><A HREF="/nmap_propaganda.html">Propaganda</A></td>
+
+
+
+<td><A HREF="/projects.html">Related Projects</A></td>
+
+
+</tr><tr>
+
+
+<td colspan=2><A HREF="/movies/">In the Movies</A></td>
+
+
+
+
+<td colspan=2 align="right"><A HREF="/nmap_inthenews.html">In the News</A></td>
+
+
+
+</tr></table>
+
+
+</TD>
+<TD VALIGN="top"><A HREF="/images/nmap-401-demoscan-798x774.gif"><IMG WIDTH=150 HEIGHT=150 SRC="/images/nmap-401-demoscan-squarecrop-150x150.gif" alt="Example Nmap output"></A></TD>
+</TR></TABLE>
+</CENTER>
+<br>
+<h2 class="purpleheader">Nmap Network Scanning</h2><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 10. Detecting and Subverting Firewalls and Intrusion Detection Systems</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="nse-implementation.html"><img src="/book-icons/prev.gif" alt="Prev"></a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="firewalls-ids-justification.html"><img src="/book-icons/next.gif" alt="Next"></a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="firewalls"></a>Chapter 10. Detecting and Subverting Firewalls and Intrusion Detection Systems</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="firewalls.html#firewalls-ids-intro">Introduction</a></span></dt><dt><span class="sect1"><a href="firewalls-ids-justification.html">Why Would Ethical Professionals (White-hats) Ever Do This?</a></span></dt><dt><span class="sect1"><a href="determining-firewall-rules.html">Determining Firewall Rules</a></span></dt><dd><dl><dt><span class="sect2"><a href="determining-firewall-rules.html#fw-rules-SYN">Standard SYN Scan</a></span></dt><dd><dl><dt><span class="sect3"><a href="determining-firewall-rules.html#idm45673678735552">Sneaky firewalls that return RST</a></span></dt></dl></dd><dt><span class="sect2"><a href="determining-firewall-rules.html#defeating-firewalls-ids-ackscan">ACK Scan</a></span></dt><dt><span class="sect2"><a href="determining-firewall-rules.html#defeating-firewalls-ipid-tricks">IP ID Tricks</a></span></dt><dt><span class="sect2"><a href="determining-firewall-rules.html#fw-udp-vscan">UDP Version Scanning</a></span></dt></dl></dd><dt><span class="sect1"><a href="firewall-subversion.html">Bypassing Firewall Rules</a></span></dt><dd><dl><dt><span class="sect2"><a href="firewall-subversion.html#fw-exotic-flags">Exotic Scan Flags</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#defeating-firewalls-source-port">Source Port Manipulation</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#defeating-firewalls-ipv6">IPv6 Attacks</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#fw-ipid-scanning">IP ID Idle Scanning</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#fw-multi-pings">Multiple Ping Probes</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#defeating-firewalls-fragmentation">Fragmentation</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#fw-proxies">Proxies</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#defeating-firewalls-mac-spoofing">MAC Address Spoofing</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#fw-src-routing">Source Routing</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#fw-ftp-bounce">FTP Bounce Scan</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#fw-alternative-path">Take an Alternative Path</a></span></dt><dt><span class="sect2"><a href="firewall-subversion.html#fw-subversion-example">A Practical Real-life Example of Firewall Subversion</a></span></dt></dl></dd><dt><span class="sect1"><a href="subvert-ids.html">Subverting Intrusion Detection Systems</a></span></dt><dd><dl><dt><span class="sect2"><a href="subvert-ids.html#subvert-ids-detection">Intrusion Detection System Detection</a></span></dt><dd><dl><dt><span class="sect3"><a href="subvert-ids.html#idm45673678423856">Reverse probes</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#idm45673678411728">Sudden firewall changes and suspicious packets</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#idm45673678406448">Naming conventions</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#idm45673678399104">Unexplained TTL jumps</a></span></dt></dl></dd><dt><span class="sect2"><a href="subvert-ids.html#avoid-ids">Avoiding Intrusion Detection Systems</a></span></dt><dd><dl><dt><span class="sect3"><a href="subvert-ids.html#idm45673678371776">Slow down</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#idm45673678333264">Scatter probes across networks rather than scanning hosts consecutively</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#idm45673678320624">Fragment packets</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#idm45673678317168">Evade specific rules</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#idm45673678299808">Avoid easily detected Nmap features</a></span></dt></dl></dd><dt><span class="sect2"><a href="subvert-ids.html#misleading-ids">Misleading Intrusion Detection Systems</a></span></dt><dd><dl><dt><span class="sect3"><a href="subvert-ids.html#defeating-firewalls-decoys">Decoys</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#defeating-firewalls-port-scan-spoofing">Port scan spoofing</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#idm45673678262928">Idle scan</a></span></dt><dt><span class="sect3"><a href="subvert-ids.html#defeating-firewalls-dns-proxy">DNS proxying</a></span></dt></dl></dd><dt><span class="sect2"><a href="subvert-ids.html#defeating-ids-dos-attack">DoS Attacks Against Reactive Systems</a></span></dt><dt><span class="sect2"><a href="subvert-ids.html#exploit-ids">Exploiting Intrusion Detection Systems</a></span></dt><dt><span class="sect2"><a href="subvert-ids.html#ignore-ids">Ignoring Intrusion Detection Systems</a></span></dt></dl></dd><dt><span class="sect1"><a href="firewall-ids-packet-forgery.html">Detecting Packet Forgery by Firewall and Intrusion Detection Systems</a></span></dt><dd><dl><dt><span class="sect2"><a href="firewall-ids-packet-forgery.html#ttl-consistency">Look for TTL Consistency</a></span></dt><dt><span class="sect2"><a href="firewall-ids-packet-forgery.html#ipid-seqnum-consistency">Look for IP ID and Sequence Number Consistency</a></span></dt><dt><span class="sect2"><a href="firewall-ids-packet-forgery.html#bogus-tcp-cksum">The Bogus TCP Checksum Trick</a></span></dt><dt><span class="sect2"><a href="firewall-ids-packet-forgery.html#fw-rtt">Round Trip Times</a></span></dt><dt><span class="sect2"><a href="firewall-ids-packet-forgery.html#fw-pkt-headers">Close Analysis of Packet Headers and Contents</a></span></dt><dt><span class="sect2"><a href="firewall-ids-packet-forgery.html#fw-net-uniformity">Unusual Network Uniformity</a></span></dt></dl></dd></dl></div><a class="indexterm" name="idm45673678767536"></a><div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="firewalls-ids-intro"></a>Introduction<a class="indexterm" name="idm45673678765744"></a></h2></div></div></div><p>Many Internet pioneers envisioned a global open network with a
+universal IP address space allowing virtual connections between any
+two nodes.  This allows hosts to act as true peers, serving and
+retrieving information from each other.  People could access all of
+their home systems from work, changing the climate control settings or
+unlocking the doors for early guests.  This vision of universal
+connectivity has been stifled by address space shortages and security
+concerns.  In the early 1990s, organizations began deploying
+firewalls for the express purpose of reducing connectivity.  Huge
+networks were cordoned off from the unfiltered Internet by application
+proxies,
+network address translation<a class="indexterm" name="idm45673678763952"></a>
+devices, and packet filters.  The
+unrestricted flow of information gave way to tight regulation of
+approved communication channels and the content that passes over
+them.</p><p>Network obstructions such as firewalls can make mapping a
+network exceedingly difficult.  It will not get any easier, as
+stifling casual reconnaissance is often a key goal of implementing the
+devices.   Nevertheless, Nmap offers many features to help understand these
+complex networks, and to verify that filters are working as intended.
+It even supports mechanisms for bypassing poorly implemented
+defenses.  One of the best methods of understanding your
+network security posture is to try to defeat it.  Place yourself in
+the mind-set of an attacker and deploy techniques from this chapter
+against your networks.  Launch an FTP bounce scan, idle scan,
+fragmentation attack, or try to tunnel through one of your own
+proxies.</p><p>In addition to restricting network activity, companies are
+increasingly monitoring traffic with intrusion detection systems
+(IDS).<a class="indexterm" name="idm45673678760544"></a>
+All of the major IDSs ship with rules designed to detect Nmap
+scans because scans are sometimes a precursor to attacks.  Many of
+these products have morphed into intrusion
+<span class="emphasis"><em>prevention</em></span> systems
+(IPS)<a class="indexterm" name="idm45673678759072"></a>
+that actively block
+traffic deemed malicious.  Unfortunately for network administrators
+and IDS vendors, reliably detecting bad intentions by analyzing packet
+data is a tough problem.  Attackers with patience, skill, and the help
+of certain Nmap options can usually pass by IDSs undetected.
+Meanwhile, administrators must cope with large numbers of false
+positive results where innocent activity is misdiagnosed and alerted
+on or blocked.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="nse-implementation.html"><img src="/book-icons/prev.gif" alt="Prev"></a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="firewalls-ids-justification.html"><img src="/book-icons/next.gif" alt="Next"></a></td></tr><tr><td width="40%" align="left" valign="top">Implementation Details </td><td width="20%" align="center"><a accesskey="h" href="toc.html"><img src="/book-icons/home.gif" alt="Home"></a></td><td width="40%" align="right" valign="top"> Why Would Ethical Professionals (White-hats) Ever Do This?</td></tr></table></div></TD></TR>
+</TABLE>
+</TD></TR>
+<TR><TD></TD><TD ALIGN="center">
+<FONT COLOR="#FFFFFF">
+[ <A HREF="https://nmap.org"><FONT COLOR="#FFFFFF">Nmap</FONT></A> |
+  <A HREF="https://sectools.org"><FONT COLOR="#FFFFFF">Sec Tools</FONT></A> |
+  <A HREF="https://seclists.org/"><FONT COLOR="#FFFFFF">Mailing Lists</FONT></A> |
+  <A HREF="https://insecure.org/"><FONT COLOR="#FFFFFF">Site News</FONT></A> |
+  <A HREF="https://insecure.org/fyodor/"><FONT COLOR="#FFFFFF">About/Contact</FONT></A> |
+  <A HREF="https://insecure.org/advertising.html"><FONT COLOR="#FFFFFF">Advertising</FONT></A> |
+  <A HREF="https://insecure.org/privacy.html"><FONT COLOR="#FFFFFF">Privacy</FONT></A> ]<BR>
+</FONT>
+
+<!-- SiteSearch Google -->
+<div class="gcse-searchbox-only" data-resultsUrl="https://nmap.org/search.html"></div>
+<!-- End SiteSearch Google -->
+
+<!-- Bottom Banner -->
+<!-- Adsense -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- PageBottom728x90 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-0078565546631069"
+     data-ad-slot="2743510915"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- End Bottom Banner -->
+</TD></TR>
+</TABLE>
+</BODY>
+</HTML>
+
+

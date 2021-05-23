@@ -1,0 +1,735 @@
+<!DOCTYPE html><html
+dir="ltr" lang="en"><head><meta
+charset="utf-8"><meta
+http-equiv="X-UA-Compatible" content="IE=edge"><meta
+name="viewport" content="width=device-width, initial-scale=1"><meta
+name="referrer" content="no-referrer-when-downgrade">
+<meta name="google-site-verification" content="riYkbs3fCzk0_BCgCPJdmKqTttlC0ZmTx5auF2nVzoQ" />
+<meta name="msvalidate.01" content="46B1CAA2EC39379BA55C32802DCC1C62" />
+
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-38132735-1', 'anomali.com');
+  ga('send', 'pageview');
+</script>
+    
+
+<!-- Triblio -->
+<script type='text/javascript' data-cfasync='false' src='//tribl.io/h.js?orgId=O8naez8e2eHPYn7m991b'></script>
+
+
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+ fbq('init', '2115220198489652'); 
+fbq('track', 'PageView');
+</script>
+<noscript>
+ <img height="1" width="1" 
+src="https://www.facebook.com/tr?id=2115220198489652&ev=PageView
+&noscript=1"/>
+</noscript>
+<!-- End Facebook Pixel Code -->
+
+
+<!-- Full Circle Digital Source Tracker -->
+<script type="text/javascript" src="https://d2i34c80a0ftze.cloudfront.net/fullcircle.js?cid=89e085f3-5a30-494c-87ce-c5df4aacd29b&domain=anomali.com"></script>
+
+
+<!-- ZoomInfo WebSights -->
+<script>
+(function() {
+var zi = document.createElement('script');
+zi.type = 'text/javascript';
+zi.async = true;
+zi.src = 'https://ws.zoominfo.com/pixel/2NTdNVxw8uLL0HhQZABg';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(zi, s);
+})();
+</script>
+<noscript>
+<img src="https://ws.zoominfo.com/pixel/2NTdNVxw8uLL0HhQZABg"
+width="1" height="1" style="display: none;" />
+</noscript>
+
+
+<!-- TrenDemon Code -->
+   <script type="text/javascript" id="trd-flame-load">
+   TRD_ACC_ID = 2154;
+    (function (w, d) {
+         function go() {
+            var trdti = setInterval(function () {
+            if (document.readyState === "complete") {
+                var bi = document.createElement("script"); bi.type = "text/javascript"; bi.async = true;
+                bi.src = "https://assets.trendemon.com/tag/trends.min.js";
+                bi.id  = "trdflame";
+                var s  = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(bi, s);
+                clearInterval(trdti);
+                }
+           }, 500);
+        };
+        go();
+     }(window, document));
+  </script>
+<!-- End of TrenDemon Code --><title>Evasive Maneuvers by the Wekby group with custom ROP-packing and DNS covert channels</title><meta
+property="og:site_name" value="Anomali" /><meta
+property="og:title" content="Evasive Maneuvers by the Wekby group with custom ROP-packing and DNS covert channels"><meta
+name="twitter:title" content="Evasive Maneuvers by the Wekby group with custom ROP-packing and DNS covert channels"><meta
+property="og:image" content="https://anomali.cdn.rackfoundry.net/images/uploads/og-anomali.png"><link
+rel="alternate" type="application/rss+xml" title="Anomali Blog" href="https://www.anomali.com/site/blog-rss" /><meta
+property="og:url" content="https://www.anomali.com/blog/evasive-maneuvers-the-wekby-group-attempts-to-evade-analysis-via-custom-rop" /><link
+rel='canonical' href='https://www.anomali.com/blog/evasive-maneuvers-the-wekby-group-attempts-to-evade-analysis-via-custom-rop' /><meta
+property="trd:title" content="[BLOG] Evasive Maneuvers by the Wekby group with custom ROP-packing and DNS covert channels" /><meta
+property="trd:image" content="https://anomali.cdn.rackfoundry.net/images/made/images/uploads/trdog-anomali_350_184_s_c1.png" /><link
+href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet"><link
+rel="stylesheet" media="all" href="https://www.anomali.com/cache/e81fe80b777a82c7598ed9fce56d54999f8fbf37.1619117684.css">
+<script>
+function get_param_by_name(name) {
+      name=name.replace(/[\[]/, "\[").replace(/[\]]/, "\]");
+      var regex=new RegExp("[\?&]"+ name+"=([^&#]*)"),
+      results=regex.exec(location.search);
+      return results==null?"": decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+var cid=get_param_by_name('cid');
+var utm_campaign=get_param_by_name('utm_campaign');
+var internal_campaign=get_param_by_name('internal_campaign');
+</script></head><body><div
+class="main-container">
+<header
+id="anomali-header" class="anomali-header">
+<nav
+class="nav-top-level">
+<div
+class="container-fluid top-level nav-mobile d-block d-md-none"><div
+id="nav-mobile-stage" class="nav-mobile-stage" aria-expanded="false"><div
+class="nav-mobile-header"><div
+class="row align-items-center no-gutters"><div
+class="col-6">
+<button
+class="btn btn-link" type="button" data-toggle="menuNav"><i
+class="fas fa-bars fa-lg" aria-hidden="true"></i><span
+class="sr-only">Navigation</span></button></div><div
+class="schedule-demo">
+<a
+href="/request-a-demo" class="btn btn-anomali btn-sm">Schedule Demo</a></div><div
+class="col-6 anomali-logo">
+<a
+href="/" class="header-logo"><img
+src="https://anomali.cdn.rackfoundry.net/assets/images/anomali-logo.svg" alt="Anomali" class="img-fluid"></a></div></div></div><div
+class="accordion" id="mobileNavStage"><div
+class="card"><div
+class="card-header" id="heading-platform"><div
+class="row"><div
+class="col-9">
+<a
+href="/products" class="btn btn-link btn-block text-left">Products</a></div><div
+class="col-3">
+<button
+class="anomali-accordion-button" type="button" data-toggle="collapse" data-target="#collapse-platform" aria-expanded="false" aria-controls="collapse-platform">
+<i
+class="fas fa-chevron-up fa-anomali-animate" aria-hidden="true"></i>
+</button></div></div></div><div
+id="collapse-platform" class="collapse" aria-labelledby="heading-platform" data-parent="#mobileNavStage"><div
+class="card-body"><ul
+class="nav-mobile-secondary-list"><li
+class="nav-mobile-secondary-item"><a
+href="/products/threatstream" class="nav-mobile-secondary-link">ThreatStream</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/products/match" class="nav-mobile-secondary-link">Match</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/products/lens" class="nav-mobile-secondary-link">Lens</a></li></ul></div></div></div><div
+class="card"><div
+class="card-header" id="heading-marketplace"><div
+class="row"><div
+class="col-9">
+<a
+href="/marketplace" class="btn btn-link btn-block text-left">Marketplace</a></div><div
+class="col-3">
+<button
+class="anomali-accordion-button" type="button" data-toggle="collapse" data-target="#collapse-marketplace" aria-expanded="false" aria-controls="collapse-marketplace">
+<i
+class="fas fa-chevron-up fa-anomali-animate" aria-hidden="true"></i>
+</button></div></div></div><div
+id="collapse-marketplace" class="collapse" aria-labelledby="heading-marketplace" data-parent="#mobileNavStage"><div
+class="card-body"><ul
+class="nav-mobile-secondary-list"><li
+class="nav-mobile-secondary-item"><a
+href="/marketplace/threat-intelligence-feeds" class="nav-mobile-secondary-link">Threat Intelligence Feeds</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/marketplace/threat-analysis-tools" class="nav-mobile-secondary-link">Threat Analysis Tools &amp; Enrichments</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/marketplace/security-system-partners" class="nav-mobile-secondary-link">Security System Partners</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/marketplace/sdks" class="nav-mobile-secondary-link">Anomali SDKs</a></li></ul></div></div></div><div
+class="card"><div
+class="card-header" id="heading-tis"><div
+class="row"><div
+class="col-9">
+<a
+href="/threat-intel-sharing" class="btn btn-link btn-block text-left">Intel Sharing</a></div></div></div></div><div
+class="card"><div
+class="card-header" id="heading-partners"><div
+class="row"><div
+class="col-9">
+<a
+href="/partners" class="btn btn-link btn-block text-left">Partners</a></div><div
+class="col-3">
+<button
+class="anomali-accordion-button" type="button" data-toggle="collapse" data-target="#collapse-partners" aria-expanded="false" aria-controls="collapse-partners">
+<i
+class="fas fa-chevron-up fa-anomali-animate" aria-hidden="true"></i>
+</button></div></div></div><div
+id="collapse-partners" class="collapse" aria-labelledby="heading-partners" data-parent="#mobileNavStage"><div
+class="card-body"><ul
+class="nav-mobile-secondary-list"><li
+class="nav-mobile-secondary-item"><a
+href="/partners/channel-resellers" class="nav-mobile-secondary-link">Channel Resellers</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/partners/mssps" class="nav-mobile-secondary-link">MSSPs</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/partners/system-integrators" class="nav-mobile-secondary-link">System Integrators</a></li></ul></div></div></div><div
+class="card"><div
+class="card-header" id="heading-resources"><div
+class="row"><div
+class="col-9">
+<a
+href="/resources" class="btn btn-link btn-block text-left">Resources</a></div><div
+class="col-3">
+<button
+class="anomali-accordion-button" type="button" data-toggle="collapse" data-target="#collapse-resources" aria-expanded="false" aria-controls="collapse-resources">
+<i
+class="fas fa-chevron-up fa-anomali-animate" aria-hidden="true"></i>
+</button></div></div></div><div
+id="collapse-resources" class="collapse" aria-labelledby="heading-resources" data-parent="#mobileNavStage"><div
+class="card-body"><ul
+class="nav-mobile-secondary-list"><li
+class="nav-mobile-secondary-item"><a
+href="/resources#datasheets" class="nav-mobile-secondary-link">Datasheets</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources#partner-datasheets" class="nav-mobile-secondary-link">Partner Datasheets</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources#videos" class="nav-mobile-secondary-link">Videos</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources#webinars" class="nav-mobile-secondary-link">Webinars</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources#whitepapers" class="nav-mobile-secondary-link">White Papers</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/detect-live" class="nav-mobile-secondary-link">Detect LIVE</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources" class="nav-mobile-secondary-link">Browse all Resources</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/what-is-threat-intelligence" class="nav-mobile-secondary-link">What is Threat Intelligence?</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/sharing-threat-intelligence" class="nav-mobile-secondary-link">Threat Intelligence Sharing</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/what-is-a-tip" class="nav-mobile-secondary-link">Threat Intelligence Platform (TIP)</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/what-are-stix-taxii" class="nav-mobile-secondary-link">STIX/TAXII</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/what-mitre-attck-is-and-how-it-is-useful" class="nav-mobile-secondary-link">MITRE ATT&amp;CK</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/learn/covid-19-resources" class="nav-mobile-secondary-link">COVID-19 Resources</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/learn/sunburst" class="nav-mobile-secondary-link">Sunburst Resources</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/anomali-cyber-watch" class="nav-mobile-secondary-link">Anomali Cyber Watch</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/staxx" class="nav-mobile-secondary-link">STAXX</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/limo" class="nav-mobile-secondary-link">Limo</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/resources/anomali-newsletter" class="nav-mobile-secondary-link">Anomali Newsletter</a></li></ul></div></div></div><div
+class="card"><div
+class="card-header" id="heading-company"><div
+class="row"><div
+class="col-9">
+<a
+href="/company" class="btn btn-link btn-block text-left">Company</a></div><div
+class="col-3">
+<button
+class="anomali-accordion-button" type="button" data-toggle="collapse" data-target="#collapse-company" aria-expanded="false" aria-controls="collapse-company">
+<i
+class="fas fa-chevron-up fa-anomali-animate" aria-hidden="true"></i>
+</button></div></div></div><div
+id="collapse-company" class="collapse" aria-labelledby="heading-company" data-parent="#mobileNavStage"><div
+class="card-body"><ul
+class="nav-mobile-secondary-list"><li
+class="nav-mobile-secondary-item"><a
+href="/company/leadership" class="nav-mobile-secondary-link">Leadership</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/news-events/press" class="nav-mobile-secondary-link">News &amp; Events</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/company/awards" class="nav-mobile-secondary-link">Awards</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/company/careers" class="nav-mobile-secondary-link">Careers</a></li><li
+class="nav-mobile-secondary-item"><a
+href="/company/contact-us" class="nav-mobile-secondary-link">Contact us</a></li></ul></div></div></div><div
+class="card"><div
+class="card-header" id="heading-blog">
+<a
+href="/blog" class="btn btn-link btn-block text-left">Blog</a></div></div><div
+class="card"><div
+class="card-header" id="heading-support">
+<a
+href="/customer-success" class="btn btn-link btn-block text-left">Support</a></div></div><div
+class="card"><div
+class="card-header" id="heading-signin">
+<a
+href="https://ui.threatstream.com/login" target="_blank" class="btn btn-link btn-block text-left">Sign In</a></div></div><div
+class="card"><div
+class="card-header schedule-demo" id="heading-schedule">
+<a
+href="/request-a-demo" class="btn btn-anomali btn-block">Schedule Demo</a></div></div></div></div></div><div
+class="nav-sticky"><div
+class="container"><div
+class="row"><div
+class="top-level-home col-sm-3">
+<a
+href="/" class="header-logo"><img
+src="https://anomali.cdn.rackfoundry.net/assets/images/anomali-logo.svg" alt="Anomali"></a></div><div
+class="top-level-nav text-right col-sm-9"><ul
+class="nav-content list-inline"><li
+class="nav-content-item list-inline-item"><a
+href="/request-a-demo" class="btn btn-anomali btn-sm">Schedule Demo</a></li></ul></div></div></div></div><div
+class="container top-level nav-desktop d-none d-md-block"><div
+class="row no-gutters"><div
+class="top-level-home col-sm-3">
+<a
+href="/" class="header-logo"><img
+src="https://anomali.cdn.rackfoundry.net/assets/images/anomali-logo.svg" alt="Anomali"></a></div><div
+class="top-level-nav col-sm-9"><ul
+class="nav-content list-inline"><li
+class="nav-content-item list-inline-item"><div
+class="dropdown anomali-dropdown-header">
+<button
+class="btn btn-link dropdown-toggle" type="button" id="header-languageSelector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">English</button><div
+class="dropdown-menu" aria-labelledby="header-languageSelector">
+<a
+class="dropdown-item" href="/">English</a>
+<a
+class="dropdown-item" href="/fr">Français</a>
+<a
+class="dropdown-item" href="/de">Deutsch</a>
+<a
+class="dropdown-item" href="/jp">日本語</a>
+<a
+class="dropdown-item" href="/it">Italiano</a>
+<a
+class="dropdown-item" href="/pt">Português</a>
+<a
+class="dropdown-item" href="/ru">Русский</a>
+<a
+class="dropdown-item" href="/es">Español</a></div></div></li><li
+class="nav-content-item list-inline-item"><a
+href="/blog">Blog</a></li><li
+class="nav-content-item list-inline-item"><a
+href="/customer-success">Support</a></li><li
+class="nav-content-item list-inline-item"><a
+href="https://ui.threatstream.com/login" target="_blank">Sign In</a></li><li
+class="nav-content-item list-inline-item"><a
+href="/request-a-demo" class="btn btn-anomali btn-sm">Schedule Demo</a></li></ul></div></div><div
+class="main-navigation"><ul
+class="main-nav-content list-inline"><li
+class="list-inline-item"><a
+href="/products" class="main-nav-content-item " data-navid="platform">Products</a></li><li
+class="list-inline-item"><a
+href="/marketplace" class="main-nav-content-item " data-navid="marketplace">Marketplace</a></li><li
+class="list-inline-item"><a
+href="/threat-intel-sharing" class="main-nav-content-item " data-navid="threatintelsharing">Intel Sharing</a></li><li
+class="list-inline-item"><a
+href="/partners" class="main-nav-content-item " data-navid="partners">Partners</a></li><li
+class="list-inline-item"><a
+href="/resources" class="main-nav-content-item  " data-navid="resources">Resources</a></li><li
+class="list-inline-item"><a
+href="/company" class="main-nav-content-item  " data-navid="company">Company</a></li></ul></div></div><div
+class="navigation-secondary container-fluid"><div
+class="nav-secondary-item container" data-navid="platform"><div
+class="row"><div
+class="nav-secondary-col-left col-5"><div
+class="my-4 mr-3 ml-0"><h2>Anomali Product Suite</h2><p>Anomali intelligence-driven security products provide unmatched threat visibility and accelerated detection, allowing customers to reduce the risk of security breaches and improve security team productivity.</p><div><a
+href="/products" class="btn btn-link-anomali btn-no-pad">Learn more</a></div></div></div><div
+class="nav-secondary-col-right col-7"><div
+class="my-4 mr-0 ml-2"><div
+class="row"><div
+class="col-12"><h2>Our Products</h2><div
+class="nav-secondary-col-item"><h4><a
+href="/products/threatstream" class="btn btn-link-anomali btn-no-pad text-left">ThreatStream</a></h4><p
+class="desc">Operationalize your threat intelligence under a single platform to speed the detection of threats and enable proactive defense measures.</p></div><div
+class="nav-secondary-col-item"><h4><a
+href="/products/match" class="btn btn-link-anomali btn-no-pad text-left">Match</a></h4><p
+class="desc">Automate the detection of threats in your network by continuously correlating all available threat intelligence against all your event logs.</p></div><div
+class="nav-secondary-col-item"><h4><a
+href="/products/lens" class="btn btn-link-anomali btn-no-pad text-left">Lens</a></h4><p
+class="desc">Access threat intelligence knowledge at your fingertips, identify new and known threats, and understand if you’ve been impacted – in seconds.</p></div></div></div></div></div></div></div><div
+class="nav-secondary-item container" data-navid="marketplace"><div
+class="row"><div
+class="nav-secondary-col-left col-5"><div
+class="my-4 mr-3 ml-0"><h2>The Anomali App Store</h2><p>A unique cybersecurity marketplace providing instant access to a growing catalog of threat intelligence providers, integration partners, and threat analysis tools.</p><div><a
+href="/marketplace" class="btn btn-link-anomali btn-no-pad">Learn more</a></div></div></div><div
+class="nav-secondary-col-right col-7"><div
+class="my-4 mr-0 ml-2"><div
+class="row"><div
+class="col-6"><h2>Marketplace Offerings</h2><div
+class="nav-secondary-col-item"><h4><a
+href="/marketplace/threat-intelligence-feeds" class="btn btn-link-anomali btn-no-pad text-left">Threat Intelligence Feeds</a></h4><p
+class="desc">Trial and purchase threat intelligence feeds from Anomali partners – find the right intelligence for your organization, industry, geography, threat type, and more.</p></div><div
+class="nav-secondary-col-item"><h4><a
+href="/marketplace/threat-analysis-tools" class="btn btn-link-anomali btn-no-pad text-left">Threat Analysis Tools &amp; Enrichments</a></h4><p
+class="desc">Gain the tools to pivot quickly from one piece of information to look up other sources of data to get a complete picture of a threat – all one click away.</p></div><div
+class="nav-secondary-col-item"><h4><a
+href="/marketplace/security-system-partners" class="btn btn-link-anomali btn-no-pad text-left">Security System Partners</a></h4><p
+class="desc">Anomali seamlessly integrates with many Security and IT systems to operationalize threat intelligence.</p></div></div><div
+class="col-6"><h2>For Partners</h2><div
+class="nav-secondary-col-item">
+<a
+href="/marketplace/sdks" class="btn btn-link-anomali btn-no-pad text-left mb-2">Anomali SDKs</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/marketplace" class="btn btn-link-anomali btn-no-pad text-left">Become an APP Store Partner</a></div></div></div></div></div></div></div><div
+class="nav-secondary-item container" data-navid="partners"><div
+class="row"><div
+class="nav-secondary-col-left col-5"><div
+class="my-4 mr-3 ml-0"><h2>Partners Overview</h2><p>Anomali offers competitive advantages and new revenue opportunities for partners looking to enhance their product portfolios with our market-leading threat intelligence platform.</p><div><a
+href="/partners" class="btn btn-link-anomali btn-no-pad">Learn more</a></div></div></div><div
+class="nav-secondary-col-right col-7"><div
+class="my-4 mr-0 ml-2"><div
+class="row"><div
+class="col-6"><h2>Apply Today</h2><div
+class="nav-secondary-col-item">
+<a
+href="/partners/channel-resellers" class="btn btn-link-anomali btn-no-pad text-left mb-2">Channel Resellers</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/partners/mssps" class="btn btn-link-anomali btn-no-pad text-left mb-2">MSSPs</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/partners/system-integrators" class="btn btn-link-anomali btn-no-pad text-left">System Integrators</a></div></div></div></div></div></div></div><div
+class="nav-secondary-item container" data-navid="resources"><div
+class="row"><div
+class="nav-secondary-col-left col-5"><div
+class="my-4 mr-3 ml-0"><h2>Featured Research</h2><div
+id="nav-resources-promo">
+<a
+href="/learn/sunburst"><img
+src="https://anomali.cdn.rackfoundry.net/images/uploads/home/promos/promo-sunburst.jpg" alt="Understand the Sunburst Attack" class="img-fluid" style="width:350px"></a></div></div></div><div
+class="nav-secondary-col-right col-7"><div
+class="my-4 mr-0 ml-2"><div
+class="row"><div
+class="col-4"><h2>Resources</h2><div
+class="nav-secondary-col-item">
+<a
+href="/resources#data-sheet" class="btn btn-link-anomali btn-no-pad text-left mb-2">Datasheets</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources#partner-data-sheet" class="btn btn-link-anomali btn-no-pad text-left mb-2">Partner Datasheets</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources#video" class="btn btn-link-anomali btn-no-pad text-left mb-2">Videos</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources#webinar" class="btn btn-link-anomali btn-no-pad text-left mb-2">Webinars</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources#whitepaper" class="btn btn-link-anomali btn-no-pad text-left mb-2">White Papers</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/detect-live" class="btn btn-link-anomali btn-no-pad text-left mb-2">Detect LIVE</a></div><div
+class="nav-secondary-col-item"><h4><a
+href="/resources" class="btn btn-link-anomali btn-no-pad text-left">Browse all</a></h4></div></div><div
+class="col-4"><h2>Topics</h2><div
+class="nav-secondary-col-item">
+<a
+href="/resources/what-is-threat-intelligence" class="btn btn-link-anomali btn-no-pad text-left mb-2">What is Threat Intelligence?</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources/sharing-threat-intelligence" class="btn btn-link-anomali btn-no-pad text-left mb-2">Threat Intelligence Sharing</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources/what-is-a-tip" class="btn btn-link-anomali btn-no-pad text-left mb-2">Threat Intelligence Platform (TIP)</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources/what-are-stix-taxii" class="btn btn-link-anomali btn-no-pad text-left mb-2">STIX/TAXII</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources/what-mitre-attck-is-and-how-it-is-useful" class="btn btn-link-anomali btn-no-pad text-left">MITRE ATT&CK</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/learn/covid-19-resources" class="btn btn-link-anomali btn-no-pad text-left">COVID-19 Resources</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/learn/sunburst" class="btn btn-link-anomali btn-no-pad text-left">Sunburst Resources</a></div></div><div
+class="col-4"><h2>Free Tools</h2><div
+class="nav-secondary-col-item">
+<a
+href="/resources/anomali-cyber-watch" class="btn btn-link-anomali btn-no-pad text-left mb-2">Anomali Cyber Watch</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources/staxx" class="btn btn-link-anomali btn-no-pad text-left mb-2">STAXX</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources/limo" class="btn btn-link-anomali btn-no-pad text-left mb-2">Limo</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/resources/anomali-newsletter" class="btn btn-link-anomali btn-no-pad text-left">Anomali Newsletter</a></div></div></div></div></div></div></div><div
+class="nav-secondary-item container" data-navid="company"><div
+class="row"><div
+class="nav-secondary-col-left col-5"><div
+class="my-4 mr-3 ml-0"><h2>About Anomali</h2><p>Anomali delivers intelligence-driven cybersecurity solutions, including ThreatStream®, Match™, and Lens™. Companies use Anomali to enhance threat visibility, automate threat processing and detection, and accelerate threat investigation, response, and remediation.</p><div><a
+href="/company" class="btn btn-link-anomali btn-no-pad">Learn more</a></div></div></div><div
+class="nav-secondary-col-right col-7"><div
+class="my-4 mr-0 ml-2"><div
+class="row"><div
+class="col-6"><h2>Anomali at Work</h2><div
+class="nav-secondary-col-item">
+<a
+href="/company/leadership" class="btn btn-link-anomali btn-no-pad text-left mb-2">Leadership</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/news-events/events" class="btn btn-link-anomali btn-no-pad text-left mb-2">Events</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/news-events/press" class="btn btn-link-anomali btn-no-pad text-left mb-2">Press Releases</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/news-events/in-the-news" class="btn btn-link-anomali btn-no-pad text-left mb-2">In the News</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/company/awards" class="btn btn-link-anomali btn-no-pad text-left mb-2">Awards</a></div></div><div
+class="col-6"><h2>Get in touch</h2><div
+class="nav-secondary-col-item">
+<a
+href="/company/contact-us" class="btn btn-link-anomali btn-no-pad mb-2">Contact us</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/request-a-demo" class="btn btn-link-anomali btn-no-pad mb-2">Request a demo</a></div><div
+class="nav-secondary-col-item">
+<a
+href="/company/careers" class="btn btn-link-anomali btn-no-pad text-left mb-2">Careers</a></div></div></div></div></div></div></div></div>
+</nav><div
+class="anomali-header-stage default"><div
+class="bg-overlay"></div><div
+class="jumbotron jumbotron-fluid"><div
+class="container"><div
+class="row align-items-center"><div
+class="col-md-12"><h1 class="headline">Evasive Maneuvers by the Wekby group with custom ROP-packing and DNS covert channels</h1></div></div></div></div></div>
+</header><div
+class="body-content"><div
+class="anomali-section-stage anomali-section-white pt-2"><div
+class="module-blog-article">
+<article
+class="blog-entry"><div
+class="article-meta">
+<img
+src="https://anomali.cdn.rackfoundry.net/images/made/images/avatars/uploads/avatar_16_256_256_c1.jpg" alt="Aaron Shelmire" class="article-author-img" /><div
+class="article-author-line">
+<span
+class="author">By: Aaron Shelmire</span>
+<span
+class="date float-right">July 6, 2015</span></div></div><div
+class="row justify-content-md-center position-relative"><div
+class="sidebar"><div
+class="social-sharing fixed">
+<a
+onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" href="https://www.facebook.com/sharer/sharer.php?u=https://www.anomali.com/blog/evasive-maneuvers-the-wekby-group-attempts-to-evade-analysis-via-custom-rop" title="Share on Facebook" target="_blank" class="fb"><i
+class="fab fa-facebook-square fa-3x" aria-hidden="true"></i></a>
+<a
+onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" href="https://twitter.com/intent/tweet?text=Evasive Maneuvers by the Wekby group with custom ROP-packing and DNS covert channels&via=Anomali&ref_src=Anomali&original_referer=https://www.anomali.com/blog/evasive-maneuvers-the-wekby-group-attempts-to-evade-analysis-via-custom-rop&url=https://www.anomali.com/blog/evasive-maneuvers-the-wekby-group-attempts-to-evade-analysis-via-custom-rop" title="Share on Twitter" target="_blank" class="tw"><i
+class="fab fa-twitter-square fa-3x"></i></a>
+<a
+onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.anomali.com/blog/evasive-maneuvers-the-wekby-group-attempts-to-evade-analysis-via-custom-rop&title=Evasive Maneuvers by the Wekby group with custom ROP-packing and DNS covert channels&summary=&source=Anomali" title="Share on LinkedIn" target="_blank" class="in"><i
+class="fab fa-linkedin fa-3x" aria-hidden="true"></i></a></div></div><div
+class="col-lg-10"><div
+class="article-body"><div
+class="article-category mt-1 mb-2"><p
+class="d-inline">Category:</p><a
+href="/blog/category/cyber-threat-intelligence" title="View all posts in Cyber Threat Intelligence">Cyber Threat Intelligence</a>, <a
+href="/blog/category/threat-intelligence-platform" title="View all posts in Threat Intelligence Platform">Threat Intelligence Platform</a>
+&#8203;</div><div
+class="article-text"><p>ThreatStream Labs recently became aware of a campaign beginning on 30 June 2015 by the omniprescent Wekby threat actors (a/k/a <a
+href="http://www.secureworks.com/resources/blog/vertical-hopscotch/">TG-0416</a>, <a
+href="http://www.bloomberg.com/news/articles/2014-08-21/chinese-hackers-vacuum-data-from-u-s-health-industry">APT-18</a>, Dynamite Panda). The Wekby actors have recently been observed compromising&nbsp;organizations in the Manufacturing, Technology and Utilities verticals, but have had a long standing interest in the HealthCare industry.&nbsp;&nbsp;This campaign uses&nbsp;obfuscated variants of the HTTPBrowser tool that use DNS as a control channel.</p><p>This recent campaign exhibits many of the groups key characteristics to deliver a more technically advanced version of their toolkit than has previously been found. The Wekby group is keen on using phishes that purport to be from the IT helpdesk, often with links or attachments claiming to be vpn or citrix upgrades. This specific instance used a &ldquo;cisco&rdquo; vpnclient theme.</p><p>The Phishing links are:&nbsp;</p><p><em>hXXp://it-desktop[.]com/vpn/cisco/vpnclient.exe</em></p><p><em>hXXp://wangke99[.]tgk[.]delldns[.]com/tools.exe</em></p><p>These&nbsp;URIs result&nbsp;in the download of an installer, which creates a PE of the malware typically known as HTTPBrowser, but called Token Control by the Wekby group themselves (based upon the PDB strings found within many of the samples).&nbsp; The PEBuildDate of the installers range from 2015-06-30 11:57:13 to 12:03:13 UTC. Two samples use subdomains of local.it-desktop.com&nbsp;and were submitted to VirusTotal at 15:32:37 from users in Great Britain. At that time only 8 of 55 AntiVirus engines detected the same as malware, mostly with generic and heuristic detections. &nbsp;The third sample was first submitted on July 1st 2015 from a user in South Korea.&nbsp; &nbsp;</p><p>The samples install&nbsp;HTTPBrowser at <em>%APPDATA%/wdm.exe</em>. Persistence is established via the <em>HKCUSoftwareMicrosoftWindowsCurrentVersionRun</em> key value for <em>wdm</em>&nbsp;set to the path of the executable. Previous samples have set persistence via Run key values for <em>360v</em>.</p><p>&nbsp;<img
+alt="HKCU Run Key for wdm" src="https://www.threatstream.com/images/uploads/HKCU_wdm_1.jpg" /></p><p>This tool has been used by a few groups since at least 2012 based upon PEBuildDates). However this sample is a bit more interesting. Normally HTTPBrowser sends traffic over HTTP using a user-agent of <em>HTTPBrowser/1.0</em>. &nbsp;This sample uses DNS as a covert channel for communications. Specifically this sample utilizes DNS TXT records with 9 uppercase letters followed by a number and 7 more uppercase letters, then the C2 domain used. In this PCAP the C2 domain is glb.it-desktop.com. The &ldquo;glb&rdquo; label is believed to be a campaign ID. The other samples use the C2 domains of local.it-desktop.com and hi.getgo2.com</p><p><img
+alt="DNS TXT C2" src="https://www.threatstream.com/images/uploads/wdm_PCAP.jpg" /></p><p>Adding to the intrigue of this sample is a novel form of obfuscation that greatly complicates analysis. Specifically the sample uses Return Oriented Programming to control execution flow, and creates an extraordinary amount of functions filled with instructions that essentially evaluate to elaborate NOPs (no operation).&nbsp; The way this works is each function modifies the stack to replace the return point with additional functions including a function that includes the next bit of code that needs to be executed. Each subroutine includes the bare minimum number of operations necessary to call another subroutine, or perform local control flow (looping,&nbsp;branching, and simple calculations), before modifying the stack to return to the next&nbsp;subroutine.&nbsp;While looking at a sample in OllyDbg, you would see the following, where execution will continue with Subroutine <em>0x0040F62E</em>. If that subroutine does not add any additional functions to the stack, execution will continue to Subroutine <em>0x0040F38A</em>.&nbsp;</p><p><img
+alt="ROP Obfuscation" src="https://www.threatstream.com/images/uploads/httpBrowser_RetnOrientedObfuscation.jpg" /></p><p>While many of the Wekby threat actors campaigns may appear unsophisticated because they often rely upon stolen credentials or basic malware, this group of actors is extremely successful at&nbsp;obtaining their objectives. If your organization does not use Two-Factor authentication, the group will typically rely upon stolen credentials for remote access. The Wekby group has exhibited a preference to use a tool named HcdLoader which often persists as a Windows Service on externally facing servers for remote access. The group is particularly skilled at living off the land by using the tools already present on computers for <a
+href="http://www.secureworks.com/resources/blog/where-you-at-indicators-of-lateral-movement-using-at-exe-on-windows-7-systems/">lateral movement</a> and exfiltration.</p><p>&nbsp;</p><p>The samples detailed here can be found on VirusTotal at:</p><p><a
+href="https://www.virustotal.com/en/file/4d62caef1ca8f4f9aead7823c95228a52852a1145ca6aaa58ad8493e042aed16/analysis/">d0f79de7bd194c1843e7411c473e4288&nbsp;</a></p><p><a
+href="https://www.virustotal.com/en/file/1b341dab023de64598d80456349db146aafe9b9e2ec24490c7d0ac881cecc094/analysis/">e5414c5215c9305feeebbe0dbee43567</a>&nbsp;</p><p><a
+href="https://www.virustotal.com/en/file/9200f80c08b21ebae065141f0367f9c88f8fed896b0b4af9ec30fc98c606129b/analysis/">985eba97e12c3e5bce9221631fb66d68</a></p><p>&nbsp;</p><p><strong>UPDATE: The original post noted a domain of hi.get2go.com in error. This domain should have been hi.getgo2.com</strong></p>
+		</div></div></div></div>
+</article></div></div>
+<section
+class="anomali-jumbotron theme-gray"><div
+class="container"><div
+class="trd-ph-embedded" data-id="2ec4bd97-a5f5-4ac1-9d27-9bff735a6058"></div></div>
+</section><div
+class="module-newsletter"><div
+class="container"><div
+class="row"><div
+class="col-2">
+<picture>
+<source
+srcset="https://anomali.cdn.rackfoundry.net/assets/images/slugs/icn-email-subscribe.webp" type="image/webp">
+<img
+class="newsletter-icon img-fluid" src="https://anomali.cdn.rackfoundry.net/assets/images/slugs/icn-email-subscribe.png">
+</picture></div><div
+class="col-10"><h3 class="headline">Subscribe to the Anomali Newsletter</h3><p
+class="m-0">Get the latest Anomali updates and cybersecurity news straight to your inbox each month.</p>
+<a
+href="/resources/anomali-newsletter" class="btn btn-outline-anomali">Subscribe Now</a></div></div></div></div></div>
+<footer
+class="footer"><div
+class="container"><div
+class="footer-nav row"><div
+class="footer-column"><h5 class="mb-2"><a
+href="/products">Products</a></h5><ul><li
+class="mb-2"><a
+href="/products/threatstream">ThreatStream</a></li><li
+class="mb-2"><a
+href="/products/match">Match</a></li><li><a
+href="/products/lens">Lens</a></li></ul></div><div
+class="footer-column"><h5><a
+href="/threat-intel-sharing">Threat Intel Sharing</a></h5><h5 class="mb-2"><a
+href="/marketplace">Marketplace</a></h5><ul><li
+class="mb-2"><a
+href="/marketplace/threat-intelligence-feeds">Threat Intelligence Feeds</a></li><li
+class="mb-2"><a
+href="/marketplace/threat-analysis-tools">Threat Analysis Tools &amp; Enrichments</a></li><li><a
+href="/marketplace/security-system-partners">Security System Partners</a></li></ul></div><div
+class="footer-column"><h5 class="mb-2"><a
+href="/resources">Resources</a></h5><ul><li
+class="mb-2"><a
+href="/resources#datasheets">Datasheets</a></li><li
+class="mb-2"><a
+href="/resources#partner-datasheets">Partner Datasheets</a></li><li
+class="mb-2"><a
+href="/resources#videos">Videos</a></li><li
+class="mb-2"><a
+href="/resources#webinars">Webinars</a></li><li
+class="mb-2"><a
+href="/resources#whitepapers">White Papers</a></li><li
+class="mb-2"><a
+href="/detect-live">Detect LIVE</a></li><li
+class="mb-2"><a
+href="/resources/anomali-cyber-watch">Anomali Cyber Watch</a></li><li
+class="mb-2"><a
+href="/resources/staxx">STAXX</a></li></ul></div><div
+class="footer-column"><h5 class="mb-2"><a
+href="/company">Company</a></h5><ul><li
+class="mb-2"><a
+href="/company/leadership">Leadership</a></li><li
+class="mb-2"><a
+href="/news-events/press">News &amp; Events</a></li><li
+class="mb-2"><a
+href="/company/awards">Awards</a></li><li><a
+href="/company/careers">Careers</a></li></ul></div><div
+class="footer-column"><h5 class="mb-2"><a
+href="/partners">Partners</a></h5><ul><li
+class="mb-2"><a
+href="/partners/channel-resellers">Channel Resellers</a></li><li
+class="mb-2"><a
+href="/partners/mssps">MSSPs</a></li><li
+class="mb-2"><a
+href="/partners/system-integrators">System Integrators</a></li><li><a
+href="https://anomali.force.com/partnerportal/s/" target="_blank">Partner Portal</a></li></ul></div><div
+class="footer-column"><h5><a
+href="/request-a-demo">Schedule Demo</a></h5><h5><a
+href="/company/contact-us">Contact</a></h5><h5><a
+href="https://ui.threatstream.com/login" target="_blank">Sign In</a></h5><h5><a
+href="/customer-success">Support</a></h5><h5><a
+href="/blog">Blog</a></h5></div></div><div
+class="footer-bottom"><div
+class="footer-bottom-legal"><ul
+class="list-inline"><li
+class="list-inline-item"><a
+href="/privacy-policy">Privacy Policy</a></li><li
+class="list-inline-item"><a
+href="/terms-of-service">Terms of Use</a></li><li
+class="list-inline-item"><a
+href="/3rd-party-vendor-policy">3rd Party Vendor Policy</a></li></ul><p>&copy; Copyright 2021 Anomali&reg;. All rights reserved.<br
+/>
+ThreatStream&reg; is a registered trademark of Anomali Inc. Anomali Match&trade; ("Match") and Anomali Lens&trade; ("Lens") are trademarks of Anomali Inc.</p></div><div
+class="footer-bottom-logo"><div>
+<img
+src="https://anomali.cdn.rackfoundry.net/assets/images/anomali-logo.svg" class="logo" alt="Anomali"></div>
+<ul class="social-links">
+	<li class="social-item">
+		<a href="https://twitter.com/anomali" target="_blank">
+			<span class="fa-stack">
+				<i class="fas fa-circle fa-stack-2x" aria-hidden="true"></i>
+				<i class="fab fa-twitter fa-stack-1x fa-inverse" aria-hidden="true"></i>
+			</span>
+			<span class="sr-only">Twitter</span>
+		</a>
+	</li>
+	<li class="social-item">
+		<a href="https://www.instagram.com/anomali_inc/" target="_blank">
+			<span class="fa-stack">
+				<i class="fas fa-circle fa-stack-2x" aria-hidden="true"></i>
+				<i class="fab fa-instagram fa-stack-1x fa-inverse" aria-hidden="true"></i>
+			</span>
+			<span class="sr-only">Instagram</span>
+		</a>
+	</li>
+	<li class="social-item">
+		<a href="https://www.facebook.com/threatstream" target="_blank">
+			<span class="fa-stack">
+				<i class="fas fa-circle fa-stack-2x" aria-hidden="true"></i>
+				<i class="fab fa-facebook fa-stack-1x fa-inverse" aria-hidden="true"></i>
+			</span>
+			<span class="sr-only">Facebook</span>
+		</a>
+	</li>
+	<li class="social-item">
+		<a href="https://www.linkedin.com/company/anomali" target="_blank">
+			<span class="fa-stack">
+				<i class="fas fa-circle fa-stack-2x" aria-hidden="true"></i>
+				<i class="fab fa-linkedin fa-stack-1x fa-inverse" aria-hidden="true"></i>
+			</span>
+			<span class="sr-only">LinkedIn</span>
+		</a>
+	</li>
+	<li class="social-item">
+		<a href="https://www.youtube.com/channel/UCloYBsWSqk_5x7gdpOn4y8g" target="_blank">
+			<span class="fa-stack">
+				<i class="fas fa-circle fa-stack-2x" aria-hidden="true"></i>
+				<i class="fab fa-youtube fa-stack-1x fa-inverse" aria-hidden="true"></i>
+			</span>
+			<span class="sr-only">YouTube</span>
+		</a>
+	</li>
+</ul></div></div></div>
+</footer></div> <script template="" id="appjs" crossorigin="anonymous" async="async" src="https://www.anomali.com/cache/a22d1d868692973288e25c89f766247feac6353d.1619117684.js"></script> 
+
+
+<!-- Start of HubSpot Embed Code -->
+<script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/458120.js"></script>
+
+
+<!-- Triblio Footer -->
+<script type='text/javascript' data-cfasync='false' src='//tribl.io/footer.js?orgId=O8naez8e2eHPYn7m991b'></script>
+
+
+<!-- LeadLander Tracking -->
+<script>
+  var llcookieless = false;
+  (function() {
+    var a = document.createElement('script');
+    a.src = 'https://lltrck.com/scripts/lt-v3.js?llid=26138';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(a, s);
+  })();
+</script>
+
+
+
+</body></html>

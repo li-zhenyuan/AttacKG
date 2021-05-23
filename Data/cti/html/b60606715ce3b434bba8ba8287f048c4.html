@@ -1,0 +1,858 @@
+<!doctype html><html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Syntax, semantics, best practice for SSH authorized_keys file.  Introduction to SSH key management.</title>
+    <meta name="description" content="Syntax, semantics, best practice for SSH authorized_keys file.  Introduction to SSH key management.">
+    <link rel="shortcut icon" href="https://www.ssh.com/hubfs/favicon-1.png">
+    <link rel="stylesheet" href="https://use.typekit.net/hdh2lgl.css">
+    
+
+    
+    <script src="/hs/hsstatic/jquery-libs/static-1.4/jquery/jquery-1.11.2.js"></script>
+<script src="/hs/hsstatic/jquery-libs/static-1.4/jquery-migrate/jquery-migrate-1.2.1.js"></script>
+<script>hsjQuery = window['jQuery'];</script>
+    <meta property="og:description" content="Syntax, semantics, best practice for SSH authorized_keys file.  Introduction to SSH key management.">
+    <meta property="og:title" content="Syntax, semantics, best practice for SSH authorized_keys file.  Introduction to SSH key management.">
+    <meta name="twitter:description" content="Syntax, semantics, best practice for SSH authorized_keys file.  Introduction to SSH key management.">
+    <meta name="twitter:title" content="Syntax, semantics, best practice for SSH authorized_keys file.  Introduction to SSH key management.">
+
+    
+
+    
+    <style>
+a.cta_button{-moz-box-sizing:content-box !important;-webkit-box-sizing:content-box !important;box-sizing:content-box !important;vertical-align:middle}.hs-breadcrumb-menu{list-style-type:none;margin:0px 0px 0px 0px;padding:0px 0px 0px 0px}.hs-breadcrumb-menu-item{float:left;padding:10px 0px 10px 10px}.hs-breadcrumb-menu-divider:before{content:'›';padding-left:10px}.hs-featured-image-link{border:0}.hs-featured-image{float:right;margin:0 0 20px 20px;max-width:50%}@media (max-width: 568px){.hs-featured-image{float:none;margin:0;width:100%;max-width:100%}}.hs-screen-reader-text{clip:rect(1px, 1px, 1px, 1px);height:1px;overflow:hidden;position:absolute !important;width:1px}
+</style>
+
+<link rel="stylesheet" href="https://www.ssh.com/hs-fs/hub/470387/hub_generated/template_assets/42307541876/1621241846801/everblox/assets/css/main.min.css">
+    
+
+    
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="text/javascript">
+  (function() {
+    window._pa = window._pa || {};
+    // _pa.orderId = "myOrderId"; // OPTIONAL: attach unique conversion identifier to conversions
+    // _pa.revenue = "19.99"; // OPTIONAL: attach dynamic purchase values to conversions
+    // _pa.productId = "myProductId"; // OPTIONAL: Include product ID for use with dynamic ads
+    var pa = document.createElement('script'); pa.type = 'text/javascript'; pa.async = true;
+    pa.src = ('https:' == document.location.protocol ? 'https:' : 'http:') + "//tag.marinsm.com/serve/56008cb9a279f711e1000054.js";
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(pa, s);
+  })();
+</script>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-W9R7H9D');</script>
+<!-- End Google Tag Manager -->
+
+<!-- OneTrust Cookies Consent Notice start for www.ssh.com -->
+<script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" type="text/javascript" charset="UTF-8" data-domain-script="949df801-e6c0-4b0a-9efe-547c476cf821"></script>
+<script type="text/javascript">
+  function OptanonWrapper() { }
+</script>
+<!-- OneTrust Cookies Consent Notice end for www.ssh.com -->
+<meta name="google-site-verification" content="6eJ9OWSb0rqNzTAuIIvQ5WIU88Ox1jfyJW2Cc63t_wk">
+
+<link rel="amphtml" href="https://www.ssh.com/academy/ssh/authorized-keys-file?hs_amp=true">
+
+<meta property="og:url" content="https://www.ssh.com/academy/ssh/authorized-keys-file">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.ssh.com/academy/ssh/authorized-keys-file">
+
+<meta property="og:type" content="article">
+<link rel="alternate" type="application/rss+xml" href="https://www.ssh.com/academy/rss.xml">
+<meta name="twitter:domain" content="www.ssh.com">
+<script src="//platform.linkedin.com/in.js" type="text/javascript">
+    lang: en_US
+</script>
+
+<meta http-equiv="content-language" content="en">
+
+
+
+
+
+
+  <meta name="generator" content="HubSpot"></head>
+  <body>
+<!--  Added by AdRoll integration -->
+<script type="text/javascript">
+  adroll_adv_id = "7AYOORTZD5BGZJWJKIMJML";
+  adroll_pix_id = "DKI3WWUSYRHOTOP4LPBI5G";
+  var _hsp = window._hsp = window._hsp || [];
+  (function () {
+      var _onload = function(){
+          if (document.readyState && !/loaded|complete/.test(document.readyState)){setTimeout(_onload, 10);return}
+          if (!window.__adroll_loaded){__adroll_loaded=true;setTimeout(_onload, 50);return}
+          _hsp.push(['addPrivacyConsentListener', function(consent) { if (consent.allowed || (consent.categories && consent.categories.advertisement)) {
+            var scr = document.createElement("script");
+            var host = (("https:" == document.location.protocol) ? "https://s.adroll.com" : "http://a.adroll.com");
+            scr.setAttribute('async', 'true');
+            scr.type = "text/javascript";
+            scr.src = host + "/j/roundtrip.js";
+            ((document.getElementsByTagName('head') || [null])[0] ||
+                document.getElementsByTagName('script')[0].parentNode).appendChild(scr);
+          }}]);
+      };
+      if (window.addEventListener) {window.addEventListener('load', _onload, false);}
+      else {window.attachEvent('onload', _onload)}
+  }());
+</script>
+
+<!-- /Added by AdRoll integration -->
+
+    <div class="body-wrapper   hs-content-id-44496657932 hs-blog-post hs-content-path-academy-ssh-authorized-keys-file hs-content-name-authorized_keys-file-in-ssh hs-blog-name-academy hs-blog-id-44046465464">
+
+      
+        <div data-global-resource-path="everblox/partials/header.html"><div class="b-header h-scheme-1">
+	<div class="b-header__top-bar">
+		<div class="b-header__container">
+			<div class="c-navigation-extra">
+				<span id="hs_cos_wrapper_extra_menu" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="menu"><div id="hs_menu_wrapper_extra_menu" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-horizontal" role="navigation" data-sitemap-name="Extra" data-menu-id="42307530001" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/about" role="menuitem">About us</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/investors" role="menuitem">Investors</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/partners/" role="menuitem">Partners</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/resources/support/home" role="menuitem">Support</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://blog.ssh.com" role="menuitem">Blog</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/contact" role="menuitem">Contact</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://info.ssh.com/get-a-demo-now-of-any-ssh.com-product-or-service" role="menuitem">Request demo</a></li>
+ </ul>
+</div></span>
+			</div>
+		</div>
+	</div>
+	<div class="b-header__main-bar">
+		<div class="b-header__container">
+			<div class="b-header__wrapper" data-scheme-target>
+				<div class="b-header__logo"><a href="/" class="c-logo"></a></div>
+				<div class="b-header__navigation">
+					<div class="c-navigation-header">
+						<span id="hs_cos_wrapper_header_menu" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="menu"><div id="hs_menu_wrapper_header_menu" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-horizontal" role="navigation" data-sitemap-name="Header" data-menu-id="42307308830" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Solutions</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/digital-transformation" role="menuitem">Digital transformation</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/secure-file-transfers" role="menuitem">Secure file transfer</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/pass-audits" role="menuitem">Pass IT audits</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/protect-ot-m2m/" role="menuitem">OT and M2M connections</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/credential-risk-mitigation/" role="menuitem">Credential risk mitigation</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/products/" aria-haspopup="true" aria-expanded="false" role="menuitem">Products</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2 hs-item-has-children" role="menuitem"><a href="javascript:;" role="menuitem">Secure access management</a>
+     <ul class="hs-menu-children-wrapper">
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/privx/" role="menuitem">PrivX™ lean PAM</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/universal-ssh-key-manager/" role="menuitem">Universal SSH Key Manager®</a></li>
+     </ul></li>
+    <li class="hs-menu-item hs-menu-depth-2 hs-item-has-children" role="menuitem"><a href="javascript:;" role="menuitem">Secure file transfer</a>
+     <ul class="hs-menu-children-wrapper">
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/nqx" role="menuitem">NQX™ quantum-ready encryption</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/tectia-ssh/" role="menuitem">Tectia™ SSH Client/Server</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/tectia-ssh-zos/" role="menuitem">Tectia™ z/OS</a></li>
+     </ul></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Services</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/ssh-risk-assessment/" role="menuitem">SSH Risk Assessment™</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/services/" role="menuitem">Professional Services</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/resources/support/home" role="menuitem">Support</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/contact" role="menuitem">Contact us</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Resources</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/references" role="menuitem">References</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/download/" role="menuitem">Downloads</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/manuals/" role="menuitem">Manuals</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/resources/events" role="menuitem">Events &amp; Webinars</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://blog.ssh.com" role="menuitem">Blog</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/resources/media" role="menuitem">Media</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://careers.ssh.com/" role="menuitem">Careers</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/legal/" role="menuitem">Legal</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/support/report-vulnerability" role="menuitem">Report a vulnerability</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/ssh/ssh-academy" aria-haspopup="true" aria-expanded="false" role="menuitem">SSH Academy</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/ssh-key-basics" role="menuitem">SSH Keys</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance" role="menuitem">SSH compliance</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/ephemeral_access" role="menuitem">Ephemeral access</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/just-in-time" role="menuitem">Just-in-time access</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty" role="menuitem">PuTTY</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cryptography" role="menuitem">Cryptography</a></li>
+   </ul></li>
+ </ul>
+</div></span>
+					</div>
+					<a class="b-header__search" href="/search">
+						<svg class="b-header__search-icon" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 20.7 20.7">
+							<circle cx="9" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+							<path d="M19.7 19.7l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>									  
+					</a>
+				</div>
+				<div class="b-header__navigation-mobile">
+					<div class="b-header__navigation-mobile-wrapper">
+						<div class="c-navigation-header-mobile">
+							<span id="hs_cos_wrapper_header_menu" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="menu"><div id="hs_menu_wrapper_header_menu" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-horizontal" role="navigation" data-sitemap-name="Header" data-menu-id="42307308830" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Solutions</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/digital-transformation" role="menuitem">Digital transformation</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/secure-file-transfers" role="menuitem">Secure file transfer</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/pass-audits" role="menuitem">Pass IT audits</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/protect-ot-m2m/" role="menuitem">OT and M2M connections</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/credential-risk-mitigation/" role="menuitem">Credential risk mitigation</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/products/" aria-haspopup="true" aria-expanded="false" role="menuitem">Products</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2 hs-item-has-children" role="menuitem"><a href="javascript:;" role="menuitem">Secure access management</a>
+     <ul class="hs-menu-children-wrapper">
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/privx/" role="menuitem">PrivX™ lean PAM</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/universal-ssh-key-manager/" role="menuitem">Universal SSH Key Manager®</a></li>
+     </ul></li>
+    <li class="hs-menu-item hs-menu-depth-2 hs-item-has-children" role="menuitem"><a href="javascript:;" role="menuitem">Secure file transfer</a>
+     <ul class="hs-menu-children-wrapper">
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/nqx" role="menuitem">NQX™ quantum-ready encryption</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/tectia-ssh/" role="menuitem">Tectia™ SSH Client/Server</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.ssh.com/products/tectia-ssh-zos/" role="menuitem">Tectia™ z/OS</a></li>
+     </ul></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Services</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/ssh-risk-assessment/" role="menuitem">SSH Risk Assessment™</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/services/" role="menuitem">Professional Services</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/resources/support/home" role="menuitem">Support</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/contact" role="menuitem">Contact us</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Resources</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/references" role="menuitem">References</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/download/" role="menuitem">Downloads</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/manuals/" role="menuitem">Manuals</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/resources/events" role="menuitem">Events &amp; Webinars</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://blog.ssh.com" role="menuitem">Blog</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/resources/media" role="menuitem">Media</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://careers.ssh.com/" role="menuitem">Careers</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/legal/" role="menuitem">Legal</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/support/report-vulnerability" role="menuitem">Report a vulnerability</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/ssh/ssh-academy" aria-haspopup="true" aria-expanded="false" role="menuitem">SSH Academy</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/ssh-key-basics" role="menuitem">SSH Keys</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance" role="menuitem">SSH compliance</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/ephemeral_access" role="menuitem">Ephemeral access</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/just-in-time" role="menuitem">Just-in-time access</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty" role="menuitem">PuTTY</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cryptography" role="menuitem">Cryptography</a></li>
+   </ul></li>
+ </ul>
+</div></span>
+						</div>
+						<div class="c-navigation-extra-mobile">
+							<span id="hs_cos_wrapper_extra_menu" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="menu"><div id="hs_menu_wrapper_extra_menu" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-horizontal" role="navigation" data-sitemap-name="Extra" data-menu-id="42307530001" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/about" role="menuitem">About us</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/investors" role="menuitem">Investors</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/partners/" role="menuitem">Partners</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/resources/support/home" role="menuitem">Support</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://blog.ssh.com" role="menuitem">Blog</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/contact" role="menuitem">Contact</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://info.ssh.com/get-a-demo-now-of-any-ssh.com-product-or-service" role="menuitem">Request demo</a></li>
+ </ul>
+</div></span>
+						</div>
+					</div>
+				</div>
+				<div class="b-header__mobile-toggle">
+					<div class="c-mobile-toggle c-mobile-toggle--main js-b-header__mobile-toggle"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div></div>
+      
+
+      <div class="body-container h-scheme-1">
+          
+  <article class="l-single">
+    <aside class="l-single__sidebar">
+      <nav class="c-navigation-sidebar">
+        <h2 class="c-navigation-sidebar__title">SSH Academy</h2>
+        <div class="c-arrow-toggle c-arrow-toggle--light js-navigation-sidebar-toggle"></div>
+        <div class="c-navigation-sidebar__menu">
+          <span id="hs_cos_wrapper_academy_menu" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="menu"><div id="hs_menu_wrapper_academy_menu" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-horizontal" role="navigation" data-sitemap-name="SSH2021 Academy" data-menu-id="44206575377" aria-label="Navigation Menu">
+ <ul class="active-branch">
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/iam" aria-haspopup="true" aria-expanded="false" role="menuitem">IAM</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/zero-trust-framework" role="menuitem">IAM Zero Trust Framework</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/carta" role="menuitem">Gartner CARTA</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/standing-privileges" role="menuitem">Standing Privileges</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/zero-standing-privileges" role="menuitem">Zero Standing Privileges (ZSP)</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/ephemeral_access" role="menuitem">Ephemeral access</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/privx/" role="menuitem">PrivX lean PAM</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/identity-management" role="menuitem">Identity management</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/active-directory" role="menuitem">Active Directory</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/administrator" role="menuitem">Administrators</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/domain-administrator" role="menuitem">Domain administrators</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/local-administrator" role="menuitem">Local administrators</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/jump-server" role="menuitem">Jump server</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/just-in-time" role="menuitem">IAM Just in time</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/just-in-time-security-tokens" role="menuitem">Just-in-time security tokens</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/multi-factor-authentication" role="menuitem">Multi-factor Authentication (MFA)</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/openid-connect" role="menuitem">OpenID Connect (OIDC)</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/pam" role="menuitem">PAM (Privileged Access Management)</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/pam/traditional" role="menuitem">Legacy PAM</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/password/generator" role="menuitem">Password generator</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/password/strength" role="menuitem">Password strength</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/password/vault" role="menuitem">Password vaults</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/privileged-account" role="menuitem">Privileged accounts</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/pasm" role="menuitem">PASM</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/pedm" role="menuitem">Privilege Elevation and Delegation Management</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/privileged/session-management" role="menuitem">Privileged session management</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/radius" role="menuitem">Radius</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/root" role="menuitem">Root accounts</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/service-account" role="menuitem">Service accounts</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/system-account" role="menuitem">System accounts</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/sudo" role="menuitem">Sudo</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user" role="menuitem">Users</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/id" role="menuitem">User IDs</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/user/superuser" role="menuitem">Superuser</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/ssh/security-orchestration" aria-haspopup="true" aria-expanded="false" role="menuitem">Security orchestration</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/data-loss-prevention" role="menuitem">DLP</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/security-orchestration/siem" role="menuitem">SIEM</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/security-orchestration/soc" role="menuitem">SOC</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/security-orchestration/soar" role="menuitem">SOAR</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/devops" aria-haspopup="true" aria-expanded="false" role="menuitem">DevOps</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/devops/vagrant" role="menuitem">Vagrant</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/cloud/security" aria-haspopup="true" aria-expanded="false" role="menuitem">Cloud</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/applications" role="menuitem">Cloud applications</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/computing" role="menuitem">Cloud computing</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/computing/characteristics" role="menuitem">Cloud Computing Characteristics</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/computing/companies" role="menuitem">Cloud Computing Companies</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/computing/definition" role="menuitem">Cloud Computing Definition</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/computing/models" role="menuitem">Cloud Computing Models</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/computing/advantages-and-disadvantages" role="menuitem">Cloud computing pros and cons</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/storage" role="menuitem">Cloud storage</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/technology" role="menuitem">Cloud technology</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/iaas" role="menuitem">IaaS</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/paas" role="menuitem">PaaS</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/saas" role="menuitem">SaaS</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/saas/companies" role="menuitem">SaaS companies</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/saas/security" role="menuitem">SaaS security</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/cloud/security" aria-haspopup="true" aria-expanded="false" role="menuitem">Cloud security</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/security/casb" role="menuitem">CASBs</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/security/threats" role="menuitem">Cloud security threats</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/security/alliance" role="menuitem">CSA (Cloud Security Alliance)</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/cloud/providers" aria-haspopup="true" aria-expanded="false" role="menuitem">Cloud Service Providers</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/providers/amazon-aws" role="menuitem">CSPs - Amazon AWS</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/providers/amazon-aws/lambda" role="menuitem">CSPs - Amazon AWS Lambda</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/providers/google" role="menuitem">CSPs - Google Cloud Platform</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/providers/google/app-engine" role="menuitem">CSPs - Google App Engine</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/providers/microsoft-azure" role="menuitem">CSPs - Microsoft Azure</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/cloud/virtualization" aria-haspopup="true" aria-expanded="false" role="menuitem">Virtualization</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/virtualization/hypervisor" role="menuitem">Hypervisor</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/virtualization/software" role="menuitem">Virtualization software</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/virtualization/virtual-network" role="menuitem">Virtual networks</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cloud/virtualization/virtual-machine" role="menuitem">VMs</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/academy/iot" role="menuitem">IOT</a></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/ssh" aria-haspopup="true" aria-expanded="false" role="menuitem">Secure Shell</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/protocol" role="menuitem">Secure Shell protocol</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/download/" role="menuitem">SSH software downloads</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/certificate" role="menuitem">SSH certificate authentication</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/network/ipsec" role="menuitem">Ipsec</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/network/monitoring" role="menuitem">Network monitoring</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/port" role="menuitem">Port 22</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/rcp" role="menuitem">RCP</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/rlogin" role="menuitem">rlogin</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/rsh" role="menuitem">RSH</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/scp" role="menuitem">SCP</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/session-key" role="menuitem">Session key</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/automated" role="menuitem">Automated connections</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/command" role="menuitem">SSH command</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/config" role="menuitem">SSH configuration</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/sshfs" role="menuitem">SSHFS SSH File System</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/windows" role="menuitem">SSH for Windows</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/server" role="menuitem">SSH servers</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/tectia-ssh/" role="menuitem">Tectia SSH Server</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/sshd_config" role="menuitem">SSH server configuration</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/agent" role="menuitem">SSO using SSH agent</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/telnet" role="menuitem">Telnet</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/winscp" role="menuitem">WinSCP</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children active-branch" role="menu"><a href="https://www.ssh.com/academy/ssh/key" aria-haspopup="true" aria-expanded="false" role="menuitem">SSH keys</a>
+   <ul class="hs-menu-children-wrapper active-branch">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/cac-card-piv-card-smartcard-authentication" role="menuitem">CAC and PIV smartcards</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/authorized_keys/openssh" role="menuitem">OpenSSH key authorization</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/passphrase" role="menuitem">Passphrases</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/passphrase-generator" role="menuitem">Passphrase generator</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/copy-id" role="menuitem">Copy ID</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/host-key" role="menuitem">Host key</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/authorized-key" role="menuitem">Authorized key</a></li>
+    <li class="hs-menu-item hs-menu-depth-2 active active-branch" role="menuitem"><a href="https://www.ssh.com/academy/ssh/authorized-keys-file" role="menuitem">Authorized key file</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/ssh-key-basics" role="menuitem">SSH key basics</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/identity-key" role="menuitem">SSH key identities</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/ssh-key-management" role="menuitem">SSH key management</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/universal-ssh-key-manager/" role="menuitem">Universal SSH Key Manager</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/iam/ssh-key-proliferation" role="menuitem">SSH key proliferation</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/keygen" role="menuitem">SSH keygen</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/add" role="menuitem">SSH keys for SSO</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/public-key-authentication" role="menuitem">Public key authentication</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/compliance" aria-haspopup="true" aria-expanded="false" role="menuitem">SSH compliance</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance-regulations-ssh-keys" role="menuitem">SSH key compliance</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/basel-iii" role="menuitem">Basel III</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/cobit" role="menuitem">COBIT</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/cybersecurity-framework" role="menuitem">Cybersecurity framework</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/fips-140" role="menuitem">Fips 140</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/fips-199" role="menuitem">Fips 199</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/fips-200" role="menuitem">Fips 200</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/eu-gdpr" role="menuitem">GDPR</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/hipaa/security-rule" role="menuitem">HIPAA</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/isaca" role="menuitem">ISACA</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://info.ssh.com/isaca-practitioner-guide" role="menuitem">ISACA SSH Guide</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/iso-27001" role="menuitem">ISO 27001</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/nerc-cip" role="menuitem">NERC-CIP</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/nis-directive" role="menuitem">NIS directive</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/nist-7966" role="menuitem">NIST 7966</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://info.ssh.com/nist-compliance-download" role="menuitem">NIST 7966 download</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/nist-800-53" role="menuitem">NIST 800-53</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/pci" role="menuitem">PCI-DSS</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/sans-top-20" role="menuitem">Sans Top 20</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/compliance/sarbanes-oxley" role="menuitem">Sarbanes Oxley</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/cryptography" aria-haspopup="true" aria-expanded="false" role="menuitem">Cryptography</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cryptography/cipher" role="menuitem">Ciphers</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cryptography/hash/algorithm" role="menuitem">Hash algorithms</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cryptography/private-key" role="menuitem">Private keys</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cryptography/public-key" role="menuitem">Public keys</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/cryptography/tls" role="menuitem">TLS</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/ssh/sftp" aria-haspopup="true" aria-expanded="false" role="menuitem">SFTP</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/sftp/server-windows" role="menuitem">SFTP server for Windows</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/ftp/client" role="menuitem">FTP clients</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/ftp" role="menuitem">FTP legacy</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/ftp/server" role="menuitem">FTP servers</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/ftp/ftps" role="menuitem">FTPS</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/ssh/openssh" aria-haspopup="true" aria-expanded="false" role="menuitem">OpenSSH</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/sshd" role="menuitem">sshd OpenSSH server process</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/ssh/client" aria-haspopup="true" aria-expanded="false" role="menuitem">SSH clients</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/best_ssh_clients" role="menuitem">SSH clients for Windows</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/tectia-ssh/" role="menuitem">Tectia SSH client</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/cyberduck" role="menuitem">Cyberduck</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/filezilla" role="menuitem">Filezilla</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty" role="menuitem">PuTTY</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/ssh/putty" aria-haspopup="true" aria-expanded="false" role="menuitem">PuTTY</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/download" role="menuitem">PuTTY download</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/linux" role="menuitem">PuTTY for Linux</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/mac" role="menuitem">PuTTY for Mac</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/windows" role="menuitem">PuTTY for Windows</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/windows/install" role="menuitem">PuTTY for Windows installation</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/public-key-authentication" role="menuitem">PuTTY public keys</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/linux/puttygen" role="menuitem">PuTTYgen for Linux</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/putty/windows/puttygen" role="menuitem">PuTTYgen for Windows</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/pki" aria-haspopup="true" aria-expanded="false" role="menuitem">PKI</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/pki/legacy" role="menuitem">PKI background</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/pki/certificate" role="menuitem">PKI certificates</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.ssh.com/academy/ssh/tunneling" aria-haspopup="true" aria-expanded="false" role="menuitem">SSH tunneling</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/tunneling/example" role="menuitem">SSH tunneling example</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.ssh.com/academy/malware" role="menuitem">Malware</a></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Hacks, threats &amp; vulnerabilities</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/ssh/cia-bothanspy-gyrfalcon" role="menuitem">Bothanspy Gyrafalcon</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/attack/goscanssh" role="menuitem">GoScanSSH</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/attack/man-in-the-middle" role="menuitem">Man-in-the-middle</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/academy/attack/password-sniffing" role="menuitem">Password sniffing</a></li>
+   </ul></li>
+ </ul>
+</div></span>
+        </div>
+      </nav>
+    </aside>
+    <div class="l-single__content h-wysiwyg-html">
+      <h1><span id="hs_cos_wrapper_name" class="hs_cos_wrapper hs_cos_wrapper_meta_field hs_cos_wrapper_type_text" style="" data-hs-cos-general-type="meta_field" data-hs-cos-type="text">Authorized_keys file in SSH</span></h1>
+      <span id="hs_cos_wrapper_post_body" class="hs_cos_wrapper hs_cos_wrapper_meta_field hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="meta_field" data-hs-cos-type="rich_text"><div class="sc-eNQAEJ gNYskd">
+ <p>The <code>authorized_keys</code> file in <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/ssh/"><span>SSH</span></a> specifies the SSH keys that can be used for logging into the user account for which the file is configured. It is a highly important configuration file, as it <b>configures permanent access</b> using <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/ssh/key/"><span>SSH keys</span></a> and needs <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/iam/ssh-key-management/"><span>proper management</span></a>.</p>
+ <p>The default configuration in most SSH implementations allows users to deploy new <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/ssh/authorized-key"><span>authorized keys</span></a> for themselves and anyone they like. Such access is permanent, and may bypass privileged access management systems.</p>
+ <p>Self-provisioning is anathema to <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/iam/identity-management"><span>identity and access management</span></a> and having a controlled access provisioning and termination process, as required by most cybersecurity <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/compliance/"><span>laws and regulations</span></a>. </p>
+ <p>When organizations deploy a formal process for <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/iam/ssh-key-management/"><span>managing access using SSH keys</span></a>, one of the first steps is usually lock-down, basically moving the <code>authorized_keys</code> files to root-owned locations, which prevents self-provisioning for normal users.</p>
+ <div class="sc-htoDjs lkZqyk">
+  <h3 color="black" class="sc-bZQynM sc-gzVnrw kDdYIN heading">Contents</h3>
+  <a href="#configuring-authorized_keys" target="_self" class="components__RichTextLink-sc-1uxoc71-0 kjgQLy"><span>Configuring Authorized_keys</span></a>
+  <a href="#automating-management-of-authorized-keys" target="_self" class="components__RichTextLink-sc-1uxoc71-0 kjgQLy"><span>Automating Management of Authorized Keys</span></a>
+  <a href="#tectia-ssh-authorizations-file" target="_self" class="components__RichTextLink-sc-1uxoc71-0 kjgQLy"><span>Tectia SSH Authorizations File</span></a>
+  <a href="#tectia-ssh-authorized_keys-file" target="_self" class="components__RichTextLink-sc-1uxoc71-0 kjgQLy"><span>Tectia SSH authorized_keys File</span></a>
+ </div>
+ <h2 color="black" id="configuring-authorized_keys" class="sc-bZQynM sc-gzVnrw dBTTIH heading">Configuring Authorized_keys</h2>
+ <p>How to configure authorized keys depends on the SSH implementation.</p>
+ <ul class="sc-EHOje YDSOZ">
+  <li><p><a href="https://support.ssh.com/manuals/server-admin/64/ssh-server-g3.html" target="_target" class="components__RichTextLink-sc-1uxoc71-0 kjgQLy"><span>How to configure authorized keys for Tectia SSH</span></a> (Windows, Unix, Linux, z/OS)</p></li>
+  <li><p><a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/ssh/authorized_keys/openssh"><span>How to configure authorized keys for OpenSSH</span></a> (Unix, Linux)</p></li>
+ </ul>
+ <p><a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/products/tectia-ssh/"><span>Tectia SSH</span></a> comes with <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/resources/support/plans"><span>support service</span></a> that frequently helps customers in SSH key management. OpenSSH offers no support services.</p>
+ <h2 color="black" id="automating-management-of-authorized-keys" class="sc-bZQynM sc-gzVnrw dBTTIH heading">Automating Management of Authorized Keys</h2>
+ <p>Managing <code>authorized_keys</code> files manually is costly and error-prone. We had a customer with a 15-person dedicated team for manually installing SSH keys. Another customer estimated having 200 system administrators who spend 10% of their time setting up SSH keys. Automating the process can <b>save a lot of money</b> and <b>eliminate outages due to human errors</b>.</p>
+ <p>Furthermore, SSH keys grant access and having that access under control is required by laws and regulations such as <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/compliance/hipaa/security-rule"><span>HIPAA</span></a> for the health care industry, <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/compliance/sarbanes-oxley/"><span>Sarbanes-Oxley</span></a> for all US public companies, <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/compliance/pci"><span>PCI DSS</span></a> for credit card processing, and <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/compliance/nist-800-53/"><span>FISMA/NIST SP 800-53</span></a> for US federal government agencies. It is also included in the US <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/compliance/cybersecurity-framework/"><span>Cybersecurity Framework</span></a> for critical infrastructure companies.</p>
+ <p>The <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/about/references/"><span>leading solution</span></a> is <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/products/universal-ssh-key-manager/"><span>Universal SSH Key Manager</span></a>.</p>
+ <p>General information on managing SSH keys can be found on the <a class="components__RichTextLink-sc-1uxoc71-0 kjgQLy" href="/iam/ssh-key-management/"><span>SSH key management</span></a> page.</p>
+ <h2 color="black" id="tectia-ssh-authorizations-file" class="sc-bZQynM sc-gzVnrw dBTTIH heading">Tectia SSH Authorizations File</h2>
+ <img src="https://www.ssh.com/hubfs/Imported_Blog_Media/authorized_keys___authorizations_file_in_Tectia_SSH-2.jpeg" alt="authorized_keys / authorizations file in Tectia SSH" style="max-width:100%">
+ <h2 color="black" id="tectia-ssh-authorized_keys-file" class="sc-bZQynM sc-gzVnrw dBTTIH heading">Tectia SSH authorized_keys File</h2>
+ <img src="https://www.ssh.com/hubfs/Imported_Blog_Media/authorized_keys_file_in_OpenSSH-2.jpeg" alt="authorized_keys file in OpenSSH" style="max-width:100%">
+ <p></p>
+</div></span>
+    </div>
+  </article>
+
+      </div>
+
+      
+        <div data-global-resource-path="everblox/partials/footer.html"><div class="b-footer">
+	<div class="b-footer__container">
+		<div class="b-footer__row b-footer__row--no-padding-bottom">
+			<div class="b-footer__column b-footer__desc">
+				<div class="b-footer__logo"><a href="/" class="c-logo c-logo--nega"></a></div>
+				<div id="hs_cos_wrapper_footer-top-text" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_footer-top-text_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="rich_text"><p>Together with our customers, our mission is to secure their digital business on on-premises, cloud, and hybrid ecosystems cost-efficiently, at scale, and without disruptions to their operations or business continuity.</p></span></div>
+			</div>
+			<div class="b-footer__column b-footer__navigation">
+				<div class="c-navigation-footer">
+					<span id="hs_cos_wrapper_footer_menu" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="menu"><div id="hs_menu_wrapper_footer_menu" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-horizontal" role="navigation" data-sitemap-name="Footer" data-menu-id="42307530051" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Solutions</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/digital-transformation" role="menuitem">Digital transformation</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/secure-file-transfers" role="menuitem">Secure file transfer</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/pass-audits" role="menuitem">Pass IT audits</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/protect-ot-m2m/" role="menuitem">OT and M2M connections</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/solutions/credential-risk-mitigation/" role="menuitem">Credential risk mitigation</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Products</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/privx/" role="menuitem">PrivX™</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/universal-ssh-key-manager/" role="menuitem">UKM™</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/nqx" role="menuitem">NQX™</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/tectia-ssh/" role="menuitem">Tectia™</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/tectia-ssh-zos/" role="menuitem">Tectia™ z/OS</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Services</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/ssh-risk-assessment/" role="menuitem">SSH Risk assessment™</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/products/services/" role="menuitem">Professional Services</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/resources/support/home" role="menuitem">Support</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/contact" role="menuitem">Contact</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Resources</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/references" role="menuitem">References</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/download/" role="menuitem">Downloads</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/manuals/" role="menuitem">Manuals</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/resources/events" role="menuitem">Events &amp; Webinars</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://blog.ssh.com" role="menuitem">Blog</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Company</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/about" role="menuitem">About us</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/investors" role="menuitem">Investors</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/partners/" role="menuitem">Partners</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/analysts" role="menuitem">Analysts</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.ssh.com/press-releases/" role="menuitem">Press</a></li>
+   </ul></li>
+ </ul>
+</div></span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="b-footer__row">
+			<div class="b-footer__column b-footer__column--end b-footer__cta">
+				<div class="footer-cta-text">
+					<div id="hs_cos_wrapper_footer-cta-text" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_footer-cta-text_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="rich_text"><h4>Stay on top of the latest in cyber security</h4>
+<p>Be the first to know about SSH.COM’s new solutions and features</p></span></div>
+				</div>
+				<div class="footer-cta-form">
+					
+
+	          		
+						
+					
+
+	          		<div data-lazyform="aa4b4bef-45b7-4b60-a5ed-c338d1837512" data-lazyform-hubid="470387" data-lazyform-redirect-url="" data-lazyform-inline-message="" data-lazyform-css="" data-lazyform-loaded="false"><div class="form"></div><div class="thankyou">Thanks for submitting the form.</div></div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="b-footer__row h-scheme-2">
+			<div class="b-footer__column b-footer__legal" data-scheme-target>
+				<div class="h-wysiwyg-html">
+					<div id="hs_cos_wrapper_footer-legal" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_footer-legal_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="rich_text"><p>© Copyright SSH.COM • 2021 • <a href="https://www.ssh.com/legal" rel="noopener">Legal</a></p></span></div>
+				</div>
+			</div>
+			<div class="b-footer__column b-footer__some-links">
+				<div class="c-social-media-links">
+					<div id="hs_cos_wrapper_footer-some-links" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-follow_me" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+
+
+
+<div>
+  <a href="https://www.linkedin.com/company/10860" target="_blank" rel="noopener" class="fm_button fm_linkedin" style="text-decoration: none"><span style="background-image:url('https://f.hubspotusercontent10.net/hubfs/7528315/raw_assets/public/mV0_hubspot/img/linkedin_legacy_color.png'); background-size: 100%; width: 32px; height: 32px; display: inline-block; cursor: pointer;"></span></a><a href="https://twitter.com/SSH" target="_blank" rel="noopener" class="fm_button fm_twitter" style="text-decoration: none"><span style="background-image:url('https://f.hubspotusercontent00.net/hubfs/7528304/raw_assets/public/mV0_hubspot/img/twitter_legacy_color.png'); background-size: 100%; width: 32px; height: 32px; display: inline-block; cursor: pointer;"></span></a><a href="https://www.facebook.com/146713258688399" target="_blank" rel="noopener" class="fm_button fm_facebook" style="text-decoration: none"><span style="background-image:url('https://f.hubspotusercontent00.net/hubfs/7528304/raw_assets/public/mV0_hubspot/img/facebook_legacy_color.png'); background-size: 100%; width: 32px; height: 32px; display: inline-block; cursor: pointer;"></span></a>
+</div></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div></div>
+      
+
+    </div>
+    <modals></modals>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    
+<script>
+(function () {
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/_hcms/perf', true /*async*/);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.onreadystatechange = function () {
+                // do nothing.
+            };
+            var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            function populateNetworkInfo(name, connection, info) {
+                if (name in connection) {
+                    info[name] = connection[name];
+                }
+            }
+            var networkInfo = {};
+            if (connection) {
+                ['type', 'effectiveType', 'downlink', 'rtt'].forEach(function(name) {
+                    populateNetworkInfo(name, connection, networkInfo);
+                });
+            }
+            var perfData = {
+                url: location.href,
+                portal: 470387,
+                content: 44496657932,
+                group: -1,
+                connection: networkInfo,
+                timing: performance.timing
+            };
+            xhr.send(JSON.stringify(perfData));
+        }, 3000);  // Execute this 3 seconds after onload.
+    });
+})();
+</script>
+
+<script src="https://www.ssh.com/hs-fs/hub/470387/hub_generated/template_assets/42308451141/1621241158168/everblox/assets/js/main.min.js"></script>
+<script src="/hs/hsstatic/keyboard-accessible-menu-flyouts/static-1.17/bundles/project.js"></script>
+<script>
+if (typeof hsVars !== 'undefined') { hsVars['language'] = 'en'; }
+</script>
+
+<script src="/hs/hsstatic/cos-i18n/static-1.27/bundles/project.js"></script>
+
+    <!--[if lte IE 8]>
+    <script charset="utf-8" src="https://js.hsforms.net/forms/v2-legacy.js"></script>
+    <![endif]-->
+
+<script src="/_hcms/forms/v2.js"></script>
+
+    <script>
+        var options = {
+            portalId: '470387',
+            formId: 'aa4b4bef-45b7-4b60-a5ed-c338d1837512',
+            formInstanceId: '8281',
+            pageId: '44496657932',
+            region: 'na1',
+            
+            
+            
+            
+            pageName: "Syntax, semantics, best practice for SSH authorized_keys file.  Introduction to SSH key management.",
+            
+            
+            
+            inlineMessage: "Thanks for submitting the form.",
+            
+            
+            rawInlineMessage: "Thanks for submitting the form.",
+            
+            
+            hsFormKey: "3ea920475136577a7e9d713ac6548e76",
+            
+            
+            css: '',
+            target: '#hs_form_target_footer_cta_form',
+            
+            
+            
+            
+            
+            contentType: "blog-post",
+            
+            
+            formsBaseUrl: '/_hcms/forms/',
+            
+            
+            formData: {
+                cssClass: 'hs-form stacked hs-custom-form'
+            }
+        };
+
+        options.getExtraMetaDataBeforeSubmit = function() {
+            var metadata = {};
+            
+
+            if (hbspt.targetedContentMetadata) {
+                var count = hbspt.targetedContentMetadata.length;
+                var targetedContentData = [];
+                for (var i = 0; i < count; i++) {
+                    var tc = hbspt.targetedContentMetadata[i];
+                     if ( tc.length !== 3) {
+                        continue;
+                     }
+                     targetedContentData.push({
+                        definitionId: tc[0],
+                        criterionId: tc[1],
+                        smartTypeId: tc[2]
+                     });
+                }
+                metadata["targetedContentMetadata"] = JSON.stringify(targetedContentData);
+            }
+
+            return metadata;
+        };
+
+        hbspt.forms.create(options);
+    </script>
+
+
+<!-- Start of HubSpot Analytics Code -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "blog-post"]);
+_hsq.push(["setCanonicalUrl", "https:\/\/www.ssh.com\/academy\/ssh\/authorized-keys-file"]);
+_hsq.push(["setPageId", "44496657932"]);
+_hsq.push(["setContentMetadata", {
+    "contentPageId": 44496657932,
+    "legacyPageId": "44496657932",
+    "contentFolderId": null,
+    "contentGroupId": 44046465464,
+    "abTestId": null,
+    "languageVariantId": 44496657932,
+    "languageCode": "en",
+    
+}]);
+</script>
+
+<script type="text/javascript" id="hs-script-loader" async defer src="/hs/scriptloader/470387.js"></script>
+<!-- End of HubSpot Analytics Code -->
+
+
+<script type="text/javascript">
+var hsVars = {
+    ticks: 1621593969994,
+    page_id: 44496657932,
+
+    content_group_id: 44046465464,
+    portal_id: 470387,
+    app_hs_base_url: "https://app.hubspot.com",
+    cp_hs_base_url: "https://cp.hubspot.com",
+    language: "en",
+    analytics_page_type: "blog-post",
+    category_id: 3,
+    folder_id: 0,
+    is_hubspot_user: false
+}
+</script>
+
+
+<script defer src="/hs/hsstatic/HubspotToolsMenu/static-1.103/js/index.js"></script>
+
+<!-- start Main.js DO NOT REMOVE -->
+<!--
+<script src='//cdn2.hubspot.net/hub/470387/hub_generated/template_assets/2713758365/1591381748863/__MASTER_TEMPLATES_2019/_TO_ARCHIVE/Coded_files/Custom/page/Ssh-Apr2015-theme/Ssh-Apr2015-main.min.js'></script>
+-->
+<!-- end Main.js -->
+
+<!-- Twitter universal website tag code -->
+<script>
+!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+},s.version='1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='//static.ads-twitter.com/uwt.js',
+a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+// Insert Twitter Pixel ID and Standard Event data below
+twq('init','nvi89');
+twq('track','PageView');
+</script>
+<!-- End Twitter universal website tag code -->
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W9R7H9D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<script> (function(){ window.ldfdr = window.ldfdr || {}; (function(d, s, ss, fs){ fs = d.getElementsByTagName(s)[0]; function ce(src){ var cs = d.createElement(s); cs.src = src; setTimeout(function(){fs.parentNode.insertBefore(cs,fs)}, 1); } ce(ss); })(document, 'script', 'https://lftracker.leadfeeder.com/lftracker_v1_9k315xMGvvwdlB0m.js'); })(); </script> 
+
+      <script>
+        (function () {
+          var zi = document.createElement('script');
+          zi.type = 'text/javascript';
+          zi.async = true;
+          zi.src = 'https://ws.zoominfo.com/pixel/d1ZQ1lY0yitJBONAhnNK';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(zi, s);
+        })();
+      </script>
+      <noscript>
+        <img src="https://ws.zoominfo.com/pixel/d1ZQ1lY0yitJBONAhnNK" width="1" height="1" style="display: none;">
+      </noscript>
+  
+
+<div id="fb-root"></div>
+ <script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&status=0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+ <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+ 
+
+
+    
+  
+</body></html>

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta property="og:title" content="Executing PowerShell scripts from C#" />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/archive/blogs/kebab/executing-powershell-scripts-from-c" />
+
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@docsmsft" />
+
+	<meta name="color-scheme" content="light dark">
+
+
+	<meta name="archived_blog_id" content="72863" />
+<meta name="archived_blog_orig_url" content="https://blogs.msdn.microsoft.com/kebab" />
+<meta name="archived_blog_post_author" content="Keith Babinec" />
+<meta name="archived_blog_post_author_email" content="keith.babinec@gmail.com" />
+<meta name="archived_blog_post_id" content="43" />
+<meta name="author" content="kexugit" />
+<meta name="breadcrumb_path" content="/archive/blogs/bread/toc.json" />
+<meta name="depot_name" content="MSDN.blogs-archive" />
+<meta name="document_id" content="fb9c803e-26ce-a80a-360d-8040d66e1e0f" />
+<meta name="document_version_independent_id" content="a7324215-3081-d73e-28d3-04faeed882ee" />
+<meta name="gitcommit" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr/commit/b1e8e2636fecb5506007f86ab5aec32dc1eb4ffb?path=/blogs-archive/kebab/executing-powershell-scripts-from-c.md&amp;_a=contents" />
+<meta name="is_archived" content="true" />
+<meta name="locale" content="en-us" />
+<meta name="ms.author" content="Archiveddocs" />
+<meta name="ms.date" content="04/28/2014" />
+<meta name="ms.topic" content="Archived" />
+<meta name="original_content_git_url" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr?path=/blogs-archive/kebab/executing-powershell-scripts-from-c.md&amp;version=GBlive&amp;_a=contents" />
+<meta name="ROBOTS" content="NOINDEX,NOFOLLOW" />
+<meta name="schema" content="Conceptual" />
+<meta name="search.ms_docsetname" content="blogs-archive" />
+<meta name="search.ms_product" content="MSDN" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="uhfHeaderId" content="MSDocsHeader-Archive" />
+<meta name="updated_at" content="2020-02-07 07:49 PM" />
+<meta name="page_type" content="conceptual" />
+<meta name="toc_rel" content="toc.json" />
+<meta name="word_count" content="2247" />
+
+
+	<meta name="scope" content="Blogs" />
+<link href="https://docs.microsoft.com/en-us/archive/blogs/kebab/executing-powershell-scripts-from-c" rel="canonical">
+	<title>Executing PowerShell scripts from C# | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/8147a557.site-ltr.css ">
+
+	
+
+
+	<script id="msdocs-script">
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasBinaryRating: false,
+			hasGithubIssues: false,
+			showFeedbackReport: false,
+			enableTutorialFeedback: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/blogs-archive-pr?path=/blogs-archive/kebab/executing-powershell-scripts-from-c.md&version=GBlive&_a=contents',
+			extendBreadcrumb: false,
+			isEditDisplayable: false,
+			hideViewSource: false,
+			hasPageActions: true,
+			hasBookmark: true,
+			hasShare: true,
+			hasRecommendations: false,
+		},
+		functions:{}
+	};
+	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2777d474.index-docs.js"></script>
+</head>
+
+<body lang="en-us" dir="ltr">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
+				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			</a>
+		</div>
+	</div>
+	<div class="nav-bar border-top is-hidden-mobile"></div>
+</header>		</div>
+
+						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
+						<li hidden>
+							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
+								<span id="lang-link-icon" class="icon docon docon-locale-globe" aria-hidden="true"></span>
+								<span id="lang-link-text" class="is-visually-hidden-touch is-hidden-portrait"></span>
+							</a>
+						</li>
+						<li>
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+								<span class="icon" aria-hidden="true">
+									<span class="docon docon-circle-addition has-text-primary"></span>
+								</span>
+								<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
+							</button>
+						</li>
+						<li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth justify-content-flex-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>						</li>
+					</ul>
+					<button type="button" class="border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
+						<span class="icon">
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+						</span>
+						<span class="contents-expand-title">Table of contents</span>
+					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
+		</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+
+
+
+						<h1 id="executing-powershell-scripts-from-c">Executing PowerShell scripts from C#</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2014-04-28T00:00:00.000Z" data-article-date-source="ms.date">04/28/2014</time>
+							</li>
+									<li class="readingTime">11 minutes to read</li>
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<h3>In this article</h3>
+						</nav>
+
+						<!-- <content> -->
+							<p>In today’s post, I will demonstrate the basics of how to execute PowerShell scripts and code from within a C#/.NET applications. I will walk through how to setup your project prerequisites, populate the pipeline with script code and parameters, perform synchronous and asynchronous execution, capture output, and leverage shared namespaces.</p>
+<p><em><strong>Update 8/7/2014</strong></em>: <a href="https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/01/59/78/0601.PowerShellExecutionSample.zip" title="Here" data-linktype="external">Here</a> is the downloadable solution file.<br/>
+<em><strong>Update 11/5/2014</strong></em>: Added a section on execution policy behavior.</p>
+<p><strong>Prerequisites:</strong></p>
+<p>First, ensure that PowerShell 2.0 or later is installed on the system you are developing on. The features used below will not be supported on PowerShell 1.0. Next, start by making a new console application (targeting .NET 4.0) in Visual Studio.</p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/01/59/78/6354.references.png" alt="" data-linktype="external"/></a></p>
+<p>In the solution explorer, add a project reference to the <em><strong>System.Management.Automation</strong></em> assembly <em><strong>*</strong></em> . On my machine (PowerShell 3.0), it was located at <em><strong>C:\Program Files (x86)\Reference Assemblies\Microsoft\WindowsPowerShell\3.0</strong></em>. Then, add <em><strong>using</strong></em> statements for the above referenced assembly, along with <em><strong>System.Collections.Objectmodel</strong></em>, which is used later for execution output.</p>
+<p><em><strong>Note</strong></em>: <em>You will need to install the Windows SDK in order to obtain the <strong>System.Management.Automation</strong> assembly file.<br><strong>Note</strong>: You do not have to distribute the <strong>System.Management.Automation</strong> assembly file with your application binaries - it is located in the GAC on machines with Windows PowerShell installed and should resolve automatically.</em></p>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/01/59/78/1070.usingPS.png" alt="" data-linktype="external"/></a></p>
+<p><strong>Prepare the Pipeline for execution:</strong></p>
+<p>The first step is to create a new instance of the <em><strong>PowerShell</strong></em> class. The static method <em><strong>PowerShell.Create()</strong></em> creates an empty PowerShell pipeline for us to use for execution. The PowerShell class implements <em><strong>IDisposable</strong></em>, so remember to wrap it up in a using block.</p>
+<pre><code>     using (PowerShell PowerShellInstance = PowerShell.Create())
+    {
+    }
+</code></pre>
+<p>Next, we can add scripts or commands to execute. Call the <em><strong>AddScript()</strong></em> and <em><strong>AddCommand()</strong></em> methods to add this content to the execution pipeline. If your script has parameters, adding them is easy with the <em><strong>AddParameter()</strong></em> method. <em><strong>AddParameter()</strong></em> accepts a string parameter name, and object for the parameter value. Feel free to pass in full object instances/types if you want. The scripts and pipeline handle it just fine. No need to limit yourself with only passing in string values.</p>
+<p>The string contents supplied to <em><strong>AddScript()</strong></em> can come from anywhere. Good choices may be text loaded from files on disk or embedded resources, or user input. For the purposes of this tutorial, I’m just hard-coding some example script text.</p>
+<pre><code>     using (PowerShell PowerShellInstance = PowerShell.Create())
+    {
+        // use &quot;AddScript&quot; to add the contents of a script file to the end of the execution pipeline.
+        // use &quot;AddCommand&quot; to add individual commands/cmdlets to the end of the execution pipeline.
+        PowerShellInstance.AddScript(&quot;param($param1) $d = get-date; $s = 'test string value'; &quot; +
+                &quot;$d; $s; $param1; get-service&quot;);
+
+        // use &quot;AddParameter&quot; to add a single parameter to the last command/script on the pipeline.
+        PowerShellInstance.AddParameter(&quot;param1&quot;, &quot;parameter 1 value!&quot;);
+    }
+</code></pre>
+<p><strong>Script/Command Execution:</strong></p>
+<p>So far, we have a PowerShell pipeline populated with script code and parameters. There are two ways we can call PowerShell to execute it: synchronously and asynchronously.</p>
+<p><strong>Synchronous execution:</strong></p>
+<p>For synchronous execution, we call <em><strong>PowerShell.Invoke()</strong></em> . The caller waits until the script or commands have finished executing completely before returning from the call to <em><strong>Invoke()</strong></em> . If you don’t care about the items in the output stream, the simplest execution looks like this:</p>
+<pre><code>     // invoke execution on the pipeline (ignore output)
+    PowerShellInstance.Invoke();
+</code></pre>
+<p>For situations where you don’t need to see or monitor the output or results of execution, this may be acceptable. But, in other scenarios you probably need to peek at the results or perform additional processing with the output that comes back from PowerShell. Let’s see what that code looks like:</p>
+<pre><code>     // invoke execution on the pipeline (collecting output)
+    Collection&lt;PSObject&gt; PSOutput = PowerShellInstance.Invoke();
+
+    // loop through each output object item
+    foreach (PSObject outputItem in PSOutput)
+    {
+        // if null object was dumped to the pipeline during the script then a null
+        // object may be present here. check for null to prevent potential NRE.
+        if (outputItem != null)
+        {
+            //TODO: do something with the output item 
+            // outputItem.BaseOBject
+        }
+    }
+</code></pre>
+<p>The return object from <em><strong>Invoke()</strong></em> is a collection of <em><strong><a href="https://msdn.microsoft.com/en-us/library/system.management.automation.psobject_members(v=vs.85).aspx" title="PSObject" data-linktype="external">PSObject</a></strong></em> instances that were written to the output stream during execution. <em><strong>PSObject</strong></em> is a wrapper class that adds PowerShell specific functionality around whatever the base object is. Inside the <em><strong>PSObject</strong></em> is a member called <em><strong>BaseObject</strong></em>, which contains an object reference to the base type you are working with. If nothing was written to the output stream, then the collection of <em><strong>PSObjects</strong></em> will be empty.</p>
+<p>Besides the standard output stream, there are also dedicated streams for warnings, errors, debug, progress, and verbose logging. If any cmdlets leverage those streams, or you call them directly (<em><strong>write-error</strong></em>, <em><strong>write-debug</strong></em>, etc.), then those items will appear in the streams collections.</p>
+<p>After invoking the script, you can check each of these stream collections to see if items were written to them.</p>
+<pre><code>     // invoke execution on the pipeline (collecting output)
+    Collection&lt;PSObject&gt; PSOutput = PowerShellInstance.Invoke();
+
+    // check the other output streams (for example, the error stream)
+    if (PowerShellInstance.Streams.Error.Count &gt; 0)
+    {
+        // error records were written to the error stream.
+        // do something with the items found.
+    }
+</code></pre>
+<p>In my sample script supplied above, I am writing a few manually-created objects to the output stream and calling the <em><strong>get-service</strong></em> cmdlet, which also writes its output to the stream since I didn’t save the output in a variable.</p>
+<p>As a test, I write the type name and <em><strong>ToString()</strong></em> on all of the base objects that came back from the sample script. As you can see, accessing the base object allows you to view or manipulate the object directly as needed. The base types that come back from execution are usually standard .NET types you may already be familiar with, just wrapped up in a <em><strong>PSObject</strong></em>.</p>
+<pre><code>     // loop through each output object item
+    foreach (PSObject outputItem in PSOutput)
+    {
+        // if null object was dumped to the pipeline during the script then a null
+        // object may be present here. check for null to prevent potential NRE.
+        if (outputItem != null)
+        {
+            //TODO: do something with the output item 
+            Console.WriteLine(outputItem.BaseObject.GetType().FullName);
+            Console.WriteLine(outputItem.BaseObject.ToString() + &quot;\n&quot;);
+        }
+    }
+</code></pre>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/01/59/78/2742.cmdout1.png" alt="" data-linktype="external"/></a></p>
+<pre><code> Asynchronous execution: 
+</code></pre>
+<p>For asynchronous execution, we call <em><strong>PowerShell.BeginInvoke()</strong></em> . <em><strong>BeginInvoke()</strong></em> immediately returns to the caller and the script execution begins in the background so you can perform other work. Unlike the synchronous <em><strong>Invoke()</strong></em> method, the return type of <em><strong>BeginInvoke()</strong></em> is not a collection of <em><strong>PSObject</strong></em> instances from the output stream. The output isn’t ready yet. The caller is given an <em><strong>IAsyncResult</strong></em> object to monitor the status of the execution pipeline. Let’s start with a really simple example:</p>
+<pre><code>     using (PowerShell PowerShellInstance = PowerShell.Create())
+    {
+        // this script has a sleep in it to simulate a long running script
+        PowerShellInstance.AddScript(&quot;start-sleep -s 7; get-service&quot;);
+
+        // begin invoke execution on the pipeline
+        IAsyncResult result = PowerShellInstance.BeginInvoke();
+
+        // do something else until execution has completed.
+        // this could be sleep/wait, or perhaps some other work
+        while (result.IsCompleted == false)
+        {
+            Console.WriteLine(&quot;Waiting for pipeline to finish...&quot;);
+            Thread.Sleep(1000);
+
+            // might want to place a timeout here...
+        }
+
+        Console.WriteLine(&quot;Finished!&quot;);
+    }
+</code></pre>
+<p><em><strong>Note:</strong> If you wrap the PowerShell instance in a <strong>using</strong> block like the sample above and do not wait for execution to complete, the pipeline will close itself, and will abort script execution, when it reaches the closing brace of the <strong>using</strong> block. You can avoid this by waiting for completion of the pipeline, or by removing the <strong>using</strong> block and manually calling <strong>Dispose()</strong> on the instance at a later time.</em></p>
+<p>In this first asynchronous example, we ignored the output stream. Again, this is only useful if you don’t care about your script results. Fortunately, the <em><strong>BeginInvoke()</strong></em> method has a few overloads that allow us to extend the functionality. Let’s improve the example by adding output collection and event handling for data hitting the pipeline.</p>
+<p>First, we will create a new instance of <em><strong>PSDataCollection&lt;PSObject&gt;</strong></em> . This collection is a thread-safe buffer that will store output stream objects as they hit the pipeline. Next, we will subscribe to the <em><strong>DataAdded</strong></em> event on this collection. This event will fire every time an object is written to the output stream. To use this new output buffer, pass it as a parameter to <em><strong>BeginInvoke()</strong></em> .</p>
+<p>I added some other functionality and comments to the next code block. First, notice that you can check the <a href="https://msdn.microsoft.com/en-us/library/system.management.automation.psinvocationstateinfo_members(v=vs.85).aspx" title="state of the pipeline" data-linktype="external">state of the pipeline</a> to see its status. The <em><strong>State</strong></em> will equal <em><strong>Completed</strong></em> when your script is done. If <em><strong>State</strong></em> is <em><strong>Failed</strong></em>, it is likely caused by an unhandled exception that occurred in the script, also known as a <a href="../kebab/an-introduction-to-error-handling-in-powershell" title="terminating error" data-linktype="relative-path">terminating error</a>. Second, if your scripts utilize <em><strong>write-error</strong></em>, <em><strong>write-debug</strong></em>, <em><strong>write-progress</strong></em>, etc. (all thread-safe collections), you can review these during or after execution to check for items logged there. I have subscribed to the <em><strong>DataAdded</strong></em> event on the <em><strong>Error</strong></em> stream as well to be notified in real time.</p>
+<pre><code>     /// &lt;summary&gt;
+    /// Sample execution scenario 2: Asynchronous
+    /// &lt;/summary&gt;
+    /// &lt;remarks&gt;
+    /// Executes a PowerShell script asynchronously with script output and event handling.
+    /// &lt;/remarks&gt;
+    public void ExecuteAsynchronously()
+    {
+        using (PowerShell PowerShellInstance = PowerShell.Create())
+        {
+            // this script has a sleep in it to simulate a long running script
+            PowerShellInstance.AddScript(&quot;$s1 = 'test1'; $s2 = 'test2'; $s1; write-error 'some error';start-sleep -s 7; $s2&quot;);
+
+            // prepare a new collection to store output stream objects
+            PSDataCollection&lt;PSObject&gt; outputCollection = new PSDataCollection&lt;PSObject&gt;();
+            outputCollection.DataAdded += outputCollection_DataAdded;
+
+            // the streams (Error, Debug, Progress, etc) are available on the PowerShell instance.
+            // we can review them during or after execution.
+            // we can also be notified when a new item is written to the stream (like this):
+            PowerShellInstance.Streams.Error.DataAdded += Error_DataAdded;
+
+            // begin invoke execution on the pipeline
+            // use this overload to specify an output stream buffer
+            IAsyncResult result = PowerShellInstance.BeginInvoke&lt;PSObject, PSObject&gt;(null, outputCollection);
+
+            // do something else until execution has completed.
+            // this could be sleep/wait, or perhaps some other work
+            while (result.IsCompleted == false)
+            {
+                Console.WriteLine(&quot;Waiting for pipeline to finish...&quot;);
+                Thread.Sleep(1000);
+
+                // might want to place a timeout here...
+            }
+
+            Console.WriteLine(&quot;Execution has stopped. The pipeline state: &quot; + PowerShellInstance.InvocationStateInfo.State);
+
+            foreach (PSObject outputItem in outputCollection)
+            {
+                //TODO: handle/process the output items if required
+                Console.WriteLine(outputItem.BaseObject.ToString());
+            }
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// Event handler for when data is added to the output stream.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;sender&quot;&gt;Contains the complete PSDataCollection of all output items.&lt;/param&gt;
+    /// &lt;param name=&quot;e&quot;&gt;Contains the index ID of the added collection item and the ID of the PowerShell instance this event belongs to.&lt;/param&gt;
+    void outputCollection_DataAdded(object sender, DataAddedEventArgs e)
+    {
+        // do something when an object is written to the output stream
+        Console.WriteLine(&quot;Object added to output.&quot;);
+    }
+
+    /// &lt;summary&gt;
+    /// Event handler for when Data is added to the Error stream.
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;sender&quot;&gt;Contains the complete PSDataCollection of all error output items.&lt;/param&gt;
+    /// &lt;param name=&quot;e&quot;&gt;Contains the index ID of the added collection item and the ID of the PowerShell instance this event belongs to.&lt;/param&gt;
+    void Error_DataAdded(object sender, DataAddedEventArgs e)
+    {
+        // do something when an error is written to the error stream
+        Console.WriteLine(&quot;An error was written to the Error stream!&quot;);
+    }
+</code></pre>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/01/59/78/8507.cmdout2.png" alt="" data-linktype="external"/></a></p>
+<p>As you can see above, the complete asynchronous model allows for some pretty interesting scenarios with long-running scripts. We can listen for events like data being added to the output stream. We can monitor the progress stream to see how much longer a task may take and provide feedback to the UI. We can listen for new errors being written to the error stream and react accordingly, instead of waiting until all execution has completed.</p>
+<p><strong>Execution Policy:</strong></p>
+<p>When you invoke cmdlets through the PowerShell class in C#, the execution policy behavior is subject to the policy restrictions of the machine. This behavior is the same is if you opened up a PowerShell prompt on the machine. You can issue commands just fine, but invoking another script might get blocked if your execution policy is undefined or restricted in some way. An easy way to get around this is to set the execution policy for the scope of the application process. Simply run <em><strong>Set-ExecutionPolicy</strong></em> and specify the scope to be <em><strong>Process</strong></em>. This should allow you to invoke secondary scripts without altering the machine/user policies. For more information about policies and their order of precedence, <a href="https://technet.microsoft.com/en-us/library/hh847748.aspx" title="see here" data-linktype="external">see here</a>.</p>
+<p><strong>Shared Namespace:</strong></p>
+<p>To wrap up our discussion, I’d like to share a potentially useful feature that can expand some of the functionality for your scripts. When you use the PowerShell class to invoke a script, that script has access to the classes inside the caller’s namespace, if they were declared public.</p>
+<p>In the example code below, we make a public class with a single public property, and a public static class with a single public method. Both of these items exist in the same namespace as the PowerShell executor code. The script we execute creates a new instance of the class, sets the property, and writes it to the pipeline. The static class and method are then called directly from inside the script, saving the results to a string which is then written to the pipeline as well.</p>
+<pre><code> namespace PowerShellExecutionSample
+{
+    /// &lt;summary&gt;
+    /// Test class object to instantiate from inside PowerShell script.
+    /// &lt;/summary&gt;
+    public class TestObject
+    {
+        /// &lt;summary&gt;
+        /// Gets or sets the Name property
+        /// &lt;/summary&gt;
+        public string Name { get; set; }
+    }
+
+    /// &lt;summary&gt;
+    /// Test static class to invoke from inside PowerShell script.
+    /// &lt;/summary&gt;
+    public static class TestStaticClass
+    {
+        /// &lt;summary&gt;
+        /// Sample static method to call from insider PowerShell script.
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;String message&lt;/returns&gt;
+        public static string TestStaticMethod()
+        {
+            return &quot;Hello, you have called the test static method.&quot;;
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// Provides PowerShell script execution examples
+    /// &lt;/summary&gt;
+    class PowerShellExecutor
+    {
+        /// &lt;summary&gt;
+        /// Sample execution scenario 3: Namespace test
+        /// &lt;/summary&gt;
+        /// &lt;remarks&gt;
+        /// Executes a PowerShell script synchronously and utilizes classes in the callers namespace.
+        /// &lt;/remarks&gt;
+        public void ExecuteSynchronouslyNamespaceTest()
+        {
+            using (PowerShell PowerShellInstance = PowerShell.Create())
+            {
+</code></pre>
+<pre><code>                 // add a script that creates a new instance of an object from the caller's namespace
+                PowerShellInstance.AddScript(&quot;$t = new-object PowerShellExecutionSample.TestObject;&quot; + 
+                                             &quot;$t.Name = 'created from inside PowerShell script'; $t;&quot; +
+                                             &quot;$message = [PowerShellExecutionSample.TestStaticClass]::TestStaticMethod(); $message&quot;);
+
+                // invoke execution on the pipeline (collecting output)
+                Collection&lt;PSObject&gt; PSOutput = PowerShellInstance.Invoke();
+
+                // loop through each output object item
+                foreach (PSObject outputItem in PSOutput)
+                {
+                    if (outputItem != null)
+                    {
+                        Console.WriteLine(outputItem.BaseObject.GetType().FullName);
+
+                        if (outputItem.BaseObject is TestObject)
+                        {
+                            TestObject testObj = outputItem.BaseObject as TestObject;
+                            Console.WriteLine(testObj.Name);
+                        }
+                        else
+                        {
+                            Console.WriteLine(outputItem.BaseObject.ToString());
+                        }
+                    }
+                }
+            }
+        }
+    }
+} 
+</code></pre>
+<p><a href=""><img src="https://msdnshared.blob.core.windows.net/media/MSDNBlogsFS/prod.evol.blogs.msdn.com/CommunityServer.Blogs.Components.WeblogFiles/00/00/01/59/78/3286.cmdout3.png" alt="" data-linktype="external"/></a></p>
+<p>As we can see from the console output, the public static class and non-static class were both available from inside the script for use. The ability to leverage public members from the caller’s namespace allows you to create some interesting scenarios calling C# code directly from your PowerShell scripts.</p>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- page rating section -->
+						<!-- end page rating section -->
+
+
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
+						<!-- feedback section -->
+						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
+
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+
+
+
+	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+						</div>
+					</div>
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+
+
+
+	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+<div class="dropdown has-caret-up">
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span>Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="light">
+					<span class="theme-light has-margin-right-small">
+						<span
+							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Light					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="dark">
+					<span class="theme-dark has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+Dark					</span>
+				</button>
+			</li>
+			<li class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth justify-content-flex-start"
+					data-theme-to="high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span
+							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span role="menuitem">
+High contrast					</span>
+				</button>
+			</li>
+		</ul>
+	</div>
+</div>		</div>
+	</div>
+	<ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
+</footer>
+	</section>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+</body>
+</html>

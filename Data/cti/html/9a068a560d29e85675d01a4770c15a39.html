@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Cobalt Strike is threat emulation software. Red teams and penetration testers use Cobalt Strike to demonstrate the risk of a breach and evaluate mature security programs. Cobalt Strike exploits network vulnerabilities, launches spear phishing campaigns, hosts web drive-by attacks, and generates malware infected files from a powerful graphical user interface that encourages collaboration and reports all activity." />
+	<meta name="keywords" content="Cobalt Strike, CobaltStrike, Armitage, Metasploit, penetration testing, vulnerability assessment, advanced persistent threat, tactics, hacking, tactical hacking, advanced threat tactics, spear phishing, targeted attacks, cyber warfare, APT " />
+	<title>Scripted Web Delivery (S) - Cobalt Strike</title>
+	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://blog.cobaltstrike.com/feed/" />
+
+	<!-- HelpSystems owns Core Security and we're part of Core Security too. We can use their favicon, which is a HelpSystems favicon :) -->
+	<link rel="shortcut icon" href="https://www.coresecurity.com/themes/custom/coresecurity/favicon.ico" type="image/vnd.microsoft.icon" />
+
+  <!-- TrustArc tag start -->
+  <script async="async" src="//consent.trustarc.com/notice?domain=helpsystems.com&c=teconsent&js=nj&text=true&gtm=1&noticeType=bb&pn=1-0&cookieLink=https://www.helpsystems.com/cookie-policy&privacypolicylink=https://www.helpsystems.com/privacy-policy" crossorigin=""></script>  <script>
+	var __dispatched__ = {}; //Map of previously dispatched preference levels
+
+    /* First step is to register with the CM API to receive callbacks when a preference update occurs. You must wait for the CM API (PrivacyManagerAPI object) to exist on the page before registering.
+    */
+    var __i__ = self.postMessage && setInterval(function() {
+        if (self.PrivacyManagerAPI && __i__) {
+            var apiObject = {
+                PrivacyManagerAPI: {
+                    action: "getConsentDecision",
+                    timestamp: new Date().getTime(),
+                    self: self.location.host
+                }
+            };
+            self.top.postMessage(JSON.stringify(apiObject), "*");
+            __i__ = clearInterval(__i__);
+        }
+    }, 50);
+
+    /*
+      Callbacks will occur in the form of a PostMessage event.
+      This code listens for the appropriately formatted PostMessage event,
+      gets the new consent decision, and then pushes the events into the GTM framework. Once the event is submitted, that consent decision is marked in the 'dispatched' map so it does not occur more than once.
+    */
+    self.addEventListener("message", function(e, d) {
+        try {
+            if (e.data && (d = JSON.parse(e.data)) &&
+                (d = d.PrivacyManagerAPI) && d.capabilities && d.action == "getConsentDecision") {
+                var newDecision = self.PrivacyManagerAPI.callApi("getGDPRConsentDecision", self.location.host).consentDecision;
+                newDecision && newDecision.forEach(function(label) {
+                    if (!__dispatched__[label]) {
+                        self.dataLayer && self.dataLayer.push({
+                            "event": "GDPR Pref Allows " + label
+                        });
+                        __dispatched__[label] = 1;
+                    }
+                });
+            }
+        } catch (xx) {
+  		    /** not a cm api message **/
+        }
+    });
+  </script>
+  <!-- TrustArc tag end -->
+
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-NN4FLFJ');</script>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/8.5.21/mmenu.min.css" integrity="sha512-gIn3+aW4xrkqoIvXsJ7F3woKfU+KTvEzXm0IXKmWqXZ8oyD9TfzFEdGDMF0egqto86E91yZVPzoa82a/dgSMig==" crossorigin="anonymous" />
+	<link href='https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
+	<link href="https://static.helpsystems.com/cobalt-strike/css/mburger.css" rel="stylesheet">
+	<link href="https://static.helpsystems.com/cobalt-strike/css/mhead.css" rel="stylesheet" />
+	<!--<link href="https://static.helpsystems.com/cobalt-strike/css/styles.css" rel="stylesheet" />-->
+	<link href="/css/styles.css?d=210221" rel="stylesheet" type="text/css" />
+	<link href="/css/local.css" rel="stylesheet" type="text/css" media="screen" />
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/8.5.21/mmenu.js" integrity="sha512-lIylIwmEOkr7tetP4IsQcCwAQc7CXNFyVh/dqTSlJwnNGZrlSnF6p9o5oTNQ87jJNylT8zjeiAvniMBuAHzqTg==" crossorigin="anonymous"></script> 
+	<script src="https://kit.fontawesome.com/e80d7cd121.js" crossorigin="anonymous"></script>
+	<script src="https://static.helpsystems.com/cobalt-strike/js/mburger.js" type="module"></script>
+	<script src="https://static.helpsystems.com/cobalt-strike/js/mhead.js" ></script>
+	<script src="https://static.helpsystems.com/cobalt-strike/js/scripts.js" ></script>
+
+<!-- TrustArc-2 tag start -->
+  <div id="consent_blackbar"></div>
+  <div id="teconsent"></div>
+<!-- TrustArc-2 tag end -->
+
+</head>
+<body>
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+	<iframe src=https://www.googletagmanager.com/ns.html?id=GTM-NN4FLFJ height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<div>
+	<nav class="navbar navbar-expand-md shadow-sm bg-white mh-head" id="my-header">
+		<div class="container"> <a class="navbar-brand" href="/"> <img src="https://static.helpsystems.com/cobalt-strike/img/cobaltstrike-logo-header.png" class="img-fluid" alt="Cobalt Strike"/></a> <a class="mburger navbar-toggler mburger--tornado" href="#my-menu"> <b></b> <b></b> <b></b> </a>
+			<div class="collapse navbar-collapse flex-column" id="my-menu">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"> <a class="nav-link " href="/download">Download</a> </li>
+					<li class="nav-item"> <a class="nav-link text-nowrap " href="/contact">Contact Us</a> </li>
+					<li class="nav-item">
+						<a class="nav-link" href="https://www.helpsystems.com" target="_blank">
+							<img src="https://static.helpsystems.com/cobalt-strike/img/helpsystems-icon-blue-grey.png" class="img-fluid d-none d-md-inline-block" alt="HelpSystems"/>
+							<span class="d-inline-block d-md-none"> HelpSystems</span>
+						</a>
+					</li>
+				</ul>
+				<ul class="navbar-nav mr-auto ml-lg-5">
+					<li class="nav-item"> <a class="nav-link text-uppercase text-nowrap btn btn-primary btn-sm px-4" href="/special">Buy Now</a> </li>
+					<li class="nav-item"> <a class="nav-link text-uppercase text-nowrap btn btn-link mx-3" href="/features">Features</a> </li>
+					<li class="nav-item"> <a class="nav-link text-uppercase text-nowrap btn btn-link mx-3" href="/screenshots">Screenshots</a> </li>
+					<li class="nav-item"> <a class="nav-link text-uppercase text-nowrap btn btn-link mx-3" href="/training">Training</a> </li>
+					<li class="nav-item"> <a class="nav-link text-uppercase text-nowrap btn btn-link mx-3 cs-nav-active" href="/support">Support</a> </li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+       <header class="my-5 bg-white">
+                <div class="container">
+                        <div class="row">
+                                <div class="col-12 text-center">
+                                        <h1 class="h2">Scripted Web Delivery (S)</h1>
+                                </div>
+                        </div>
+                </div>
+        </header>
+        <section class="bg-white">
+                <div class="container">
+			<div class="raffi_content">
+
+<p>The <strong>Attacks</strong> -&gt; <strong>Web Drive-by</strong> -&gt; <strong>Scripted Web Delivery (S)</strong> feature generates a stageless Beacon payload artifact, hosts it on Cobalt Strike’s web server, and presents a one-liner to download and run the artifact. The options are: bitsadmin, exe, powershell, powershell IEX, and python.</p>
+
+
+<div style="padding-left: 2em">
+<p>The <strong>bitsadmin</strong> option hosts an executable and uses bitsadmin to download it. The bitsadmin method runs the executable via cmd.exe.</p>
+<p>The <strong>exe</strong> option generates an executable and hosts it on Cobalt Strike's web server.</p>
+<p>The <strong>powershell</strong> option hosts a PowerShell script and uses powershell.exe to download the script and evaluate it.</p>
+<p>The <strong>powershell IEX</strong> option hosts a PowerShell script and uses powershell.exe to download the script and evaluate it. Similar to prior 'powershell' option, but it provides a shorter Invoke-Execution one-liner command that can be pasted into a PowerShell console.</p>
+<p>The <strong>python</strong> option hosts a Python script and uses python.exe to download the script and run it. Each of these options is a different way to run a Cobalt Strike listener.</p>
+
+</div>
+
+<p>Check <strong>Enable SSL</strong> to serve this content over SSL. This option is available when you specify a <a href="https://www.cobaltstrike.com/help-malleable-c2#validssl">valid SSL certificate</a> in your Malleable C2 profile. Make sure the <strong>Host</strong> field matches the CN field of your SSL certificate. This will avoid a situation where this feature fails because of a mismatch between these fields.</p>
+
+			</div>
+		</div>
+	</section>
+
+		<footer class="bg-footer-1">
+		<div class="container">
+			<div class="row mb-4">
+				<div class="col-12">
+					<a href="https://www.coresecurity.com" target="_blank" class="text-decoration-none">
+						<img src="https://static.helpsystems.com/cobalt-strike/img/coresecurity.png" class="img-fluid mr-3 mb-2" alt="CoreSecurity Logo"/>
+					</a>
+
+					<a href="https://www.cobaltstrike.com" target="_blank" class="text-decoration-none">
+						<img src="https://static.helpsystems.com/cobalt-strike/img/cobaltstrike.png" class="img-fluid mb-2" alt="Cobalt Strike Logo"/>
+					</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<p class="small mb-1">
+					    Copyright &copy; 2021 HelpSystems. All rights reserved. |
+					    <a href="/help-corp-compliance-ethics">Corporate Compliance &amp; Ethics</a> |
+					    <a href="https://www.helpsystems.com/impressum">Impressum</a> |
+					    <a href="https://www.helpsystems.com/privacy-policy" target="_blank">Privacy Policy</a> |
+					    <a href="https://www.helpsystems.com/cookie-policy" target="_blank">Cookie Policy</a> |
+					    <a href="/help-researcher-ack">Security Hall of Fame</a> |
+					    <a href="https://blog.cobaltstrike.com">Blog</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/8.5.21/mmenu.js" integrity="sha512-lIylIwmEOkr7tetP4IsQcCwAQc7CXNFyVh/dqTSlJwnNGZrlSnF6p9o5oTNQ87jJNylT8zjeiAvniMBuAHzqTg==" crossorigin="anonymous"></script> 
+<script src="https://kit.fontawesome.com/e80d7cd121.js" crossorigin="anonymous"></script>
+<script src="https://static.helpsystems.com/cobalt-strike/js/mburger.js" type="module"></script>
+<script src="https://static.helpsystems.com/cobalt-strike/js/mhead.js" ></script>
+<script src="https://static.helpsystems.com/cobalt-strike/js/scripts.js" ></script>
+</body>
+</html>

@@ -1,0 +1,1135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>LKM loading kernel restrictions | xorl %eax, %eax</title>
+<link rel="pingback" href="https://xorl.wordpress.com/xmlrpc.php" />
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s1.wp.com' />
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//s2.wp.com' />
+<link rel="alternate" type="application/rss+xml" title="xorl %eax, %eax &raquo; Feed" href="https://xorl.wordpress.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="xorl %eax, %eax &raquo; Comments Feed" href="https://xorl.wordpress.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="xorl %eax, %eax &raquo; LKM loading kernel&nbsp;restrictions Comments Feed" href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/feed/" />
+	<script type="text/javascript">
+		/* <![CDATA[ */
+		function addLoadEvent(func) {
+			var oldonload = window.onload;
+			if (typeof window.onload != 'function') {
+				window.onload = func;
+			} else {
+				window.onload = function () {
+					oldonload();
+					func();
+				}
+			}
+		}
+		/* ]]> */
+	</script>
+			<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/72x72\/","ext":".png","svgUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/s0.wp.com\/wp-includes\/js\/wp-emoji-release.min.js?m=1612197847h&ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='all-css-0-1' href='https://s0.wp.com/_static/??-eJydkNsKwjAMQH/ILs4rPojf0m6xZrZdaVJlf2+niAMVxJdALickB65RNX0QDAI+q+iypcBA4UiBZAA5oUeGmA10fU5BO2KpGuYZTMgnZnNJDSZbOgnhUs+rdbUCk8m1YFzfnJUjk3QagGVw+MOiO8XQoUQ94nrosyibqP13RdJCwfIXfCJh/KHUfdQyTnhsSaMrPsK7gQl2jYVRxsSEzKpET9mrh8g37qPf12kHv6839W61WK63u+4GmcuhaQ==?cssminify=yes' type='text/css' media='all' />
+<style id='wp-block-library-inline-css'>
+.has-text-align-justify {
+	text-align:justify;
+}
+</style>
+<!--[if IE 6]>
+<link rel='stylesheet' id='journalist-ie6-css'  href='https://s2.wp.com/wp-content/themes/pub/journalist/ie6.css?m=1270837707h&#038;ver=5.7.2' media='all' />
+<![endif]-->
+<link rel='stylesheet' id='all-css-2-1' href='https://s1.wp.com/_static/??-eJzTLy/QTc7PK0nNK9HPLdUtyClNz8wr1k9PzdfNyU9OLMnMz0Ph6KblJGYW6SUXF+voY9dalJqUk58OZKbrA1UhcUGa7HNtDU1MLU1MLMwNTbIAmkQtqg==?cssminify=yes' type='text/css' media='all' />
+<link rel='stylesheet' id='print-css-3-1' href='https://s2.wp.com/wp-content/mu-plugins/global-print/global-print.css?m=1465851035h&cssminify=yes' type='text/css' media='print' />
+<style id='jetpack-global-styles-frontend-style-inline-css'>
+:root { --font-headings: unset; --font-base: unset; --font-headings-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; --font-base-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;}
+</style>
+<link rel='stylesheet' id='all-css-6-1' href='https://s1.wp.com/_static/??-eJxti0EKgCAQAD+ULUaJl+gtJqbG6opr9P3o0CHqNAzMwFmEpdxcbpAOUfDwMTMU4iY2NLECB1Nj9g97y9zB/8Vko0GB5Oktn6kFlxxDGMEjrQbvYEmzVHIclNZy2i9lFDfR?cssminify=yes' type='text/css' media='all' />
+<script id='wpcom-actionbar-placeholder-js-extra'>
+var actionbardata = {"siteID":"6013855","siteName":"xorl %eax, %eax","siteURL":"http:\/\/xorl.wordpress.com","icon":"<img alt='' src='https:\/\/s2.wp.com\/i\/logo\/wpcom-gray-white.png' class='avatar avatar-50' height='50' width='50' \/>","canManageOptions":"","canCustomizeSite":"","isFollowing":"","themeSlug":"pub\/journalist","signupURL":"https:\/\/wordpress.com\/start\/","loginURL":"https:\/\/wordpress.com\/log-in?redirect_to=https%3A%2F%2Fxorl.wordpress.com%2F2018%2F02%2F17%2Flkm-loading-kernel-restrictions%2F&signup_flow=account","themeURL":"","xhrURL":"https:\/\/xorl.wordpress.com\/wp-admin\/admin-ajax.php","nonce":"a09c78b47f","isSingular":"1","isFolded":"","isLoggedIn":"","isMobile":"","subscribeNonce":"<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"b37c85dd05\" \/>","referer":"https:\/\/xorl.wordpress.com\/2018\/02\/17\/lkm-loading-kernel-restrictions\/","canFollow":"1","feedID":"165688","statusMessage":"","customizeLink":"https:\/\/xorl.wordpress.com\/wp-admin\/customize.php?url=https%3A%2F%2Fxorl.wordpress.com%2F2018%2F02%2F17%2Flkm-loading-kernel-restrictions%2F","postID":"4078","shortlink":"https:\/\/wp.me\/ppetF-13M","canEditPost":"","editLink":"https:\/\/wordpress.com\/post\/xorl.wordpress.com\/4078","statsLink":"https:\/\/wordpress.com\/stats\/post\/4078\/xorl.wordpress.com","i18n":{"view":"View site","follow":"Follow","following":"Following","edit":"Edit","login":"Log in","signup":"Sign up","customize":"Customize","report":"Report this content","themeInfo":"Get theme: The Journalist v1.9","shortlink":"Copy shortlink","copied":"Copied","followedText":"New posts from this site will now appear in your <a href=\"https:\/\/wordpress.com\/read\">Reader<\/a>","foldBar":"Collapse this bar","unfoldBar":"Expand this bar","editSubs":"Manage subscriptions","viewReader":"View site in Reader","viewReadPost":"View post in Reader","subscribe":"Sign me up","enterEmail":"Enter your email address","followers":"Join 116 other followers","alreadyUser":"Already have a WordPress.com account? <a href=\"https:\/\/wordpress.com\/log-in?redirect_to=https%3A%2F%2Fxorl.wordpress.com%2F2018%2F02%2F17%2Flkm-loading-kernel-restrictions%2F&signup_flow=account\">Log in now.<\/a>","stats":"Stats"}};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s0.wp.com/_static/??/wp-content/js/postmessage.js,/wp-content/js/mobile-useragent-info.js,/wp-content/js/rlt-proxy.js?m=1617313679j'></script>
+<script type='text/javascript'>
+	window.addEventListener( 'DOMContentLoaded', function() {
+		rltInitialize( {"token":null,"iframeOrigins":["https:\/\/widgets.wp.com"]} );
+	} );
+</script>
+<link rel='stylesheet' id='all-css-0-2' href='https://s0.wp.com/wp-content/mu-plugins/highlander-comments/style.css?m=1530132353h&cssminify=yes' type='text/css' media='all' />
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='highlander-comments-ie7-css'  href='https://s2.wp.com/wp-content/mu-plugins/highlander-comments/style-ie7.css?m=1351637563h&#038;ver=20110606' media='all' />
+<![endif]-->
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://xorl.wordpress.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://s1.wp.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress.com" />
+<link rel="canonical" href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/" />
+<link rel='shortlink' href='https://wp.me/ppetF-13M' />
+<link rel="alternate" type="application/json+oembed" href="https://public-api.wordpress.com/oembed/?format=json&amp;url=https%3A%2F%2Fxorl.wordpress.com%2F2018%2F02%2F17%2Flkm-loading-kernel-restrictions%2F&amp;for=wpcom-auto-discovery" /><link rel="alternate" type="application/xml+oembed" href="https://public-api.wordpress.com/oembed/?format=xml&amp;url=https%3A%2F%2Fxorl.wordpress.com%2F2018%2F02%2F17%2Flkm-loading-kernel-restrictions%2F&amp;for=wpcom-auto-discovery" />
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="LKM loading kernel restrictions" />
+<meta property="og:url" content="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/" />
+<meta property="og:description" content="Loading arbitrary kernel modules dynamically has always been a gray area between usability oriented and security oriented Linux developers &amp; users. In this post I will present what options are …" />
+<meta property="article:published_time" content="2018-02-17T13:07:08+00:00" />
+<meta property="article:modified_time" content="2018-02-17T13:09:54+00:00" />
+<meta property="og:site_name" content="xorl %eax, %eax" />
+<meta property="og:image" content="https://s0.wp.com/i/blank.jpg" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:site" content="@wordpressdotcom" />
+<meta name="twitter:text:title" content="LKM loading kernel&nbsp;restrictions" />
+<meta name="twitter:card" content="summary" />
+<meta property="fb:app_id" content="249643311490" />
+<meta property="article:publisher" content="https://www.facebook.com/WordPresscom" />
+
+<!-- End Jetpack Open Graph Tags -->
+<link rel="shortcut icon" type="image/x-icon" href="https://s1.wp.com/i/favicon.ico" sizes="16x16 24x24 32x32 48x48" />
+<link rel="icon" type="image/x-icon" href="https://s1.wp.com/i/favicon.ico" sizes="16x16 24x24 32x32 48x48" />
+<link rel="apple-touch-icon" href="https://s2.wp.com/i/webclip.png" />
+<link rel='openid.server' href='https://xorl.wordpress.com/?openidserver=1' />
+<link rel='openid.delegate' href='https://xorl.wordpress.com/' />
+<link rel="search" type="application/opensearchdescription+xml" href="https://xorl.wordpress.com/osd.xml" title="xorl %eax, %eax" />
+<link rel="search" type="application/opensearchdescription+xml" href="https://s1.wp.com/opensearch.xml" title="WordPress.com" />
+		<style id="wpcom-hotfix-masterbar-style">
+			@media screen and (min-width: 783px) {
+				#wpadminbar .quicklinks li#wp-admin-bar-my-account.with-avatar > a img {
+					margin-top: 5px;
+				}
+			}
+		</style>
+		<meta name="application-name" content="xorl %eax, %eax" /><meta name="msapplication-window" content="width=device-width;height=device-height" /><meta name="msapplication-task" content="name=Subscribe;action-uri=https://xorl.wordpress.com/feed/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=Sign up for a free blog;action-uri=http://wordpress.com/signup/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Support;action-uri=http://support.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Forums;action-uri=http://forums.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="description" content="Loading arbitrary kernel modules dynamically has always been a gray area between usability oriented and security oriented Linux developers &amp; users. In this post I will present what options are available today from the Linux kernel and the most popular kernel hardening patch, the grsecurity. Those will give you some ideas on how those projects&hellip;" />
+<link rel="amphtml" href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/amp/"><!-- Your Google Analytics Plugin is missing the tracking ID -->
+</head>
+
+<body class="post-template-default single single-post postid-4078 single-format-standard customizer-styles-applied highlander-enabled highlander-light">
+<div id="container" class="group">
+
+<h1><a href="https://xorl.wordpress.com/">xorl %eax, %eax</a></h1>
+
+<div id="content" class="group">
+<div class="post-4078 post type-post status-publish format-standard hentry category-linux">
+	<h2 id="post-4078">LKM loading kernel&nbsp;restrictions</h2>
+			<p class="comments"><a href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/#comments">with one comment</a></p>
+	
+	<div class="main">
+		<p>Loading arbitrary kernel modules dynamically has always been a gray area between usability oriented and security oriented Linux developers &amp; users. In this post I will present what options are available today from the Linux kernel and the most popular kernel hardening patch, the grsecurity. Those will give you some ideas on how those projects deal with the threat of Linux kernel&#8217;s LKMs (Loadable Kernel Modules).<br />
+<br />
+<strong>Threat</strong><br />
+This can be split to two main categories, allowing dynamic LKM loading introduces the following two threats:</p>
+<ul>
+<li>Malicious LKMs. That&#8217;s more or less rootkits or similar malware that an adversary can load for various operations, most commonly to hide specific activities from the user-space.</li>
+<p></p>
+<li>Vulnerable LKM loading. Imagine that you have a 0day exploit on a specific network driver but this is not loaded by default. If you can trigger a dynamic loading then you can use your code to exploit it and compromise the system. This is what this vector is about.</li>
+</ul>
+<p>
+<strong>Linux kernel and KSPP</strong><br />
+The KSPP (Kernel Self-Protection Project) of the Linux kernel tried to fix this issue with the introduction of the kernel modules access restriction. Below you can see the exact description that Linux kernel’s <a href="https://www.kernel.org/doc/html/v4.14/security/self-protection.html">documentation</a> has for this restriction.<br />
+</p>
+<pre class="brush: plain; title: ; notranslate" title="">
+Restricting access to kernel modules
+
+The kernel should never allow an unprivileged user the ability to load specific
+kernel modules, since that would provide a facility to unexpectedly extend the
+available attack surface. (The on-demand loading of modules via their predefined
+subsystems, e.g. MODULE_ALIAS_*, is considered “expected” here, though additional
+consideration should be given even to these.) For example, loading a filesystem
+module via an unprivileged socket API is nonsense: only the root or physically
+local user should trigger filesystem module loading. (And even this can be up
+for debate in some scenarios.)
+
+To protect against even privileged users, systems may need to either disable
+module loading entirely (e.g. monolithic kernel builds or modules_disabled
+sysctl), or provide signed modules (e.g. CONFIG_MODULE_SIG_FORCE, or dm-crypt
+with LoadPin), to keep from having root load arbitrary kernel code via the
+module loader interface.
+</pre>
+<p>
+The most restrictive way is via modules_disabled sysctl variable which is available by default on the Linux kernel. This can either be set dynamically as you see here.<br />
+</p>
+<pre class="brush: bash; title: ; notranslate" title="">
+sysctl -w kernel.modules_disabled=1
+</pre>
+<p>
+Or permanently as part of the runtime kernel configuration as you can see here.<br />
+</p>
+<pre class="brush: bash; title: ; notranslate" title="">
+echo 'kernel.modules_disabled=1' &gt;&gt; /etc/sysctl.d/99-custom.conf
+</pre>
+<p>
+In both cases, the result is the same. Basically, the above change its default value from “0” to “1”. You can find the exact definition of this variable in kernel/sysctl.c.</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+kernel/sysctl.c
+    {
+        .procname    = &quot;modules_disabled&quot;,
+        .data        = &amp;modules_disabled,
+        .maxlen        = sizeof(int),
+        .mode        = 0644,
+        /* only handle a transition from default &quot;0&quot; to &quot;1&quot; */
+        .proc_handler    = proc_dointvec_minmax,
+        .extra1        = &amp;one,
+        .extra2        = &amp;one,
+    },
+</pre>
+<p>
+If we look into kernel/module.c we will see that if modules_disabled has a non-zero value it is not allowing LKM loading (may_init_module()) or even unloading (delete_module() system call) of any LKM. Below you can see the module initialization code that requires both the SYS_MODULE POSIX capability, and modules_disabled to be zero.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+static int may_init_module(void)
+{
+    if (!capable(CAP_SYS_MODULE) || modules_disabled)
+        return -EPERM;
+
+    return 0;
+}
+</pre>
+<p>
+Similarly, the delete_module() system call has the exact same check as shown below. In both cases, failure of those will result in a Permission Denied (EPERM) error.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+        unsigned int, flags)
+{
+    struct module *mod;
+    char name[MODULE_NAME_LEN];
+    int ret, forced = 0;
+
+    if (!capable(CAP_SYS_MODULE) || modules_disabled)
+        return -EPERM;
+</pre>
+<p>
+Looking in kernel/kmod.c we can also see another check, before the kernel module loading request is passed to call_modprobe() to get loaded in the kernel, the __request_module() function verifies that modprobe_path is set, meaning the LKM is not loaded via an API or socket instead of /sbin/modprobe command.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+int __request_module(bool wait, const char *fmt, ...)
+{
+    va_list args;
+    char module_name[MODULE_NAME_LEN];
+    int ret;
+
+    /*
+     * We don't allow synchronous module loading from async.  Module
+     * init may invoke async_synchronize_full() which will end up
+     * waiting for this task which already is waiting for the module
+     * loading to complete, leading to a deadlock.
+     */
+    WARN_ON_ONCE(wait &amp;&amp; current_is_async());
+
+    if (!modprobe_path[0])
+        return 0;
+</pre>
+<p>
+The above were the features that Linux kernel had for years to protect against this threat. The downside though is that completely disabling loading and unloading of LKMs can break some legitimate operations such as system upgrades, reboots on systems that load modules after boot, automation configuring software RAID devices after boot, etc.<br />
+<br />
+To deal with the above, on 22 May 2017 the KSPP team proposed a patch to __request_module() (still to be added to the kernel) which follows a different approach.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+int __request_module(bool wait, int allow_cap, const char *fmt, ...)
+{
+    ...
+
+    if (!modprobe_path[0])
+        return 0;
+
+    ...
+
+    ret = security_kernel_module_request(module_name, allow_cap);
+    if (ret)
+</pre>
+<p>
+What you see here is that in the very early stage of the kernel module loading security_kernel_module_request() is invoked with the module to be loaded as well as allow_cap variable which can be set to either “0” or “1”. If its value is positive, the security subsystem will trust the caller to load modules with specific predifned (hardcoded) aliases. This should allow auto-loading of specific aliases. This was done to close a design flaw of the Linux kernel where although all modules required the CAP_SYS_MODULE capability to load modules (which is already checked as shown earlier), the network modules required the CAP_NET_ADMIN capability which completely bypassed the previously described controls. Using this modified __request_module() it is ensured that only specific modules that are allowed by the security subsystem will be able to auto-load. However, it is also crucial to note that to this date, the only security subsystem that utilizes security_kernel_module_request() hook is the SELinux.<br />
+<br />
+Before we move on with grsecurity, it is important to note that in 07 November 2010 Dan Rosenberg <a href="https://lwn.net/Articles/413952/">proposed</a> a replacement of modules_disabled, the modules_restrict which was a copy of grsecurity&#8217;s logic. It had three values, 0 (disabled), 1 (only root can load/unload LKMs), 2 (no one can load/unload &#8211; same as modules_disabled). You can see the check that it was adding to __request_module() below.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+	/* Can non-root users cause auto-loading of modules? */
+	if (current_uid() &amp;&amp; modules_restrict)
+		return -EPERM;
+
+</pre>
+<p>
+However, this was never added to the upstream kernel so there is no need to dive more into the details behind it. Just as an overview, here is the proposed kernel configuration option documentation for modules_restrict.<br />
+</p>
+<pre class="brush: plain; title: ; notranslate" title="">
+modules_restrict:
+ 
+A toggle value indicating if modules are allowed to be loaded
+in an otherwise modular kernel.  This toggle defaults to off
+(0), but can be set true (1).  Once true, modules can be
+neither loaded nor unloaded, and the toggle cannot be set back
+to false.
+A value indicating if module loading is restricted in an 
+otherwise modular kernel.  This value defaults to off (0), 
+but can be set to (1) or (2).  If set to (1), modules cannot 
+be auto-loaded by non-root users, for example by creating a 
+socket using a packet family that is compiled as a module and 
+not already loaded.  If set to (2), modules can neither be 
+loaded nor unloaded, and the value can no longer be changed.
+</pre>
+<p>
+<strong>grsecurity</strong><br />
+Unfortunately, grsecurity stable patches are no longer publicly available. For this reason, in this article I will be using the grsecurity patch for kernel releases 3.1 to 4.9.24. For the LKM loading hardening grsecurity offers a kernel configuration option known as MODHARDEN (Harden Module Auto-loading). If we go back to ___request_module() in kernel/kmod.c we will see how this feature works.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+    ret = security_kernel_module_request(module_name);
+    if (ret)
+        return ret;
+
+#ifdef CONFIG_GRKERNSEC_MODHARDEN
+    if (uid_eq(current_uid(), GLOBAL_ROOT_UID)) {
+        /* hack to workaround consolekit/udisks stupidity */
+        read_lock(&amp;tasklist_lock);
+        if (!strcmp(current-&gt;comm, &quot;mount&quot;) &amp;&amp;
+            current-&gt;real_parent &amp;&amp; !strncmp(current-&gt;real_parent-&gt;comm, &quot;udisk&quot;, 5)) {
+            read_unlock(&amp;tasklist_lock);
+            printk(KERN_ALERT &quot;grsec: denied attempt to auto-load fs module %.64s by udisks\n&quot;, module_name);
+            return -EPERM;
+        }
+        read_unlock(&amp;tasklist_lock);
+    }
+#endif
+</pre>
+<p>
+The check in this case is relatively simple, it verifies that the caller’s UID is the same as the static global UID of root user. This ensure that only users with UID=0 can load kernel modules which completely eliminates the cases of unprivileged users exploiting flaws that are allowing them to request kernel module loading. To overcome the network kernel modules issue grsecurity followed a different approach which maintains the capability check (which is currently used by a very limited amount of security subsystems) but redirects all loading to the ___request_module() function to ensure that only root can load them.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+void dev_load(struct net *net, const char *name)
+{
+    ...
+
+    no_module = !dev;
+    if (no_module &amp;&amp; capable(CAP_NET_ADMIN))
+        no_module = request_module(&quot;netdev-%s&quot;, name);
+    if (no_module &amp;&amp; capable(CAP_SYS_MODULE)) {
+#ifdef CONFIG_GRKERNSEC_MODHARDEN
+        ___request_module(true, &quot;grsec_modharden_netdev&quot;, &quot;%s&quot;, name);
+#else
+        request_module(&quot;%s&quot;, name);
+#endif
+}
+</pre>
+<p>
+Furthermore, grsecurity identified that a similar security design flaw also exists in the filesystem modules loading (still to be identified and fixed in the upstream kernel), which was fixed in a similar manner. Below is the grsecurity version of fs/filesystems.c’s get_fs_type() function which is ensuring that filesystem modules are loaded only by root user.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+    fs = __get_fs_type(name, len);
+#ifdef CONFIG_GRKERNSEC_MODHARDEN
+    if (!fs &amp;&amp; (___request_module(true, &quot;grsec_modharden_fs&quot;, &quot;fs-%.*s&quot;, len, name) == 0))
+#else
+    if (!fs &amp;&amp; (request_module(&quot;fs-%.*s&quot;, len, name) == 0))
+#endif
+fs = __get_fs_type(name, len);
+</pre>
+<p>
+This Linux kernel design flaw allows loading of non-filesystem kernel modules via mount. How grsecurity detects those is quite clever and can be found in simplify_symbols() function of kernel/module.c. What it does is ensuring that the the arguments of the module are copied to the kernel side, and then checks the module’s loading information in the symbol table to ensure that the loaded module is trying to register a filesystem instead of any arbitrary kernel module.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+#ifdef CONFIG_GRKERNSEC_MODHARDEN
+    int is_fs_load = 0;
+    int register_filesystem_found = 0;
+    char *p;
+
+    p = strstr(mod-&gt;args, &quot;grsec_modharden_fs&quot;);
+    if (p) {
+        char *endptr = p + sizeof(&quot;grsec_modharden_fs&quot;) - 1;
+        /* copy &#092;&#048; as well */
+        memmove(p, endptr, strlen(mod-&gt;args) - (unsigned int)(endptr - mod-&gt;args) + 1);
+        is_fs_load = 1;
+    }
+#endif
+
+    for (i = 1; i &lt; symsec-&gt;sh_size / sizeof(Elf_Sym); i++) {
+        const char *name = info-&gt;strtab + sym[i].st_name;
+
+#ifdef CONFIG_GRKERNSEC_MODHARDEN
+        /* it's a real shame this will never get ripped and copied
+           upstream! ;(
+        */
+        if (is_fs_load &amp;&amp; !strcmp(name, &quot;register_filesystem&quot;))
+            register_filesystem_found = 1;
+#endif
+
+switch (sym[i].st_shndx) {
+</pre>
+<p>
+To help in detection of malicious users trying to exploit this Linux kernel design flaw, grsecurity has also an alerting mechanism in place which immediately logs any attempts to load Linux kernel modules that are not filesystems using this design flaw. Meaning loading a kernel module via “mount” without that being an actual filesystem module.<br />
+</p>
+<pre class="brush: cpp; title: ; notranslate" title="">
+#ifdef CONFIG_GRKERNSEC_MODHARDEN
+    if (is_fs_load &amp;&amp; !register_filesystem_found) {
+        printk(KERN_ALERT &quot;grsec: Denied attempt to load non-fs module %.64s through mount\n&quot;, mod-&gt;name);
+        ret = -EPERM;
+    }
+#endif
+
+    return ret;
+}
+</pre>
+<p>
+Security wise grsecurity&#8217;s approach is by far the most complete but unfortunately, by default the Linux kernel doesn&#8217;t have anything even close to this.</p>
+<div id="jp-post-flair" class="sharedaddy sd-sharing-enabled"><div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-reddit"><a rel="nofollow noopener noreferrer" data-shared="" class="share-reddit sd-button share-icon" href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/?share=reddit" target="_blank" title="Click to share on Reddit"><span>Reddit</span></a></li><li class="share-facebook"><a rel="nofollow noopener noreferrer" data-shared="sharing-facebook-4078" class="share-facebook sd-button share-icon" href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/?share=facebook" target="_blank" title="Click to share on Facebook"><span>Facebook</span></a></li><li class="share-twitter"><a rel="nofollow noopener noreferrer" data-shared="sharing-twitter-4078" class="share-twitter sd-button share-icon" href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/?share=twitter" target="_blank" title="Click to share on Twitter"><span>Twitter</span></a></li><li class="share-email"><a rel="nofollow noopener noreferrer" data-shared="" class="share-email sd-button share-icon" href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/?share=email" target="_blank" title="Click to email this to a friend"><span>Email</span></a></li><li class="share-end"></li></ul></div></div></div>
+<div id='jp-relatedposts' class='jp-relatedposts' >
+	<h3 class="jp-relatedposts-headline"><em>Related</em></h3>
+</div></div>			</div>
+
+	<div class="meta group">
+		<div class="signature">
+			<p>Written by xorl <span class="edit"></span></p>
+			<p>February 17, 2018 at 15:07</p>
+		</div>
+		<div class="tags">
+			<p>Posted in <a href="https://xorl.wordpress.com/category/linux/" rel="category tag">linux</a></p>
+					</div>
+	</div>
+</div>
+<div class="navigation group">
+	<div class="alignleft">&laquo; <a href="https://xorl.wordpress.com/2018/02/11/multi-stage-cc-and-red-teams/" rel="prev">Multi-stage C&amp;C and Red&nbsp;Teams</a></div>
+	<div class="alignright"><a href="https://xorl.wordpress.com/2018/02/20/threat-intelligence-phising-kits-anti-detection/" rel="next">Threat Intelligence: Phising kits&nbsp;anti-detection</a> &raquo;</div>
+</div>
+
+
+<a name="comments" id="comments"></a>
+
+<h3 class="reply">One Response</h3>
+<p class="comment_meta">Subscribe to comments with <a href="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/feed/">RSS</a>.</p>
+
+<ol class="commentlist">
+<li id="comment-11942" class="comment even thread-even depth-1  highlander-comment highlander-comment">
+	<div id="div-comment-11942">
+	<div class="comment_mod">
+		</div>
+
+	<div class="comment_text">
+	<p>There was never attempt to land this feature mainline by KSPP:<br />
+<a href="https://lwn.net/Articles/720434/" rel="nofollow ugc">https://lwn.net/Articles/720434/</a></p>
+	</div>
+
+	<div class="comment_author vcard">
+		<p><strong class="fn">Henderson.Konopelski</strong></p>
+	<p><small>
+		February 18, 2018 at <a href="#comment-11942">17:58</a>			</small></p>
+	</div>
+	<div class="clear"></div>
+
+	<div class="reply">
+			</div>
+	</div>
+</li><!-- #comment-## -->
+</ol>
+<div class="navigation">
+	<div class="alignleft"></div>
+	<div class="alignright"></div>
+</div>
+<br />
+
+	
+
+
+	<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2018/02/17/lkm-loading-kernel-restrictions/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://xorl.wordpress.com/wp-comments-post.php" method="post" id="commentform" class="comment-form"><input type="hidden" id="highlander_comment_nonce" name="highlander_comment_nonce" value="a24c1ed278" /><input type="hidden" name="_wp_http_referer" value="/2018/02/17/lkm-loading-kernel-restrictions/" />
+<input type="hidden" name="hc_post_as" id="hc_post_as" value="guest" />
+
+<div class="comment-form-field comment-textarea">
+	<label for="comment">Enter your comment here...</label>
+	<div id="comment-form-comment"><textarea id="comment" name="comment" title="Enter your comment here..."></textarea></div>
+</div>
+
+<div id="comment-form-identity">
+	<div id="comment-form-nascar">
+		<p>Fill in your details below or click an icon to log in:</p>
+		<ul>
+			<li class="selected" style="display:none;">
+				<a href="#comment-form-guest" id="postas-guest" class="nascar-signin-link"
+                   title="Login via Guest">
+									</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:WordPress.com" id="postas-wordpress" class="nascar-signin-link"
+                   title="Login via WordPress.com">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#0087be" d="M12.158 12.786l-2.698 7.84c.806.236 1.657.365 2.54.365 1.047 0 2.05-.18 2.986-.51-.024-.037-.046-.078-.065-.123l-2.762-7.57zM3.008 12c0 3.56 2.07 6.634 5.068 8.092L3.788 8.342c-.5 1.117-.78 2.354-.78 3.658zm15.06-.454c0-1.112-.398-1.88-.74-2.48-.456-.74-.883-1.368-.883-2.11 0-.825.627-1.595 1.51-1.595.04 0 .078.006.116.008-1.598-1.464-3.73-2.36-6.07-2.36-3.14 0-5.904 1.613-7.512 4.053.21.008.41.012.58.012.94 0 2.395-.114 2.395-.114.484-.028.54.684.057.74 0 0-.487.058-1.03.086l3.275 9.74 1.968-5.902-1.4-3.838c-.485-.028-.944-.085-.944-.085-.486-.03-.43-.77.056-.742 0 0 1.484.114 2.368.114.94 0 2.397-.114 2.397-.114.486-.028.543.684.058.74 0 0-.488.058-1.03.086l3.25 9.665.897-2.997c.456-1.17.684-2.137.684-2.907zm1.82-3.86c.04.286.06.593.06.924 0 .912-.17 1.938-.683 3.22l-2.746 7.94c2.672-1.558 4.47-4.454 4.47-7.77 0-1.564-.4-3.033-1.1-4.314zM12 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></g></svg>				</a>
+			</li>
+			<li>
+			<iframe id="googleplus-sign-in" name="googleplus-sign-in" src="https://public-api.wordpress.com/connect/?googleplus-sign-in=https%3A%2F%2Fxorl.wordpress.com&#038;color_scheme=light" width="24" height="24" scrolling="no" allowtransparency="true" seamless="seamless" frameborder="0"></iframe>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Twitter" id="postas-twitter" class="nascar-signin-link"
+                   title="Login via Twitter">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#1DA1F2" d="M22.23 5.924c-.736.326-1.527.547-2.357.646.847-.508 1.498-1.312 1.804-2.27-.793.47-1.67.812-2.606.996C18.325 4.498 17.258 4 16.078 4c-2.266 0-4.103 1.837-4.103 4.103 0 .322.036.635.106.935-3.41-.17-6.433-1.804-8.457-4.287-.353.607-.556 1.312-.556 2.064 0 1.424.724 2.68 1.825 3.415-.673-.022-1.305-.207-1.86-.514v.052c0 1.988 1.415 3.647 3.293 4.023-.344.095-.707.145-1.08.145-.265 0-.522-.026-.773-.074.522 1.63 2.038 2.817 3.833 2.85-1.404 1.1-3.174 1.757-5.096 1.757-.332 0-.66-.02-.98-.057 1.816 1.164 3.973 1.843 6.29 1.843 7.547 0 11.675-6.252 11.675-11.675 0-.178-.004-.355-.012-.53.802-.578 1.497-1.3 2.047-2.124z"/></g></svg>				</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Facebook" id="postas-facebook" class="nascar-signin-link"
+                   title="Login via Facebook">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#3B5998" d="M20.007 3H3.993C3.445 3 3 3.445 3 3.993v16.013c0 .55.445.994.993.994h8.62v-6.97H10.27V11.31h2.346V9.31c0-2.325 1.42-3.59 3.494-3.59.993 0 1.847.073 2.096.106v2.43h-1.438c-1.128 0-1.346.537-1.346 1.324v1.734h2.69l-.35 2.717h-2.34V21h4.587c.548 0 .993-.445.993-.993V3.993c0-.548-.445-.993-.993-.993z"/></g></svg>				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div id="comment-form-guest" class="comment-form-service selected">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+<a href="https://gravatar.com/site/signup/" target="_blank">				<img src="" alt="Gravatar" width="25" class="no-grav" />
+</a>			</div>
+
+				<div class="comment-form-fields">
+				<div class="comment-form-field comment-form-email">
+					<label for="email">Email <span class="required">(required)</span> <span class="nopublish">(Address never made public)</span></label>
+					<div class="comment-form-input"><input id="email" name="email" type="email" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-author">
+					<label for="author">Name <span class="required">(required)</span></label>
+					<div class="comment-form-input"><input id="author" name="author" type="text" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-url">
+					<label for="url">Website</label>
+					<div class="comment-form-input"><input id="url" name="url" type="url" value="" /></div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<div id="comment-form-wordpress" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="" alt="WordPress.com Logo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="wp_avatar" id="wordpress-avatar" class="comment-meta-wordpress" value="" />
+				<input type="hidden" name="wp_user_id" id="wordpress-user_id" class="comment-meta-wordpress" value="" />
+				<input type="hidden" name="wp_access_token" id="wordpress-access_token" class="comment-meta-wordpress" value="" />
+						<p class="comment-form-posting-as pa-wordpress">
+			<strong></strong>
+			You are commenting using your WordPress.com account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'wordpress' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#0087be" d="M12.158 12.786l-2.698 7.84c.806.236 1.657.365 2.54.365 1.047 0 2.05-.18 2.986-.51-.024-.037-.046-.078-.065-.123l-2.762-7.57zM3.008 12c0 3.56 2.07 6.634 5.068 8.092L3.788 8.342c-.5 1.117-.78 2.354-.78 3.658zm15.06-.454c0-1.112-.398-1.88-.74-2.48-.456-.74-.883-1.368-.883-2.11 0-.825.627-1.595 1.51-1.595.04 0 .078.006.116.008-1.598-1.464-3.73-2.36-6.07-2.36-3.14 0-5.904 1.613-7.512 4.053.21.008.41.012.58.012.94 0 2.395-.114 2.395-.114.484-.028.54.684.057.74 0 0-.487.058-1.03.086l3.275 9.74 1.968-5.902-1.4-3.838c-.485-.028-.944-.085-.944-.085-.486-.03-.43-.77.056-.742 0 0 1.484.114 2.368.114.94 0 2.397-.114 2.397-.114.486-.028.543.684.058.74 0 0-.488.058-1.03.086l3.25 9.665.897-2.997c.456-1.17.684-2.137.684-2.907zm1.82-3.86c.04.286.06.593.06.924 0 .912-.17 1.938-.683 3.22l-2.746 7.94c2.672-1.558 4.47-4.454 4.47-7.77 0-1.564-.4-3.033-1.1-4.314zM12 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-googleplus" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="" alt="Google photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="googleplus_avatar" id="googleplus-avatar" class="comment-meta-googleplus" value="" />
+				<input type="hidden" name="googleplus_user_id" id="googleplus-user_id" class="comment-meta-googleplus" value="" />
+				<input type="hidden" name="googleplus_access_token" id="googleplus-access_token" class="comment-meta-googleplus" value="" />
+						<p class="comment-form-posting-as pa-googleplus">
+			<strong></strong>
+			You are commenting using your Google account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'googleplus' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" x="0px" y="0px" viewBox="0 0 60 60" ><path fill="#519bf7" d="M56.3,30c0,-1.6 -0.2,-3.4 -0.6,-5h-3.1H42.2H30v10.6h14.8C44,39.3 42,42 39.1,43.9l8.8,6.8C53,46 56.3,39 56.3,30z" /><path fill="#3db366" d="M30,57.5c6.7,0 13.1,-2.4 17.9,-6.8l-8.8,-6.8c-2.5,1.6 -5.6,2.4 -9.1,2.4c-7.2,0 -13.3,-4.7 -15.4,-11.2l-9.3,7.1C9.8,51.3 19.1,57.5 30,57.5z" /><path fill="#fdc600" d="M5.3,42.2l9.3,-7.1c-0.5,-1.6 -0.8,-3.3 -0.8,-5.1s0.3,-3.5 0.8,-5.1l-9.3,-7.1C3.5,21.5 2.5,25.6 2.5,30S3.5,38.5 5.3,42.2z" /><path fill="#f15b44" d="M40.1,17.4l8,-8C43.3,5.1 37,2.5 30,2.5C19.1,2.5 9.8,8.7 5.3,17.8l9.3,7.1c2.1,-6.5 8.2,-11.1 15.4,-11.1C33.9,13.7 37.4,15.1 40.1,17.4z" /></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-twitter" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="" alt="Twitter picture" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="twitter_avatar" id="twitter-avatar" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_user_id" id="twitter-user_id" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_access_token" id="twitter-access_token" class="comment-meta-twitter" value="" />
+						<p class="comment-form-posting-as pa-twitter">
+			<strong></strong>
+			You are commenting using your Twitter account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'twitter' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#1DA1F2" d="M22.23 5.924c-.736.326-1.527.547-2.357.646.847-.508 1.498-1.312 1.804-2.27-.793.47-1.67.812-2.606.996C18.325 4.498 17.258 4 16.078 4c-2.266 0-4.103 1.837-4.103 4.103 0 .322.036.635.106.935-3.41-.17-6.433-1.804-8.457-4.287-.353.607-.556 1.312-.556 2.064 0 1.424.724 2.68 1.825 3.415-.673-.022-1.305-.207-1.86-.514v.052c0 1.988 1.415 3.647 3.293 4.023-.344.095-.707.145-1.08.145-.265 0-.522-.026-.773-.074.522 1.63 2.038 2.817 3.833 2.85-1.404 1.1-3.174 1.757-5.096 1.757-.332 0-.66-.02-.98-.057 1.816 1.164 3.973 1.843 6.29 1.843 7.547 0 11.675-6.252 11.675-11.675 0-.178-.004-.355-.012-.53.802-.578 1.497-1.3 2.047-2.124z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-facebook" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="" alt="Facebook photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="fb_avatar" id="facebook-avatar" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_user_id" id="facebook-user_id" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_access_token" id="facebook-access_token" class="comment-meta-facebook" value="" />
+						<p class="comment-form-posting-as pa-facebook">
+			<strong></strong>
+			You are commenting using your Facebook account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'facebook' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#3B5998" d="M20.007 3H3.993C3.445 3 3 3.445 3 3.993v16.013c0 .55.445.994.993.994h8.62v-6.97H10.27V11.31h2.346V9.31c0-2.325 1.42-3.59 3.494-3.59.993 0 1.847.073 2.096.106v2.43h-1.438c-1.128 0-1.346.537-1.346 1.324v1.734h2.69l-.35 2.717h-2.34V21h4.587c.548 0 .993-.445.993-.993V3.993c0-.548-.445-.993-.993-.993z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+
+	<div id="comment-form-load-service" class="comment-form-service">
+		<div class="comment-form-posting-as-cancel"><a href="javascript:HighlanderComments.cancelExternalWindow();">Cancel</a></div>
+		<p>Connecting to %s</p>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+var highlander_expando_javascript = function () {
+
+	function hide( sel ) {
+		var el = document.querySelector( sel );
+		if ( el ) {
+			el.style.setProperty( 'display', 'none' );
+		}
+	}
+
+	function show( sel ) {
+		var el = document.querySelector( sel );
+		if ( el ) {
+			el.style.removeProperty( 'display' );
+		}
+	}
+
+	var input = document.createElement( 'input' );
+	var comment = document.querySelector( '#comment' );
+
+	if ( input && comment && 'placeholder' in input ) {
+		var label = document.querySelector( '.comment-textarea label' );
+		if ( label ) {
+			var text = label.textContent;
+			label.parentNode.removeChild( label );
+			comment.setAttribute( 'placeholder', text );
+		}
+	}
+
+	// Expando Mode: start small, then auto-resize on first click + text length
+	hide( '#comment-form-identity' );
+	hide( '#comment-form-subscribe' );
+	hide( '#commentform .form-submit' );
+
+	if ( comment ) {
+		comment.style.height = '10px';
+
+		var handler = function () {
+			comment.style.height = HighlanderComments.initialHeight + 'px';
+			show( '#comment-form-identity' );
+			show( '#comment-form-subscribe' );
+			show( '#commentform .form-submit' );
+			HighlanderComments.resizeCallback();
+
+			comment.removeEventListener( 'focus', handler );
+		};
+
+		comment.addEventListener( 'focus', handler );
+	}
+}
+
+if ( document.readyState !== 'loading' ) {
+	highlander_expando_javascript();
+} else {
+	if ( typeof window.jQuery === 'function' ) {
+		// Use jQuery's `ready` if available.
+		// This solves some scheduling issues between this script and the main highlander script.
+		jQuery( document ).ready( highlander_expando_javascript );
+	} else {
+		// If not available, add a vanilla event listener.
+		document.addEventListener( 'DOMContentLoaded', highlander_expando_javascript );
+	}
+}
+
+</script>
+
+<div id="comment-form-subscribe">
+	<p class="comment-subscription-form"><input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;"/> <label class="subscribe-label" id="subscribe-label" for="subscribe" style="display: inline;">Notify me of new comments via email.</label></p></div>
+
+<style type="text/css">
+#respond .comment-form-avatar { display: none !important; }
+#respond .comment-form-fields { margin-left: 0 !important; }
+#respond .comment-form-cookies-consent { margin-left: 0 !important; }
+</style>
+
+
+
+
+<p class="form-submit"><input name="submit" type="submit" id="comment-submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='4078' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="87070fc373" /></p>
+<input type="hidden" name="genseq" value="1621735115" />
+<input type="hidden" id="ak_js" name="ak_js" value="103"/><textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100" style="display: none !important;"></textarea></form>	</div><!-- #respond -->
+	<div style="clear: both"></div>
+
+
+</div>
+
+<div id="sidebar">
+<p class="size-small"><a class="feed-image-link" href="https://xorl.wordpress.com/feed/" title="Subscribe to Posts"><img src="https://xorl.wordpress.com/i/rss/blue-small.png?m=1391188133h" alt="RSS Feed" /></a></p>
+<form role="search" method="get" id="searchform" class="searchform" action="https://xorl.wordpress.com/">
+				<div>
+					<label class="screen-reader-text" for="s">Search for:</label>
+					<input type="text" value="" name="s" id="s" />
+					<input type="submit" id="searchsubmit" value="Search" />
+				</div>
+			</form><h3>Categories</h3><form action="https://xorl.wordpress.com" method="get"><label class="screen-reader-text" for="cat">Categories</label><select  name='cat' id='cat' class='postform' >
+	<option value='-1'>Select Category</option>
+	<option class="level-0" value="276">administration&nbsp;&nbsp;(28)</option>
+	<option class="level-0" value="641922">android&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="178">books&nbsp;&nbsp;(43)</option>
+	<option class="level-0" value="36985">C programming&nbsp;&nbsp;(16)</option>
+	<option class="level-0" value="11610518">conferences/trainings&nbsp;&nbsp;(19)</option>
+	<option class="level-0" value="78">dell&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="3588">freebsd&nbsp;&nbsp;(24)</option>
+	<option class="level-0" value="155998">fujitsu-siemens&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="272">fun&nbsp;&nbsp;(35)</option>
+	<option class="level-0" value="15193107">gera&#8217;s insecure programming&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="5784040">grsecurity&nbsp;&nbsp;(20)</option>
+	<option class="level-0" value="194943">hax&nbsp;&nbsp;(27)</option>
+	<option class="level-0" value="678">history&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="22518">hp&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="32744">ibm&nbsp;&nbsp;(2)</option>
+	<option class="level-0" value="610">linux&nbsp;&nbsp;(238)</option>
+	<option class="level-0" value="15593">malware&nbsp;&nbsp;(4)</option>
+	<option class="level-0" value="23915">mistakes&nbsp;&nbsp;(6)</option>
+	<option class="level-0" value="7916579">motorcycles &amp; cars&nbsp;&nbsp;(14)</option>
+	<option class="level-0" value="37564">netbsd&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="103">news&nbsp;&nbsp;(37)</option>
+	<option class="level-0" value="15262">openbsd&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="321864">opsec&nbsp;&nbsp;(8)</option>
+	<option class="level-0" value="1902">osx&nbsp;&nbsp;(2)</option>
+	<option class="level-0" value="1008535">pfsense&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="2265970">phrack&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="1811">polls&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="15192692">raptor&#8217;s wargames&nbsp;&nbsp;(2)</option>
+	<option class="level-0" value="49333">reverse engineering&nbsp;&nbsp;(10)</option>
+	<option class="level-0" value="801">security&nbsp;&nbsp;(40)</option>
+	<option class="level-0" value="3589">solaris&nbsp;&nbsp;(19)</option>
+	<option class="level-0" value="21182911">threat intelligence&nbsp;&nbsp;(32)</option>
+	<option class="level-0" value="1788">tips&nbsp;&nbsp;(7)</option>
+	<option class="level-0" value="1">Uncategorized&nbsp;&nbsp;(24)</option>
+	<option class="level-0" value="65966">vulnerabilities&nbsp;&nbsp;(445)</option>
+	<option class="level-0" value="64947">Wargames&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="800">Windows&nbsp;&nbsp;(10)</option>
+</select>
+</form>
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			dropdown.parentNode.submit();
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/* ]]> */
+</script>
+
+			<h3>Archives</h3>		<label class="screen-reader-text" for="archives-dropdown-2">Archives</label>
+		<select id="archives-dropdown-2" name="archive-dropdown">
+			
+			<option value="">Select Month</option>
+				<option value='https://xorl.wordpress.com/2021/05/'> May 2021 &nbsp;(3)</option>
+	<option value='https://xorl.wordpress.com/2021/04/'> April 2021 &nbsp;(10)</option>
+	<option value='https://xorl.wordpress.com/2021/03/'> March 2021 &nbsp;(2)</option>
+	<option value='https://xorl.wordpress.com/2021/02/'> February 2021 &nbsp;(1)</option>
+	<option value='https://xorl.wordpress.com/2021/01/'> January 2021 &nbsp;(4)</option>
+	<option value='https://xorl.wordpress.com/2020/08/'> August 2020 &nbsp;(2)</option>
+	<option value='https://xorl.wordpress.com/2020/06/'> June 2020 &nbsp;(1)</option>
+	<option value='https://xorl.wordpress.com/2020/05/'> May 2020 &nbsp;(2)</option>
+	<option value='https://xorl.wordpress.com/2020/03/'> March 2020 &nbsp;(2)</option>
+	<option value='https://xorl.wordpress.com/2020/01/'> January 2020 &nbsp;(2)</option>
+	<option value='https://xorl.wordpress.com/2019/12/'> December 2019 &nbsp;(6)</option>
+	<option value='https://xorl.wordpress.com/2018/07/'> July 2018 &nbsp;(1)</option>
+	<option value='https://xorl.wordpress.com/2018/03/'> March 2018 &nbsp;(5)</option>
+	<option value='https://xorl.wordpress.com/2018/02/'> February 2018 &nbsp;(8)</option>
+	<option value='https://xorl.wordpress.com/2018/01/'> January 2018 &nbsp;(4)</option>
+	<option value='https://xorl.wordpress.com/2017/12/'> December 2017 &nbsp;(18)</option>
+	<option value='https://xorl.wordpress.com/2017/11/'> November 2017 &nbsp;(38)</option>
+	<option value='https://xorl.wordpress.com/2013/05/'> May 2013 &nbsp;(10)</option>
+	<option value='https://xorl.wordpress.com/2012/09/'> September 2012 &nbsp;(4)</option>
+	<option value='https://xorl.wordpress.com/2012/08/'> August 2012 &nbsp;(3)</option>
+	<option value='https://xorl.wordpress.com/2012/06/'> June 2012 &nbsp;(1)</option>
+	<option value='https://xorl.wordpress.com/2012/05/'> May 2012 &nbsp;(5)</option>
+	<option value='https://xorl.wordpress.com/2012/04/'> April 2012 &nbsp;(1)</option>
+	<option value='https://xorl.wordpress.com/2012/02/'> February 2012 &nbsp;(1)</option>
+	<option value='https://xorl.wordpress.com/2012/01/'> January 2012 &nbsp;(5)</option>
+	<option value='https://xorl.wordpress.com/2011/12/'> December 2011 &nbsp;(5)</option>
+	<option value='https://xorl.wordpress.com/2011/10/'> October 2011 &nbsp;(7)</option>
+	<option value='https://xorl.wordpress.com/2011/09/'> September 2011 &nbsp;(1)</option>
+	<option value='https://xorl.wordpress.com/2011/08/'> August 2011 &nbsp;(10)</option>
+	<option value='https://xorl.wordpress.com/2011/07/'> July 2011 &nbsp;(11)</option>
+	<option value='https://xorl.wordpress.com/2011/06/'> June 2011 &nbsp;(10)</option>
+	<option value='https://xorl.wordpress.com/2011/05/'> May 2011 &nbsp;(22)</option>
+	<option value='https://xorl.wordpress.com/2011/04/'> April 2011 &nbsp;(17)</option>
+	<option value='https://xorl.wordpress.com/2011/03/'> March 2011 &nbsp;(16)</option>
+	<option value='https://xorl.wordpress.com/2011/02/'> February 2011 &nbsp;(8)</option>
+	<option value='https://xorl.wordpress.com/2011/01/'> January 2011 &nbsp;(24)</option>
+	<option value='https://xorl.wordpress.com/2010/12/'> December 2010 &nbsp;(27)</option>
+	<option value='https://xorl.wordpress.com/2010/11/'> November 2010 &nbsp;(29)</option>
+	<option value='https://xorl.wordpress.com/2010/10/'> October 2010 &nbsp;(16)</option>
+	<option value='https://xorl.wordpress.com/2010/09/'> September 2010 &nbsp;(14)</option>
+	<option value='https://xorl.wordpress.com/2010/04/'> April 2010 &nbsp;(5)</option>
+	<option value='https://xorl.wordpress.com/2010/02/'> February 2010 &nbsp;(4)</option>
+	<option value='https://xorl.wordpress.com/2010/01/'> January 2010 &nbsp;(27)</option>
+	<option value='https://xorl.wordpress.com/2009/12/'> December 2009 &nbsp;(9)</option>
+	<option value='https://xorl.wordpress.com/2009/11/'> November 2009 &nbsp;(40)</option>
+	<option value='https://xorl.wordpress.com/2009/10/'> October 2009 &nbsp;(26)</option>
+	<option value='https://xorl.wordpress.com/2009/08/'> August 2009 &nbsp;(24)</option>
+	<option value='https://xorl.wordpress.com/2009/07/'> July 2009 &nbsp;(39)</option>
+	<option value='https://xorl.wordpress.com/2009/06/'> June 2009 &nbsp;(24)</option>
+	<option value='https://xorl.wordpress.com/2009/05/'> May 2009 &nbsp;(38)</option>
+	<option value='https://xorl.wordpress.com/2009/04/'> April 2009 &nbsp;(51)</option>
+	<option value='https://xorl.wordpress.com/2009/03/'> March 2009 &nbsp;(28)</option>
+	<option value='https://xorl.wordpress.com/2009/02/'> February 2009 &nbsp;(24)</option>
+	<option value='https://xorl.wordpress.com/2009/01/'> January 2009 &nbsp;(50)</option>
+
+		</select>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+(function() {
+	var dropdown = document.getElementById( "archives-dropdown-2" );
+	function onSelectChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value !== '' ) {
+			document.location.href = this.options[ this.selectedIndex ].value;
+		}
+	}
+	dropdown.onchange = onSelectChange;
+})();
+/* ]]> */
+</script>
+			<h3>Pages</h3>
+			<ul>
+				<li class="page_item page-item-2"><a href="https://xorl.wordpress.com/about/">About</a></li>
+			</ul>
+
+			<h3><label for="subscribe-field">Follow Blog via Email</label></h3>
+			<form
+				action="https://subscribe.wordpress.com"
+				method="post"
+				accept-charset="utf-8"
+				id=""
+			>
+				<p>Click to follow this blog and receive notifications of new posts by email.</p>
+				<p id="subscribe-email">
+					<label
+						id="subscribe-field-label"
+						for="subscribe-field"
+						class="screen-reader-text"
+					>
+						Email Address:					</label>
+
+					<input
+							type="email"
+							name="email"
+							
+							style="width: 95%; padding: 1px 10px"
+							placeholder="Enter your email address"
+							value=""
+							id="subscribe-field"
+						/>				</p>
+
+				<p id="subscribe-submit"
+									>
+                    <input type="hidden" name="action" value="subscribe"/>
+                    <input type="hidden" name="blog_id" value="6013855"/>
+                    <input type="hidden" name="source" value="https://xorl.wordpress.com/2018/02/17/lkm-loading-kernel-restrictions/"/>
+                    <input type="hidden" name="sub-type" value="widget"/>
+                    <input type="hidden" name="redirect_fragment" value="blog_subscription-3"/>
+					<input type="hidden" id="_wpnonce" name="_wpnonce" value="b37c85dd05" />                    <button type="submit"
+	                    		                	                >
+	                    Follow                    </button>
+                </p>
+            </form>
+			
+<h3>APT mappings</h3>
+	<ul class='xoxo blogroll'>
+<li><a href="https://xorl.wordpress.com/2021/04/20/chinese-cyber-operations-groups/">China</a></li>
+<li><a href="https://xorl.wordpress.com/2021/04/24/north-korea-dprk-cyber-operations-groups/">DPRK (North Korea)</a></li>
+<li><a href="https://xorl.wordpress.com/2021/04/28/eu-cyber-operations-groups/">EU</a></li>
+<li><a href="https://xorl.wordpress.com/2021/05/06/iran-cyber-operations-groups/">Iran</a></li>
+<li><a href="https://xorl.wordpress.com/2021/04/16/russias-cyber-operations-groups/">Russia</a></li>
+<li><a href="https://xorl.wordpress.com/2021/04/18/us-cyber-operations-groups/">USA</a></li>
+
+	</ul>
+
+<h3>Links</h3>
+	<ul class='xoxo blogroll'>
+<li><a href="http://www.awarenetwork.org/" title="rattle and iqlord (and legion recently) :)">.aware</a></li>
+<li><a href="http://www.attackingthecore.com/" title="Website of the amazing kernel exploitation book :)">Attacking the Core</a></li>
+<li><a href="http://dividead.wordpress.com/" title="the amazing dividead.">dividead’s blog</a></li>
+<li><a href="http://grsecurity.net/" title="spender&#8217;s awesome patch">grsecurity</a></li>
+<li><a href="http://sock-raw.org/" title="Low level network programming and more" target="_top">ithilgore&#039;s site</a></li>
+<li><a href="http://amnezia.2f30.org/" title="coding 24/7">sin&#039;s blog</a></li>
+<li><a href="http://c-skills.blogspot.com/" title="you should already know him, no need for a description">stealth&#039;s blog</a></li>
+
+	</ul>
+
+
+
+</div>
+
+</div>
+
+<div id="footer">
+	<p><a href="https://wordpress.com/?ref=footer_blog" rel="nofollow">Blog at WordPress.com.</a> </p>
+</div>
+<!--  -->
+	<div style="display:none">
+	</div>
+<script id='highlander-comments-js-extra'>
+var HighlanderComments = {"loggingInText":"Logging In\u2026","submittingText":"Posting Comment\u2026","postCommentText":"Post Comment","connectingToText":"Connecting to %s","commentingAsText":"%1$s: You are commenting using your %2$s account.","logoutText":"Log Out","loginText":"Log In","connectURL":"https:\/\/xorl.wordpress.com\/public.api\/connect\/?action=request","logoutURL":"https:\/\/xorl.wordpress.com\/wp-login.php?action=logout&_wpnonce=605197e367","homeURL":"https:\/\/xorl.wordpress.com\/","postID":"4078","gravDefault":"blank","enterACommentError":"Please enter a comment","enterEmailError":"Please enter your email address here","invalidEmailError":"Invalid email address","enterAuthorError":"Please enter your name here","gravatarFromEmail":"This picture will show whenever you leave a comment. Click to customize it.","logInToExternalAccount":"Log in to use details from one of these accounts.","change":"Change","changeAccount":"Change Account","comment_registration":"","userIsLoggedIn":"","isJetpack":"","text_direction":"ltr"};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s0.wp.com/_static/??-eJx9jMEKAjEMRH/IbtkKKx7Ebynd0E1psjVpEP16e/AgCsLAHN6b8ffmkFO1FdSXkZuBPN41EfJU9OD/SY4wS+zwKaedO3D/PYzWdwHFJ3yrZK5Vy8jqN8xbjbyCDEo0qHpNgq2P0ZUu8zKH4ymcl1BeKKpHCA=='></script>
+
+<script>
+window.addEventListener( "load", function( event ) {
+	var link = document.createElement( "link" );
+	link.href = "https://s0.wp.com/wp-content/mu-plugins/actionbar/actionbar.css?v=20201002";
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.head.appendChild( link );
+
+	var script = document.createElement( "script" );
+	script.src = "https://s0.wp.com/wp-content/mu-plugins/actionbar/actionbar.js?v=20201002";
+	script.defer = true;
+	document.body.appendChild( script );
+} );
+</script>
+
+	
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/xorl.wordpress.com\/2018\/02\/17\/lkm-loading-kernel-restrictions\/":4078};
+	</script>
+					<div id="sharing_email" style="display: none;">
+		<form action="/2018/02/17/lkm-loading-kernel-restrictions/" method="post">
+			<label for="target_email">Send to Email Address</label>
+			<input type="email" name="target_email" id="target_email" value="" />
+
+			
+				<label for="source_name">Your Name</label>
+				<input type="text" name="source_name" id="source_name" value="" />
+
+				<label for="source_email">Your Email Address</label>
+				<input type="email" name="source_email" id="source_email" value="" />
+
+						<input type="text" id="jetpack-source_f_name" name="source_f_name" class="input" value="" size="25" autocomplete="off" title="This field is for validation and should not be changed" />
+			
+			<div
+				class="g-recaptcha"
+				data-sitekey="6LcmyE0UAAAAALID28yVNg7pFCodGaArJzHitez_"
+				data-theme="light"
+				data-type="image"
+				data-tabindex="0"
+				data-lazy="true"
+				data-url="https://www.google.com/recaptcha/api.js?hl=en"></div>
+			
+			<img style="float: right; display: none" class="loading" src="https://s2.wp.com/wp-content/mu-plugins/post-flair/sharing/images/loading.gif" alt="loading" width="16" height="16" />
+			<input type="submit" value="Send Email" class="sharing_send" />
+			<a rel="nofollow" href="#cancel" class="sharing_cancel" role="button">Cancel</a>
+
+			<div class="errors errors-1" style="display: none;">
+				Post was not sent - check your email addresses!			</div>
+
+			<div class="errors errors-2" style="display: none;">
+				Email check failed, please try again			</div>
+
+			<div class="errors errors-3" style="display: none;">
+				Sorry, your blog cannot share posts by email.			</div>
+		</form>
+	</div>
+<script crossorigin='anonymous' type='text/javascript' src='https://s0.wp.com/_static/??-eJzTLy/QTc7PK0nNK9EvyClNz8wr1i+uzCtJrMjITM/IAeKS1CJMEWP94uSizIISoOIM5/yiVL2sYh19yo1yKiotzgjISczMo6aBTonFGdQ0z7mgAGicfa6toZmhqYm5maWxURYA7/t+7g=='></script>
+<script type='text/javascript'>
+	(function(){
+		var corecss = document.createElement('link');
+		var themecss = document.createElement('link');
+		var corecssurl = "https://s1.wp.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter3/styles/shCore.css?ver=3.0.9b";
+		if ( corecss.setAttribute ) {
+				corecss.setAttribute( "rel", "stylesheet" );
+				corecss.setAttribute( "type", "text/css" );
+				corecss.setAttribute( "href", corecssurl );
+		} else {
+				corecss.rel = "stylesheet";
+				corecss.href = corecssurl;
+		}
+		document.head.appendChild( corecss );
+		var themecssurl = "https://s2.wp.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter3/styles/shThemeDefault.css?m=1363304414h&amp;ver=3.0.9b";
+		if ( themecss.setAttribute ) {
+				themecss.setAttribute( "rel", "stylesheet" );
+				themecss.setAttribute( "type", "text/css" );
+				themecss.setAttribute( "href", themecssurl );
+		} else {
+				themecss.rel = "stylesheet";
+				themecss.href = themecssurl;
+		}
+		document.head.appendChild( themecss );
+	})();
+	SyntaxHighlighter.config.strings.expandSource = '+ expand source';
+	SyntaxHighlighter.config.strings.help = '?';
+	SyntaxHighlighter.config.strings.alert = 'SyntaxHighlighter\n\n';
+	SyntaxHighlighter.config.strings.noBrush = 'Can\'t find brush for: ';
+	SyntaxHighlighter.config.strings.brushNotHtmlScript = 'Brush wasn\'t configured for html-script option: ';
+	SyntaxHighlighter.defaults['pad-line-numbers'] = false;
+	SyntaxHighlighter.defaults['toolbar'] = false;
+	SyntaxHighlighter.all();
+
+	// Infinite scroll support
+	if ( typeof( jQuery ) !== 'undefined' ) {
+		jQuery( function( $ ) {
+			$( document.body ).on( 'post-load', function() {
+				SyntaxHighlighter.highlight();
+			} );
+		} );
+	}
+</script>
+<link rel='stylesheet' id='all-css-0-3' href='https://s0.wp.com/wp-content/mu-plugins/related-posts/related-posts.css?m=1614268815h&cssminify=yes' type='text/css' media='all' />
+<script id='jetpack_related-posts-js-extra'>
+var related_posts_js_options = {"post_heading":"h4"};
+</script>
+<script id='sharing-js-js-extra'>
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s0.wp.com/_static/??-eJx9jsEOgjAMhl/IUQhKvBgfxZStYGEby1rUx3ccSIwHTu2f9vtaeCdjl6gUFSYBRy+2lD7VJCf4GYXVJL+OHAXQBY6mxwwBRSmXzmhGO8sOcbR+dSSbsEQKPbmqQAfSTB6VnEmL6F86emVmCaSmrWp4lKswLDkc7G8+M3jkDPLEzHHca4Hu4dZ0zblr2vp6mb5LTGat'></script>
+<script type='text/javascript'>
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-facebook' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-facebook' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-twitter' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-twitter' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+						return false;
+					}
+				} );
+			} )();
+</script>
+<script type="text/javascript">
+// <![CDATA[
+(function() {
+try{
+  if ( window.external &&'msIsSiteMode' in window.external) {
+    if (window.external.msIsSiteMode()) {
+      var jl = document.createElement('script');
+      jl.type='text/javascript';
+      jl.async=true;
+      jl.src='/wp-content/plugins/ie-sitemode/custom-jumplist.php';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(jl, s);
+    }
+  }
+}catch(e){}
+})();
+// ]]>
+</script><script src="//stats.wp.com/w.js?61" defer></script> <script type="text/javascript">
+_tkq = window._tkq || [];
+_stq = window._stq || [];
+_tkq.push(['storeContext', {'blog_id':'6013855','blog_tz':'3','user_lang':'en','blog_lang':'en','user_id':'0'}]);
+_stq.push(['view', {'blog':'6013855','v':'wpcom','tz':'3','user_id':'0','post':'4078','subd':'xorl'}]);
+_stq.push(['extra', {'crypt':'UE40eW5QN0p8M2Y/RE1TaVhzUzFMbjdWNHpwZGhTayxPSUFCMGNrd29+Smw0TDhnZmRTK0hlRi9QSGh6bi9GXVhBJWIlZlR5U1JMLU8/MkNtblkvY1doOC9EQzh5RWxZenMmX0xbflhEbld3WTl6cGs2Y2hoMFRJRT1qeG5SJmtlJl9KaltDTXxhV0s9UWYzWlZIV0Z5ckxZdUt6ZVYufjFkSkJWP3RUbE1WajY/ZjV4YnRQdzgsdzhkRTROKyxuOXZUMUs2dXVhTjUzempvUzN5K2xZQ1RUckp1N0FtZnc9bnc2X0pod2E9UjJbVU9mWFpEUFtpUF1xYl90JTJ6SzRPZHNMc3xBNEVSdk1DRlZBXT9tVHAwXVo0U3IsQUJdLEY1PSxsSyZbRCxKbm5UNCY1QWhvMC5yQjZZ'}]);
+_stq.push([ 'clickTrackerInit', '6013855', '4078' ]);
+	</script>
+<noscript><img src="https://pixel.wp.com/b.gif?v=noscript" style="height:1px;width:1px;overflow:hidden;position:absolute;bottom:1px;" alt="" /></noscript>
+<script>
+if ( 'object' === typeof wpcom_mobile_user_agent_info ) {
+
+	wpcom_mobile_user_agent_info.init();
+	var mobileStatsQueryString = "";
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedPlatformName )
+		mobileStatsQueryString += "&x_" + 'mobile_platforms' + '=' + wpcom_mobile_user_agent_info.matchedPlatformName;
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedUserAgentName )
+		mobileStatsQueryString += "&x_" + 'mobile_devices' + '=' + wpcom_mobile_user_agent_info.matchedUserAgentName;
+	
+	if( wpcom_mobile_user_agent_info.isIPad() )
+		mobileStatsQueryString += "&x_" + 'ipad_views' + '=' + 'views';
+
+	if( "" != mobileStatsQueryString ) {
+		new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?v=wpcom-no-pv' + mobileStatsQueryString + '&baba=' + Math.random();
+	}
+	
+}
+</script>
+</body>
+</html>

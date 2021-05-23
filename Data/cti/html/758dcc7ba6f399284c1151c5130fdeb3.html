@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html lang="en-US" class="ie ie6 lte9 lte8 lte7 lte6 no-js"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en-US" class="ie ie7 lte9 lte8 lte7 no-js"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en-US" class="ie ie8 lte9 lte8 no-js"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en-US" class="ie ie9 lte9 no-js"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en-US" class="no-js"> <!--<![endif]-->
+        <meta charset="UTF-8">
+	<title>Dark Halo Leverages SolarWinds Compromise to Breach Organizations | Volexity</title>
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="cleartype" content="on">
+
+            <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@Volexity">
+        <meta name="twitter:creator" content="@Volexity">
+        <meta name="twitter:title" content="Dark Halo Leverages SolarWinds Compromise to Breach Organizations">
+        <meta name="twitter:description" content="Volexity is releasing additional research and indicators associated with compromises impacting customers of the SolarWinds Orion software platform. Volexity has also published a guide for responding to the SolarWinds breach, and how to detect, prevent, and remediate this supply chain attack. On Sunday, December 13, 2020, FireEye released a blog detailing an alleged compromise to the company SolarWinds. This compromise involved a backdoor being distributed through an update to SolarWind&#039;s Orion software product. FireEye attributed this activity to an unknown threat actor it tracks as UNC2452. Volexity has subsequently been able to tie these attacks to multiple incidents it worked in late 2019 and 2020 at a US-based think tank. Volexity tracks this threat actor under the name Dark Halo. At one particular think tank, Volexity worked three separate incidents involving Dark Halo. In the initial incident, Volexity found multiple tools, backdoors, and malware implants that had allowed the attacker to remain undetected for [&hellip;]">
+                    <meta name="twitter:image" content="https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo.png">
+            
+    <link rel="apple-touch-icon" sizes="180x180" href="https://www.volexity.com/wp-content/themes/volexity/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="https://www.volexity.com/wp-content/themes/volexity/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://www.volexity.com/wp-content/themes/volexity/favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="https://www.volexity.com/wp-content/themes/volexity/favicon.ico">
+    <link rel="manifest" href="https://www.volexity.com/wp-content/themes/volexity/manifest.json">
+    <meta name="theme-color" content="#12BEF0">
+    
+
+          <meta property="og:image" content="https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo-300x178.png" />
+    
+	<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s.w.org' />
+		<!-- This site uses the Google Analytics by ExactMetrics plugin v6.7.0 - Using Analytics tracking - https://www.exactmetrics.com/ -->
+							<script src="//www.googletagmanager.com/gtag/js?id=UA-43664679-1"  type="text/javascript" data-cfasync="false"></script>
+			<script type="text/javascript" data-cfasync="false">
+				var em_version = '6.7.0';
+				var em_track_user = true;
+				var em_no_track_reason = '';
+				
+								var disableStr = 'ga-disable-UA-43664679-1';
+
+				/* Function to detect opted out users */
+				function __gtagTrackerIsOptedOut() {
+					return document.cookie.indexOf( disableStr + '=true' ) > - 1;
+				}
+
+				/* Disable tracking if the opt-out cookie exists. */
+				if ( __gtagTrackerIsOptedOut() ) {
+					window[disableStr] = true;
+				}
+
+				/* Opt-out function */
+				function __gtagTrackerOptout() {
+					document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
+					window[disableStr] = true;
+				}
+
+				if ( 'undefined' === typeof gaOptout ) {
+					function gaOptout() {
+						__gtagTrackerOptout();
+					}
+				}
+								window.dataLayer = window.dataLayer || [];
+				if ( em_track_user ) {
+					function __gtagTracker() {dataLayer.push( arguments );}
+					__gtagTracker( 'js', new Date() );
+					__gtagTracker( 'set', {
+						'developer_id.dNDMyYj' : true,
+						                    });
+					__gtagTracker( 'config', 'UA-43664679-1', {
+						forceSSL:true,					} );
+										window.gtag = __gtagTracker;										(
+						function () {
+							/* https://developers.google.com/analytics/devguides/collection/analyticsjs/ */
+							/* ga and __gaTracker compatibility shim. */
+							var noopfn = function () {
+								return null;
+							};
+							var newtracker = function () {
+								return new Tracker();
+							};
+							var Tracker = function () {
+								return null;
+							};
+							var p = Tracker.prototype;
+							p.get = noopfn;
+							p.set = noopfn;
+							p.send = function (){
+								var args = Array.prototype.slice.call(arguments);
+								args.unshift( 'send' );
+								__gaTracker.apply(null, args);
+							};
+							var __gaTracker = function () {
+								var len = arguments.length;
+								if ( len === 0 ) {
+									return;
+								}
+								var f = arguments[len - 1];
+								if ( typeof f !== 'object' || f === null || typeof f.hitCallback !== 'function' ) {
+									if ( 'send' === arguments[0] ) {
+										var hitConverted, hitObject = false, action;
+										if ( 'event' === arguments[1] ) {
+											if ( 'undefined' !== typeof arguments[3] ) {
+												hitObject = {
+													'eventAction': arguments[3],
+													'eventCategory': arguments[2],
+													'eventLabel': arguments[4],
+													'value': arguments[5] ? arguments[5] : 1,
+												}
+											}
+										}
+										if ( typeof arguments[2] === 'object' ) {
+											hitObject = arguments[2];
+										}
+										if ( typeof arguments[5] === 'object' ) {
+											Object.assign( hitObject, arguments[5] );
+										}
+										if ( 'undefined' !== typeof (
+											arguments[1].hitType
+										) ) {
+											hitObject = arguments[1];
+										}
+										if ( hitObject ) {
+											action = 'timing' === arguments[1].hitType ? 'timing_complete' : hitObject.eventAction;
+											hitConverted = mapArgs( hitObject );
+											__gtagTracker( 'event', action, hitConverted );
+										}
+									}
+									return;
+								}
+
+								function mapArgs( args ) {
+									var gaKey, hit = {};
+									var gaMap = {
+										'eventCategory': 'event_category',
+										'eventAction': 'event_action',
+										'eventLabel': 'event_label',
+										'eventValue': 'event_value',
+										'nonInteraction': 'non_interaction',
+										'timingCategory': 'event_category',
+										'timingVar': 'name',
+										'timingValue': 'value',
+										'timingLabel': 'event_label',
+									};
+									for ( gaKey in gaMap ) {
+										if ( 'undefined' !== typeof args[gaKey] ) {
+											hit[gaMap[gaKey]] = args[gaKey];
+										}
+									}
+									return hit;
+								}
+
+								try {
+									f.hitCallback();
+								} catch ( ex ) {
+								}
+							};
+							__gaTracker.create = newtracker;
+							__gaTracker.getByName = newtracker;
+							__gaTracker.getAll = function () {
+								return [];
+							};
+							__gaTracker.remove = noopfn;
+							__gaTracker.loaded = true;
+							window['__gaTracker'] = __gaTracker;
+						}
+					)();
+									} else {
+										console.log( "" );
+					( function () {
+							function __gtagTracker() {
+								return null;
+							}
+							window['__gtagTracker'] = __gtagTracker;
+							window['gtag'] = __gtagTracker;
+					} )();
+									}
+			</script>
+				<!-- / Google Analytics by ExactMetrics -->
+		<link rel='stylesheet' id='wp-block-library-css'  href='https://www.volexity.com/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='main-style-css'  href='https://www.volexity.com/wp-content/themes/volexity/dist/styles/styles.min.css?ver=5.7.2' type='text/css' media='screen, print' />
+<link rel='stylesheet' id='cookie-notice-front-css'  href='https://www.volexity.com/wp-content/plugins/cookie-notice/includes/../css/front.min.css?ver=5.7.2' type='text/css' media='all' />
+<script type='text/javascript' id='exactmetrics-frontend-script-js-extra'>
+/* <![CDATA[ */
+var exactmetrics_frontend = {"js_events_tracking":"true","download_extensions":"zip,mp3,mpeg,pdf,docx,pptx,xlsx,rar","inbound_paths":"[{\"path\":\"\\\/go\\\/\",\"label\":\"affiliate\"},{\"path\":\"\\\/recommend\\\/\",\"label\":\"affiliate\"}]","home_url":"https:\/\/www.volexity.com","hash_tracking":"false","ua":"UA-43664679-1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.volexity.com/wp-content/plugins/google-analytics-dashboard-for-wp/assets/js/frontend-gtag.min.js?ver=6.7.0' id='exactmetrics-frontend-script-js'></script>
+<script type='text/javascript' src='https://www.volexity.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://www.volexity.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script type='text/javascript' id='cookie-notice-front-js-extra'>
+/* <![CDATA[ */
+var cnArgs = {"ajaxUrl":"https:\/\/www.volexity.com\/wp-admin\/admin-ajax.php","nonce":"b9b49275e2","hideEffect":"fade","position":"bottom","onScroll":"0","onScrollOffset":"100","onClick":"0","cookieName":"cookie_notice_accepted","cookieTime":"2592000","cookieTimeRejected":"2592000","cookiePath":"\/","cookieDomain":"","redirection":"0","cache":"0","refuse":"0","revokeCookies":"0","revokeCookiesOpt":"automatic","secure":"1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.volexity.com/wp-content/plugins/cookie-notice/includes/../js/front.min.js?ver=2.0.3' id='cookie-notice-front-js'></script>
+<link rel="https://api.w.org/" href="https://www.volexity.com/wp-json/" /><link rel="alternate" type="application/json" href="https://www.volexity.com/wp-json/wp/v2/posts/1936" /><link rel="canonical" href="https://www.volexity.com/blog/2020/12/14/dark-halo-leverages-solarwinds-compromise-to-breach-organizations/" />
+<link rel='shortlink' href='https://www.volexity.com/?p=1936' />
+<link rel="alternate" type="application/json+oembed" href="https://www.volexity.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.volexity.com%2Fblog%2F2020%2F12%2F14%2Fdark-halo-leverages-solarwinds-compromise-to-breach-organizations%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://www.volexity.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.volexity.com%2Fblog%2F2020%2F12%2F14%2Fdark-halo-leverages-solarwinds-compromise-to-breach-organizations%2F&#038;format=xml" />
+		<style type="text/css" id="wp-custom-css">
+			/*
+You can add your own CSS here.
+
+Click the help icon above to learn more.
+*/		</style>
+		
+	<!--[if lte IE 9 ]>
+		<script src="https://www.volexity.com/wp-content/themes/volexity/scripts/vendor/selectivizr.js"></script>
+		<script src="https://www.volexity.com/wp-content/themes/volexity/scripts/vendor/respond.js"></script>
+		<script src="https://www.volexity.com/wp-content/themes/volexity/scripts/vendor/mediamatch.js"></script>
+	<![endif]-->
+</head>
+<body class="post-template-default single single-post postid-1936 single-format-standard gecko windows cookies-not-set">
+	<header class="header">
+    <div class="header-top-container">
+        <div class="container">
+            <ul id="menu-sub-left" class="header-sub-left"><li id="menu-item-2116" class="icon-triangle menu-item menu-item-type-post_type menu-item-object-page menu-item-2116"><a href="https://www.volexity.com/company/contact/demo-request/" class="icon-triangle">Request A Demo</a></li>
+</ul>            <ul id="menu-sub-right" class="header-sub-right"><li id="menu-item-1213" class="icon-warning menu-item menu-item-type-post_type menu-item-object-page menu-item-1213"><a href="https://www.volexity.com/company/contact/breach-assistance/" class="icon-warning">Breach Assistance</a></li>
+</ul>        </div>
+    </div>
+	<div class="header-container">
+        <div class="container">
+            <a class="header-logo" href="https://www.volexity.com"><img src="https://www.volexity.com/wp-content/themes/volexity/dist/images/logo.png" alt="Volexity"></a>
+            <div class="header-menu">
+                <ul id="menu-main-navigation" class="header-menu-list"><li id="menu-item-376" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-376"><a href="https://www.volexity.com/products-overview/">Products</a>
+<ul class="sub-menu">
+	<li id="menu-item-48" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-48"><a href="https://www.volexity.com/products-overview/">Products Overview</a></li>
+	<li id="menu-item-50" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-50"><a href="https://www.volexity.com/products-overview/volcano/">Volcano</a></li>
+	<li id="menu-item-49" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-49"><a href="https://www.volexity.com/products-overview/surge/">Surge</a></li>
+</ul>
+</li>
+<li id="menu-item-377" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-377"><a href="https://www.volexity.com/services-overview/">Services</a>
+<ul class="sub-menu">
+	<li id="menu-item-55" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-55"><a href="https://www.volexity.com/services-overview/">Services Overview</a></li>
+	<li id="menu-item-52" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-52"><a href="https://www.volexity.com/services-overview/incident-response/">Incident Response</a></li>
+	<li id="menu-item-53" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-53"><a href="https://www.volexity.com/services-overview/network-security-monitoring/">Network Security Monitoring</a></li>
+	<li id="menu-item-54" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-54"><a href="https://www.volexity.com/services-overview/proactive-threat-assessments/">Proactive Threat Assessments</a></li>
+	<li id="menu-item-56" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-56"><a href="https://www.volexity.com/services-overview/threat-intelligence/">Threat Intelligence</a></li>
+</ul>
+</li>
+<li id="menu-item-385" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-385"><a href="https://www.volexity.com/company/about/">Company</a>
+<ul class="sub-menu">
+	<li id="menu-item-41" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-41"><a href="https://www.volexity.com/company/about/">About</a></li>
+	<li id="menu-item-43" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-43"><a href="https://www.volexity.com/company/news-press/">News &#038; Press</a></li>
+	<li id="menu-item-1849" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1849"><a href="https://www.volexity.com/company/careers/">Careers</a></li>
+	<li id="menu-item-1824" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1824"><a href="https://www.volexity.com/company/internships/">Internships</a></li>
+	<li id="menu-item-1718" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1718"><a href="https://www.volexity.com/company/resources/">Resources</a></li>
+</ul>
+</li>
+<li id="menu-item-39" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-39"><a href="https://www.volexity.com/blog/">Blog</a></li>
+<li id="menu-item-45" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-45"><a href="https://www.volexity.com/company/contact/">Contact</a></li>
+</ul>            </div>
+            <div class="mobile-menu--holder">
+                <div class="mobile-menu"></div>
+            </div>
+        </div>
+	</div>
+</header>
+<div class="int-header s5">
+    <div class="container">
+        <section class="int-header-hold col-sm-12">
+            blog        </section>
+    </div>
+</div>
+	<main class="main">
+		<div class="container">
+	<section class="row int">
+		<article class="col-sm-8">
+			<div class="post-content composition">
+				<h2 class="post-title">Dark Halo Leverages SolarWinds Compromise to Breach Organizations</h2>
+				<p class="post-date">December 14, 2020</p>
+									<p class="post-byline">by Damien Cash, Matthew Meltzer, Sean Koessel, Steven Adair, Thomas Lancaster, Volexity Threat Research</p>
+					
+				<div class="post-single-social">
+		      <a class="post-single-social-share" data-share-channel="facebook" data-title="Dark Halo Leverages SolarWinds Compromise to Breach Organizations" data-description="Volexity is releasing additional research and indicators associated with compromises impacting customers of the SolarWinds Orion software platform. Volexity has also published a guide for responding to the SolarWinds breach, and how to detect, prevent, and remediate this supply chain attack. On Sunday, December 13, 2020, FireEye released a blog detailing an alleged compromise to the company SolarWinds. This compromise involved a backdoor being distributed through an update to SolarWind's Orion software product. FireEye attributed this activity to an unknown threat actor it tracks as UNC2452. Volexity has subsequently been able to tie these attacks to multiple incidents it worked in late 2019 and 2020 at a US-based think tank. Volexity tracks this threat actor under the name Dark Halo. At one particular think tank, Volexity worked three separate incidents involving Dark Halo. In the initial incident, Volexity found multiple tools, backdoors, and malware implants that had allowed the attacker to remain undetected for [&hellip;]" data-url="https://www.volexity.com/blog/2020/12/14/dark-halo-leverages-solarwinds-compromise-to-breach-organizations/" data-image="" data-caption="Volexity"><i class="icon icon-facebook-share"></i><span class="sr-only">Facebook</span></a>
+		      <a class="post-single-social-share" data-share-channel="twitter" data-text="Dark+Halo+Leverages+SolarWinds+Compromise+to+Breach+Organizations" data-url="https://www.volexity.com/blog/2020/12/14/dark-halo-leverages-solarwinds-compromise-to-breach-organizations/" data-hashtags="volexity" data-via="Volexity"><i class="icon icon-twitter-share"></i><span class="sr-only">Twitter</span></a>
+		      <a class="post-single-social-share" data-share-channel="email" data-post-id="1936"><i class="icon icon-mail-share"></i><span class="sr-only">Email</span></a>
+			  </div>
+				<div><img loading="lazy" class="alignnone wp-image-1941 size-full" src="https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo.png" alt="" width="2438" height="1446" srcset="https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo.png 2438w, https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo-300x178.png 300w, https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo-1024x607.png 1024w, https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo-768x456.png 768w, https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo-1536x911.png 1536w, https://www.volexity.com/wp-content/uploads/2020/12/Volexity-Dark-Halo-2048x1215.png 2048w" sizes="(max-width: 2438px) 100vw, 2438px" /></div>
+<div>Volexity is releasing additional research and indicators associated with compromises impacting customers of the SolarWinds Orion software platform. Volexity has also <a href="https://www.volexity.com/blog/2020/12/16/responding-to-the-solarwinds-breach/">published a guide</a> for responding to the SolarWinds breach, and how to detect, prevent, and remediate this supply chain attack.</div>
+<p>On Sunday, December 13, 2020, FireEye <a class="jive-link-external-small" href="https://www.fireeye.com/blog/threat-research/2020/12/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor.html" target="_blank" rel="nofollow noopener noreferrer">released a blog</a> detailing an alleged compromise to the company SolarWinds. This compromise involved a backdoor being distributed through an update to SolarWind's Orion software product. FireEye attributed this activity to an unknown threat actor it tracks as UNC2452. Volexity has subsequently been able to tie these attacks to multiple incidents it worked in late 2019 and 2020 at a US-based think tank. Volexity tracks this threat actor under the name <strong>Dark Halo</strong>.</p>
+<p>At one particular think tank, Volexity worked three separate incidents involving Dark Halo. In the initial incident, Volexity found multiple tools, backdoors, and malware implants that had allowed the attacker to remain undetected for several years. After being extricated from the network, Dark Halo then returned a second time, exploiting a vulnerability in the organization's <a class="jive-link-external-small" href="https://www.volexity.com/blog/2020/03/06/microsoft-exchange-control-panel-ecp-vulnerability-cve-2020-0688-exploited/" target="_blank" rel="nofollow noopener noreferrer">Microsoft Exchange Control Panel</a>. Near the end of this incident, Volexity observed the threat actor using a novel technique to bypass Duo multi-factor authentication (MFA) to access the mailbox of a user via the organization's Outlook Web App (OWA) service. Finally, in a third incident, Dark Halo breached the organization by way of its SolarWinds Orion software in June and July 2020.</p>
+<p>The primary goal of the Dark Halo threat actor was to obtain the e-mails of specific individuals at the think tank. This included a handful of select executives, policy experts, and the IT staff at the organization. Volexity notes its investigations are directly related to the FireEye report based on overlap between command-and-control (C2) domains and other related indicators such as a backdoored server running SolarWinds Orion.</p>
+<h2>Major Incidents</h2>
+<p>Volexity has worked three major incidents involving the Dark Halo threat actor. In most cases, the actor aimed to live off the land, primarily focusing on weekly operations to extract e-mail messages from the organization. Dark Halo did use malware and red-teaming tools but largely only for specific one-time tasks as a fallback mechanism when other avenues of access were cut off. For the purposes of this write-up, Volexity will share novel and useful information from the second and third incidents. The second incident involved a sophisticated way to obtain unauthorized access to an account via OWA that had MFA protection in place. The third incident involved a breach by way of the SolarWinds Orion platform.</p>
+<h3>Bypassing Multi-Factor Authentication</h3>
+<p>Toward the end of the second incident that Volexity worked involving Dark Halo, the actor was observed accessing the e-mail account of a user via OWA. This was unexpected for a few reasons, not least of which was the targeted mailbox was protected by MFA. Logs from the Exchange server showed that the attacker provided username and password authentication like normal but were not challenged for a second factor through Duo. The logs from the Duo authentication server further showed that no attempts had been made to log into the account in question. Volexity was able to confirm that session hijacking was not involved and, through a memory dump of the OWA server, could also confirm that the attacker had presented cookie tied to a Duo MFA session named <strong>duo-sid</strong>.</p>
+<p>Volexity's investigation into this incident determined the attacker had accessed the Duo integration secret key (<strong>akey</strong>) from the OWA server. This key then allowed the attacker to derive a pre-computed value to be set in the duo-sid cookie. After successful password authentication, the server evaluated the duo-sid cookie and determined it to be valid. This allowed the attacker with knowledge of a user account and password to then completely bypass the MFA set on the account. It should be noted this is <span style="text-decoration: underline;">not a vulnerability</span> with the MFA provider and underscores the need to ensure that all secrets associated with key integrations, such as those with an MFA provider, should be changed following a breach. Further, it is important that not only are passwords changed after a breach, but that passwords are not set to something similar to the previous password (e.g., <em>Summer2020!</em> versus<em> Spring2020!</em> or <em>SillyGoo$e3</em> versus <em>SillyGoo$e2</em>).</p>
+<h3>SolarWinds</h3>
+<p>In the third incident, which took place in July 2020, Volexity identified suspicious administrative commands and ActiveSync anomalies in the organization's Exchange environment. Further review of the organization's endpoint software and network traffic confirmed a breach. The attacker had executed commands to export e-mail for specific users in the organization, and then exfiltrated the data via the organization's Outlook Web Anywhere (OWA) server.</p>
+<p>Many of the technical details regarding the malware used are covered in the FireEye notification. However, in this blog, Volexity can share examples of command-line actions the attacker took after gaining access to the target network and provide insight into additional tools, infrastructure, and attacker objectives.</p>
+<h4>Reconnaissance</h4>
+<p>The attacker was quite adept with Exchange and immediately listed various organization configuration settings via PowerShell. Below are a few of the operations that the attacker executed.</p>
+<ul>
+<li>Get a list of users on the Exchange server and their current role using <a class="jive-link-external-small" href="https://docs.microsoft.com/en-us/powershell/module/exchange/get-managementroleassignment?view=exchange-ps" target="_blank" rel="nofollow noopener noreferrer">Get-ManagementRoleAssignment</a>:</li>
+</ul>
+<blockquote class="jive-quote"><p>C:\Windows\system32\cmd.exe /C powershell.exe -PSConsoleFile exshell.psc1 -Command "Get-ManagementRoleAssignment -GetEffectiveUsers | select Name,Role,EffectiveUserName,AssignmentMethod,IsValid | ConvertTo-Csv -NoTypeInformation | % {$_ -replace '`n','_'} | Out-File C:\temp\1.xml"</p></blockquote>
+<ul>
+<li>Retrieve information about the configured Virtual Directory using <a class="jive-link-external-small" href="https://docs.microsoft.com/en-us/powershell/module/exchange/Get-WebServicesVirtualDirectory?view=exchange-ps" target="_blank" rel="nofollow noopener noreferrer">Get-WebServicesVirtualDirectory</a>:</li>
+</ul>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p><span class="">C:\Windows\system32\cmd.exe /C powershell.exe -PSConsoleFile exshell.psc1 -Command "Get-WebServicesVirtualDirectory | Format-List"</span></p></blockquote>
+<p>The attacker also made use of a file called sqlceip.exe, which upon first glance might appear as the legitimate version of SQL Server Telemetry Client provided by Microsoft. However, Volexity determined this tool was actually a version of AdFind from joeware.net. AdFind is a command-line tool used for querying and extracting data from Active Directory. During the course of its investigations, Volexity discovered the attacker using AdFind with the following command line:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>C:\Windows\system32\cmd.exe /C sqlceip.exe -default -f (name="Organization Management") member -list | sqlceip.exe -f objectcategory=* &gt; .\SettingSync\log2.txt</p></blockquote>
+<h4>Lateral Movement</h4>
+<p>The attacker used PowerShell to create new tasks on remote machines:</p>
+<blockquote><p>$scheduler = New-Object -ComObject ("Schedule.Service");$scheduler.Connect($env:COMPUTERNAME);$folder = $scheduler.GetFolder("\Microsoft\Windows\SoftwareProtectionPlatform");$task = $folder.GetTask("EventCacheManager");$definition = $task.Definition;$definition.Settings.ExecutionTimeLimit = "PT0S";$folder.RegisterTaskDefinition($task.Name,$definition,6,"System",$null,5);echo "Done"</p></blockquote>
+<p>They also attempted this on a number of machines using schtasks.exe directly. For example:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>C:\Windows\system32\cmd.exe /C schtasks /create /F /tn "\Microsoft\Windows\SoftwareProtectionPlatform\EventCacheManager" /tr "C:\Windows\SoftwareDistribution\EventCacheManager.exe" /sc ONSTART /ru system /S [machine_name]</p></blockquote>
+<h4>Exfiltration</h4>
+<p>The attacker exfiltrated e-mail data from targeted accounts using the <a href="https://docs.microsoft.com/en-us/powershell/module/exchange/new-mailboxexportrequest?view=exchange-ps">New-MailboxExportRequest</a> command followed by Get-MailboxExport-Request command. In this case, the attacker was only interested in mail received this year.</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p><span class="">C:\Windows\system32\cmd.exe /C powershell.exe -PSConsoleFile exshell.psc1 -Command "New-MailboxExportRequest -Mailbox <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="187e77777a796a58776a7f79767162796c71777636707d6a7d">[email&#160;protected]</a> -ContentFilter {(Received -ge '03/01/2020')} -FilePath '\\&lt;MAILSERVER&gt;\c$\temp\b.pst'"</span></p></blockquote>
+<p>The attacker created password-protected archives on the victims' OWA server so that they could be exfiltrated via a simple HTTP request.</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>C:\Windows\system32\cmd.exe /C .\7z.exe a -mx9 -r0 -p[33_char_password]  "C:\Program Files\Microsoft\Exchange Server\V15\FrontEnd\HttpProxy\owa\auth\Redir.png" C:\Temp\b.pst‍‍‍</p></blockquote>
+<p>An example URL for the attacker to collect the exfiltrated data would be:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>https://owa.organization.here/owa/auth/Redir.png</p></blockquote>
+<p>On disk, this was located at the following path:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>\Program Files\Microsoft\Exchange Server\V15\FrontEnd\HttpProxy\owa\auth\</p></blockquote>
+<p>Volexity also saw the attacker stage other exfiltration in another folder on the server located here:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>\Program Files\Microsoft\Exchange Server\V15\FrontEnd\HttpProxy\owa\auth\Current\themes\resources\</p></blockquote>
+<p>Finally, the attacker added their own devices as allowed IDs for active sync for a number of mailboxes using <a href="https://docs.microsoft.com/en-us/powershell/module/exchange/set-casmailbox?view=exchange-ps">Set-CASMailbox</a>:</p>
+<blockquote><p>C:\Windows\system32\cmd.exe /C powershell.exe -PSConsoleFile exshell.psc1 -Command "Set-CASMailbox -Identity &lt;UserID&gt; -ActiveSyncAllowedDeviceIDs @{add='XXXXXXXXXXXXX'}"</p></blockquote>
+<h4>Attacker Cleanup</h4>
+<p>After successfully exporting mail they wished to steal, the attacker would remove the evidence of the export request using <a href="https://docs.microsoft.com/en-us/powershell/module/exchange/remove-mailboxexportrequest?view=exchange-ps">Remove-MailboxExportRequest</a>:</p>
+<blockquote><p>C:\Windows\system32\cmd.exe /C powershell.exe -PSConsoleFile exshell.psc1 -Command "Get-MailboxExportRequest -Mailbox <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4237312730022d3025232c2b3823362b2d2c6c2a273027">[email&#160;protected]</a> | Remove-MailboxExportRequest -Confirm:$False"</p></blockquote>
+<h3>Attacker Infrastructure</h3>
+<p>During the July 2020 incident, Volexity observed at least two indicators that overlapped with indicators of compromise posted by FireEye. The organization's SolarWinds server conducted DGA-style DNS queries under the following subdomain:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>appsync-api.us-west-2.avsvmcloud[.]com</p></blockquote>
+<p>The vast majority of queries were met with SERVFAIL responses. In most other cases, the hostnames resolved to IPs that fell in the ranges 184.72.0.0/16, 20.141.48.0/24, 8.18.144.0/24, and 8.18.145.0/24. However, the critical responses to the organization came by way of CNAME responses that occurred between June 30, 2020, and July 16, 2020. These DNS resolutions returned a CNAME for the domain <strong>freescanonline[.]com</strong>. In late July, the attacker took advantage of their access and started moving laterally throughout the organization, which will be described a bit later. Most notably the attacker pushed malware to other systems that beaconed back to the following additional infrastructure:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>lcomputers[.]com</p>
+<p>webcodez[.]com</p></blockquote>
+<p>At the time of the incident (July 2020), the attacker had accidentally configured their servers to be open to the Internet, accepting arbitrary requests on port 80. Since then, the attacker has fixed this issue; however, at the time, Volexity was able to identify a number of C2 addresses based on server profiling.</p>
+<p>Specifically, at the time there were only a handful of servers that responded with the following HTTP headers in the following order:</p>
+<ul>
+<li>Transfer-Encoding</li>
+<li>Connection</li>
+<li>Server</li>
+<li>X-Powered-By</li>
+<li>Date</li>
+</ul>
+<p>The "Server" value also specified IIS10.0, but this header order does not match the order used by IIS 10.0.</p>
+<p>Based on this pattern Volexity was able to identify the following IP addresses in July 2020:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>13.57.184.217<br />
+13.59.205.66<br />
+18.217.225.111<br />
+18.220.219.143<br />
+3.16.81.254<br />
+3.87.182.149‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍<br />
+34.219.234.134<br />
+54.193.127.66<br />
+54.215.192.52</p></blockquote>
+<p>These IPs hosted SSL certificates for the following domains:</p>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>deftsecurity[.]com<br />
+digitalcollege[.]org<br />
+freescanonline[.]com<br />
+globalnetworkissues[.]com<br />
+kubecloud[.]com<br />
+seobundlekit[.]com<br />
+solartrackingsystem[.]net<br />
+thedoccloud[.]com<br />
+virtualwebdata[.]com</p></blockquote>
+<p>Notably, some of these domains were set up prior to the earlier known compromise date published by FireEye, such as solartrackingsystem[.]net, which was assigned its current nameserver in January 2020. Several of the domains also have very long registration histories going back several years. Volexity believes that attacker obtained these domains through auctions or from registrants after they expired but before they were deleted. This allowed the attacker to use domains with a long history and avoid being detected based on detections tied to a domain being newly registered.</p>
+<h2>Conclusion</h2>
+<p>At the time of the investigation, Volexity deduced that the likely infection was the result of the SolarWinds box on the target network; however, it was not fully understood exactly how the breach occurred (i.e., whether there was some unknown exploit in play, or other means of access), therefore Volexity was not in a position to report the circumstances surrounding the breach to SolarWinds. The machines involved in this incident had been rebooted several times prior to Volexity's involvement in incident response efforts, meaning that a great deal of evidence that would have been in volatile memory had been lost.</p>
+<p>Volexity believes that Dark Halo is a sophisticated threat actor based on the following characteristics of their attacks:</p>
+<ul>
+<li>Generally, the attacker displayed a reasonable level of operational security throughout the attack, taking steps to wipe logs for various services used and to remove evidence of their commands from infected systems.</li>
+<li>The server profile used to identify the C2 domains was only visible for a snapshot in time, where the attacker likely became aware that their C2 addresses could be identified in this way, they went on to secure their C2 servers further.</li>
+<li>Despite an ongoing campaign lasting one year, very few files related to this attacker have made their way to VirusTotal.</li>
+</ul>
+<p>During the investigation Volexity discovered no hints as to the attacker's origin or any links to any publicly known threat actor.</p>
+<p>To protect against these attacks, Volexity recommends the following:</p>
+<ul>
+<li>Look for traffic to any of the related malicious domains identified in Appendix A.</li>
+<li>Follow the <a href="https://www.solarwinds.com/securityadvisory">advice from SolarWinds</a> in their response to this incident.</li>
+<li>Use the <a href="https://github.com/fireeye/sunburst_countermeasures/">signatures provided by FireEye</a> to identify related activity.</li>
+<li>Ensure that all secret keys associated with MFA or other sensitive integrations are reset following a breach.</li>
+<li>Make sure all credentials in an organization, including service accounts, are reset following a breach and that default passwords or those similar to previous passwords are not used.</li>
+<li>If you run an on-premise Exchange environment, consider adding alerting mechanisms to any EDR solutions for processes using the Exchange Management Shell PowerShell cmdlets listed in Appendix B. This may or may not be a valid detection approach depending on how frequently this is used within your organization.</li>
+<li>More generally, if the Exchange Management Shell is rarely used in a legitimate Administrative context, it may be worth investigating any historical use of this shell.</li>
+</ul>
+<h2>Appendix A - IP and Domain IOCs</h2>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>13.57.184.217<br />
+13.59.205.66<br />
+18.217.225.111<br />
+18.220.219.143<br />
+196.203.11.89<br />
+3.16.81.254<br />
+3.87.182.149<br />
+3.87.182.149‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍<br />
+34.219.234.134<br />
+54.193.127.66<br />
+54.215.192.52<br />
+avsvmcloud[.]com<br />
+deftsecurity[.]com<br />
+digitalcollege[.]org<br />
+freescanonline[.]com<br />
+globalnetworkissues[.]com<br />
+kubecloud[.]com<br />
+lcomputers[.]com<br />
+seobundlekit[.]com<br />
+solartrackingsystem[.]net<br />
+thedoccloud[.]com<br />
+virtualwebdata[.]com<br />
+webcodez[.]com</p></blockquote>
+<h2>Appendix B - Exchange Management Shell Powershell cmdlets</h2>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>Get-AcceptedDomain</p>
+<p>Get-CASMailbox</p>
+<p>Get-Mailbox</p>
+<p>Get-ManagementRoleAssignment</p>
+<p>Get-OrganizationConfig</p>
+<p>Get-OwaVirtualDirectory</p>
+<p>Get-Process</p>
+<p>Get-WebServicesVirtualDirectory</p>
+<p>New-MailboxExportRequest</p>
+<p>Remove-MailboxExportRequest</p>
+<p>Set-CASMailbox</p></blockquote>
+<h2>Appendix C - DGA Domain Resolutions</h2>
+<blockquote class="jive_macro_quote jive-quote jive_text_macro"><p>184.72.1.3<br />
+184.72.101.22<br />
+184.72.113.55<br />
+184.72.145.34<br />
+184.72.209.33<br />
+184.72.21.54<br />
+184.72.212.52<br />
+184.72.224.3<br />
+184.72.229.1<br />
+184.72.240.3<br />
+184.72.245.1<br />
+184.72.48.22<br />
+20.141.48.154<br />
+8.18.144.11<br />
+8.18.144.12<br />
+8.18.144.130<br />
+8.18.144.135<br />
+8.18.144.136<br />
+8.18.144.149<br />
+8.18.144.156<br />
+8.18.144.158<br />
+8.18.144.165<br />
+8.18.144.170<br />
+8.18.144.180<br />
+8.18.144.188<br />
+8.18.144.20<br />
+8.18.144.40<br />
+8.18.144.44<br />
+8.18.144.62<br />
+8.18.144.9<br />
+8.18.145.131<br />
+8.18.145.134<br />
+8.18.145.136<br />
+8.18.145.139<br />
+8.18.145.150<br />
+8.18.145.157<br />
+8.18.145.181<br />
+8.18.145.21<br />
+8.18.145.3<br />
+8.18.145.33<br />
+8.18.145.36</p></blockquote>
+				<div class="post-tags">
+					<a href="https://www.volexity.com/blog/tag/darkhalo/">darkhalo</a>, <a href="https://www.volexity.com/blog/tag/exchange/">Exchange</a>, <a href="https://www.volexity.com/blog/tag/malware/">malware</a>, <a href="https://www.volexity.com/blog/tag/solarwinds/">solarwinds</a>				</div>
+			</div>
+
+		</article>
+
+		<aside class="sidebar col-sm-4">
+	<ul class="widgets">
+		<li class="widget widget_search"><div class="widget-content"><form role="search" method="get" class="search-form" action="https://www.volexity.com/">
+    <label>
+        <span class="screen-reader-text">Search for:</span>
+        <input type="search" class="search-field"
+               placeholder="SEARCH"
+               value="" name="s"
+               title="Search for:" />
+    </label>
+    <input type="submit" class="search-submit"
+           value="Search" />
+</form></div></li>
+		<li class="widget widget_recent_entries"><div class="widget-content">
+		<h4 class="widget-title">Recent Posts</h4>
+		<ul>
+											<li>
+					<a href="https://www.volexity.com/blog/2021/03/02/active-exploitation-of-microsoft-exchange-zero-day-vulnerabilities/">Operation Exchange Marauder: Active Exploitation of Multiple Zero-Day Microsoft Exchange Vulnerabilities</a>
+									</li>
+											<li>
+					<a href="https://www.volexity.com/blog/2020/12/16/responding-to-the-solarwinds-breach/">Responding to the SolarWinds Breach: Detect, Prevent, and Remediate the Dark Halo Supply Chain Attack</a>
+									</li>
+											<li>
+					<a href="https://www.volexity.com/blog/2020/12/14/dark-halo-leverages-solarwinds-compromise-to-breach-organizations/" aria-current="page">Dark Halo Leverages SolarWinds Compromise to Breach Organizations</a>
+									</li>
+											<li>
+					<a href="https://www.volexity.com/blog/2020/11/06/oceanlotus-extending-cyber-espionage-operations-through-fake-websites/">OceanLotus: Extending Cyber Espionage Operations Through Fake Websites</a>
+									</li>
+											<li>
+					<a href="https://www.volexity.com/blog/2020/04/21/evil-eye-threat-actor-resurfaces-with-ios-exploit-and-updated-implant/">Evil Eye Threat Actor Resurfaces with iOS Exploit and Updated Implant</a>
+									</li>
+					</ul>
+
+		</div></li><li class="widget widget_archive"><div class="widget-content"><h4 class="widget-title">Archives</h4>
+			<ul>
+					<li><a href='https://www.volexity.com/blog/2021/03/'>March 2021</a></li>
+	<li><a href='https://www.volexity.com/blog/2020/12/'>December 2020</a></li>
+	<li><a href='https://www.volexity.com/blog/2020/11/'>November 2020</a></li>
+	<li><a href='https://www.volexity.com/blog/2020/04/'>April 2020</a></li>
+	<li><a href='https://www.volexity.com/blog/2020/03/'>March 2020</a></li>
+	<li><a href='https://www.volexity.com/blog/2019/09/'>September 2019</a></li>
+	<li><a href='https://www.volexity.com/blog/2018/11/'>November 2018</a></li>
+	<li><a href='https://www.volexity.com/blog/2018/09/'>September 2018</a></li>
+	<li><a href='https://www.volexity.com/blog/2018/08/'>August 2018</a></li>
+	<li><a href='https://www.volexity.com/blog/2018/07/'>July 2018</a></li>
+	<li><a href='https://www.volexity.com/blog/2018/06/'>June 2018</a></li>
+	<li><a href='https://www.volexity.com/blog/2018/04/'>April 2018</a></li>
+	<li><a href='https://www.volexity.com/blog/2017/11/'>November 2017</a></li>
+	<li><a href='https://www.volexity.com/blog/2017/07/'>July 2017</a></li>
+	<li><a href='https://www.volexity.com/blog/2017/03/'>March 2017</a></li>
+	<li><a href='https://www.volexity.com/blog/2016/11/'>November 2016</a></li>
+	<li><a href='https://www.volexity.com/blog/2015/10/'>October 2015</a></li>
+	<li><a href='https://www.volexity.com/blog/2015/07/'>July 2015</a></li>
+	<li><a href='https://www.volexity.com/blog/2015/06/'>June 2015</a></li>
+	<li><a href='https://www.volexity.com/blog/2015/04/'>April 2015</a></li>
+	<li><a href='https://www.volexity.com/blog/2014/10/'>October 2014</a></li>
+	<li><a href='https://www.volexity.com/blog/2014/09/'>September 2014</a></li>
+			</ul>
+
+			</div></li><li class="widget widget_categorizedtagcloudwidget"><div class="widget-content"><h4 class="widget-title">Tags</h4>
+    <div id="categorized-tag-cloud"><span id="categorized-tag-cloud-el-1"><a href="https://www.volexity.com/blog/tag/malware/" class="tag-cloud-link tag-link-106 tag-link-position-1" style="font-size: 12pt;" aria-label="malware (2 items)">malware</a></span> <span id="categorized-tag-cloud-el-2"><a href="https://www.volexity.com/blog/tag/drupal/" class="tag-cloud-link tag-link-40 tag-link-position-2" style="font-size: 12pt;" aria-label="Drupal (2 items)">Drupal</a></span> <span id="categorized-tag-cloud-el-3"><a href="https://www.volexity.com/blog/tag/crimeware/" class="tag-cloud-link tag-link-68 tag-link-position-3" style="font-size: 12pt;" aria-label="crimeware (2 items)">crimeware</a></span> <span id="categorized-tag-cloud-el-4"><a href="https://www.volexity.com/blog/tag/exchange/" class="tag-cloud-link tag-link-88 tag-link-position-4" style="font-size: 12pt;" aria-label="Exchange (2 items)">Exchange</a></span> <span id="categorized-tag-cloud-el-5"><a href="https://www.volexity.com/blog/tag/solarwinds/" class="tag-cloud-link tag-link-112 tag-link-position-5" style="font-size: 12pt;" aria-label="solarwinds (2 items)">solarwinds</a></span> <span id="categorized-tag-cloud-el-6"><a href="https://www.volexity.com/blog/tag/vietnam/" class="tag-cloud-link tag-link-52 tag-link-position-6" style="font-size: 12pt;" aria-label="Vietnam (2 items)">Vietnam</a></span> <span id="categorized-tag-cloud-el-7"><a href="https://www.volexity.com/blog/tag/exploit/" class="tag-cloud-link tag-link-87 tag-link-position-7" style="font-size: 12pt;" aria-label="Exploit (2 items)">Exploit</a></span> <span id="categorized-tag-cloud-el-8"><a href="https://www.volexity.com/blog/tag/china/" class="tag-cloud-link tag-link-42 tag-link-position-8" style="font-size: 13.333333333333pt;" aria-label="China (3 items)">China</a></span> <span id="categorized-tag-cloud-el-9"><a href="https://www.volexity.com/blog/tag/scanning/" class="tag-cloud-link tag-link-31 tag-link-position-9" style="font-size: 14.444444444444pt;" aria-label="Scanning (4 items)">Scanning</a></span> <span id="categorized-tag-cloud-el-10"><a href="https://www.volexity.com/blog/tag/cisco/" class="tag-cloud-link tag-link-22 tag-link-position-10" style="font-size: 10pt;" aria-label="Cisco (1 item)">Cisco</a></span> <span id="categorized-tag-cloud-el-11"><a href="https://www.volexity.com/blog/tag/scanbox/" class="tag-cloud-link tag-link-23 tag-link-position-11" style="font-size: 10pt;" aria-label="Scanbox (1 item)">Scanbox</a></span> <span id="categorized-tag-cloud-el-12"><a href="https://www.volexity.com/blog/tag/vpn/" class="tag-cloud-link tag-link-24 tag-link-position-12" style="font-size: 10pt;" aria-label="VPN (1 item)">VPN</a></span> <span id="categorized-tag-cloud-el-13"><a href="https://www.volexity.com/blog/tag/oceanlotus/" class="tag-cloud-link tag-link-51 tag-link-position-13" style="font-size: 12pt;" aria-label="OceanLotus (2 items)">OceanLotus</a></span> <span id="categorized-tag-cloud-el-14"><a href="https://www.volexity.com/blog/tag/japan/" class="tag-cloud-link tag-link-38 tag-link-position-14" style="font-size: 12pt;" aria-label="Japan (2 items)">Japan</a></span> <span id="categorized-tag-cloud-el-15"><a href="https://www.volexity.com/blog/tag/digital-surveillance/" class="tag-cloud-link tag-link-36 tag-link-position-15" style="font-size: 12pt;" aria-label="digital surveillance (2 items)">digital surveillance</a></span> <span id="categorized-tag-cloud-el-16"><a href="https://www.volexity.com/blog/tag/vulnerabilities/" class="tag-cloud-link tag-link-34 tag-link-position-16" style="font-size: 14.444444444444pt;" aria-label="vulnerabilities (4 items)">vulnerabilities</a></span> <span id="categorized-tag-cloud-el-17"><a href="https://www.volexity.com/blog/tag/osx/" class="tag-cloud-link tag-link-49 tag-link-position-17" style="font-size: 12pt;" aria-label="osx (2 items)">osx</a></span> <span id="categorized-tag-cloud-el-18"><a href="https://www.volexity.com/blog/tag/afghanistan/" class="tag-cloud-link tag-link-19 tag-link-position-18" style="font-size: 10pt;" aria-label="Afghanistan (1 item)">Afghanistan</a></span> <span id="categorized-tag-cloud-el-19"><a href="https://www.volexity.com/blog/tag/exploits/" class="tag-cloud-link tag-link-33 tag-link-position-19" style="font-size: 17.777777777778pt;" aria-label="exploits (9 items)">exploits</a></span> <span id="categorized-tag-cloud-el-20"><a href="https://www.volexity.com/blog/tag/apt/" class="tag-cloud-link tag-link-35 tag-link-position-20" style="font-size: 20pt;" aria-label="APT (15 items)">APT</a></span> </div>
+  	<style>
+  	
+  		#categorized-tag-cloud a, #categorized-tag-cloud a:visited { text-decoration:none; }
+      #categorized-tag-cloud a:hover { text-decoration:none; color:#3b97d3; }
+    		#categorized-tag-cloud-el-1 a, #categorized-tag-cloud-el-1 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-2 a, #categorized-tag-cloud-el-2 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-3 a, #categorized-tag-cloud-el-3 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-4 a, #categorized-tag-cloud-el-4 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-5 a, #categorized-tag-cloud-el-5 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-6 a, #categorized-tag-cloud-el-6 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-7 a, #categorized-tag-cloud-el-7 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-8 a, #categorized-tag-cloud-el-8 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-9 a, #categorized-tag-cloud-el-9 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-10 a, #categorized-tag-cloud-el-10 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-11 a, #categorized-tag-cloud-el-11 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-12 a, #categorized-tag-cloud-el-12 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-13 a, #categorized-tag-cloud-el-13 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-14 a, #categorized-tag-cloud-el-14 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-15 a, #categorized-tag-cloud-el-15 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-16 a, #categorized-tag-cloud-el-16 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-17 a, #categorized-tag-cloud-el-17 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-18 a, #categorized-tag-cloud-el-18 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-19 a, #categorized-tag-cloud-el-19 a:visited { color:#555555; }
+    		#categorized-tag-cloud-el-20 a, #categorized-tag-cloud-el-20 a:visited { color:#555555; }
+  	</style></div></li>	</ul>
+</aside>	</section>
+</div>	</main>
+
+	<footer class="footer">
+	<div class="footer-container container">
+        <div class="footer-col-first col-md-3 no-padding">
+            <a class="footer-logo" href="https://www.volexity.com"><img src="https://www.volexity.com/wp-content/themes/volexity/dist/images/logo.png" alt="Volexity"></a>
+            <address class="footer-copyright">&copy; 2021 Volexity. All Rights Reserved.</address>
+        </div>
+		<ul id="menu-footer-menu" class="footer-menu-list col-md-4 col-xs-12"><li id="menu-item-57" class="nav-header menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-57"><a href="/company/about/">About</a>
+<ul class="sub-menu">
+	<li id="menu-item-59" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-59"><a href="https://www.volexity.com/company/about/">About Us</a></li>
+	<li id="menu-item-58" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-58"><a href="https://www.volexity.com/blog/">Blog</a></li>
+	<li id="menu-item-395" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-395"><a href="https://www.volexity.com/privacy-policy/">Privacy Policy</a></li>
+</ul>
+</li>
+<li id="menu-item-60" class="nav-header menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-60"><a href="/solutions/">Solutions</a>
+<ul class="sub-menu">
+	<li id="menu-item-400" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-400"><a href="https://www.volexity.com/company/contact/">Request A Demo</a></li>
+	<li id="menu-item-61" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-61"><a href="https://www.volexity.com/products-overview/">Products</a></li>
+	<li id="menu-item-669" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-669"><a href="https://www.volexity.com/services-overview/">Services</a></li>
+</ul>
+</li>
+</ul>
+        <div class="footer-address col-md-3 col-xs-12">
+            <p class="footer-header">Contact</p>
+            <ul>
+                <li class="footer-address--address icon-location-marker">11654 Plaza America Dr #774<br />Reston, VA 20190-4700</li>
+                <li class="footer-address--phone icon-phone-mobile">1-888-825-1975</li>
+            </ul>
+        </div>
+        <div class="footer-social col-md-2 no-padding">
+            <p class="footer-header">Connect</p>
+            <ul>
+                <li class="footer-social-holder"><a href="https://www.facebook.com/volexity" target="_blank" class="icon-facebook footer-social--link"></a></li>
+                <li class="footer-social-holder"><a href="https://twitter.com/volexity" target="_blank" class="icon-twitter footer-social--link"></a></li>
+                <li class="footer-social-holder"><a href="https://www.linkedin.com/company/volexity" target="_blank" class="icon-linkedin footer-social--link"></a></li>
+            </ul>
+        </div>
+	</div>
+    <div id="back-to-top" class="icon-slide-left"></div>
+	<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type='text/javascript' id='main-js-extra'>
+/* <![CDATA[ */
+var urls = {"base":"https:\/\/www.volexity.com","theme":"https:\/\/www.volexity.com\/wp-content\/themes\/volexity","ajax":"https:\/\/www.volexity.com\/wp-admin\/admin-ajax.php"};
+var info = [];
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.volexity.com/wp-content/themes/volexity/dist/scripts/scripts.min.js?ver=5.7.2' id='main-js'></script>
+<script type='text/javascript' src='https://www.volexity.com/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://www.volexity.com/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+
+		<!-- Cookie Notice plugin v2.0.3 by Digital Factory https://dfactory.eu/ -->
+		<div id="cookie-notice" role="banner" class="cookie-notice-hidden cookie-revoke-hidden cn-position-bottom" aria-label="Cookie Notice" style="background-color: rgba(0,0,0,1);"><div class="cookie-notice-container" style="color: #fff;"><span id="cn-notice-text" class="cn-text-container">This Website uses cookies, which are necessary to its functioning and required to achieve the purposes illustrated in our <a href="/privacy-policy/#cookies">Cookie Policy</a>. By clicking the button, you consent to our use of cookies.</span><span id="cn-notice-buttons" class="cn-buttons-container"><a href="#" id="cn-accept-cookie" data-cookie-set="accept" class="cn-set-cookie cn-button box-cta" aria-label="Agree & Close">Agree & Close</a></span><a href="javascript:void(0);" id="cn-close-notice" data-cookie-set="accept" class="cn-close-icon" aria-label="Agree & Close"></a></div>
+			
+		</div>
+		<!-- / Cookie Notice plugin --></footer></body>
+</html>

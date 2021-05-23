@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>setuid(2) - Linux manual page</title>
+    <link rel="stylesheet" type="text/css" href="../../../style.css" title="style" />
+    <link rel="stylesheet" type="text/css" href="../style.css" title="style" />
+</head>
+
+<body>
+
+<div class="page-top"><a id="top_of_page"></a></div>
+<!--%%%TOP_BAR%%%-->
+    <div class="nav-bar">
+        <table class="nav-table">
+            <tr>
+                <td class="nav-cell">
+                    <p class="nav-text">
+                        <a href="../../../index.html">man7.org</a> &gt; Linux &gt; <a href="../index.html">man-pages</a>
+                    </p>
+                </td>
+                <td class="training-cell">
+                    <p class="training-text"><a class="training-link" href="http://man7.org/training/">Linux/UNIX system programming training</a></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+<hr class="nav-end" />
+
+<!--%%%PAGE_START%%%-->
+<h1>setuid(2) &mdash; Linux manual page</h1>
+
+
+<table class="sec-table">
+<tr>
+    <td>
+        <p class="section-dir">
+<a href="#NAME">NAME</a> | <a href="#SYNOPSIS">SYNOPSIS</a> | <a href="#DESCRIPTION">DESCRIPTION</a> | <a href="#RETURN_VALUE">RETURN&nbsp;VALUE</a> | <a href="#ERRORS">ERRORS</a> | <a href="#CONFORMING_TO">CONFORMING&nbsp;TO</a> | <a href="#NOTES">NOTES</a> | <a href="#SEE_ALSO">SEE&nbsp;ALSO</a> | <a href="#COLOPHON">COLOPHON</a>
+        </p>
+    </td>
+</tr>
+<tr>
+    <td class="search-box">
+        <div class="man-search-box">
+
+            <form method="get" action="https://www.google.com/search">
+                <fieldset class="man-search">
+                    <input type="text" name="q" size="10" maxlength="255" value="" />
+                    <input type="hidden" name="sitesearch" value="man7.org/linux/man-pages" />
+                    <input type="submit" name="sa" value="Search online pages" />
+                </fieldset>
+            </form>
+
+        </div>
+    </td>
+    <td> </td>
+</tr>
+</table>
+
+<pre>
+<span class="headline">SETUID(2)               Linux Programmer's Manual              SETUID(2)</span>
+</pre>
+<h2><a id="NAME" href="#NAME"></a>NAME  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       setuid - set user identity
+</pre>
+<h2><a id="SYNOPSIS" href="#SYNOPSIS"></a>SYNOPSIS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <b>#include &lt;unistd.h&gt;</b>
+
+       <b>int setuid(uid_t </b><i>uid</i><b>);</b>
+</pre>
+<h2><a id="DESCRIPTION" href="#DESCRIPTION"></a>DESCRIPTION  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <b>setuid</b>() sets the effective user ID of the calling process.  If
+       the calling process is privileged (more precisely: if the process
+       has the <b>CAP_SETUID </b>capability in its user namespace), the real
+       UID and saved set-user-ID are also set.
+
+       Under Linux, <b>setuid</b>() is implemented like the POSIX version with
+       the <b>_POSIX_SAVED_IDS </b>feature.  This allows a set-user-ID (other
+       than root) program to drop all of its user privileges, do some
+       un-privileged work, and then reengage the original effective user
+       ID in a secure manner.
+
+       If the user is root or the program is set-user-ID-root, special
+       care must be taken: <b>setuid</b>() checks the effective user ID of the
+       caller and if it is the superuser, all process-related user ID's
+       are set to <i>uid</i>.  After this has occurred, it is impossible for
+       the program to regain root privileges.
+
+       Thus, a set-user-ID-root program wishing to temporarily drop root
+       privileges, assume the identity of an unprivileged user, and then
+       regain root privileges afterward cannot use <b>setuid</b>().  You can
+       accomplish this with <a href="../man2/seteuid.2.html">seteuid(2)</a>.
+</pre>
+<h2><a id="RETURN_VALUE" href="#RETURN_VALUE"></a>RETURN VALUE  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       On success, zero is returned.  On error, -1 is returned, and
+       <i><a href="../man3/errno.3.html">errno</a></i> is set to indicate the error.
+
+       <i>Note</i>: there are cases where <b>setuid</b>() can fail even when the
+       caller is UID 0; it is a grave security error to omit checking
+       for a failure return from <b>setuid</b>().
+</pre>
+<h2><a id="ERRORS" href="#ERRORS"></a>ERRORS  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <b>EAGAIN </b>The call would change the caller's real UID (i.e., <i>uid</i>
+              does not match the caller's real UID), but there was a
+              temporary failure allocating the necessary kernel data
+              structures.
+
+       <b>EAGAIN </b><i>uid</i> does not match the real user ID of the caller and this
+              call would bring the number of processes belonging to the
+              real user ID <i>uid</i> over the caller's <b>RLIMIT_NPROC </b>resource
+              limit.  Since Linux 3.1, this error case no longer occurs
+              (but robust applications should check for this error); see
+              the description of <b>EAGAIN </b>in <a href="../man2/execve.2.html">execve(2)</a>.
+
+       <b>EINVAL </b>The user ID specified in <i>uid</i> is not valid in this user
+              namespace.
+
+       <b>EPERM  </b>The user is not privileged (Linux: does not have the
+              <b>CAP_SETUID </b>capability in its user namespace) and <i>uid</i> does
+              not match the real UID or saved set-user-ID of the calling
+              process.
+</pre>
+<h2><a id="CONFORMING_TO" href="#CONFORMING_TO"></a>CONFORMING TO  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       POSIX.1-2001, POSIX.1-2008, SVr4.  Not quite compatible with the
+       4.4BSD call, which sets all of the real, saved, and effective
+       user IDs.
+</pre>
+<h2><a id="NOTES" href="#NOTES"></a>NOTES  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       Linux has the concept of the filesystem user ID, normally equal
+       to the effective user ID.  The <b>setuid</b>() call also sets the
+       filesystem user ID of the calling process.  See <a href="../man2/setfsuid.2.html">setfsuid(2)</a>.
+
+       If <i>uid</i> is different from the old effective UID, the process will
+       be forbidden from leaving core dumps.
+
+       The original Linux <b>setuid</b>() system call supported only 16-bit
+       user IDs.  Subsequently, Linux 2.4 added <b>setuid32</b>() supporting
+       32-bit IDs.  The glibc <b>setuid</b>() wrapper function transparently
+       deals with the variation across kernel versions.
+
+   <b>C library/kernel differences</b>
+       At the kernel level, user IDs and group IDs are a per-thread
+       attribute.  However, POSIX requires that all threads in a process
+       share the same credentials.  The NPTL threading implementation
+       handles the POSIX requirements by providing wrapper functions for
+       the various system calls that change process UIDs and GIDs.
+       These wrapper functions (including the one for <b>setuid</b>()) employ a
+       signal-based technique to ensure that when one thread changes
+       credentials, all of the other threads in the process also change
+       their credentials.  For details, see <a href="../man7/nptl.7.html">nptl(7)</a>.
+</pre>
+<h2><a id="SEE_ALSO" href="#SEE_ALSO"></a>SEE ALSO  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       <a href="../man2/getuid.2.html">getuid(2)</a>, <a href="../man2/seteuid.2.html">seteuid(2)</a>, <a href="../man2/setfsuid.2.html">setfsuid(2)</a>, <a href="../man2/setreuid.2.html">setreuid(2)</a>, <a href="../man7/capabilities.7.html">capabilities(7)</a>,
+       <a href="../man7/credentials.7.html">credentials(7)</a>, <a href="../man7/user_namespaces.7.html">user_namespaces(7)</a>
+</pre>
+<h2><a id="COLOPHON" href="#COLOPHON"></a>COLOPHON  &nbsp; &nbsp; &nbsp; &nbsp; <a href="#top_of_page"><span class="top-link">top</span></a></h2><pre>
+       This page is part of release 5.11 of the Linux <i>man-pages</i> project.
+       A description of the project, information about reporting bugs,
+       and the latest version of this page, can be found at
+       <a href="https://www.kernel.org/doc/man-pages/">https://www.kernel.org/doc/man-pages/</a>.
+
+<span class="footline">Linux                          2021-03-22                      SETUID(2)</span>
+</pre>
+
+<hr class="end-man-text" />
+<p>Pages that refer to this page: 
+    <a href="../man1/capsh.1.html">capsh(1)</a>,&nbsp; 
+    <a href="../man2/access.2.html">access(2)</a>,&nbsp; 
+    <a href="../man2/execve.2.html">execve(2)</a>,&nbsp; 
+    <a href="../man2/getresuid.2.html">getresuid(2)</a>,&nbsp; 
+    <a href="../man2/getuid.2.html">getuid(2)</a>,&nbsp; 
+    <a href="../man2/seccomp.2.html">seccomp(2)</a>,&nbsp; 
+    <a href="../man2/seteuid.2.html">seteuid(2)</a>,&nbsp; 
+    <a href="../man2/setresuid.2.html">setresuid(2)</a>,&nbsp; 
+    <a href="../man2/setreuid.2.html">setreuid(2)</a>,&nbsp; 
+    <a href="../man2/syscalls.2.html">syscalls(2)</a>,&nbsp; 
+    <a href="../man2/vfork.2.html">vfork(2)</a>,&nbsp; 
+    <a href="../man3/cap_get_proc.3.html">cap_get_proc(3)</a>,&nbsp; 
+    <a href="../man3/euidaccess.3.html">euidaccess(3)</a>,&nbsp; 
+    <a href="../man3/posix_spawn.3.html">posix_spawn(3)</a>,&nbsp; 
+    <a href="../man5/systemd.exec.5.html">systemd.exec(5)</a>,&nbsp; 
+    <a href="../man7/capabilities.7.html">capabilities(7)</a>,&nbsp; 
+    <a href="../man7/credentials.7.html">credentials(7)</a>,&nbsp; 
+    <a href="../man7/nptl.7.html">nptl(7)</a>,&nbsp; 
+    <a href="../man7/signal-safety.7.html">signal-safety(7)</a>,&nbsp; 
+    <a href="../man7/user_namespaces.7.html">user_namespaces(7)</a>
+</p>
+<hr/>
+
+<p class="page-copyright"><a href="../man2/setuid.2.license.html">Copyright and license for this manual page</a></p> 
+<hr class="start-footer" />
+
+<div class="footer"> 
+
+<table class="colophon-table">
+    <tr>
+    <td class="pub-info">
+        <p>
+            HTML rendering created 2021-04-01
+            by <a href="https://man7.org/mtk/index.html">Michael Kerrisk</a>, 
+            author of 
+            <a href="https://man7.org/tlpi/"><em>The Linux Programming Interface</em></a>, 
+            maintainer of the 
+            <a href="https://www.kernel.org/doc/man-pages/">Linux <em>man-pages</em> project</a>.
+        </p>
+        <p>
+            For details of in-depth
+            <strong>Linux/UNIX system programming training courses</strong>
+            that I teach, look <a href="https://man7.org/training/">here</a>.
+        </p>
+        <p>
+            Hosting by <a href="https://www.jambit.com/index_en.html">jambit GmbH</a>.
+        </p>
+    </td>
+    <td class="colophon-divider">
+    </td>
+    <td class="tlpi-cover">
+        <a href="https://man7.org/tlpi/"><img src="https://man7.org/tlpi/cover/TLPI-front-cover-vsmall.png" alt="Cover of TLPI" /></a>
+    </td>
+    </tr>
+</table>
+
+</div>
+
+<hr class="end-footer" />
+
+
+
+<!--BEGIN-SITETRACKING-->
+<!-- SITETRACKING.man7.org_linux_man-pages -->
+
+<!-- Default Statcounter code for man7.org/linux/man-pages
+http://www.man7.org/linux/man-pages -->
+<script type="text/javascript">
+var sc_project=7422636;
+var sc_invisible=1;
+var sc_security="9b6714ff";
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><a title="Web Analytics
+Made Easy - StatCounter" href="https://statcounter.com/"
+target="_blank"><img class="statcounter"
+src="https://c.statcounter.com/7422636/0/9b6714ff/1/"
+alt="Web Analytics Made Easy -
+StatCounter"></a></div></noscript>
+<!-- End of Statcounter Code -->
+
+
+
+<!-- Start of Google Analytics Code -->
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9830363-8']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<!-- End of Google Analytics Code -->
+
+<!--END-SITETRACKING-->
+
+</body>
+</html>

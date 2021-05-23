@@ -1,0 +1,1888 @@
+<!DOCTYPE html><!--[if IE 7]>
+<html class="ie ie7" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if IE 8]>
+<html class="ie ie8" lang="en-US" prefix="og: http://ogp.me/ns#">
+<![endif]-->
+<!--[if !(IE 7) & !(IE 8)]><!-->
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<!--<![endif]-->
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Securing Windows Workstations: Developing a Secure Baseline &#8211; Active Directory Security</title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Feed" href="https://adsecurity.org/?feed=rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Comments Feed" href="https://adsecurity.org/?feed=comments-rss2" />
+<link rel="alternate" type="application/rss+xml" title="Active Directory Security &raquo; Securing Windows Workstations: Developing a Secure Baseline Comments Feed" href="https://adsecurity.org/?feed=rss2&#038;p=3299" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/adsecurity.org\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://adsecurity.org/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://adsecurity.org/wp-content/themes/graphene/bootstrap/css/bootstrap.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='https://adsecurity.org/wp-content/themes/graphene/fonts/font-awesome/css/font-awesome.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-css'  href='https://adsecurity.org/wp-content/themes/graphene/style.css?ver=2.8.4' type='text/css' media='screen' />
+<link rel='stylesheet' id='graphene-responsive-css'  href='https://adsecurity.org/wp-content/themes/graphene/responsive.css?ver=2.8.4' type='text/css' media='all' />
+<link rel='stylesheet' id='graphene-blocks-css'  href='https://adsecurity.org/wp-content/themes/graphene/blocks.css?ver=2.8.4' type='text/css' media='all' />
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/bootstrap/js/bootstrap.min.js?ver=2.8.4' id='bootstrap-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js?ver=2.8.4' id='bootstrap-hover-dropdown-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/bootstrap-submenu/bootstrap-submenu.min.js?ver=2.8.4' id='bootstrap-submenu-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/jquery.infinitescroll.min.js?ver=2.8.4' id='infinite-scroll-js'></script>
+<script type='text/javascript' id='graphene-js-extra'>
+/* <![CDATA[ */
+var grapheneJS = {"siteurl":"https:\/\/adsecurity.org","ajaxurl":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","templateUrl":"https:\/\/adsecurity.org\/wp-content\/themes\/graphene","isSingular":"1","enableStickyMenu":"","shouldShowComments":"1","commentsOrder":"newest","sliderDisable":"","sliderInterval":"7000","infScrollBtnLbl":"Load more","infScrollOn":"","infScrollCommentsOn":"","totalPosts":"1","postsPerPage":"10","isPageNavi":"","infScrollMsgText":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollMsgTextPlural":"Fetching window.grapheneInfScrollItemsPerPage of window.grapheneInfScrollItemsLeft items left ...","infScrollFinishedText":"All loaded!","commentsPerPage":"50","totalComments":"6","infScrollCommentsMsg":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsMsgPlural":"Fetching window.grapheneInfScrollCommentsPerPage of window.grapheneInfScrollCommentsLeft comments left ...","infScrollCommentsFinishedMsg":"All comments loaded!","disableLiveSearch":"1","txtNoResult":"No result found.","isMasonry":""};
+/* ]]> */
+</script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-content/themes/graphene/js/graphene.js?ver=2.8.4' id='graphene-js'></script>
+<link rel="https://api.w.org/" href="https://adsecurity.org/index.php?rest_route=/" /><link rel="alternate" type="application/json" href="https://adsecurity.org/index.php?rest_route=/wp/v2/posts/3299" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://adsecurity.org/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://adsecurity.org/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel="canonical" href="https://adsecurity.org/?p=3299" />
+<link rel='shortlink' href='https://adsecurity.org/?p=3299' />
+<link rel="alternate" type="application/json+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D3299" />
+<link rel="alternate" type="text/xml+oembed" href="https://adsecurity.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&#038;url=https%3A%2F%2Fadsecurity.org%2F%3Fp%3D3299&#038;format=xml" />
+		<script type="text/javascript">
+			var _statcounter = _statcounter || [];
+			_statcounter.push({"tags": {"author": "SeanMetcalf"}});
+		</script>
+				<script>
+		   WebFontConfig = {
+		      google: { 
+		      	families: ["Lato:400,400i,700,700i&display=swap"]		      }
+		   };
+
+		   (function(d) {
+		      var wf = d.createElement('script'), s = d.scripts[0];
+		      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js';
+		      wf.async = true;
+		      s.parentNode.insertBefore(wf, s);
+		   })(document);
+		</script>
+	<style type="text/css">
+.header_title, .header_title a, .header_title a:visited, .header_title a:hover, .header_desc {color:#000000}.carousel, .carousel .item{height:400px}@media (max-width: 991px) {.carousel, .carousel .item{height:250px}}#header{max-height:198px}@media (min-width: 1200px) {.container {width:1280px}}
+</style>
+		<script type="application/ld+json">{"@context":"http:\/\/schema.org","@type":"Article","mainEntityOfPage":"https:\/\/adsecurity.org\/?p=3299","publisher":{"@type":"Organization","name":"Active Directory Security"},"headline":"Securing Windows Workstations: Developing a Secure Baseline","datePublished":"2016-10-21T10:14:04+00:00","dateModified":"2018-03-08T09:56:05+00:00","description":"Securing workstations against modern threats is challenging. It seems like every week there\u2019s some new method attackers are using to compromise a system and user credentials. Post updated on March 8th, 2018 with recommended event IDs to audit. The best way to create a secure Windows workstation is to download the Microsoft Security Compliance Manager ...","author":{"@type":"Person","name":"Sean Metcalf"},"image":["https:\/\/adsecurity.org\/wp-content\/uploads\/2016\/10\/KevinB-OLE-In-Email.jpg","https:\/\/adsecurity.org\/wp-content\/uploads\/2016\/10\/Office2016-BlockMacrosFromInternet.png"]}</script>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style><meta property="og:type" content="article" />
+<meta property="og:title" content="Securing Windows Workstations: Developing a Secure Baseline" />
+<meta property="og:url" content="https://adsecurity.org/?p=3299" />
+<meta property="og:site_name" content="Active Directory Security" />
+<meta property="og:description" content="Securing workstations against modern threats is challenging. It seems like every week there’s some new method attackers are using to compromise a system and user credentials. Post updated on March 8th, 2018 with recommended event IDs to audit. The best way to create a secure Windows workstation is to download the Microsoft Security Compliance Manager ..." />
+<meta property="og:updated_time" content="2018-03-08T09:56:05+00:00" />
+<meta property="article:modified_time" content="2018-03-08T09:56:05+00:00" />
+<meta property="article:published_time" content="2016-10-21T10:14:04+00:00" />
+<meta property="og:image" content="https://adsecurity.org/wp-content/uploads/2016/10/Twitter-Windows10-RestrictSAMR.png" />
+<meta property="og:image:width" content="1167" />
+<meta property="og:image:height" content="612" />
+    </head>
+    <body class="post-template-default single single-post postid-3299 single-format-standard custom-background wp-embed-responsive layout-boxed two_col_left two-columns singular">
+        
+        <div class="container boxed-wrapper">
+            
+                            <div id="top-bar" class="row clearfix top-bar ">
+                    
+                                                    
+                            <div class="col-md-12 top-bar-items">
+                                
+                                                                                                    	<ul class="social-profiles">
+							
+			            <li class="social-profile social-profile-rss">
+			            	<a href="https://adsecurity.org/?feed=rss2" title="Subscribe to Tech, News, and Other Ideations&#039;s RSS feed" id="social-id-1" class="mysocial social-rss">
+			            				                            <i class="fa fa-rss"></i>
+		                        			            	</a>
+			            </li>
+		            
+		    	    </ul>
+                                    
+                                                                    <button type="button" class="search-toggle navbar-toggle collapsed" data-toggle="collapse" data-target="#top_search">
+                                        <span class="sr-only">Toggle search form</span>
+                                        <i class="fa fa-search-plus"></i>
+                                    </button>
+
+                                    <div id="top_search" class="top-search-form">
+                                        <form class="searchform" method="get" action="https://adsecurity.org">
+	<div class="input-group">
+		<div class="form-group live-search-input">
+			<label for="s" class="screen-reader-text">Search for:</label>
+		    <input type="text" id="s" name="s" class="form-control" placeholder="Search">
+		    		</div>
+	    <span class="input-group-btn">
+	    	<button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+	    </span>
+    </div>
+    </form>                                                                            </div>
+                                
+                                                            </div>
+
+                        
+                                    </div>
+            
+
+            <div id="header" class="row">
+
+                <img src="https://adsecurity.org/wp-content/themes/graphene/images/headers/fluid.jpg" alt="Active Directory Security" title="Active Directory Security" width="960" height="198" />                
+                                                                </div>
+
+
+                        <nav class="navbar row navbar-inverse">
+
+                <div class="navbar-header align-center">
+                		                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-menu-wrap, #secondary-menu-wrap">
+	                        <span class="sr-only">Toggle navigation</span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                        <span class="icon-bar"></span>
+	                    </button>
+                	                    
+                    
+                                            <p class="header_title">
+                            <a href="https://adsecurity.org" title="Go back to the front page">                                Active Directory Security                            </a>                        </p>
+                    
+                                                    <p class="header_desc">Active Directory &amp; Enterprise Security, Methods to Secure Active Directory, Attack Methods &amp; Effective Defenses, PowerShell, Tech Notes, &amp; Geek Trivia&#8230;</p>
+                                            
+                                    </div>
+
+                                    <div class="collapse navbar-collapse" id="header-menu-wrap">
+
+            			<ul class="nav navbar-nav flip"><li ><a href="https://adsecurity.org/">Home</a></li><li class="menu-item menu-item-8"><a href="https://adsecurity.org/?page_id=8" >About</a></li><li class="menu-item menu-item-41"><a href="https://adsecurity.org/?page_id=41" >AD Resources</a></li><li class="menu-item menu-item-4031"><a href="https://adsecurity.org/?page_id=4031" >Attack Defense &#038; Detection</a></li><li class="menu-item menu-item-293"><a href="https://adsecurity.org/?page_id=293" >Contact</a></li><li class="menu-item menu-item-1821"><a href="https://adsecurity.org/?page_id=1821" >Mimikatz</a></li><li class="menu-item menu-item-1352"><a href="https://adsecurity.org/?page_id=1352" >Presentations</a></li><li class="menu-item menu-item-195"><a href="https://adsecurity.org/?page_id=195" >Schema Versions</a></li><li class="menu-item menu-item-399"><a href="https://adsecurity.org/?page_id=399" >Security Resources</a></li><li class="menu-item menu-item-183"><a href="https://adsecurity.org/?page_id=183" >SPNs</a></li><li class="menu-item menu-item-2532"><a href="https://adsecurity.org/?page_id=2532" >Top Posts</a></li></ul>                        
+            			                        
+                                            </div>
+                
+                                    
+                            </nav>
+
+            
+            <div id="content" class="clearfix hfeed row">
+                
+                    
+                                        
+                    <div id="content-main" class="clearfix content-main col-md-8">
+                    
+	
+		<div class="post-nav post-nav-top clearfix">
+			<p class="previous col-sm-6"><i class="fa fa-arrow-circle-left"></i> <a href="https://adsecurity.org/?p=3289" rel="prev">BSides DC (2016) Talk &#8211; PowerShell Security: Defending the Enterprise from the Latest Attack Platform</a></p>			<p class="next-post col-sm-6"><a href="https://adsecurity.org/?p=3377" rel="next">Securing Domain Controllers to Improve Active Directory Security</a> <i class="fa fa-arrow-circle-right"></i></p>					</div>
+		        
+<div id="post-3299" class="clearfix post post-3299 type-post status-publish format-standard hentry category-microsoft-security category-security-recommendation category-technical-reference tag-applocker tag-block-macros tag-block-macros-from-running-in-office-files-from-the-internet tag-cmd tag-control-local-administrator-account tag-control-macros tag-dhcp-option-43-hex-0104-0000-0002 tag-direct-hosting-of-smb-over-tcpip tag-disable-llmnr tag-disable-netbios tag-disable-netsession-enumeration tag-disable-powershell-version-2 tag-disable-smb-1 tag-disable-windows-scripting-host-wsh tag-disable-wpad tag-emet tag-group-policy tag-jscript tag-kb2871997 tag-kb3177451 tag-lanman-authentication tag-laps tag-llmnr tag-microsoft-office-macro-security tag-microsoft-office-macros tag-mimikatz tag-netcease tag-ntlm-session-security tag-office-2013-macro tag-office-2016-macro-security tag-office-ole tag-ole tag-packager-dll tag-port-445 tag-responder tag-rid-500 tag-secure-windows-workstation tag-server-message-block tag-smb tag-telemetry-dashboard tag-vba tag-vbscript tag-wdigest tag-windows-10-build-image tag-wpad tag-wscript item-wrap">
+		
+	<div class="entry clearfix">
+    	
+                    	<div class="post-date date alpha with-year">
+            <p class="default_date">
+            	<span class="month">Oct</span>
+                <span class="day">21</span>
+                	                <span class="year">2016</span>
+                            </p>
+                    </div>
+            
+		        <h1 class="post-title entry-title">
+			Securing Windows Workstations: Developing a Secure Baseline			        </h1>
+		
+			    <ul class="post-meta entry-meta clearfix">
+	    		        <li class="byline">
+	        	By <span class="author"><a href="https://adsecurity.org/?author=2" rel="author">Sean Metcalf</a></span><span class="entry-cat"> in <span class="terms"><a class="term term-category term-11" href="https://adsecurity.org/?cat=11">Microsoft Security</a>, <a class="term term-category term-1045" href="https://adsecurity.org/?cat=1045">Security Recommendation</a>, <a class="term term-category term-2" href="https://adsecurity.org/?cat=2">Technical Reference</a></span></span>	        </li>
+	        	    </ul>
+    
+				
+				<div class="entry-content clearfix">
+							
+										
+						<p>Securing workstations against modern threats is challenging. It seems like every week there’s some new method attackers are using to compromise a system and user credentials.</p>
+<p>Post updated on March 8th, 2018 with recommended event IDs to audit.</p>
+<p>The best way to create a secure Windows workstation is to download the <a href="https://technet.microsoft.com/en-us/solutionaccelerators/cc835245.aspx">Microsoft Security Compliance Manager</a> (currently at version 4.0) and select “Security Compliance” option under the operating system version for which you want to create the security baseline GPO. Review the options, change as needed, and export as a GPO Backup (folder). Create a new empty GPO and Import the settings from the SCM GPO backup. Then apply this newly created GPO to your workstations. This will improve your workstation security baseline if you have minimal security settings already configured, especially if you have no existing workstation GPO.</p>
+<p><img loading="lazy" class="alignnone size-full wp-image-3326" src="https://adsecurity.org/wp-content/uploads/2016/10/SCM-Workstation.png" alt="scm-workstation" width="2844" height="1143" srcset="https://adsecurity.org/wp-content/uploads/2016/10/SCM-Workstation.png 2844w, https://adsecurity.org/wp-content/uploads/2016/10/SCM-Workstation-300x121.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/SCM-Workstation-768x309.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/SCM-Workstation-1024x412.png 1024w" sizes="(max-width: 2844px) 100vw, 2844px" /></p>
+<p>As part of developing your Windows Workstation Security Baseline GPO, there are several large organizations that have spent time and money determining what&#8217;s &#8220;secure&#8221;:</p>
+<ul>
+<li>DoD STIG: <a href="http://iase.disa.mil/stigs/os/windows">http://iase.disa.mil/stigs/os/windows</a></li>
+<li>DoD Windows 10 Secure Host Baseline files: <a href="https://github.com/iadgov/Secure-Host-Baseline">https://github.com/iadgov/Secure-Host-Baseline </a></li>
+<li>Australian Information Security Manual: <a href="http://www.asd.gov.au/infosec/ism/index.htm">http://www.asd.gov.au/infosec/ism/index.htm</a></li>
+<li>CIS Benchmarks: <a href="https://benchmarks.cisecurity.org/downloads/browse/?category=benchmarks.os.windows">https://benchmarks.cisecurity.org/downloads/browse/?category=benchmarks.os.windows</a></li>
+</ul>
+<p>&nbsp;</p>
+<p>Microsoft Administrative Templates for controlling settings via Group Policy are here:</p>
+<ul>
+<li>Windows 7 &amp; Windows Server 2008 R2: <a href="https://www.microsoft.com/en-us/download/details.aspx?id=6243">https://www.microsoft.com/en-us/download/details.aspx?id=6243</a></li>
+<li>Windows 8.1 &amp; Windows Server 2012 R2: <a href="https://www.microsoft.com/en-us/download/details.aspx?id=43413">https://www.microsoft.com/en-us/download/details.aspx?id=43413</a></li>
+<li>Windows 10 (v1607) &amp; Windows Server 2016: <a href="https://www.microsoft.com/en-us/download/details.aspx?id=53430">https://www.microsoft.com/en-us/download/details.aspx?id=53430</a></li>
+<li>Office 2010: <a href="https://www.microsoft.com/en-us/download/details.aspx?id=18968">https://www.microsoft.com/en-us/download/details.aspx?id=18968</a></li>
+<li>Office 2013:<a href="https://www.microsoft.com/en-us/download/details.aspx?id=35554"> https://www.microsoft.com/en-us/download/details.aspx?id=35554</a></li>
+<li>Office 2016: <a href="https://www.microsoft.com/en-us/download/details.aspx?id=49030">https://www.microsoft.com/en-us/download/details.aspx?id=49030</a></li>
+</ul>
+<p><em>Note that these locations are subject to change with further updates.<br />
+</em><a href="https://www.microsoft.com/en-us/download/details.aspx?id=25250">Group Policy Settings Reference for Windows and Windows Server</a><em><br />
+</em></p>
+<p>Windows 10 (v1607) &amp; Windows Server 2016 security configuration baseline settings: <a href="https://blogs.technet.microsoft.com/secguide/2016/10/17/security-baseline-for-windows-10-v1607-anniversary-edition-and-windows-server-2016/">https://blogs.technet.microsoft.com/secguide/2016/10/17/security-baseline-for-windows-10-v1607-anniversary-edition-and-windows-server-2016/</a></p>
+<p>&nbsp;</p>
+<p>If you already have a GPO configuring workstation security, you can compare what you have to the SCM generated &#8220;Security Compliance&#8221; GPO using Microsoft’s <a href="https://blogs.technet.microsoft.com/secguide/2016/01/22/new-tool-policy-analyzer/">Policy Analyzer</a>.</p>
+<p>Beyond the standard “Windows security things”, there are legacy and often unused components that linger and are carried forward from earlier Windows versions that are often no longer needed, but kept for compatibility reasons. This post covers many of these as well as other good security practices and configuration.</p>
+<p>Obviously, you should move to the most recent version of Windows and rapidly deploy security patches when they are available.<br />
+The following items are recommended for deploying a secure Windows workstation baseline, though test first since some of these may break things.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;">Securing Windows Workstation:</span></p>
+<ul>
+<li>Deploying Free/Near-Free Microsoft Tools to Improve Windows Security
+<ul>
+<li>Deploy <a href="https://technet.microsoft.com/en-us/library/dd759117(v=ws.11).aspx">Microsoft AppLocker </a>to lock down what can run on the system.</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Deploy current version of <a href="https://adsecurity.org/?tag=emet">EMET</a> with recommended software settings.</p>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Deploy <a href="https://adsecurity.org/?p=1790">LAPS</a> to manage the local Administrator (RID 500) password.</p>
+</li>
+<li>Force Group Policy to reapply settings during &#8220;refresh&#8221;</li>
+</ul>
+</li>
+<li>Disable Windows Legacy &amp; Typically Unused Features
+<ul>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Disable Net Session Enumeration (<a href="https://gallery.technet.microsoft.com/Net-Cease-Blocking-Net-1e8dcb5b">NetCease</a>)</p>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Disable <a href="https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol">WPAD</a></p>
+</li>
+<li>Disable <a href="https://blogs.technet.microsoft.com/networking/2008/04/01/how-to-benefit-from-link-local-multicast-name-resolution/">LLMNR</a></li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Disable Windows <a href="https://en.wikipedia.org/wiki/Browser_service">Browser Protocol</a></p>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Disable <a href="https://technet.microsoft.com/en-us/library/cc940063.aspx">NetBIOS</a></p>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Disable <a href="https://en.wikipedia.org/wiki/Windows_Script_Host">Windows Scripting Host</a> (WSH) &amp; Control Scripting File Extensions</p>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Deploy security back-port patch (<a href="https://adsecurity.org/?p=559">KB2871997</a>).</p>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Prevent local Administrator (RID 500) accounts from authenticating over the network</p>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Ensure <a href="https://blogs.technet.microsoft.com/kfalde/2014/11/01/kb2871997-and-wdigest-part-1/">WDigest</a> is disabled</p>
+</li>
+<li>Remove SMB v1 support</li>
+</ul>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Windows 10 &amp; Windows 2016</p>
+<ul>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Windows 10 &amp; 2016 System Image Configuration</p>
+</li>
+<li>Block Untrusted Fonts</li>
+<li>Enable Credential Guard</li>
+<li>Configure Device Guard</li>
+</ul>
+</li>
+<li>Application Security Settings
+<ul>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Disable Microsoft Office Macros</p>
+</li>
+<li>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Disable Microsoft Office OLE</p>
+</li>
+</ul>
+</li>
+<li>Additional Group Policy Security Settings
+<ul>
+<li>Configure Lanman Authentication to a secure setting</li>
+<li>Configure restrictions for unauthenticated RPC clients</li>
+<li>Configure NTLM session security</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><span id="more-3299"></span></p>
+<h2><span style="text-decoration: underline;"><strong>Free or Near Free Microsoft Tools to Improve Windows Security</strong></span></h2>
+<h3><strong>Deploy AppLocker to lock down what can run on the system</strong></h3>
+<p><a href="https://technet.microsoft.com/en-us/library/dd759117%28v=ws.11%29.aspx">Microsoft AppLocker</a> provides out of the box application whitelisting capability for Windows.</p>
+<p>It is highly recommended to use AppLocker to lock down what can be executed on Windows workstations and servers that require high levels of security.</p>
+<p>AppLocker can be used to limit application execution to specific approved applications. There are several difference phases I recommend for AppLocker:</p>
+<ul>
+<li>Phase 1: Audit Mode – audit all execution by users and the path they were run from. This logging mode provides information on what programs are run in the enterprise and this data is logged to the event log.</li>
+<li>Phase 2: “Blacklist Mode” – Configure AppLocker to block execution of any file in a user’s home directory, profile path, and temporary file location the user has write access to, such as c:\temp.</li>
+<li>Phase 3: “Folder Whitelist Mode” – Configure AppLocker to build on Phase 2 by adding new rules to only allow execution of files in specific folders such as c:\Windows and c:\Program Files.</li>
+<li>Phase 4: “Application Whitelisting” – Inventory all applications in use in the enterprise environment and whitelist those applications by path and/or file hash (preferably digital signature). This ensures that only approved organization applications will execute.</li>
+</ul>
+<p>AppLocker Group Policies are created and managed here:</p>
+<ul>
+<li>Computer Configuration\Policies\Windows Settings\Security Settings\Application Control Policies\AppLocker</li>
+</ul>
+<p>Review the <a href="https://technet.microsoft.com/en-us/library/ee449480%28v=ws.11%29.aspx">AppLocker Policies Design Guide</a> for deployment help.</p>
+<p><strong>Expected Level of Effort:<br />
+</strong>Medium High</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is likely to break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Deploy current version of <a href="https://adsecurity.org/?tag=emet">EMET</a> with recommended software settings</strong></h3>
+<p><a href="https://support.microsoft.com/en-us/kb/2458544">Microsoft Enhanced Mitigation Experience Toolkit (EMET)</a> helps prevent application vulnerabilities from being exploited (including mitigating many 0-days). It’s a free product that effectively “wraps” popular applications so when vulnerability exploitation is attempted, the attempt is stopped at the “wrapper” and doesn’t make it to the OS.</p>
+<p>There are several profiles for deployment:</p>
+<ul>
+<li>Default configuration.</li>
+<li>Recommended Software.</li>
+<li>Popular Software.</li>
+</ul>
+<p>At the very least, deploy EMET with the default configuration to harden core applications.<br />
+Use the EMET administration templates (EMET.admx &amp; EMET.adml) enable EMET management via GPO and are found in the &lt;SystemDrive&gt;\Program Files\EMET\Deployment\Group Policy Files folder on a system with EMET installed. Copy these to the <a href="https://support.microsoft.com/en-us/kb/3087759">Active Directory GPO Central Store</a>.</p>
+<p><a href="https://technet.microsoft.com/en-us/itpro/windows/keep-secure/override-mitigation-options-for-app-related-security-policies">Customize EMET configuration via Group Policy</a></p>
+<p>Test with applications since some “more secure” settings may cause crashes with programs like Outlook and Chrome as well as some security software.</p>
+<p><em>Note that Microsoft EMET is End of Life (EOL) in 2018 since it was developed by Microsoft to help improve certain elements of Windows security when it was released. Windows 10 includes greatly improved security which exceeds most of the EMET enhancements.</em></p>
+<p><strong>Expected Level of Effort:</strong><br />
+Medium</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This may break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Use <a href="https://adsecurity.org/?p=1790">LAPS</a> to manage the local Administrator (RID 500) password</strong></h3>
+<p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=46899">Microsoft Local Administrator Password Solution (LAPS) </a>provides automated local administrator account management for every computer in Active Directory (LAPS is best for workstation local admin passwords). A client-side component installed on every computer generates a random password, updates the (new) LAPS password attribute on the associated AD computer account, and sets the password locally. LAPS configuration is managed through Group Policy which provides the values for password complexity, password length, local account name for password change, password change frequency, etc.</p>
+<p><a href="https://adsecurity.org/?p=1790">LAPS Deployment Information</a></p>
+<p><strong>Expected Level of Effort:</strong><br />
+Low to Medium</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This may break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<h3><a href="https://technet.microsoft.com/en-us/library/cc978261.aspx">Force Group Policy to reapply settings during &#8220;refresh&#8221;</a></h3>
+<p>The default Group Policy application behavior is to “refresh the group policy” on the client, though this doesn’t actually mean the GPO settings are re-applied. By default, the GPO’s settings are only reapplied if the GPO was modified prior to the refresh. This means that one could reverse a GPO enforced setting via the computer’s registry (typically with admin rights) and the unauthorized setting remains until the GPO is modified (if it ever is), after which the GPO settings are re-applied.</p>
+<p>After testing, change the Group Policy default setting to re-apply GPO settings at every refresh &#8211; &#8220;Process even if the Group Policy objects have not changed&#8221;. This does have a potential performance hit on the client, but will ensure all GPO enforced settings are re-applied.</p>
+<p><em>Computer Configuration, Policies, Administrative Templates, System, Group Policy, Configure security policy processing</em>: Set to Enabled.<br />
+Also check the box for “<em>Process even if the Group Policy objects have not changed</em>”</p>
+<p>It’s also recommended to configure the same settings for each of the following:</p>
+<ul>
+<li><em>Computer Configuration, Policies, Administrative Templates, System, Group Policy, Configure registry policy processing</em></li>
+<li><em>Computer Configuration, Policies, Administrative Templates, System, Group Policy, Configure scripts policy processing</em></li>
+<li>As well as any other policy settings as needed.</li>
+</ul>
+<p><a href="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Enforce.jpg" rel="attachment wp-att-2728"><img loading="lazy" class="alignnone wp-image-2728" src="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Enforce.jpg" sizes="(max-width: 618px) 100vw, 618px" srcset="https://adsecurity.org/wp-content/uploads/2016/03/GPO-Enforce.jpg 760w, https://adsecurity.org/wp-content/uploads/2016/03/GPO-Enforce-259x300.jpg 259w" alt="GPO-Enforce" width="618" height="716" /></a></p>
+<p>&nbsp;</p>
+<h3><strong>Enable LSA Protection/Auditing<br />
+</strong></h3>
+<p>Starting with Windows 8.1/Windows Server 2012 R2, LSA Protection can be enabled with a registry key addition to prevent unsigned code from interacting with LSASS (like Mimikatz). Before enabling LSA Protection, it&#8217;s a best practice to enable LSA Auditing to know what code may be interacting with LSASS which would be blocked otherwise.</p>
+<p>From Microsoft&#8217;s &#8220;<a href="https://technet.microsoft.com/en-us/library/dn408187(v=ws.11).aspx">Configuring Additional LSA Protection</a>&#8220;:</p>
+<p><em>The LSA, which includes the Local Security Authority Server Service (LSASS) process, validates users for local and remote sign-ins and enforces local security policies. The Windows 8.1 operating system provides additional protection for the LSA to prevent reading memory and code injection by non-protected processes. This provides added security for the credentials that the LSA stores and manages. The protected process setting for LSA can be configured in Windows 8.1, but it cannot be configured in Windows RT 8.1. When this setting is used in conjunction with Secure Boot, additional protection is achieved because disabling the HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa registry key has no effect.</em></p>
+<div><a class="LW_CollapsibleArea_TitleAhref" title="Collapse"><span class="LW_CollapsibleArea_Title"><br />
+Protected process requirements for plug-ins or drivers</span></a></div>
+<div class="sectionblock">
+<div class="section">
+<p><em>For an LSA plug-in or driver to successfully load as a protected process, it must meet the following criteria:</em></p>
+<ol class="ordered">
+<li><em>Signature verification</em><em>Protected mode requires that any plug-in that is loaded into the LSA is digitally signed with a Microsoft signature. Therefore, any plug-ins that are unsigned or are not signed with a Microsoft signature will fail to load in LSA. Examples of these plug-ins are smart card drivers, cryptographic plug-ins, and password filters.</em><em>LSA plug-ins that are drivers, such as smart card drivers, need to be signed by using the WHQL Certification. For more information, see <a href="https://msdn.microsoft.com/library/windows/hardware/ff553976%28v=vs.85%29.aspx">WHQL Release Signature (Windows Drivers)</a>.</em><em>LSA plug-ins that do not have a WHQL Certification process, must be signed by using the <a href="http://go.microsoft.com/fwlink/?LinkId=392590">file signing service for LSA</a>.</em></li>
+<li><em>Adherence to the Microsoft Security Development Lifecycle (SDL) process guidance</em><em>All of the plug-ins must conform to the applicable SDL process guidance. For more information, see the <a href="https://msdn.microsoft.com/library/windows/desktop/cc307891.aspx">Microsoft Security Development Lifecycle (SDL) Appendix</a>.</em><em>Even if the plug-ins are properly signed with a Microsoft signature, non-compliance with the SDL process can result in failure to load a plug-in.</em></li>
+</ol>
+</div>
+<div>
+<div><em><a class="LW_CollapsibleArea_TitleAhref" title="Collapse"><span class="LW_CollapsibleArea_Title"><br />
+Recommended practices</span></a></em></p>
+<div class="LW_CollapsibleArea_HrDiv"><em> </em><em>Use the following list to thoroughly test that LSA protection is enabled before you broadly deploy the feature:</em></div>
+</div>
+<div class="sectionblock">
+<div class="section">
+<ul class="unordered">
+<li><em>Identify all of the LSA plug-ins and drivers that are in use within your organization. This includes non-Microsoft drivers or plug-ins such as smart card drivers and cryptographic plug-ins, and any internally developed software that is used to enforce password filters or password change notifications.</em></li>
+<li><em>Ensure that all of the LSA plug-ins are digitally signed with a Microsoft certificate so that the plug-in will not fail to load.</em></li>
+<li><em>Ensure that all of the correctly signed plug-ins can successfully load into LSA and that they perform as expected.</em></li>
+<li><em>Use the audit logs to identify LSA plug-ins and drivers that fail to run as a protected process.</em></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div><a class="LW_CollapsibleArea_TitleAhref" title="Collapse"><span class="LW_CollapsibleArea_Title">Before opting in: How to identify plug-ins and drivers loaded by the lsass.exe</span></a></div>
+<div class="sectionblock">
+<div class="section">
+<p>You can use the audit mode to identify LSA plug-ins and drivers that will fail to load in LSA Protection mode. While in the audit mode, the system will generate event logs, identifying all of the plug-ins and drivers that will fail to load under LSA if LSA Protection is enabled. The messages are logged without blocking the plug-ins or drivers.</p>
+<div class="section">
+<p class="subHeading">To enable the audit mode for Lsass.exe on a single computer by editing the Registry</p>
+<ol class="steps">
+<li class="step">
+<div class="section">
+<p>Open the Registry Editor (RegEdit.exe), and navigate to the registry key that is located at: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\LSASS.exe.</p>
+</div>
+</li>
+<li class="step">
+<div class="section">
+<p>Set the value of the registry key to <strong>AuditLevel=dword:00000008</strong>.</p>
+</div>
+</li>
+<li class="step">
+<div class="section">
+<p>Restart the computer.</p>
+</div>
+</li>
+</ol>
+</div>
+<p>Analyze the results of event 3065 and event 3066.</p>
+<ul class="unordered">
+<li><span class="label">Event 3065</span>: This event records that a code integrity check determined that a process (usually lsass.exe) attempted to load a particular driver that did not meet the security requirements for Shared Sections. However, due to the system policy that is set, the image was allowed to load.</li>
+<li><span class="label">Event 3066</span>: This event records that a code integrity check determined that a process (usually lsass.exe) attempted to load a particular driver that did not meet the Microsoft signing level requirements. However, due to the system policy that is set, the image was allowed to load.</li>
+</ul>
+</div>
+</div>
+<p><strong>Expected Level of Effort:</strong><br />
+Low to Medium</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This may break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<h2><span style="text-decoration: underline;"><strong>Event IDs that Matter &#8211; Log These</strong></span></h2>
+<table width="2359">
+<tbody>
+<tr>
+<td width="290"><b>EventID</b></td>
+<td width="772"><b>Description</b></td>
+<td width="1298"><b>Impact</b></td>
+</tr>
+<tr>
+<td width="290">1102/517</td>
+<td width="772">Event log cleared</td>
+<td width="1298">Attackers may clear Windows event logs.</td>
+</tr>
+<tr>
+<td width="290">4610/4611/4614/4622</td>
+<td width="772">Local Security Authority modification</td>
+<td width="1298">Attackers may modify LSA for escalation/persistence.</td>
+</tr>
+<tr>
+<td width="290">4648</td>
+<td width="772">Explicit credential logon</td>
+<td width="1298">Typically when a logged on user provides different credentials to access a resource. Requires filtering of “normal”.</td>
+</tr>
+<tr>
+<td width="290">4661</td>
+<td width="772">A handle to an object was requested</td>
+<td width="1298">SAM/DSA Access. Requires filtering of “normal”.</td>
+</tr>
+<tr>
+<td width="290"><b>4672</b></td>
+<td width="772">Special privileges assigned to new logon</td>
+<td width="1298">Monitor when someone with admin rights logs on. Is this an account that should have admin rights or a normal user?</td>
+</tr>
+<tr>
+<td width="290"><b>4723</b></td>
+<td width="772">Account password change attempted</td>
+<td width="1298">If it’s not an approved/known pw change, you should know.</td>
+</tr>
+<tr>
+<td width="290"><b>4964</b></td>
+<td width="772">Custom Special Group logon tracking</td>
+<td width="1298">Track admin &amp; “users of interest” logons.</td>
+</tr>
+<tr>
+<td width="290">7045/4697</td>
+<td width="772">New service was installed</td>
+<td width="1298">Attackers often install a new service for persistence.</td>
+</tr>
+<tr>
+<td width="290">4698 &amp; 4702</td>
+<td width="772">Scheduled task creation/modification</td>
+<td width="1298">Attackers often create/modify scheduled tasks for persistence.<br />
+Pull all events in Microsoft-Windows-TaskScheduler/Operational</td>
+</tr>
+<tr>
+<td width="290">4719/612</td>
+<td width="772">System audit policy was changed</td>
+<td width="1298">Attackers may modify the system’s audit policy.</td>
+</tr>
+<tr>
+<td width="290">4732</td>
+<td width="772">A member was added to a (security-enabled) local group</td>
+<td width="1298">Attackers may create a new local account &amp; add it to the local Administrators group.</td>
+</tr>
+<tr>
+<td width="290">4720</td>
+<td width="772">A (local) user account was created</td>
+<td width="1298">Attackers may create a new local account for persistence.</td>
+</tr>
+</tbody>
+</table>
+<p>On newer versions of Windows, add</p>
+<table width="2208">
+<tbody>
+<tr>
+<td width="390"><b>EventID</b></td>
+<td width="905"><b>Description</b></td>
+<td width="913"><b>Impact</b></td>
+</tr>
+<tr>
+<td width="390">3065/3066</td>
+<td width="905">LSASS Auditing – checks for code integrity</td>
+<td width="913">Monitors LSA drivers &amp; plugins. Test extensively before deploying!</td>
+</tr>
+<tr>
+<td width="390">3033/3063</td>
+<td width="905">LSA Protection – drivers that failed to load</td>
+<td width="913">Monitors LSA drivers &amp; plugins &amp; blocks ones that aren’t properly signed.</td>
+</tr>
+<tr>
+<td width="390">4798</td>
+<td width="905">A user&#8217;s local group membership was enumerated.</td>
+<td width="913">Potentially recon activity of local group membership. Filter out normal activity.</td>
+</tr>
+</tbody>
+</table>
+<p>LSA Protection &amp; Auditing (Windows 8.1/2012R2 and newer):<br />
+<a href="https://technet.microsoft.com/en-us/library/dn408187(v=ws.11).aspx">https://technet.microsoft.com/en-us/library/dn408187(v=ws.11).aspx</a></p>
+<p>4798: A user&#8217;s local group membership was enumerated (Windows 10/2016):<br />
+<a href="https://technet.microsoft.com/en-us/itpro/windows/keep-secure/event-4798">https://technet.microsoft.com/en-us/itpro/windows/keep-secure/event-4798</a></p>
+<p>&nbsp;</p>
+<h3>A Note About Logon Types (4624)</h3>
+<table width="2130">
+<tbody>
+<tr>
+<td width="182"><b>Logon Type #</b></td>
+<td width="410"><b>Name</b></td>
+<td width="1093"><b>Description</b></td>
+<td width="190"><b>Creds on Disk</b></td>
+<td width="255"><b>Creds</b><b> in Memory</b></td>
+</tr>
+<tr>
+<td width="182">0</td>
+<td width="410">System</td>
+<td width="1093">Typically rare, but could alert to malicious activity</td>
+<td width="190">Yes</td>
+<td width="255">Yes</td>
+</tr>
+<tr>
+<td width="182">2</td>
+<td width="410">Interactive</td>
+<td width="1093">Console logon (local keyboard) which includes server KVM or virtual client logon. Also standard RunAs.</td>
+<td width="190">No</td>
+<td width="255">Yes</td>
+</tr>
+<tr>
+<td width="182">3</td>
+<td width="410">Network</td>
+<td width="1093">Accessing file shares, printers, IIS (integrated auth, etc), PowerShell remoting</td>
+<td width="190">No</td>
+<td width="255">No</td>
+</tr>
+<tr>
+<td width="182"><b>4</b></td>
+<td width="410"><b>Batch</b></td>
+<td width="1093">Scheduled tasks</td>
+<td width="190">Yes</td>
+<td width="255">Yes</td>
+</tr>
+<tr>
+<td width="182"><b>5</b></td>
+<td width="410"><b>Service</b></td>
+<td width="1093">Services</td>
+<td width="190">Yes</td>
+<td width="255">Yes</td>
+</tr>
+<tr>
+<td width="182">7</td>
+<td width="410">Unlock</td>
+<td width="1093">Unlock the system</td>
+<td width="190">No</td>
+<td width="255">Yes</td>
+</tr>
+<tr>
+<td width="182">8</td>
+<td width="410">Network Clear Text</td>
+<td width="1093">Network logon with password in clear text (IIS basic auth). If over SSL/TLS, this is probably fine.</td>
+<td width="190">Maybe</td>
+<td width="255">Yes</td>
+</tr>
+<tr>
+<td width="182"><b>9</b></td>
+<td width="410"><b>New Credentials</b></td>
+<td width="1093">RunAs /NetOnly which starts a program with different credentials than logged on user</td>
+<td width="190">No</td>
+<td width="255">Yes</td>
+</tr>
+<tr>
+<td width="182">10</td>
+<td width="410">Remote Interactive</td>
+<td width="1093">RDP: Terminal Services, Remote Assistance, R.Desktop</td>
+<td width="190">Maybe</td>
+<td width="255">Yes*</td>
+</tr>
+<tr>
+<td width="182">11</td>
+<td width="410">Cached Interactive</td>
+<td width="1093">Logon with cached credentials (no DC online)</td>
+<td width="190">Yes</td>
+<td width="255">Yes</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h3>Auditing Subcategories to Events</h3>
+<table width="2187">
+<tbody>
+<tr>
+<td width="811"><b>Auditing Subcategory</b></td>
+<td width="1376"><b>Event IDs</b></td>
+</tr>
+<tr>
+<td width="811">Audit Audit Policy Change</td>
+<td width="1376">4719: System audit policy was changed.<br />
+<b>4908</b>: Special Groups Logon table modified.</td>
+</tr>
+<tr>
+<td width="811">Audit Authentication Policy Change</td>
+<td width="1376">4706: A new trust was created to a domain.4707: A trust to a domain was removed.</p>
+<p><b>4713</b>: Kerberos policy was changed.</p>
+<p><b>4716</b>: Trusted domain information was modified.</p>
+<p>4717: System security access was granted to an account.</p>
+<p>4718: System security access was removed from an account.</p>
+<p><b>4739</b>: Domain Policy was changed.</p>
+<p>4865: A trusted forest information entry was added.</p>
+<p>4866: A trusted forest information entry was removed.</p>
+<p><b>4867</b>: A trusted forest information entry was modified.</p>
+<p>4706: A new trust was created to a domain.</p>
+<p>4707: A trust to a domain was removed.</td>
+</tr>
+<tr>
+<td width="811">Audit Computer Account Management</td>
+<td width="1376"><b>4741</b>: A computer account was created.<b>4742</b>: A computer account was changed.</p>
+<p>4743: A computer account was deleted.</td>
+</tr>
+</tbody>
+</table>
+<table width="2334">
+<tbody>
+<tr>
+<td width="880"><b>Audit DPAPI Activity</b></td>
+<td width="1454"><b>4692</b>: Backup of data protection master key was attempted.4693: Recovery of data protection master key was attempted.</p>
+<p>4695: Unprotection of auditable protected data was attempted.</td>
+</tr>
+<tr>
+<td width="880">Audit Kerberos Authentication Service</td>
+<td width="1454"><b>4768</b>: A Kerberos authentication ticket (TGT) was requested<b>4771</b>: Kerberos pre-authentication failed</p>
+<p>4772: Kerberos authentication ticket request failed</td>
+</tr>
+<tr>
+<td width="880">Audit Kerberos Service Ticket Operation</td>
+<td width="1454"><b>4769</b>: A Kerberos service ticket (TGS) was requested4770: A Kerberos service ticket was renewed</td>
+</tr>
+<tr>
+<td width="880">Audit Logoff</td>
+<td width="1454">4634: An account was logged off.</td>
+</tr>
+<tr>
+<td width="880">Audit Logon</td>
+<td width="1454"><b>4624</b>: An account was successfully logged on.<b>4625</b>: An account failed to log on.</p>
+<p><b>4648</b>: A logon was attempted using explicit credentials.</td>
+</tr>
+<tr>
+<td width="880">Audit Other Account Logon Events</td>
+<td width="1454"><b>4648</b>: A logon was attempted using explicit credentials4649: A replay attack was detected.</p>
+<p>4800: The workstation was locked.</p>
+<p>4801: The workstation was unlocked.</p>
+<p>5378: The requested credentials delegation was disallowed by policy.</td>
+</tr>
+</tbody>
+</table>
+<table width="2334">
+<tbody>
+<tr>
+<td width="880"><b>Audit Other Object Access Events</b></td>
+<td width="1454"><b>4698</b><b>: A scheduled task was created.</b><b>4699</b><b>: A scheduled task was deleted.</b></p>
+<p><b>4702</b><b>: A scheduled task was updated.</b></td>
+</tr>
+<tr>
+<td width="880">Audit Process Creation</td>
+<td width="1454"><b>4688</b>: A new process has been created.</td>
+</tr>
+<tr>
+<td width="880">Audit Security Group Management</td>
+<td width="1454"><b>4728</b>: A member was added to a security-enabled global group.4729: A member was removed from a security-enabled global group.</p>
+<p><b>4732</b>: A member was added to a security-enabled local group.</p>
+<p>4733: A member was removed from a security-enabled local group.</p>
+<p>4735: A security-enabled local group was changed.</p>
+<p>4737: A security-enabled global group was changed.</p>
+<p>4755: A security-enabled universal group was changed.</p>
+<p><b>4756</b>: A member was added to a security-enabled universal group.</p>
+<p>4757: A member was removed from a security-enabled universal group.</p>
+<p>4764: A group’s type was changed.</td>
+</tr>
+<tr>
+<td width="880">Audit Security System Extension</td>
+<td width="1454"><b>4610</b>: An authentication package has been loaded by the Local Security Authority.<b>4611</b>: A trusted logon process has been registered with the Local Security Authority.</p>
+<p><b>4697</b>: A service was installed in the system.</td>
+</tr>
+</tbody>
+</table>
+<table width="2334">
+<tbody>
+<tr>
+<td width="880"><b>Audit Sensitive Privilege Use</b></td>
+<td width="1454"><b>4672</b><b>: Special privileges assigned to new logon.</b><b>4673:</b> <b>A privileged service was called.</b></p>
+<p><b>4674: An operation was attempted on a privileged object.</b></td>
+</tr>
+<tr>
+<td width="880">Audit Special Logon</td>
+<td width="1454"><b>4964</b>: Special groups have been assigned to a new logon.</td>
+</tr>
+<tr>
+<td width="880">Audit User Account Management</td>
+<td width="1454"><b>4720</b>: A user account was created.<b>4722</b>: A user account was enabled.</p>
+<p><b>4723</b>: An attempt was made to change an account’s password.</p>
+<p>4724: An attempt was made to reset an account’s password.</p>
+<p>4725: A user account was disabled.</p>
+<p>4726: A user account was deleted.</p>
+<p><b>4738</b>: A user account was changed.</p>
+<p>4740: A user account was locked out.</p>
+<p><b>4765</b>: SID History was added to an account.</p>
+<p><b>4766</b>: An attempt to add SID History to an account failed.</p>
+<p>4767: A user account was unlocked.</p>
+<p><b>4780</b>: The ACL was set on accounts which are members of administrators groups.</p>
+<p><b>4794</b>: An attempt was made to set the Directory Services Restore Mode.</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h2><span style="text-decoration: underline;"><strong>Disable Windows Legacy &amp; Typically Unused Features:<br />
+</strong></span></h2>
+<h3><strong>Disable Net Session Enumeration (<a href="https://gallery.technet.microsoft.com/Net-Cease-Blocking-Net-1e8dcb5b">NetCease</a>)</strong></h3>
+<p>By default, Windows computers allow any authenticated user to enumerate network sessions to it. This means an attacker could enumerate network sessions to a file share hosting home directories or a Domain Controller to see who’s connected to SYSVOL (to apply Group Policy) and determine which workstations each user and admin account is logged into. <a href="https://github.com/adaptivethreat/Bloodhound/wiki">Bloodhound </a>uses this capability extensively to map out credentials in the network.</p>
+<p>Disabling Net Session Enumeration removes the capability for any user to enumerate net session info (Recon).</p>
+<p>These settings can also be deployed via Group Policy:</p>
+<ul>
+<li>Run the <a href="https://gallery.technet.microsoft.com/Net-Cease-Blocking-Net-1e8dcb5b">NetCease</a> PowerShell script on a reference workstation.</li>
+<li>Open the <b>Group Policy Management Console</b>. Right-click the Group Policy object (GPO) that should contain the new preference item, and then click <b>Edit</b> .</li>
+<li>In the console tree under <b>Computer Configuration</b>, expand the <b>Preferences</b> folder, and then expand the <b>Windows Settings</b> folder.</li>
+<li>Right-click the <b>Registry</b> node, point to <b>New</b> , and select <b>Registry Wizard</b> .</li>
+<li>Select the reference workstation on which the desired registry settings exist, then click <b>Next</b> .</li>
+<li>Browse to <em>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\DefaultSecurity</em>\<br />
+and select the check box for “SrvsvcSessionInfo” from which you want to create a Registry preference item. Select the check box for a key only if you want to create a Registry item for the key rather than for a value within the key.</li>
+<li>Click <b>Finish</b> . The settings that you selected appear as preference items in the Registry Wizard Values collection.</li>
+</ul>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low – Medium</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Disable <a href="https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol">WPAD</a></strong></h3>
+<p>Web Proxy Auto-Discovery Protocol (<a href="https://en.wikipedia.org/wiki/Web_Proxy_Autodiscovery_Protocol">WPAD</a>) is “a method used by clients to locate the URL of a configuration file using DHCP and/or DNS discovery methods. Once detection and download of the configuration file is complete, it can be executed to determine the proxy for a specified URL.”</p>
+<p>Disabling WPAD removes a method <a href="https://github.com/lgandx/Responder-Windows">Responder</a> uses for passive credential theft. Only disable if not used in environment.</p>
+<p>Disable WPAD via Group Policy by deploying the following:</p>
+<ul>
+<li>HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Wpad</li>
+<li>New DWORD (32-Bit Value) called “WpadOverride” and set to “1”</li>
+</ul>
+<p>Disable the service “WinHTTP Web Proxy Auto-Discovery Service”</p>
+<ul>
+<li>Computer Configuration/Policies/Windows Settings/Security Settings/System Services</li>
+</ul>
+<p><span style="text-decoration: underline;">Note:</span><br />
+Partial mitigation of WPAD issues is possible by installing the Microsoft patch <a href="https://support.microsoft.com/en-us/kb/3165191">KB3165191</a> (MS16-077).<br />
+This patch hardens the WPAD process and when the system responds to NetBIOS requests.</p>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low-High</p>
+<p><strong><br />
+Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Disable <a href="https://blogs.technet.microsoft.com/networking/2008/04/01/how-to-benefit-from-link-local-multicast-name-resolution/">LLMNR</a></strong></h3>
+<p>Link-Local Multicast Name Resolution (LLMNR):<br />
+<em>In a nutshell, Link-Local Multicast Name Resolution (LLMNR) resolves single label names (like: COMPUTER1), on the local subnet, when DNS devolution is unable to resolve the name. This is helpful if you are in an Ad-Hoc network scenario, or in a scenario where DNS entries do not include hosts on the local subnet.</em>LLMNR should be disabled if not used since disabling it removes a method <a href="https://github.com/lgandx/Responder-Windows">Responder</a> uses for passive credential theft.<strong>Group Policy:</strong>Computer Configuration/Administrative Templates/Network/DNS Client</p>
+<ul>
+<li>Set “Turn Off Multicast Name Resolution” to “Enabled”</li>
+</ul>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Disable <a href="https://en.wikipedia.org/wiki/Browser_service">Windows Browser Protocol</a> (Browser Service) </strong></h3>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">The <a href="https://en.wikipedia.org/wiki/Browser_service">Browser service</a> (Browser protocol) was used by Windows NT to discover and share information on resources on the local network. This process works by broadcasting on the network and gathering results of this broadcast. A network broadcast is a little like yelling in a room full of people to find a friend every 30 seconds (once you find your friend you note their location, but may forget a little while later and have to re-discover their current location). In order to make this process somewhat less inefficient, a &#8220;Master Browser&#8221; is elected on each subnet which tracks resources and responds to these resource broadcast requests. In a Windows domain, the PDC acts as the Domain Master Browser to which these subnet Master Browsers forward resource information. Resource discovery using Windows Browser broadcasts was ultimately replaced by Windows Internet Name Service (<a href="https://en.wikipedia.org/wiki/Windows_Internet_Name_Service">WINS</a>) and then Active Directory (with DNS). While the necessity of the Browser service has been reduced to almost nil, the Computer Browser service in Windows has continued up through Windows 10 and Windows Server 2012 R2 (though the service was removed in Windows 10 v1607 &amp; Windows Server 2016).</p>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">The Windows Browser protocol is another method used by <a href="https://github.com/lgandx/Responder-Windows">Responder</a> to passively steal credentials.</p>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">The Windows Computer Browser service is set to manually start up, though usually starts at Windows start.</p>
+<p style="margin: 0in;"><img loading="lazy" class="alignnone wp-image-3346" src="https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceRunning.png" alt="computerbrowserservicerunning" width="878" height="23" srcset="https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceRunning.png 1331w, https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceRunning-300x8.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceRunning-768x20.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceRunning-1024x27.png 1024w, https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceRunning-1280x35.png 1280w" sizes="(max-width: 878px) 100vw, 878px" /></p>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">The simple method to disable the Windows browser protocol is to disable the Computer Browser service.</p>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;"><img loading="lazy" class="alignnone wp-image-3345" src="https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceDisabled-Stopped.png" alt="computerbrowserservicedisabled-stopped" width="884" height="20" srcset="https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceDisabled-Stopped.png 1326w, https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceDisabled-Stopped-300x7.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceDisabled-Stopped-768x17.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceDisabled-Stopped-1024x23.png 1024w, https://adsecurity.org/wp-content/uploads/2016/10/ComputerBrowserServiceDisabled-Stopped-1280x30.png 1280w" sizes="(max-width: 884px) 100vw, 884px" /></p>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">In Windows 10 v1607 (aka &#8220;Anniversary Update&#8221;) and Windows Server 2016, the Computer Browser service was removed and is no longer available.</p>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;"><img loading="lazy" class="alignnone wp-image-3344" src="https://adsecurity.org/wp-content/uploads/2016/10/Windows10-1607-NoComputerBrowserService.png" alt="windows10-1607-nocomputerbrowserservice" width="510" height="79" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Windows10-1607-NoComputerBrowserService.png 1262w, https://adsecurity.org/wp-content/uploads/2016/10/Windows10-1607-NoComputerBrowserService-300x47.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/Windows10-1607-NoComputerBrowserService-768x119.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/Windows10-1607-NoComputerBrowserService-1024x159.png 1024w" sizes="(max-width: 510px) 100vw, 510px" /></p>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;"><span style="font-weight: bold;">Disable the Computer Browser via Group Policy:</span></p>
+<ul style="margin-left: .375in; direction: ltr; unicode-bidi: embed; margin-top: 0in; margin-bottom: 0in;" type="disc">
+<li style="margin-top: 0; margin-bottom: 0; vertical-align: middle;"><span style="font-family: Calibri; font-size: 11.0pt;">Open the Group Policy Management Console. Right-click the Group Policy object (GPO) that requires modification, and then click Edit .</span></li>
+<li style="margin-top: 0; margin-bottom: 0; vertical-align: middle;"><span style="font-family: Calibri; font-size: 11.0pt;">In the console tree under Computer Configuration, expand Policies folder, expand Windows Settings, expand Security Settings, and then expand the System Services folder.</span></li>
+<li style="margin-top: 0; margin-bottom: 0; vertical-align: middle;"><span style="font-family: Calibri; font-size: 11.0pt;">Scroll down to the &#8220;Computer Browser&#8221; service, right-click on the service name, and select Properties.</span></li>
+<li style="margin-top: 0; margin-bottom: 0; vertical-align: middle;"><span style="font-family: Calibri; font-size: 11.0pt;">Check the box to &#8220;Define this policy setting&#8221;, select Disabled as the service startup mode, and click OK.</span></li>
+</ul>
+<p style="margin: 0in; font-family: Calibri; font-size: 11.0pt;">Note: Group Policy Preferences can also be used to manage services.</p>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<h3><strong>Disable <a href="https://technet.microsoft.com/en-us/library/cc940063.aspx">NetBIOS</a></strong></h3>
+<p><a href="https://technet.microsoft.com/en-us/library/cc940063.aspx">NetBIOS</a> is one of the earliest protocols used by Windows.</p>
+<blockquote><p>NetBIOS over TCP/IP is specified by RFC 1001 and RFC 1002. The Netbt.sys driver is a kernel -mode component that supports the TDI interface. Services such as workstation and server use the TDI interface directly, while traditional NetBIOS applications have their calls mapped to TDI calls through the Netbios.sys driver. Using TDI to make calls to NetBT is a more difficult programming task, but can provide higher performance and freedom from historical NetBIOS limitations.</p>
+<p>NetBIOS defines a software interface and a naming convention, not a protocol. NetBIOS over TCP/IP provides the NetBIOS programming interface over the TCP/IP protocol, extending the reach of NetBIOS client and server programs to the IP internetworks and providing interoperability with various other operating systems.</p>
+<p>The Windows 2000 workstation service, server service, browser, messenger, and NetLogon services are all NetBT clients and use TDI to communicate with NetBT. Windows 2000 also includes a NetBIOS emulator. The emulator takes standard NetBIOS requests from NetBIOS applications and translates them to equivalent TDI functions.</p>
+<p>Windows 2000 uses NetBIOS over TCP/IP to communicate with prior versions of Windows NT and other clients, such as Windows 95. However, the Windows 2000 redirector and server components now support direct hosting for communicating with other computers running Windows 2000. With direct hosting, NetBIOS is not used for name resolution. DNS is used for name resolution and the Microsoft networking communication is sent directly over TCP without a NetBIOS header. Direct hosting over TCP/IP uses TCP port 445 instead of the NetBIOS session TCP port 139.</p></blockquote>
+<p>Most versions of Windows in use, can leverage <a href="https://support.microsoft.com/en-us/kb/204279">Direct hosting of SMB over TCP/IP</a>, meaning the use of NetBIOS on a network today is only to support legacy systems.</p>
+<p><a href="https://danielmiessler.com/blog/windowsfilesharing/">In 2005, Daniel Miessler wrote</a>:</p>
+<blockquote><p>In fact, one can completely disable NetBIOS over TCP/IP on a Windows 2000/XP machine since these new operating systems (via TCP/445) have SMB riding <em>directly</em> on top of TCP rather than on NetBIOS. Microsoft calls this the “direct hosting” of SMB.</p></blockquote>
+<p>Disabling NetBIOS requires some work to determine how and where it’s being used on the network. Disabling it removes a method <a href="https://github.com/lgandx/Responder-Windows">Responder</a> uses for passive credential theft.</p>
+<p>Noted that NetBIOS may be required for legacy systems (older versions of Windows, non-Windows systems, etc).</p>
+<p><b>Disable NetBIOS via (Microsoft) DHCP:</b></p>
+<p>Open Microsoft DHCP.</p>
+<ul>
+<li>In the navigation pane, expand SERVERNAME, expand Scope, right-click Scope Options, and then click Configure Options.</li>
+<li>Click the Advanced tab, and then click Microsoft Windows 2000 Options in the Vendor class list.</li>
+<li>Make sure that Default User Class is selected in the User class list.</li>
+<li>Click to select the 001 Microsoft Disable Netbios Option check box, under the Available Options column.</li>
+<li>In the Data entry area, type 0x2 in the Long box, and then click OK.</li>
+</ul>
+<p>Reference: <a href="https://support.microsoft.com/en-us/kb/313314">Disabling NetBIOS</a></p>
+<p>On Linux/Unix based DHCP servers, setting option 43 configures DHCP to disable NetBIOS</p>
+<ul>
+<li>option 43 hex 0104.0000.0002</li>
+</ul>
+<p>&nbsp;</p>
+<p><b>Disable NetBIOS on the Computer:</b></p>
+<p>Go to the properties of all network devices on the computer, TCPIPv4 Properties, Advanced, WINS, Disable NetBIOS over TCP/IP</p>
+<p><img loading="lazy" class="alignnone wp-image-3303" src="https://adsecurity.org/wp-content/uploads/2016/10/Disable-NetBIOS-Computer-NIC.png" sizes="(max-width: 361px) 100vw, 361px" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Disable-NetBIOS-Computer-NIC.png 802w, https://adsecurity.org/wp-content/uploads/2016/10/Disable-NetBIOS-Computer-NIC-195x300.png 195w, https://adsecurity.org/wp-content/uploads/2016/10/Disable-NetBIOS-Computer-NIC-768x1185.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/Disable-NetBIOS-Computer-NIC-664x1024.png 664w" alt="disable-netbios-computer-nic" width="361" height="557" /></p>
+<p><strong>Expected Level of Effort:</strong><br />
+Medium-High</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is very likely to break things in the enterprise, so please test extensively first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Disable <a href="https://en.wikipedia.org/wiki/Windows_Script_Host">Windows Script Host</a> (WSH) File Extensions (and others that execute code)<br />
+</strong></h3>
+<p>A common method for attackers is to embed or attach a WSH associated file in an email or attached document in order for a user. Disable the WSH extensions not used in the environment by associating them with notepad.exe (this forces the files to be opened in Notepad instead of with WSH). If the organization uses batch files or VBScript, those should be evaluated for disabling prior to changing the file extension. Note that PowerShell files (.ps1, etc) already open by default in notepad.</p>
+<p>WSH extensions:</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/JScript">JScript</a>: .js, .jse  [<em>disabling not likely to cause issues, please test first</em>].</li>
+<li><a href="https://en.wikipedia.org/wiki/Windows_Script_Host">Windows Scripting files</a>: .wsf, .wsh   [<em>disabling not likely to cause issues, please test first</em>].</li>
+<li><a href="https://en.wikipedia.org/wiki/VBScript">VBScript</a>: .vbs, .vbe   [<em>disabling may cause issues if still using VBScript, please test first</em>].</li>
+<li><a href="https://en.wikipedia.org/wiki/HTML_Application">HTML for Applications</a>: .hta   [<em>disabling not likely to cause issues, please test first</em>].</li>
+<li><a href="https://en.wikipedia.org/wiki/Batch_file">CMD Batch</a>: .bat, .cmd (be careful with .cmd)   [<em>disabling may cause issues if using batch files, please test first</em>].</li>
+<li><a href="https://en.wikipedia.org/wiki/Visual_Basic_for_Applications">Visual Basic for Applications</a>: Most VBA code is run in another filetype, however .mod opens as video file   [<em>disabling not likely to cause issues, please test first</em>].</li>
+</ul>
+<p>Disabling JScript &amp; Wscript should have minimal impact, though test before disabling VBScript.</p>
+<p>The following registry key disables Windows Scripting, though doing so doesn’t disable it in SCT or ActiveScriptEventConsumer.</p>
+<ul>
+<li>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Script Host\Settings</li>
+<li>Add new DWORD value “Enabled” and set to “0”</li>
+</ul>
+<p>To disable for specific users, the following may be performed:</p>
+<p>HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows Script Host\Settings value “Enabled” and set to “0”</p>
+<p>&nbsp;</p>
+<p><strong><a href="https://gallery.technet.microsoft.com/Net-Cease-Blocking-Net-1e8dcb5b">Group Policy:</a></strong><br />
+File extensions that open in scripting engines can be modified to open in Notepad via GPO:</p>
+<ul>
+<li>Open the Group Policy Management Console. Right-click the Group Policy object (GPO) that should contain the new preference item, and then click Edit .</li>
+<li>Go to User Configuration &gt; Preferences &gt; Control Panel Settings.</li>
+<li>Right click on Folder Options, Click New, Open With.</li>
+<li>In “File Extension”, Enter the extension and then provide the path to the program which will open this file extension. You can also opt to “Set as default”. Click OK.</li>
+<li>Repeat for each file type.</li>
+</ul>
+<p>Disable Windows Scripting Host in the registry via GPO:</p>
+<ul>
+<li>Configure the registry setting on a reference workstation<br />
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Script Host\Settings\Enabled = “0”</li>
+<li>Open the Group Policy Management Console. Right-click the Group Policy object (GPO) that should contain the new preference item, and then click Edit .</li>
+<li>In the console tree under Computer Configuration, expand the Preferences folder, and then expand the Windows Settings folder.</li>
+<li>Right-click the Registry node, point to New , and select Registry Wizard .</li>
+<li>Select the reference workstation on which the desired registry settings exist, then click Next .</li>
+<li>Browse to HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Script Host\Settings\<br />
+and select the check box for “Enabled” from which you want to create a Registry preference item. Select the check box for a key only if you want to create a Registry item for the key rather than for a value within the key.</li>
+<li>Click Finish. The settings that you selected appear as preference items in the Registry Wizard Values collection.</li>
+</ul>
+<p><strong>Expected Level of Effort:</strong><br />
+Low to Medium High</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This may break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Deploy security back-port patch (KB2871997)</strong></h3>
+<p>Ensure all Windows systems prior to Windows 8.1 &amp; Windows Server 2012 R2 have the <a href="https://support.microsoft.com/en-us/kb/2871997">KB2871997 patch</a> installed. This patch updates earlier supported versions of Windows with security enhancements baked into Windows 8.1 &amp; Windows Server 2012 R2.</p>
+<p><a href="https://adsecurity.org/?p=559">Additional protections in kb2871997</a></p>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Prevent local &#8220;administrator&#8221; accounts from authenticating over the network</strong></h3>
+<p>While the local Administrator (RID 500) account on two different computers has a different SID, if they have the same account name and password, the local Administrator account from one can authenticate as Administrator on the other. The same is true with any local account that is duplicated on multiple computers.</p>
+<p>This presents a security issue if multiple (or all) workstations in an organization have the same account name and password since compromise of one workstation results in compromise of all.</p>
+<p>Windows 8.1 &amp; Windows 2012 R2 and newer introduced two new local SIDs:</p>
+<ul>
+<li>S-1-5-113: NT AUTHORITY\Local account</li>
+<li>S-1-5-114: NT AUTHORITY\Local account and member of Administrators group</li>
+</ul>
+<p>These SIDs are also added in earlier supported versions of Windows by installing the KB2871997 patch.</p>
+<p><b><br />
+Local account network access behavior can be changed via Group Policy:</b></p>
+<p>Computer Configuration\Windows Settings\Local Policies\User Rights Assignment</p>
+<ul>
+<li>Deny access to this computer from the network: Local account and member of Administrators group</li>
+<li>Deny log on through Remote Desktop Services: Local account and member of Administrators group</li>
+</ul>
+<p>Note that using &#8220;Local account&#8221; instead also provides the same level of protection as well as blocking all local users from authenticating in this manner.</p>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low to Medium</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Ensure <a href="https://blogs.technet.microsoft.com/kfalde/2014/11/01/kb2871997-and-wdigest-part-1/">WDigest</a> is disabled</strong></h3>
+<p>WDigest provides support for <a href="https://technet.microsoft.com/en-us/library/cc780170%28v=ws.10%29.aspx">Digest authentication</a> which is:<br />
+<i>“An industry standard that is used in Windows Server 2003 for Lightweight Directory Access Protocol (LDAP) and Web authentication. Digest Authentication transmits credentials across the network as an MD5 hash or message digest.”</i><br />
+Prior to Windows 8.1 and Windows Server 2012 R2, Wdigest was enabled which placed the user’s “clear text” password in LSASS memory space in order to support basic authentication scenarios.Windows 8.1 and Windows Server 2012 R2 and newer have WDigest disabled by default by adding and setting the following registry key:<em>HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SecurityProviders\Wdigest\UseLogonCredential = “0”</em>Earlier supported Windows versions with KB2871997 installed add this registry key, though WDigest is enabled and needs to be disabled by changing UseLogonCredential from “1” Enabled, to “0” DisabledKeeping WDigest enabled means that tools like Mimikatz can extract the user’s “clear-text” password.<a href="https://blogs.technet.microsoft.com/kfalde/2014/11/02/kb2871997-and-wdigest-part-2/">Identify who is authenticating via Wdigest</a>:</p>
+<ul>
+<li>Server Event ID 4624
+<ul>
+<li>Security ID: ADSECURITY\JoeUser</li>
+<li>Source Network Address: 10.10.10.221 [Workstation IP Address]</li>
+<li>Authentication Package: WDigest</li>
+</ul>
+</li>
+<li>Domain Controller Event ID 4776
+<ul>
+<li>Authentication Package: Wdigest</li>
+<li>Logon Account: JoeUSer</li>
+<li>Source Workstation: ADS-IIS01 [Server that accepted WDigest Auth]</li>
+</ul>
+</li>
+</ul>
+<p>In order to get WDIgest authentication logged on DCs, enable the appropriate auditing:</p>
+<ul>
+<li>Computer Configuration&gt;Windows Settings&gt;Security Settings&gt;Advanced Audit Policy Configuration&gt;Audit Policies&gt;Account Logon&gt;Audit Credential Validation&gt;Success</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>Disable WDigest via Group Policy:</strong></p>
+<ul>
+<li>Configure the registry setting on a reference workstation<br />
+<em>HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SecurityProviders\Wdigest\UseLogonCredential = “0”</em></li>
+<li>Open the Group Policy Management Console. Right-click the Group Policy object (GPO) that should contain the new preference item, and then click Edit .</li>
+<li>In the console tree under Computer Configuration, expand the Preferences folder, and then expand the Windows Settings folder.</li>
+<li>Right-click the Registry node, point to New , and select Registry Wizard .</li>
+<li>Select the reference workstation on which the desired registry settings exist, then click Next .</li>
+<li>Browse to <em>HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SecurityProviders\Wdigest</em>\<br />
+and select the check box for “<em>UseLogonCredential</em>” from which you want to create a Registry preference item. Select the check box for a key only if you want to create a Registry item for the key rather than for a value within the key.</li>
+<li>Click Finish. The settings that you selected appear as preference items in the Registry Wizard Values collection.</li>
+</ul>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Remove SMB v1 from Windows 8.1 &amp; Windows Server 2012 R2<br />
+</strong></h3>
+<p><a href="https://en.wikipedia.org/wiki/Server_Message_Block">Server Message Block (SMB)</a><br />
+SMB &#8220;<em>operates as an application-layer network protocol[3] mainly used for providing shared access to files, printers, and serial ports and miscellaneous communications between nodes on a network. It also provides an authenticated inter-process communication mechanism. Most usage of SMB involves computers running Microsoft Windows, where it was known as &#8220;Microsoft Windows Network&#8221; before the subsequent introduction of Active Directory.</em>&#8221;</p>
+<p>SMB version 1 was the default for Windows 2003 &amp; Windows 2003 and has several security issues.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong><a href="https://blogs.technet.microsoft.com/filecab/2016/09/16/stop-using-smb1/">Ned Pyle outlines several reasons to stop using SMBv1</a>:</strong></span></p>
+<ul>
+<li><strong>SMB1 isn’t safe</strong></li>
+</ul>
+<blockquote><p>When you use SMB1, you lose key protections offered by later SMB protocol versions:</p>
+<ul>
+<li><a href="https://blogs.msdn.microsoft.com/openspecification/2015/08/11/smb-3-1-1-pre-authentication-integrity-in-windows-10/">Pre-authentication Integrity</a> (SMB 3.1.1+). Protects against security downgrade attacks.</li>
+<li><a href="https://blogs.msdn.microsoft.com/openspecification/2012/06/28/smb3-secure-dialect-negotiation/">Secure Dialect Negotiation</a> (SMB 3.0, 3.02). Protects against security downgrade attacks.</li>
+<li><a href="https://blogs.msdn.microsoft.com/openspecification/2015/09/09/smb-3-1-1-encryption-in-windows-10/">Encryption</a> (SMB 3.0+). Prevents inspection of data on the wire, MiTM attacks. In SMB 3.1.1 encryption performance is even better than signing!</li>
+<li><a href="https://msdnshared.blob.core.windows.net/media/2016/09/2016-09-14_17-15-54.png">Insecure guest auth blocking (SMB 3.0+ on Windows 10+)</a> . Protects against MiTM attacks.</li>
+<li><a href="https://blogs.technet.microsoft.com/josebda/2010/12/01/the-basics-of-smb-signing-covering-both-smb1-and-smb2/">Better message signing</a> (SMB 2.02+). HMAC SHA-256 replaces MD5 as the hashing algorithm in SMB 2.02, SMB 2.1 and AES-CMAC replaces that in SMB 3.0+. Signing performance increases in SMB2 and 3.</li>
+</ul>
+</blockquote>
+<p>&nbsp;</p>
+<ul>
+<li><strong>SMB1 isn’t modern or efficient</strong></li>
+</ul>
+<blockquote><p>When you use SMB1, you lose key performance and productivity optimizations for end users.</p>
+<ul>
+<li>Larger reads and writes (2.02+)- more efficient use of faster networks or higher latency WANs. Large MTU support.</li>
+<li>Peer caching of folder and file properties (2.02+) – clients keep local copies of folders and files via BranchCache</li>
+<li>Durable handles (2.02, 2.1) – allow for connection to transparently reconnect to the server if there is a temporary disconnection</li>
+<li>Client oplock leasing model (2.02+) – limits the data transferred between the client and server,</li>
+<li>improving performance on high-latency networks and increasing SMB server scalability</li>
+<li>Multichannel &amp; SMB Direct (3.0+) – aggregation of network bandwidth and fault tolerance if multiple paths are available between client and server, plus usage of modern ultra-high throughout RDMA infrastructure</li>
+<li>Directory Leasing (3.0+) – Improves application response times in branch offices through caching</li>
+</ul>
+</blockquote>
+<p>&nbsp;</p>
+<ul>
+<li><strong>SMB1 isn’t usually necessary</strong></li>
+</ul>
+<blockquote><p>This is the real killer: there are very few cases left in any modern enterprise where SMB1 is the only option. Some legit reasons:</p>
+<ol>
+<li>You’re still running XP or WS2003 under a custom support agreement.</li>
+<li>You have some decrepit management software that demands admins browse via the ‘network neighborhood’ master browser list.</li>
+<li>You run old multi-function printers with antique firmware in order to “scan to share”.</li>
+</ol>
+<p>None of these things should affect the average end user or business. Unless you let them.</p></blockquote>
+<p>&nbsp;</p>
+<p><strong><a href="https://blogs.technet.microsoft.com/josebda/2013/10/02/windows-server-2012-r2-which-version-of-the-smb-protocol-smb-1-0-smb-2-0-smb-2-1-smb-3-0-or-smb-3-02-are-you-using/">Windows SMB Support by Windows OS Version:</a></strong></p>
+<blockquote><p>There are several different versions of SMB used by Windows operating systems:</p>
+<ul>
+<li>CIFS – The ancient version of SMB that was part of Microsoft Windows NT 4.0 in 1996. SMB1 supersedes this version.</li>
+<li>SMB 1.0 (or SMB1) – The version used in Windows 2000, Windows XP, Windows Server 2003 and Windows Server 2003 R2</li>
+<li>SMB 2.0 (or SMB2) – The version used in Windows Vista (SP1 or later) and Windows Server 2008</li>
+<li>SMB 2.1 (or SMB2.1) – The version used in Windows 7 and Windows Server 2008 R2</li>
+<li>SMB 3.0 (or SMB3) – The version used in Windows 8 and Windows Server 2012</li>
+<li>SMB 3.02 (or SMB3) – The version used in Windows 8.1 and Windows Server 2012 R2</li>
+</ul>
+</blockquote>
+<p>&nbsp;</p>
+<p><strong><a href="https://blogs.technet.microsoft.com/josebda/2013/10/02/windows-server-2012-r2-which-version-of-the-smb-protocol-smb-1-0-smb-2-0-smb-2-1-smb-3-0-or-smb-3-02-are-you-using/">SMB Negotiated Versions:</a></strong></p>
+<blockquote><p>Here’s a table to help you understand what version you will end up using, depending on what Windows version is running as the SMB client and what version of Windows is running as the SMB server:</p>
+<table border="1" cellspacing="1" cellpadding="5">
+<tbody>
+<tr>
+<td>OS</td>
+<td>Windows 8.1<br />
+WS 2012 R2</td>
+<td>Windows 8<br />
+WS 2012</td>
+<td>Windows 7<br />
+WS 2008 R2</td>
+<td>Windows Vista<br />
+WS 2008</td>
+<td>Previous<br />
+versions</td>
+</tr>
+<tr>
+<td>Windows 8.1<br />
+WS 2012 R2</td>
+<td bgcolor="#a0a0a0"><strong>SMB 3.02</strong></td>
+<td bgcolor="#b0b0b0"><strong>SMB 3.0</strong></td>
+<td bgcolor="#c0c0c0">SMB 2.1</td>
+<td bgcolor="#d0d0d0">SMB 2.0</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+</tr>
+<tr>
+<td>Windows 8<br />
+WS 2012</td>
+<td bgcolor="#b0b0b0"><strong>SMB 3.0</strong></td>
+<td bgcolor="#b0b0b0"><strong>SMB 3.0</strong></td>
+<td bgcolor="#c0c0c0">SMB 2.1</td>
+<td bgcolor="#d0d0d0">SMB 2.0</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+</tr>
+<tr>
+<td>Windows 7<br />
+WS 2008 R2</td>
+<td bgcolor="#c0c0c0">SMB 2.1</td>
+<td bgcolor="#c0c0c0">SMB 2.1</td>
+<td bgcolor="#c0c0c0">SMB 2.1</td>
+<td bgcolor="#d0d0d0">SMB 2.0</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+</tr>
+<tr>
+<td>Windows Vista<br />
+WS 2008</td>
+<td bgcolor="#d0d0d0">SMB 2.0</td>
+<td bgcolor="#d0d0d0">SMB 2.0</td>
+<td bgcolor="#d0d0d0">SMB 2.0</td>
+<td bgcolor="#d0d0d0">SMB 2.0</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+</tr>
+<tr>
+<td>Previous<br />
+versions</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+<td bgcolor="#e0e0e0">SMB 1.0</td>
+</tr>
+</tbody>
+</table>
+<p>* WS = Windows Server</p></blockquote>
+<p>&nbsp;</p>
+<p><strong><a href="https://blogs.technet.microsoft.com/josebda/2013/10/02/windows-server-2012-r2-which-version-of-the-smb-protocol-smb-1-0-smb-2-0-smb-2-1-smb-3-0-or-smb-3-02-are-you-using/">SMB Features and Capabilities:</a></strong></p>
+<blockquote><p>Here’s a very short summary of what changed with each version of SMB:</p>
+<ul>
+<li>From SMB 1.0 to SMB 2.0 – The first major redesign of SMB
+<ul>
+<li>Increased file sharing scalability</li>
+<li>Improved performance
+<ul>
+<li>Request compounding</li>
+<li>Asynchronous operations</li>
+<li>Larger reads/writes</li>
+</ul>
+</li>
+<li>More secure and robust
+<ul>
+<li>Small command set</li>
+<li>Signing now uses HMAC SHA-256 instead of MD5</li>
+<li>SMB2 durability</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>From SMB 2.0 to SMB 2.1
+<ul>
+<li>File leasing improvements</li>
+<li>Large MTU support</li>
+<li>BranchCache</li>
+</ul>
+</li>
+<li>From SMB 2.1 to SMB 3.0
+<ul>
+<li>Availability
+<ul>
+<li>SMB Transparent Failover</li>
+<li>SMB Witness</li>
+<li>SMB Multichannel</li>
+</ul>
+</li>
+<li>Performance
+<ul>
+<li>SMB Scale-Out</li>
+<li>SMB Direct (SMB 3.0 over RDMA)</li>
+<li>SMB Multichannel</li>
+<li>Directory Leasing</li>
+<li>BranchCache V2</li>
+</ul>
+</li>
+<li>Backup
+<ul>
+<li>VSS for Remote File Shares</li>
+</ul>
+</li>
+<li>Security
+<ul>
+<li>SMB Encryption using AES-CCM (Optional)</li>
+<li>Signing now uses AES-CMAC</li>
+</ul>
+</li>
+<li>Management
+<ul>
+<li>SMB PowerShell</li>
+<li>Improved Performance Counters</li>
+<li>Improved Eventing</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>From SMB 3.0 to SMB 3.02
+<ul>
+<li>Automatic rebalancing of Scale-Out File Server clients</li>
+<li>Improved performance of SMB Direct (SMB over RDMA)</li>
+<li>Support for multiple SMB instances on a Scale-Out File Server</li>
+</ul>
+</li>
+</ul>
+<p>You can get additional details on the SMB 2.0 improvements listed above at<br />
+<a href="https://blogs.technet.microsoft.com/b/josebda/archive/2008/12/09/smb2-a-complete-redesign-of-the-main-remote-file-protocol-for-windows.aspx">http://blogs.technet.com/b/josebda/archive/2008/12/09/smb2-a-complete-redesign-of-the-main-remote-file-protocol-for-windows.aspx</a></p>
+<p>You can get additional details on the SMB 3.0 improvements listed above at<br />
+<a href="https://blogs.technet.microsoft.com/b/josebda/archive/2012/05/03/updated-links-on-windows-server-2012-file-server-and-smb-3-0.aspx">http://blogs.technet.com/b/josebda/archive/2012/05/03/updated-links-on-windows-server-2012-file-server-and-smb-3-0.aspx</a></p>
+<p>You can get additional details on the SMB 3.02 improvements in Windows Server 2012 R2 at<br />
+<a href="http://technet.microsoft.com/en-us/library/hh831474.aspx">http://technet.microsoft.com/en-us/library/hh831474.aspx</a></p></blockquote>
+<p>&nbsp;</p>
+<p><a href="https://blogs.technet.microsoft.com/josebda/2013/10/02/windows-server-2012-r2-which-version-of-the-smb-protocol-smb-1-0-smb-2-0-smb-2-1-smb-3-0-or-smb-3-02-are-you-using/"><strong>Third-party implementations:</strong></a></p>
+<blockquote><p>There are several implementations of the SMB protocol from someone other than Microsoft. If you use one of those implementations of SMB, you should ask whoever is providing the implementation which version of SMB they implement for each version of their product. Here are a few of these implementations of SMB:</p>
+<ul>
+<li><strong>Apple </strong>– Up to SMB2 implemented in OS X 10 Mavericks – <a href="http://images.apple.com/osx/preview/docs/OSX_Mavericks_Core_Technology_Overview.pdf">http://images.apple.com/osx/preview/docs/OSX_Mavericks_Core_Technology_Overview.pdf</a></li>
+<li><strong>EMC</strong> – Up to SMB3 implemented in VNX – <a href="http://www.emc.com/collateral/white-papers/h11427-vnx-introduction-smb-30-support-wp.pdf">http://www.emc.com/collateral/white-papers/h11427-vnx-introduction-smb-30-support-wp.pdf</a></li>
+<li><strong>Linux</strong> (Client) – SMB 2.1 and SMB 3.0 (even minimum SMB 3.02 support) implemented in the Linux kernel 3.11 or higher – <a title="http://www.snia.org/sites/default/files2/SDC2013/presentations/Revisions/StevenFrench_SMB3_Meets_Linux_ver3_revision.pdf" href="http://www.snia.org/sites/default/files2/SDC2013/presentations/Revisions/StevenFrench_SMB3_Meets_Linux_ver3_revision.pdf">http://www.snia.org/sites/default/files2/SDC2013/presentations/Revisions/StevenFrench_SMB3_Meets_Linux_ver3_revision.pdf</a></li>
+<li><strong>NetApp</strong> – Up to SMB3 implemented in Data ONTAP 8.2 – <a href="https://communities.netapp.com/community/netapp-blogs/cloud/blog/2013/06/11/clustered-ontap-82-with-windows-server-2012-r2-and-system-center-2012-r2-innovation-in-storage-and-the-cloud">https://communities.netapp.com/community/netapp-blogs/cloud/blog/2013/06/11/clustered-ontap-82-with-windows-server-2012-r2-and-system-center-2012-r2-innovation-in-storage-and-the-cloud</a></li>
+<li><strong>Samba</strong> (Server) – Up to SMB3 implemented in Samba 4.1 – <a href="http://www.samba.org/samba/history/samba-4.1.0.html">http://www.samba.org/samba/history/samba-4.1.0.html</a></li>
+</ul>
+<p>Please note that is not a complete list of implementations and the list is bound to become obsolete the minute I post it. Please refer to the specific implementers for up-to-date information on their specific implementations and which version and optional portions of the protocol they offer.</p></blockquote>
+<p>&nbsp;</p>
+<p><strong>Managing SMB with PowerShell (Windows 8.1 &amp; Windows Server 2012 R2 and up):</strong></p>
+<p>This Powershell command can audit SMBv1 usage:</p>
+<pre style="padding-left: 30px;">Set-SmbServerConfiguration –AuditSmb1Access $true
+
+</pre>
+<p>The PowerShell command can disable SMB v1:</p>
+<pre style="padding-left: 30px;">Set-SmbServerConfiguration –EnableSMB1Protocol $false</pre>
+<p>&nbsp;</p>
+<p><strong>Expected Level of Effort:<br />
+</strong>Medium</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This is may break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<h2><span style="text-decoration: underline;"><strong>Windows 10 &amp; Windows 2016 Specific</strong></span></h2>
+<h3><strong>Windows 10/2016 Build Updates</strong></h3>
+<p>When configuring your baseline image for Windows 10, remove the following features:</p>
+<ul>
+<li>PowerShell 2.0 Engine</li>
+<li>SMB 1 (breaks access to old file shares, like Windows 2003)</li>
+</ul>
+<p><img loading="lazy" class="alignnone wp-image-3304" src="https://adsecurity.org/wp-content/uploads/2016/10/Disable-Windows10-Features-PSv2-SMB1.png" sizes="(max-width: 331px) 100vw, 331px" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Disable-Windows10-Features-PSv2-SMB1.png 988w, https://adsecurity.org/wp-content/uploads/2016/10/Disable-Windows10-Features-PSv2-SMB1-199x300.png 199w, https://adsecurity.org/wp-content/uploads/2016/10/Disable-Windows10-Features-PSv2-SMB1-768x1157.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/Disable-Windows10-Features-PSv2-SMB1-679x1024.png 679w" alt="disable-windows10-features-psv2-smb1" width="331" height="498" /></p>
+<p>Note: In the screenshot above, .Net framewok 3.5 is enabled. This is a Microsoft SCM 4.0 requirement and is why it’s enabled on the system. Do <em>not</em> add .Net 3.5 (which includes .Net 2.0 &amp; 3.0) to the Windows 10 base image.</p>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low</p>
+<p><strong><br />
+Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h3>Block Untrusted Fonts</h3>
+<p><em>To help protect your company from attacks which may originate from untrusted or attacker controlled font files, we’ve created the Blocking Untrusted Fonts feature. Using this feature, you can turn on a global setting that stops your employees from loading untrusted fonts processed using the Graphics Device Interface (GDI) onto your network. Untrusted fonts are any font installed outside of the %windir%/Fonts directory. Blocking untrusted fonts helps prevent both remote (web-based or email-based) and local EOP attacks that can happen during the font file-parsing process.</em></p>
+<p>Enable the <a href="https://technet.microsoft.com/en-us/itpro/windows/keep-secure/block-untrusted-fonts-in-enterprise">Blocking Untrusted Fonts feature:</a><br />
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel\<br />
+If the MitigationOptions key isn&#8217;t there, right-click and add a new QWORD (64-bit) Value, renaming it to MitigationOptions.</p>
+<p>MitigationOptions key value options:</p>
+<ul>
+<li>To turn this feature on. Type 1000000000000.</li>
+<li>To turn this feature off. Type 2000000000000.</li>
+<li>To audit with this feature. Type 3000000000000.</li>
+</ul>
+<p>It&#8217;s highly recommended to enable this feature in Audit mode for a week or two and check for related events. After that, flip the switch to turn it on.</p>
+<p><span style="text-decoration: underline;">Review Audit Events:</span></p>
+<ol>
+<li>Open Event Viewer and go to Application and Service Logs/Microsoft/Windows/Win32k/Operational.</li>
+<li>Review Event ID 260 events.</li>
+</ol>
+<blockquote><p>Event Example 1 &#8211; MS Word<br />
+<em>WINWORD.EXE attempted loading a font that is restricted by font loading policy.</em><br />
+<em>  FontType: Memory</em><br />
+<em>  FontPath:</em><br />
+<em>  Blocked: true</em><br />
+Note: Because the FontType is Memory, there’s no associated FontPath.</p>
+<p>Event Example 2 &#8211; Winlogon<br />
+<em>Winlogon.exe attempted loading a font that is restricted by font loading policy.</em><br />
+<em> FontType: File</em><br />
+<em> FontPath: \??\C:\PROGRAM FILES (X86)\COMMON FILES\MICROSOFT SHARED\EQUATION\MTEXTRA.TTF</em><br />
+<em> Blocked: true</em><br />
+Note: Because the FontType is File, there’s also an associated FontPath.</p>
+<p>Event Example 3 &#8211; Internet Explorer running in Audit mode<br />
+<em> Iexplore.exe attempted loading a font that is restricted by font loading policy.</em><br />
+<em> FontType: Memory</em><br />
+<em> FontPath:</em><br />
+<em> Blocked: false</em><br />
+Note: In Audit mode, the problem is recorded, but the font isn’t blocked.</p></blockquote>
+<p>&nbsp;</p>
+<p><strong>Block Untrusted Fonts via Group Policy:</strong></p>
+<ul>
+<li>Configure the registry setting on a reference workstation<br />
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel\MitigationOptions Type = 1000000000000</li>
+<li>Open the Group Policy Management Console. Right-click the Group Policy object (GPO) that should contain the new preference item, and then click Edit .</li>
+<li>In the console tree under Computer Configuration, expand the Preferences folder, and then expand the Windows Settings folder.</li>
+<li>Right-click the Registry node, point to New, and select Registry Wizard .</li>
+<li>Select the reference workstation on which the desired registry settings exist, then click Next .</li>
+<li>Browse to <em>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel\</em><br />
+and select the check box for “MitigationOptions ” from which you want to create a Registry preference item. Select the check box for a key only if you want to create a Registry item for the key rather than for a value within the key.</li>
+<li>Click Finish. The settings that you selected appear as preference items in the Registry Wizard Values collection.</li>
+</ul>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low to Medium</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This may break things in the enterprise, please test first (at least deploy in audit mode first).<br />
+</em></p>
+<p>&nbsp;</p>
+<h3>Block Authenticated Users from Enumerating Local Groups on Windows 10 Workstations</h3>
+<p>Thanks to the Microsoft ATA folks, we know that Windows 10 Anniversary Update (v1607) restricts remote SAMR calls (default) to only local administrators.</p>
+<p><a href="https://twitter.com/TalBeerySec/status/776469365478883328"><img loading="lazy" class="alignnone wp-image-3365" src="https://adsecurity.org/wp-content/uploads/2016/10/Twitter-Windows10-RestrictSAMR.png" alt="twitter-windows10-restrictsamr" width="297" height="156" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Twitter-Windows10-RestrictSAMR.png 1167w, https://adsecurity.org/wp-content/uploads/2016/10/Twitter-Windows10-RestrictSAMR-300x157.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/Twitter-Windows10-RestrictSAMR-768x403.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/Twitter-Windows10-RestrictSAMR-1024x537.png 1024w" sizes="(max-width: 297px) 100vw, 297px" /></a></p>
+<p>When using PowerView to enumerate local group membership on Windows 10 v1607 as a domain user, we get the following error</p>
+<p><img loading="lazy" class="alignnone wp-image-3366" src="https://adsecurity.org/wp-content/uploads/2016/10/Block-Network-Local-Group-Enumeration.png" alt="block-network-local-group-enumeration" width="674" height="52" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Block-Network-Local-Group-Enumeration.png 790w, https://adsecurity.org/wp-content/uploads/2016/10/Block-Network-Local-Group-Enumeration-300x23.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/Block-Network-Local-Group-Enumeration-768x59.png 768w" sizes="(max-width: 674px) 100vw, 674px" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h3>Enable Credential Guard</h3>
+<p><a href="https://blogs.technet.microsoft.com/ash/2016/03/02/windows-10-device-guard-and-credential-guard-demystified/">https://blogs.technet.microsoft.com/ash/2016/03/02/windows-10-device-guard-and-credential-guard-demystified/ </a></p>
+<p>&nbsp;</p>
+<h3>Configure Device Guard</h3>
+<p><a href="https://technet.microsoft.com/en-us/itpro/windows/keep-secure/device-guard-deployment-guide">Device Guard Deployment Guide</a></p>
+<p><a href="https://github.com/mattifestation/DeviceGuardBypassMitigationRules">Matt Graeber&#8217;s Device Guard rules to mitigate bypasses</a></p>
+<p>&nbsp;</p>
+<h2><span style="text-decoration: underline;"><strong>Application Settings</strong></span></h2>
+<h3><strong>Disable Office Macros</strong></h3>
+<p>The term Office Macro sounds like a nice helper in an Office document. The reality is that a macro is code that runs on the computer. This code is written in Visual Basic (VBA) and can be used to help, or used maliciously.<br />
+<a href="https://blogs.technet.microsoft.com/mmpc/2016/03/22/new-feature-in-office-2016-can-block-macros-and-help-prevent-infection/">According to Microsoft</a>, “<i>In the enterprise, recent data from our Office 365 Advanced Threat Protection service indicates 98% of Office-targeted threats use macros.</i>“<img loading="lazy" class="alignnone wp-image-3308" src="https://adsecurity.org/wp-content/uploads/2016/10/Top20MacroFamilyDetections.png" sizes="(max-width: 543px) 100vw, 543px" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Top20MacroFamilyDetections.png 624w, https://adsecurity.org/wp-content/uploads/2016/10/Top20MacroFamilyDetections-300x158.png 300w" alt="top20macrofamilydetections" width="543" height="286" />Macros are disabled by default in current versions of Office (VBA was enabled in Office 2010), but some organizations have users who require macro functionality. This complicates managing macros.Starting with Office 2007, there are several options to control macros</p>
+<ul>
+<li>Disable all macros without notification</li>
+<li>Disable all macros with notification</li>
+<li>Disable all macros except digitally signed macros</li>
+<li>Enable all macros (not recommended, potentially dangerous code can run)</li>
+</ul>
+<p>Some organizations configure Office to block macros with notification, but users are able to enable macros – a fact that phishers take advantage of.</p>
+<p><img loading="lazy" class="alignnone wp-image-3302" src="https://adsecurity.org/wp-content/uploads/2016/10/Bypass-Marco-Security.png" sizes="(max-width: 407px) 100vw, 407px" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Bypass-Marco-Security.png 1116w, https://adsecurity.org/wp-content/uploads/2016/10/Bypass-Marco-Security-300x145.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/Bypass-Marco-Security-768x370.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/Bypass-Marco-Security-1024x494.png 1024w" alt="bypass-marco-security" width="407" height="196" /></p>
+<p>Microsoft Office 2013 introduced the Telemetry Dashboard which can be used to determine macro usage, though it’s disabled by default.</p>
+<p><img loading="lazy" class="alignnone wp-image-3306" src="https://adsecurity.org/wp-content/uploads/2016/10/Office2013-Telemetry-Dashboard.png" sizes="(max-width: 536px) 100vw, 536px" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Office2013-Telemetry-Dashboard.png 1160w, https://adsecurity.org/wp-content/uploads/2016/10/Office2013-Telemetry-Dashboard-300x182.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/Office2013-Telemetry-Dashboard-768x467.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/Office2013-Telemetry-Dashboard-1024x622.png 1024w" alt="office2013-telemetry-dashboard" width="536" height="325" /></p>
+<p>Enable by using Group Policy, registry settings, or by selecting the Enable Logging button in Telemetry Log</p>
+<p><a href="https://technet.microsoft.com/en-us/library/jj863580.aspx">https://technet.microsoft.com/en-us/library/jj863580.aspx</a></p>
+<p><a href="https://blogs.technet.microsoft.com/office_resource_kit/2012/08/08/using-office-telemetry-dashboard-to-see-how-well-your-office-solutions-perform-in-office-2013/">https://blogs.technet.microsoft.com/office_resource_kit/2012/08/08/using-office-telemetry-dashboard-to-see-how-well-your-office-solutions-perform-in-office-2013/</a></p>
+<p>Assuming you are running Office 2007 and newer, block all macros without notification for all users.</p>
+<p>If you have a subset of users who require macros, you can lower the restriction to those users so they can use digitally signed macros.</p>
+<p>Office 2016 introduced a new setting, which has since been backported to <a href="https://support.microsoft.com/en-us/kb/3177451">Office 2013 in KB3177451</a>, (get the <a href="https://www.microsoft.com/en-us/download/details.aspx?id=49030">Office 2016 Group Policy administrative templates</a> to configure via GPO) which provides the ability to “<a href="https://technet.microsoft.com/en-us/library/ee857085%28v=office.16%29.aspx#blockvba">Block macros from running in Office files from the Internet</a>.”</p>
+<p><i>This policy setting allows you to block macros from running in Office files that come from the Internet. If you enable this policy setting, macros are blocked from running, even if “Enable all macros” is selected in the Macro Settings section of the Trust Center. Also, instead of having the choice to “Enable Content,” users will receive a notification that macros are blocked from running. If the Office file is saved to a trusted location or was previously trusted by the user, macros will be allowed to run. If you disable or don’t configure this policy setting, the settings configured in the Macro Settings section of the Trust Center determine whether macros run in Office files that come from the Internet.</i></p>
+<p>This option provides another level of granularity for organizations which have users who have to use macros in files within their organization, but have issues with signing those macros.</p>
+<p><a href="https://blogs.technet.microsoft.com/mmpc/2016/03/22/new-feature-in-office-2016-can-block-macros-and-help-prevent-infection/">Microsoft describes this feature:</a></p>
+<p><i>This feature can be controlled via Group Policy and configured per application. It enables enterprise administrators to block macros from running in Word, Excel and PowerPoint documents that come from the Internet. This includes scenarios such as the following:</i></p>
+<ul>
+<li><i>Documents downloaded from Internet websites or consumer storage providers (like OneDrive, Google Drive, and Dropbox).</i></li>
+<li><i>Documents attached to emails that have been sent from outside the organization (where the organization uses the Outlook client and Exchange servers for email)</i></li>
+<li><i>Documents opened from public shares hosted on the Internet (such as files downloaded from file-sharing sites).</i></li>
+</ul>
+<p>&nbsp;</p>
+<p><b>Group policy:</b></p>
+<ol>
+<li>Open the Group Policy Management Console, right-click the Group Policy Object you want to configure and click Edit.</li>
+<li>In the Group Policy Management Editor, go to User configuration.</li>
+<li>Click Administrative templates &gt; Microsoft Word 2016 &gt; Word options &gt; Security &gt; Trust Center.</li>
+<li>Open the Block macros from running in Office files from the Internet setting to configure and enable it.</li>
+</ol>
+<p><strong><img loading="lazy" class="alignnone size-full wp-image-3307" src="https://adsecurity.org/wp-content/uploads/2016/10/Office2016-BlockMacrosFromInternet.png" sizes="(max-width: 1161px) 100vw, 1161px" srcset="https://adsecurity.org/wp-content/uploads/2016/10/Office2016-BlockMacrosFromInternet.png 1161w, https://adsecurity.org/wp-content/uploads/2016/10/Office2016-BlockMacrosFromInternet-300x180.png 300w, https://adsecurity.org/wp-content/uploads/2016/10/Office2016-BlockMacrosFromInternet-768x462.png 768w, https://adsecurity.org/wp-content/uploads/2016/10/Office2016-BlockMacrosFromInternet-1024x616.png 1024w" alt="office2016-blockmacrosfrominternet" width="1161" height="698" /></strong></p>
+<p><strong>Expected Level of Effort:<br />
+</strong>Low to Medium</p>
+<p><strong>Expected Impact:</strong><br />
+<em>This may break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Disable Office OLE</strong></h3>
+<p>You have disabled all Office macros in your organization, so you’re good right?</p>
+<p>Not exactly. There’s a technology for embedding files from Windows ancient times called <a href="https://medium.com/@networksecurity/oleoutlook-bypass-almost-every-corporate-security-control-with-a-point-n-click-gui-37f4cbc107d0">OLE Package</a> (packager.dll) which provides attackers the ability to trick users into running code on their system simply by opening the attachment.</p>
+<p>In fact, <a href="https://twitter.com/harmj0y">Will Harmjoy</a> (<a href="http://blog.harmj0y.net/">Harmj0y.net</a>) &amp; I demonstrated how embedded OLE can bypass most organization’s perimiter security and execute attacker code even when Office macros are disabled:<br />
+<a href="https://adsecurity.org/wp-content/uploads/2016/09/DerbyCon6-2016-AttackingEvilCorp-Anatomy-of-a-Corporate-Hack-Presented.pdf">DerbyCon 6 (2016) Slides (PDF)</a><a href="https://youtu.be/nJSMJyRNvlM?t=16"><br />
+DerbyCon 6 (2016) Presentation Video (YouTube)</a><strong><br />
+</strong></p>
+<p>According to <a href="https://twitter.com/GossiTheDog">Kevin Beaumont</a>, this affects Outlook 2003 through Outlook 2016.</p>
+<p><img loading="lazy" class="alignnone wp-image-3305" src="https://adsecurity.org/wp-content/uploads/2016/10/KevinB-OLE-In-Email.jpg" sizes="(max-width: 505px) 100vw, 505px" srcset="https://adsecurity.org/wp-content/uploads/2016/10/KevinB-OLE-In-Email.jpg 800w, https://adsecurity.org/wp-content/uploads/2016/10/KevinB-OLE-In-Email-300x239.jpg 300w, https://adsecurity.org/wp-content/uploads/2016/10/KevinB-OLE-In-Email-768x612.jpg 768w" alt="kevinb-ole-in-email" width="505" height="403" /><br />
+<em>Screenshot by Kevin Beaumont</em></p>
+<p><a href="https://medium.com/@networksecurity/oleoutlook-bypass-almost-every-corporate-security-control-with-a-point-n-click-gui-37f4cbc107d0"><br />
+Kevin provides several mitigations for this issue:</a></p>
+<ul>
+<li><i>Application whitelisting. However, be careful for signed executables with parameters being embedded. E.g. there are many Microsoft digitally signed tools you can use to springboard for other content, and because they’re Microsoft you’ve probably already trusted their publisher certificate.<br />
+</i></li>
+<li><i>Deploy the registry key ShowOLEPackageObj, for your version(s) of Office, to silently disable OLE Package function in Outlook. There is no way to disable it in wider Office, however, so attackers can still embed inside Word, Excel and PowerPoint.<br />
+HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\15.0\Outlook\Security\ShowOLEPackageObj = “0” (disabled)<br />
+</i></li>
+<li><i>EMET. If you run Microsoft EMET (or a similar product such as Palo-Alto TRAPS), add this mitigation for Outlook.exe:</i></li>
+</ul>
+<p><i>&lt;Mitigation Name=”ASR” Enabled=”true”&gt;<br />
+&lt;asr_modules&gt;packager.dll&lt;/asr_modules<br />
+&lt;/Mitigation&gt;</i></p>
+<p>&nbsp;</p>
+<p>By stopping packager.dll, you stop the issue.</p>
+<p><b><br />
+Group Policy:</b></p>
+<p>The simplest method to deploy mitigation is to create a Group Policy and link to the OU(s) containing users:</p>
+<ul>
+<li>Set this registry key on a reference workstation:<br />
+<i>HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\###\Outlook\Security\<br />
+</i>Add new Ddword (32-bit) value:<i> ShowOLEPackageObj = “0” (disabled)</i>Where “###” is the current version of Office installed</li>
+</ul>
+<table>
+<tbody>
+<tr>
+<td>Office Version</td>
+<td>Value</td>
+</tr>
+<tr>
+<td>Office 2016</td>
+<td>16.0</td>
+</tr>
+<tr>
+<td>Office 2013</td>
+<td>15.0</td>
+</tr>
+<tr>
+<td>Office 2010</td>
+<td>14.0</td>
+</tr>
+<tr>
+<td>Office 2007</td>
+<td>12.0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Open the <b>Group Policy Management Console</b>. Right-click the Group Policy object (GPO) that should contain the new preference item, and then click <b>Edit</b> .</li>
+<li>In the console tree under <b>Computer Configuration</b>, expand the <b>Preferences</b> folder, and then expand the <b>Windows Settings</b> folder.</li>
+<li>Right-click the <b>Registry</b> node, point to <b>New</b> , and select <b>Registry Wizard</b> .</li>
+<li>Select the reference workstation on which the desired registry settings exist, then click <b>Next</b> .</li>
+<li>Browse to <i>HKEY_CURRENT_USER\SOFTWARE\Microsoft\Office\###\Outlook\Security\ </i>and select the check box for “<i>ShowOLEPackageObj </i>” to create a Registry preference item. Select the check box for a key only if you want to create a Registry item for the key rather than for a value within the key.</li>
+<li>Click <b>Finish</b> . The settings that you selected appear as preference items in the Registry Wizard Values collection.</li>
+</ul>
+<p>&nbsp;</p>
+<p>If your organization has deployed EMET (which it should), update the EMET configuration file with the following:</p>
+<p><i>&lt;Mitigation Name=”ASR” Enabled=”true”&gt;<br />
+&lt;asr_modules&gt;packager.dll&lt;/asr_modules&gt;<br />
+&lt;/Mitigation&gt;</i></p>
+<p>Configure this via Group Policy:<a href="https://technet.microsoft.com/en-us/itpro/windows/keep-secure/override-mitigation-options-for-app-related-security-policies"> https://technet.microsoft.com/en-us/itpro/windows/keep-secure/override-mitigation-options-for-app-related-security-policies </a><br />
+<strong>Expected Level of Effort:<br />
+</strong>Low to Medium</p>
+<p><strong><br />
+Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h2><span style="text-decoration: underline;"><strong>Windows Group Policy Settings</strong></span></h2>
+<h3><strong>Configure <a href="https://technet.microsoft.com/en-us/library/2006.08.securitywatch.aspx">Lanman Authentication</a> to a secure setting</strong></h3>
+<p>Configure <a href="https://technet.microsoft.com/en-us/library/jj852207%28v=ws.11%29.aspx">Lanman authentication</a> to “Send NTLMv2 response only” to enforce authentication security.<br />
+For better security, configure this setting to “Send NTLMv2 response only. Refuse LM &amp; NTLM”Group Policy configuration:</p>
+<ul>
+<li>Computer Configuration\Windows Settings\Security Settings\Local Policies\Security Options</li>
+</ul>
+<p>&nbsp;</p>
+<table>
+<tbody>
+<tr>
+<td><b>Setting</b></td>
+<td><b>Description</b></td>
+<td><b>Registry security level</b></td>
+</tr>
+<tr>
+<td>Send LM &amp; NTLM responses</td>
+<td>Client computers use LM and NTLM authentication, and they never use NTLMv2 session security. Domain controllers accept LM, NTLM, and NTLMv2 authentication.</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Send LM &amp; NTLM – use NTLMv2 session security if negotiated</td>
+<td>Client computers use LM and NTLM authentication, and they use NTLMv2 session security if the server supports it. Domain controllers accept LM, NTLM, and NTLMv2 authentication.</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Send NTLM response only</td>
+<td>Client computers use NTLMv1 authentication, and they use NTLMv2 session security if the server supports it. Domain controllers accept LM, NTLM, and NTLMv2 authentication.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Send NTLMv2 response only</td>
+<td>Client computers use NTLMv2 authentication, and they use NTLMv2 session security if the server supports it. Domain controllers accept LM, NTLM, and NTLMv2 authentication.</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Send NTLMv2 response only. Refuse LM</td>
+<td>Client computers use NTLMv2 authentication, and they use NTLMv2 session security if the server supports it. Domain controllers refuse to accept LM authentication, and they will accept only NTLM and NTLMv2 authentication.</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Send NTLMv2 response only. Refuse LM &amp; NTLM</td>
+<td>Client computers use NTLMv2 authentication, and they use NTLMv2 session security if the server supports it. Domain controllers refuse to accept LM and NTLM authentication, and they will accept only NTLMv2 authentication.</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>In Windows Vista, Windows Server 2008, Windows 7, and Windows Server 2008 R2, the default is <b>Send NTLMv2 response only</b>. Check to see if you are overriding this with another GPO.</p>
+<p><strong><br />
+Expected Impact:</strong><br />
+<em>This could very well break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Configure restrictions for unauthenticated RPC clients</strong></h3>
+<p><i>This policy setting configures the RPC Runtime on an RPC server to restrict unauthenticated RPC clients from connecting to the RPC server. A client will be considered an authenticated client if it uses a named pipe to communicate with the server or if it uses RPC Security. RPC interfaces that have specifically asked to be accessible by unauthenticated clients may be exempt from this restriction, depending on the selected value for this policy.</i></p>
+<p><i>If you enable this policy setting, the following values are available:</i></p>
+<p><i>• None. Allows all RPC clients to connect to RPC servers that run on the computer on which the policy is applied.</i></p>
+<p><i>• Authenticated. Allows only authenticated RPC clients to connect to RPC servers that run on the computer on which the policy is applied. Interfaces that have asked to be exempt from this restriction will be granted an exemption.</i></p>
+<p><i>• Authenticated without exceptions. Allows only authenticated RPC clients to connect to RPC servers that run on the computer on which the policy is applied. No exceptions are allowed.</i></p>
+<p><b>Group Policy:</b></p>
+<p>Computer Configuration\Administrative Templates\System\Remote Procedure Call to “Enabled”</p>
+<p>RPC Runtime Unauthenticated Client Restriction to Apply: Authenticated</p>
+<p><strong><br />
+Expected Impact:</strong><br />
+<em>This is not likely to break things in the enterprise, but please test first.</em></p>
+<p>&nbsp;</p>
+<h3><strong>Configure NTLM session security</strong></h3>
+<p><i>You can enable all of the options for this policy setting to help protect network traffic that uses the NTLM Security Support Provider (NTLM SSP) from being exposed or tampered with by an attacker who has gained access to the same network. In other words, these options help protect against man-in-the-middle attacks.</i></p>
+<p><i>This policy setting determines which behaviors are allowed for applications using the NTLM Security Support Provider (SSP). The SSP Interface (SSPI) is used by applications that need authentication services. The setting does not modify how the authentication sequence works but instead require certain behaviors in applications that use the SSPI. </i></p>
+<p><i>The possible values for the Network security: Minimum session security for NTLM SSP based (including secure RPC) clients setting are:</i></p>
+<p><i>– Require message confidentiality. This option is only available in Windows XP and Windows Server 2003, the connection will fail if encryption is not negotiated. Encryption converts data into a form that is not readable until decrypted.</i></p>
+<p>– Require message integrity. This option is only available in Windows XP and Windows Server 2003, the connection will fail if message integrity is not negotiated. The integrity of a message can be assessed through message signing. Message signing proves that the message has not been tampered with; it attaches a cryptographic signature that identifies the sender and is a numeric representation of the contents of the message.</p>
+<p>– Require 128-bit encryption. The connection will fail if strong encryption (128-bit) is not negotiated.</p>
+<p>– Require NTLMv2 session security. The connection will fail if the NTLMv2 protocol is not negotiated.</p>
+<p>– Not Defined.</p>
+<p><b>Group Policy:</b></p>
+<p>Computer Configuration\Windows Settings\Security Settings\Local Policies\Security Options</p>
+<p>Network security: Minimum session security for NTLM SSP based (including secure RPC) client</p>
+<p><strong><br />
+Expected Impact:</strong><br />
+<em>This is may break things in the enterprise, please test first.</em></p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>Important Note Before Applying:</strong></span></p>
+<p><strong><em>These are only recommendations. You are responsible for testing and identifying issues before deploying.</em></strong><br />
+<strong><em> I am not responsible if you break your environment. Configuring any of these settings could negatively impact your environment &#8211; test before applying. Though configuring as many of these as possible will improve the security of your systems.</em></strong></p>
+<p>&nbsp;</p>
+<div class="tptn_counter" id="tptn_counter_3299">(Visited 134,379 times, 22 visits today)</div>								</div>
+		
+			    <ul class="entry-footer">
+	    		        <li class="post-tags col-sm-8"><i class="fa fa-tags" title="Tags"></i> <span class="terms"><a class="term term-tagpost_tag term-818" href="https://adsecurity.org/?tag=applocker">AppLocker</a>, <a class="term term-tagpost_tag term-1081" href="https://adsecurity.org/?tag=block-macros">block macros</a>, <a class="term term-tagpost_tag term-1077" href="https://adsecurity.org/?tag=block-macros-from-running-in-office-files-from-the-internet">Block macros from running in Office files from the Internet</a>, <a class="term term-tagpost_tag term-1067" href="https://adsecurity.org/?tag=cmd">cmd</a>, <a class="term term-tagpost_tag term-1060" href="https://adsecurity.org/?tag=control-local-administrator-account">Control Local Administrator Account</a>, <a class="term term-tagpost_tag term-1074" href="https://adsecurity.org/?tag=control-macros">Control Macros</a>, <a class="term term-tagpost_tag term-1057" href="https://adsecurity.org/?tag=dhcp-option-43-hex-0104-0000-0002">DHCP option 43 hex 0104.0000.0002</a>, <a class="term term-tagpost_tag term-1055" href="https://adsecurity.org/?tag=direct-hosting-of-smb-over-tcpip">Direct hosting of SMB over TCP/IP</a>, <a class="term term-tagpost_tag term-1052" href="https://adsecurity.org/?tag=disable-llmnr">Disable LLMNR</a>, <a class="term term-tagpost_tag term-1054" href="https://adsecurity.org/?tag=disable-netbios">Disable NetBIOS</a>, <a class="term term-tagpost_tag term-1050" href="https://adsecurity.org/?tag=disable-netsession-enumeration">Disable NetSession Enumeration</a>, <a class="term term-tagpost_tag term-1069" href="https://adsecurity.org/?tag=disable-powershell-version-2">Disable PowerShell version 2</a>, <a class="term term-tagpost_tag term-1070" href="https://adsecurity.org/?tag=disable-smb-1">Disable SMB 1</a>, <a class="term term-tagpost_tag term-1058" href="https://adsecurity.org/?tag=disable-windows-scripting-host-wsh">Disable Windows Scripting Host (WSH)</a>, <a class="term term-tagpost_tag term-1053" href="https://adsecurity.org/?tag=disable-wpad">Disable WPAD</a>, <a class="term term-tagpost_tag term-260" href="https://adsecurity.org/?tag=emet">EMET</a>, <a class="term term-tagpost_tag term-1059" href="https://adsecurity.org/?tag=group-policy">Group Policy</a>, <a class="term term-tagpost_tag term-1063" href="https://adsecurity.org/?tag=jscript">jscript</a>, <a class="term term-tagpost_tag term-305" href="https://adsecurity.org/?tag=kb2871997">KB2871997</a>, <a class="term term-tagpost_tag term-1079" href="https://adsecurity.org/?tag=kb3177451">KB3177451</a>, <a class="term term-tagpost_tag term-1072" href="https://adsecurity.org/?tag=lanman-authentication">Lanman Authentication</a>, <a class="term term-tagpost_tag term-631" href="https://adsecurity.org/?tag=laps">LAPS</a>, <a class="term term-tagpost_tag term-1046" href="https://adsecurity.org/?tag=llmnr">LLMNR</a>, <a class="term term-tagpost_tag term-1075" href="https://adsecurity.org/?tag=microsoft-office-macro-security">Microsoft Office Macro Security</a>, <a class="term term-tagpost_tag term-1048" href="https://adsecurity.org/?tag=microsoft-office-macros">Microsoft Office Macros</a>, <a class="term term-tagpost_tag term-207" href="https://adsecurity.org/?tag=mimikatz">mimikatz</a>, <a class="term term-tagpost_tag term-1051" href="https://adsecurity.org/?tag=netcease">NetCease</a>, <a class="term term-tagpost_tag term-1073" href="https://adsecurity.org/?tag=ntlm-session-security">NTLM session security</a>, <a class="term term-tagpost_tag term-1080" href="https://adsecurity.org/?tag=office-2013-macro">Office 2013 macro</a>, <a class="term term-tagpost_tag term-1078" href="https://adsecurity.org/?tag=office-2016-macro-security">Office 2016 macro security</a>, <a class="term term-tagpost_tag term-1082" href="https://adsecurity.org/?tag=office-ole">Office OLE</a>, <a class="term term-tagpost_tag term-1047" href="https://adsecurity.org/?tag=ole">OLE</a>, <a class="term term-tagpost_tag term-1083" href="https://adsecurity.org/?tag=packager-dll">packager.dll</a>, <a class="term term-tagpost_tag term-1056" href="https://adsecurity.org/?tag=port-445">port 445</a>, <a class="term term-tagpost_tag term-1032" href="https://adsecurity.org/?tag=responder">Responder</a>, <a class="term term-tagpost_tag term-1061" href="https://adsecurity.org/?tag=rid-500">RID 500</a>, <a class="term term-tagpost_tag term-1049" href="https://adsecurity.org/?tag=secure-windows-workstation">Secure Windows Workstation</a>, <a class="term term-tagpost_tag term-1071" href="https://adsecurity.org/?tag=server-message-block">Server Message Block</a>, <a class="term term-tagpost_tag term-455" href="https://adsecurity.org/?tag=smb">SMB</a>, <a class="term term-tagpost_tag term-1076" href="https://adsecurity.org/?tag=telemetry-dashboard">Telemetry Dashboard</a>, <a class="term term-tagpost_tag term-1065" href="https://adsecurity.org/?tag=vba">VBA</a>, <a class="term term-tagpost_tag term-1066" href="https://adsecurity.org/?tag=vbscript">VBScript</a>, <a class="term term-tagpost_tag term-1062" href="https://adsecurity.org/?tag=wdigest">WDigest</a>, <a class="term term-tagpost_tag term-1068" href="https://adsecurity.org/?tag=windows-10-build-image">Windows 10 build image</a>, <a class="term term-tagpost_tag term-1031" href="https://adsecurity.org/?tag=wpad">WPAD</a>, <a class="term term-tagpost_tag term-1064" href="https://adsecurity.org/?tag=wscript">wscript</a></span></li>
+	        	        <li class="addthis col-sm-8"><div class="add-this"></div></li>
+	        	    </ul>
+    	</div>
+
+</div>
+
+    <div class="entry-author">
+        <div class="row">
+            <div class="author-avatar col-sm-3">
+            	<a href="https://adsecurity.org/?author=2" rel="author">
+					<img alt='' src='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=200&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/1f3ad5e878e5d0e6096c5a33718a04d0?s=400&#038;d=mm&#038;r=g 2x' class='avatar avatar-200 photo' height='200' width='200' loading='lazy'/>                </a>
+            </div>
+
+            <div class="author-bio col-sm-9">
+                <h3 class="section-title-sm">Sean Metcalf</h3>
+                <p>I improve security for enterprises around the world working for TrimarcSecurity.com<br />
+Read the About page (top left) for information about me. :)<br />
+https://adsecurity.org/?page_id=8</p>
+    <ul class="author-social">
+    	        
+			        <li><a href="mailto:sean@adsecurity.org"><i class="fa fa-envelope-o"></i></a></li>
+            </ul>
+                </div>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+<div id="comments" class="clearfix no-ping">
+        	<h4 class="comments current">
+            <i class="fa fa-comments-o"></i> 6 comments        </h4>
+	        
+        	<p class="comment-form-jump"><a href="#respond" class="btn btn-sm">Skip to comment form <i class="fa fa-arrow-circle-down"></i></a></p>
+	
+	
+	    <div class="comments-list-wrapper">
+        <ol class="clearfix comments-list" id="comments_list">
+            		<li id="comment-11242" class="comment even thread-even depth-1 comment">
+			<div class="row">
+								
+											
+				<div class="comment-wrap col-md-12">
+					
+                        <ul class="comment-meta">
+                <li class="comment-avatar"><img alt='' src='https://secure.gravatar.com/avatar/ba20374f05fc6859ecb962751565446e?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/ba20374f05fc6859ecb962751565446e?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' loading='lazy'/></li>
+                <li class="comment-attr"><span class="comment-author">Bobby</span> on <span class="comment-date">October 21, 2016 <span class="time">at 10:35 am</span></span></li>
+                <li class="single-comment-link"><a href="https://adsecurity.org/?p=3299#comment-11242">#</a></li>
+            </ul>
+    
+					<div class="comment-entry">
+												
+													<p>Excellent write-up! Thanks for publishing this.</p>
+												
+											</div>
+				</div>
+			
+							</div>
+	</li><!-- #comment-## -->
+		<li id="comment-11245" class="comment odd alt thread-odd thread-alt depth-1 comment">
+			<div class="row">
+								
+											
+				<div class="comment-wrap col-md-12">
+					
+                        <ul class="comment-meta">
+                <li class="comment-avatar"><img alt='' src='https://secure.gravatar.com/avatar/ee0e9315d60f867a40b644af38b4d3d5?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/ee0e9315d60f867a40b644af38b4d3d5?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' loading='lazy'/></li>
+                <li class="comment-attr"><span class="comment-author"><a href='http://microsoft.com' rel='external nofollow ugc' class='url'>Ned Pyle</a></span> on <span class="comment-date">October 21, 2016 <span class="time">at 1:54 pm</span></span></li>
+                <li class="single-comment-link"><a href="https://adsecurity.org/?p=3299#comment-11245">#</a></li>
+            </ul>
+    
+					<div class="comment-entry">
+												
+													<p>You can also remove SMB1 from Windows 8.1. And I sure wish you would. 🙂</p>
+<p>Excellent article, as always, Sean.</p>
+												
+											</div>
+				</div>
+			
+							</div>
+	</li><!-- #comment-## -->
+		<li id="comment-11273" class="comment even thread-even depth-1 comment">
+			<div class="row">
+								
+											
+				<div class="comment-wrap col-md-12">
+					
+                        <ul class="comment-meta">
+                <li class="comment-avatar"><img alt='' src='https://secure.gravatar.com/avatar/ce2ee0649f3fb6a643ffff9a9f1e63e4?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/ce2ee0649f3fb6a643ffff9a9f1e63e4?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' loading='lazy'/></li>
+                <li class="comment-attr"><span class="comment-author">F</span> on <span class="comment-date">October 24, 2016 <span class="time">at 2:17 pm</span></span></li>
+                <li class="single-comment-link"><a href="https://adsecurity.org/?p=3299#comment-11273">#</a></li>
+            </ul>
+    
+					<div class="comment-entry">
+												
+													<p>Very nice comprehensive list &#8211; thanks!</p>
+												
+											</div>
+				</div>
+			
+							</div>
+	</li><!-- #comment-## -->
+		<li id="comment-11274" class="comment odd alt thread-odd thread-alt depth-1 comment">
+			<div class="row">
+								
+											
+				<div class="comment-wrap col-md-12">
+					
+                        <ul class="comment-meta">
+                <li class="comment-avatar"><img alt='' src='https://secure.gravatar.com/avatar/ea37796e91133726fc20688189e16f25?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/ea37796e91133726fc20688189e16f25?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' loading='lazy'/></li>
+                <li class="comment-attr"><span class="comment-author"><a href='http://blogs.technet.com/kfalde' rel='external nofollow ugc' class='url'>Kurt Falde</a></span> on <span class="comment-date">October 24, 2016 <span class="time">at 4:05 pm</span></span></li>
+                <li class="single-comment-link"><a href="https://adsecurity.org/?p=3299#comment-11274">#</a></li>
+            </ul>
+    
+					<div class="comment-entry">
+												
+													<p>Great write-up nice good list of findings that are over and above what STIG/CIS currently dictates.</p>
+												
+											</div>
+				</div>
+			
+							</div>
+	</li><!-- #comment-## -->
+		<li id="comment-11281" class="comment even thread-even depth-1 comment">
+			<div class="row">
+								
+											
+				<div class="comment-wrap col-md-12">
+					
+                        <ul class="comment-meta">
+                <li class="comment-avatar"><img alt='' src='https://secure.gravatar.com/avatar/238f110f54c0e82a9f64b4331278566a?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/238f110f54c0e82a9f64b4331278566a?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' loading='lazy'/></li>
+                <li class="comment-attr"><span class="comment-author"><a href='https://msitpros.com' rel='external nofollow ugc' class='url'>Oddvar Moe</a></span> on <span class="comment-date">October 25, 2016 <span class="time">at 3:55 am</span></span></li>
+                <li class="single-comment-link"><a href="https://adsecurity.org/?p=3299#comment-11281">#</a></li>
+            </ul>
+    
+					<div class="comment-entry">
+												
+													<p>One of the best blogposts I have seen in a long time. Great work.<br />
+Also I suggest to remove the possibility to run .hta extensions. It is no problem wrapping vb scripts inside a HTA.</p>
+												
+											</div>
+				</div>
+			
+							</div>
+	</li><!-- #comment-## -->
+		<li id="comment-11393" class="comment odd alt thread-odd thread-alt depth-1 comment">
+			<div class="row">
+								
+											
+				<div class="comment-wrap col-md-12">
+					
+                        <ul class="comment-meta">
+                <li class="comment-avatar"><img alt='' src='https://secure.gravatar.com/avatar/d7bae586e8a462ba8024fa3013576716?s=50&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/d7bae586e8a462ba8024fa3013576716?s=100&#038;d=mm&#038;r=g 2x' class='avatar avatar-50 photo' height='50' width='50' loading='lazy'/></li>
+                <li class="comment-attr"><span class="comment-author"><a href='http://none' rel='external nofollow ugc' class='url'>Matt Smith</a></span> on <span class="comment-date">November 4, 2016 <span class="time">at 9:46 am</span></span></li>
+                <li class="single-comment-link"><a href="https://adsecurity.org/?p=3299#comment-11393">#</a></li>
+            </ul>
+    
+					<div class="comment-entry">
+												
+													<p>Great Article. </p>
+<p>Thought it worth noting EMET isn&#8217;t hugely recommended anymore for Windows 10,</p>
+<p><a href="https://blogs.technet.microsoft.com/srd/2016/11/03/beyond-emet/" rel="nofollow ugc">https://blogs.technet.microsoft.com/srd/2016/11/03/beyond-emet/</a></p>
+												
+											</div>
+				</div>
+			
+							</div>
+	</li><!-- #comment-## -->
+        </ol>
+       	
+            </div>
+        
+        
+    </div>
+
+
+	<div id="respond">
+		<h3 id="reply-title"><i class="fa fa-comment-o"></i> Comments have been disabled.</h3>
+            </div>
+
+
+
+            
+  
+
+                </div><!-- #content-main -->
+        
+            
+<div id="sidebar1" class="sidebar sidebar-right widget-area col-md-4">
+
+	
+    
+		<div id="recent-posts-4" class="sidebar-wrap widget_recent_entries">
+		<h3>Recent Posts</h3>
+		<ul>
+											<li>
+					<a href="https://adsecurity.org/?p=4367">Attacking Active Directory Group Managed Service Accounts (GMSAs)</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4277">From Azure AD to Active Directory (via Azure) &#8211; An Unanticipated Attack Path</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4211">What is Azure Active Directory?</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4179">Slides Posted for Black Hat USA 2019 Talk: Attacking &#038; Defending the Microsoft Cloud</a>
+									</li>
+											<li>
+					<a href="https://adsecurity.org/?p=4187">AD Reading: Windows Server 2019 Active Directory Features</a>
+									</li>
+					</ul>
+
+		</div><div id="text-3" class="sidebar-wrap widget_text"><h3>Trimarc Active Directory Security Services</h3>			<div class="textwidget">Have concerns about your Active Directory environment?
+
+Trimarc helps enterprises improve their security posture. <p>
+<a href="http://trimarcsecurity.com/security-services">Find out how...</a> 
+TrimarcSecurity.com</div>
+		</div><div id="widget_tptn_pop-4" class="sidebar-wrap tptn_posts_list_widget"><h3>Popular Posts</h3><div class="tptn_posts  tptn_posts_widget tptn_posts_widget4"><ul><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2362"     class="tptn_link"><span class="tptn_title">Attack Methods for Gaining Domain Admin Rights in&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=478"     class="tptn_link"><span class="tptn_title">PowerShell Encoding &#038; Decoding (Base64)</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=483"     class="tptn_link"><span class="tptn_title">Kerberos &#038; KRBTGT: Active Directory&#8217;s&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3377"     class="tptn_link"><span class="tptn_title">Securing Domain Controllers to Improve Active&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2288"     class="tptn_link"><span class="tptn_title">Finding Passwords in SYSVOL &#038; Exploiting Group&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=3299"     class="tptn_link"><span class="tptn_title">Securing Windows Workstations: Developing a Secure Baseline</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1684"     class="tptn_link"><span class="tptn_title">The Most Common Active Directory Security Issues and&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=2653"     class="tptn_link"><span class="tptn_title">Building an Effective Active Directory Lab&hellip;</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1729"     class="tptn_link"><span class="tptn_title">Mimikatz DCSync Usage, Exploitation, and Detection</span></a></span></li><li><span class="tptn_after_thumb"><a href="https://adsecurity.org/?p=1790"     class="tptn_link"><span class="tptn_title">Microsoft Local Administrator Password Solution (LAPS)</span></a></span></li></ul><div class="tptn_clear"></div></div></div><div id="categories-4" class="sidebar-wrap widget_categories"><h3>Categories</h3>
+			<ul>
+					<li class="cat-item cat-item-565"><a href="https://adsecurity.org/?cat=565">ActiveDirectorySecurity</a>
+</li>
+	<li class="cat-item cat-item-55"><a href="https://adsecurity.org/?cat=55">Apple Security</a>
+</li>
+	<li class="cat-item cat-item-431"><a href="https://adsecurity.org/?cat=431">Cloud Security</a>
+</li>
+	<li class="cat-item cat-item-17"><a href="https://adsecurity.org/?cat=17">Continuing Education</a>
+</li>
+	<li class="cat-item cat-item-396"><a href="https://adsecurity.org/?cat=396">Entertainment</a>
+</li>
+	<li class="cat-item cat-item-347"><a href="https://adsecurity.org/?cat=347">Exploit</a>
+</li>
+	<li class="cat-item cat-item-1039"><a href="https://adsecurity.org/?cat=1039">Hacking</a>
+</li>
+	<li class="cat-item cat-item-168"><a href="https://adsecurity.org/?cat=168">Hardware Security</a>
+</li>
+	<li class="cat-item cat-item-172"><a href="https://adsecurity.org/?cat=172">Hypervisor Security</a>
+</li>
+	<li class="cat-item cat-item-126"><a href="https://adsecurity.org/?cat=126">Linux/Unix Security</a>
+</li>
+	<li class="cat-item cat-item-343"><a href="https://adsecurity.org/?cat=343">Malware</a>
+</li>
+	<li class="cat-item cat-item-11"><a href="https://adsecurity.org/?cat=11">Microsoft Security</a>
+</li>
+	<li class="cat-item cat-item-819"><a href="https://adsecurity.org/?cat=819">Mitigation</a>
+</li>
+	<li class="cat-item cat-item-48"><a href="https://adsecurity.org/?cat=48">Network/System Security</a>
+</li>
+	<li class="cat-item cat-item-7"><a href="https://adsecurity.org/?cat=7">PowerShell</a>
+</li>
+	<li class="cat-item cat-item-698"><a href="https://adsecurity.org/?cat=698">RealWorld</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="https://adsecurity.org/?cat=21">Security</a>
+</li>
+	<li class="cat-item cat-item-234"><a href="https://adsecurity.org/?cat=234">Security Conference Presentation/Video</a>
+</li>
+	<li class="cat-item cat-item-1045"><a href="https://adsecurity.org/?cat=1045">Security Recommendation</a>
+</li>
+	<li class="cat-item cat-item-24"><a href="https://adsecurity.org/?cat=24">Technical Article</a>
+</li>
+	<li class="cat-item cat-item-4"><a href="https://adsecurity.org/?cat=4">Technical Reading</a>
+</li>
+	<li class="cat-item cat-item-2"><a href="https://adsecurity.org/?cat=2">Technical Reference</a>
+</li>
+	<li class="cat-item cat-item-156"><a href="https://adsecurity.org/?cat=156">TheCloud</a>
+</li>
+	<li class="cat-item cat-item-930"><a href="https://adsecurity.org/?cat=930">Vulnerability</a>
+</li>
+			</ul>
+
+			</div><div id="tag_cloud-3" class="sidebar-wrap widget_tag_cloud"><h3>Tags</h3><div class="tagcloud"><a href="https://adsecurity.org/?tag=activedirectory" class="tag-cloud-link tag-link-20 tag-link-position-1" style="font-size: 22pt;" aria-label="ActiveDirectory (52 items)">ActiveDirectory</a>
+<a href="https://adsecurity.org/?tag=active-directory" class="tag-cloud-link tag-link-75 tag-link-position-2" style="font-size: 10.531914893617pt;" aria-label="Active Directory (8 items)">Active Directory</a>
+<a href="https://adsecurity.org/?tag=activedirectoryattack" class="tag-cloud-link tag-link-537 tag-link-position-3" style="font-size: 8pt;" aria-label="ActiveDirectoryAttack (5 items)">ActiveDirectoryAttack</a>
+<a href="https://adsecurity.org/?tag=activedirectorysecurity" class="tag-cloud-link tag-link-113 tag-link-position-4" style="font-size: 13.957446808511pt;" aria-label="ActiveDirectorySecurity (14 items)">ActiveDirectorySecurity</a>
+<a href="https://adsecurity.org/?tag=active-directory-security" class="tag-cloud-link tag-link-976 tag-link-position-5" style="font-size: 9.7872340425532pt;" aria-label="Active Directory Security (7 items)">Active Directory Security</a>
+<a href="https://adsecurity.org/?tag=adreading" class="tag-cloud-link tag-link-5 tag-link-position-6" style="font-size: 13.510638297872pt;" aria-label="ADReading (13 items)">ADReading</a>
+<a href="https://adsecurity.org/?tag=adsecurity" class="tag-cloud-link tag-link-86 tag-link-position-7" style="font-size: 10.531914893617pt;" aria-label="ADSecurity (8 items)">ADSecurity</a>
+<a href="https://adsecurity.org/?tag=ad-security" class="tag-cloud-link tag-link-100 tag-link-position-8" style="font-size: 8pt;" aria-label="AD Security (5 items)">AD Security</a>
+<a href="https://adsecurity.org/?tag=dcsync" class="tag-cloud-link tag-link-598 tag-link-position-9" style="font-size: 10.531914893617pt;" aria-label="DCSync (8 items)">DCSync</a>
+<a href="https://adsecurity.org/?tag=defcon" class="tag-cloud-link tag-link-518 tag-link-position-10" style="font-size: 8pt;" aria-label="DEFCON (5 items)">DEFCON</a>
+<a href="https://adsecurity.org/?tag=domaincontroller" class="tag-cloud-link tag-link-101 tag-link-position-11" style="font-size: 15.446808510638pt;" aria-label="DomainController (18 items)">DomainController</a>
+<a href="https://adsecurity.org/?tag=emet5" class="tag-cloud-link tag-link-338 tag-link-position-12" style="font-size: 8pt;" aria-label="EMET5 (5 items)">EMET5</a>
+<a href="https://adsecurity.org/?tag=goldenticket" class="tag-cloud-link tag-link-303 tag-link-position-13" style="font-size: 11.276595744681pt;" aria-label="GoldenTicket (9 items)">GoldenTicket</a>
+<a href="https://adsecurity.org/?tag=hyperv" class="tag-cloud-link tag-link-3 tag-link-position-14" style="font-size: 8pt;" aria-label="HyperV (5 items)">HyperV</a>
+<a href="https://adsecurity.org/?tag=invoke-mimikatz" class="tag-cloud-link tag-link-336 tag-link-position-15" style="font-size: 10.531914893617pt;" aria-label="Invoke-Mimikatz (8 items)">Invoke-Mimikatz</a>
+<a href="https://adsecurity.org/?tag=kb3011780" class="tag-cloud-link tag-link-337 tag-link-position-16" style="font-size: 9.7872340425532pt;" aria-label="KB3011780 (7 items)">KB3011780</a>
+<a href="https://adsecurity.org/?tag=kdc" class="tag-cloud-link tag-link-80 tag-link-position-17" style="font-size: 8pt;" aria-label="KDC (5 items)">KDC</a>
+<a href="https://adsecurity.org/?tag=kerberos" class="tag-cloud-link tag-link-81 tag-link-position-18" style="font-size: 15.446808510638pt;" aria-label="Kerberos (18 items)">Kerberos</a>
+<a href="https://adsecurity.org/?tag=kerberoshacking" class="tag-cloud-link tag-link-298 tag-link-position-19" style="font-size: 11.872340425532pt;" aria-label="KerberosHacking (10 items)">KerberosHacking</a>
+<a href="https://adsecurity.org/?tag=krbtgt" class="tag-cloud-link tag-link-394 tag-link-position-20" style="font-size: 9.7872340425532pt;" aria-label="KRBTGT (7 items)">KRBTGT</a>
+<a href="https://adsecurity.org/?tag=laps" class="tag-cloud-link tag-link-631 tag-link-position-21" style="font-size: 9.0425531914894pt;" aria-label="LAPS (6 items)">LAPS</a>
+<a href="https://adsecurity.org/?tag=lsass" class="tag-cloud-link tag-link-71 tag-link-position-22" style="font-size: 11.276595744681pt;" aria-label="LSASS (9 items)">LSASS</a>
+<a href="https://adsecurity.org/?tag=mcm" class="tag-cloud-link tag-link-6 tag-link-position-23" style="font-size: 14.255319148936pt;" aria-label="MCM (15 items)">MCM</a>
+<a href="https://adsecurity.org/?tag=microsoftemet" class="tag-cloud-link tag-link-58 tag-link-position-24" style="font-size: 11.276595744681pt;" aria-label="MicrosoftEMET (9 items)">MicrosoftEMET</a>
+<a href="https://adsecurity.org/?tag=microsoftwindows" class="tag-cloud-link tag-link-102 tag-link-position-25" style="font-size: 9.7872340425532pt;" aria-label="MicrosoftWindows (7 items)">MicrosoftWindows</a>
+<a href="https://adsecurity.org/?tag=mimikatz" class="tag-cloud-link tag-link-207 tag-link-position-26" style="font-size: 18.425531914894pt;" aria-label="mimikatz (29 items)">mimikatz</a>
+<a href="https://adsecurity.org/?tag=ms14068" class="tag-cloud-link tag-link-295 tag-link-position-27" style="font-size: 11.276595744681pt;" aria-label="MS14068 (9 items)">MS14068</a>
+<a href="https://adsecurity.org/?tag=passthehash" class="tag-cloud-link tag-link-44 tag-link-position-28" style="font-size: 9.7872340425532pt;" aria-label="PassTheHash (7 items)">PassTheHash</a>
+<a href="https://adsecurity.org/?tag=powershell" class="tag-cloud-link tag-link-575 tag-link-position-29" style="font-size: 18.872340425532pt;" aria-label="PowerShell (31 items)">PowerShell</a>
+<a href="https://adsecurity.org/?tag=powershellcode" class="tag-cloud-link tag-link-22 tag-link-position-30" style="font-size: 15.148936170213pt;" aria-label="PowerShellCode (17 items)">PowerShellCode</a>
+<a href="https://adsecurity.org/?tag=powershellhacking" class="tag-cloud-link tag-link-68 tag-link-position-31" style="font-size: 8pt;" aria-label="PowerShellHacking (5 items)">PowerShellHacking</a>
+<a href="https://adsecurity.org/?tag=powershellv5" class="tag-cloud-link tag-link-69 tag-link-position-32" style="font-size: 8pt;" aria-label="PowerShellv5 (5 items)">PowerShellv5</a>
+<a href="https://adsecurity.org/?tag=powersploit" class="tag-cloud-link tag-link-232 tag-link-position-33" style="font-size: 10.531914893617pt;" aria-label="PowerSploit (8 items)">PowerSploit</a>
+<a href="https://adsecurity.org/?tag=presentation" class="tag-cloud-link tag-link-422 tag-link-position-34" style="font-size: 9.7872340425532pt;" aria-label="Presentation (7 items)">Presentation</a>
+<a href="https://adsecurity.org/?tag=security" class="tag-cloud-link tag-link-576 tag-link-position-35" style="font-size: 8pt;" aria-label="Security (5 items)">Security</a>
+<a href="https://adsecurity.org/?tag=sidhistory" class="tag-cloud-link tag-link-547 tag-link-position-36" style="font-size: 8pt;" aria-label="SIDHistory (5 items)">SIDHistory</a>
+<a href="https://adsecurity.org/?tag=silverticket" class="tag-cloud-link tag-link-304 tag-link-position-37" style="font-size: 11.276595744681pt;" aria-label="SilverTicket (9 items)">SilverTicket</a>
+<a href="https://adsecurity.org/?tag=sneakyadpersistence" class="tag-cloud-link tag-link-596 tag-link-position-38" style="font-size: 9.0425531914894pt;" aria-label="SneakyADPersistence (6 items)">SneakyADPersistence</a>
+<a href="https://adsecurity.org/?tag=spn" class="tag-cloud-link tag-link-294 tag-link-position-39" style="font-size: 9.0425531914894pt;" aria-label="SPN (6 items)">SPN</a>
+<a href="https://adsecurity.org/?tag=tgs" class="tag-cloud-link tag-link-528 tag-link-position-40" style="font-size: 9.0425531914894pt;" aria-label="TGS (6 items)">TGS</a>
+<a href="https://adsecurity.org/?tag=tgt" class="tag-cloud-link tag-link-529 tag-link-position-41" style="font-size: 9.0425531914894pt;" aria-label="TGT (6 items)">TGT</a>
+<a href="https://adsecurity.org/?tag=windows10" class="tag-cloud-link tag-link-494 tag-link-position-42" style="font-size: 10.531914893617pt;" aria-label="Windows10 (8 items)">Windows10</a>
+<a href="https://adsecurity.org/?tag=windowsserver2008r2" class="tag-cloud-link tag-link-46 tag-link-position-43" style="font-size: 9.0425531914894pt;" aria-label="WindowsServer2008R2 (6 items)">WindowsServer2008R2</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012" class="tag-cloud-link tag-link-47 tag-link-position-44" style="font-size: 11.276595744681pt;" aria-label="WindowsServer2012 (9 items)">WindowsServer2012</a>
+<a href="https://adsecurity.org/?tag=windowsserver2012r2" class="tag-cloud-link tag-link-54 tag-link-position-45" style="font-size: 9.7872340425532pt;" aria-label="WindowsServer2012R2 (7 items)">WindowsServer2012R2</a></div>
+</div>    
+        
+    
+</div><!-- #sidebar1 -->        
+        
+    </div><!-- #content -->
+
+
+    
+        
+    <div id="sidebar_bottom" class="sidebar widget-area row footer-widget-col-3">
+                    <div id="text-2" class="sidebar-wrap widget_text col-sm-4"><h3>Copyright</h3>			<div class="textwidget">Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability.
+The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned.
+
+Content Ownership: All content posted here is intellectual work and under the current law, the poster owns the copyright of the article. Terms of Use Copyright © 2011 - 2020.</div>
+		</div>		
+            </div>
+
+	
+
+<div id="footer" class="row default-footer">
+    
+        
+            
+            <div class="copyright-developer">
+                                    <div id="copyright">
+                        <p>Content Disclaimer: This blog and its contents are provided "AS IS" with no warranties, and they confer no rights. Script samples are provided for informational purposes only and no guarantee is provided as to functionality or suitability. The views shared on this blog reflect those of the authors and do not represent the views of any companies mentioned. </p>
+                    </div>
+                
+                                    <div id="developer">
+                        <p>
+                                                        Made with <i class="fa fa-heart"></i> by <a href="https://www.graphene-theme.com/" rel="nofollow">Graphene Themes</a>.                        </p>
+
+                                            </div>
+                            </div>
+
+        
+                
+    </div><!-- #footer -->
+
+
+</div><!-- #container -->
+
+		<!-- Start of StatCounter Code -->
+		<script>
+			<!--
+			var sc_project=10100711;
+			var sc_security="4b306538";
+			      var sc_invisible=1;
+			var scJsHost = (("https:" == document.location.protocol) ?
+				"https://secure." : "http://www.");
+			//-->
+					</script>
+		
+<script type="text/javascript"
+				src="https://secure.statcounter.com/counter/counter.js"
+				async></script>		<noscript><div class="statcounter"><a title="web analytics" href="https://statcounter.com/"><img class="statcounter" src="https://c.statcounter.com/10100711/0/4b306538/1/" alt="web analytics" /></a></div></noscript>
+		<!-- End of StatCounter Code -->
+				<a href="#" id="back-to-top" title="Back to top"><i class="fa fa-chevron-up"></i></a>
+	<script type='text/javascript' id='tptn_tracker-js-extra'>
+/* <![CDATA[ */
+var ajax_tptn_tracker = {"ajax_url":"https:\/\/adsecurity.org\/wp-admin\/admin-ajax.php","top_ten_id":"3299","top_ten_blog_id":"1","activate_counter":"11","top_ten_debug":"0","tptn_rnd":"1092726137"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://adsecurity.org/wp-content/plugins/top-10/includes/js/top-10-tracker.min.js?ver=1.0' id='tptn_tracker-js'></script>
+<script defer type='text/javascript' src='https://adsecurity.org/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://adsecurity.org/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+</body>
+</html>

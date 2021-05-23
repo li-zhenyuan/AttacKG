@@ -1,0 +1,1862 @@
+<!doctype html><!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en-us" > <![endif]--><!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en-us" >        <![endif]--><!--[if IE 8]>    <html class="no-js lt-ie9" lang="en-us" >               <![endif]--><!--[if gt IE 8]><!--><html class="no-js" lang="en-us"><!--<![endif]--><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="author" content="Michael Gorelik">
+    <meta name="description" content="Morphisec Lab identified a new fileless attack campaign targeting restaurants across the US, most likely perpetrated by FIN7. It uses some never before seen evasive techniques that allow it to bypass most security solutions.">
+    <meta name="generator" content="HubSpot">
+    <title>FIN7 Takes Another Bite at the Restaurant Industry</title>
+    <link rel="shortcut icon" href="https://blog.morphisec.com/hubfs/favicon.png">
+    
+
+    <script src="/hs/hsstatic/jquery-libs/static-1.4/jquery/jquery-1.11.2.js"></script>
+<script>hsjQuery = window['jQuery'];</script>
+    <meta property="og:description" content="Morphisec Lab identified a new fileless attack campaign targeting restaurants across the US, most likely perpetrated by FIN7. It uses some never before seen evasive techniques that allow it to bypass most security solutions.">
+    <meta property="og:title" content="FIN7 Takes Another Bite at the Restaurant Industry">
+    <meta name="twitter:description" content="Morphisec Lab identified a new fileless attack campaign targeting restaurants across the US, most likely perpetrated by FIN7. It uses some never before seen evasive techniques that allow it to bypass most security solutions.">
+    <meta name="twitter:title" content="FIN7 Takes Another Bite at the Restaurant Industry">
+
+    
+
+    
+    <style>
+a.cta_button{-moz-box-sizing:content-box !important;-webkit-box-sizing:content-box !important;box-sizing:content-box !important;vertical-align:middle}.hs-breadcrumb-menu{list-style-type:none;margin:0px 0px 0px 0px;padding:0px 0px 0px 0px}.hs-breadcrumb-menu-item{float:left;padding:10px 0px 10px 10px}.hs-breadcrumb-menu-divider:before{content:'›';padding-left:10px}.hs-featured-image-link{border:0}.hs-featured-image{float:right;margin:0 0 20px 20px;max-width:50%}@media (max-width: 568px){.hs-featured-image{float:none;margin:0;width:100%;max-width:100%}}.hs-screen-reader-text{clip:rect(1px, 1px, 1px, 1px);height:1px;overflow:hidden;position:absolute !important;width:1px}
+</style>
+
+<link rel="stylesheet" href="https://cdn2.hubspot.net/hub/-1/hub_generated/module_assets/-2712622/1621627583859/module_-2712622_Site_Search_Input.min.css">
+<link rel="stylesheet" href="/hs/hsstatic/BlogSocialSharingSupport/static-1.16/bundles/project.css">
+<link rel="stylesheet" href="/hs/hsstatic/AsyncSupport/static-1.94/sass/rss_post_listing.css">
+<link rel="stylesheet" href="https://blog.morphisec.com/hs-fs/hub/1534169/hub_generated/module_assets/6224175595/1617603418843/module_6224175595_Morphisec_-_Footer_Social_Icons.min.css">
+<link rel="stylesheet" href="https://blog.morphisec.com/hs-fs/hub/1534169/hub_generated/template_assets/35906320644/1602336947748/2020_-_UIS_-_Template_Folders/Vendor_CSS/magnific-popup.min.css">
+    
+
+    
+<!--  Added by GoogleAnalytics integration -->
+<script>
+var _hsp = window._hsp = window._hsp || [];
+_hsp.push(['addPrivacyConsentListener', function(consent) { if (consent.allowed || (consent.categories && consent.categories.analytics)) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create','UA-60065248-1','auto');
+  ga('send','pageview');
+}}]);
+</script>
+
+<!-- /Added by GoogleAnalytics integration -->
+
+<!--  Added by GoogleTagManager integration -->
+<script>
+var _hsp = window._hsp = window._hsp || []; _hsp.push(['addPrivacyConsentListener', function(consent) { if (consent.allowed || (consent.categories && consent.categories.analytics)) {
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NVB96BD');
+}}]);
+</script>
+
+<!-- /Added by GoogleTagManager integration -->
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Facebook Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '885880844953016');
+  fbq('track', 'PageView');
+</script>
+<noscript>&lt;img  height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=885880844953016&amp;amp;ev=PageView&amp;amp;noscript=1"&gt;</noscript>
+<!-- End Facebook Pixel Code -->
+<!-- Global site tag (gtag.js) - Google Ads: 784310031 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-784310031"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-784310031');
+</script>
+
+<!-- FontAwesome -->
+<script src="https://kit.fontawesome.com/3d204f513a.js" crossorigin="anonymous"></script>
+<!-- End FontAwesome -->
+<link rel="amphtml" href="https://blog.morphisec.com/fin7-attacks-restaurant-industry?hs_amp=true">
+
+<meta property="og:image" content="https://blog.morphisec.com/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg#keepProtocol">
+<meta property="og:image:width" content="750">
+<meta property="og:image:height" content="450">
+<meta property="og:image:alt" content="FIN7-attacks-restaurants-165362852.jpg">
+<meta name="twitter:image" content="https://blog.morphisec.com/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg#keepProtocol">
+<meta name="twitter:image:alt" content="FIN7-attacks-restaurants-165362852.jpg">
+
+<meta property="og:url" content="https://blog.morphisec.com/fin7-attacks-restaurant-industry">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@smgoreli">
+
+<link rel="canonical" href="https://blog.morphisec.com/fin7-attacks-restaurant-industry">
+<style>
+#header.updated-header-section .main-nav .hs-menu-wrapper>ul>li .hs-menu-children-wrapper {
+    margin-left: 10px;
+}
+</style>
+<meta property="og:type" content="article">
+<link rel="alternate" type="application/rss+xml" href="https://blog.morphisec.com/rss.xml">
+<meta name="twitter:domain" content="blog.morphisec.com">
+<meta name="twitter:site" content="@morphisec">
+<script src="//platform.linkedin.com/in.js" type="text/javascript">
+    lang: en_US
+</script>
+
+<meta http-equiv="content-language" content="en-us">
+<link rel="stylesheet" href="//cdn2.hubspot.net/hub/7052064/hub_generated/template_assets/1621526769050/hubspot/hubspot_default/shared/responsive/layout.min.css">
+
+
+<link rel="stylesheet" href="https://blog.morphisec.com/hs-fs/hub/1534169/hub_generated/template_assets/6213834303/1621187185291/Morphisec/Coded_Files/Morphisec_Sept2018_styles.min.css">
+
+
+
+
+</head>
+<body class="   hs-content-id-5199233586 hs-blog-post hs-blog-id-3742504875" style="">
+<!--  Added by GoogleTagManager integration -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NVB96BD" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- /Added by GoogleTagManager integration -->
+
+    <div class="header-container-wrapper">
+    <div class="header-container container-fluid">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-1 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-global_group " style="" data-widget-type="global_group" data-x="0" data-w="12">
+<div class="" data-global-widget-path="generated_global_groups/17239665297.html"><div class="row-fluid-wrapper row-depth-1 row-number-1 ">
+<div class="row-fluid ">
+<div id="top-header" class="span12 widget-span widget-type-cell " style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-2 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell page-center" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-3 ">
+<div class="row-fluid ">
+<div class="span6 widget-span widget-type-custom_widget top-header-search" style="" data-widget-type="custom_widget" data-x="0" data-w="6">
+<div id="hs_cos_wrapper_module_1537886188382726" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+<div class="hs-search-field"> 
+    <div class="hs-search-field__bar"> 
+      <form action="/hs-search-results">
+        
+        <input type="text" class="hs-search-field__input" name="term" autocomplete="off" aria-label="Search" placeholder="Keyword...">
+        
+        
+          <input type="hidden" name="type" value="SITE_PAGE">
+        
+        
+        
+          <input type="hidden" name="type" value="BLOG_POST">
+          <input type="hidden" name="type" value="LISTING_PAGE">
+        
+        
+
+        
+      </form>
+    </div>
+    <ul class="hs-search-field__suggestions"></ul>
+</div></div>
+
+</div><!--end widget-span -->
+<div class="span6 widget-span widget-type-custom_widget top-header-nav" style="" data-widget-type="custom_widget" data-x="6" data-w="6">
+<div id="hs_cos_wrapper_module_1537886180025724" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_1537886180025724_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="simple_menu"><div id="hs_menu_wrapper_module_1537886180025724_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-horizontal" role="navigation" data-sitemap-name="" data-menu-id="" aria-label="Navigation Menu">
+ <ul class="active-branch">
+  <li class="hs-menu-item hs-menu-depth-1"><a href="#" role="menuitem" target="_self"><i class="fa fa-search" aria-hidden="true"><span class="screen-reader-text">Search</span></i></a></li>
+  <li class="hs-menu-item hs-menu-depth-1 active active-branch"><a href="https://blog.morphisec.com" role="menuitem" target="_self">Blog</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://engage.morphisec.com/support" role="menuitem" target="_self">Support</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/partners" role="menuitem" target="_self">Partners</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://engage.morphisec.com/contact-us-2019" role="menuitem" target="_self">Contact Us</a></li>
+ </ul>
+</div></span>
+
+
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-4 ">
+<div class="row-fluid ">
+<div id="header" class="span12 widget-span widget-type-cell updated-header-section" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-5 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell page-center vertical-aligncenter" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-6 ">
+<div class="row-fluid ">
+<div class="span3 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="3">
+<div id="hs_cos_wrapper_module_1537886166544714" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-linked_image" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+    
+
+
+
+
+
+  
+
+
+
+<span id="hs_cos_wrapper_module_1537886166544714_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_linked_image" style="" data-hs-cos-general-type="widget" data-hs-cos-type="linked_image"><a href="https://www.morphisec.com" target="_parent" id="hs-link-module_1537886166544714_" style="border-width:0px;border:0px;"><img src="https://blog.morphisec.com/hubfs/MorphLogoHorizColorWhiteNoTag_RGB.png" class="hs-image-widget " style="max-width: 100%; height: auto;" alt="MorphLogoHorizColorWhiteNoTag_RGB" title="MorphLogoHorizColorWhiteNoTag_RGB"></a></span>
+</div>
+
+</div><!--end widget-span -->
+<div class="span7 widget-span widget-type-custom_widget main-nav custom-menu-primary" style="" data-widget-type="custom_widget" data-x="3" data-w="7">
+<div id="hs_cos_wrapper_module_1537886177615723" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+<span id="hs_cos_wrapper_module_1537886177615723_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="menu"><div id="hs_menu_wrapper_module_1537886177615723_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-horizontal" role="navigation" data-sitemap-name="default" data-menu-id="17242827075" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Products</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/products/" role="menuitem">Product Overview</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/products/morphisec-shield-threat-prevention" role="menuitem">Morphisec Shield</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/products/morphisec-guard-endpoint-protection" role="menuitem">Morphisec Guard</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/products/virtual-desktop-infrastructure" role="menuitem">Virtual Desktop Protection</a></li>
+    <li class="hs-menu-item hs-menu-depth-2 hs-item-has-children" role="menuitem"><a href="https://www.morphisec.com/products/morphisec-keep-server-protection" role="menuitem">Morphisec Keep</a>
+     <ul class="hs-menu-children-wrapper">
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/products/server-protection-linux" role="menuitem">Linux Server Protection</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/products/windows-server-protection" role="menuitem">Windows Server Protection</a></li>
+     </ul></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Solutions</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2 hs-item-has-children" role="menuitem"><a href="javascript:;" role="menuitem">By Industry</a>
+     <ul class="hs-menu-children-wrapper">
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/solutions/small-business" role="menuitem">SMB</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/solutions/k-12-school-cybersecurity" role="menuitem">K-12 Education</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/solutions/manufacturing-industry" role="menuitem">Manufacturing</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/solutions/finance-industry" role="menuitem">Finance</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/solutions/tech-industry" role="menuitem">Technology</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/solutions/healthcare-industry" role="menuitem">Healthcare</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/solutions/legal-industry" role="menuitem">Legal</a></li>
+     </ul></li>
+    <li class="hs-menu-item hs-menu-depth-2 hs-item-has-children" role="menuitem"><a href="javascript:;" role="menuitem">By Use Case</a>
+     <ul class="hs-menu-children-wrapper">
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/incident-response-services" role="menuitem">Incident Response</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/legacy-av" role="menuitem">Antivirus Replacement</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/cloud-workload-protection" role="menuitem">Cloud Workload Protection</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/remote-employee-security" role="menuitem">Remote Employee Security</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/collaboration-application-hardening" role="menuitem">Collaboration Application Hardening</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/ransomware-protection" role="menuitem">Ransomware Prevention</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/virtual-patch" role="menuitem">Virtual Patching and Compliance</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/pos" role="menuitem">Point-of-Sale Protection</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/supply-chain-attack-prevention" role="menuitem">Supply Chain Attack Protection</a></li>
+      <li class="hs-menu-item hs-menu-depth-3"><a href="https://www.morphisec.com/browser-attack-protection" role="menuitem">Browser Attack Protection</a></li>
+     </ul></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="javascript:;" aria-haspopup="true" aria-expanded="false" role="menuitem">Company</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/about-us" role="menuitem">About Us</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/news-and-events" role="menuitem">News</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/news-and-events#events" role="menuitem">Events</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/careers" role="menuitem">Careers</a></li>
+   </ul></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/morphisec-customer-corner" role="menuitem">Customers</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/resources" role="menuitem">Resources</a></li>
+ </ul>
+</div></span></div>
+
+</div><!--end widget-span -->
+<div class="span2 widget-span widget-type-custom_widget header-cta" style="" data-widget-type="custom_widget" data-x="10" data-w="2">
+<div id="hs_cos_wrapper_module_15379063671511715" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-cta" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_15379063671511715_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_cta" style="" data-hs-cos-general-type="widget" data-hs-cos-type="cta"><!--HubSpot Call-to-Action Code --><span class="hs-cta-wrapper" id="hs-cta-wrapper-ce754037-3810-4a18-a28d-27ddc7e80abe"><span class="hs-cta-node hs-cta-ce754037-3810-4a18-a28d-27ddc7e80abe" id="hs-cta-ce754037-3810-4a18-a28d-27ddc7e80abe"><!--[if lte IE 8]><div id="hs-cta-ie-element"></div><![endif]--><a href="https://cta-redirect.hubspot.com/cta/redirect/1534169/ce754037-3810-4a18-a28d-27ddc7e80abe" target="_blank"><img class="hs-cta-img" id="hs-cta-img-ce754037-3810-4a18-a28d-27ddc7e80abe" style="border-width:0px;" src="https://no-cache.hubspot.com/cta/default/1534169/ce754037-3810-4a18-a28d-27ddc7e80abe.png" alt="Get a Demo"></a></span><script charset="utf-8" src="/hs/cta/cta/current.js"></script><script type="text/javascript"> hbspt.cta._relativeUrls=true;hbspt.cta.load(1534169, 'ce754037-3810-4a18-a28d-27ddc7e80abe', {"region":"na1"}); </script></span><!-- end HubSpot Call-to-Action Code --></span></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+</div>
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+    </div><!--end header -->
+</div><!--end header wrapper -->
+
+<div class="body-container-wrapper">
+    <div class="body-container container-fluid">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-1 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1541131484651182" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><div class="blog-banner-mod" style="background-image: url('https://blog.morphisec.com/hubfs/Morphisec_Sept2018/images/banner.jpg');">
+  <div class="page-center">
+    <div class="banner-content">
+      <h1>Moving Target Defense Blog</h1>
+      <h2>Cybersecurity trends, exploring moving target defense and putting endpoint threat prevention first</h2>
+    </div>
+  </div>
+</div></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-2 ">
+<div class="row-fluid ">
+<div class="main-blog-sec">
+  <div class="page-center">
+    
+<div class="span12 widget-span widget-type-cell " style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-3 ">
+<div class="row-fluid ">
+<div class="span8 widget-span widget-type-cell blog-left-col" style="" data-widget-type="cell" data-x="0" data-w="8">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-4 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_151456960811572" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-blog_content" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+    <div class="blog-section">
+<div class="blog-post-wrapper cell-wrapper">
+<div class="section post-header">
+<h1><span id="hs_cos_wrapper_name" class="hs_cos_wrapper hs_cos_wrapper_meta_field hs_cos_wrapper_type_text" style="" data-hs-cos-general-type="meta_field" data-hs-cos-type="text">FIN7 Takes Another Bite at the Restaurant Industry</span></h1>
+<div id="hubspot-author_data" class="hubspot-editable" data-hubspot-form-id="author_data" data-hubspot-name="Blog Author">
+<span class="hs-author-label">Posted by</span>
+<a class="author-link" href="https://blog.morphisec.com/author/michael-gorelik">Michael Gorelik</a> on June 9, 2017
+<div class="hs-author-social-section">
+<span class="hs-author-social-label">Find me on:</span>
+<div class="hs-author-social-links">
+<a href="https://www.linkedin.com/in/michael-gorelik-56130021" target="_blank" class="hs-author-social-link hs-social-linkedin">LinkedIn</a>
+<a href="https://twitter.com/smgoreli" target="_blank" class="hs-author-social-link hs-social-twitter">Twitter </a>
+</div>
+</div>
+</div>
+</div>
+<div class="blog-share-media">
+<span id="hs_cos_wrapper_blog_social_sharing" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_blog_social_sharing" style="" data-hs-cos-general-type="widget" data-hs-cos-type="blog_social_sharing">
+<div class="hs-blog-social-share">
+<ul class="hs-blog-social-share-list">
+<li class="hs-blog-social-share-item hs-blog-social-share-item-twitter">
+<!-- Twitter social share -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-lang="en" data-url="https://blog.morphisec.com/fin7-attacks-restaurant-industry" data-size="medium" data-text="FIN7 Takes Another Bite at the Restaurant Industry">Tweet</a>
+</li>
+<li class="hs-blog-social-share-item hs-blog-social-share-item-linkedin">
+<!-- LinkedIn social share -->
+<script type="IN/Share" data-url="https://blog.morphisec.com/fin7-attacks-restaurant-industry" data-showzero="true" data-counter="right"></script>
+</li>
+<li class="hs-blog-social-share-item hs-blog-social-share-item-facebook">
+<!-- Facebook share -->
+<div class="fb-like" data-href="https://blog.morphisec.com/fin7-attacks-restaurant-industry" data-layout="button" data-action="like" data-show-faces="false" data-share="true" data-width="120"></div>
+</li>
+</ul>
+</div>
+</span>
+</div>
+<div class="section post-body">
+<span id="hs_cos_wrapper_post_body" class="hs_cos_wrapper hs_cos_wrapper_meta_field hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="meta_field" data-hs-cos-type="rich_text"><p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg?width=750&amp;height=450&amp;name=FIN7-attacks-restaurants-165362852.jpg" alt="FIN7-attacks-restaurants-165362852.jpg" width="750" height="450" style="background-color: transparent;" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg?width=375&amp;height=225&amp;name=FIN7-attacks-restaurants-165362852.jpg 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg?width=750&amp;height=450&amp;name=FIN7-attacks-restaurants-165362852.jpg 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg?width=1125&amp;height=675&amp;name=FIN7-attacks-restaurants-165362852.jpg 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg?width=1500&amp;height=900&amp;name=FIN7-attacks-restaurants-165362852.jpg 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg?width=1875&amp;height=1125&amp;name=FIN7-attacks-restaurants-165362852.jpg 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7-attacks-restaurants-165362852.jpg?width=2250&amp;height=1350&amp;name=FIN7-attacks-restaurants-165362852.jpg 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<h2><span style="color: #e72c45;">INTRODUCTION</span></h2>
+<p>On June 7, 2017, Morphisec Lab identified a new, highly sophisticated fileless attack targeting restaurants across the US. The ongoing campaign allows hackers to seize system control and install a backdoor to steal financial information at will. It incorporates some never before seen evasive techniques that allow it to bypass most security solutions – signature and behavior based.</p>
+<p><!--more--></p>
+<p>Aside from these updated techniques, Morphisec’s investigation revealed an almost perfect match to FIN7 attack methods. Past highly successful and damaging attacks on banks, SEC personnel, large restaurant chains and hospitality organizations have all been attributed to the financially-motivated <a href="//blog.morphisec.com/fileless-attack-framework-discovery">FIN7 group</a>. FIN7, which is also associated with the <a href="//blog.morphisec.com/carbanak-winword-exploit-prevented-by-morphisec">Carbanak</a> gang, must be seen as one of the leading threat actor groups operating today.</p>
+<p>Like past attacks, the initial infection vector is a malicious Word document attached to a phishing email that is well-tailored to the targeted business and its day-to-day operations. The Word document executes a fileless attack that uses DNS queries to deliver the next shellcode stage (Meterpreter). However, in this new variant, all the DNS activity is initiated and executed solely from memory – unlike previous attacks which used PowerShell commands.</p>
+<p>OpenDNS investigate data, shared in coordination with the Cisco Advanced Threat Research &amp; Efficacy Team, shows that this is a large-scale, currently active attack with peaks of more than 10K DNS requests per hour.</p>
+<p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/OpenDNS-data.png?width=750&amp;height=198&amp;name=OpenDNS-data.png" alt="OpenDNS-data.png" width="750" height="198" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/OpenDNS-data.png?width=375&amp;height=99&amp;name=OpenDNS-data.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/OpenDNS-data.png?width=750&amp;height=198&amp;name=OpenDNS-data.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/OpenDNS-data.png?width=1125&amp;height=297&amp;name=OpenDNS-data.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/OpenDNS-data.png?width=1500&amp;height=396&amp;name=OpenDNS-data.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/OpenDNS-data.png?width=1875&amp;height=495&amp;name=OpenDNS-data.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/OpenDNS-data.png?width=2250&amp;height=594&amp;name=OpenDNS-data.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p>Alarmingly, the detection score on VirusTotal for all of the documents continues to be 0/56 from the time the first documents were uploaded (1.6.2017) up until the date of this publication. This means the attackers successfully bypass static analysis by most of the security solutions.</p>
+<p>By contrast, <a href="https://www.morphisec.com/products/?__hstc=182053752.1b163c3a4dd03affa5bab3a75da22fc8.1578295878507.1583307015582.1583313278178.17&amp;__hssc=182053752.70.1583313278178&amp;__hsfp=3981430878" rel="noopener" target="_blank">Morphisec’s Moving Target Defense</a>-based technology prevents the attack in its early stages, before any channel to the attacker is opened.</p>
+<p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_01cut.png?width=750&amp;height=219&amp;name=FIN7_01cut.png" alt="FIN7_01cut.png" width="750" height="219" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_01cut.png?width=375&amp;height=110&amp;name=FIN7_01cut.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_01cut.png?width=750&amp;height=219&amp;name=FIN7_01cut.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_01cut.png?width=1125&amp;height=329&amp;name=FIN7_01cut.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_01cut.png?width=1500&amp;height=438&amp;name=FIN7_01cut.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_01cut.png?width=1875&amp;height=548&amp;name=FIN7_01cut.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_01cut.png?width=2250&amp;height=657&amp;name=FIN7_01cut.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<h2><span style="color: #e72c45;">TECHNICAL ANALYSIS</span></h2>
+<p>Below we describe the full technical details, beginning with the initial email through the final Meterpreter session used to hijack the computer.</p>
+<p><strong><span style="color: #f47310;">PHISHING EMAIL:</span></strong></p>
+<p>As seen in the email below, FIN7’s attack campaign targets restaurants. The content of the email is well crafted to avoid suspicion. Some of the email attachments are called menu.rtf, others Olive Garden.rtf or Chick Fil A Order.rtf&nbsp;(all the identified hashes are listed at the end).</p>
+<p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_02cut.png?width=747&amp;height=497&amp;name=FIN7_02cut.png" alt="FIN7_02cut.png" width="747" height="497" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_02cut.png?width=374&amp;height=249&amp;name=FIN7_02cut.png 374w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_02cut.png?width=747&amp;height=497&amp;name=FIN7_02cut.png 747w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_02cut.png?width=1121&amp;height=746&amp;name=FIN7_02cut.png 1121w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_02cut.png?width=1494&amp;height=994&amp;name=FIN7_02cut.png 1494w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_02cut.png?width=1868&amp;height=1243&amp;name=FIN7_02cut.png 1868w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_02cut.png?width=2241&amp;height=1491&amp;name=FIN7_02cut.png 2241w" sizes="(max-width: 747px) 100vw, 747px"></p>
+<p><strong><span style="color: #f47310;">WORD DELIVERY:</span></strong></p>
+<p>The attached .rtf file uses OLE and has many similarities to previous FIN7 attacks. But this attack, instead of activating hta files (mshta.exe) from within the link, executes obfuscated JavaScript code. All the victim needs to do is double click on the envelope and press OK.</p>
+<p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_03.png?width=750&amp;height=408&amp;name=FIN7_03.png" alt="FIN7_03.png" width="750" height="408" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_03.png?width=375&amp;height=204&amp;name=FIN7_03.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_03.png?width=750&amp;height=408&amp;name=FIN7_03.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_03.png?width=1125&amp;height=612&amp;name=FIN7_03.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_03.png?width=1500&amp;height=816&amp;name=FIN7_03.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_03.png?width=1875&amp;height=1020&amp;name=FIN7_03.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_03.png?width=2250&amp;height=1224&amp;name=FIN7_03.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p><strong><span style="color: #f47310;">JAVASCRIPT CODE SNIPPETS:</span></strong></p>
+<p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_04.png?width=750&amp;height=253&amp;name=FIN7_04.png" alt="FIN7_04.png" width="750" height="253" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_04.png?width=375&amp;height=127&amp;name=FIN7_04.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_04.png?width=750&amp;height=253&amp;name=FIN7_04.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_04.png?width=1125&amp;height=380&amp;name=FIN7_04.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_04.png?width=1500&amp;height=506&amp;name=FIN7_04.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_04.png?width=1875&amp;height=633&amp;name=FIN7_04.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_04.png?width=2250&amp;height=759&amp;name=FIN7_04.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p>The first stage JavaScript copies additional JavaScript code snippets in txt format from the RTF document into a random directory “C:\Users\&lt;User Name&gt;\&lt;Random guid&gt;\”. The same code snippets are combined into a second stage JavaScript in “C:\Users\&lt;User Name&gt;\”. Additionally, the first stage JavaScript creates a scheduled task that executes the second stage code within a minute – this delayed execution helps to bypass behavior analysis since the second stage is not directly executed by the first stage.</p>
+<p>&nbsp;<img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_05.png?width=750&amp;height=298&amp;name=FIN7_05.png" alt="FIN7_05.png" width="750" height="298" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_05.png?width=375&amp;height=149&amp;name=FIN7_05.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_05.png?width=750&amp;height=298&amp;name=FIN7_05.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_05.png?width=1125&amp;height=447&amp;name=FIN7_05.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_05.png?width=1500&amp;height=596&amp;name=FIN7_05.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_05.png?width=1875&amp;height=745&amp;name=FIN7_05.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_05.png?width=2250&amp;height=894&amp;name=FIN7_05.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p><span style="color: #f47310;"><strong><span style="background-color: transparent;">PERSISTENCY:</span></strong></span></p>
+<p>In some cases, an additional scheduled task “AdobeFlashSync” is created for persistency. This task is executed every 25 minutes and will repeat the actions described above – recreating the JavaScript code which later will create and execute a PowerShell script (described below).</p>
+<p><span style="color: #f47310;"><strong>SECOND STAGE JAVASCRIPT INTO POWERSHELL:</strong></span></p>
+<p>The second stage JavaScript creates a PowerShell file with the same name in the same directory. <strong>Afterwards, it deletes its own JavaScript code traces</strong>.</p>
+<p>&nbsp;<img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_06.png?width=530&amp;height=473&amp;name=FIN7_06.png" alt="FIN7_06.png" width="530" height="473" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_06.png?width=265&amp;height=237&amp;name=FIN7_06.png 265w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_06.png?width=530&amp;height=473&amp;name=FIN7_06.png 530w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_06.png?width=795&amp;height=710&amp;name=FIN7_06.png 795w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_06.png?width=1060&amp;height=946&amp;name=FIN7_06.png 1060w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_06.png?width=1325&amp;height=1183&amp;name=FIN7_06.png 1325w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_06.png?width=1590&amp;height=1419&amp;name=FIN7_06.png 1590w" sizes="(max-width: 530px) 100vw, 530px"></p>
+<p>&nbsp;<span style="background-color: transparent;">The PowerShell script executes a compressed first stage PowerShell child process, which then performs a second stage PowerShell process. The latter PowerShell injects a shellcode into its own process using well-known CreateThread and VirtualAlloc techniques:</span></p>
+<p>&nbsp;<img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_07.png?width=750&amp;height=321&amp;name=FIN7_07.png" alt="FIN7_07.png" width="750" height="321" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_07.png?width=375&amp;height=161&amp;name=FIN7_07.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_07.png?width=750&amp;height=321&amp;name=FIN7_07.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_07.png?width=1125&amp;height=482&amp;name=FIN7_07.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_07.png?width=1500&amp;height=642&amp;name=FIN7_07.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_07.png?width=1875&amp;height=803&amp;name=FIN7_07.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_07.png?width=2250&amp;height=963&amp;name=FIN7_07.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p><strong><span style="color: #f47310;">SHELLCODE:</span></strong></p>
+<p><span style="color: #e72c45;"><strong>The shellcode phase of this attack is unique and demonstrates the constantly advancing abilities of attackers. The shellcode is the primary differentiating technique between this campaign and past attacks by FIN7 and other threat actors</strong></span>.</p>
+<p>This shellcode iterates over process environment block and looks immediately for dnsapi.dll name (xor 13) and its DnsQueryA function. Basically, FIN7 implemented a shellcode that gets the next stage shellcode using the DNS messaging technique directly from memory. This way they can successfully evade many of the behavior based solutions.</p>
+<p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_08.png?width=750&amp;height=532&amp;name=FIN7_08.png" alt="FIN7_08.png" width="750" height="532" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_08.png?width=375&amp;height=266&amp;name=FIN7_08.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_08.png?width=750&amp;height=532&amp;name=FIN7_08.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_08.png?width=1125&amp;height=798&amp;name=FIN7_08.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_08.png?width=1500&amp;height=1064&amp;name=FIN7_08.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_08.png?width=1875&amp;height=1330&amp;name=FIN7_08.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_08.png?width=2250&amp;height=1596&amp;name=FIN7_08.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p>In the DNS query pattern, it is very clear to see that alphabetical modification of the subdomain prefix is used:</p>
+<p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_09.png?width=750&amp;height=276&amp;name=FIN7_09.png" alt="FIN7_09.png" width="750" height="276" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_09.png?width=375&amp;height=138&amp;name=FIN7_09.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_09.png?width=750&amp;height=276&amp;name=FIN7_09.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_09.png?width=1125&amp;height=414&amp;name=FIN7_09.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_09.png?width=1500&amp;height=552&amp;name=FIN7_09.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_09.png?width=1875&amp;height=690&amp;name=FIN7_09.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_09.png?width=2250&amp;height=828&amp;name=FIN7_09.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p>Each such DNS query results in an additional snippet of shellcode being appended to a reallocated buffer. When, finally, the first stage shellcode receives a special “FF” signal, it then executes the delivered shellcode. (It takes a few minutes for the DNS queries to finish. The last query is to the subdomain ihc[.]stage[.]12019683[.]ns2[.]true-deals[.]com):</p>
+<p>&nbsp;<img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_10.png?width=750&amp;height=370&amp;name=FIN7_10.png" alt="FIN7_10.png" width="750" height="370" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_10.png?width=375&amp;height=185&amp;name=FIN7_10.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_10.png?width=750&amp;height=370&amp;name=FIN7_10.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_10.png?width=1125&amp;height=555&amp;name=FIN7_10.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_10.png?width=1500&amp;height=740&amp;name=FIN7_10.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_10.png?width=1875&amp;height=925&amp;name=FIN7_10.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_10.png?width=2250&amp;height=1110&amp;name=FIN7_10.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p>The delivered second stage shellcode is encrypted:</p>
+<p><img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_11.png?width=744&amp;height=589&amp;name=FIN7_11.png" alt="FIN7_11.png" width="744" height="589" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_11.png?width=372&amp;height=295&amp;name=FIN7_11.png 372w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_11.png?width=744&amp;height=589&amp;name=FIN7_11.png 744w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_11.png?width=1116&amp;height=884&amp;name=FIN7_11.png 1116w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_11.png?width=1488&amp;height=1178&amp;name=FIN7_11.png 1488w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_11.png?width=1860&amp;height=1473&amp;name=FIN7_11.png 1860w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_11.png?width=2232&amp;height=1767&amp;name=FIN7_11.png 2232w" sizes="(max-width: 744px) 100vw, 744px"></p>
+<p><span style="color: #f47310;"><strong>METERPRETER:</strong></span></p>
+<p>After decryption of the second stage shellcode, the shellcode <strong>deletes</strong> the ‘MZ’ prefix from within a very important part of the shellcode. This prefix indicates it may be a dll, and its deletion helps the attack <strong>to evade memory scanning solutions</strong>.</p>
+<p>Just before this step executed, we extracted the dll from memory and uploaded it to VirusTotal. If this dll was saved on disk, many security solutions would immediately identify it as a CobaltStrike Meterpreter, which is used by many attackers and pen testers. Having a Meterpreter session on a compromised computer allows for full control of the computer and exfiltration of any data, and in some cases lateral movement inside the organization.</p>
+<p>&nbsp;<img src="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_12.png?width=750&amp;height=680&amp;name=FIN7_12.png" alt="FIN7_12.png" width="750" height="680" srcset="https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_12.png?width=375&amp;height=340&amp;name=FIN7_12.png 375w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_12.png?width=750&amp;height=680&amp;name=FIN7_12.png 750w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_12.png?width=1125&amp;height=1020&amp;name=FIN7_12.png 1125w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_12.png?width=1500&amp;height=1360&amp;name=FIN7_12.png 1500w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_12.png?width=1875&amp;height=1700&amp;name=FIN7_12.png 1875w, https://blog.morphisec.com/hs-fs/hubfs/05_2017/FIN7_12.png?width=2250&amp;height=2040&amp;name=FIN7_12.png 2250w" sizes="(max-width: 750px) 100vw, 750px"></p>
+<p>&nbsp;</p>
+<h2><span style="color: #e72c45;">CONCLUSIONS:</span></h2>
+<p>FIN7 constantly upgrades their attacks and evasion techniques, thus becoming even more dangerous and unpredictable. The analysis of this attack shows, how easy it is for them to bypass static, dynamic and behavior based solutions. These attacks pose a severe risk to enterprises.</p>
+<p>Fileless attacks are on the rise – <a href="https://www.carbonblack.com/2016/12/15/carbon-black-threat-report-non-malware-attacks-ransomware-take-center-stage-2016/" rel="nofollow noopener" target="_blank">Carbon Black reports</a> that researchers found a 33% rise in severe non-malware attacks in Q4 2016 compared to Q1. Defenders will see more attacks on their businesses by hacker groups utilizing memory for evasion while keeping executable artifacts far away from disk.</p>
+<p>In this continuously evolving threat landscape, enterprises need to look for new defenses that are resilient to such changes and are able to prevent fileless attacks. Morphisec <a href="https://www.morphisec.com/products/advanced-endpoint-threat-protection" rel="noopener" target="_blank">Endpoint Threat Prevention</a> specializes in preventing in-memory attacks, using Moving Target Defense to make the target itself unpredictable.</p>
+<p>&nbsp;</p>
+<h2><span style="color: #e72c45;">ARTIFACTS:</span></h2>
+<p><span style="color: #f47310;"><strong>Documents:</strong></span></p>
+<table>
+<tbody>
+<tr>
+<td width="623">
+<p>2781526f6b302da00661b9a6a625a5a6ecf4ffccafa61202e9b0e9b61b657867</p>
+</td>
+</tr>
+<tr>
+<td width="623">
+<p>c357396ca82fdcd6b6f46b748f2b6941051dbc81be5326cf9548e6e95507af7c</p>
+</td>
+</tr>
+<tr>
+<td width="623">
+<p>ffebcc4d2e851baecd89bf11103e3c9de86f428fdeaf0f8b33d9ea6f5ef56685</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<p><strong><span style="color: #f47310;">Domains:</span></strong></p>
+<ul>
+<li>true-deals[.]com;&nbsp;strikes-withlucky[.]com</li>
+<li>Email account in registration is: isvarawski@yahoo.com</li>
+<li>Attacker email account:&nbsp;adrian.1987clark@yahoo.com
+<p style="margin: 0in; margin-bottom: .0001pt;">&nbsp;</p>
+</li>
+</ul>
+<p>&nbsp;<!--HubSpot Call-to-Action Code --><span class="hs-cta-wrapper" id="hs-cta-wrapper-d2bd484f-10a5-4b85-a30d-20e42ae3637b"><span class="hs-cta-node hs-cta-d2bd484f-10a5-4b85-a30d-20e42ae3637b" id="hs-cta-d2bd484f-10a5-4b85-a30d-20e42ae3637b"><!--[if lte IE 8]><div id="hs-cta-ie-element"></div><![endif]--><a href="https://cta-redirect.hubspot.com/cta/redirect/1534169/d2bd484f-10a5-4b85-a30d-20e42ae3637b" target="_blank"><img class="hs-cta-img" id="hs-cta-img-d2bd484f-10a5-4b85-a30d-20e42ae3637b" style="border-width:0px;" src="https://no-cache.hubspot.com/cta/default/1534169/d2bd484f-10a5-4b85-a30d-20e42ae3637b.png" alt="New Call-to-action"></a></span><script charset="utf-8" src="/hs/cta/cta/current.js"></script><script type="text/javascript"> hbspt.cta._relativeUrls=true;hbspt.cta.load(1534169, 'd2bd484f-10a5-4b85-a30d-20e42ae3637b', {"region":"na1"}); </script></span><!-- end HubSpot Call-to-Action Code --></p></span>
+</div>
+</div>
+</div>
+
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+<div class="span4 widget-span widget-type-cell blog-right-column" style="" data-widget-type="cell" data-x="8" data-w="4">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-5 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell blog-subscribe-box" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-6 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1541131658433228" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_1541131658433228_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="rich_text"><h3>Subscribe to our blog</h3>
+<p>Stay in the loop with industry insight, cyber security trends, and cyber attack information and company updates.</p></span></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-7 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget blog-subscribe-form" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1541132004988163" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-form widget-type-form" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"> 
+	
+
+ 
+
+	<span id="hs_cos_wrapper_module_1541132004988163_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_form" style="" data-hs-cos-general-type="widget" data-hs-cos-type="form">
+<div id="hs_form_target_module_1541132004988163"></div>
+
+
+
+
+
+
+
+
+</span>
+
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-8 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="padding-left: 50px;     padding-top: 55px;     padding-right: 50px;" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_160080841375863" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-cta" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_160080841375863_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_cta" style="" data-hs-cos-general-type="widget" data-hs-cos-type="cta"><!--HubSpot Call-to-Action Code --><span class="hs-cta-wrapper" id="hs-cta-wrapper-4f0feebd-16b5-4509-8e27-c4dab59e00e6"><span class="hs-cta-node hs-cta-4f0feebd-16b5-4509-8e27-c4dab59e00e6" id="hs-cta-4f0feebd-16b5-4509-8e27-c4dab59e00e6"><!--[if lte IE 8]><div id="hs-cta-ie-element"></div><![endif]--><a href="https://cta-redirect.hubspot.com/cta/redirect/1534169/4f0feebd-16b5-4509-8e27-c4dab59e00e6" target="_blank"><img class="hs-cta-img" id="hs-cta-img-4f0feebd-16b5-4509-8e27-c4dab59e00e6" style="border-width:0px;" src="https://no-cache.hubspot.com/cta/default/1534169/4f0feebd-16b5-4509-8e27-c4dab59e00e6.png" alt="New call-to-action"></a></span><script charset="utf-8" src="/hs/cta/cta/current.js"></script><script type="text/javascript"> hbspt.cta._relativeUrls=true;hbspt.cta.load(1534169, '4f0feebd-16b5-4509-8e27-c4dab59e00e6', {"region":"na1"}); </script></span><!-- end HubSpot Call-to-Action Code --></span></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-9 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell padding-top-50" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-10 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1548900007626379" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-rich_text widget-type-rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_1548900007626379_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="rich_text"><h3>Search Our Site</h3></span></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-11 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1548899851922233" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+<div class="hs-search-field"> 
+    <div class="hs-search-field__bar"> 
+      <form action="/hs-search-results">
+        
+        <input type="text" class="hs-search-field__input" name="term" autocomplete="off" aria-label="Search" placeholder="Keyword...">
+        
+        
+          <input type="hidden" name="type" value="SITE_PAGE">
+        
+        
+        
+          <input type="hidden" name="type" value="BLOG_POST">
+          <input type="hidden" name="type" value="LISTING_PAGE">
+        
+        
+
+        
+      </form>
+    </div>
+    <ul class="hs-search-field__suggestions"></ul>
+</div></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-12 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget blog-recent-posts" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_151456963368678" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-post_listing" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+  
+
+
+<span id="hs_cos_wrapper_module_151456963368678_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_post_listing" style="" data-hs-cos-general-type="widget" data-hs-cos-type="post_listing"><div class="block">
+  <h3>Recent Posts</h3>
+  <div class="widget-module">
+    <ul class="hs-hash-1511797933-1621627663479">
+    </ul>
+  </div>
+</div>
+</span>
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-13 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget blog-recent-posts" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1548899761061130" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-post_filter" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+  
+
+
+<span id="hs_cos_wrapper_module_1548899761061130_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_post_filter" style="" data-hs-cos-general-type="widget" data-hs-cos-type="post_filter"><div class="block">
+  <h3>Posts by Tag</h3>
+  <div class="widget-module">
+    <ul>
+      
+        <li>
+          <a href="https://blog.morphisec.com/topic/cyber-security">Cyber Security <span class="filter-link-count" dir="ltr">(98)</span></a>
+        </li>
+      
+        <li>
+          <a href="https://blog.morphisec.com/topic/endpoint-security">Endpoint Security <span class="filter-link-count" dir="ltr">(83)</span></a>
+        </li>
+      
+        <li>
+          <a href="https://blog.morphisec.com/topic/cyber-attacks">Cyber Attacks <span class="filter-link-count" dir="ltr">(48)</span></a>
+        </li>
+      
+        <li>
+          <a href="https://blog.morphisec.com/topic/attack-analysis">Attack Analysis <span class="filter-link-count" dir="ltr">(46)</span></a>
+        </li>
+      
+        <li>
+          <a href="https://blog.morphisec.com/topic/company-news">Company News <span class="filter-link-count" dir="ltr">(38)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/morphisec-labs">Morphisec Labs <span class="filter-link-count" dir="ltr">(37)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/moving-target-defense">Moving Target Defense <span class="filter-link-count" dir="ltr">(37)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ransomware">Ransomware <span class="filter-link-count" dir="ltr">(35)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/exploits">Exploits <span class="filter-link-count" dir="ltr">(30)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/threat-alerts">Threat Alerts <span class="filter-link-count" dir="ltr">(19)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/threat-profile">Threat Profile <span class="filter-link-count" dir="ltr">(19)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/fileless-attacks">Fileless Attacks <span class="filter-link-count" dir="ltr">(18)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/industry-news">Industry News <span class="filter-link-count" dir="ltr">(18)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/zero-day">Zero-day <span class="filter-link-count" dir="ltr">(17)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/apt">APT <span class="filter-link-count" dir="ltr">(16)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/research">Research <span class="filter-link-count" dir="ltr">(15)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ciso">CISO <span class="filter-link-count" dir="ltr">(14)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/events">Events <span class="filter-link-count" dir="ltr">(14)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/security-news">Security News <span class="filter-link-count" dir="ltr">(14)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/malware">Malware <span class="filter-link-count" dir="ltr">(12)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/product">Product <span class="filter-link-count" dir="ltr">(12)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/0-day-exploits">0-day exploits <span class="filter-link-count" dir="ltr">(10)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/patching">Patching <span class="filter-link-count" dir="ltr">(9)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/sandbox-evasion">Sandbox evasion <span class="filter-link-count" dir="ltr">(6)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/vdi">VDI <span class="filter-link-count" dir="ltr">(6)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/advanced-endpoint-protection">advanced endpoint protection <span class="filter-link-count" dir="ltr">(6)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/virtual-desktop-security">virtual desktop security <span class="filter-link-count" dir="ltr">(6)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/exploit-kit">Exploit Kit <span class="filter-link-count" dir="ltr">(5)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/microsoft">Microsoft <span class="filter-link-count" dir="ltr">(5)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/mordechai-guri">Mordechai Guri <span class="filter-link-count" dir="ltr">(5)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/remote-access-trojan">Remote Access Trojan <span class="filter-link-count" dir="ltr">(5)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/remote-employees">Remote Employees <span class="filter-link-count" dir="ltr">(5)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/threat-report">Threat Report <span class="filter-link-count" dir="ltr">(5)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/work-from-home-security">Work from Home Security <span class="filter-link-count" dir="ltr">(5)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/virtual-desktop-infrastructure">virtual desktop infrastructure <span class="filter-link-count" dir="ltr">(5)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/aslr">ASLR <span class="filter-link-count" dir="ltr">(4)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/custom-packer">Custom Packer <span class="filter-link-count" dir="ltr">(4)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyber-security-predictions-2017">Cyber Security Predictions 2017 <span class="filter-link-count" dir="ltr">(4)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyber-security-stack">Cyber Security Stack <span class="filter-link-count" dir="ltr">(4)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/proactive-cyber-defense">Proactive Cyber Defense <span class="filter-link-count" dir="ltr">(4)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ransomware-prevention">Ransomware Prevention <span class="filter-link-count" dir="ltr">(4)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cloud-workload-security">cloud workload security <span class="filter-link-count" dir="ltr">(4)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/angler-kit">Angler Kit <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyber-threat-landscape">Cyber threat landscape <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cybersecurity-measures">Cybersecurity Measures <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/fin7">FIN7 <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/healthcare-cybersecurity">HEALTHCARE CYBERSECURITY <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/holidays">Holidays <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/malspam">Malspam <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/proactive-endpoint-protection">Proactive Endpoint Protection <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/threat-research">Threat Research <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cloud-workload-protection">cloud workload protection <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/remote-workforce">remote workforce <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/vdi-security">vdi security <span class="filter-link-count" dir="ltr">(3)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cost-of-ransomware-in-healthcare">COST OF RANSOMWARE IN HEALTHCARE <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/case-study">Case Study <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/collaboration-applications">Collaboration Applications <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/crypters">Crypters <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/evasive-malware">Evasive Malware <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/healthcares-cybersecurity-weak-spots">HEALTHCARE'S CYBERSECURITY WEAK SPOTS <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/healthcare-threat-index">Healthcare Threat Index <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/hospital-cybersecurity">Hospital Cybersecurity <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/linux-security">Linux Security <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/mltr">MLTR <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ms-office-exploits">MS Office Exploits <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/pos">POS <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/proactive-prevention">Proactive Prevention <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ryuk-ransomware">RYUK RANSOMWARE <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/security-stack">Security Stack <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/state-and-local-government-cybersecurity">State and Local Government Cybersecurity <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/webinars">Webinars <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cloud-security">cloud security <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/non-persistent-vdi">non-persistent VDI <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/proactive-cloud-workload-security">proactive cloud workload security <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/protect-cloud-workloads">protect cloud workloads <span class="filter-link-count" dir="ltr">(2)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/antivirus">Antivirus <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/banking-trojans">Banking Trojans <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/covid-19-ransomware-prevention">COVID-19 ransomware prevention <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cerber">Cerber <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/citized-threat-index">Citized Threat Index <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cobalt-group">Cobalt Group <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cuba-ransomware-gang">Cuba ransomware gang <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyber-hygiene">Cyber Hygiene <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyber-hygiene-practices">Cyber hygiene practices <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cybersecurity-spending">Cybersecurity Spending <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/defender-for-endpoint">Defender for Endpoint <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/defending-infrastructure-against-cyber-threats">Defending infrastructure against cyber threats <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/edr">EDR <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/egregor">Egregor <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/egregor-ransomware">Egregor ransomware <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/emerging-cyber-threats">Emerging cyber threats <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/emerging-threats">Emerging threats <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/endpoint-detection-and-response">Endpoint Detection and Response <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/exchange-server">Exchange Server <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/fallout-exploit-kit">FALLOUT EXPLOIT KIT <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/fallout-activity">Fallout activity <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/flash-wrapper">Flash wrapper <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/flawedammyy">FlawedAmmyy <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/gdpr">GDPR <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/google-funding-security-development">GOOGLE FUNDING SECURITY DEVELOPMENT <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/grandcrab-ransomware">GRANDCRAB RANSOMWARE <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/gozi">Gozi <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/hancitor">Hancitor <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/healthcare">Healthcare <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/higher-education-cybersecurity">Higher Education Cybersecurity <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/hospitality-threat-index">Hospitality Threat Index <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/hotel-cybersecurity">Hotel Cybersecurity <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/it-security-budget">IT security budget <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/kovter">Kovter <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/modern-cybersecurity">MODERN CYBERSECURITY <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/microsoft-defender">Microsoft Defender <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/morphisec-guard">Morphisec Guard <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ngav">NGAV <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ocr-bypass">OCR Bypass <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/os-native-security">OS-Native Security <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/osiris">Osiris <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/pos-intrusions">POS intrusions <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/protect-yourself-from-grandcrab">PROTECT YOURSELF FROM GRANDCRAB <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/phobos-ransomware">Phobos ransomware <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/pied-piper-campaign">Pied Piper Campaign <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/product-news">Product News <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/remote-collaboration-applications">REMOTE COLLABORATION APPLICATIONS <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/retail-cybersecurity">Retail Cybersecurity <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/risk-reduction">Risk Reduction <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/rotajakiro-malware">RotaJakiro malware <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/security-resiliency">SECURITY RESILIENCY <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/secops">SecOps <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/server-security">Server Security <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/supply-chain-attack">Supply Chain attack <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/threadkit">ThreadKit <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ursnif">Ursnif <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/zoom-security">Zoom Security <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/advanced-cyberthreat-tactics">advanced cyberthreat tactics <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/advanced-threat-prevention">advanced threat prevention <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/advanced-threat-tactics">advanced threat tactics <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/antivirus-scanning-processes">antivirus scanning processes <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/aslr-meaning">aslr meaning <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/browser-attacks">browser attacks <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cloud-misconfigurations">cloud misconfigurations <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/code-injection">code injection <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyber-defense-technology">cyber defense technology <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyber-prevention-mechanisms">cyber prevention mechanisms <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyber-strategies">cyber strategies <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cyberattack-landscape">cyberattack landscape <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cybersecurity-acronyms">cybersecurity acronyms <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/cybersecurity-resilience">cybersecurity resilience <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/end-to-end-visibility">end to end visibility <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/endpoint-security-breaches">endpoint security breaches <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/fallout-protection">fallout protection <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/financial-cyberattacks">financial cyberattacks <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/financial-cyberthreat">financial cyberthreat <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/financial-system-threat">financial system threat <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/healthcare-phishing-schemes">healthcare phishing schemes <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/malware-authors">malware authors <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/patch-management-processes">patch management processes <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/persistent-vdi">persistent VDI <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/proactive-threat-prevention">proactive threat prevention <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/ransomware-risk-in-healthcare">ransomware risk in healthcare <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/remote-collaboration-app-security-loopholes">remote collaboration app security loopholes <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/remote-workforce-hidden-risks">remote workforce hidden risks <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/retail-cybersecurity-risks">retail cybersecurity risks <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/threat-prevention">threat prevention <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/virtual-endpoints">virtual endpoints <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/zoom-malware">zoom malware <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+        <li style="display:none;">
+          <a href="https://blog.morphisec.com/topic/zoom-weaknesses">zoom weaknesses <span class="filter-link-count" dir="ltr">(1)</span></a>
+        </li>
+      
+    </ul>
+    
+      <a class="filter-expand-link" href="#">See all</a>
+    
+  </div>
+</div>
+</span>
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+
+  </div>
+</div>
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+    </div><!--end body -->
+</div><!--end body wrapper -->
+
+<div class="footer-container-wrapper">
+    <div class="footer-container container-fluid">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-1 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-global_group " style="" data-widget-type="global_group" data-x="0" data-w="12">
+<div class="" data-global-widget-path="generated_global_groups/17239529598.html"><div class="row-fluid-wrapper row-depth-1 row-number-1 ">
+<div class="row-fluid ">
+<div id="footer" class="span12 widget-span widget-type-cell updated-footer-section" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-2 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell page-center" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-3 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell footer-top-row" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-4 ">
+<div class="row-fluid ">
+<div class="span3 widget-span widget-type-cell footer-left-col" style="" data-widget-type="cell" data-x="0" data-w="3">
+
+<div class="row-fluid-wrapper row-depth-2 row-number-1 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1544506715290240" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-logo" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+  
+
+
+
+  <span id="hs_cos_wrapper_module_1544506715290240_hs_logo_widget" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_logo" style="" data-hs-cos-general-type="widget" data-hs-cos-type="logo"><a href="//www-morphisec-com.sandbox.hs-sites.com/" id="hs-link-module_1544506715290240_hs_logo_widget" style="border-width:0px;border:0px;"><img src="https://blog.morphisec.com/hs-fs/hubfs/MorphLogoHorizColorWhiteNoTag_RGB.png?width=2481&amp;name=MorphLogoHorizColorWhiteNoTag_RGB.png" class="hs-image-widget " style="width:2481px;border-width:0px;border:0px;" width="2481" alt="MorphLogoHorizColorWhiteNoTag_RGB" title="MorphLogoHorizColorWhiteNoTag_RGB" srcset="https://blog.morphisec.com/hs-fs/hubfs/MorphLogoHorizColorWhiteNoTag_RGB.png?width=1241&amp;name=MorphLogoHorizColorWhiteNoTag_RGB.png 1241w, https://blog.morphisec.com/hs-fs/hubfs/MorphLogoHorizColorWhiteNoTag_RGB.png?width=2481&amp;name=MorphLogoHorizColorWhiteNoTag_RGB.png 2481w, https://blog.morphisec.com/hs-fs/hubfs/MorphLogoHorizColorWhiteNoTag_RGB.png?width=3722&amp;name=MorphLogoHorizColorWhiteNoTag_RGB.png 3722w, https://blog.morphisec.com/hs-fs/hubfs/MorphLogoHorizColorWhiteNoTag_RGB.png?width=4962&amp;name=MorphLogoHorizColorWhiteNoTag_RGB.png 4962w, https://blog.morphisec.com/hs-fs/hubfs/MorphLogoHorizColorWhiteNoTag_RGB.png?width=6203&amp;name=MorphLogoHorizColorWhiteNoTag_RGB.png 6203w, https://blog.morphisec.com/hs-fs/hubfs/MorphLogoHorizColorWhiteNoTag_RGB.png?width=7443&amp;name=MorphLogoHorizColorWhiteNoTag_RGB.png 7443w" sizes="(max-width: 2481px) 100vw, 2481px"></a></span>
+
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-2 row-number-2 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget copyright" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_153778360943154" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_153778360943154_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="text"><a href="mailto:sales@morphisec.com">Contact Sales</a><a href="https://azuremarketplace.microsoft.com/en-us/marketplace/apps/morphisec.morphisec_unified_threat_prevention_platform?tab=overview" target="_blank" rel="noopener">Inquire via Azure</a></span></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+<div class="span9 widget-span widget-type-cell footer-right-col" style="" data-widget-type="cell" data-x="3" data-w="9">
+
+<div class="row-fluid-wrapper row-depth-2 row-number-3 ">
+<div class="row-fluid ">
+<div class="span3 widget-span widget-type-cell " style="" data-widget-type="cell" data-x="0" data-w="3">
+
+<div class="row-fluid-wrapper row-depth-2 row-number-4 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_153778359263044" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_153778359263044_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="simple_menu"><div id="hs_menu_wrapper_module_153778359263044_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-vertical" role="navigation" data-sitemap-name="" data-menu-id="" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.morphisec.com/products/" aria-haspopup="true" aria-expanded="false" role="menuitem" target="_self">Products</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/products/morphisec-shield-threat-prevention" role="menuitem" target="_self">Morphisec Shield</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/products/morphisec-guard-endpoint-protection" role="menuitem" target="_self">Morphisec Guard</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/products/virtual-desktop-infrastructure" role="menuitem" target="_self">Virtual Desktop Protection</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/products/morphisec-keep-server-protection" role="menuitem" target="_self">Server Protection</a></li>
+   </ul></li>
+ </ul>
+</div></span>
+
+
+</div>
+
+   </div><!--end widget-span -->
+    </div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+<div class="span6 widget-span widget-type-cell " style="" data-widget-type="cell" data-x="3" data-w="6">
+
+<div class="row-fluid-wrapper row-depth-2 row-number-5 ">
+<div class="row-fluid ">
+<div class="span6 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="6">
+<div id="hs_cos_wrapper_module_153778362959965" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_153778362959965_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="simple_menu"><div id="hs_menu_wrapper_module_153778362959965_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-vertical" role="navigation" data-sitemap-name="" data-menu-id="" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.morphisec.com/solutions" aria-haspopup="true" aria-expanded="false" role="menuitem" target="_self">Solutions By Industry</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/solutions/small-business" role="menuitem" target="_self">SMB</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/solutions/k-12-school-cybersecurity" role="menuitem" target="_self">K-12 Education</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/solutions/manufacturing-industry" role="menuitem" target="_self">Manufacturing</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/solutions/finance-industry" role="menuitem" target="_self">Finance</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/solutions/tech-industry" role="menuitem" target="_self">Technology</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/solutions/healthcare-industry" role="menuitem" target="_self">Healthcare</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/solutions/legal-industry" role="menuitem" target="_self">Legal</a></li>
+   </ul></li>
+ </ul>
+</div></span>
+
+
+</div>
+
+   </div><!--end widget-span -->
+<div class="span6 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="6" data-w="6">
+<div id="hs_cos_wrapper_module_1570445644691657" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_1570445644691657_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="simple_menu"><div id="hs_menu_wrapper_module_1570445644691657_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-vertical" role="navigation" data-sitemap-name="" data-menu-id="" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1 hs-item-has-children" role="menu"><a href="https://www.morphisec.com/solutions" aria-haspopup="true" aria-expanded="false" role="menuitem" target="_self">Solutions By Use Case</a>
+   <ul class="hs-menu-children-wrapper">
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/legacy-av" role="menuitem" target="_self">Antivirus Replacement</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/cloud-workload-protection" role="menuitem" target="_self">Cloud Workload Protection</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/remote-employee-security" role="menuitem" target="_self">Remote Employee Security</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/collaboration-application-hardening" role="menuitem" target="_self">Collaboration Application Hardening</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/ransomware-protection" role="menuitem" target="_self">Ransomware Prevention</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/virtual-patch" role="menuitem" target="_self">Virtual Patching &amp; Compliance</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/pos" role="menuitem" target="_self">Point-of-Sale Protection</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/supply-chain-attack-prevention" role="menuitem" target="_self">Supply Chain Attack Protection</a></li>
+    <li class="hs-menu-item hs-menu-depth-2" role="menuitem"><a href="https://www.morphisec.com/browser-attack-protection" role="menuitem" target="_self">Browser Attack Protection</a></li>
+   </ul></li>
+ </ul>
+</div></span>
+
+
+</div>
+
+   </div><!--end widget-span -->
+    </div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+<div class="span3 widget-span widget-type-cell " style="" data-widget-type="cell" data-x="9" data-w="3">
+
+<div class="row-fluid-wrapper row-depth-2 row-number-6 ">
+<div class="row-fluid ">
+<div id="difrent_foot" class="span6 widget-span widget-type-cell " style="" data-widget-type="cell" data-x="0" data-w="6">
+
+<div class="row-fluid-wrapper row-depth-2 row-number-7 ">
+    <div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget footr_ul" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_153778363056966" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_153778363056966_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="simple_menu"><div id="hs_menu_wrapper_module_153778363056966_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-vertical" role="navigation" data-sitemap-name="" data-menu-id="" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/about-us" role="menuitem" target="_self">About Us</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/news-and-events" role="menuitem" target="_self">News</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/news-and-events-archived#events" role="menuitem" target="_self">Events</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/careers" role="menuitem" target="_self">Careers</a></li>
+ </ul>
+</div></span>
+
+
+</div>
+
+       </div><!--end widget-span -->
+        </div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-2 row-number-8 ">
+    <div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1544506971636543" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_1544506971636543_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="simple_menu"><div id="hs_menu_wrapper_module_1544506971636543_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-vertical" role="navigation" data-sitemap-name="" data-menu-id="" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/morphisec-customer-corner" role="menuitem" target="_self">CUSTOMERS</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/resources" role="menuitem" target="_self">RESOURCES</a></li>
+ </ul>
+</div></span>
+
+
+</div>
+
+       </div><!--end widget-span -->
+        </div><!--end row-->
+</div><!--end row-wrapper -->
+
+   </div><!--end widget-span -->
+<div id="footer-col" class="span6 widget-span widget-type-cell " style="" data-widget-type="cell" data-x="6" data-w="6">
+
+<div class="row-fluid-wrapper row-depth-2 row-number-9 ">
+    <div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1544507006465551" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_1544507006465551_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="simple_menu"><div id="hs_menu_wrapper_module_1544507006465551_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-vertical" role="navigation" data-sitemap-name="" data-menu-id="" aria-label="Navigation Menu">
+ <ul class="active-branch">
+  <li class="hs-menu-item hs-menu-depth-1 active active-branch"><a href="https://blog.morphisec.com" role="menuitem" target="_self">Blog</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://support.morphisec.com/support/home" role="menuitem" target="_self">Support</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/partners" role="menuitem" target="_self">Partners</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://engage.morphisec.com/contact-us" role="menuitem" target="_self">Contact Us</a></li>
+ </ul>
+</div></span>
+
+
+</div>
+
+       </div><!--end widget-span -->
+        </div><!--end row-->
+</div><!--end row-wrapper -->
+
+   </div><!--end widget-span -->
+    </div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-1 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell footer-mobile-menu" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-2 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget footer-menu" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_1570687183687125" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_1570687183687125_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_simple_menu" style="" data-hs-cos-general-type="widget" data-hs-cos-type="simple_menu"><div id="hs_menu_wrapper_module_1570687183687125_" class="hs-menu-wrapper active-branch flyouts hs-menu-flow-vertical" role="navigation" data-sitemap-name="" data-menu-id="" aria-label="Navigation Menu">
+ <ul>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/products/" role="menuitem" target="_self">Products</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/solutions" role="menuitem" target="_self">Solutions</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/about-us" role="menuitem" target="_self">Company</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/news-and-events" role="menuitem" target="_self">News &amp; Events</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/careers" role="menuitem" target="_self">Careers</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/partners" role="menuitem" target="_self">Partners</a></li>
+  <li class="hs-menu-item hs-menu-depth-1"><a href="https://www.morphisec.com/resources" role="menuitem" target="_self">Resources</a></li>
+ </ul>
+</div></span>
+
+
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-3 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-cell footer-btm-sec" style="" data-widget-type="cell" data-x="0" data-w="12">
+
+<div class="row-fluid-wrapper row-depth-1 row-number-4 ">
+<div class="row-fluid ">
+<div class="span6 widget-span widget-type-custom_widget footer-copyright" style="" data-widget-type="custom_widget" data-x="0" data-w="6">
+<div id="hs_cos_wrapper_module_1544506938059542" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><span id="hs_cos_wrapper_module_1544506938059542_" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style="" data-hs-cos-general-type="widget" data-hs-cos-type="rich_text"><span>© 2021 Morphisec Ltd. | All rights reserved | <a href="https://www.morphisec.com/privacy-policy/">Privacy Policy</a></span></span></div>
+
+</div><!--end widget-span -->
+<div class="span6 widget-span widget-type-custom_widget social-icons-footer" style="" data-widget-type="custom_widget" data-x="6" data-w="6">
+<div id="hs_cos_wrapper_module_15378995125271465" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"><ul class="footer-social-links">
+  
+  <li>
+    <a aria-label="facebook" href="https://www.facebook.com/Morphisec/" target="_blank" rel="noopener">
+      <i class="fab fa-facebook-square" aria-hidden="true"></i>
+    </a>
+  </li>
+  
+  <li>
+    <a aria-label="linkedin" href="https://www.linkedin.com/company/morphisec" target="_blank" rel="noopener">
+      <i class="fab fa-linkedin" aria-hidden="true"></i>
+    </a>
+  </li>
+  
+  <li>
+    <a aria-label="twitter" href="https://twitter.com/morphisec" target="_blank" rel="noopener">
+      <i class="fab fa-twitter-square" aria-hidden="true"></i>
+    </a>
+  </li>
+  
+  <li>
+    <a aria-label="youtube" href="https://www.youtube.com/channel/UCe48cR5xTxPJSYMjG-So7Rw" target="_blank" rel="noopener">
+      <i class="fab fa-youtube-square" aria-hidden="true"></i>
+    </a>
+  </li>
+
+  <li>
+    <a aria-label="instagram" href="https://www.instagram.com/morphisec/" target="_blank" rel="noopener">
+      <i class="fab fa-instagram-square" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a aria-label="rss" href="//blog.morphisec.com/" target="_blank" rel="noopener">
+      <i class="fa fa-rss-square" aria-hidden="true"></i>
+    </a>
+  </li>
+  
+</ul></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+<div class="row-fluid-wrapper row-depth-1 row-number-5 ">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget " style="display:none;" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_15378875841521083" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module"></div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+</div>
+</div><!--end widget-span -->
+</div><!--end row-->
+</div><!--end row-wrapper -->
+
+    </div><!--end footer -->
+</div><!--end footer wrapper -->
+
+    
+<script>
+(function () {
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/_hcms/perf', true /*async*/);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.onreadystatechange = function () {
+                // do nothing.
+            };
+            var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            function populateNetworkInfo(name, connection, info) {
+                if (name in connection) {
+                    info[name] = connection[name];
+                }
+            }
+            var networkInfo = {};
+            if (connection) {
+                ['type', 'effectiveType', 'downlink', 'rtt'].forEach(function(name) {
+                    populateNetworkInfo(name, connection, networkInfo);
+                });
+            }
+            var perfData = {
+                url: location.href,
+                portal: 1534169,
+                content: 5199233586,
+                group: -1,
+                connection: networkInfo,
+                timing: performance.timing
+            };
+            xhr.send(JSON.stringify(perfData));
+        }, 3000);  // Execute this 3 seconds after onload.
+    });
+})();
+</script>
+
+<script>
+if (typeof hsVars !== 'undefined') { hsVars['language'] = 'en-us'; }
+</script>
+
+<script src="/hs/hsstatic/cos-i18n/static-1.27/bundles/project.js"></script>
+<script src="https://cdn2.hubspot.net/hub/-1/hub_generated/module_assets/-2712622/1621627583798/module_-2712622_Site_Search_Input.min.js"></script>
+<script src="/hs/hsstatic/keyboard-accessible-menu-flyouts/static-1.17/bundles/project.js"></script>
+
+    <!--[if lte IE 8]>
+    <script charset="utf-8" src="https://js.hsforms.net/forms/v2-legacy.js"></script>
+    <![endif]-->
+
+<script src="/_hcms/forms/v2.js"></script>
+
+    <script>
+        var options = {
+            portalId: '1534169',
+            formId: '37b11fda-a2aa-4805-9c0e-bae8eaccd6b7',
+            formInstanceId: '2853',
+            pageId: '5199233586',
+            region: 'na1',
+            
+            
+            
+            
+            pageName: "FIN7 Takes Another Bite at the Restaurant Industry",
+            
+            
+            
+            inlineMessage: "Thanks for submitting the form.",
+            
+            
+            rawInlineMessage: "Thanks for submitting the form.",
+            
+            
+            hsFormKey: "6e9b6e4a8c0faa9163c72ccbcebfa6d8",
+            
+            
+            css: '',
+            target: '#hs_form_target_module_1541132004988163',
+            
+            
+            
+            
+            
+            contentType: "blog-post",
+            
+            
+            formsBaseUrl: '/_hcms/forms/',
+            
+            
+            formData: {
+                cssClass: 'hs-form stacked hs-custom-form'
+            }
+        };
+
+        options.getExtraMetaDataBeforeSubmit = function() {
+            var metadata = {};
+            
+
+            if (hbspt.targetedContentMetadata) {
+                var count = hbspt.targetedContentMetadata.length;
+                var targetedContentData = [];
+                for (var i = 0; i < count; i++) {
+                    var tc = hbspt.targetedContentMetadata[i];
+                     if ( tc.length !== 3) {
+                        continue;
+                     }
+                     targetedContentData.push({
+                        definitionId: tc[0],
+                        criterionId: tc[1],
+                        smartTypeId: tc[2]
+                     });
+                }
+                metadata["targetedContentMetadata"] = JSON.stringify(targetedContentData);
+            }
+
+            return metadata;
+        };
+
+        hbspt.forms.create(options);
+    </script>
+
+<script src="/hs/hsstatic/AsyncSupport/static-1.94/js/post_listing_asset.js"></script>
+<script>
+  function hsOnReadyPopulateListingFeed_1511797933_1621627663479() {
+    var options = {
+      'id': "1511797933-1621627663479",
+      'listing_url': "/_hcms/postlisting?blogId=3742504875&maxLinks=10&listingType=recent&orderByViews=false&hs-expires=1653163663&hs-version=2&hs-signature=AJ2IBuHulTuDOYorHT3syoGbqN66UraElw",
+      'include_featured_image': false
+    };
+    window.hsPopulateListingFeed(options);
+  }
+
+  if (document.readyState === "complete" ||
+      (document.readyState !== "loading" && !document.documentElement.doScroll)
+  ) {
+    hsOnReadyPopulateListingFeed_1511797933_1621627663479();
+  } else {
+    document.addEventListener("DOMContentLoaded", hsOnReadyPopulateListingFeed_1511797933_1621627663479);
+  }
+</script>
+
+<script src="https://blog.morphisec.com/hs-fs/hub/1534169/hub_generated/template_assets/36272650673/1603042259630/2020_-_UIS_-_Template_Folders/Vendor_JS/lazyload-min.min.js"></script>
+<script src="https://blog.morphisec.com/hs-fs/hub/1534169/hub_generated/template_assets/6224156614/1569821730014/Morphisec/Coded_Files/vide.js"></script>
+<script src="https://blog.morphisec.com/hs-fs/hub/1534169/hub_generated/template_assets/6213834399/1611499568052/Morphisec/Coded_Files/Morphisec_Sept2018_script.js"></script>
+<script src="https://blog.morphisec.com/hs-fs/hub/1534169/hub_generated/template_assets/6224925249/1569821730326/Morphisec/Coded_Files/magnificpopup.js"></script>
+
+<!-- Start of HubSpot Analytics Code -->
+<script type="text/javascript">
+var _hsq = _hsq || [];
+_hsq.push(["setContentType", "blog-post"]);
+_hsq.push(["setCanonicalUrl", "https:\/\/blog.morphisec.com\/fin7-attacks-restaurant-industry"]);
+_hsq.push(["setPageId", "5199233586"]);
+_hsq.push(["setContentMetadata", {
+    "contentPageId": 5199233586,
+    "legacyPageId": "5199233586",
+    "contentFolderId": null,
+    "contentGroupId": 3742504875,
+    "abTestId": null,
+    "languageVariantId": 5199233586,
+    "languageCode": "en-us",
+    
+}]);
+</script>
+
+<script type="text/javascript" id="hs-script-loader" async defer src="/hs/scriptloader/1534169.js"></script>
+<!-- End of HubSpot Analytics Code -->
+
+
+<script type="text/javascript">
+var hsVars = {
+    ticks: 1621627663377,
+    page_id: 5199233586,
+
+    content_group_id: 3742504875,
+    portal_id: 1534169,
+    app_hs_base_url: "https://app.hubspot.com",
+    cp_hs_base_url: "https://cp.hubspot.com",
+    language: "en",
+    analytics_page_type: "blog-post",
+    category_id: 3,
+    folder_id: 0,
+    is_hubspot_user: false
+}
+</script>
+
+
+<script defer src="/hs/hsstatic/HubspotToolsMenu/static-1.103/js/index.js"></script>
+
+<script type="text/javascript">
+_linkedin_partner_id = "32136";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(){var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})();
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://dc.ads.linkedin.com/collect/?pid=32136&amp;fmt=gif">
+</noscript>
+<!-- Twitter universal website tag code -->
+<script>
+!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+},s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='//static.ads-twitter.com/uwt.js',
+a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+// Insert Twitter Pixel ID and Standard Event data below
+twq('init','nxrig');
+twq('track','PageView');
+</script>
+<!-- End Twitter universal website tag code -->
+<script>
+  window.addEventListener('load', function() {
+    jQuery('[type="submit"]').click(function() {
+      var set_int = setInterval(function() {
+        if (jQuery('.submitted-message:contains("Thanks for")').is(":visible")) {
+          if (window.location.pathname == "/contact-us") {
+            gtag('event', 'conversion', {
+              'send_to': 'AW-784310031/cR_XCLDBgosBEI--_vUC'
+            });
+            clearInterval(set_int);
+          }
+          if (window.location.pathname == "/schedule-a-demo") {
+            gtag('event', 'conversion', {
+              'send_to': 'AW-784310031/LyfaCMyUhYsBEI--_vUC'
+            });
+            clearInterval(set_int);
+          }
+        }
+      }, 1000)
+    })
+  });
+
+</script>
+
+
+
+<div id="fb-root"></div>
+ <script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&status=0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+ <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+ 
+
+
+    
+    <!-- Generated by the HubSpot Template Builder - template version 1.03 -->
+
+</body></html>

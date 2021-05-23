@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>Bypassing Application Whitelisting By Using dnx.exe | enigma0x3</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="https://enigma0x3.net/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="https://s2.wp.com/wp-content/themes/pub/trvl/js/html5.js" type="text/javascript"></script>
+<![endif]-->
+
+<meta name='robots' content='max-image-preview:large' />
+
+<!-- Async WordPress.com Remote Login -->
+<script id="wpcom_remote_login_js">
+var wpcom_remote_login_extra_auth = '';
+function wpcom_remote_login_remove_dom_node_id( element_id ) {
+	var dom_node = document.getElementById( element_id );
+	if ( dom_node ) { dom_node.parentNode.removeChild( dom_node ); }
+}
+function wpcom_remote_login_remove_dom_node_classes( class_name ) {
+	var dom_nodes = document.querySelectorAll( '.' + class_name );
+	for ( var i = 0; i < dom_nodes.length; i++ ) {
+		dom_nodes[ i ].parentNode.removeChild( dom_nodes[ i ] );
+	}
+}
+function wpcom_remote_login_final_cleanup() {
+	wpcom_remote_login_remove_dom_node_classes( "wpcom_remote_login_msg" );
+	wpcom_remote_login_remove_dom_node_id( "wpcom_remote_login_key" );
+	wpcom_remote_login_remove_dom_node_id( "wpcom_remote_login_validate" );
+	wpcom_remote_login_remove_dom_node_id( "wpcom_remote_login_js" );
+	wpcom_remote_login_remove_dom_node_id( "wpcom_request_access_iframe" );
+	wpcom_remote_login_remove_dom_node_id( "wpcom_request_access_styles" );
+}
+
+// Watch for messages back from the remote login
+window.addEventListener( "message", function( e ) {
+	if ( e.origin === "https://r-login.wordpress.com" ) {
+		var data = {};
+		try {
+			data = JSON.parse( e.data );
+		} catch( e ) {
+			wpcom_remote_login_final_cleanup();
+			return;
+		}
+
+		if ( data.msg === 'LOGIN' ) {
+			// Clean up the login check iframe
+			wpcom_remote_login_remove_dom_node_id( "wpcom_remote_login_key" );
+
+			var id_regex = new RegExp( /^[0-9]+$/ );
+			var token_regex = new RegExp( /^.*|.*|.*$/ );
+			if (
+				token_regex.test( data.token )
+				&& id_regex.test( data.wpcomid )
+			) {
+				// We have everything we need to ask for a login
+				var script = document.createElement( "script" );
+				script.setAttribute( "id", "wpcom_remote_login_validate" );
+				script.src = '/remote-login.php?wpcom_remote_login=validate'
+					+ '&wpcomid=' + data.wpcomid
+					+ '&token=' + encodeURIComponent( data.token )
+					+ '&host=' + window.location.protocol
+						+ '//' + window.location.hostname;
+				document.body.appendChild( script );
+			}
+
+			return;
+		}
+
+		// Safari ITP, not logged in, so redirect
+		if ( data.msg === 'LOGIN-REDIRECT' ) {
+			window.location = 'https://wordpress.com/log-in?redirect_to=' + window.location.href;
+			return;
+		}
+
+		// Safari ITP, storage access failed, remove the request
+		if ( data.msg === 'LOGIN-REMOVE' ) {
+			var css_zap = 'html { -webkit-transition: margin-top 1s; transition: margin-top 1s; } /* 9001 */ html { margin-top: 0 !important; } * html body { margin-top: 0 !important; } @media screen and ( max-width: 782px ) { html { margin-top: 0 !important; } * html body { margin-top: 0 !important; } }';
+			var style_zap = document.createElement( 'style' );
+			style_zap.type = 'text/css';
+			style_zap.appendChild( document.createTextNode( css_zap ) );
+			document.body.appendChild( style_zap );
+
+			var e = document.getElementById( 'wpcom_request_access_iframe' );
+			e.parentNode.removeChild( e );
+
+			document.cookie = 'wordpress_com_login_access=denied; path=/; max-age=31536000';
+
+			return;
+		}
+
+		// Safari ITP
+		if ( data.msg === 'REQUEST_ACCESS' ) {
+			console.log( 'request access: safari' );
+
+			// Check ITP iframe enable/disable knob
+			if ( wpcom_remote_login_extra_auth !== 'safari_itp_iframe' ) {
+				return;
+			}
+
+			// If we are in a "private window" there is no ITP.
+			var private_window = false;
+			try {
+				var opendb = window.openDatabase( null, null, null, null );
+			} catch( e ) {
+				private_window = true;
+			}
+
+			if ( private_window ) {
+				console.log( 'private window' );
+				return;
+			}
+
+			var iframe = document.createElement( 'iframe' );
+			iframe.id = 'wpcom_request_access_iframe';
+			iframe.setAttribute( 'scrolling', 'no' );
+			iframe.setAttribute( 'sandbox', 'allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-top-navigation-by-user-activation' );
+			iframe.src = 'https://r-login.wordpress.com/remote-login.php?wpcom_remote_login=request_access&origin=' + encodeURIComponent( data.origin ) + '&wpcomid=' + encodeURIComponent( data.wpcomid );
+
+			var css = 'html { -webkit-transition: margin-top 1s; transition: margin-top 1s; } /* 9001 */ html { margin-top: 46px !important; } * html body { margin-top: 46px !important; } @media screen and ( max-width: 660px ) { html { margin-top: 71px !important; } * html body { margin-top: 71px !important; } #wpcom_request_access_iframe { display: block; height: 71px !important; } } #wpcom_request_access_iframe { border: 0px; height: 46px; position: fixed; top: 0; left: 0; width: 100%; min-width: 100%; z-index: 99999; background: #23282d; } ';
+
+			var style = document.createElement( 'style' );
+			style.type = 'text/css';
+			style.id = 'wpcom_request_access_styles';
+			style.appendChild( document.createTextNode( css ) );
+			document.body.appendChild( style );
+
+			document.body.appendChild( iframe );
+		}
+
+		if ( data.msg === 'DONE' ) {
+			wpcom_remote_login_final_cleanup();
+		}
+	}
+}, false );
+
+// Inject the remote login iframe after the page has had a chance to load
+// more critical resources
+window.addEventListener( "DOMContentLoaded", function( e ) {
+	var iframe = document.createElement( "iframe" );
+	iframe.style.display = "none";
+	iframe.setAttribute( "scrolling", "no" );
+	iframe.setAttribute( "id", "wpcom_remote_login_key" );
+	iframe.src = "https://r-login.wordpress.com/remote-login.php"
+		+ "?wpcom_remote_login=key"
+		+ "&origin=aHR0cHM6Ly9lbmlnbWEweDMubmV0"
+		+ "&wpcomid=62662083"
+		+ "&time=1621735942";
+	document.body.appendChild( iframe );
+}, false );
+</script>
+<link rel='dns-prefetch' href='//s2.wp.com' />
+<link rel='dns-prefetch' href='//enigma0x3.wordpress.com' />
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel="alternate" type="application/rss+xml" title="enigma0x3 &raquo; Feed" href="https://enigma0x3.net/feed/" />
+<link rel="alternate" type="application/rss+xml" title="enigma0x3 &raquo; Comments Feed" href="https://enigma0x3.net/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="enigma0x3 &raquo; Bypassing Application Whitelisting By Using&nbsp;dnx.exe Comments Feed" href="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/feed/" />
+	<script type="text/javascript">
+		/* <![CDATA[ */
+		function addLoadEvent(func) {
+			var oldonload = window.onload;
+			if (typeof window.onload != 'function') {
+				window.onload = func;
+			} else {
+				window.onload = function () {
+					oldonload();
+					func();
+				}
+			}
+		}
+		/* ]]> */
+	</script>
+			<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/72x72\/","ext":".png","svgUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/s0.wp.com\/wp-includes\/js\/wp-emoji-release.min.js?m=1612197847h&ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='all-css-0-1' href='https://s1.wp.com/_static/??-eJydkNtuAjEMRH+oWXdbaMVD1W9JssYYclMuoP37ehchLaWFqi9RxpnjaAZOSdkYKoYKvqnkGnEocEo2elU8Oxy/qc6W8gQ/Y44PWGCPNWl7ULO6sV+81EQazCQvGeHYP3frbgWmsRvAuDgvMFnnEUodHf5h0Uwt/tdjbFVR5uG/K7KuHKj8gi+STxlk7pOuk8PjwBoderHdw87NGpMylqLk9Ny8qjsBb5s7jyE1AzUfHWxlLp2jpoaKYt2xfcg8DEIYlXQguWO4EmrrNOd7aEZpj+RKIK6FnKBP/9G/9ZvVy+v6fbP/AjoE7ZI=?cssminify=yes' type='text/css' media='all' />
+<style id='wp-block-library-inline-css'>
+.has-text-align-justify {
+	text-align:justify;
+}
+</style>
+<link rel='stylesheet' id='print-css-1-1' href='https://s2.wp.com/wp-content/mu-plugins/global-print/global-print.css?m=1465851035h&cssminify=yes' type='text/css' media='print' />
+<style id='jetpack-global-styles-frontend-style-inline-css'>
+:root { --font-headings: unset; --font-base: unset; --font-headings-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; --font-base-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;}
+</style>
+<link rel='stylesheet' id='all-css-4-1' href='https://s1.wp.com/_static/??-eJxti0EKgCAQAD+ULUaJl+gtJqbG6opr9P3o0CHqNAzMwFmEpdxcbpAOUfDwMTMU4iY2NLECB1Nj9g97y9zB/8Vko0GB5Oktn6kFlxxDGMEjrQbvYEmzVHIclNZy2i9lFDfR?cssminify=yes' type='text/css' media='all' />
+<script id='wpcom-actionbar-placeholder-js-extra'>
+var actionbardata = {"siteID":"62662083","siteName":"enigma0x3","siteURL":"https:\/\/enigma0x3.net","icon":"<img alt='' src='https:\/\/s2.wp.com\/i\/logo\/wpcom-gray-white.png' class='avatar avatar-50' height='50' width='50' \/>","canManageOptions":"","canCustomizeSite":"","isFollowing":"","themeSlug":"pub\/trvl","signupURL":"https:\/\/wordpress.com\/start\/","loginURL":"https:\/\/wordpress.com\/log-in?redirect_to=https%3A%2F%2Fenigma0x3.net%2F2016%2F11%2F17%2Fbypassing-application-whitelisting-by-using-dnx-exe%2F&signup_flow=account&domain=enigma0x3.net","themeURL":"","xhrURL":"https:\/\/enigma0x3.net\/wp-admin\/admin-ajax.php","nonce":"a09c78b47f","isSingular":"1","isFolded":"","isLoggedIn":"","isMobile":"","subscribeNonce":"<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"7e6993c0e0\" \/>","referer":"https:\/\/enigma0x3.net\/2016\/11\/17\/bypassing-application-whitelisting-by-using-dnx-exe\/","canFollow":"1","feedID":"45323403","statusMessage":"","customizeLink":"https:\/\/enigma0x3.wordpress.com\/wp-admin\/customize.php?url=https%3A%2F%2Fenigma0x3.wordpress.com%2F2016%2F11%2F17%2Fbypassing-application-whitelisting-by-using-dnx-exe%2F","postID":"482","shortlink":"https:\/\/wp.me\/p4eVgL-7M","canEditPost":"","editLink":"https:\/\/wordpress.com\/post\/enigma0x3.net\/482","statsLink":"https:\/\/wordpress.com\/stats\/post\/482\/enigma0x3.net","i18n":{"view":"View site","follow":"Follow","following":"Following","edit":"Edit","login":"Log in","signup":"Sign up","customize":"Customize","report":"Report this content","themeInfo":"Get theme: Trvl","shortlink":"Copy shortlink","copied":"Copied","followedText":"New posts from this site will now appear in your <a href=\"https:\/\/wordpress.com\/read\">Reader<\/a>","foldBar":"Collapse this bar","unfoldBar":"Expand this bar","editSubs":"Manage subscriptions","viewReader":"View site in Reader","viewReadPost":"View post in Reader","subscribe":"Sign me up","enterEmail":"Enter your email address","followers":"Join 178 other followers","alreadyUser":"Already have a WordPress.com account? <a href=\"https:\/\/wordpress.com\/log-in?redirect_to=https%3A%2F%2Fenigma0x3.net%2F2016%2F11%2F17%2Fbypassing-application-whitelisting-by-using-dnx-exe%2F&signup_flow=account&domain=enigma0x3.net\">Log in now.<\/a>","stats":"Stats"}};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s2.wp.com/_static/??-eJyFzUEKwkAMheELmQ5DocWFeJZaY8kwyYxJBu3traBQV67e4v/ghUeFuYijeEgWajFnNJsW7JIdwm/lcqGM0Ax1A+JAcitfRzLndkV7w3RvqOtnOib5i4Bp0clxj3fPmh2qlue6tTOf4hDHPvbDeEwvhOVG7A=='></script>
+<script type='text/javascript'>
+	window.addEventListener( 'DOMContentLoaded', function() {
+		rltInitialize( {"token":null,"iframeOrigins":["https:\/\/widgets.wp.com"]} );
+	} );
+</script>
+<link rel='stylesheet' id='all-css-0-2' href='https://s0.wp.com/wp-content/mu-plugins/highlander-comments/style.css?m=1530132353h&cssminify=yes' type='text/css' media='all' />
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='highlander-comments-ie7-css'  href='https://s2.wp.com/wp-content/mu-plugins/highlander-comments/style-ie7.css?m=1351637563h&#038;ver=20110606' media='all' />
+<![endif]-->
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://enigma0x3.wordpress.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://s1.wp.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress.com" />
+<link rel="canonical" href="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/" />
+<link rel='shortlink' href='https://wp.me/p4eVgL-7M' />
+<link rel="alternate" type="application/json+oembed" href="https://public-api.wordpress.com/oembed/?format=json&amp;url=https%3A%2F%2Fenigma0x3.net%2F2016%2F11%2F17%2Fbypassing-application-whitelisting-by-using-dnx-exe%2F&amp;for=wpcom-auto-discovery" /><link rel="alternate" type="application/xml+oembed" href="https://public-api.wordpress.com/oembed/?format=xml&amp;url=https%3A%2F%2Fenigma0x3.net%2F2016%2F11%2F17%2Fbypassing-application-whitelisting-by-using-dnx-exe%2F&amp;for=wpcom-auto-discovery" />
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Bypassing Application Whitelisting By Using dnx.exe" />
+<meta property="og:url" content="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/" />
+<meta property="og:description" content="Over the past few weeks, I have had the pleasure to work side-by-side with Matt Graeber (@mattifestation) and Casey Smith (@subtee) researching Device Guard user mode code integrity (UMCI) bypasses…" />
+<meta property="article:published_time" content="2016-11-17T14:43:25+00:00" />
+<meta property="article:modified_time" content="2016-11-17T14:43:25+00:00" />
+<meta property="og:site_name" content="enigma0x3" />
+<meta property="og:image" content="https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png" />
+<meta property="og:image:width" content="1518" />
+<meta property="og:image:height" content="1164" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:site" content="@wordpressdotcom" />
+<meta name="twitter:text:title" content="Bypassing Application Whitelisting By Using&nbsp;dnx.exe" />
+<meta name="twitter:image" content="https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=640" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="article:publisher" content="https://www.facebook.com/WordPresscom" />
+
+<!-- End Jetpack Open Graph Tags -->
+<link rel="shortcut icon" type="image/x-icon" href="https://s1.wp.com/i/favicon.ico" sizes="16x16 24x24 32x32 48x48" />
+<link rel="icon" type="image/x-icon" href="https://s1.wp.com/i/favicon.ico" sizes="16x16 24x24 32x32 48x48" />
+<link rel="apple-touch-icon" href="https://s2.wp.com/i/webclip.png" />
+<link rel='openid.server' href='https://enigma0x3.net/?openidserver=1' />
+<link rel='openid.delegate' href='https://enigma0x3.net/' />
+<link rel="search" type="application/opensearchdescription+xml" href="https://enigma0x3.net/osd.xml" title="enigma0x3" />
+<link rel="search" type="application/opensearchdescription+xml" href="https://s1.wp.com/opensearch.xml" title="WordPress.com" />
+<meta name="theme-color" content="#282828" />
+<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>		<style type="text/css">
+			.recentcomments a {
+				display: inline !important;
+				padding: 0 !important;
+				margin: 0 !important;
+			}
+
+			table.recentcommentsavatartop img.avatar, table.recentcommentsavatarend img.avatar {
+				border: 0px;
+				margin: 0;
+			}
+
+			table.recentcommentsavatartop a, table.recentcommentsavatarend a {
+				border: 0px !important;
+				background-color: transparent !important;
+			}
+
+			td.recentcommentsavatarend, td.recentcommentsavatartop {
+				padding: 0px 0px 1px 0px;
+				margin: 0px;
+			}
+
+			td.recentcommentstextend {
+				border: none !important;
+				padding: 0px 0px 2px 10px;
+			}
+
+			.rtl td.recentcommentstextend {
+				padding: 0px 10px 2px 0px;
+			}
+
+			td.recentcommentstexttop {
+				border: none;
+				padding: 0px 0px 0px 10px;
+			}
+
+			.rtl td.recentcommentstexttop {
+				padding: 0px 10px 0px 0px;
+			}
+		</style>
+		<meta name="application-name" content="enigma0x3" /><meta name="msapplication-window" content="width=device-width;height=device-height" /><meta name="msapplication-tooltip" content="Red Teamer and Security Addict" /><meta name="msapplication-task" content="name=Subscribe;action-uri=https://enigma0x3.net/feed/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=Sign up for a free blog;action-uri=http://wordpress.com/signup/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Support;action-uri=http://support.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Forums;action-uri=http://forums.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="description" content="Over the past few weeks, I have had the pleasure to work side-by-side with Matt Graeber (@mattifestation) and Casey Smith (@subtee) researching Device Guard user mode code integrity (UMCI) bypasses. If you aren’t familiar with Device Guard, you can read more about it here: https://technet.microsoft.com/en-us/itpro/windows/keep-secure/device-guard-deployment-guide.   In short, Device Guard UMCI prevents unsigned binaries from&hellip;" />
+	<style type="text/css">
+			.site-title a {
+			color: #b5b5b5;
+		}
+		</style>
+	<style type="text/css" id="custom-background-css">
+body.custom-background { background-color: #282828; }
+</style>
+	<link rel="amphtml" href="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/amp/"><style type="text/css" id="custom-colors-css">body { background-color: #333333;}
+pre { color: #333333;}
+input[type="text"],input[type="email"],input[type="password"],input[type="search"],input[type="url"],textarea { color: #333333;}
+#infinite-handle span { color: #333333;}
+.entry-title { border-color: #191919;}
+</style>
+</head>
+
+<body class="post-template-default single single-post postid-482 single-format-standard custom-background customizer-styles-applied highlander-enabled highlander-dark">
+<div id="page" class="hfeed site">
+		<header id="masthead" class="site-header" role="banner">
+		<div class="site-description">Red Teamer and Security Addict</div>
+		<h1 class="site-title"><a href="https://enigma0x3.net/" title="enigma0x3" rel="home">enigma0x3</a></h1>
+
+			</header><!-- #masthead -->
+
+	<div id="main" class="site-main">
+
+<div id="primary" class="content-area">
+	<div id="content" class="site-content" role="main">
+
+		<nav role="navigation" id="nav-above" class="navigation-post">
+		<h1 class="screen-reader-text">Post navigation</h1>
+
+	
+		<div class="nav-previous"><a href="https://enigma0x3.net/2016/08/15/fileless-uac-bypass-using-eventvwr-exe-and-registry-hijacking/" rel="prev"><span class="meta-nav">&laquo;</span> &#8220;Fileless&#8221; UAC Bypass Using eventvwr.exe and Registry&nbsp;Hijacking</a></div>		<div class="nav-next"><a href="https://enigma0x3.net/2016/11/21/bypassing-application-whitelisting-by-using-rcsi-exe/" rel="next">Bypassing Application Whitelisting By Using&nbsp;rcsi.exe <span class="meta-nav">&raquo;</span></a></div>
+	
+	</nav><!-- #nav-above -->
+	
+	
+		
+<article id="post-482" class="post-482 post type-post status-publish format-standard hentry category-uncategorized">
+	<header class="entry-header">
+		<h1 class="entry-title">Bypassing Application Whitelisting By Using&nbsp;dnx.exe</h1>
+		<div class="entry-meta">
+			<a href="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/" title="2:43 pm" rel="bookmark"><time class="entry-date" datetime="2016-11-17T14:43:25+00:00">November 17, 2016</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="https://enigma0x3.net/author/enigma0x3/" title="View all posts by enigma0x3" rel="author">enigma0x3</a></span></span>					</div><!-- .entry-meta -->
+	</header><!-- .entry-header -->
+
+	<div class="entry-content">
+		<p><span style="font-weight:400;">Over the past few weeks, I have had the pleasure to work side-by-side with Matt Graeber (</span><a href="https://twitter.com/mattifestation"><span style="font-weight:400;">@mattifestation</span></a><span style="font-weight:400;">) and Casey Smith (</span><a href="https://twitter.com/subtee"><span style="font-weight:400;">@subtee</span></a><span style="font-weight:400;">) researching Device Guard user mode code integrity (UMCI) bypasses. If you aren’t familiar with Device Guard, you can read more about it here: </span><a href="https://technet.microsoft.com/en-us/itpro/windows/keep-secure/device-guard-deployment-guide"><span style="font-weight:400;">https://technet.microsoft.com/en-us/itpro/windows/keep-secure/device-guard-deployment-guide</span></a><span style="font-weight:400;">.  </span></p>
+<p><span style="font-weight:400;">In short, Device Guard UMCI prevents unsigned binaries from executing, restricts the Windows Scripting Host, and it places PowerShell in </span><a href="https://technet.microsoft.com/en-us/library/dn433292.aspx"><span style="font-weight:400;">Constrained Language mode</span></a><span style="font-weight:400;">.</span></p>
+<p><span style="font-weight:400;">Recently, </span><a href="https://twitter.com/mattifestation"><span style="font-weight:400;">@mattifestation</span></a><span style="font-weight:400;"> blogged about a typical Device Guard scenario and using the </span><a href="http://www.exploit-monday.com/2016/08/windbg-cdb-shellcode-runner.html"><span style="font-weight:400;">Microsoft Signed debuggers WinDbg/CDB</span></a><span style="font-weight:400;"> as shellcode runners.</span></p>
+<p><span style="font-weight:400;">Soon after, </span><a href="https://twitter.com/subtee"><span style="font-weight:400;">@subtee</span></a><span style="font-weight:400;"> released a post on </span><a href="http://subt0x10.blogspot.com/2016/09/application-whitelisting-bypass-csiexe.html"><span style="font-weight:400;">using CSI.exe to run unsigned C# code</span></a><span style="font-weight:400;"> on a Device Guard system. </span></p>
+<p><span style="font-weight:400;">Taking their lead, I decided to install the Visual Studio Enterprise trial and poke around to see what binaries existed. After much digging, I stumbled across dnx.exe, which is the Microsoft .NET Execution environment. If you are curious, you can read more on dnx.exe here: </span></p>
+<p><a href="https://blogs.msdn.microsoft.com/sujitdmello/2015/04/23/step-by-step-installation-instructions-for-getting-dnx-on-your-windows-machine/"><span style="font-weight:400;">https://blogs.msdn.microsoft.com/sujitdmello/2015/04/23/step-by-step-installation-instructions-for-getting-dnx-on-your-windows-machine/</span></a></p>
+<p><span style="font-weight:400;">In a Device Guard scenario, dnx.exe is allowed to execute as it is a Microsoft signed binary packaged with Visual Studio Enterprise. In order to execute dnx.exe on a Device Guard system (assuming it isn’t already installed), you will need to gather dnx.exe and its required dependencies, and somehow transport everything to your target (this is an exercise left up to the reader).</span></p>
+<p><span style="font-weight:400;">With everything required now on our target host, we can now start down the path of bypassing Device Guard’s UMCI. Since dnx.exe allows for executing code in dynamic scenarios, we can use it to execute arbitrary, unsigned C# code. Fortunately, there is a solid example of this on Microsoft’s blog above.</span></p>
+<p><span style="font-weight:400;">For example, we can create a C# file called “Program.cs” and add whatever C# code we want. To demonstrate the execution of unsigned code, we can keep things simple:</span></p>
+<p><a href="https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png"><img loading="lazy" data-attachment-id="483" data-permalink="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/csharp_code/#main" data-orig-file="https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png" data-orig-size="1358,354" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}" data-image-title="csharp_code" data-image-description="" data-medium-file="https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png?w=300" data-large-file="https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png?w=690" class="alignnone size-full wp-image-483" src="https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png?w=690&#038;h=180" alt="csharp_code" width="690" height="180" srcset="https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png?w=690&amp;h=180 690w, https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png?w=150&amp;h=39 150w, https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png?w=300&amp;h=78 300w, https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png?w=768&amp;h=200 768w, https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png?w=1024&amp;h=267 1024w, https://enigma0x3.files.wordpress.com/2016/11/csharp_code.png 1358w" sizes="(max-width: 690px) 100vw, 690px" /></a></p>
+<p><span style="font-weight:400;">To satisfy the requirements of dnx.exe, a Project.json file is required, which specifies some of the requirements when executing the code. For this PoC, the example “Project.json” file can be used from Microsoft’s blog </span><a href="https://blogs.msdn.microsoft.com/sujitdmello/2015/04/23/step-by-step-installation-instructions-for-getting-dnx-on-your-windows-machine/"><span style="font-weight:400;">here</span></a><span style="font-weight:400;">. As stated in their post, we can execute our C# by placing “Program.cs” and “Project.json” in a folder called “ConsoleApp” (this can obviously be renamed/modified).</span></p>
+<p><span style="font-weight:400;">Now that we have our files, we can execute our C# using dnx.exe by going into the “ConsoleApp” folder and invoking dnx.exe on it. This is done on a PC running Device Guard:</span></p>
+<p><a href="https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png"><img loading="lazy" data-attachment-id="484" data-permalink="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/dnx_bypass/#main" data-orig-file="https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png" data-orig-size="1518,1164" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}" data-image-title="dnx_bypass" data-image-description="" data-medium-file="https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=300" data-large-file="https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=690" class="alignnone size-full wp-image-484" src="https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=690&#038;h=529" alt="dnx_bypass" width="690" height="529" srcset="https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=690&amp;h=529 690w, https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=1380&amp;h=1058 1380w, https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=150&amp;h=115 150w, https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=300&amp;h=230 300w, https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=768&amp;h=589 768w, https://enigma0x3.files.wordpress.com/2016/11/dnx_bypass.png?w=1024&amp;h=785 1024w" sizes="(max-width: 690px) 100vw, 690px" /></a></p>
+<p><span style="font-weight:400;">As you can see above, our unsigned C# successfully executed and is running inside of dnx.exe.</span></p>
+<p><span style="font-weight:400;">Fortunately, these “misplaced trust” bypasses can be mitigated via code integrity policy FilePublisher file rules. You can read up on creating these mitigation rules here:</span></p>
+<p><a href="http://www.exploit-monday.com/2016/09/using-device-guard-to-mitigate-against.html"><span style="font-weight:400;">http://www.exploit-monday.com/2016/09/using-device-guard-to-mitigate-against.html</span></a></p>
+<p><span style="font-weight:400;">You can find a comprehensive bypass mitigation policy here:</span></p>
+<p><a href="https://github.com/mattifestation/DeviceGuardBypassMitigationRules"><span style="font-weight:400;">https://github.com/mattifestation/DeviceGuardBypassMitigationRules</span></a></p>
+<p><span style="font-weight:400;">Cheers!</span><span style="font-weight:400;"><br />
+</span><span style="font-weight:400;">Matt Nelson</span></p>
+<div id="jp-post-flair" class="sharedaddy sharedaddy-dark sd-like-enabled sd-sharing-enabled"><div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-twitter"><a rel="nofollow noopener noreferrer" data-shared="sharing-twitter-482" class="share-twitter sd-button share-icon" href="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/?share=twitter" target="_blank" title="Click to share on Twitter"><span>Twitter</span></a></li><li class="share-facebook"><a rel="nofollow noopener noreferrer" data-shared="sharing-facebook-482" class="share-facebook sd-button share-icon" href="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/?share=facebook" target="_blank" title="Click to share on Facebook"><span>Facebook</span></a></li><li class="share-end"></li></ul></div></div></div><div class='sharedaddy sd-block sd-like jetpack-likes-widget-wrapper jetpack-likes-widget-unloaded' id='like-post-wrapper-62662083-482-60a9ba06cfe34' data-src='//widgets.wp.com/likes/index.html?ver=20210413#blog_id=62662083&amp;post_id=482&amp;origin=enigma0x3.wordpress.com&amp;obj_id=62662083-482-60a9ba06cfe34&amp;domain=enigma0x3.net' data-name='like-post-frame-62662083-482-60a9ba06cfe34'><h3 class='sd-title'>Like this:</h3><div class='likes-widget-placeholder post-likes-widget-placeholder' style='height: 55px;'><span class='button'><span>Like</span></span> <span class="loading">Loading...</span></div><span class='sd-text-color'></span><a class='sd-link-color'></a></div>
+<div id='jp-relatedposts' class='jp-relatedposts' >
+	<h3 class="jp-relatedposts-headline"><em>Related</em></h3>
+</div></div>			</div><!-- .entry-content -->
+
+	
+	<footer class="entry-meta">
+		Bookmark the <a href="https://enigma0x3.net/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/" title="Permalink to Bypassing Application Whitelisting By Using&nbsp;dnx.exe" rel="bookmark">permalink</a>.	</footer><!-- .entry-meta -->
+</article><!-- #post-## -->
+
+		
+<div id="comments" class="comments-area">
+
+	
+	
+	
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://enigma0x3.net/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><input type="hidden" id="highlander_comment_nonce" name="highlander_comment_nonce" value="a24c1ed278" /><input type="hidden" name="_wp_http_referer" value="/2016/11/17/bypassing-application-whitelisting-by-using-dnx-exe/" />
+<input type="hidden" name="hc_post_as" id="hc_post_as" value="guest" />
+
+<div class="comment-form-field comment-textarea">
+	<label for="comment">Enter your comment here...</label>
+	<div id="comment-form-comment"><textarea id="comment" name="comment" title="Enter your comment here..."></textarea></div>
+</div>
+
+<div id="comment-form-identity">
+	<div id="comment-form-nascar">
+		<p>Fill in your details below or click an icon to log in:</p>
+		<ul>
+			<li class="selected" style="display:none;">
+				<a href="#comment-form-guest" id="postas-guest" class="nascar-signin-link"
+                   title="Login via Guest">
+									</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:WordPress.com" id="postas-wordpress" class="nascar-signin-link"
+                   title="Login via WordPress.com">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#FFF" d="M12.158 12.786l-2.698 7.84c.806.236 1.657.365 2.54.365 1.047 0 2.05-.18 2.986-.51-.024-.037-.046-.078-.065-.123l-2.762-7.57zM3.008 12c0 3.56 2.07 6.634 5.068 8.092L3.788 8.342c-.5 1.117-.78 2.354-.78 3.658zm15.06-.454c0-1.112-.398-1.88-.74-2.48-.456-.74-.883-1.368-.883-2.11 0-.825.627-1.595 1.51-1.595.04 0 .078.006.116.008-1.598-1.464-3.73-2.36-6.07-2.36-3.14 0-5.904 1.613-7.512 4.053.21.008.41.012.58.012.94 0 2.395-.114 2.395-.114.484-.028.54.684.057.74 0 0-.487.058-1.03.086l3.275 9.74 1.968-5.902-1.4-3.838c-.485-.028-.944-.085-.944-.085-.486-.03-.43-.77.056-.742 0 0 1.484.114 2.368.114.94 0 2.397-.114 2.397-.114.486-.028.543.684.058.74 0 0-.488.058-1.03.086l3.25 9.665.897-2.997c.456-1.17.684-2.137.684-2.907zm1.82-3.86c.04.286.06.593.06.924 0 .912-.17 1.938-.683 3.22l-2.746 7.94c2.672-1.558 4.47-4.454 4.47-7.77 0-1.564-.4-3.033-1.1-4.314zM12 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></g></svg>				</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Twitter" id="postas-twitter" class="nascar-signin-link"
+                   title="Login via Twitter">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#FFF" d="M22.23 5.924c-.736.326-1.527.547-2.357.646.847-.508 1.498-1.312 1.804-2.27-.793.47-1.67.812-2.606.996C18.325 4.498 17.258 4 16.078 4c-2.266 0-4.103 1.837-4.103 4.103 0 .322.036.635.106.935-3.41-.17-6.433-1.804-8.457-4.287-.353.607-.556 1.312-.556 2.064 0 1.424.724 2.68 1.825 3.415-.673-.022-1.305-.207-1.86-.514v.052c0 1.988 1.415 3.647 3.293 4.023-.344.095-.707.145-1.08.145-.265 0-.522-.026-.773-.074.522 1.63 2.038 2.817 3.833 2.85-1.404 1.1-3.174 1.757-5.096 1.757-.332 0-.66-.02-.98-.057 1.816 1.164 3.973 1.843 6.29 1.843 7.547 0 11.675-6.252 11.675-11.675 0-.178-.004-.355-.012-.53.802-.578 1.497-1.3 2.047-2.124z"/></g></svg>				</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Facebook" id="postas-facebook" class="nascar-signin-link"
+                   title="Login via Facebook">
+					<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#FFF" d="M20.007 3H3.993C3.445 3 3 3.445 3 3.993v16.013c0 .55.445.994.993.994h8.62v-6.97H10.27V11.31h2.346V9.31c0-2.325 1.42-3.59 3.494-3.59.993 0 1.847.073 2.096.106v2.43h-1.438c-1.128 0-1.346.537-1.346 1.324v1.734h2.69l-.35 2.717h-2.34V21h4.587c.548 0 .993-.445.993-.993V3.993c0-.548-.445-.993-.993-.993z"/></g></svg>				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div id="comment-form-guest" class="comment-form-service selected">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+<a href="https://gravatar.com/site/signup/" target="_blank">				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="Gravatar" width="25" class="no-grav" />
+</a>			</div>
+
+				<div class="comment-form-fields">
+				<div class="comment-form-field comment-form-email">
+					<label for="email">Email <span class="required">(required)</span> <span class="nopublish">(Address never made public)</span></label>
+					<div class="comment-form-input"><input id="email" name="email" type="email" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-author">
+					<label for="author">Name <span class="required">(required)</span></label>
+					<div class="comment-form-input"><input id="author" name="author" type="text" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-url">
+					<label for="url">Website</label>
+					<div class="comment-form-input"><input id="url" name="url" type="url" value="" /></div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<div id="comment-form-wordpress" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="WordPress.com Logo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="wp_avatar" id="wordpress-avatar" class="comment-meta-wordpress" value="" />
+				<input type="hidden" name="wp_user_id" id="wordpress-user_id" class="comment-meta-wordpress" value="" />
+				<input type="hidden" name="wp_access_token" id="wordpress-access_token" class="comment-meta-wordpress" value="" />
+						<p class="comment-form-posting-as pa-wordpress">
+			<strong></strong>
+			You are commenting using your WordPress.com account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'wordpress' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#FFF" d="M12.158 12.786l-2.698 7.84c.806.236 1.657.365 2.54.365 1.047 0 2.05-.18 2.986-.51-.024-.037-.046-.078-.065-.123l-2.762-7.57zM3.008 12c0 3.56 2.07 6.634 5.068 8.092L3.788 8.342c-.5 1.117-.78 2.354-.78 3.658zm15.06-.454c0-1.112-.398-1.88-.74-2.48-.456-.74-.883-1.368-.883-2.11 0-.825.627-1.595 1.51-1.595.04 0 .078.006.116.008-1.598-1.464-3.73-2.36-6.07-2.36-3.14 0-5.904 1.613-7.512 4.053.21.008.41.012.58.012.94 0 2.395-.114 2.395-.114.484-.028.54.684.057.74 0 0-.487.058-1.03.086l3.275 9.74 1.968-5.902-1.4-3.838c-.485-.028-.944-.085-.944-.085-.486-.03-.43-.77.056-.742 0 0 1.484.114 2.368.114.94 0 2.397-.114 2.397-.114.486-.028.543.684.058.74 0 0-.488.058-1.03.086l3.25 9.665.897-2.997c.456-1.17.684-2.137.684-2.907zm1.82-3.86c.04.286.06.593.06.924 0 .912-.17 1.938-.683 3.22l-2.746 7.94c2.672-1.558 4.47-4.454 4.47-7.77 0-1.564-.4-3.033-1.1-4.314zM12 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-googleplus" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="Google photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="googleplus_avatar" id="googleplus-avatar" class="comment-meta-googleplus" value="" />
+				<input type="hidden" name="googleplus_user_id" id="googleplus-user_id" class="comment-meta-googleplus" value="" />
+				<input type="hidden" name="googleplus_access_token" id="googleplus-access_token" class="comment-meta-googleplus" value="" />
+						<p class="comment-form-posting-as pa-googleplus">
+			<strong></strong>
+			You are commenting using your Google account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'googleplus' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" x="0px" y="0px" viewBox="0 0 60 60" ><path fill="#FFF" d="M56.3,30c0,-1.6 -0.2,-3.4 -0.6,-5h-3.1H42.2H30v10.6h14.8C44,39.3 42,42 39.1,43.9l8.8,6.8C53,46 56.3,39 56.3,30z" /><path fill="#FFF" d="M30,57.5c6.7,0 13.1,-2.4 17.9,-6.8l-8.8,-6.8c-2.5,1.6 -5.6,2.4 -9.1,2.4c-7.2,0 -13.3,-4.7 -15.4,-11.2l-9.3,7.1C9.8,51.3 19.1,57.5 30,57.5z" /><path fill="#FFF" d="M5.3,42.2l9.3,-7.1c-0.5,-1.6 -0.8,-3.3 -0.8,-5.1s0.3,-3.5 0.8,-5.1l-9.3,-7.1C3.5,21.5 2.5,25.6 2.5,30S3.5,38.5 5.3,42.2z" /><path fill="#FFF" d="M40.1,17.4l8,-8C43.3,5.1 37,2.5 30,2.5C19.1,2.5 9.8,8.7 5.3,17.8l9.3,7.1c2.1,-6.5 8.2,-11.1 15.4,-11.1C33.9,13.7 37.4,15.1 40.1,17.4z" /></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-twitter" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="Twitter picture" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="twitter_avatar" id="twitter-avatar" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_user_id" id="twitter-user_id" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_access_token" id="twitter-access_token" class="comment-meta-twitter" value="" />
+						<p class="comment-form-posting-as pa-twitter">
+			<strong></strong>
+			You are commenting using your Twitter account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'twitter' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#FFF" d="M22.23 5.924c-.736.326-1.527.547-2.357.646.847-.508 1.498-1.312 1.804-2.27-.793.47-1.67.812-2.606.996C18.325 4.498 17.258 4 16.078 4c-2.266 0-4.103 1.837-4.103 4.103 0 .322.036.635.106.935-3.41-.17-6.433-1.804-8.457-4.287-.353.607-.556 1.312-.556 2.064 0 1.424.724 2.68 1.825 3.415-.673-.022-1.305-.207-1.86-.514v.052c0 1.988 1.415 3.647 3.293 4.023-.344.095-.707.145-1.08.145-.265 0-.522-.026-.773-.074.522 1.63 2.038 2.817 3.833 2.85-1.404 1.1-3.174 1.757-5.096 1.757-.332 0-.66-.02-.98-.057 1.816 1.164 3.973 1.843 6.29 1.843 7.547 0 11.675-6.252 11.675-11.675 0-.178-.004-.355-.012-.53.802-.578 1.497-1.3 2.047-2.124z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-facebook" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="https://1.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&amp;d=identicon&amp;forcedefault=y&amp;r=G" alt="Facebook photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="fb_avatar" id="facebook-avatar" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_user_id" id="facebook-user_id" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_access_token" id="facebook-access_token" class="comment-meta-facebook" value="" />
+						<p class="comment-form-posting-as pa-facebook">
+			<strong></strong>
+			You are commenting using your Facebook account.			<span class="comment-form-log-out">
+				(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'facebook' );">Log&nbsp;Out</a>&nbsp;/&nbsp;
+				<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)
+			</span>
+			<span class="pa-icon"><svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24" ><rect x="0" fill="none" width="24" height="24"/><g><path fill="#FFF" d="M20.007 3H3.993C3.445 3 3 3.445 3 3.993v16.013c0 .55.445.994.993.994h8.62v-6.97H10.27V11.31h2.346V9.31c0-2.325 1.42-3.59 3.494-3.59.993 0 1.847.073 2.096.106v2.43h-1.438c-1.128 0-1.346.537-1.346 1.324v1.734h2.69l-.35 2.717h-2.34V21h4.587c.548 0 .993-.445.993-.993V3.993c0-.548-.445-.993-.993-.993z"/></g></svg></span>
+		</p>
+					</div>
+	
+		</div>
+	</div>
+
+
+	<div id="comment-form-load-service" class="comment-form-service">
+		<div class="comment-form-posting-as-cancel"><a href="javascript:HighlanderComments.cancelExternalWindow();">Cancel</a></div>
+		<p>Connecting to %s</p>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+var highlander_expando_javascript = function () {
+
+	function hide( sel ) {
+		var el = document.querySelector( sel );
+		if ( el ) {
+			el.style.setProperty( 'display', 'none' );
+		}
+	}
+
+	function show( sel ) {
+		var el = document.querySelector( sel );
+		if ( el ) {
+			el.style.removeProperty( 'display' );
+		}
+	}
+
+	var input = document.createElement( 'input' );
+	var comment = document.querySelector( '#comment' );
+
+	if ( input && comment && 'placeholder' in input ) {
+		var label = document.querySelector( '.comment-textarea label' );
+		if ( label ) {
+			var text = label.textContent;
+			label.parentNode.removeChild( label );
+			comment.setAttribute( 'placeholder', text );
+		}
+	}
+
+	// Expando Mode: start small, then auto-resize on first click + text length
+	hide( '#comment-form-identity' );
+	hide( '#comment-form-subscribe' );
+	hide( '#commentform .form-submit' );
+
+	if ( comment ) {
+		comment.style.height = '10px';
+
+		var handler = function () {
+			comment.style.height = HighlanderComments.initialHeight + 'px';
+			show( '#comment-form-identity' );
+			show( '#comment-form-subscribe' );
+			show( '#commentform .form-submit' );
+			HighlanderComments.resizeCallback();
+
+			comment.removeEventListener( 'focus', handler );
+		};
+
+		comment.addEventListener( 'focus', handler );
+	}
+}
+
+if ( document.readyState !== 'loading' ) {
+	highlander_expando_javascript();
+} else {
+	if ( typeof window.jQuery === 'function' ) {
+		// Use jQuery's `ready` if available.
+		// This solves some scheduling issues between this script and the main highlander script.
+		jQuery( document ).ready( highlander_expando_javascript );
+	} else {
+		// If not available, add a vanilla event listener.
+		document.addEventListener( 'DOMContentLoaded', highlander_expando_javascript );
+	}
+}
+
+</script>
+
+<div id="comment-form-subscribe">
+	<p class="comment-subscription-form"><input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;"/> <label class="subscribe-label" id="subscribe-label" for="subscribe" style="display: inline;">Notify me of new comments via email.</label></p><p class="post-subscription-form"><input type="checkbox" name="subscribe_blog" id="subscribe_blog" value="subscribe" style="width: auto;"/> <label class="subscribe-label" id="subscribe-blog-label" for="subscribe_blog"  style="display: inline;">Notify me of new posts via email.</label></p></div>
+
+
+
+
+<p class="form-submit"><input name="submit" type="submit" id="comment-submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='482' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="83fb17ec15" /></p>
+<input type="hidden" name="genseq" value="1621735942" />
+<input type="hidden" id="ak_js" name="ak_js" value="123"/><textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100" style="display: none !important;"></textarea></form>	</div><!-- #respond -->
+	<div style="clear: both"></div>
+</div><!-- #comments -->
+
+	
+	</div><!-- #content -->
+</div><!-- #primary -->
+
+
+	</div><!-- #main -->
+
+	<footer id="colophon" class="site-footer" role="contentinfo">
+		
+		<div id="secondary" class="widget-area" role="complementary">
+		<aside id="search-2" class="widget widget_search"><form role="search" method="get" class="search-form" action="https://enigma0x3.net/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form></aside>
+		<aside id="recent-posts-2" class="widget widget_recent_entries">
+		<h1 class="widget-title">Recent Posts</h1>
+		<ul>
+											<li>
+					<a href="https://enigma0x3.net/2020/01/15/avira-vpn-local-privilege-escalation-via-insecure-update-location/">Avira VPN Local Privilege Escalation via Insecure Update&nbsp;Location</a>
+									</li>
+											<li>
+					<a href="https://enigma0x3.net/2019/12/10/cve-2019-19248-local-privilege-escalation-in-eas-origin-client/">CVE-2019-19248: Local Privilege Escalation in EA&#8217;s Origin&nbsp;Client</a>
+									</li>
+											<li>
+					<a href="https://enigma0x3.net/2019/08/29/avira-optimizer-local-privilege-escalation/">Avira Optimizer Local Privilege&nbsp;Escalation</a>
+									</li>
+											<li>
+					<a href="https://enigma0x3.net/2019/07/24/cve-2019-13382-privilege-escalation-in-snagit/">CVE-2019-13382: Local Privilege Escalation in&nbsp;SnagIt</a>
+									</li>
+											<li>
+					<a href="https://enigma0x3.net/2019/07/05/cve-2019-13142-razer-surround-1-1-63-0-eop/">CVE-2019-13142: Razer Surround 1.1.63.0&nbsp;EoP</a>
+									</li>
+					</ul>
+
+		</aside><aside id="recent-comments-2" class="widget widget_recent_comments"><h1 class="widget-title">Recent Comments</h1>				<table class="recentcommentsavatar" cellspacing="0" cellpadding="0" border="0">
+					<tr><td title="Ron" class="recentcommentsavatartop" style="height:48px; width:48px;"><img alt='' src='https://2.gravatar.com/avatar/218f63a0f3f5746619b9ade0f27b9df3?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' /></td><td class="recentcommentstexttop" style="">Ron on <a href="https://enigma0x3.net/2019/07/24/cve-2019-13382-privilege-escalation-in-snagit/comment-page-1/#comment-18188">CVE-2019-13382: Local Privileg&hellip;</a></td></tr><tr><td title="enigma0x3" class="recentcommentsavatarend" style="height:48px; width:48px;"><img alt='' src='https://0.gravatar.com/avatar/c06dc3cee51829dbac8d5a40a56ada2f?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' /></td><td class="recentcommentstextend" style="">enigma0x3 on <a href="https://enigma0x3.net/2019/07/24/cve-2019-13382-privilege-escalation-in-snagit/comment-page-1/#comment-18184">CVE-2019-13382: Local Privileg&hellip;</a></td></tr><tr><td title="Ron" class="recentcommentsavatarend" style="height:48px; width:48px;"><img alt='' src='https://2.gravatar.com/avatar/218f63a0f3f5746619b9ade0f27b9df3?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' /></td><td class="recentcommentstextend" style="">Ron on <a href="https://enigma0x3.net/2019/07/24/cve-2019-13382-privilege-escalation-in-snagit/comment-page-1/#comment-18182">CVE-2019-13382: Local Privileg&hellip;</a></td></tr><tr><td title="Soc" class="recentcommentsavatarend" style="height:48px; width:48px;"><img alt='' src='https://0.gravatar.com/avatar/f032b1869da8022340d18db76da8bfcb?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' /></td><td class="recentcommentstextend" style="">Soc on <a href="https://enigma0x3.net/2017/04/03/defeating-device-guard-a-look-into-cve-2017-0007/comment-page-1/#comment-1502">Defeating Device Guard: A look&hellip;</a></td></tr><tr><td title="&#8220;Fileless&#8221; UAC Bypass using sdclt.exe | enigma0x3" class="recentcommentsavatarend" style="height:48px; width:48px;"><a href="https://enigma0x3.net/2017/03/17/fileless-uac-bypass-using-sdclt-exe/" rel="nofollow"></a></td><td class="recentcommentstextend" style=""><a href="https://enigma0x3.net/2017/03/17/fileless-uac-bypass-using-sdclt-exe/" rel="nofollow">&#8220;Fileless&hellip;</a> on <a href="https://enigma0x3.net/2016/08/15/fileless-uac-bypass-using-eventvwr-exe-and-registry-hijacking/comment-page-1/#comment-1286">&#8220;Fileless&#8221; UAC Byp&hellip;</a></td></tr>				</table>
+				</aside><aside id="archives-2" class="widget widget_archive"><h1 class="widget-title">Archives</h1>
+			<ul>
+					<li><a href='https://enigma0x3.net/2020/01/'>January 2020</a></li>
+	<li><a href='https://enigma0x3.net/2019/12/'>December 2019</a></li>
+	<li><a href='https://enigma0x3.net/2019/08/'>August 2019</a></li>
+	<li><a href='https://enigma0x3.net/2019/07/'>July 2019</a></li>
+	<li><a href='https://enigma0x3.net/2019/03/'>March 2019</a></li>
+	<li><a href='https://enigma0x3.net/2019/01/'>January 2019</a></li>
+	<li><a href='https://enigma0x3.net/2018/10/'>October 2018</a></li>
+	<li><a href='https://enigma0x3.net/2018/06/'>June 2018</a></li>
+	<li><a href='https://enigma0x3.net/2018/01/'>January 2018</a></li>
+	<li><a href='https://enigma0x3.net/2017/11/'>November 2017</a></li>
+	<li><a href='https://enigma0x3.net/2017/10/'>October 2017</a></li>
+	<li><a href='https://enigma0x3.net/2017/09/'>September 2017</a></li>
+	<li><a href='https://enigma0x3.net/2017/08/'>August 2017</a></li>
+	<li><a href='https://enigma0x3.net/2017/07/'>July 2017</a></li>
+	<li><a href='https://enigma0x3.net/2017/04/'>April 2017</a></li>
+	<li><a href='https://enigma0x3.net/2017/03/'>March 2017</a></li>
+	<li><a href='https://enigma0x3.net/2017/01/'>January 2017</a></li>
+	<li><a href='https://enigma0x3.net/2016/11/'>November 2016</a></li>
+	<li><a href='https://enigma0x3.net/2016/08/'>August 2016</a></li>
+	<li><a href='https://enigma0x3.net/2016/07/'>July 2016</a></li>
+	<li><a href='https://enigma0x3.net/2016/05/'>May 2016</a></li>
+	<li><a href='https://enigma0x3.net/2016/03/'>March 2016</a></li>
+	<li><a href='https://enigma0x3.net/2016/02/'>February 2016</a></li>
+	<li><a href='https://enigma0x3.net/2016/01/'>January 2016</a></li>
+	<li><a href='https://enigma0x3.net/2015/10/'>October 2015</a></li>
+	<li><a href='https://enigma0x3.net/2015/08/'>August 2015</a></li>
+	<li><a href='https://enigma0x3.net/2015/04/'>April 2015</a></li>
+	<li><a href='https://enigma0x3.net/2015/03/'>March 2015</a></li>
+	<li><a href='https://enigma0x3.net/2015/01/'>January 2015</a></li>
+	<li><a href='https://enigma0x3.net/2014/10/'>October 2014</a></li>
+	<li><a href='https://enigma0x3.net/2014/07/'>July 2014</a></li>
+	<li><a href='https://enigma0x3.net/2014/06/'>June 2014</a></li>
+	<li><a href='https://enigma0x3.net/2014/03/'>March 2014</a></li>
+	<li><a href='https://enigma0x3.net/2014/01/'>January 2014</a></li>
+			</ul>
+
+			</aside><aside id="categories-2" class="widget widget_categories"><h1 class="widget-title">Categories</h1>
+			<ul>
+					<li class="cat-item cat-item-1"><a href="https://enigma0x3.net/category/uncategorized/">Uncategorized</a>
+</li>
+			</ul>
+
+			</aside><aside id="meta-2" class="widget widget_meta"><h1 class="widget-title">Meta</h1>
+		<ul>
+			<li><a href="https://wordpress.com/start?ref=wplogin">Register</a></li>			<li><a href="https://enigma0x3.wordpress.com/wp-login.php">Log in</a></li>
+			<li><a href="https://enigma0x3.net/feed/">Entries feed</a></li>
+			<li><a href="https://enigma0x3.net/comments/feed/">Comments feed</a></li>
+
+			<li><a href="https://wordpress.com/" title="Powered by WordPress, state-of-the-art semantic personal publishing platform.">WordPress.com</a></li>
+		</ul>
+
+		</aside></div><!-- #secondary -->
+
+		<div class="site-info">
+						<a href="https://wordpress.com/?ref=footer_blog" rel="nofollow">Blog at WordPress.com.</a>
+			
+					</div><!-- .site-info -->
+	</footer><!-- #colophon -->
+</div><!-- #page -->
+
+<!--  -->
+<script src='//0.gravatar.com/js/gprofiles.js?ver=202120y' id='grofiles-cards-js'></script>
+<script id='wpgroho-js-extra'>
+var WPGroHo = {"my_hash":""};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s1.wp.com/wp-content/mu-plugins/gravatar-hovercards/wpgroho.js?m=1610363240h'></script>
+
+	<script>
+		// Initialize and attach hovercards to all gravatars
+		( function() {
+			function init() {
+				if ( typeof Gravatar === 'undefined' ) {
+					return;
+				}
+
+				if ( typeof Gravatar.init !== 'function' ) {
+					return;
+				}
+
+				Gravatar.profile_cb = function ( hash, id ) {
+					WPGroHo.syncProfileData( hash, id );
+				};
+
+				Gravatar.my_hash = WPGroHo.my_hash;
+				Gravatar.init( 'body', '#wp-admin-bar-my-account' );
+			}
+
+			if ( document.readyState !== 'loading' ) {
+				init();
+			} else {
+				document.addEventListener( 'DOMContentLoaded', init );
+			}
+		} )();
+	</script>
+
+		<div style="display:none">
+	<div class="grofile-hash-map-218f63a0f3f5746619b9ade0f27b9df3">
+	</div>
+	<div class="grofile-hash-map-c06dc3cee51829dbac8d5a40a56ada2f">
+	</div>
+	<div class="grofile-hash-map-f032b1869da8022340d18db76da8bfcb">
+	</div>
+	</div>
+<script id='highlander-comments-js-extra'>
+var HighlanderComments = {"loggingInText":"Logging In\u2026","submittingText":"Posting Comment\u2026","postCommentText":"Post Comment","connectingToText":"Connecting to %s","commentingAsText":"%1$s: You are commenting using your %2$s account.","logoutText":"Log Out","loginText":"Log In","connectURL":"https:\/\/enigma0x3.wordpress.com\/public.api\/connect\/?action=request&domain=enigma0x3.net","logoutURL":"https:\/\/enigma0x3.wordpress.com\/wp-login.php?action=logout&_wpnonce=605197e367","homeURL":"https:\/\/enigma0x3.net\/","postID":"482","gravDefault":"identicon","enterACommentError":"Please enter a comment","enterEmailError":"Please enter your email address here","invalidEmailError":"Invalid email address","enterAuthorError":"Please enter your name here","gravatarFromEmail":"This picture will show whenever you leave a comment. Click to customize it.","logInToExternalAccount":"Log in to use details from one of these accounts.","change":"Change","changeAccount":"Change Account","comment_registration":"0","userIsLoggedIn":"","isJetpack":"","text_direction":"ltr"};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s0.wp.com/_static/??/wp-content/js/jquery/jquery.autoresize.js,/wp-content/mu-plugins/highlander-comments/script.js?m=1573483029j'></script>
+
+<script>
+window.addEventListener( "load", function( event ) {
+	var link = document.createElement( "link" );
+	link.href = "https://s0.wp.com/wp-content/mu-plugins/actionbar/actionbar.css?v=20201002";
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.head.appendChild( link );
+
+	var script = document.createElement( "script" );
+	script.src = "https://s0.wp.com/wp-content/mu-plugins/actionbar/actionbar.js?v=20201002";
+	script.defer = true;
+	document.body.appendChild( script );
+} );
+</script>
+
+	
+		<div
+			class="jp-carousel-wrap jp-carousel-transitions"
+			itemscope
+			itemtype="https://schema.org/ImageGallery"
+			style="display: none;">
+			<div class="jp-carousel-overlay"></div>
+			<div class="jp-carousel"></div>
+			<div class="jp-carousel-fadeaway"></div>
+			<div class="jp-carousel-info">
+				<div class="jp-carousel-photo-info">
+					<h2 class="jp-carousel-caption" itemprop="caption description"></h2>
+				</div>
+				<div class="jp-carousel-info-columns">
+					<div class="jp-carousel-left-column-wrapper">
+						<div class="jp-carousel-titleanddesc"></div>
+						<!-- Intentional duplicate -->
+						<div class="jp-carousel-photo-info">
+							<h2 class="jp-carousel-caption" itemprop="caption description"></h2>
+						</div>
+													<div id="jp-carousel-comment-form-container">
+																											<form id="jp-carousel-comment-form">
+											<textarea
+												name="comment"
+												class="jp-carousel-comment-form-field jp-carousel-comment-form-textarea"
+												id="jp-carousel-comment-form-comment-field"
+												placeholder="Write a Comment..."
+											></textarea>
+											<div id="jp-carousel-comment-form-submit-and-info-wrapper">
+												<div id="jp-carousel-comment-form-commenting-as">
+																											<fieldset>
+															<label for="jp-carousel-comment-form-email-field">Email (Required)</label>
+															<input type="text" name="email" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-email-field" />
+														</fieldset>
+														<fieldset>
+															<label for="jp-carousel-comment-form-author-field">Name (Required)</label>
+															<input type="text" name="author" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-author-field" />
+														</fieldset>
+														<fieldset>
+															<label for="jp-carousel-comment-form-url-field">Website</label>
+															<input type="text" name="url" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-url-field" />
+														</fieldset>
+																									</div>
+												<input
+													type="submit"
+													name="submit"
+													class="jp-carousel-comment-form-button"
+													id="jp-carousel-comment-form-button-submit"
+													value="Post Comment" />
+												<span id="jp-carousel-comment-form-spinner">&nbsp;</span>
+												<div id="jp-carousel-comment-post-results"></div>
+											</div>
+										</form>
+																								</div>
+							<div class="jp-carousel-comments"></div>
+							<div id="jp-carousel-comments-loading">
+								<span>Loading Comments...</span>
+							</div>
+											</div>
+					<div class="jp-carousel-image-meta">
+						<div class="jp-carousel-buttons">
+														<a class="jp-carousel-commentlink" href="#">Comment</a>
+																				</div>
+						<ul class="jp-carousel-image-exif" style="display: none;"></ul>
+						<a class="jp-carousel-image-download" style="display: none;"></a>
+						<div class="jp-carousel-image-map" style="display: none;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="jp-carousel-next-button" style="display: none;">
+				<span></span>
+			</div>
+			<div class="jp-carousel-previous-button" style="display: none;">
+				<span></span>
+			</div>
+			<div class="jp-carousel-close-hint"><span>&times;</span></div>
+		</div>
+
+		
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/enigma0x3.net\/2016\/11\/17\/bypassing-application-whitelisting-by-using-dnx-exe\/":482};
+	</script>
+				<link rel='stylesheet' id='all-css-0-3' href='https://s1.wp.com/_static/??/wp-content/mu-plugins/carousel/jetpack-carousel.css,/wp-content/mu-plugins/related-posts/related-posts.css?m=1620034463j&cssminify=yes' type='text/css' media='all' />
+<script id='jetpack-carousel-js-extra'>
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"en","ajaxurl":"https:\/\/enigma0x3.net\/wp-admin\/admin-ajax.php","nonce":"1adfd72456","display_exif":"1","display_comments":"1","display_geo":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"Comment","post_comment":"Post Comment","write_comment":"Write a Comment...","loading_comments":"Loading Comments...","download_original":"View full size <span class=\"photo-size\">{0}<span class=\"photo-size-times\">\u00d7<\/span>{1}<\/span>","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","copyright":"Copyright","comment_registration":"0","require_name_email":"1","login_url":"https:\/\/enigma0x3.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Fenigma0x3.net%2F2016%2F11%2F17%2Fbypassing-application-whitelisting-by-using-dnx-exe%2F","blog_id":"62662083","meta_data":["camera","aperture","shutter_speed","focal_length","copyright"],"stats_query_args":"blog=62662083&v=wpcom&tz=0&user_id=0&subd=enigma0x3","is_public":"1"};
+</script>
+<script id='jetpack_related-posts-js-extra'>
+var related_posts_js_options = {"post_heading":"h4"};
+</script>
+<script id='sharing-js-js-extra'>
+var sharing_js_options = {"lang":"en","counts":"1","is_stats_active":"1"};
+</script>
+<script crossorigin='anonymous' type='text/javascript' src='https://s1.wp.com/_static/??-eJyNketOwzAMhV+INGOIy34gHgVlibu6zQ07WRlPjyttSK1K4Vfi5JzjL44es7IpFohF96wdnNFC/mx6vtPzq/6jAl2uS4PxjDD+KeuhZGMHRcD4BUt5qCr7esLI2uMArMVUoTPReaCluHQQRJLrURc6+6kXD5iVxzioNtnKqsUfcIzWVyd6kdkUgiQIRPaXJmBcE2EwJ2CfjAP3myYYTpFmERt0bY22YIq88WzjJEsdDU3ZBUh2qpBMjNf6SwnhOOdbCbWGUmUQiOv0bwcbHgJvCjiVE5dFtYU/IAco6qHZ6Xch1W2i8A8yNWb5lEW54Zs4VOsNkubOEMbTbRXTW3i9f9rvDi+Hx/1z/w3AUw2W'></script>
+<script type='text/javascript'>
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-twitter' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-twitter' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+						return false;
+					}
+				} );
+			} )();
+var windowOpen;
+			( function () {
+				function matches( el, sel ) {
+					return !! (
+						el.matches && el.matches( sel ) ||
+						el.msMatchesSelector && el.msMatchesSelector( sel )
+					);
+				}
+
+				document.body.addEventListener( 'click', function ( event ) {
+					if ( ! event.target ) {
+						return;
+					}
+
+					var el;
+					if ( matches( event.target, 'a.share-facebook' ) ) {
+						el = event.target;
+					} else if ( event.target.parentNode && matches( event.target.parentNode, 'a.share-facebook' ) ) {
+						el = event.target.parentNode;
+					}
+
+					if ( el ) {
+						event.preventDefault();
+
+						// If there's another sharing window open, close it.
+						if ( typeof windowOpen !== 'undefined' ) {
+							windowOpen.close();
+						}
+						windowOpen = window.open( el.getAttribute( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+						return false;
+					}
+				} );
+			} )();
+</script>
+<script type="text/javascript">
+// <![CDATA[
+(function() {
+try{
+  if ( window.external &&'msIsSiteMode' in window.external) {
+    if (window.external.msIsSiteMode()) {
+      var jl = document.createElement('script');
+      jl.type='text/javascript';
+      jl.async=true;
+      jl.src='/wp-content/plugins/ie-sitemode/custom-jumplist.php';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(jl, s);
+    }
+  }
+}catch(e){}
+})();
+// ]]>
+</script>	<iframe src='https://widgets.wp.com/likes/master.html?ver=20210413#ver=20210413&amp;origin=https://enigma0x3.net' scrolling='no' id='likes-master' name='likes-master' style='display:none;'></iframe>
+	<div id='likes-other-gravatars'>
+		<div class="likes-text">
+			<span>%d</span> bloggers like this:		</div>
+		<ul class="wpl-avatars sd-like-gravatars"></ul>
+	</div>
+	
+		<script src="//stats.wp.com/w.js?61" defer></script> <script type="text/javascript">
+_tkq = window._tkq || [];
+_stq = window._stq || [];
+_tkq.push(['storeContext', {'blog_id':'62662083','blog_tz':'0','user_lang':'en','blog_lang':'en','user_id':'0'}]);
+_stq.push(['view', {'blog':'62662083','v':'wpcom','tz':'0','user_id':'0','post':'482','subd':'enigma0x3'}]);
+_stq.push(['extra', {'crypt':'UE40eW5QN0p8M2Y/RE1TaVhzUzFMbjdWNHpwZGhTayxPSUFCMGNrd29+Smw0TDhnZmRTK0hlRi9QSGh6bi9GXVhBJWIlZlR5U1JMLU8/MkNtblkvY1dzSVouX254PXM/JT9UZnxGMTBzWWYtLEtMTlZHWndIfGc0cHdkW2YydUVzOV1fcGw4P3N2LWprX0Q3fkZnZS9vS19qP08taU5qT0RkZkxJJnJMRk95SWE3Wm84cjVwM1lZW2dXfnksM0JmbE1aSHFZZis4MVJIeGltMmhrSUM1SFpYUndteGtudGJvaWlCWEhnNC9vYnhvTUE9TCtsdFMsNlA1WWpXUnp+V0p2ZjBbZExvNnduUUJENFp0RWsmJWE/YVtOWWh3SC4/bnxKVHhBaW1ZazZIbjgz'}]);
+_stq.push([ 'clickTrackerInit', '62662083', '482' ]);
+	</script>
+<noscript><img src="https://pixel.wp.com/b.gif?v=noscript" style="height:1px;width:1px;overflow:hidden;position:absolute;bottom:1px;" alt="" /></noscript>
+<script>
+if ( 'object' === typeof wpcom_mobile_user_agent_info ) {
+
+	wpcom_mobile_user_agent_info.init();
+	var mobileStatsQueryString = "";
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedPlatformName )
+		mobileStatsQueryString += "&x_" + 'mobile_platforms' + '=' + wpcom_mobile_user_agent_info.matchedPlatformName;
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedUserAgentName )
+		mobileStatsQueryString += "&x_" + 'mobile_devices' + '=' + wpcom_mobile_user_agent_info.matchedUserAgentName;
+	
+	if( wpcom_mobile_user_agent_info.isIPad() )
+		mobileStatsQueryString += "&x_" + 'ipad_views' + '=' + 'views';
+
+	if( "" != mobileStatsQueryString ) {
+		new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?v=wpcom-no-pv' + mobileStatsQueryString + '&baba=' + Math.random();
+	}
+	
+}
+</script>
+</body>
+</html>

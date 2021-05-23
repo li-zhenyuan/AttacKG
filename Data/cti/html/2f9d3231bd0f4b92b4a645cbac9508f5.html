@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/cdn-cgi/apps/head/n9TF-6GWbkpYTiDSgDnrjC9AIZM.js"></script><link rel="profile" href="http://gmpg.org/xfn/11">
+<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+<title>PowerLoader Injection - Something truly amazing - MalwareTech</title>
+<link rel="canonical" href="https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="PowerLoader Injection - Something truly amazing - MalwareTech" />
+<meta property="og:description" content="I&#8217;m not dead It has been a while since i wrote an article (I&#8217;ve been pretty busy in real life), so I decided to get writing. This article will probably only make sense to people from a malware research / programming background, but to compensate i will be posting a &hellip;" />
+<meta property="og:url" content="https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html" />
+<meta property="og:site_name" content="MalwareTech" />
+<meta property="article:published_time" content="2013-08-13T13:16:00+00:00" />
+<meta property="article:modified_time" content="2016-06-29T08:41:33+00:00" />
+<meta property="og:image" content="https://www.malwaretech.com/wp-content/uploads/2013/08/WndProcLite.png" />
+<meta property="og:image:width" content="212" />
+<meta property="og:image:height" content="85" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@MalwareTechBlog" />
+<meta name="twitter:site" content="@MalwareTechBlog" />
+<meta name="twitter:label1" content="Written by">
+<meta name="twitter:data1" content="MalwareTech">
+<meta name="twitter:label2" content="Est. reading time">
+<meta name="twitter:data2" content="9 minutes">
+<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://www.malwaretech.com/#website","url":"https://www.malwaretech.com/","name":"MalwareTech","description":"Life of a Malware Analyst","publisher":{"@id":"https://www.malwaretech.com/#/schema/person/4ab66290f687de23ffad2820632610b0"},"potentialAction":[{"@type":"SearchAction","target":"https://www.malwaretech.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#primaryimage","inLanguage":"en-US","url":"https://www.malwaretech.com/wp-content/uploads/2013/08/WndProcLite.png","width":212,"height":85},{"@type":"WebPage","@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#webpage","url":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html","name":"PowerLoader Injection - Something truly amazing - MalwareTech","isPartOf":{"@id":"https://www.malwaretech.com/#website"},"primaryImageOfPage":{"@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#primaryimage"},"datePublished":"2013-08-13T13:16:00+00:00","dateModified":"2016-06-29T08:41:33+00:00","breadcrumb":{"@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html"]}]},{"@type":"BreadcrumbList","@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://www.malwaretech.com/","url":"https://www.malwaretech.com/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://www.malwaretech.com/category/uncategorized","url":"https://www.malwaretech.com/category/uncategorized","name":"Uncategorized"}},{"@type":"ListItem","position":3,"item":{"@type":"WebPage","@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html","url":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html","name":"PowerLoader Injection &#8211; Something truly amazing"}}]},{"@type":"Article","@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#article","isPartOf":{"@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#webpage"},"author":{"@id":"https://www.malwaretech.com/#/schema/person/4ab66290f687de23ffad2820632610b0"},"headline":"PowerLoader Injection &#8211; Something truly amazing","datePublished":"2013-08-13T13:16:00+00:00","dateModified":"2016-06-29T08:41:33+00:00","mainEntityOfPage":{"@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#webpage"},"commentCount":6,"publisher":{"@id":"https://www.malwaretech.com/#/schema/person/4ab66290f687de23ffad2820632610b0"},"image":{"@id":"https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#primaryimage"},"keywords":"exploits,malware,reversing,security,windows internals","inLanguage":"en-US","potentialAction":[{"@type":"CommentAction","name":"Comment","target":["https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html#respond"]}]},{"@type":["Person","Organization"],"@id":"https://www.malwaretech.com/#/schema/person/4ab66290f687de23ffad2820632610b0","name":"MalwareTech","image":{"@type":"ImageObject","@id":"https://www.malwaretech.com/#personlogo","inLanguage":"en-US","url":"https://www.malwaretech.com/wp-content/uploads/2019/08/catglass.jpg","width":300,"height":300,"caption":"MalwareTech"},"logo":{"@id":"https://www.malwaretech.com/#personlogo"}}]}</script>
+
+<link rel='dns-prefetch' href='//www.malwaretech.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="MalwareTech &raquo; Feed" href="https://www.malwaretech.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="MalwareTech &raquo; Comments Feed" href="https://www.malwaretech.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="MalwareTech &raquo; PowerLoader Injection &#8211; Something truly amazing Comments Feed" href="https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html/feed" />
+<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/www.malwaretech.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='crayon-css' href='https://www.malwaretech.com/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css?ver=_2.7.2_beta' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-css' href='https://www.malwaretech.com/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='contact-form-7-css' href='https://www.malwaretech.com/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.4' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/font-awesome.min.css?ver=4.7.0' type='text/css' media='all' />
+<link rel='stylesheet' id='animate-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/animate.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='stellarnav-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/stellarnav.css?ver=1.1' type='text/css' media='all' />
+<link rel='stylesheet' id='imnewspro-carousel-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/owl.carousel.min.css?ver=2.2.1' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/bootstrap.min.css?ver=3.3.7' type='text/css' media='all' />
+<link rel='stylesheet' id='imnewspro-theme-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/owl.theme.css?ver=1.3.3' type='text/css' media='all' />
+<link rel='stylesheet' id='imnewspro-simplyscroll-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/jquery.simplyscroll.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='imnews-default-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/default.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='imnews-style-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/style.css?ver=5.7.2' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script type='text/javascript' id='crayon_js-js-extra'>
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"https:\/\/www.malwaretech.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js?ver=_2.7.2_beta' id='crayon_js-js'></script>
+<link rel="https://api.w.org/" href="https://www.malwaretech.com/wp-json/" /><link rel="alternate" type="application/json" href="https://www.malwaretech.com/wp-json/wp/v2/posts/827" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.malwaretech.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.malwaretech.com/wp-includes/wlwmanifest.xml" />
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel='shortlink' href='https://www.malwaretech.com/?p=827' />
+<link rel="alternate" type="application/json+oembed" href="https://www.malwaretech.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.malwaretech.com%2F2013%2F08%2Fpowerloader-injection-something-truly.html" />
+<style>button#responsive-menu-button,
+#responsive-menu-container {
+    display: none;
+    -webkit-text-size-adjust: 100%;
+}
+
+@media screen and (max-width: 840px) {
+
+    #responsive-menu-container {
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        z-index: 99998;
+        padding-bottom: 5px;
+        margin-bottom: -5px;
+        outline: 1px solid transparent;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box {
+        width: 100%;
+        padding: 0 2%;
+        border-radius: 2px;
+        height: 50px;
+        -webkit-appearance: none;
+    }
+
+    #responsive-menu-container.push-left,
+    #responsive-menu-container.slide-left {
+        transform: translateX(-100%);
+        -ms-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        -moz-transform: translateX(-100%);
+    }
+
+    .responsive-menu-open #responsive-menu-container.push-left,
+    .responsive-menu-open #responsive-menu-container.slide-left {
+        transform: translateX(0);
+        -ms-transform: translateX(0);
+        -webkit-transform: translateX(0);
+        -moz-transform: translateX(0);
+    }
+
+    #responsive-menu-container.push-top,
+    #responsive-menu-container.slide-top {
+        transform: translateY(-100%);
+        -ms-transform: translateY(-100%);
+        -webkit-transform: translateY(-100%);
+        -moz-transform: translateY(-100%);
+    }
+
+    .responsive-menu-open #responsive-menu-container.push-top,
+    .responsive-menu-open #responsive-menu-container.slide-top {
+        transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+    }
+
+    #responsive-menu-container.push-right,
+    #responsive-menu-container.slide-right {
+        transform: translateX(100%);
+        -ms-transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+        -moz-transform: translateX(100%);
+    }
+
+    .responsive-menu-open #responsive-menu-container.push-right,
+    .responsive-menu-open #responsive-menu-container.slide-right {
+        transform: translateX(0);
+        -ms-transform: translateX(0);
+        -webkit-transform: translateX(0);
+        -moz-transform: translateX(0);
+    }
+
+    #responsive-menu-container.push-bottom,
+    #responsive-menu-container.slide-bottom {
+        transform: translateY(100%);
+        -ms-transform: translateY(100%);
+        -webkit-transform: translateY(100%);
+        -moz-transform: translateY(100%);
+    }
+
+    .responsive-menu-open #responsive-menu-container.push-bottom,
+    .responsive-menu-open #responsive-menu-container.slide-bottom {
+        transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+    }
+
+    #responsive-menu-container,
+    #responsive-menu-container:before,
+    #responsive-menu-container:after,
+    #responsive-menu-container *,
+    #responsive-menu-container *:before,
+    #responsive-menu-container *:after {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+    }
+
+    #responsive-menu-container #responsive-menu-search-box,
+    #responsive-menu-container #responsive-menu-additional-content,
+    #responsive-menu-container #responsive-menu-title {
+        padding: 25px 5%;
+    }
+
+    #responsive-menu-container #responsive-menu,
+    #responsive-menu-container #responsive-menu ul {
+        width: 100%;
+    }
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu {
+        display: none;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu.responsive-menu-submenu-open {
+         display: block;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-1 a.responsive-menu-item-link {
+        padding-left: 10%;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-2 a.responsive-menu-item-link {
+        padding-left: 15%;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-3 a.responsive-menu-item-link {
+        padding-left: 20%;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-4 a.responsive-menu-item-link {
+        padding-left: 25%;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-5 a.responsive-menu-item-link {
+        padding-left: 30%;
+    }
+
+    #responsive-menu-container li.responsive-menu-item {
+        width: 100%;
+        list-style: none;
+    }
+
+    #responsive-menu-container li.responsive-menu-item a {
+        width: 100%;
+        display: block;
+        text-decoration: none;
+        
+        position: relative;
+    }
+
+
+     #responsive-menu-container #responsive-menu li.responsive-menu-item a {
+                    padding: 0   5%;
+            }
+
+    #responsive-menu-container .responsive-menu-submenu li.responsive-menu-item a {
+                    padding: 0   5%;
+            }
+
+    #responsive-menu-container li.responsive-menu-item a .fa {
+        margin-right: 15px;
+    }
+
+    #responsive-menu-container li.responsive-menu-item a .responsive-menu-subarrow {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    #responsive-menu-container li.responsive-menu-item a .responsive-menu-subarrow  .fa {
+        margin-right: 0;
+    }
+
+    button#responsive-menu-button .responsive-menu-button-icon-inactive {
+        display: none;
+    }
+
+    button#responsive-menu-button {
+        z-index: 99999;
+        display: none;
+        overflow: hidden;
+        outline: none;
+    }
+
+    button#responsive-menu-button img {
+        max-width: 100%;
+    }
+
+    .responsive-menu-label {
+        display: inline-block;
+        font-weight: 600;
+        margin: 0 5px;
+        vertical-align: middle;
+    }
+
+    .responsive-menu-label .responsive-menu-button-text-open {
+        display: none;
+    }
+
+    .responsive-menu-accessible {
+        display: inline-block;
+    }
+
+    .responsive-menu-accessible .responsive-menu-box {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .responsive-menu-label.responsive-menu-label-top,
+    .responsive-menu-label.responsive-menu-label-bottom
+    {
+        display: block;
+        margin: 0 auto;
+    }
+
+    button#responsive-menu-button {
+        padding: 0 0;
+        display: inline-block;
+        cursor: pointer;
+        transition-property: opacity, filter;
+        transition-duration: 0.15s;
+        transition-timing-function: linear;
+        font: inherit;
+        color: inherit;
+        text-transform: none;
+        background-color: transparent;
+        border: 0;
+        margin: 0;
+        overflow: visible;
+    }
+
+    .responsive-menu-box {
+        width: 25px;
+        height: 19px;
+        display: inline-block;
+        position: relative;
+    }
+
+    .responsive-menu-inner {
+        display: block;
+        top: 50%;
+        margin-top: -1.5px;
+    }
+
+    .responsive-menu-inner,
+    .responsive-menu-inner::before,
+    .responsive-menu-inner::after {
+         width: 25px;
+         height: 3px;
+         background-color: #fff;
+         border-radius: 4px;
+         position: absolute;
+         transition-property: transform;
+         transition-duration: 0.15s;
+         transition-timing-function: ease;
+    }
+
+    .responsive-menu-open .responsive-menu-inner,
+    .responsive-menu-open .responsive-menu-inner::before,
+    .responsive-menu-open .responsive-menu-inner::after {
+        background-color: #fff;
+    }
+
+    button#responsive-menu-button:hover .responsive-menu-inner,
+    button#responsive-menu-button:hover .responsive-menu-inner::before,
+    button#responsive-menu-button:hover .responsive-menu-inner::after,
+    button#responsive-menu-button:hover .responsive-menu-open .responsive-menu-inner,
+    button#responsive-menu-button:hover .responsive-menu-open .responsive-menu-inner::before,
+    button#responsive-menu-button:hover .responsive-menu-open .responsive-menu-inner::after,
+    button#responsive-menu-button:focus .responsive-menu-inner,
+    button#responsive-menu-button:focus .responsive-menu-inner::before,
+    button#responsive-menu-button:focus .responsive-menu-inner::after,
+    button#responsive-menu-button:focus .responsive-menu-open .responsive-menu-inner,
+    button#responsive-menu-button:focus .responsive-menu-open .responsive-menu-inner::before,
+    button#responsive-menu-button:focus .responsive-menu-open .responsive-menu-inner::after {
+        background-color: #fff;
+    }
+
+    .responsive-menu-inner::before,
+    .responsive-menu-inner::after {
+         content: "";
+         display: block;
+    }
+
+    .responsive-menu-inner::before {
+         top: -8px;
+    }
+
+    .responsive-menu-inner::after {
+         bottom: -8px;
+    }
+
+            .responsive-menu-boring .responsive-menu-inner,
+.responsive-menu-boring .responsive-menu-inner::before,
+.responsive-menu-boring .responsive-menu-inner::after {
+    transition-property: none;
+}
+
+.responsive-menu-boring.is-active .responsive-menu-inner {
+    transform: rotate(45deg);
+}
+
+.responsive-menu-boring.is-active .responsive-menu-inner::before {
+    top: 0;
+    opacity: 0;
+}
+
+.responsive-menu-boring.is-active .responsive-menu-inner::after {
+    bottom: 0;
+    transform: rotate(-90deg);
+}    
+    button#responsive-menu-button {
+        width: 55px;
+        height: 55px;
+        position: fixed;
+        top: 15px;
+        right: 5%;
+                    background: #000
+            }
+
+            .responsive-menu-open button#responsive-menu-button {
+            background: #000
+        }
+    
+            .responsive-menu-open button#responsive-menu-button:hover,
+        .responsive-menu-open button#responsive-menu-button:focus,
+        button#responsive-menu-button:hover,
+        button#responsive-menu-button:focus {
+            background: #000
+        }
+    
+    button#responsive-menu-button .responsive-menu-box {
+        color: #fff;
+    }
+
+    .responsive-menu-open button#responsive-menu-button .responsive-menu-box {
+        color: #fff;
+    }
+
+    .responsive-menu-label {
+        color: #fff;
+        font-size: 14px;
+        line-height: 13px;
+            }
+
+    button#responsive-menu-button {
+        display: inline-block;
+        transition: transform   0.5s, background-color   0.5s;
+    }
+
+    
+    
+    #responsive-menu-container {
+        width: 75%;
+        left: 0;
+        transition: transform   0.5s;
+        text-align: left;
+                                            background: #212121;
+            }
+
+    #responsive-menu-container #responsive-menu-wrapper {
+        background: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu-additional-content {
+        color: #fff;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box {
+        background: #fff;
+        border: 2px solid   #dadada;
+        color: #333;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box:-ms-input-placeholder {
+        color: #C7C7CD;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box::-webkit-input-placeholder {
+        color: #C7C7CD;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box:-moz-placeholder {
+        color: #C7C7CD;
+        opacity: 1;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box::-moz-placeholder {
+        color: #C7C7CD;
+        opacity: 1;
+    }
+
+    #responsive-menu-container .responsive-menu-item-link,
+    #responsive-menu-container #responsive-menu-title,
+    #responsive-menu-container .responsive-menu-subarrow {
+        transition: background-color   0.5s, border-color   0.5s, color   0.5s;
+    }
+
+    #responsive-menu-container #responsive-menu-title {
+        background-color: #212121;
+        color: #fff;
+        font-size: 13px;
+        text-align: left;
+    }
+
+    #responsive-menu-container #responsive-menu-title a {
+        color: #fff;
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    #responsive-menu-container #responsive-menu-title a:hover {
+        color: #fff;
+    }
+
+    #responsive-menu-container #responsive-menu-title:hover {
+        background-color: #212121;
+        color: #fff;
+    }
+
+    #responsive-menu-container #responsive-menu-title:hover a {
+        color: #fff;
+    }
+
+    #responsive-menu-container #responsive-menu-title #responsive-menu-title-image {
+        display: inline-block;
+        vertical-align: middle;
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+
+    #responsive-menu-container #responsive-menu-title #responsive-menu-title-image img {
+                        max-width: 100%;
+    }
+
+    #responsive-menu-container #responsive-menu > li.responsive-menu-item:first-child > a {
+        border-top: 1px solid   #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item .responsive-menu-item-link {
+        font-size: 13px;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a {
+        line-height: 40px;
+        border-bottom: 1px solid   #212121;
+        color: #fff;
+        background-color: #212121;
+                    height: 40px;
+            }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a:hover {
+        color: #fff;
+        background-color: #3f3f3f;
+        border-color: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a:hover .responsive-menu-subarrow {
+        color: #fff;
+        border-color: #3f3f3f;
+        background-color: #3f3f3f;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a:hover .responsive-menu-subarrow.responsive-menu-subarrow-active {
+        color: #fff;
+        border-color: #3f3f3f;
+        background-color: #3f3f3f;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a .responsive-menu-subarrow {
+        right: 0;
+        height: 40px;
+        line-height: 40px;
+        width: 40px;
+        color: #fff;
+                        border-left: 1px solid #212121;
+        
+        background-color: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a .responsive-menu-subarrow.responsive-menu-subarrow-active {
+        color: #fff;
+        border-color: #212121;
+        background-color: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a .responsive-menu-subarrow.responsive-menu-subarrow-active:hover {
+        color: #fff;
+        border-color: #3f3f3f;
+        background-color: #3f3f3f;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a .responsive-menu-subarrow:hover {
+        color: #fff;
+        border-color: #3f3f3f;
+        background-color: #3f3f3f;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-current-item > .responsive-menu-item-link {
+        background-color: #212121;
+        color: #fff;
+        border-color: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-current-item > .responsive-menu-item-link:hover {
+        background-color: #3f3f3f;
+        color: #fff;
+        border-color: #3f3f3f;
+    }
+
+            #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item .responsive-menu-item-link {
+                        font-size: 13px;
+            text-align: left;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a {
+                            height: 40px;
+                        line-height: 40px;
+            border-bottom: 1px solid   #212121;
+            color: #fff;
+            background-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a:hover {
+            color: #fff;
+            background-color: #3f3f3f;
+            border-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a:hover .responsive-menu-subarrow {
+            color: #fff;
+            border-color: #3f3f3f;
+            background-color: #3f3f3f;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a:hover .responsive-menu-subarrow.responsive-menu-subarrow-active {
+            color: #fff;
+            border-color: #3f3f3f;
+            background-color: #3f3f3f;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a .responsive-menu-subarrow {
+                                        left:unset;
+                right:0;
+                        height: 40px;
+            line-height: 40px;
+            width: 40px;
+            color: #fff;
+                                        border-left: 1px solid   #212121  !important;
+                border-right:unset  !important;
+                        background-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a .responsive-menu-subarrow.responsive-menu-subarrow-active {
+            color: #fff;
+            border-color: #212121;
+            background-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a .responsive-menu-subarrow.responsive-menu-subarrow-active:hover {
+            color: #fff;
+            border-color: #3f3f3f;
+            background-color: #3f3f3f;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a .responsive-menu-subarrow:hover {
+            color: #fff;
+            border-color: #3f3f3f;
+            background-color: #3f3f3f;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-current-item > .responsive-menu-item-link {
+            background-color: #212121;
+            color: #fff;
+            border-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-current-item > .responsive-menu-item-link:hover {
+            background-color: #3f3f3f;
+            color: #fff;
+            border-color: #3f3f3f;
+        }
+    
+    
+            #header-nav {
+            display: none !important;
+        }
+    }</style><script>jQuery(document).ready(function($) {
+
+    var ResponsiveMenu = {
+        trigger: '#responsive-menu-button',
+        animationSpeed: 500,
+        breakpoint: 840,
+        pushButton: 'off',
+        animationType: 'slide',
+        animationSide: 'left',
+        pageWrapper: '',
+        isOpen: false,
+        triggerTypes: 'click',
+        activeClass: 'is-active',
+        container: '#responsive-menu-container',
+        openClass: 'responsive-menu-open',
+        accordion: 'off',
+        activeArrow: '▲',
+        inactiveArrow: '▼',
+        wrapper: '#responsive-menu-wrapper',
+        closeOnBodyClick: 'off',
+        closeOnLinkClick: 'off',
+        itemTriggerSubMenu: 'off',
+        linkElement: '.responsive-menu-item-link',
+        subMenuTransitionTime: 200,
+        openMenu: function() {
+            $(this.trigger).addClass(this.activeClass);
+            $('html').addClass(this.openClass);
+            $('.responsive-menu-button-icon-active').hide();
+            $('.responsive-menu-button-icon-inactive').show();
+            this.setButtonTextOpen();
+            this.setWrapperTranslate();
+            this.isOpen = true;
+        },
+        closeMenu: function() {
+            $(this.trigger).removeClass(this.activeClass);
+            $('html').removeClass(this.openClass);
+            $('.responsive-menu-button-icon-inactive').hide();
+            $('.responsive-menu-button-icon-active').show();
+            this.setButtonText();
+            this.clearWrapperTranslate();
+            this.isOpen = false;
+        },
+        setButtonText: function() {
+            if($('.responsive-menu-button-text-open').length > 0 && $('.responsive-menu-button-text').length > 0) {
+                $('.responsive-menu-button-text-open').hide();
+                $('.responsive-menu-button-text').show();
+            }
+        },
+        setButtonTextOpen: function() {
+            if($('.responsive-menu-button-text').length > 0 && $('.responsive-menu-button-text-open').length > 0) {
+                $('.responsive-menu-button-text').hide();
+                $('.responsive-menu-button-text-open').show();
+            }
+        },
+        triggerMenu: function() {
+            this.isOpen ? this.closeMenu() : this.openMenu();
+        },
+        triggerSubArrow: function(subarrow) {
+            var sub_menu = $(subarrow).parent().siblings('.responsive-menu-submenu');
+            var self = this;
+            if(this.accordion == 'on') {
+                /* Get Top Most Parent and the siblings */
+                var top_siblings = sub_menu.parents('.responsive-menu-item-has-children').last().siblings('.responsive-menu-item-has-children');
+                var first_siblings = sub_menu.parents('.responsive-menu-item-has-children').first().siblings('.responsive-menu-item-has-children');
+                /* Close up just the top level parents to key the rest as it was */
+                top_siblings.children('.responsive-menu-submenu').slideUp(self.subMenuTransitionTime, 'linear').removeClass('responsive-menu-submenu-open');
+                /* Set each parent arrow to inactive */
+                top_siblings.each(function() {
+                    $(this).find('.responsive-menu-subarrow').first().html(self.inactiveArrow);
+                    $(this).find('.responsive-menu-subarrow').first().removeClass('responsive-menu-subarrow-active');
+                });
+                /* Now Repeat for the current item siblings */
+                first_siblings.children('.responsive-menu-submenu').slideUp(self.subMenuTransitionTime, 'linear').removeClass('responsive-menu-submenu-open');
+                first_siblings.each(function() {
+                    $(this).find('.responsive-menu-subarrow').first().html(self.inactiveArrow);
+                    $(this).find('.responsive-menu-subarrow').first().removeClass('responsive-menu-subarrow-active');
+                });
+            }
+            if(sub_menu.hasClass('responsive-menu-submenu-open')) {
+                sub_menu.slideUp(self.subMenuTransitionTime, 'linear').removeClass('responsive-menu-submenu-open');
+                $(subarrow).html(this.inactiveArrow);
+                $(subarrow).removeClass('responsive-menu-subarrow-active');
+            } else {
+                sub_menu.slideDown(self.subMenuTransitionTime, 'linear').addClass('responsive-menu-submenu-open');
+                $(subarrow).html(this.activeArrow);
+                $(subarrow).addClass('responsive-menu-subarrow-active');
+            }
+        },
+        menuHeight: function() {
+            return $(this.container).height();
+        },
+        menuWidth: function() {
+            return $(this.container).width();
+        },
+        wrapperHeight: function() {
+            return $(this.wrapper).height();
+        },
+        setWrapperTranslate: function() {
+            switch(this.animationSide) {
+                case 'left':
+                    translate = 'translateX(' + this.menuWidth() + 'px)'; break;
+                case 'right':
+                    translate = 'translateX(-' + this.menuWidth() + 'px)'; break;
+                case 'top':
+                    translate = 'translateY(' + this.wrapperHeight() + 'px)'; break;
+                case 'bottom':
+                    translate = 'translateY(-' + this.menuHeight() + 'px)'; break;
+            }
+            if(this.animationType == 'push') {
+                $(this.pageWrapper).css({'transform':translate});
+                $('html, body').css('overflow-x', 'hidden');
+            }
+            if(this.pushButton == 'on') {
+                $('#responsive-menu-button').css({'transform':translate});
+            }
+        },
+        clearWrapperTranslate: function() {
+            var self = this;
+            if(this.animationType == 'push') {
+                $(this.pageWrapper).css({'transform':''});
+                setTimeout(function() {
+                    $('html, body').css('overflow-x', '');
+                }, self.animationSpeed);
+            }
+            if(this.pushButton == 'on') {
+                $('#responsive-menu-button').css({'transform':''});
+            }
+        },
+        init: function() {
+            var self = this;
+            $(this.trigger).on(this.triggerTypes, function(e){
+                e.stopPropagation();
+                self.triggerMenu();
+            });
+            $(this.trigger).mouseup(function(){
+                $(self.trigger).blur();
+            });
+            $('.responsive-menu-subarrow').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                self.triggerSubArrow(this);
+            });
+            $(window).resize(function() {
+                if($(window).width() > self.breakpoint) {
+                    if(self.isOpen){
+                        self.closeMenu();
+                    }
+                } else {
+                    if($('.responsive-menu-open').length>0){
+                        self.setWrapperTranslate();
+                    }
+                }
+            });
+            if(this.closeOnLinkClick == 'on') {
+                $(this.linkElement).on('click', function(e) {
+                    e.preventDefault();
+                    /* Fix for when close menu on parent clicks is on */
+                    if(self.itemTriggerSubMenu == 'on' && $(this).is('.responsive-menu-item-has-children > ' + self.linkElement)) {
+                        return;
+                    }
+                    old_href = $(this).attr('href');
+                    old_target = typeof $(this).attr('target') == 'undefined' ? '_self' : $(this).attr('target');
+                    if(self.isOpen) {
+                        if($(e.target).closest('.responsive-menu-subarrow').length) {
+                            return;
+                        }
+                        self.closeMenu();
+                        setTimeout(function() {
+                            window.open(old_href, old_target);
+                        }, self.animationSpeed);
+                    }
+                });
+            }
+            if(this.closeOnBodyClick == 'on') {
+                $(document).on('click', 'body', function(e) {
+                    if(self.isOpen) {
+                        if($(e.target).closest('#responsive-menu-container').length || $(e.target).closest('#responsive-menu-button').length) {
+                            return;
+                        }
+                    }
+                    self.closeMenu();
+                });
+            }
+            if(this.itemTriggerSubMenu == 'on') {
+                $('.responsive-menu-item-has-children > ' + this.linkElement).on('click', function(e) {
+                    e.preventDefault();
+                    self.triggerSubArrow($(this).children('.responsive-menu-subarrow').first());
+                });
+            }
+
+                        if (jQuery('#responsive-menu-button').css('display') != 'none') {
+                $('#responsive-menu-button,#responsive-menu a.responsive-menu-item-link, #responsive-menu-wrapper input').focus( function() {
+                    $(this).addClass('is-active');
+                    $('html').addClass('responsive-menu-open');
+                    $('#responsive-menu li').css({"opacity": "1", "margin-left": "0"});
+                });
+
+                $('#responsive-menu-button, a.responsive-menu-item-link,#responsive-menu-wrapper input').focusout( function() {
+                    if ( $(this).last('#responsive-menu-button a.responsive-menu-item-link') ) {
+                        $(this).removeClass('is-active');
+                        $('html').removeClass('responsive-menu-open');
+                    }
+                });
+            }
+
+                        $('#responsive-menu a.responsive-menu-item-link').keydown(function(event) {
+                console.log( event.keyCode );
+                if ( [13,27,32,35,36,37,38,39,40].indexOf( event.keyCode) == -1) {
+                    return;
+                }
+                var link = $(this);
+                switch(event.keyCode) {
+                    case 13:
+                                                link.click();
+                        break;
+                    case 27:
+                                                var dropdown = link.parent('li').parents('.responsive-menu-submenu');
+                        if ( dropdown.length > 0 ) {
+                            dropdown.hide();
+                            dropdown.prev().focus();
+                        }
+                        break;
+
+                    case 32:
+                                                var dropdown = link.parent('li').find('.responsive-menu-submenu');
+                        if ( dropdown.length > 0 ) {
+                            dropdown.show();
+                            dropdown.find('a, input, button, textarea').first().focus();
+                        }
+                        break;
+
+                    case 35:
+                                                var dropdown = link.parent('li').find('.responsive-menu-submenu');
+                        if ( dropdown.length > 0 ) {
+                            dropdown.hide();
+                        }
+                        $(this).parents('#responsive-menu').find('a.responsive-menu-item-link').filter(':visible').last().focus();
+                        break;
+                    case 36:
+                                                var dropdown = link.parent('li').find('.responsive-menu-submenu');
+                        if( dropdown.length > 0 ) {
+                            dropdown.hide();
+                        }
+                        $(this).parents('#responsive-menu').find('a.responsive-menu-item-link').filter(':visible').first().focus();
+                        break;
+                    case 37:
+                    case 38:
+                        event.preventDefault();
+                        event.stopPropagation();
+                                                if ( link.parent('li').prevAll('li').filter(':visible').first().length == 0) {
+                            link.parent('li').nextAll('li').filter(':visible').last().find('a').first().focus();
+                        } else {
+                            link.parent('li').prevAll('li').filter(':visible').first().find('a').first().focus();
+                        }
+                        break;
+                    case 39:
+                    case 40:
+                        event.preventDefault();
+                        event.stopPropagation();
+                                                if( link.parent('li').nextAll('li').filter(':visible').first().length == 0) {
+                            link.parent('li').prevAll('li').filter(':visible').last().find('a').first().focus();
+                        } else {
+                            link.parent('li').nextAll('li').filter(':visible').first().find('a').first().focus();
+                        }
+                        break;
+                }
+            });
+        }
+    };
+    ResponsiveMenu.init();
+});</script><style type="text/css">
+h1 span,h1, .h1{
+  font-size: 42px;
+}
+h2 span,h2,.h2{
+  font-size: 36px;
+}
+h3 span,h3,.h3{
+  font-size: 30px;
+}
+h4 span,h4,.h4,.title-data a h1,.title-data a.blogTitle{
+  font-size: 24px;
+}
+h5 span,h5,.h5{
+  font-size: 20px;
+}
+h6 span,h6,.h6{
+  font-size: 16px;
+}
+p, span, li, a,.package-header h4 span,.main-sidebar ul li a{
+  font-size: 14px;
+}
+#cssmenu ul li a{
+  font-size: 14px;
+}
+body{
+  background: #ffffff;
+}
+body, p, time,ul, li{
+  color:#424242;
+}
+.inline-dropdown,.comment .comment-reply-link{background-color: #0088ff}
+.search-box-input .search-button,caption{background-color: #0088ff}
+.side-area-post .side-area-heading,.side-area-post table,#single-blog .share-social-icon ul li a:hover,input:focus, textarea:focus, input:hover, textarea:hover{border-color:  #0088ff; color: #0088ff;}
+.side-area-post .side-area-heading::after,.latest-text,.title:after{background:#0088ff;}
+.current,.slider-title:after, .centered:after{background:#0088ff;}
+.next, .prev{color:#0088ff;}
+.sidenews-post-image img,.tagcloud a:hover,.othernews-post-image img,.relatednews-post-image img,.similar-post-image img{background:#0088ff;}
+.side-area-post ul li a:hover,cite,a,#single-blog .share-social-icon ul li a:hover{color:#0088ff;}
+.side-area-post ul li.recentcomments a:hover,.slider-title, .centered{color: #0088ff;}    
+.like-article h4,.title,.slider-title, .centered{border-bottom: 1px solid #0088ff; color: #0088ff;}
+#menubar .nav > li > a:hover,.mainnews-post h4.post-title a:hover,.inline-post-type h4 a:hover,.owl-prev:hover, .owl-next:hover{color:#0088ff;}
+#menubar#main-nav ul ul li:hover > a, #main-nav ul ul li a:hover{color: #0088ff;}
+.next, .prev{border:1px solid #0088ff;}
+#top .navbar-toggle .icon-bar,.comment-form .submit,.current, .page-numbers:hover, .next:hover, .prev:hover{background:#0088ff; }
+#menubar .nav > li > a,#menubar ul ul li a,#menubar .navbar-brand{ color: #7a7a7a; }
+.comment .comment-metadata a,.othernews-post-title a,.relatednews-post-details .relatednews-post-title a,.similar-post-details .similar-post-title a,.news-title a,.comment-metadata > a,.comment-edit-link,.comment-reply-link,.logged-in-as > a,.ttl_tagline{ color: #7a7a7a; }
+.comment-form .submit:hover{background: #7a7a7a;}
+.menu-footer{ background-color: #303030; }
+.widget-footer{ background-color: #212121; }
+.widget-footer-heading h4,.widget-footer-heading p,.widget-footer .widget-footer-heading .sidenews-updates .sidenews-post-date time, .widget-footer .widget-footer-heading .sidenews-updates .sidenews-post-heading a,.widget-footer-row .widget-footer-heading ul li a { color: #ffffff; }
+.widget-footer .widget-footer-heading .sidenews-updates .sidenews-post-heading a:hover, .widget-footer-heading ul li a:hover{ color: #ffffff; }	
+.footer-copyrights p{ color: #ffffff; }
+.footer-copyrights p a{ color: #ffffff; }
+.footer-copyrights a:hover,.social-widget ul li a:hover{ color: #ffffff; }
+.comment .comment-metadata a:hover,.othernews-post-title a:hover,.relatednews-post-title a:hover,.similar-post-title a:hover,.sidenews-post-heading > a:hover,.news-title a:hover,.comment-metadata > a:hover,.comment-edit-link:hover,.comment-reply-link:hover,.logged-in-as > a:hover,a:focus, a:hover{color: #0088ff;}
+    .navbar-brand,.ttl_tagline{
+      clip: auto;
+      position: relative;
+    }
+    </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3337609182489974",
+          enable_page_level_ads: true
+     });
+</script>
+</head>
+<body class="post-template-default single single-post postid-827 single-format-standard responsive-menu-slide-left">
+
+<header id="top">
+<div id="menubar">
+<div class="container">
+<div class="row">
+<nav class="navbar navbar-default">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<div class="navbar-header">
+<a href="https://www.malwaretech.com/" class="navbar-brand" rel="home">MalwareTech</a>
+<span class="ttl_tagline">Life of a Malware Analyst</span>
+</div>
+<div class="collapse navbar-collapse inline-list" id="main-nav">
+<ul id="menu-menu-1" class="nav navbar-nav nav-category"><li id="menu-item-114" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-114"><a href="/"><i class="fa fa-home"></i></a></li>
+<li id="menu-item-2357" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2357"><a href="https://malwaretech-podcast.simplecast.com/">Podcast</a></li>
+<li id="menu-item-1805" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1805"><a href="https://discord.gg/4tUrsPu">Discord</a></li>
+<li id="menu-item-2325" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2325"><a href="http://malwaretech.com/challenges">Challenges</a></li>
+<li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1311"><a href="https://www.malwaretech.com/contact">Contact</a></li>
+</ul> </div>
+</nav>
+</div>
+</div>
+</div>
+</header>
+<div class="inline-dropdown">
+<div class="container">
+<div class="row">
+<div class="col-sm-12">
+<div class="path-category">
+<ul id="breadcrumbs" class="breadcrumbs"><li class="item-home"><a class="bread-link bread-home" href="https://www.malwaretech.com" title="Home">Home</a></li><li class="separator separator-home"> / </li><li class="item-cat"><a href="https://www.malwaretech.com/category/uncategorized">Uncategorized</a></li><li class="separator"> / </li><li class="item-current item-827"><strong class="bread-current bread-827" title="PowerLoader Injection &#8211; Something truly amazing">PowerLoader Injection &#8211; Something truly amazing</strong></li></ul> </div>
+</div>
+</div>
+</div>
+</div>
+<div class="container no-padding">
+<div class="row main-row main-detail">
+<div class="col-sm-9">
+<div class="news-posts" id="single-blog">
+<div class="mainnews-post">
+<div class="row">
+<div class="col-sm-12">
+<div class="news-title">
+<h3><b>PowerLoader Injection &#8211; Something truly amazing</b></h3>
+<ul>
+<li>By :<a href="https://www.malwaretech.com/author/malwaretech" rel="tag"> MalwareTech</a></li>
+<li><time datetime="2013-08-13T13:16:00+00:00">August 13, 2013</time></li>
+<li>Category : <a href="https://www.malwaretech.com/category/uncategorized" rel="category tag">Uncategorized</a></li>
+<li> Tags: <a href="https://www.malwaretech.com/tag/exploits" rel="tag">exploits</a>, <a href="https://www.malwaretech.com/tag/malware" rel="tag">malware</a>, <a href="https://www.malwaretech.com/tag/reversing" rel="tag">reversing</a>, <a href="https://www.malwaretech.com/tag/security" rel="tag">security</a>, <a href="https://www.malwaretech.com/tag/windows-internals" rel="tag">windows internals</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="share-social-icon">
+<ul>
+<li><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html" title="Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="http://twitter.com/home?status=https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html" title="Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="https://plus.google.com/share?url=https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html" title="Google+"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="https://www.pinterest.com/pin/create/button/?url=https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html&media=&description=PowerLoader Injection &#8211; Something truly amazing" data-pin-do="buttonPin" data-pin-config="above" title="Pinterest"><i class="fa fa-pinterest-p" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html&title=PowerLoader Injection &#8211; Something truly amazing&source=https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html" title="Linkedin"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="http://www.tumblr.com/share/link?url=https://www.malwaretech.com/2013/08/powerloader-injection-something-truly.html" title="Tumblr"><i class="fa fa-tumblr" aria-hidden="true"></i></a></li>
+</ul>
+</div>
+<div class="news-details">
+<div class="news details">
+<div dir="ltr" style="text-align: left;" trbidi="on">
+<h2 style="text-align: left;">
+I&#8217;m not dead</h2>
+<div>
+It has been a while since i wrote an article (I&#8217;ve been pretty busy in real life), so I decided to get writing. This article will probably only make sense to people from a malware research / programming background, but to compensate i will be posting a fairly non technical article in the near future.&nbsp;</div>
+<div>
+</div>
+<div>
+I will be talking about the infamous injection method from PowerLoader 2.0, which has been seen in many different malware families such as: Carberp, Redyms and Gapz. Recently, after looking at the difference between 0vercl0ck&#8217;s proof of concept and the real deal, a friend asked me &#8220;Why does PowerLoader go to all the trouble of using ROP chains instead of just executing the shellcode like 0vercl0ck does.&#8221;, I already had a perfect idea of why, but decided to do some digging and answer the question &#8220;How?&#8221;, this digging resulted in me finding something that truly impressed me, (I try not to admire the work of criminals as i don&#8217;t want to seem like a psychopath 😉 ). I would have written this article sooner, but i was totally unaware that no blogs had really gone into depth on this method, i like to be unique!</div>
+<div>
+</div>
+<h2 style="text-align: left;">
+The Purpose</h2>
+<div>
+Most antiviruses don&#8217;t treat all processes the same, a known &#8220;trusted&#8221; process is usually far less likely to flag up any warnings from the antivirus. In this case, the goal of malware is to inject code into one of these &#8220;trusted&#8221; processes in order to run with less risk of detection. Of course antiviruses will attempt to catch injection too, so the challenge is for malware to find a way into the trusted process without being detected.</div>
+<div>
+</div>
+<div>
+In order to give a better idea of the stealthiness of PowerLoader I have listed below some common telltale signs of a malicious process attempting to inject.&nbsp;</div>
+<div>
+</div>
+<div>
+(The following only apply to a process trying to perform any of these actions on another process)</div>
+<div>
+<ul style="text-align: left;">
+<li>Allocating heap space</li>
+<li>Creating threads</li>
+<li>Overwriting process/module memory</li>
+<li>Manipulating thread context&nbsp;</li>
+<li>Queuing asynchronous procedure calls (APCs)</li>
+</ul>
+<div>
+Proactive antiviruses will check for processes trying to perform these actions and could likely result in the user being alerted to a malicious process. The aim of PowerLoader is to subvert this, (which seems to be a success as it is not picked up by antiviruses, and does not cross off anything on the list).&nbsp;</div>
+</div>
+<div>
+</p>
+<h2 style="text-align: left;">
+Writing the code to explorer</h2>
+</div>
+<div>
+In the case of PowerLoader, the trusted process targeted is explorer. I won&#8217;t be putting any images/reversed code for this part as it has already been well documented by <a href="http://www.welivesecurity.com/2012/12/27/win32gapz-steps-of-evolution/">ESET</a>.</div>
+<div>
+</div>
+<div>
+PowerLoader gets the malicious code into the process by opening an existing, shared section already mapped into explorer, removing the need to allocate heap space or overwrite process memory. PowerLoader then proceeds to map the shellcode onto the end of the chosen section. Below is a list of targeted shared sections.</div>
+<div>
+<ul style="text-align: left;">
+<li>BaseNamedObjectsShimSharedMemory</li>
+<li>BaseNamedObjectswindows_shell_global_counters</li>
+<li>BaseNamedObjectsMSCTF.Shared.SFM.MIH</li>
+<li>BaseNamedObjectsMSCTF.Shared.SFM.AMF</li>
+<li>BaseNamedObjectsUrlZonesSM_Administrator</li>
+<li>BaseNamedObjectsUrlZonesSM_SYSTEM</li>
+</ul>
+</div>
+<div>
+</p>
+<h2 style="text-align: left;">
+Executing the code</h2>
+</div>
+<div>
+In order to execute the remote code without creating a thread, PowerLoader uses a little trick with the explorer tray window procedure. By opening &#8220;Shell_TrayWnd&#8221; and calling SetWindowLong, PowerLoader is able to set a variable used by the window procedure to point to a specific address in its shellcode. Here PowerLoader sets the address to a pointer to a pointer to KiUserApcDispatcher, whereas 0vercl0ck&#8217;s code will just set it to a pointer to a pointer to the payload (which resides in a shared section).</div>
+<div>
+</div>
+<div>
+When SendNotifyMessage is called by the malware, the window procedure inside explorer is triggered and this is what happens.</div>
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;">
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="http://www.malwaretech.com/wp-content/uploads/2013/08/WndProcLite.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://www.malwaretech.com/wp-content/uploads/2013/08/WndProcLite.png" /></a></td>
+</tr>
+<tr>
+<td class="tr-caption" style="text-align: center;">Figure 1: A snippet from the Window Procedure</td>
+</tr>
+</tbody>
+</table>
+<p>Now this code is simple, it will perform a double indirection that will result in the address pointed to by the pointer that was set using SetWindowLong, being executed.</p>
+<div>
+</div>
+<div>
+This is where PowerLoader differs from 0vercl0ck&#8217;s version. The instruction &#8220;call dword ptr eax&#8221; will read the value pointed to by EAX and then call it. The read part won&#8217;t trigger DEP (Data Execution Prevention), if the section is not executable (in later versions of windows it is execute-protected), however if EAX points to an address inside the section, DEP will be triggered. Because the sections protection is only set to Read/Write in later versions of windows, 0vercl0ck&#8217;s code will likely trigger DEP and crash explorer, however, because PowerLoader&#8217;s pointer points to KiUserApcDispatcher (resides in ntdll), DEP is not triggered.&nbsp;</div>
+<div>
+</div>
+<div>
+Well how does one get from KiUserApcDispatcher to code execution, without executing the non-executable shellcode, I hear you ask?</p>
+<div>
+</div>
+<h2 style="text-align: left;">
+ROP Chains, Unicorns, and Rainbows</h2>
+<div>
+This part greatly interested me, partly because I have never seen a ROP chain in the wild before but mainly because it is the most advanced injection method I have ever come across. In order to understand how PowerLoader gets from KiUserApcDispatcher, to shellcode execution, we need to do some disassembling.&nbsp;</div>
+<div>
+</div>
+<div>
+In Figure 1, we see the Window Procedure pushing ESI onto the stack, then calling KiUserApcDispatcher. It is important to remember ESI contains the address&nbsp;(held in the shellcode) of the pointer to the KiUserApcDispatcher pointer.</div>
+<div>
+</div>
+<div>
+So let&#8217;s see dissasemble KiUserApcDispatcher.</div>
+<div>
+</div>
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;">
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="http://www.malwaretech.com/wp-content/uploads/2013/08/KiUserApcDispatcher.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://www.malwaretech.com/wp-content/uploads/2013/08/KiUserApcDispatcher.png" /></a></td>
+</tr>
+<tr>
+<td class="tr-caption" style="text-align: center;">Figure 2: KiUserApcDispatcher</td>
+</tr>
+</tbody>
+</table>
+<div>
+</div>
+<div>
+Pay attention to the first 3 instructions. &#8220;lea edi, [esp+10h]&#8221; is loading the last parameter into the EDI register. If you remember in Figure 1, the last parameter pushed to the stack was ESI, which contains an address within the shellcode. Next it pops the return address into the EAX and then calls it, this results in execution being transferred back to the Window Procedure.</div>
+<div>
+</div>
+<div>
+So really nothing has happened here, We&#8217;ve just set the EDI to an address inside the shellcode and then gone back to where we came from. So in order to see what happens next, we are going to have to dig deeper. Here is some more of the Window Procedure.&nbsp;</div>
+<div>
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;">
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="http://www.malwaretech.com/wp-content/uploads/2013/08/WndProcExtended.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://www.malwaretech.com/wp-content/uploads/2013/08/WndProcExtended.png" /></a></td>
+</tr>
+<tr>
+<td class="tr-caption" style="text-align: center;">Figure 3: More of the Window Procedure shown in Figure 1</td>
+</tr>
+</tbody>
+</table>
+<p>Now in this disassembly we need to pay attention to the instructions underlined in red and orange, the blue box is the code we already discussed (executes KiUserApcDispatcher and sets EDI to ESI), the rest of the code can be ignored. As you can see, the function makes 2 more calls (EAX+8, followed by EAX+4), if you remember earlier, EAX is an address in the shellcode, so the next call is to the address 8 Bytes below.&nbsp;</p></div>
+<div>
+</div>
+<div>
+Let&#8217;s take a look at the shellcode shall we?</div>
+<div>
+</div>
+<div class="separator" style="clear: both; text-align: center;">
+</div>
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;">
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="http://www.malwaretech.com/wp-content/uploads/2013/08/ShellcodeStart.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://www.malwaretech.com/wp-content/uploads/2013/08/ShellcodeStart.png" /></a></td>
+</tr>
+<tr>
+<td class="tr-caption" style="text-align: center;">Figure 4: A small snippet from the shellcode</td>
+</tr>
+</tbody>
+</table>
+<div>
+When SetWindowLong was called by PowerLoader it set the ESI (Blue Box Figure 3) to 00100E0C (Which holds the address 00100E20), The code then performs and indirection and EAX ends up pointing to KiUserApcDispatchPtr (00100E20). Using some very basic maths, EAX+8 points to 00100E28 and EAX+4 to 00100E24.</div>
+<div>
+</div>
+<div>
+What are 00100E28 &amp; 00100E24? When the shellcode was made during runtime, PowerLoader searched for some byte sequences in explorer using ReadProcessMemory, then stored the addresses of those sequences in the shellcode. The sequences are instruction within the executable regions of explorer&#8217;s memory, their purpose is to perform certain operations as PowerLoader can&#8217;t execute any of its own code yet, due to the section being execute-protected.</p>
+<p>00100E28 points to some code in explorer that executes the instruction &#8220;STD&#8221; followed by &#8220;RET&#8221;, As a result the instruction underlined in red will result in the direction flag being set and execution being returned to the Window Procedure.</p></div>
+<div>
+</div>
+<div>
+Until now, nothing makes any sense at all. We&#8217;ve set the ESI to an address in the shellcode (Figure 1), we&#8217;ve set the EDI to an address on the stack (Figure2), and we&#8217;ve set the direction flag. What happens next makes sense of it all. EAX+4 is called from the window procedure, as we established EAX+4 is a pointer in our shellcode, but what does it point to? Again, we need to do some disassembling.</div>
+<div>
+</div>
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;">
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="http://2.bp.blogspot.com/--RMJud2582s/Ugn64Q0hi_I/AAAAAAAAAGU/RAmOHmrmJho/s1600/SomeFunctionInShell32.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img loading="lazy" border="0" src="http://www.malwaretech.com/wp-content/uploads/2013/08/SomeFunctionInShell32.png" height="294" width="640" /></a></td>
+</tr>
+<tr>
+<td class="tr-caption" style="text-align: center;">Figure 4: A random function in shell32.dll</td>
+</tr>
+</tbody>
+</table>
+<div>
+Remember i said PowerLoader scanned some byte sequences in explorer? Well these bytes were found, in this case inside some random shell32 function (it doesn&#8217;t matter). Now the pointer doesn&#8217;t point to the start of the function, it points somewhere in the middle, as a result, only the bytes in the red box are executed. It should become apparent what is happening. The instruction &#8220;REP MOVSD&#8221; will move ECX (0x94) bytes from the address in ESI to the address in EDI. Earlier the code managed to use code within explorer to set the ESI to the shellcode address, the EDI to an address on the stack, then Set the direction flag to 1. Because of this, the shellcode starting at address 00100E0C will &nbsp;be copied to the stack backwards (The copying will start at the address in ESI, copy a DWORD, then subtract the address by 4 and repeat.&nbsp;</div>
+<div>
+(Remember: because all addresses points to executable code within explorer address space, and they are called using a pointer, no code in the shellcode is actually executed, thus resulting in no nasty DEP errors.)</div>
+<div>
+</div>
+<div>
+This is where things start to heat up, PowerLoader has just used code located within explorer to overwrite some of the stack with some shellcode, which means although still incapable of directly executing its own code, PowerLoader has control over return addresses and stack based parameters.</div>
+<div>
+</div>
+<div>
+Let&#8217;s have a look at the code that was copied.</div>
+<div>
+</div>
+<table align="center" cellpadding="0" cellspacing="0" class="tr-caption-container" style="margin-left: auto; margin-right: auto; text-align: center;">
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="http://www.malwaretech.com/wp-content/uploads/2013/08/ROPShellcode.png" imageanchor="1" style="margin-left: auto; margin-right: auto;"><img border="0" src="http://www.malwaretech.com/wp-content/uploads/2013/08/ROPShellcode.png" /></a></td>
+</tr>
+<tr>
+<td class="tr-caption" style="text-align: center;">Figure 5: The ROP Shellcode that is written to the stack</td>
+</tr>
+</tbody>
+</table>
+<div>
+</div>
+<div>
+Once the code copying the ROP Shellcode to the stack is done, it hits the ret instruction, but because the stack has been overwritten, it instead ends up executing code pointed to by the ROP Shellcode, Each bit of code has a ret instruction which causes the next ROP gadget to be executed. I stepped through in a debugger, below i have made a list of the ROP Gadgets in order of execution, each line is a different gadget.&nbsp;</div>
+<div>
+</div>
+<div>
+<ol style="text-align: left;">
+<li>Direction Flag Clear</li>
+<li>Pop 0x70 into EAX</li>
+<li>Call _alloca_probe</li>
+<li>WriteProcessMemory</li>
+<li>Pop the address of ntdll!atan into EAX</li>
+<li>Jmp to EAX</li>
+</ol>
+<div>
+Some things to note:</div>
+</div>
+<div>
+<ul style="text-align: left;">
+<li>The _alloca_probe function is undocumented but I believe it takes the value in EAX and check that the stack can hold that many items, if not it triggers the guard page to allocate more stack space (0x70 is in EAX)</li>
+<li>The parameters for WriteProcessMemory are at address 00090DA0, these parameters cause WriteProcessMemory to read the shellcode from the shared section, then write it over ntdll!atan which we can assume isn&#8217;t used by explorer.&nbsp;</li>
+<li>Finally the last instruction jumps to ntdll!atan and the code begins execution.</li>
+</ul>
+<h2 style="text-align: left;">
+TLDR / Recap</h2>
+<div>
+PowerLoader bypasses the execution protection on the shared sections, by using code found inside explorer to copy a ROP Chain to the stack, then uses the ROP Chain to manipulate the call stack into causing Explorer to call WriteProcessMemory and overwrite an unused function in ntdll with some shellcode to complete the injection.&nbsp;</div>
+<h2 style="text-align: left;">
+Conclusion</h2>
+<div>
+So there we have it, from non-executable section to shellcode execution by using explorer&#8217;s own code against itself. I&#8217;ll try and get a new article up soon, sorry for the inactivity &lt;3</div>
+</div>
+<div>
+</div>
+<div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relatednews-post">
+<div id="disqus_thread"></div>
+<div class="row like-article similar-article">
+<div class="col-sm-12">
+<h4><b>SIMILAR NEWS</b></h4>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-4">
+<div class="relatednews-post-panel">
+<div class="label-img">
+<div class="relatednews-post-image">
+<a href="https://www.malwaretech.com/2016/12/open-source-ransomware.html">
+<img width="204" height="160" src="https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker.png" class="attachment-imnews-related-thumbnail size-imnews-related-thumbnail wp-post-image" alt="" loading="lazy" srcset="https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker.png 1680w, https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker-300x235.png 300w, https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker-768x602.png 768w, https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker-1024x802.png 1024w" sizes="(max-width: 204px) 100vw, 204px" /> </a>
+</div>
+<div class="label">
+<div class="row label-row">
+<div class="col-sm-9 col-xs-9 label-column no-padding">
+<span>Uncategorized</span>
+</div>
+<div class="col-sm-3 col-xs-3 no-padding">
+<div class="comments">
+<i class="fa fa-comments comments-icon"></i>
+<span class="comments-no">9</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relatednews-post-details">
+<div class="relatednews-post-title">
+<h5><b><a href="https://www.malwaretech.com/2016/12/open-source-ransomware.html">Why Open Source Ransomware is Such a Problem</a></b></h5>
+</div>
+<div class="relatednews-post-news">
+<p>A while back 2sec4u posted a poll asking if people considered open source ransomware helpful to detection and prevention, with 46% voting yes. Although the poll wasn&#8217;t limited to people working in the antimalware industry, 46% is scarily high. Trying to prove a point, help me out Twitter. Is open source ransomware helping &hellip; </p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="relatednews-post-panel">
+<div class="label-img">
+<div class="relatednews-post-image">
+<a href="https://www.malwaretech.com/2016/10/mapping-mirai-a-botnet-case-study.html">
+<img width="260" height="125" src="https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap.png" class="attachment-imnews-related-thumbnail size-imnews-related-thumbnail wp-post-image" alt="" loading="lazy" srcset="https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap.png 1273w, https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap-300x144.png 300w, https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap-768x370.png 768w, https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap-1024x493.png 1024w" sizes="(max-width: 260px) 100vw, 260px" /> </a>
+</div>
+<div class="label">
+<div class="row label-row">
+<div class="col-sm-9 col-xs-9 label-column no-padding">
+<span>Uncategorized</span>
+</div>
+<div class="col-sm-3 col-xs-3 no-padding">
+<div class="comments">
+<i class="fa fa-comments comments-icon"></i>
+<span class="comments-no">1</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relatednews-post-details">
+<div class="relatednews-post-title">
+<h5><b><a href="https://www.malwaretech.com/2016/10/mapping-mirai-a-botnet-case-study.html">Mapping Mirai: A Botnet Case Study</a></b></h5>
+</div>
+<div class="relatednews-post-news">
+<p>Mirai is a piece of malware designed to hijack busybox systems (commonly used on IoT devices) in order to perform DDoS attacks, it&#8217;s also the bot used in the 620 Gbps DDoS attack on Brian Kreb&#8217;s blog and the 1.1 Tbps attack on OVH a few days later. Although Mirai isn&#8217;t even close to &hellip; </p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="relatednews-post-panel">
+<div class="label-img">
+<div class="relatednews-post-image">
+<a href="https://www.malwaretech.com/2016/09/dridex-returns-to-the-uk-with-updated-ttps.html">
+<img width="204" height="160" src="https://www.malwaretech.com/wp-content/uploads/2016/09/WordDocument.png" class="attachment-imnews-related-thumbnail size-imnews-related-thumbnail wp-post-image" alt="" loading="lazy" srcset="https://www.malwaretech.com/wp-content/uploads/2016/09/WordDocument.png 814w, https://www.malwaretech.com/wp-content/uploads/2016/09/WordDocument-300x235.png 300w, https://www.malwaretech.com/wp-content/uploads/2016/09/WordDocument-768x601.png 768w" sizes="(max-width: 204px) 100vw, 204px" /> </a>
+</div>
+<div class="label">
+<div class="row label-row">
+<div class="col-sm-9 col-xs-9 label-column no-padding">
+<span>Uncategorized</span>
+</div>
+<div class="col-sm-3 col-xs-3 no-padding">
+<div class="comments">
+<i class="fa fa-comments comments-icon"></i>
+<span class="comments-no">1</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relatednews-post-details">
+<div class="relatednews-post-title">
+<h5><b><a href="https://www.malwaretech.com/2016/09/dridex-returns-to-the-uk-with-updated-ttps.html">Dridex Returns to the UK With Updated TTPs</a></b></h5>
+</div>
+<div class="relatednews-post-news">
+<p>With the exception of a few unconfirmed reports of Dridex targeting Baltic countries (which doesn&#8217;t make much sense economically), infection campaigns have ceased since mid August when Dridex briefly resumed spreading to propagate multiple new botnets aimed at Switzerland. This morning a friend of mine, Liam, reported receiving a malicious email which unusually didn&#8217;t &hellip; </p>
+</div>
+</div>
+</div>
+</div>
+</div> </div>
+</div>
+</div>
+<div class="col-sm-3">
+<div class="side-area">
+<aside class="side-area-post"><aside class="side-area-post">
+<div class="search-box">
+<div class="row">
+<div class="col-sm-12">
+<form role="search" method="get" id="searchform" class="searchform" action="https://www.malwaretech.com/">
+<div class="input-group search-box-input">
+<input type="text" value="" name="s" id="s" class="form-control search-box-form" placeholder="" />
+<span class="input-group-btn search-button-span">
+<button class="btn btn-default search-button" type="submit"><i class="fa fa-search"></i></button>
+</span>
+</div>
+</form>
+</div>
+</div>
+</div>
+</aside></aside><aside class="side-area-post"> <div class="textwidget"><p><script src="https://apis.google.com/js/platform.js"></script></p>
+<div class="g-ytsubscribe" data-channelid="UCLDnEn-TxejaDB8qm2AUhHQ" data-layout="full" data-count="default"></div>
+</div>
+</aside><aside class="side-area-post"><div class="side-area-heading"><h4><b>Stay Connected</b></h4></div> <div class="textwidget"><ul style="padding-left: 0px;">
+<a href="https://twitter.com/MalwareTechBlog">
+<img alt="Twitter" border="0" src="/wp-content/themes/mt/includes/images/twitter.png" title="Twitter">
+</a>
+<a href="https://youtube.com/c/MalwareTechBlog">
+<img alt="Youtube" border="0" src="/wp-content/themes/mt/includes/images/youtube.png" title="Youtube">
+</a>
+<a href="https://twitch.tv/MalwareTechBlog">
+<img alt="Twitch" border="0" src="/wp-content/themes/mt/includes/images/twitch.png" title="Twitch">
+</a>
+<a href="https://discord.gg/4tUrsPu">
+<img alt="Discord" border="0" src="/wp-content/themes/mt/includes/images/discord.png" title="Discord">
+</a>
+<a href="https://www.instagram.com/malwaretech/">
+<img alt="Instagram" border="0" src="/wp-content/themes/mt/includes/images/instagram2.png" title="Instagram">
+</a>
+<a href="/feed/">
+<img alt="RSS" border="0" src="/wp-content/themes/mt/includes/images/rss.png" title="RSS">
+</a>
+</ul></div>
+</aside><aside class="side-area-post"><div class="side-area-heading"><h4><b>Donations</b></h4></div> <div class="textwidget"><div style="display: block;"></div>
+<p><a href="https://www.patreon.com/bePatron?u=8204812"><img src="/wp-content/themes/mt/includes/images/become_a_patron_button.png" /></a></p>
+<div id="cd437" style="float: left;"></div>
+<div id="cd136" style="float: left;"></div>
+<div id="cd868" style="float: left;"></div>
+<p><script>
+  !function(c){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.onload=c,t.src="//malwaretech.com/wp-content/plugins/cryptodonate/widget.js";var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}(function(){
+    Fr.loadCD("cd437", {
+      coin: "bitcoin",
+      address: "1Ma1WArEsGDkvnLHJQiAKkpARZYwC4tMqg",
+      buttonClass: "",
+      dialogClass: "",
+    });
+  });
+</script><br />
+<script>
+  !function(c){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.onload=c,t.src="//malwaretech.com/wp-content/plugins/cryptodonate/widget.js";var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}(function(){
+    Fr.loadCD("cd136", {
+      coin: "ethereum",
+      address: "0xf9b77ee1a4770977962322ec16445adbe66e39c5",
+      buttonClass: "",
+      dialogClass: "",
+    });
+  });
+</script><br />
+<script>
+  !function(c){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.onload=c,t.src="//malwaretech.com/wp-content/plugins/cryptodonate/widget.js";var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}(function(){
+    Fr.loadCD("cd868", {
+      coin: "litecoin",
+      address: "LfLU4V55KXWvpp358EVXe1MtKvM8CtQgXr",
+      buttonClass: "",
+      dialogClass: "",
+    });
+  });
+</script><br /></p>
+</div>
+</aside><aside class="side-area-post"><div class="side-area-heading"><h4><b>Categories</b></h4></div> <ul class="categories">
+<li class="cat-item cat-item-8"><a href="https://www.malwaretech.com/category/malware-analysis">Malware Analysis<span class="news-numbers">4</span></a>
+<li class="cat-item cat-item-105"><a href="https://www.malwaretech.com/category/opinions">Opinions<span class="news-numbers">3</span></a>
+<li class="cat-item cat-item-102"><a href="https://www.malwaretech.com/category/stories">Personal Stories<span class="news-numbers">2</span></a>
+<li class="cat-item cat-item-103"><a href="https://www.malwaretech.com/category/reverse-engineering">Reverse Engineering<span class="news-numbers">1</span></a>
+<li class="cat-item cat-item-91"><a href="https://www.malwaretech.com/category/threat-intelligence">Threat Intelligence<span class="news-numbers">5</span></a>
+<li class="cat-item cat-item-1"><a href="https://www.malwaretech.com/category/uncategorized">Uncategorized<span class="news-numbers">83</span></a>
+<li class="cat-item cat-item-85"><a href="https://www.malwaretech.com/category/vulnerability-research">Vulnerability Research<span class="news-numbers">7</span></a>
+</ul>
+</aside> </div>
+</div> </div>
+</div>
+<footer class="widget-footer">
+<div class="container">
+<div class="widget-footer-row">
+<div class="row">
+</div>
+</div>
+</div>
+</footer>
+<footer class="menu-footer">
+<div class="container">
+<div class="menu-footer-row">
+<div class="row">
+<div class="col-sm-4">
+<div class="footer-copyrights">
+</div>
+</div>
+<div class="col-sm-4">
+<div class="footer-social-icons">
+</div>
+</div>
+<div class="col-sm-4">
+<div class="footer-copyrights">
+</div>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<button id="responsive-menu-button" tabindex="1" class="responsive-menu-button responsive-menu-boring
+         responsive-menu-accessible" type="button" aria-label="Menu">
+<span class="responsive-menu-box">
+<span class="responsive-menu-inner"></span>
+</span>
+</button><div id="responsive-menu-container" class="slide-left">
+<div id="responsive-menu-wrapper" role="navigation" aria-label="menu-1">
+<ul id="responsive-menu" role="menubar" aria-label="menu-1"><li id="responsive-menu-item-114" class=" menu-item menu-item-type-custom menu-item-object-custom responsive-menu-item" role="none"><a href="/" class="responsive-menu-item-link" tabindex="1" role="menuitem"><i class="fa fa-home"></i></a></li><li id="responsive-menu-item-2357" class=" menu-item menu-item-type-custom menu-item-object-custom responsive-menu-item" role="none"><a href="https://malwaretech-podcast.simplecast.com/" class="responsive-menu-item-link" tabindex="1" role="menuitem">Podcast</a></li><li id="responsive-menu-item-1805" class=" menu-item menu-item-type-custom menu-item-object-custom responsive-menu-item" role="none"><a href="https://discord.gg/4tUrsPu" class="responsive-menu-item-link" tabindex="1" role="menuitem">Discord</a></li><li id="responsive-menu-item-2325" class=" menu-item menu-item-type-custom menu-item-object-custom responsive-menu-item" role="none"><a href="http://malwaretech.com/challenges" class="responsive-menu-item-link" tabindex="1" role="menuitem">Challenges</a></li><li id="responsive-menu-item-1311" class=" menu-item menu-item-type-post_type menu-item-object-page responsive-menu-item" role="none"><a href="https://www.malwaretech.com/contact" class="responsive-menu-item-link" tabindex="1" role="menuitem">Contact</a></li></ul> <div id="responsive-menu-search-box">
+<form action="https://www.malwaretech.com" class="responsive-menu-search-form" role="search">
+<input type="search" name="s" title="Search" tabindex="1" placeholder="Search" class="responsive-menu-search-box">
+</form>
+</div> <div id="responsive-menu-additional-content"></div> </div>
+</div>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=7.4.4' id='wp-polyfill-js'></script>
+<script type='text/javascript' id='wp-polyfill-js-after'>
+( 'fetch' in window ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-fetch.min.js?ver=3.0.0"></scr' + 'ipt>' );( document.contains ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-node-contains.min.js?ver=3.42.0"></scr' + 'ipt>' );( window.DOMRect ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-dom-rect.min.js?ver=3.42.0"></scr' + 'ipt>' );( window.URL && window.URL.prototype && window.URLSearchParams ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-url.min.js?ver=3.6.4"></scr' + 'ipt>' );( window.FormData && window.FormData.prototype.keys ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-formdata.min.js?ver=3.0.12"></scr' + 'ipt>' );( Element.prototype.matches && Element.prototype.closest ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-element-closest.min.js?ver=2.0.2"></scr' + 'ipt>' );( 'objectFit' in document.documentElement.style ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-object-fit.min.js?ver=2.3.4"></scr' + 'ipt>' );
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/hooks.min.js?ver=50e23bed88bcb9e6e14023e9961698c1' id='wp-hooks-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/i18n.min.js?ver=db9a9a37da262883343e941c3731bc67' id='wp-i18n-js'></script>
+<script type='text/javascript' id='wp-i18n-js-after'>
+wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/vendor/lodash.min.js?ver=4.17.19' id='lodash-js'></script>
+<script type='text/javascript' id='lodash-js-after'>
+window.lodash = _.noConflict();
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/url.min.js?ver=0ac7e0472c46121366e7ce07244be1ac' id='wp-url-js'></script>
+<script type='text/javascript' id='wp-api-fetch-js-translations'>
+( function( domain, translations ) {
+	var localeData = translations.locale_data[ domain ] || translations.locale_data.messages;
+	localeData[""].domain = domain;
+	wp.i18n.setLocaleData( localeData, domain );
+} )( "default", { "locale_data": { "messages": { "": {} } } } );
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/api-fetch.min.js?ver=a783d1f442d2abefc7d6dbd156a44561' id='wp-api-fetch-js'></script>
+<script type='text/javascript' id='wp-api-fetch-js-after'>
+wp.apiFetch.use( wp.apiFetch.createRootURLMiddleware( "https://www.malwaretech.com/wp-json/" ) );
+wp.apiFetch.nonceMiddleware = wp.apiFetch.createNonceMiddleware( "0a08de24da" );
+wp.apiFetch.use( wp.apiFetch.nonceMiddleware );
+wp.apiFetch.use( wp.apiFetch.mediaUploadMiddleware );
+wp.apiFetch.nonceEndpoint = "https://www.malwaretech.com/wp-admin/admin-ajax.php?action=rest-nonce";
+</script>
+<script type='text/javascript' id='contact-form-7-js-extra'>
+/* <![CDATA[ */
+var wpcf7 = [];
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/plugins/contact-form-7/includes/js/index.js?ver=5.4' id='contact-form-7-js'></script>
+<script type='text/javascript' id='disqus_count-js-extra'>
+/* <![CDATA[ */
+var countVars = {"disqusShortname":"malwaretech2"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/plugins/disqus-comment-system/public/js/comment_count.js?ver=3.0.21' id='disqus_count-js'></script>
+<script type='text/javascript' id='disqus_embed-js-extra'>
+/* <![CDATA[ */
+var embedVars = {"disqusConfig":{"integration":"wordpress 3.0.21"},"disqusIdentifier":"827 http:\/\/t4wej5.malwaretech.com\/2013\/08\/powerloader-injection-something-truly.html","disqusShortname":"malwaretech2","disqusTitle":"PowerLoader Injection \u2013 Something truly amazing","disqusUrl":"https:\/\/www.malwaretech.com\/2013\/08\/powerloader-injection-something-truly.html","postId":"827"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/plugins/disqus-comment-system/public/js/comment_embed.js?ver=3.0.21' id='disqus_embed-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/bootstrap.min.js?ver=5.7.2' id='bootstrap-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/owl.carousel.min.js?ver=5.7.2' id='owl-carousel-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/stellarnav.js?ver=5.7.2' id='stellarnav-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/jquery.simplyscroll.js?ver=5.7.2' id='jquery-simplyscroll-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/custom.js?ver=5.7.2' id='imnews-custom-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+</body>
+</html>

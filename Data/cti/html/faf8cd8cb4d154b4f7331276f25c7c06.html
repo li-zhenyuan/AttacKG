@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="/cdn-cgi/apps/head/n9TF-6GWbkpYTiDSgDnrjC9AIZM.js"></script><link rel="profile" href="http://gmpg.org/xfn/11">
+<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+<title>Virtual File Systems for Beginners - MalwareTech</title>
+<link rel="canonical" href="https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Virtual File Systems for Beginners - MalwareTech" />
+<meta property="og:description" content="A virtual File System (VFS), sometimes referred to as a Hidden File System, is a storage technique most commonly used by kernel mode malware, usually to store components outside of the existing filesystem. By using a virtual filesystem, malware developers can both bypass antivirus scanners as well as complicating work &hellip;" />
+<meta property="og:url" content="https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html" />
+<meta property="og:site_name" content="MalwareTech" />
+<meta property="article:published_time" content="2014-11-28T20:21:00+00:00" />
+<meta property="article:modified_time" content="2016-06-29T08:41:32+00:00" />
+<meta property="og:image" content="https://www.malwaretech.com/wp-content/uploads/2014/11/disklayout.png" />
+<meta property="og:image:width" content="688" />
+<meta property="og:image:height" content="147" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@MalwareTechBlog" />
+<meta name="twitter:site" content="@MalwareTechBlog" />
+<meta name="twitter:label1" content="Written by">
+<meta name="twitter:data1" content="MalwareTech">
+<meta name="twitter:label2" content="Est. reading time">
+<meta name="twitter:data2" content="7 minutes">
+<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://www.malwaretech.com/#website","url":"https://www.malwaretech.com/","name":"MalwareTech","description":"Life of a Malware Analyst","publisher":{"@id":"https://www.malwaretech.com/#/schema/person/4ab66290f687de23ffad2820632610b0"},"potentialAction":[{"@type":"SearchAction","target":"https://www.malwaretech.com/?s={search_term_string}","query-input":"required name=search_term_string"}],"inLanguage":"en-US"},{"@type":"ImageObject","@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#primaryimage","inLanguage":"en-US","url":"https://www.malwaretech.com/wp-content/uploads/2014/11/disklayout.png","width":688,"height":147},{"@type":"WebPage","@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#webpage","url":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html","name":"Virtual File Systems for Beginners - MalwareTech","isPartOf":{"@id":"https://www.malwaretech.com/#website"},"primaryImageOfPage":{"@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#primaryimage"},"datePublished":"2014-11-28T20:21:00+00:00","dateModified":"2016-06-29T08:41:32+00:00","breadcrumb":{"@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html"]}]},{"@type":"BreadcrumbList","@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"WebPage","@id":"https://www.malwaretech.com/","url":"https://www.malwaretech.com/","name":"Home"}},{"@type":"ListItem","position":2,"item":{"@type":"WebPage","@id":"https://www.malwaretech.com/category/uncategorized","url":"https://www.malwaretech.com/category/uncategorized","name":"Uncategorized"}},{"@type":"ListItem","position":3,"item":{"@type":"WebPage","@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html","url":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html","name":"Virtual File Systems for Beginners"}}]},{"@type":"Article","@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#article","isPartOf":{"@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#webpage"},"author":{"@id":"https://www.malwaretech.com/#/schema/person/4ab66290f687de23ffad2820632610b0"},"headline":"Virtual File Systems for Beginners","datePublished":"2014-11-28T20:21:00+00:00","dateModified":"2016-06-29T08:41:32+00:00","mainEntityOfPage":{"@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#webpage"},"commentCount":3,"publisher":{"@id":"https://www.malwaretech.com/#/schema/person/4ab66290f687de23ffad2820632610b0"},"image":{"@id":"https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#primaryimage"},"keywords":"malware,programming,windows internals","inLanguage":"en-US","potentialAction":[{"@type":"CommentAction","name":"Comment","target":["https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html#respond"]}]},{"@type":["Person","Organization"],"@id":"https://www.malwaretech.com/#/schema/person/4ab66290f687de23ffad2820632610b0","name":"MalwareTech","image":{"@type":"ImageObject","@id":"https://www.malwaretech.com/#personlogo","inLanguage":"en-US","url":"https://www.malwaretech.com/wp-content/uploads/2019/08/catglass.jpg","width":300,"height":300,"caption":"MalwareTech"},"logo":{"@id":"https://www.malwaretech.com/#personlogo"}}]}</script>
+
+<link rel='dns-prefetch' href='//www.malwaretech.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="MalwareTech &raquo; Feed" href="https://www.malwaretech.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="MalwareTech &raquo; Comments Feed" href="https://www.malwaretech.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="MalwareTech &raquo; Virtual File Systems for Beginners Comments Feed" href="https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html/feed" />
+<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/13.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/www.malwaretech.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.7.2"}};
+			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([55357,56424,8205,55356,57212],[55357,56424,8203,55356,57212])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='crayon-css' href='https://www.malwaretech.com/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css?ver=_2.7.2_beta' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-css' href='https://www.malwaretech.com/wp-includes/css/dist/block-library/style.min.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='contact-form-7-css' href='https://www.malwaretech.com/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.4' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/font-awesome.min.css?ver=4.7.0' type='text/css' media='all' />
+<link rel='stylesheet' id='animate-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/animate.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='stellarnav-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/stellarnav.css?ver=1.1' type='text/css' media='all' />
+<link rel='stylesheet' id='imnewspro-carousel-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/owl.carousel.min.css?ver=2.2.1' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/bootstrap.min.css?ver=3.3.7' type='text/css' media='all' />
+<link rel='stylesheet' id='imnewspro-theme-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/owl.theme.css?ver=1.3.3' type='text/css' media='all' />
+<link rel='stylesheet' id='imnewspro-simplyscroll-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/jquery.simplyscroll.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='imnews-default-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/css/default.css?ver=5.7.2' type='text/css' media='all' />
+<link rel='stylesheet' id='imnews-style-css' href='https://www.malwaretech.com/wp-content/themes/imnewspro/style.css?ver=5.7.2' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/jquery/jquery.min.js?ver=3.5.1' id='jquery-core-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.3.2' id='jquery-migrate-js'></script>
+<script type='text/javascript' id='crayon_js-js-extra'>
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"https:\/\/www.malwaretech.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js?ver=_2.7.2_beta' id='crayon_js-js'></script>
+<link rel="https://api.w.org/" href="https://www.malwaretech.com/wp-json/" /><link rel="alternate" type="application/json" href="https://www.malwaretech.com/wp-json/wp/v2/posts/789" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.malwaretech.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://www.malwaretech.com/wp-includes/wlwmanifest.xml" />
+<meta name="generator" content="WordPress 5.7.2" />
+<link rel='shortlink' href='https://www.malwaretech.com/?p=789' />
+<link rel="alternate" type="application/json+oembed" href="https://www.malwaretech.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fwww.malwaretech.com%2F2014%2F11%2Fvirtual-file-systems-for-beginners.html" />
+<style>button#responsive-menu-button,
+#responsive-menu-container {
+    display: none;
+    -webkit-text-size-adjust: 100%;
+}
+
+@media screen and (max-width: 840px) {
+
+    #responsive-menu-container {
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        z-index: 99998;
+        padding-bottom: 5px;
+        margin-bottom: -5px;
+        outline: 1px solid transparent;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box {
+        width: 100%;
+        padding: 0 2%;
+        border-radius: 2px;
+        height: 50px;
+        -webkit-appearance: none;
+    }
+
+    #responsive-menu-container.push-left,
+    #responsive-menu-container.slide-left {
+        transform: translateX(-100%);
+        -ms-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        -moz-transform: translateX(-100%);
+    }
+
+    .responsive-menu-open #responsive-menu-container.push-left,
+    .responsive-menu-open #responsive-menu-container.slide-left {
+        transform: translateX(0);
+        -ms-transform: translateX(0);
+        -webkit-transform: translateX(0);
+        -moz-transform: translateX(0);
+    }
+
+    #responsive-menu-container.push-top,
+    #responsive-menu-container.slide-top {
+        transform: translateY(-100%);
+        -ms-transform: translateY(-100%);
+        -webkit-transform: translateY(-100%);
+        -moz-transform: translateY(-100%);
+    }
+
+    .responsive-menu-open #responsive-menu-container.push-top,
+    .responsive-menu-open #responsive-menu-container.slide-top {
+        transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+    }
+
+    #responsive-menu-container.push-right,
+    #responsive-menu-container.slide-right {
+        transform: translateX(100%);
+        -ms-transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+        -moz-transform: translateX(100%);
+    }
+
+    .responsive-menu-open #responsive-menu-container.push-right,
+    .responsive-menu-open #responsive-menu-container.slide-right {
+        transform: translateX(0);
+        -ms-transform: translateX(0);
+        -webkit-transform: translateX(0);
+        -moz-transform: translateX(0);
+    }
+
+    #responsive-menu-container.push-bottom,
+    #responsive-menu-container.slide-bottom {
+        transform: translateY(100%);
+        -ms-transform: translateY(100%);
+        -webkit-transform: translateY(100%);
+        -moz-transform: translateY(100%);
+    }
+
+    .responsive-menu-open #responsive-menu-container.push-bottom,
+    .responsive-menu-open #responsive-menu-container.slide-bottom {
+        transform: translateY(0);
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+    }
+
+    #responsive-menu-container,
+    #responsive-menu-container:before,
+    #responsive-menu-container:after,
+    #responsive-menu-container *,
+    #responsive-menu-container *:before,
+    #responsive-menu-container *:after {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+    }
+
+    #responsive-menu-container #responsive-menu-search-box,
+    #responsive-menu-container #responsive-menu-additional-content,
+    #responsive-menu-container #responsive-menu-title {
+        padding: 25px 5%;
+    }
+
+    #responsive-menu-container #responsive-menu,
+    #responsive-menu-container #responsive-menu ul {
+        width: 100%;
+    }
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu {
+        display: none;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu.responsive-menu-submenu-open {
+         display: block;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-1 a.responsive-menu-item-link {
+        padding-left: 10%;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-2 a.responsive-menu-item-link {
+        padding-left: 15%;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-3 a.responsive-menu-item-link {
+        padding-left: 20%;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-4 a.responsive-menu-item-link {
+        padding-left: 25%;
+    }
+
+    #responsive-menu-container #responsive-menu ul.responsive-menu-submenu-depth-5 a.responsive-menu-item-link {
+        padding-left: 30%;
+    }
+
+    #responsive-menu-container li.responsive-menu-item {
+        width: 100%;
+        list-style: none;
+    }
+
+    #responsive-menu-container li.responsive-menu-item a {
+        width: 100%;
+        display: block;
+        text-decoration: none;
+        
+        position: relative;
+    }
+
+
+     #responsive-menu-container #responsive-menu li.responsive-menu-item a {
+                    padding: 0   5%;
+            }
+
+    #responsive-menu-container .responsive-menu-submenu li.responsive-menu-item a {
+                    padding: 0   5%;
+            }
+
+    #responsive-menu-container li.responsive-menu-item a .fa {
+        margin-right: 15px;
+    }
+
+    #responsive-menu-container li.responsive-menu-item a .responsive-menu-subarrow {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    #responsive-menu-container li.responsive-menu-item a .responsive-menu-subarrow  .fa {
+        margin-right: 0;
+    }
+
+    button#responsive-menu-button .responsive-menu-button-icon-inactive {
+        display: none;
+    }
+
+    button#responsive-menu-button {
+        z-index: 99999;
+        display: none;
+        overflow: hidden;
+        outline: none;
+    }
+
+    button#responsive-menu-button img {
+        max-width: 100%;
+    }
+
+    .responsive-menu-label {
+        display: inline-block;
+        font-weight: 600;
+        margin: 0 5px;
+        vertical-align: middle;
+    }
+
+    .responsive-menu-label .responsive-menu-button-text-open {
+        display: none;
+    }
+
+    .responsive-menu-accessible {
+        display: inline-block;
+    }
+
+    .responsive-menu-accessible .responsive-menu-box {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .responsive-menu-label.responsive-menu-label-top,
+    .responsive-menu-label.responsive-menu-label-bottom
+    {
+        display: block;
+        margin: 0 auto;
+    }
+
+    button#responsive-menu-button {
+        padding: 0 0;
+        display: inline-block;
+        cursor: pointer;
+        transition-property: opacity, filter;
+        transition-duration: 0.15s;
+        transition-timing-function: linear;
+        font: inherit;
+        color: inherit;
+        text-transform: none;
+        background-color: transparent;
+        border: 0;
+        margin: 0;
+        overflow: visible;
+    }
+
+    .responsive-menu-box {
+        width: 25px;
+        height: 19px;
+        display: inline-block;
+        position: relative;
+    }
+
+    .responsive-menu-inner {
+        display: block;
+        top: 50%;
+        margin-top: -1.5px;
+    }
+
+    .responsive-menu-inner,
+    .responsive-menu-inner::before,
+    .responsive-menu-inner::after {
+         width: 25px;
+         height: 3px;
+         background-color: #fff;
+         border-radius: 4px;
+         position: absolute;
+         transition-property: transform;
+         transition-duration: 0.15s;
+         transition-timing-function: ease;
+    }
+
+    .responsive-menu-open .responsive-menu-inner,
+    .responsive-menu-open .responsive-menu-inner::before,
+    .responsive-menu-open .responsive-menu-inner::after {
+        background-color: #fff;
+    }
+
+    button#responsive-menu-button:hover .responsive-menu-inner,
+    button#responsive-menu-button:hover .responsive-menu-inner::before,
+    button#responsive-menu-button:hover .responsive-menu-inner::after,
+    button#responsive-menu-button:hover .responsive-menu-open .responsive-menu-inner,
+    button#responsive-menu-button:hover .responsive-menu-open .responsive-menu-inner::before,
+    button#responsive-menu-button:hover .responsive-menu-open .responsive-menu-inner::after,
+    button#responsive-menu-button:focus .responsive-menu-inner,
+    button#responsive-menu-button:focus .responsive-menu-inner::before,
+    button#responsive-menu-button:focus .responsive-menu-inner::after,
+    button#responsive-menu-button:focus .responsive-menu-open .responsive-menu-inner,
+    button#responsive-menu-button:focus .responsive-menu-open .responsive-menu-inner::before,
+    button#responsive-menu-button:focus .responsive-menu-open .responsive-menu-inner::after {
+        background-color: #fff;
+    }
+
+    .responsive-menu-inner::before,
+    .responsive-menu-inner::after {
+         content: "";
+         display: block;
+    }
+
+    .responsive-menu-inner::before {
+         top: -8px;
+    }
+
+    .responsive-menu-inner::after {
+         bottom: -8px;
+    }
+
+            .responsive-menu-boring .responsive-menu-inner,
+.responsive-menu-boring .responsive-menu-inner::before,
+.responsive-menu-boring .responsive-menu-inner::after {
+    transition-property: none;
+}
+
+.responsive-menu-boring.is-active .responsive-menu-inner {
+    transform: rotate(45deg);
+}
+
+.responsive-menu-boring.is-active .responsive-menu-inner::before {
+    top: 0;
+    opacity: 0;
+}
+
+.responsive-menu-boring.is-active .responsive-menu-inner::after {
+    bottom: 0;
+    transform: rotate(-90deg);
+}    
+    button#responsive-menu-button {
+        width: 55px;
+        height: 55px;
+        position: fixed;
+        top: 15px;
+        right: 5%;
+                    background: #000
+            }
+
+            .responsive-menu-open button#responsive-menu-button {
+            background: #000
+        }
+    
+            .responsive-menu-open button#responsive-menu-button:hover,
+        .responsive-menu-open button#responsive-menu-button:focus,
+        button#responsive-menu-button:hover,
+        button#responsive-menu-button:focus {
+            background: #000
+        }
+    
+    button#responsive-menu-button .responsive-menu-box {
+        color: #fff;
+    }
+
+    .responsive-menu-open button#responsive-menu-button .responsive-menu-box {
+        color: #fff;
+    }
+
+    .responsive-menu-label {
+        color: #fff;
+        font-size: 14px;
+        line-height: 13px;
+            }
+
+    button#responsive-menu-button {
+        display: inline-block;
+        transition: transform   0.5s, background-color   0.5s;
+    }
+
+    
+    
+    #responsive-menu-container {
+        width: 75%;
+        left: 0;
+        transition: transform   0.5s;
+        text-align: left;
+                                            background: #212121;
+            }
+
+    #responsive-menu-container #responsive-menu-wrapper {
+        background: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu-additional-content {
+        color: #fff;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box {
+        background: #fff;
+        border: 2px solid   #dadada;
+        color: #333;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box:-ms-input-placeholder {
+        color: #C7C7CD;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box::-webkit-input-placeholder {
+        color: #C7C7CD;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box:-moz-placeholder {
+        color: #C7C7CD;
+        opacity: 1;
+    }
+
+    #responsive-menu-container .responsive-menu-search-box::-moz-placeholder {
+        color: #C7C7CD;
+        opacity: 1;
+    }
+
+    #responsive-menu-container .responsive-menu-item-link,
+    #responsive-menu-container #responsive-menu-title,
+    #responsive-menu-container .responsive-menu-subarrow {
+        transition: background-color   0.5s, border-color   0.5s, color   0.5s;
+    }
+
+    #responsive-menu-container #responsive-menu-title {
+        background-color: #212121;
+        color: #fff;
+        font-size: 13px;
+        text-align: left;
+    }
+
+    #responsive-menu-container #responsive-menu-title a {
+        color: #fff;
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    #responsive-menu-container #responsive-menu-title a:hover {
+        color: #fff;
+    }
+
+    #responsive-menu-container #responsive-menu-title:hover {
+        background-color: #212121;
+        color: #fff;
+    }
+
+    #responsive-menu-container #responsive-menu-title:hover a {
+        color: #fff;
+    }
+
+    #responsive-menu-container #responsive-menu-title #responsive-menu-title-image {
+        display: inline-block;
+        vertical-align: middle;
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+
+    #responsive-menu-container #responsive-menu-title #responsive-menu-title-image img {
+                        max-width: 100%;
+    }
+
+    #responsive-menu-container #responsive-menu > li.responsive-menu-item:first-child > a {
+        border-top: 1px solid   #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item .responsive-menu-item-link {
+        font-size: 13px;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a {
+        line-height: 40px;
+        border-bottom: 1px solid   #212121;
+        color: #fff;
+        background-color: #212121;
+                    height: 40px;
+            }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a:hover {
+        color: #fff;
+        background-color: #3f3f3f;
+        border-color: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a:hover .responsive-menu-subarrow {
+        color: #fff;
+        border-color: #3f3f3f;
+        background-color: #3f3f3f;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a:hover .responsive-menu-subarrow.responsive-menu-subarrow-active {
+        color: #fff;
+        border-color: #3f3f3f;
+        background-color: #3f3f3f;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a .responsive-menu-subarrow {
+        right: 0;
+        height: 40px;
+        line-height: 40px;
+        width: 40px;
+        color: #fff;
+                        border-left: 1px solid #212121;
+        
+        background-color: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a .responsive-menu-subarrow.responsive-menu-subarrow-active {
+        color: #fff;
+        border-color: #212121;
+        background-color: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a .responsive-menu-subarrow.responsive-menu-subarrow-active:hover {
+        color: #fff;
+        border-color: #3f3f3f;
+        background-color: #3f3f3f;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-item a .responsive-menu-subarrow:hover {
+        color: #fff;
+        border-color: #3f3f3f;
+        background-color: #3f3f3f;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-current-item > .responsive-menu-item-link {
+        background-color: #212121;
+        color: #fff;
+        border-color: #212121;
+    }
+
+    #responsive-menu-container #responsive-menu li.responsive-menu-current-item > .responsive-menu-item-link:hover {
+        background-color: #3f3f3f;
+        color: #fff;
+        border-color: #3f3f3f;
+    }
+
+            #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item .responsive-menu-item-link {
+                        font-size: 13px;
+            text-align: left;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a {
+                            height: 40px;
+                        line-height: 40px;
+            border-bottom: 1px solid   #212121;
+            color: #fff;
+            background-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a:hover {
+            color: #fff;
+            background-color: #3f3f3f;
+            border-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a:hover .responsive-menu-subarrow {
+            color: #fff;
+            border-color: #3f3f3f;
+            background-color: #3f3f3f;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a:hover .responsive-menu-subarrow.responsive-menu-subarrow-active {
+            color: #fff;
+            border-color: #3f3f3f;
+            background-color: #3f3f3f;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a .responsive-menu-subarrow {
+                                        left:unset;
+                right:0;
+                        height: 40px;
+            line-height: 40px;
+            width: 40px;
+            color: #fff;
+                                        border-left: 1px solid   #212121  !important;
+                border-right:unset  !important;
+                        background-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a .responsive-menu-subarrow.responsive-menu-subarrow-active {
+            color: #fff;
+            border-color: #212121;
+            background-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a .responsive-menu-subarrow.responsive-menu-subarrow-active:hover {
+            color: #fff;
+            border-color: #3f3f3f;
+            background-color: #3f3f3f;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-item a .responsive-menu-subarrow:hover {
+            color: #fff;
+            border-color: #3f3f3f;
+            background-color: #3f3f3f;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-current-item > .responsive-menu-item-link {
+            background-color: #212121;
+            color: #fff;
+            border-color: #212121;
+        }
+
+        #responsive-menu-container #responsive-menu ul.responsive-menu-submenu li.responsive-menu-current-item > .responsive-menu-item-link:hover {
+            background-color: #3f3f3f;
+            color: #fff;
+            border-color: #3f3f3f;
+        }
+    
+    
+            #header-nav {
+            display: none !important;
+        }
+    }</style><script>jQuery(document).ready(function($) {
+
+    var ResponsiveMenu = {
+        trigger: '#responsive-menu-button',
+        animationSpeed: 500,
+        breakpoint: 840,
+        pushButton: 'off',
+        animationType: 'slide',
+        animationSide: 'left',
+        pageWrapper: '',
+        isOpen: false,
+        triggerTypes: 'click',
+        activeClass: 'is-active',
+        container: '#responsive-menu-container',
+        openClass: 'responsive-menu-open',
+        accordion: 'off',
+        activeArrow: '▲',
+        inactiveArrow: '▼',
+        wrapper: '#responsive-menu-wrapper',
+        closeOnBodyClick: 'off',
+        closeOnLinkClick: 'off',
+        itemTriggerSubMenu: 'off',
+        linkElement: '.responsive-menu-item-link',
+        subMenuTransitionTime: 200,
+        openMenu: function() {
+            $(this.trigger).addClass(this.activeClass);
+            $('html').addClass(this.openClass);
+            $('.responsive-menu-button-icon-active').hide();
+            $('.responsive-menu-button-icon-inactive').show();
+            this.setButtonTextOpen();
+            this.setWrapperTranslate();
+            this.isOpen = true;
+        },
+        closeMenu: function() {
+            $(this.trigger).removeClass(this.activeClass);
+            $('html').removeClass(this.openClass);
+            $('.responsive-menu-button-icon-inactive').hide();
+            $('.responsive-menu-button-icon-active').show();
+            this.setButtonText();
+            this.clearWrapperTranslate();
+            this.isOpen = false;
+        },
+        setButtonText: function() {
+            if($('.responsive-menu-button-text-open').length > 0 && $('.responsive-menu-button-text').length > 0) {
+                $('.responsive-menu-button-text-open').hide();
+                $('.responsive-menu-button-text').show();
+            }
+        },
+        setButtonTextOpen: function() {
+            if($('.responsive-menu-button-text').length > 0 && $('.responsive-menu-button-text-open').length > 0) {
+                $('.responsive-menu-button-text').hide();
+                $('.responsive-menu-button-text-open').show();
+            }
+        },
+        triggerMenu: function() {
+            this.isOpen ? this.closeMenu() : this.openMenu();
+        },
+        triggerSubArrow: function(subarrow) {
+            var sub_menu = $(subarrow).parent().siblings('.responsive-menu-submenu');
+            var self = this;
+            if(this.accordion == 'on') {
+                /* Get Top Most Parent and the siblings */
+                var top_siblings = sub_menu.parents('.responsive-menu-item-has-children').last().siblings('.responsive-menu-item-has-children');
+                var first_siblings = sub_menu.parents('.responsive-menu-item-has-children').first().siblings('.responsive-menu-item-has-children');
+                /* Close up just the top level parents to key the rest as it was */
+                top_siblings.children('.responsive-menu-submenu').slideUp(self.subMenuTransitionTime, 'linear').removeClass('responsive-menu-submenu-open');
+                /* Set each parent arrow to inactive */
+                top_siblings.each(function() {
+                    $(this).find('.responsive-menu-subarrow').first().html(self.inactiveArrow);
+                    $(this).find('.responsive-menu-subarrow').first().removeClass('responsive-menu-subarrow-active');
+                });
+                /* Now Repeat for the current item siblings */
+                first_siblings.children('.responsive-menu-submenu').slideUp(self.subMenuTransitionTime, 'linear').removeClass('responsive-menu-submenu-open');
+                first_siblings.each(function() {
+                    $(this).find('.responsive-menu-subarrow').first().html(self.inactiveArrow);
+                    $(this).find('.responsive-menu-subarrow').first().removeClass('responsive-menu-subarrow-active');
+                });
+            }
+            if(sub_menu.hasClass('responsive-menu-submenu-open')) {
+                sub_menu.slideUp(self.subMenuTransitionTime, 'linear').removeClass('responsive-menu-submenu-open');
+                $(subarrow).html(this.inactiveArrow);
+                $(subarrow).removeClass('responsive-menu-subarrow-active');
+            } else {
+                sub_menu.slideDown(self.subMenuTransitionTime, 'linear').addClass('responsive-menu-submenu-open');
+                $(subarrow).html(this.activeArrow);
+                $(subarrow).addClass('responsive-menu-subarrow-active');
+            }
+        },
+        menuHeight: function() {
+            return $(this.container).height();
+        },
+        menuWidth: function() {
+            return $(this.container).width();
+        },
+        wrapperHeight: function() {
+            return $(this.wrapper).height();
+        },
+        setWrapperTranslate: function() {
+            switch(this.animationSide) {
+                case 'left':
+                    translate = 'translateX(' + this.menuWidth() + 'px)'; break;
+                case 'right':
+                    translate = 'translateX(-' + this.menuWidth() + 'px)'; break;
+                case 'top':
+                    translate = 'translateY(' + this.wrapperHeight() + 'px)'; break;
+                case 'bottom':
+                    translate = 'translateY(-' + this.menuHeight() + 'px)'; break;
+            }
+            if(this.animationType == 'push') {
+                $(this.pageWrapper).css({'transform':translate});
+                $('html, body').css('overflow-x', 'hidden');
+            }
+            if(this.pushButton == 'on') {
+                $('#responsive-menu-button').css({'transform':translate});
+            }
+        },
+        clearWrapperTranslate: function() {
+            var self = this;
+            if(this.animationType == 'push') {
+                $(this.pageWrapper).css({'transform':''});
+                setTimeout(function() {
+                    $('html, body').css('overflow-x', '');
+                }, self.animationSpeed);
+            }
+            if(this.pushButton == 'on') {
+                $('#responsive-menu-button').css({'transform':''});
+            }
+        },
+        init: function() {
+            var self = this;
+            $(this.trigger).on(this.triggerTypes, function(e){
+                e.stopPropagation();
+                self.triggerMenu();
+            });
+            $(this.trigger).mouseup(function(){
+                $(self.trigger).blur();
+            });
+            $('.responsive-menu-subarrow').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                self.triggerSubArrow(this);
+            });
+            $(window).resize(function() {
+                if($(window).width() > self.breakpoint) {
+                    if(self.isOpen){
+                        self.closeMenu();
+                    }
+                } else {
+                    if($('.responsive-menu-open').length>0){
+                        self.setWrapperTranslate();
+                    }
+                }
+            });
+            if(this.closeOnLinkClick == 'on') {
+                $(this.linkElement).on('click', function(e) {
+                    e.preventDefault();
+                    /* Fix for when close menu on parent clicks is on */
+                    if(self.itemTriggerSubMenu == 'on' && $(this).is('.responsive-menu-item-has-children > ' + self.linkElement)) {
+                        return;
+                    }
+                    old_href = $(this).attr('href');
+                    old_target = typeof $(this).attr('target') == 'undefined' ? '_self' : $(this).attr('target');
+                    if(self.isOpen) {
+                        if($(e.target).closest('.responsive-menu-subarrow').length) {
+                            return;
+                        }
+                        self.closeMenu();
+                        setTimeout(function() {
+                            window.open(old_href, old_target);
+                        }, self.animationSpeed);
+                    }
+                });
+            }
+            if(this.closeOnBodyClick == 'on') {
+                $(document).on('click', 'body', function(e) {
+                    if(self.isOpen) {
+                        if($(e.target).closest('#responsive-menu-container').length || $(e.target).closest('#responsive-menu-button').length) {
+                            return;
+                        }
+                    }
+                    self.closeMenu();
+                });
+            }
+            if(this.itemTriggerSubMenu == 'on') {
+                $('.responsive-menu-item-has-children > ' + this.linkElement).on('click', function(e) {
+                    e.preventDefault();
+                    self.triggerSubArrow($(this).children('.responsive-menu-subarrow').first());
+                });
+            }
+
+                        if (jQuery('#responsive-menu-button').css('display') != 'none') {
+                $('#responsive-menu-button,#responsive-menu a.responsive-menu-item-link, #responsive-menu-wrapper input').focus( function() {
+                    $(this).addClass('is-active');
+                    $('html').addClass('responsive-menu-open');
+                    $('#responsive-menu li').css({"opacity": "1", "margin-left": "0"});
+                });
+
+                $('#responsive-menu-button, a.responsive-menu-item-link,#responsive-menu-wrapper input').focusout( function() {
+                    if ( $(this).last('#responsive-menu-button a.responsive-menu-item-link') ) {
+                        $(this).removeClass('is-active');
+                        $('html').removeClass('responsive-menu-open');
+                    }
+                });
+            }
+
+                        $('#responsive-menu a.responsive-menu-item-link').keydown(function(event) {
+                console.log( event.keyCode );
+                if ( [13,27,32,35,36,37,38,39,40].indexOf( event.keyCode) == -1) {
+                    return;
+                }
+                var link = $(this);
+                switch(event.keyCode) {
+                    case 13:
+                                                link.click();
+                        break;
+                    case 27:
+                                                var dropdown = link.parent('li').parents('.responsive-menu-submenu');
+                        if ( dropdown.length > 0 ) {
+                            dropdown.hide();
+                            dropdown.prev().focus();
+                        }
+                        break;
+
+                    case 32:
+                                                var dropdown = link.parent('li').find('.responsive-menu-submenu');
+                        if ( dropdown.length > 0 ) {
+                            dropdown.show();
+                            dropdown.find('a, input, button, textarea').first().focus();
+                        }
+                        break;
+
+                    case 35:
+                                                var dropdown = link.parent('li').find('.responsive-menu-submenu');
+                        if ( dropdown.length > 0 ) {
+                            dropdown.hide();
+                        }
+                        $(this).parents('#responsive-menu').find('a.responsive-menu-item-link').filter(':visible').last().focus();
+                        break;
+                    case 36:
+                                                var dropdown = link.parent('li').find('.responsive-menu-submenu');
+                        if( dropdown.length > 0 ) {
+                            dropdown.hide();
+                        }
+                        $(this).parents('#responsive-menu').find('a.responsive-menu-item-link').filter(':visible').first().focus();
+                        break;
+                    case 37:
+                    case 38:
+                        event.preventDefault();
+                        event.stopPropagation();
+                                                if ( link.parent('li').prevAll('li').filter(':visible').first().length == 0) {
+                            link.parent('li').nextAll('li').filter(':visible').last().find('a').first().focus();
+                        } else {
+                            link.parent('li').prevAll('li').filter(':visible').first().find('a').first().focus();
+                        }
+                        break;
+                    case 39:
+                    case 40:
+                        event.preventDefault();
+                        event.stopPropagation();
+                                                if( link.parent('li').nextAll('li').filter(':visible').first().length == 0) {
+                            link.parent('li').prevAll('li').filter(':visible').last().find('a').first().focus();
+                        } else {
+                            link.parent('li').nextAll('li').filter(':visible').first().find('a').first().focus();
+                        }
+                        break;
+                }
+            });
+        }
+    };
+    ResponsiveMenu.init();
+});</script><style type="text/css">
+h1 span,h1, .h1{
+  font-size: 42px;
+}
+h2 span,h2,.h2{
+  font-size: 36px;
+}
+h3 span,h3,.h3{
+  font-size: 30px;
+}
+h4 span,h4,.h4,.title-data a h1,.title-data a.blogTitle{
+  font-size: 24px;
+}
+h5 span,h5,.h5{
+  font-size: 20px;
+}
+h6 span,h6,.h6{
+  font-size: 16px;
+}
+p, span, li, a,.package-header h4 span,.main-sidebar ul li a{
+  font-size: 14px;
+}
+#cssmenu ul li a{
+  font-size: 14px;
+}
+body{
+  background: #ffffff;
+}
+body, p, time,ul, li{
+  color:#424242;
+}
+.inline-dropdown,.comment .comment-reply-link{background-color: #0088ff}
+.search-box-input .search-button,caption{background-color: #0088ff}
+.side-area-post .side-area-heading,.side-area-post table,#single-blog .share-social-icon ul li a:hover,input:focus, textarea:focus, input:hover, textarea:hover{border-color:  #0088ff; color: #0088ff;}
+.side-area-post .side-area-heading::after,.latest-text,.title:after{background:#0088ff;}
+.current,.slider-title:after, .centered:after{background:#0088ff;}
+.next, .prev{color:#0088ff;}
+.sidenews-post-image img,.tagcloud a:hover,.othernews-post-image img,.relatednews-post-image img,.similar-post-image img{background:#0088ff;}
+.side-area-post ul li a:hover,cite,a,#single-blog .share-social-icon ul li a:hover{color:#0088ff;}
+.side-area-post ul li.recentcomments a:hover,.slider-title, .centered{color: #0088ff;}    
+.like-article h4,.title,.slider-title, .centered{border-bottom: 1px solid #0088ff; color: #0088ff;}
+#menubar .nav > li > a:hover,.mainnews-post h4.post-title a:hover,.inline-post-type h4 a:hover,.owl-prev:hover, .owl-next:hover{color:#0088ff;}
+#menubar#main-nav ul ul li:hover > a, #main-nav ul ul li a:hover{color: #0088ff;}
+.next, .prev{border:1px solid #0088ff;}
+#top .navbar-toggle .icon-bar,.comment-form .submit,.current, .page-numbers:hover, .next:hover, .prev:hover{background:#0088ff; }
+#menubar .nav > li > a,#menubar ul ul li a,#menubar .navbar-brand{ color: #7a7a7a; }
+.comment .comment-metadata a,.othernews-post-title a,.relatednews-post-details .relatednews-post-title a,.similar-post-details .similar-post-title a,.news-title a,.comment-metadata > a,.comment-edit-link,.comment-reply-link,.logged-in-as > a,.ttl_tagline{ color: #7a7a7a; }
+.comment-form .submit:hover{background: #7a7a7a;}
+.menu-footer{ background-color: #303030; }
+.widget-footer{ background-color: #212121; }
+.widget-footer-heading h4,.widget-footer-heading p,.widget-footer .widget-footer-heading .sidenews-updates .sidenews-post-date time, .widget-footer .widget-footer-heading .sidenews-updates .sidenews-post-heading a,.widget-footer-row .widget-footer-heading ul li a { color: #ffffff; }
+.widget-footer .widget-footer-heading .sidenews-updates .sidenews-post-heading a:hover, .widget-footer-heading ul li a:hover{ color: #ffffff; }	
+.footer-copyrights p{ color: #ffffff; }
+.footer-copyrights p a{ color: #ffffff; }
+.footer-copyrights a:hover,.social-widget ul li a:hover{ color: #ffffff; }
+.comment .comment-metadata a:hover,.othernews-post-title a:hover,.relatednews-post-title a:hover,.similar-post-title a:hover,.sidenews-post-heading > a:hover,.news-title a:hover,.comment-metadata > a:hover,.comment-edit-link:hover,.comment-reply-link:hover,.logged-in-as > a:hover,a:focus, a:hover{color: #0088ff;}
+    .navbar-brand,.ttl_tagline{
+      clip: auto;
+      position: relative;
+    }
+    </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-3337609182489974",
+          enable_page_level_ads: true
+     });
+</script>
+</head>
+<body class="post-template-default single single-post postid-789 single-format-standard responsive-menu-slide-left">
+
+<header id="top">
+<div id="menubar">
+<div class="container">
+<div class="row">
+<nav class="navbar navbar-default">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<div class="navbar-header">
+<a href="https://www.malwaretech.com/" class="navbar-brand" rel="home">MalwareTech</a>
+<span class="ttl_tagline">Life of a Malware Analyst</span>
+</div>
+<div class="collapse navbar-collapse inline-list" id="main-nav">
+<ul id="menu-menu-1" class="nav navbar-nav nav-category"><li id="menu-item-114" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-114"><a href="/"><i class="fa fa-home"></i></a></li>
+<li id="menu-item-2357" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2357"><a href="https://malwaretech-podcast.simplecast.com/">Podcast</a></li>
+<li id="menu-item-1805" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1805"><a href="https://discord.gg/4tUrsPu">Discord</a></li>
+<li id="menu-item-2325" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2325"><a href="http://malwaretech.com/challenges">Challenges</a></li>
+<li id="menu-item-1311" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1311"><a href="https://www.malwaretech.com/contact">Contact</a></li>
+</ul> </div>
+</nav>
+</div>
+</div>
+</div>
+</header>
+<div class="inline-dropdown">
+<div class="container">
+<div class="row">
+<div class="col-sm-12">
+<div class="path-category">
+<ul id="breadcrumbs" class="breadcrumbs"><li class="item-home"><a class="bread-link bread-home" href="https://www.malwaretech.com" title="Home">Home</a></li><li class="separator separator-home"> / </li><li class="item-cat"><a href="https://www.malwaretech.com/category/uncategorized">Uncategorized</a></li><li class="separator"> / </li><li class="item-current item-789"><strong class="bread-current bread-789" title="Virtual File Systems for Beginners">Virtual File Systems for Beginners</strong></li></ul> </div>
+</div>
+</div>
+</div>
+</div>
+<div class="container no-padding">
+<div class="row main-row main-detail">
+<div class="col-sm-9">
+<div class="news-posts" id="single-blog">
+<div class="mainnews-post">
+<div class="row">
+<div class="col-sm-12">
+<div class="news-title">
+<h3><b>Virtual File Systems for Beginners</b></h3>
+<ul>
+<li>By :<a href="https://www.malwaretech.com/author/malwaretech" rel="tag"> MalwareTech</a></li>
+<li><time datetime="2014-11-28T20:21:00+00:00">November 28, 2014</time></li>
+<li>Category : <a href="https://www.malwaretech.com/category/uncategorized" rel="category tag">Uncategorized</a></li>
+<li> Tags: <a href="https://www.malwaretech.com/tag/malware" rel="tag">malware</a>, <a href="https://www.malwaretech.com/tag/programming" rel="tag">programming</a>, <a href="https://www.malwaretech.com/tag/windows-internals" rel="tag">windows internals</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="share-social-icon">
+<ul>
+<li><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html" title="Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="http://twitter.com/home?status=https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html" title="Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="https://plus.google.com/share?url=https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html" title="Google+"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="https://www.pinterest.com/pin/create/button/?url=https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html&media=&description=Virtual File Systems for Beginners" data-pin-do="buttonPin" data-pin-config="above" title="Pinterest"><i class="fa fa-pinterest-p" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html&title=Virtual File Systems for Beginners&source=https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html" title="Linkedin"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+<li><a target="_blank" href="http://www.tumblr.com/share/link?url=https://www.malwaretech.com/2014/11/virtual-file-systems-for-beginners.html" title="Tumblr"><i class="fa fa-tumblr" aria-hidden="true"></i></a></li>
+</ul>
+</div>
+<div class="news-details">
+<div class="news details">
+<div dir="ltr" style="text-align: left;" trbidi="on">
+A virtual File System (VFS), sometimes referred to as a Hidden File System, is a storage technique most commonly used by kernel mode malware, usually to store components outside of the existing filesystem. By using a virtual filesystem, malware developers can both bypass antivirus scanners as well as complicating work for forensic experts.</p>
+<h2>
+Filesystem Basics</h2>
+<div>
+If you&#8217;re running Windows and not using hardware from the 90s, or have your OS installed on a flash drive; chances are, you&#8217;re using the New Technology File System (NTFS). In order to understand how a VFS benefits malware developers, first we need to dive into a bit of filesystem basics.&nbsp;</div>
+<div>
+</div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://www.malwaretech.com/wp-content/uploads/2014/11/disklayout.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img alt="NTFS disk layout" border="0" src="http://www.malwaretech.com/wp-content/uploads/2014/11/disklayout.png" title="" /></a></div>
+<div>
+</div>
+<p>In this example we have a disk containing only one partition (which runs Windows).</p>
+<ul style="text-align: left;">
+<li>The Master Boot Record (MBR) gives the system information about the partition, such as its start sector and size.</li>
+<li>The Volume Boot Record (VBR) is the primary boot code and will load and Windows bootloader and execute it; The VBR is the first sector within the NTFS partition.&nbsp;</li>
+<li>$BOOT is the boot area and contains the Windows boot loader.</li>
+<li>$MFT is the Master File Table and tells the system where to find files within the filesystem.</li>
+</ul>
+<div>
+</div>
+<div>
+<b>Antivirus Scans</b></div>
+<div>
+A full system scan will go through every file in the master file table and scan it, additionally the antivirus can hook the filesystem driver and scan files on creation / write. If somebody didn&#8217;t want a file to be scanned, not adding an entry to the MFT would be a good start. Unfortunately, if sectors within the partition are not referenced by the MFT, they are assumed unused and likely to be overwritten as more files are written to the disk.</div>
+<div>
+</div>
+<div>
+<b>Malware Forensics</b></div>
+<div>
+There are lots of techniques used when analyzing an infected system; however, looking for new/modified files is a common starting point for an analyst. To speed up file deletion, the system simply deletes the file&#8217;s record in the MFT but leaves the actual file intact, this way the sectors can be overwritten by an new file and the system doesn&#8217;t have to waste time zeroing out the old one. Due to the fact there&#8217;s going to be random data left by deleted files all over the disk, it&#8217;s very easy for an encrypted virtual filesystem to hide, further complicating analysis.</div>
+<div>
+</div>
+<div>
+Obviously if we can&#8217;t write directly to free sectors within the partition for fear of them being overwritten, then we&#8217;re going to have to write our VFS outside of the partition; What makes this possible is the fact that there is unused reserves space on both ends of the disk.&nbsp;</div>
+<div>
+</div>
+<h2 style="text-align: left;">
+Disk Basics</h2>
+<div>
+For people who are interested in the (very technical) reasons behind the reserved space at the beginning and end of the disk, I suggest reading this section. If you&#8217;re not interested or easily confused, skip to Virtual File Systems.</div>
+<div>
+</div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://www.malwaretech.com/wp-content/uploads/2014/11/harddiskplatter.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img alt="A hard disk platter" border="0" src="http://www.malwaretech.com/wp-content/uploads/2014/11/harddiskplatter.png" title="" /></a></div>
+<div>
+</div>
+<div>
+<b>Space after the MBR</b></div>
+<div>
+A disk platter is divided into tracks which are divided into sectors; a single sector is 512 bytes in size and there are a fixed number of sectors per a track. As technology advanced the physical size of sectors got smaller so more sectors could be fit onto a single track; however, the MBR field that describes the number of sectors is 6 bits in size, thus can only support numbers 0 &#8211; 63, limiting the sectors per track to 63.</div>
+<div>
+</div>
+<div>
+Eventually, someone figured out that the the closer to the edge of the disk you get, the longer the tracks are and the more sectors the can hold. Nowadays the number of sectors per a track varies depending on how far away from the spindle the track is, making the sectors per a track field of the MBR totally meaningless; For compatibility reason, disks with more than 63 sectors per a track will just leave the value set at 63, the same goes for SSDs or other media that doesn&#8217;t have tracks.&nbsp;</div>
+<div>
+</div>
+<div>
+For optimization reasons when partitioning the disk, the Windows partition manager will read the sectors per track value and align the partition on the track boundary (63 sectors per track vmeans that the MBR will be sector 0 track 0, while the start of the partition will be sector 0 track 1, leaving 62 sectors of unused space between the MBR and first partition). </div>
+<div>
+</div>
+<div>
+The only problem with aligning the partition to 63 virtual (512kb) sectors is if the disk internally used 4kb sectors, then there&#8217;s going to be a huge performance penalty because 63 * 512 is not a multiple of 4kb, so the OS will constantly be writing across sector boundaries and wasting time with unnecessary Read-Modify-Write cycles. In Windows Vista and onward Microsoft addresses this issue by starting the partition on the 2048th sector (leaving 1 MB of reserved space and 4kb aligning the partition), nobody is exactly sure why they chose to leave so much space, but when it comes to malware, 1 MB is a lot of storage.&nbsp;</div>
+<div>
+</div>
+<div>
+<b>Space at then end of the disk</b></div>
+<div>
+Because the space at the start of the disk can be pretty small and isn&#8217;t guaranteed on GPT systems, the space at the end may be a better bet. When allocating a partition, the Windows partition manager will end the partition before the end of the disk to leave space for dynamic disk information. As it happens, dynamic disks are incredibly rare on most computers because they&#8217;re only used for software RAID and other black magic, which leave between 1 mb and 100 mb of space at the end of the disk.&nbsp;</div>
+<div>
+</div>
+<h2 style="text-align: left;">
+Virtual File System</h2>
+<div>
+The location of the Virtual File System depends on the space needed and the system specifications, here&#8217;s a quick overview of the reserved space.</div>
+<div>
+</div>
+<div>
+<b>Start Of Disk</b></div>
+<div>
+<ul>
+<li>On XP systems using the MBR partition format you are guaranteed 62 sectors (31.7 KB) of space between the MBR and the first partition.</li>
+<li>On Vista+ systems using the MBR partition format&nbsp;you are guaranteed 2047 sectors (1 MB) of space between the MBR and the first&nbsp;partition.&nbsp;</li>
+<li>Because the GUID Partition Table (GPT) is of variable size and not restricted to 1 sector like the MBR, it is uncertain how much space will be available on systems using the GPT.</li>
+<li>Other than by the GPT, this space is never used by windows.&nbsp;</li>
+</ul>
+</div>
+<div>
+<b>End Of Disk</b></div>
+<div>
+<ul style="text-align: left;">
+<li>Between 1 MB and 100 MB, there doesn&#8217;t appear to be any OS specifications for the exact size so the variation is likely to do with disk geometry (Ex: 1 disk track is reserved).</li>
+<li>Some of the space can be used for dynamic disk information (most system do not use dynamic disks unless using software RAID).</li>
+</ul>
+</div>
+<div>
+</div>
+<div>
+Contrary to popular belief, a VFS can be created and accessed by a user mode application, as long as it is running as administrator. To prevent malware from bypassing kernel code signing, raw disk access was &#8220;disabled&#8221; in vista and onward; however, there is an exception for boot sectors and sectors residing outside of the filesystem (both reserved areas reside outside the filesystem), enabling user mode access to the VFS. Although, direct user mode access is possible, most malware tends to manage the VFS from a kernel driver and expose an API to user mode components for reading/writing via the driver; This allows the VFS to be hidden from normal applications and other drivers.</div>
+<div>
+</div>
+<div class="separator" style="clear: both; text-align: center;">
+<a href="http://www.malwaretech.com/wp-content/uploads/2014/11/VFSrootkitdriver.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img loading="lazy" alt="VFS driver and disk driver stack" border="0" src="http://www.malwaretech.com/wp-content/uploads/2014/11/VFSrootkitdriver.png" height="640" title="" width="588" /></a></div>
+<div>
+</div>
+<div>
+It&#8217;s quite common for a VFS driver to send requests directly to the lowest level disk driver (the disk miniport), as a result the disk read/write requests cannot be intercepted by the antivirus or any standard disk monitors, providing better stealth. Although you could write standard files using this method, ntfs.sys handles the NTFS specification, so you&#8217;d have to create your own ntfs driver which would be a lot of work especially as NTFS is not fully documented by Microsoft.&nbsp;</div>
+<div>
+</div>
+<div>
+The actual format of the VFS is entirely dependent on the developer, some have chosen to use FAT32 with RC4 encryption, whilst others use custom file systems with modified encryption algorithms. Almost always the VFS is encrypted in an attempt to make the data look like random leftover bytes and not executables or log files.</div>
+<div>
+</div>
+<div>
+Bootkits most commonly use a VFS because it reduces the attack surface to a single point of attack: The infected bootloader reads the rootkit driver from the VFS and loads it into the kernel long before the antivirus, leaving the kernel driver time to install hooks and cover its tracks before the OS even initializes. A bootkit using a VFS driver has only one weakness: The infected boot record; this can be easily resolved by using the bootkit&#8217;s driver to hook the disk miniport and spoof read/write requests to the boot sector, tricking the AV into thinking the boot sector contains the original Windows boot code, the same method can also be used to just display empty sectors if something other than the rootkit tries to read the VFS.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relatednews-post">
+<div id="disqus_thread"></div>
+<div class="row like-article similar-article">
+<div class="col-sm-12">
+<h4><b>SIMILAR NEWS</b></h4>
+</div>
+</div>
+<div class="row">
+<div class="col-sm-4">
+<div class="relatednews-post-panel">
+<div class="label-img">
+<div class="relatednews-post-image">
+<a href="https://www.malwaretech.com/2016/12/open-source-ransomware.html">
+<img width="204" height="160" src="https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker.png" class="attachment-imnews-related-thumbnail size-imnews-related-thumbnail wp-post-image" alt="" loading="lazy" srcset="https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker.png 1680w, https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker-300x235.png 300w, https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker-768x602.png 768w, https://www.malwaretech.com/wp-content/uploads/2016/12/cryptolocker-1024x802.png 1024w" sizes="(max-width: 204px) 100vw, 204px" /> </a>
+</div>
+<div class="label">
+<div class="row label-row">
+<div class="col-sm-9 col-xs-9 label-column no-padding">
+<span>Uncategorized</span>
+</div>
+<div class="col-sm-3 col-xs-3 no-padding">
+<div class="comments">
+<i class="fa fa-comments comments-icon"></i>
+<span class="comments-no">9</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relatednews-post-details">
+<div class="relatednews-post-title">
+<h5><b><a href="https://www.malwaretech.com/2016/12/open-source-ransomware.html">Why Open Source Ransomware is Such a Problem</a></b></h5>
+</div>
+<div class="relatednews-post-news">
+<p>A while back 2sec4u posted a poll asking if people considered open source ransomware helpful to detection and prevention, with 46% voting yes. Although the poll wasn&#8217;t limited to people working in the antimalware industry, 46% is scarily high. Trying to prove a point, help me out Twitter. Is open source ransomware helping &hellip; </p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="relatednews-post-panel">
+<div class="label-img">
+<div class="relatednews-post-image">
+<a href="https://www.malwaretech.com/2016/10/mapping-mirai-a-botnet-case-study.html">
+<img width="260" height="125" src="https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap.png" class="attachment-imnews-related-thumbnail size-imnews-related-thumbnail wp-post-image" alt="" loading="lazy" srcset="https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap.png 1273w, https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap-300x144.png 300w, https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap-768x370.png 768w, https://www.malwaretech.com/wp-content/uploads/2016/10/MiraiMap-1024x493.png 1024w" sizes="(max-width: 260px) 100vw, 260px" /> </a>
+</div>
+<div class="label">
+<div class="row label-row">
+<div class="col-sm-9 col-xs-9 label-column no-padding">
+<span>Uncategorized</span>
+</div>
+<div class="col-sm-3 col-xs-3 no-padding">
+<div class="comments">
+<i class="fa fa-comments comments-icon"></i>
+<span class="comments-no">1</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relatednews-post-details">
+<div class="relatednews-post-title">
+<h5><b><a href="https://www.malwaretech.com/2016/10/mapping-mirai-a-botnet-case-study.html">Mapping Mirai: A Botnet Case Study</a></b></h5>
+</div>
+<div class="relatednews-post-news">
+<p>Mirai is a piece of malware designed to hijack busybox systems (commonly used on IoT devices) in order to perform DDoS attacks, it&#8217;s also the bot used in the 620 Gbps DDoS attack on Brian Kreb&#8217;s blog and the 1.1 Tbps attack on OVH a few days later. Although Mirai isn&#8217;t even close to &hellip; </p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-sm-4">
+<div class="relatednews-post-panel">
+<div class="label-img">
+<div class="relatednews-post-image">
+<a href="https://www.malwaretech.com/2016/09/dridex-returns-to-the-uk-with-updated-ttps.html">
+<img width="204" height="160" src="https://www.malwaretech.com/wp-content/uploads/2016/09/WordDocument.png" class="attachment-imnews-related-thumbnail size-imnews-related-thumbnail wp-post-image" alt="" loading="lazy" srcset="https://www.malwaretech.com/wp-content/uploads/2016/09/WordDocument.png 814w, https://www.malwaretech.com/wp-content/uploads/2016/09/WordDocument-300x235.png 300w, https://www.malwaretech.com/wp-content/uploads/2016/09/WordDocument-768x601.png 768w" sizes="(max-width: 204px) 100vw, 204px" /> </a>
+</div>
+<div class="label">
+<div class="row label-row">
+<div class="col-sm-9 col-xs-9 label-column no-padding">
+<span>Uncategorized</span>
+</div>
+<div class="col-sm-3 col-xs-3 no-padding">
+<div class="comments">
+<i class="fa fa-comments comments-icon"></i>
+<span class="comments-no">1</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="relatednews-post-details">
+<div class="relatednews-post-title">
+<h5><b><a href="https://www.malwaretech.com/2016/09/dridex-returns-to-the-uk-with-updated-ttps.html">Dridex Returns to the UK With Updated TTPs</a></b></h5>
+</div>
+<div class="relatednews-post-news">
+<p>With the exception of a few unconfirmed reports of Dridex targeting Baltic countries (which doesn&#8217;t make much sense economically), infection campaigns have ceased since mid August when Dridex briefly resumed spreading to propagate multiple new botnets aimed at Switzerland. This morning a friend of mine, Liam, reported receiving a malicious email which unusually didn&#8217;t &hellip; </p>
+</div>
+</div>
+</div>
+</div>
+</div> </div>
+</div>
+</div>
+<div class="col-sm-3">
+<div class="side-area">
+<aside class="side-area-post"><aside class="side-area-post">
+<div class="search-box">
+<div class="row">
+<div class="col-sm-12">
+<form role="search" method="get" id="searchform" class="searchform" action="https://www.malwaretech.com/">
+<div class="input-group search-box-input">
+<input type="text" value="" name="s" id="s" class="form-control search-box-form" placeholder="" />
+<span class="input-group-btn search-button-span">
+<button class="btn btn-default search-button" type="submit"><i class="fa fa-search"></i></button>
+</span>
+</div>
+</form>
+</div>
+</div>
+</div>
+</aside></aside><aside class="side-area-post"> <div class="textwidget"><p><script src="https://apis.google.com/js/platform.js"></script></p>
+<div class="g-ytsubscribe" data-channelid="UCLDnEn-TxejaDB8qm2AUhHQ" data-layout="full" data-count="default"></div>
+</div>
+</aside><aside class="side-area-post"><div class="side-area-heading"><h4><b>Stay Connected</b></h4></div> <div class="textwidget"><ul style="padding-left: 0px;">
+<a href="https://twitter.com/MalwareTechBlog">
+<img alt="Twitter" border="0" src="/wp-content/themes/mt/includes/images/twitter.png" title="Twitter">
+</a>
+<a href="https://youtube.com/c/MalwareTechBlog">
+<img alt="Youtube" border="0" src="/wp-content/themes/mt/includes/images/youtube.png" title="Youtube">
+</a>
+<a href="https://twitch.tv/MalwareTechBlog">
+<img alt="Twitch" border="0" src="/wp-content/themes/mt/includes/images/twitch.png" title="Twitch">
+</a>
+<a href="https://discord.gg/4tUrsPu">
+<img alt="Discord" border="0" src="/wp-content/themes/mt/includes/images/discord.png" title="Discord">
+</a>
+<a href="https://www.instagram.com/malwaretech/">
+<img alt="Instagram" border="0" src="/wp-content/themes/mt/includes/images/instagram2.png" title="Instagram">
+</a>
+<a href="/feed/">
+<img alt="RSS" border="0" src="/wp-content/themes/mt/includes/images/rss.png" title="RSS">
+</a>
+</ul></div>
+</aside><aside class="side-area-post"><div class="side-area-heading"><h4><b>Donations</b></h4></div> <div class="textwidget"><div style="display: block;"></div>
+<p><a href="https://www.patreon.com/bePatron?u=8204812"><img src="/wp-content/themes/mt/includes/images/become_a_patron_button.png" /></a></p>
+<div id="cd437" style="float: left;"></div>
+<div id="cd136" style="float: left;"></div>
+<div id="cd868" style="float: left;"></div>
+<p><script>
+  !function(c){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.onload=c,t.src="//malwaretech.com/wp-content/plugins/cryptodonate/widget.js";var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}(function(){
+    Fr.loadCD("cd437", {
+      coin: "bitcoin",
+      address: "1Ma1WArEsGDkvnLHJQiAKkpARZYwC4tMqg",
+      buttonClass: "",
+      dialogClass: "",
+    });
+  });
+</script><br />
+<script>
+  !function(c){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.onload=c,t.src="//malwaretech.com/wp-content/plugins/cryptodonate/widget.js";var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}(function(){
+    Fr.loadCD("cd136", {
+      coin: "ethereum",
+      address: "0xf9b77ee1a4770977962322ec16445adbe66e39c5",
+      buttonClass: "",
+      dialogClass: "",
+    });
+  });
+</script><br />
+<script>
+  !function(c){var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.onload=c,t.src="//malwaretech.com/wp-content/plugins/cryptodonate/widget.js";var e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}(function(){
+    Fr.loadCD("cd868", {
+      coin: "litecoin",
+      address: "LfLU4V55KXWvpp358EVXe1MtKvM8CtQgXr",
+      buttonClass: "",
+      dialogClass: "",
+    });
+  });
+</script><br /></p>
+</div>
+</aside><aside class="side-area-post"><div class="side-area-heading"><h4><b>Categories</b></h4></div> <ul class="categories">
+<li class="cat-item cat-item-8"><a href="https://www.malwaretech.com/category/malware-analysis">Malware Analysis<span class="news-numbers">4</span></a>
+<li class="cat-item cat-item-105"><a href="https://www.malwaretech.com/category/opinions">Opinions<span class="news-numbers">3</span></a>
+<li class="cat-item cat-item-102"><a href="https://www.malwaretech.com/category/stories">Personal Stories<span class="news-numbers">2</span></a>
+<li class="cat-item cat-item-103"><a href="https://www.malwaretech.com/category/reverse-engineering">Reverse Engineering<span class="news-numbers">1</span></a>
+<li class="cat-item cat-item-91"><a href="https://www.malwaretech.com/category/threat-intelligence">Threat Intelligence<span class="news-numbers">5</span></a>
+<li class="cat-item cat-item-1"><a href="https://www.malwaretech.com/category/uncategorized">Uncategorized<span class="news-numbers">83</span></a>
+<li class="cat-item cat-item-85"><a href="https://www.malwaretech.com/category/vulnerability-research">Vulnerability Research<span class="news-numbers">7</span></a>
+</ul>
+</aside> </div>
+</div> </div>
+</div>
+<footer class="widget-footer">
+<div class="container">
+<div class="widget-footer-row">
+<div class="row">
+</div>
+</div>
+</div>
+</footer>
+<footer class="menu-footer">
+<div class="container">
+<div class="menu-footer-row">
+<div class="row">
+<div class="col-sm-4">
+<div class="footer-copyrights">
+</div>
+</div>
+<div class="col-sm-4">
+<div class="footer-social-icons">
+</div>
+</div>
+<div class="col-sm-4">
+<div class="footer-copyrights">
+</div>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<button id="responsive-menu-button" tabindex="1" class="responsive-menu-button responsive-menu-boring
+         responsive-menu-accessible" type="button" aria-label="Menu">
+<span class="responsive-menu-box">
+<span class="responsive-menu-inner"></span>
+</span>
+</button><div id="responsive-menu-container" class="slide-left">
+<div id="responsive-menu-wrapper" role="navigation" aria-label="menu-1">
+<ul id="responsive-menu" role="menubar" aria-label="menu-1"><li id="responsive-menu-item-114" class=" menu-item menu-item-type-custom menu-item-object-custom responsive-menu-item" role="none"><a href="/" class="responsive-menu-item-link" tabindex="1" role="menuitem"><i class="fa fa-home"></i></a></li><li id="responsive-menu-item-2357" class=" menu-item menu-item-type-custom menu-item-object-custom responsive-menu-item" role="none"><a href="https://malwaretech-podcast.simplecast.com/" class="responsive-menu-item-link" tabindex="1" role="menuitem">Podcast</a></li><li id="responsive-menu-item-1805" class=" menu-item menu-item-type-custom menu-item-object-custom responsive-menu-item" role="none"><a href="https://discord.gg/4tUrsPu" class="responsive-menu-item-link" tabindex="1" role="menuitem">Discord</a></li><li id="responsive-menu-item-2325" class=" menu-item menu-item-type-custom menu-item-object-custom responsive-menu-item" role="none"><a href="http://malwaretech.com/challenges" class="responsive-menu-item-link" tabindex="1" role="menuitem">Challenges</a></li><li id="responsive-menu-item-1311" class=" menu-item menu-item-type-post_type menu-item-object-page responsive-menu-item" role="none"><a href="https://www.malwaretech.com/contact" class="responsive-menu-item-link" tabindex="1" role="menuitem">Contact</a></li></ul> <div id="responsive-menu-search-box">
+<form action="https://www.malwaretech.com" class="responsive-menu-search-form" role="search">
+<input type="search" name="s" title="Search" tabindex="1" placeholder="Search" class="responsive-menu-search-box">
+</form>
+</div> <div id="responsive-menu-additional-content"></div> </div>
+</div>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=7.4.4' id='wp-polyfill-js'></script>
+<script type='text/javascript' id='wp-polyfill-js-after'>
+( 'fetch' in window ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-fetch.min.js?ver=3.0.0"></scr' + 'ipt>' );( document.contains ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-node-contains.min.js?ver=3.42.0"></scr' + 'ipt>' );( window.DOMRect ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-dom-rect.min.js?ver=3.42.0"></scr' + 'ipt>' );( window.URL && window.URL.prototype && window.URLSearchParams ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-url.min.js?ver=3.6.4"></scr' + 'ipt>' );( window.FormData && window.FormData.prototype.keys ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-formdata.min.js?ver=3.0.12"></scr' + 'ipt>' );( Element.prototype.matches && Element.prototype.closest ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-element-closest.min.js?ver=2.0.2"></scr' + 'ipt>' );( 'objectFit' in document.documentElement.style ) || document.write( '<script src="https://www.malwaretech.com/wp-includes/js/dist/vendor/wp-polyfill-object-fit.min.js?ver=2.3.4"></scr' + 'ipt>' );
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/hooks.min.js?ver=50e23bed88bcb9e6e14023e9961698c1' id='wp-hooks-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/i18n.min.js?ver=db9a9a37da262883343e941c3731bc67' id='wp-i18n-js'></script>
+<script type='text/javascript' id='wp-i18n-js-after'>
+wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/vendor/lodash.min.js?ver=4.17.19' id='lodash-js'></script>
+<script type='text/javascript' id='lodash-js-after'>
+window.lodash = _.noConflict();
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/url.min.js?ver=0ac7e0472c46121366e7ce07244be1ac' id='wp-url-js'></script>
+<script type='text/javascript' id='wp-api-fetch-js-translations'>
+( function( domain, translations ) {
+	var localeData = translations.locale_data[ domain ] || translations.locale_data.messages;
+	localeData[""].domain = domain;
+	wp.i18n.setLocaleData( localeData, domain );
+} )( "default", { "locale_data": { "messages": { "": {} } } } );
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/dist/api-fetch.min.js?ver=a783d1f442d2abefc7d6dbd156a44561' id='wp-api-fetch-js'></script>
+<script type='text/javascript' id='wp-api-fetch-js-after'>
+wp.apiFetch.use( wp.apiFetch.createRootURLMiddleware( "https://www.malwaretech.com/wp-json/" ) );
+wp.apiFetch.nonceMiddleware = wp.apiFetch.createNonceMiddleware( "0a08de24da" );
+wp.apiFetch.use( wp.apiFetch.nonceMiddleware );
+wp.apiFetch.use( wp.apiFetch.mediaUploadMiddleware );
+wp.apiFetch.nonceEndpoint = "https://www.malwaretech.com/wp-admin/admin-ajax.php?action=rest-nonce";
+</script>
+<script type='text/javascript' id='contact-form-7-js-extra'>
+/* <![CDATA[ */
+var wpcf7 = [];
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/plugins/contact-form-7/includes/js/index.js?ver=5.4' id='contact-form-7-js'></script>
+<script type='text/javascript' id='disqus_count-js-extra'>
+/* <![CDATA[ */
+var countVars = {"disqusShortname":"malwaretech2"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/plugins/disqus-comment-system/public/js/comment_count.js?ver=3.0.21' id='disqus_count-js'></script>
+<script type='text/javascript' id='disqus_embed-js-extra'>
+/* <![CDATA[ */
+var embedVars = {"disqusConfig":{"integration":"wordpress 3.0.21"},"disqusIdentifier":"789 http:\/\/t4wej5.malwaretech.com\/2014\/11\/virtual-file-systems-for-beginners.html","disqusShortname":"malwaretech2","disqusTitle":"Virtual File Systems for Beginners","disqusUrl":"https:\/\/www.malwaretech.com\/2014\/11\/virtual-file-systems-for-beginners.html","postId":"789"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/plugins/disqus-comment-system/public/js/comment_embed.js?ver=3.0.21' id='disqus_embed-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/comment-reply.min.js?ver=5.7.2' id='comment-reply-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/bootstrap.min.js?ver=5.7.2' id='bootstrap-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/owl.carousel.min.js?ver=5.7.2' id='owl-carousel-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/stellarnav.js?ver=5.7.2' id='stellarnav-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/jquery.simplyscroll.js?ver=5.7.2' id='jquery-simplyscroll-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-content/themes/imnewspro/js/custom.js?ver=5.7.2' id='imnews-custom-js'></script>
+<script type='text/javascript' src='https://www.malwaretech.com/wp-includes/js/wp-embed.min.js?ver=5.7.2' id='wp-embed-js'></script>
+</body>
+</html>
