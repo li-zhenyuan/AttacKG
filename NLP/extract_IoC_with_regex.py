@@ -15,7 +15,7 @@ class IoC_identifier:
             r"\b([a-f0-9]{40}|[A-F0-9]{40})\b",
             r"\b([a-f0-9]{64}|[A-F0-9]{64})\b"
         ],
-        "FilePath": [r"\b[A-Z]:\\[A-Za-z0-9-_\.\\]+\b"],
+        "FilePath": [r"\b[A-Z]:\\[A-Za-z0-9-_\.\\]+\b"], # %ALLUSERPROFILE%\Application Data\Microsoft\MediaPlayer\
         "FileName": [r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|sys|htm|html|js|jar|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
         "Vulnerability": [r"\b(CVE\-[0-9]{4}\-[0-9]{4,6})\b"],
         "Registry": [r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE)\\[\\A-Za-z0-9-_]+)\b", r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE)\\\\[\\\\A-Za-z0-9-_]+)\b"],
