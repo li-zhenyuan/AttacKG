@@ -1,6 +1,8 @@
 import re
 import configparser
 import json
+import spacy
+from spacy import Matcher
 
 
 class IoC_identifier:
@@ -15,10 +17,36 @@ class IoC_identifier:
             r"\b([a-f0-9]{40}|[A-F0-9]{40})\b",
             r"\b([a-f0-9]{64}|[A-F0-9]{64})\b"
         ],
-        "FilePath": [r"\b[A-Z]:\\[A-Za-z0-9-_\.\\]+\b"], # %ALLUSERPROFILE%\Application Data\Microsoft\MediaPlayer\
-        "FileName": [r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|sys|htm|html|js|jar|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
+        "FilePath": [
+            r"\b[A-Z]:\\[A-Za-z0-9-_\.\\]+\b",
+            # r"[~]*/[A-Za-z0-9-_\./]{2,}\b"
+            r"[%A-Za-z0-9]*\\[A-Za-z0-9-_\.\\%]+\b"
+        ], # %ALLUSERPROFILE%\Application Data\Microsoft\MediaPlayer\
+        # "FileName": [r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|sys|htm|html|js|jar|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
+        "DocFile": [r"\b([A-Za-z0-9-_\.]+\.(sys|htm|html|js|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
+        "ExeFile": [r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|jar))\b"],
         "Vulnerability": [r"\b(CVE\-[0-9]{4}\-[0-9]{4,6})\b"],
-        "Registry": [r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE)\\[\\A-Za-z0-9-_]+)\b", r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE)\\\\[\\\\A-Za-z0-9-_]+)\b"],
+        "Registry": [
+            r"\b((KCU|HKLM|HKCU|HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|SOFTWARE).{0,1}\\[\\A-Za-z0-9-_]+)\b",
+            r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE)\\\\[\\\\A-Za-z0-9-_]+)\b"
+        ],
+        "Arguments": [r"\s[-/\\][0-9a-zA-Z]+\s"]
+    }
+
+    IoC_nl_regex = {
+
+    }
+
+    IoC_replacedWord = {
+        "NetLoc": "network",
+        "E-mail": "email",
+        "FileHash": "file",
+        "DocFile": "document",
+        "ExeFile": "executable",
+        "FilePath": "path",
+        "Vulnerability": "exploit",
+        "Registry": "registry",
+        "Arguments": "argument"
     }
 
     IoC_config_path = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\ioc_pattern.json" # r"/mnt/c/Users/xiaowan/Documents/GitHub/AttacKG/NLP/ioc_pattern.json"
@@ -61,6 +89,12 @@ class IoC_identifier:
                 output = self.IoC_identify(line)
                 write_file.write(output + "\n")
 
+    # def regex_based_ner(self):
+    #     nlp = spacy.load("en_core_web_sm") #en_core_web_lg
+    #     matcher = Matcher(nlp.vocab)
+    #     pattern = [{"TEXT": {"REGEX": "[Ee]mail"}}]
+    #
+    #     pass
 
 if __name__ == '__main__':
     ii = IoC_identifier()
