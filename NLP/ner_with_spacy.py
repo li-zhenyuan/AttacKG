@@ -1,17 +1,25 @@
+#%%
+
+# References:
+# https://towardsdatascience.com/custom-named-entity-recognition-using-spacy-7140ebbb3718
+# https://spacy.io/usage/training#api
+
 import spacy
-from spacy.training import Example
 from spacy import displacy
+from spacy.training import Example
+from spacy.pipeline import EntityRuler
+from spacy.lang.en import English
 import random
 import json
 
-# https://medium.com/@justindavies/training-spacy-ner-models-with-doccano-8d8203e29bfa
-# https://itnext.io/nlp-named-entity-recognition-ner-with-spacy-and-python-dabaf843cab2
-# https://support.prodi.gy/t/updating-training-pipline-of-ner-from-spacy-2-to-spacy-3/3592
-# https://spacy.io/api/example
 
-def read_data_jsonl():
+#%%
+
+def read_labeled_data(path: str = r"/home/zhenyuan/AttacKG/NLP/Doccano/2021-6-1.jsonl") -> list:
+    # labeled_data_path = r"/home/zhenyuan/AttacKG/NLP/Doccano/admin.jsonl"
+    labeled_data_path = path
     labeled_data = []
-    with open(r"/home/zhenyuan/AttacKG/NLP/Doccano/admin.jsonl", "r") as read_file:
+    with open(labeled_data_path, "r") as read_file:
         for line in read_file:
             data = json.loads(line)
             labeled_data.append(data)
@@ -20,66 +28,149 @@ def read_data_jsonl():
     return labeled_data
 
 
-class spacy_ner:
+# split training and testing set
+# training_set = spacy_data[0:19]
+# testing_set = spacy_data[20:-1]
 
-    nlp = spacy.blank("en")
+def convert_data_format(labeled_data: list) -> list:
+    # Data format converting
     spacy_data = []
-    model_location = "/home/zhenyuan/AttacKG/NLP/cti.model"
+    for entry in labeled_data:
+        entities = []
+        for e in entry['label']:
+            entities.append((e[0], e[1], e[2]))
+        try:
+            nlp = spacy.load('en')
+            spacy_data.append(Example.from_dict(nlp.make_doc(entry['data']), {"entities": entities}))
+        except:
+            print("Wrong format: %s!" % entry['data'])
+    return spacy_data
 
-    def convert_jsonl_spacy(self, labeled_data):
-        for entry in labeled_data:
-            entities = []
-            for e in entry['label']:
-                entities.append((e[0], e[1], e[2]))
-            self.spacy_data.append(Example.from_dict(self.nlp.make_doc(entry['data']), {"entities": entities}))
 
-        self.nlp.initialize(lambda: self.spacy_data)
-    # split training and testing set
-    # training_set = spacy_data[0:19]
-    # testing_set = spacy_data[20:-1]
+#%%
 
-    def spacy_training(self):
+class NER_With_Spacy:
+    # nlp = spacy.blank("en")
+    # nlp = spacy.load("en_core_web_sm") # python -m spacy download en_core_web_sm
+
+    model_location = None
+    # model_location = "/home/zhenyuan/AttacKG/NLP/cti.model"
+
+    # ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
+    ner_labels = ["FilePath", "NetLoc", "FileName", "Vulnerability", "Registry", "Attacker", "ExeFile", "DocFIle",
+                  "Service"]
+
+    nlp = None
+    optimizer = None
+
+    def __init__(self, model_location=None):
+        self.model_location = model_location
+        self.create_optimizer()
+
+    def create_optimizer(self):
+        if self.model_location is None:
+            self.nlp = spacy.blank('en')
+            print("---Created Blank 'en' Model!---")
+        else:
+            self.nlp = spacy.load(self.model_location)
+            print("---Load Model: %s!---" % self.model_location)
+
+        if 'ner' not in self.nlp.pipe_names:
+            ner = self.nlp.add_pipe("ner")
+        else:
+            ner = self.nlp.get_pipe("ner")
+        print("---Add Pipe 'ner'!---")
+
+        for label in self.ner_labels:
+            ner.add_label(label)
+
+        if self.model_location is None:
+            self.optimizer = self.nlp.begin_training()
+        else:
+            self.optimizer = ner.create_optimizer()
+        print("---Created Optimizer!---")
+
+    def train_model(self, spacy_data: list, new_model_location="./new_cti.model"):
         # Start training
         print("---Start Training!---")
-
-        ner = self.nlp.add_pipe("ner")
-        ner.add_label("NetLoc")
-        ner.add_label("APTFamily")
-        ner.add_label("ExeFile")
-        ner.add_label("ScriptsFile")
-        ner.add_label("DocumentFile")
-        ner.add_label("E-mail")
-        ner.add_label("Registry")
-        ner.add_label("File")
-        ner.add_label("Vulnerability")
-        ner.add_label("C2C")
-        ner.add_label("SensInfo")
-        ner.add_label("Service")
-
-        self.nlp.begin_training()
+        # new_model_location = "/home/zhenyuan/AttacKG/NLP/new_cti.model"
 
         # Loop
-        for itn in range(4):
-            random.shuffle(self.spacy_data)
-            # losses = ()
+        other_pipes = [pipe for pipe in self.nlp.pipe_names if pipe != 'ner']
+        with self.nlp.disable_pipes(*other_pipes):
+            for itn in range(4):
+                random.shuffle(spacy_data)
+                losses = ()
 
-            # Batch the examples
-            for batch in spacy.util.minibatch(self.spacy_data, size=2):
-                # Update the model
-                self.nlp.update(batch)
-                # print(losses)
+                # Batch the examples
+                for batch in spacy.util.minibatch(spacy_data, size=2):
+                    # Update the model
+                    self.nlp.update(batch, sgd=self.optimizer)  # , drop=0.35, losses=losses
+                    # print('Losses', losses)
 
-        self.nlp.to_disk(self.model_location)
-        print("---Save Model to %s!---" % self.model_location)
+        self.nlp.to_disk(new_model_location)
+        print("---Save Model to %s!---" % new_model_location)
 
-    def test_model(self):
-        example = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
-        doc = self.nlp(example)
+    def test_model(self,
+                   sample: str = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."):
+        # nlp = spacy.load(new_model_location)
+        doc = self.nlp(sample)
         displacy.render(doc, style='ent')
 
+    # https://stackoverflow.com/questions/57667710/using-regex-for-phrase-pattern-in-entityruler
+    patterns = [
+        {"label": "Attacker", "pattern":
+            [{"TEXT": {"REGEX": "APT[A-Za-z0-9-]+"}}
+             ]},
+        {"label": "ExeFile", "pattern":
+            [{"TEXT": {"REGEX": "payload[s]"}},
+             {"TEXT": {"REGEX": "script[s]*"}}
+             ]},
+        {"label": "NetLoc", "pattern":
+            [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}
+             ]}
+    ]
+
+    config = {
+        "phrase_matcher_attr": None,
+        "validate": True,
+        "overwrite_ents": False,
+        "ent_id_sep": "||",
+    }
+
+    def ner_with_regex(self):
+        ruler = self.nlp.add_pipe("entity_ruler", config=self.config)
+        ruler.add_patterns(self.patterns)
+
+        doc = self.nlp("APT3 has used PowerShell on victim systems to download and run payloads after exploitation.")
+        print([(ent.text, ent.label_) for ent in doc.ents])
+
+
+#%%
 
 if __name__ == '__main__':
-    sn = spacy_ner()
-    sn.convert_jsonl_spacy(read_data_jsonl())
-    sn.spacy_training()
-    sn.test_model()
+    ner_model = NER_With_Spacy()
+    labeled_data = read_labeled_data(r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\admin.jsonl")
+    spacy_data = convert_data_format(labeled_data)
+    ner_model.train_model(spacy_data)
+    pass
+
+#%%
+
+sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+
+# nlp = spacy.load("./new_cti.model")
+# doc = ner_model.nlp(sample)
+
+ner_model.ner_with_regex()
+doc = ner_model.nlp(sample)
+
+
+#%%
+
+# from IPython.core.display import display, HTML
+
+# spacy.displacy.serve(doc, style='ent')
+# html = spacy.displacy.render(doc, style='ent', jupyter=True)
+# display(HTML(html))
+# print(HTML(html))
