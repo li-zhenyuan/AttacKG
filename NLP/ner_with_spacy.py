@@ -12,9 +12,11 @@ from spacy.lang.en import English
 import random
 import json
 import sys
+import matplotlib.pyplot as plt
+import networkx
 
 sys.path.append("..")
-from Attack_KG import AttacKG
+from Attack_KG.AttacKG import AttacKG_AG
 
 
 #%%
@@ -156,17 +158,3 @@ if __name__ == '__main__':
     print([(ent.text, ent.label_) for ent in doc.ents])
     sents = [sent for sent in doc.sents]
     pass
-
-
-#%%
-
-
-
-#%%
-
-# from IPython.core.display import display, HTML
-
-# spacy.displacy.serve(doc, style='ent')
-# html = spacy.displacy.render(doc, style='ent', jupyter=True)
-# display(HTML(html))
-# print(HTML(html))
