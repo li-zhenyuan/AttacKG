@@ -1,7 +1,7 @@
 #%%
 
 import spacy
-import networkx
+import networkx as nx
 import re
 from nltk import Tree
 import matplotlib.pyplot as plt
@@ -11,6 +11,8 @@ sys.path.append("..")
 from NLP import ner_with_spacy
 
 #%%
+
+ner_labels = ["NetLoc", "Attacker", "ExeFile", "ScriptsFile", "DocFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
 
 def to_nltk_tree(node):
     if node.n_lefts + node.n_rights > 0:
@@ -51,7 +53,7 @@ class AttacKG_AG:
     edge_sets = {}  # (node_a, node_b) -> confidence score
 
     def construct_AG_from_spacydoc(self, doc):
-        G = networkx.Graph()
+        G = nx.Graph()
 
         node_queue = []
         tvb = ""
@@ -62,15 +64,18 @@ class AttacKG_AG:
         node_queue.append(root)
         while node_queue:
             node = node_queue.pop()
-            print(node)
+            print("@".join([node.text, node.tag_, node.ent_type_]))
             if re.match("VB.*", node.tag_):
                 tvb = node.text
             if re.match("NN.*", node.tag_):
-                if node.ent_type_ != "":
-                    G.add_node(node.text)
+                # if node.ent_type_ != "":
+                if node.ent_type_ in ner_labels:
+                    n = "@".join([node.text,node.ent_type_])
+                    G.add_node(n)
+                    print("--" + node.ent_type_)
                     if tnode != "" and tvb != "":
-                        G.add_edge(tnode, node.text)
-                    tnode = node.text
+                        G.add_edge(tnode, n, action=tvb)
+                    tnode = n
             for child in node.children:
                 node_queue.append(child)
 
@@ -92,27 +97,28 @@ def init_akg_template() -> AttacKG_TG:
 #%%
 
 if __name__ == '__main__':
-    sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+    ner_model = ner_with_spacy.NER_With_Spacy("./new_cti.model")
 
-    ner_model = ner_with_spacy.NER_With_Spacy("en_core_web_sm")
-    # ner_model = NER_With_Spacy()
-    labeled_data = ner_model.read_labeled_data(r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\admin.jsonl")
-    spacy_data = ner_model.convert_data_format(labeled_data)
-    ner_model.train_model(spacy_data)
-
-    # ner_model.nlp.replace_pipe("parser", "parser", source="en_core_web_sm")
-    doc = ner_model.nlp(sample)
-    print([(ent.text, ent.label_) for ent in doc.ents])
-
-    ner_model.ner_with_regex()
-    doc = ner_model.nlp(sample)
-    print([(ent.text, ent.label_) for ent in doc.ents])
-    sents = [sent for sent in doc.sents]
 
 #%%
+
+    sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
+    sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+    sample = "Sandworm Team has delivered malicious Microsoft Office attachments via spearphishing."
+    sample = "Windshift has sent spearphishing emails with attachment to harvest credentials and deliver malware."
+
+    doc = ner_model.parser(sample)
 
     ag = AttacKG_AG()
     G = ag.construct_AG_from_spacydoc(doc)
 
-    networkx.draw_networkx(G)
+    # nx.draw_networkx(G)
+    # plt.show()
+
+    graph_pos = nx.spring_layout(G)
+    nx.draw_networkx_nodes(G, graph_pos, node_size=10, node_color='blue', alpha=0.3)
+    nx.draw_networkx_edges(G, graph_pos)
+    nx.draw_networkx_labels(G, graph_pos, font_size=8, font_family='sans-serif')
+    # edge_labels = nx.get_edge_attributes(G, 'action')
+    # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
     plt.show()

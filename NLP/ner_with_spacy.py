@@ -118,9 +118,14 @@ class NER_With_Spacy:
     # https://python.plainenglish.io/a-closer-look-at-entityruler-in-spacy-rule-based-matching-44d01c43fb6
     patterns = [
         {"label": "Attacker", "pattern": [{"TEXT": {"REGEX": "APT[A-Za-z0-9-]+"}}]},
+        {"label": "Attacker", "pattern": [{"TEXT": {"REGEX": "(T|t)eam"}}]},
         {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "payload[s]*"}}]},
         {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "script[s]*"}}]},
-        {"label": "NetLoc", "pattern": [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}]}
+        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "malware"}}]},
+        {"label": "NetLoc", "pattern": [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}]},
+        {"label": "DocFile", "pattern": [{"TEXT": {"REGEX": "(D|d)ocument[s]*"}}]},
+        {"label": "DocFile", "pattern": [{"TEXT": {"REGEX": "(|c)redential[s]*"}}]},
+        {"label": "DocFile", "pattern": [{"TEXT": {"REGEX": "(A|a)ttachment[s]*"}}]}
     ]
 
     config = {
@@ -137,6 +142,13 @@ class NER_With_Spacy:
         # doc = self.nlp("APT3 has used PowerShell on victim systems to download and run payloads after exploitation.")
         # print([(ent.text, ent.label_) for ent in doc.ents])
 
+    def parser(self, text: str, model_location="./new_cti.model"):
+        self.nlp = spacy.load(model_location)
+        self.ner_with_regex()
+
+        doc = self.nlp(text)
+        return doc
+
 
 #%%
 
@@ -149,7 +161,6 @@ if __name__ == '__main__':
     spacy_data = ner_model.convert_data_format(labeled_data)
     ner_model.train_model(spacy_data)
 
-    # ner_model.nlp.replace_pipe("parser", "parser", source="en_core_web_sm")
     doc = ner_model.nlp(sample)
     print([(ent.text, ent.label_) for ent in doc.ents])
 
