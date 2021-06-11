@@ -1,4 +1,4 @@
-#%%
+# %%
 
 # References:
 # https://towardsdatascience.com/custom-named-entity-recognition-using-spacy-7140ebbb3718
@@ -19,7 +19,7 @@ sys.path.append("..")
 from Attack_KG.AttacKG import AttacKG_AG
 
 
-#%%
+# %%
 
 class NER_With_Spacy:
     # nlp = spacy.blank("en")
@@ -28,7 +28,8 @@ class NER_With_Spacy:
     model_location = None
     # model_location = "/home/zhenyuan/AttacKG/NLP/cti.model"
 
-    ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
+    ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File",
+                  "Vulnerability", "C2C", "SensInfo", "Service"]
     # ner_labels = ["FilePath", "NetLoc", "FileName", "Vulnerability", "Registry", "Attacker", "ExeFile", "DocFIle","Service"]
 
     nlp = None
@@ -150,7 +151,7 @@ class NER_With_Spacy:
         return doc
 
 
-#%%
+# %%
 
 if __name__ == '__main__':
     sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."

@@ -1,4 +1,4 @@
-#%%
+# %%
 
 import spacy
 import networkx as nx
@@ -10,9 +10,11 @@ import sys
 sys.path.append("..")
 from NLP import ner_with_spacy
 
-#%%
+# %%
 
-ner_labels = ["NetLoc", "Attacker", "ExeFile", "ScriptsFile", "DocFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
+ner_labels = ["NetLoc", "Attacker", "ExeFile", "ScriptsFile", "DocFile", "E-mail", "Registry", "File", "Vulnerability",
+              "C2C", "SensInfo", "Service"]
+
 
 def to_nltk_tree(node):
     if node.n_lefts + node.n_rights > 0:
@@ -20,8 +22,10 @@ def to_nltk_tree(node):
     else:
         return node.orth_
 
+
 def tok_format(tok):
-    return "@".join([tok.orth_, tok.tag_, tok.dep_, tok.ent_type_]) #, tok.dep_])
+    return "@".join([tok.orth_, tok.tag_, tok.dep_, tok.ent_type_])  # , tok.dep_])
+
 
 def to_nltk_formatted_tree(node):
     if node.n_lefts + node.n_rights > 0:
@@ -70,7 +74,7 @@ class AttacKG_AG:
             if re.match("NN.*", node.tag_):
                 # if node.ent_type_ != "":
                 if node.ent_type_ in ner_labels:
-                    n = "@".join([node.text,node.ent_type_])
+                    n = "@".join([node.text, node.ent_type_])
                     G.add_node(n)
                     print("--" + node.ent_type_)
                     if tnode != "" and tvb != "":
@@ -94,13 +98,13 @@ def init_akg_template() -> AttacKG_TG:
 
     return akg
 
-#%%
+
+# %%
 
 if __name__ == '__main__':
     ner_model = ner_with_spacy.NER_With_Spacy("./new_cti.model")
 
-
-#%%
+    # %%
 
     sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
     sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
