@@ -9,6 +9,7 @@ import sys
 
 sys.path.append("..")
 from NLP import ner_with_spacy
+from NLP.extract_text_from_file import *
 
 # %%
 
@@ -56,15 +57,18 @@ class AttacKG_AG:
     nodes = {}  # node representation -> confidence score
     edge_sets = {}  # (node_a, node_b) -> confidence score
 
-    def construct_AG_from_spacydoc(self, doc):
-        G = nx.Graph()
+    def construct_AG_from_spacydoc(self, sentence, G = None):
+        if G == None:
+            G = nx.Graph()
 
         node_queue = []
         tvb = ""
         tnode = ""
 
-        sents = [sent for sent in doc.sents]
-        root = sents[0].root
+        # sents = [sent for sent in doc.sents]
+        # root = sents[0].root
+        root = sentence.root
+
         node_queue.append(root)
         while node_queue:
             node = node_queue.pop()
@@ -104,7 +108,7 @@ def init_akg_template() -> AttacKG_TG:
 if __name__ == '__main__':
     ner_model = ner_with_spacy.NER_With_Spacy("./new_cti.model")
 
-    # %%
+# %%
 
     sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
     sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
@@ -115,6 +119,23 @@ if __name__ == '__main__':
 
     ag = AttacKG_AG()
     G = ag.construct_AG_from_spacydoc(doc)
+
+# %%
+
+    file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
+    text = read_html(file)
+
+    # sentences = spacy_stentencizer(text, "./new_cti.model")
+    doc = ner_model.parser(text)
+
+    G = None
+    for sentence in doc.sents:
+        try:
+            G = ag.construct_AG_from_spacydoc(sentence, G)
+        except:
+            print("---No Root!---")
+
+# %%
 
     # nx.draw_networkx(G)
     # plt.show()
