@@ -49,7 +49,7 @@ class IoC_identifier:
         "Arguments": "argument"
     }
 
-    IoC_config_path = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\ioc_pattern.json" # r"/mnt/c/Users/xiaowan/Documents/GitHub/AttacKG/NLP/ioc_pattern.json"
+    IoC_config_path = r"/Archive/NLP/ioc_pattern.json"  # r"/mnt/c/Users/xiaowan/Documents/GitHub/AttacKG/NLP/ioc_pattern.json"
 
     # def read_IoC_config(self, path=IoC_config_path):
     #     config = configparser.ConfigParser()

@@ -23,6 +23,10 @@ def read_pdf(file):
 
 # %%
 
+# ToDo: Try beautifulsoup-based (or chrome-based) text extraction
+# https://www.nhooo.com/note/qa3hxo.html
+# https://www.shuzhiduo.com/A/8Bz8PNpXzx/
+
 def read_html(file) -> str:
     with open(file, 'rb') as html_content:
         html = str(html_content.read())
