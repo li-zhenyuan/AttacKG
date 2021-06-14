@@ -73,8 +73,8 @@ class AttacKG_AG:
 
     techniques = {}  # technique name -> [node_list]
 
-    def draw_AG(G: nx.Graph, output_file=None) -> graphviz.Graph:
-        dot = graphviz.Graph()
+    def draw_AG(G: nx.Graph, clusters: dict=None, output_file: str=None) -> graphviz.Graph:
+        dot = graphviz.Graph('G', filename=output_file)
 
         for node in G.nodes:
             print(node)
@@ -97,8 +97,19 @@ class AttacKG_AG:
         for edge in G.edges:
             dot.edge(edge[0], edge[1])
 
-        if output_file is not None:
-            dot.render(output_file, view=True)
+
+         # https://graphviz.readthedocs.io/en/stable/examples.html
+        if clusters is not None:
+            for key, value in clusters.items():
+                with dot.subgraph(name=("cluster_" + key)) as t:
+                    t.attr(style='filled', color='lightgrey')
+                    t.attr(label=key)
+                    for tech in value:
+                        t.node(tech)
+
+        # if output_file is not None:
+        #     dot.render(output_file, view=True)
+        # dot.view()
 
         return dot
 
