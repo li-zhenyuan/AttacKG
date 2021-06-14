@@ -21,16 +21,15 @@ from Attack_KG.AttacKG import AttacKG_AG
 
 # %%
 
+ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
+# ner_labels = ["FilePath", "NetLoc", "FileName", "Vulnerability", "Registry", "Attacker", "ExeFile", "DocFIle","Service"]
+
 class NER_With_Spacy:
     # nlp = spacy.blank("en")
     # nlp = spacy.load("en_core_web_sm") # python -m spacy download en_core_web_sm
 
     model_location = None
     # model_location = "/home/zhenyuan/AttacKG/NLP/cti.model"
-
-    ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File",
-                  "Vulnerability", "C2C", "SensInfo", "Service"]
-    # ner_labels = ["FilePath", "NetLoc", "FileName", "Vulnerability", "Registry", "Attacker", "ExeFile", "DocFIle","Service"]
 
     nlp = None
     optimizer = None
@@ -79,7 +78,7 @@ class NER_With_Spacy:
             ner = self.nlp.get_pipe("ner")
         print("---Add Pipe 'ner'!---")
 
-        for label in self.ner_labels:
+        for label in ner_labels:
             ner.add_label(label)
 
         if self.model_location is None:

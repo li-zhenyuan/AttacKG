@@ -2,20 +2,19 @@
 
 import spacy
 import networkx as nx
+import graphviz
 import re
 from nltk import Tree
 import matplotlib.pyplot as plt
 import sys
+import os
 
-sys.path.append("..")
-from NLP import ner_with_spacy
+# sys.path.append("..")
+from NLP.ner_with_spacy import *
 from NLP.extract_text_from_file import *
 
+
 # %%
-
-ner_labels = ["NetLoc", "Attacker", "ExeFile", "ScriptsFile", "DocFile", "E-mail", "Registry", "File", "Vulnerability",
-              "C2C", "SensInfo", "Service"]
-
 
 def to_nltk_tree(node):
     if node.n_lefts + node.n_rights > 0:
@@ -35,27 +34,73 @@ def to_nltk_formatted_tree(node):
         return tok_format(node)
 
 
-class AttacKG_Node:
-    node_summary = ""
+# class AttacKG_Node:
+#     node_summary = ""
+#
+#     regexs = []
+#     descriptions = []
+#
+#     # ToDo: Check if one node belong to this type.
+#     def node_check(self, node: dict) -> float:
+#         similarity = 0.0
+#         return similarity
+#
+#     # ToDo: update node representation
+#     def node_update(self, node: dict):
+#         pass
 
-    regexs = []
-    descriptions = []
-
-    # ToDo: Check if one node belong to this type.
-    def node_check(self, node: dict) -> float:
-        similarity = 0.0
-        return similarity
-
-    # ToDo: update node representation
-    def node_update(self, node: dict):
-        pass
-
+# https://graphviz.org/doc/info/shapes.html
+node_shape = {
+    "NetLoc": "diamond",
+    "E-mail": "diamond",
+    "C2C": "diamond",
+    "APTFamily": "doublecircle",
+    "ExeFile": "oval",
+    "ScriptsFile": "oval",
+    "DocumentFile": "rectangle",
+    "File": "rectangle",
+    "Registry": "parallelogram",
+    "Vulnerability": "trapezium",
+    "Service": "trapezium",
+    "SensInfo": "invhouse"
+}
 
 class AttacKG_AG:
-    technique_name = ""
+    AG: nx.Graph
 
     nodes = {}  # node representation -> confidence score
-    edge_sets = {}  # (node_a, node_b) -> confidence score
+    edges = {}  # (node_a, node_b) -> confidence score
+
+    techniques = {}  # technique name -> [node_list]
+
+    def draw_AG(G: nx.Graph, output_file=None) -> graphviz.Graph:
+        dot = graphviz.Graph()
+
+        for node in G.nodes:
+            print(node)
+
+            nlp = ""
+            regex = ""
+            try:
+                nlp = G.nodes[node]["nlp"]
+            except:
+                pass
+
+            try:
+                regex = G.nodes[node]["regex"]
+            except:
+                pass
+            node_label = "\n-\n".join([nlp, regex])
+
+            dot.node(node, label=node_label, shape=node_shape[G.nodes[node]["type"]])
+
+        for edge in G.edges:
+            dot.edge(edge[0], edge[1])
+
+        if output_file is not None:
+            dot.render(output_file, view=True)
+
+        return dot
 
     def construct_AG_from_spacydoc(self, sentence, G = None):
         if G == None:
@@ -69,6 +114,7 @@ class AttacKG_AG:
         # root = sents[0].root
         root = sentence.root
 
+        # FIXME: Wrong relationships
         node_queue.append(root)
         while node_queue:
             node = node_queue.pop()
@@ -89,24 +135,28 @@ class AttacKG_AG:
 
         return G
 
+    def AG_matching(self, G1: nx.Graph, G2: nx.Graph) -> float:
+        similarity_score = 0.0
 
-class AttacKG_TG:
-    akg_version = 0.1
+        return similarity_score
 
-    t_nodes = []
-    t_edges = {}  # (node_a, node_b) -> (confidence score, connection)
+# class AttacKG_TG:
+#     akg_version = 0.1
+#
+#     t_nodes = []
+#     t_edges = {}  # (node_a, node_b) -> (confidence score, connection)
 
 
-def init_akg_template() -> AttacKG_TG:
-    akg = AttacKG_TG
-
-    return akg
+# def init_akg_template() -> AttacKG_TG:
+#     akg = AttacKG_TG
+#
+#     return akg
 
 
 # %%
 
 if __name__ == '__main__':
-    ner_model = ner_with_spacy.NER_With_Spacy("./new_cti.model")
+    ner_model = NER_With_Spacy("./new_cti.model")
 
 # %%
 
@@ -147,3 +197,7 @@ if __name__ == '__main__':
     # edge_labels = nx.get_edge_attributes(G, 'action')
     # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
     plt.show()
+
+# %%
+
+    nx.write_gml(G, os.path.basename(file).split('.')[0] + '.gml')
