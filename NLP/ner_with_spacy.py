@@ -117,15 +117,25 @@ class NER_With_Spacy:
     # https://stackoverflow.com/questions/57667710/using-regex-for-phrase-pattern-in-entityruler
     # https://python.plainenglish.io/a-closer-look-at-entityruler-in-spacy-rule-based-matching-44d01c43fb6
     patterns = [
-        {"label": "Attacker", "pattern": [{"TEXT": {"REGEX": "APT[A-Za-z0-9-]+"}}]},
-        {"label": "Attacker", "pattern": [{"TEXT": {"REGEX": "(T|t)eam"}}]},
+        {"label": "APTFamily", "pattern": [{"TEXT": {"REGEX": "APT[A-Za-z0-9-]+"}}]},
+        {"label": "APTFamily", "pattern": [{"TEXT": {"REGEX": "(T|t)eam"}}]},
+        {"label": "APTFamily", "pattern": [{"TEXT": {"REGEX": "(A|a)ctor[s]*"}}]},
+
         {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "payload[s]*"}}]},
         {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "script[s]*"}}]},
+        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(C|c)ommand[s]*"}}]},
         {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "malware"}}]},
+        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "stager"}}]},
+
+        {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(D|d)ocument[s]*"}}]},
+        {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(|c)redential[s]*"}}]},
+        {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(A|a)ttachment[s]*"}}]},
+
         {"label": "NetLoc", "pattern": [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}]},
-        {"label": "DocFile", "pattern": [{"TEXT": {"REGEX": "(D|d)ocument[s]*"}}]},
-        {"label": "DocFile", "pattern": [{"TEXT": {"REGEX": "(|c)redential[s]*"}}]},
-        {"label": "DocFile", "pattern": [{"TEXT": {"REGEX": "(A|a)ttachment[s]*"}}]}
+
+        {"label": "Service", "pattern": [{"TEXT": {"REGEX": "(T|t)ask[s]*"}}]},
+
+        {"label": "Vulnerability", "pattern": [{"TEXT": {"REGEX": "(E|e)xploit"}}]}
     ]
 
     config = {

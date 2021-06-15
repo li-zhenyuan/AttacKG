@@ -2,6 +2,7 @@
 
 import pdfplumber
 from html2text import html2text
+from bs4 import BeautifulSoup
 import spacy
 import re
 import sys
@@ -23,20 +24,34 @@ def read_pdf(file):
 
 # %%
 
-# ToDo: Try beautifulsoup-based (or chrome-based) text extraction
+# ToDo: Remove special characters with regex
 # https://www.nhooo.com/note/qa3hxo.html
 # https://www.shuzhiduo.com/A/8Bz8PNpXzx/
 
 def read_html(file) -> str:
     with open(file, 'rb') as html_content:
         html = str(html_content.read())
-        print(html)
-        text = html2text(html)
-        print(text)
 
-        return text
-        # spacy_stentencizer(text)
+        # text = html2text(html)
+        soup = BeautifulSoup(html, 'lxml')
+        text = soup.text
 
+        cleartext = clear_text(text)
+
+        return cleartext
+
+def clear_text(text: str) -> str:
+    cleartext = text.replace("\\n", "\n")
+    cleartext = cleartext.replace("\\t", "\t")
+
+    multint = re.compile('[\n]+')
+    cleartext = multint.sub('\n', cleartext)
+
+    # comp = re.compile('[^A-Z^a-z^0-9^\u4e00-\u9fa5]') #[^A-Z^a-z^0-9^\u4e00-\u9fa5]
+    # cleartext = comp.sub('', text)
+
+    print(cleartext)
+    return cleartext
 
 # %%
 

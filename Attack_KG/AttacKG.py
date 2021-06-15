@@ -73,6 +73,11 @@ class AttacKG_AG:
 
     techniques = {}  # technique name -> [node_list]
 
+    def AG_matching(m: dict, n: dict) -> float:
+        similarity = 0.0
+
+        return similarity
+
     def draw_AG(G: nx.Graph, clusters: dict=None, output_file: str=None) -> graphviz.Graph:
         dot = graphviz.Graph('G', filename=output_file)
 
@@ -129,7 +134,7 @@ class AttacKG_AG:
         node_queue.append(root)
         while node_queue:
             node = node_queue.pop()
-            print("@".join([node.text, node.tag_, node.ent_type_]))
+            # print("@".join([node.text, node.tag_, node.ent_type_]))
             if re.match("VB.*", node.tag_):
                 tvb = node.text
             if re.match("NN.*", node.tag_):
@@ -168,18 +173,18 @@ class AttacKG_AG:
 
 if __name__ == '__main__':
     ner_model = NER_With_Spacy("./new_cti.model")
+    ag = AttacKG_AG()
 
 # %%
 
-    sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
-    sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
-    sample = "Sandworm Team has delivered malicious Microsoft Office attachments via spearphishing."
-    sample = "Windshift has sent spearphishing emails with attachment to harvest credentials and deliver malware."
-
-    doc = ner_model.parser(sample)
-
-    ag = AttacKG_AG()
-    G = ag.construct_AG_from_spacydoc(doc)
+    # sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
+    # sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+    # sample = "Sandworm Team has delivered malicious Microsoft Office attachments via spearphishing."
+    # sample = "Windshift has sent spearphishing emails with attachment to harvest credentials and deliver malware."
+    #
+    # doc = ner_model.parser(sample)
+    #
+    # G = ag.construct_AG_from_spacydoc(doc)
 
 # %%
 
