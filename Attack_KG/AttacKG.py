@@ -33,6 +33,21 @@ def to_nltk_formatted_tree(node):
     else:
         return tok_format(node)
 
+# %%
+
+def view_graph(G):
+    # nx.draw_networkx(G)
+    # plt.show()
+
+    graph_pos = nx.spring_layout(G)
+    nx.draw_networkx_nodes(G, graph_pos, node_size=10, node_color='blue', alpha=0.3)
+    nx.draw_networkx_edges(G, graph_pos)
+    nx.draw_networkx_labels(G, graph_pos, font_size=8, font_family='sans-serif')
+    # edge_labels = nx.get_edge_attributes(G, 'action')
+    # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
+    plt.show()
+
+# %%
 
 # class AttacKG_Node:
 #     node_summary = ""
@@ -64,6 +79,8 @@ node_shape = {
     "Service": "trapezium",
     "SensInfo": "invhouse"
 }
+
+# %%
 
 class AttacKG_AG:
     AG: nx.Graph
@@ -118,7 +135,13 @@ class AttacKG_AG:
 
         return dot
 
-    def construct_AG_from_spacydoc(self, sentence, G = None):
+    def construct_AG_from_spacydoc(self, doc, G = None):
+        for sentence in doc.sents:
+            G = self.construct_AG_from_spacysent(sentence, G)
+
+        return G
+
+    def construct_AG_from_spacysent(self, sentence, G = None):
         if G == None:
             G = nx.Graph()
 
@@ -141,7 +164,8 @@ class AttacKG_AG:
                 # if node.ent_type_ != "":
                 if node.ent_type_ in ner_labels:
                     n = "@".join([node.text, node.ent_type_])
-                    G.add_node(n)
+                    G.add_node(n, type=node.ent_type_, nlp=node.text)
+
                     print("--" + node.ent_type_)
                     if tnode != "" and tvb != "":
                         G.add_edge(tnode, n, action=tvb)
@@ -183,7 +207,6 @@ if __name__ == '__main__':
     # sample = "Windshift has sent spearphishing emails with attachment to harvest credentials and deliver malware."
     #
     # doc = ner_model.parser(sample)
-    #
     # G = ag.construct_AG_from_spacydoc(doc)
 
 # %%
@@ -194,12 +217,14 @@ if __name__ == '__main__':
     # sentences = spacy_stentencizer(text, "./new_cti.model")
     doc = ner_model.parser(text)
 
-    G = None
-    for sentence in doc.sents:
-        try:
-            G = ag.construct_AG_from_spacydoc(sentence, G)
-        except:
-            print("---No Root!---")
+    G = ag.construct_AG_from_spacydoc(doc)
+
+    # G = None
+    # for sentence in doc.sents:
+    #     try:
+    #         G = ag.construct_AG_from_spacydoc(sentence, G)
+    #     except:
+    #         print("---No Root!---")
 
 # %%
 
@@ -217,3 +242,14 @@ if __name__ == '__main__':
 # %%
 
     nx.write_gml(G, os.path.basename(file).split('.')[0] + '.gml')
+
+#%%
+
+    techniques = {
+        "Scripting": ['script@ExeFile'],
+        "Scripting": ['PowerShell@ExeFile'],
+        "Phishing E-mails": ['actors@APTFamily', 'documents@DocumentFile', 'email@NetLoc']
+    }
+
+    dot = AttacKG_AG.draw_AG(G, clusters=techniques)
+    dot.view()
