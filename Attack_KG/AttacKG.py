@@ -49,21 +49,6 @@ def view_graph(G):
 
 # %%
 
-# class AttacKG_Node:
-#     node_summary = ""
-#
-#     regexs = []
-#     descriptions = []
-#
-#     # ToDo: Check if one node belong to this type.
-#     def node_check(self, node: dict) -> float:
-#         similarity = 0.0
-#         return similarity
-#
-#     # ToDo: update node representation
-#     def node_update(self, node: dict):
-#         pass
-
 # https://graphviz.org/doc/info/shapes.html
 node_shape = {
     "NetLoc": "diamond",
@@ -149,8 +134,6 @@ class AttacKG_AG:
         tvb = ""
         tnode = ""
 
-        # sents = [sent for sent in doc.sents]
-        # root = sents[0].root
         root = sentence.root
 
         # FIXME: Wrong relationships
@@ -180,19 +163,6 @@ class AttacKG_AG:
 
         return similarity_score
 
-# class AttacKG_TG:
-#     akg_version = 0.1
-#
-#     t_nodes = []
-#     t_edges = {}  # (node_a, node_b) -> (confidence score, connection)
-
-
-# def init_akg_template() -> AttacKG_TG:
-#     akg = AttacKG_TG
-#
-#     return akg
-
-
 # %%
 
 if __name__ == '__main__':
@@ -214,30 +184,12 @@ if __name__ == '__main__':
     file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
     text = read_html(file)
 
-    # sentences = spacy_stentencizer(text, "./new_cti.model")
     doc = ner_model.parser(text)
-
     G = ag.construct_AG_from_spacydoc(doc)
-
-    # G = None
-    # for sentence in doc.sents:
-    #     try:
-    #         G = ag.construct_AG_from_spacydoc(sentence, G)
-    #     except:
-    #         print("---No Root!---")
 
 # %%
 
-    # nx.draw_networkx(G)
-    # plt.show()
-
-    graph_pos = nx.spring_layout(G)
-    nx.draw_networkx_nodes(G, graph_pos, node_size=10, node_color='blue', alpha=0.3)
-    nx.draw_networkx_edges(G, graph_pos)
-    nx.draw_networkx_labels(G, graph_pos, font_size=8, font_family='sans-serif')
-    # edge_labels = nx.get_edge_attributes(G, 'action')
-    # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
-    plt.show()
+    view_graph(G)
 
 # %%
 
