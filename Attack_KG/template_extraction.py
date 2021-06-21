@@ -26,20 +26,43 @@ def get_technique_example_dict():
 
     return technique_example_dict
 
+# %%
+
+class Template_node:
+
+    type = ""
+    details = {}
+
+    follow_up_count = 0
+    possible_follow_up = [] # (leaf_node, count)
+
+# %%
+
+class Technique_template:
+
+    node_set = []
+    edge_set = []
+
+    variant_list = []
+
+    def update_template(self, G):
+        pass
+
+
 
 # %%
 
 if __name__ == '__main__':
     technique_example_dict = get_technique_example_dict()
+
+    # '/techniques/T1566/00[1|2|3]',
     phishing_email_example = technique_example_dict[r'/techniques/T1566/001']
 
     ag = AttacKG_AG()
-    # ner_model = NER_With_Spacy("./new_cti.model")
-    ner_model = NER_With_Spacy("en_core_web_sm")
+    ner_model = NER_With_Spacy("./new_cti.model")
+    # ner_model = NER_With_Spacy("en_core_web_sm")
+
     for example in phishing_email_example:
         doc = ner_model.parser(example)
-        # try:
         G = ag.construct_AG_from_spacydoc(doc)
-        # except:
-        #     continue
         view_graph(G)
