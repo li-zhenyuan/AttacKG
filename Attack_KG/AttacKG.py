@@ -12,6 +12,7 @@ import os
 # sys.path.append("..")
 from NLP.ner_with_spacy import *
 from NLP.extract_text_from_file import *
+from template_extraction import *
 
 
 # %%
@@ -33,6 +34,7 @@ def to_nltk_formatted_tree(node):
     else:
         return tok_format(node)
 
+
 # %%
 
 def view_graph(G):
@@ -46,6 +48,7 @@ def view_graph(G):
     # edge_labels = nx.get_edge_attributes(G, 'action')
     # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
     plt.show()
+
 
 # %%
 
@@ -65,6 +68,7 @@ node_shape = {
     "SensInfo": "invhouse"
 }
 
+
 # %%
 
 class AttacKG_AG:
@@ -80,7 +84,7 @@ class AttacKG_AG:
 
         return similarity
 
-    def draw_AG(G: nx.Graph, clusters: dict=None, output_file: str=None) -> graphviz.Graph:
+    def draw_AG(G: nx.Graph, clusters: dict = None, output_file: str = None) -> graphviz.Graph:
         dot = graphviz.Graph('G', filename=output_file)
 
         for node in G.nodes:
@@ -104,8 +108,7 @@ class AttacKG_AG:
         for edge in G.edges:
             dot.edge(edge[0], edge[1])
 
-
-         # https://graphviz.readthedocs.io/en/stable/examples.html
+        # https://graphviz.readthedocs.io/en/stable/examples.html
         if clusters is not None:
             for key, value in clusters.items():
                 with dot.subgraph(name=("cluster_" + key)) as t:
@@ -120,13 +123,28 @@ class AttacKG_AG:
 
         return dot
 
-    def construct_AG_from_spacydoc(self, doc, G = None):
+    def extract_entity_list_from_spacydoc(self, doc):
+        print("---Extract Entity List!---")
+        ent_list = []
+
+        for ent in doc.ents:
+            ent = ent[0]
+            if ent.ent_type_ in ner_labels:
+                n = "@".join([ent.text, ent.ent_type_])
+                print(n)
+                ent_list.append(n)
+
+        return ent_list
+
+    def construct_AG_from_spacydoc(self, doc, G=None):
         for sentence in doc.sents:
             G = self.construct_AG_from_spacysent(sentence, G)
 
         return G
 
-    def construct_AG_from_spacysent(self, sentence, G = None):
+    def construct_AG_from_spacysent(self, sentence, G=None):
+        print("---Construct Attack Graph!---")
+
         if G == None:
             G = nx.Graph()
 
@@ -135,11 +153,13 @@ class AttacKG_AG:
         tnode = ""
 
         root = sentence.root
+        to_nltk_formatted_tree(root).pretty_print()
 
         # FIXME: Wrong relationships
+        # traverse the nltk tree
         node_queue.append(root)
         while node_queue:
-            node = node_queue.pop()
+            node = node_queue.pop(0) # FIXME: First in first out
             # print("@".join([node.text, node.tag_, node.ent_type_]))
             if re.match("VB.*", node.tag_):
                 tvb = node.text
@@ -147,9 +167,10 @@ class AttacKG_AG:
                 # if node.ent_type_ != "":
                 if node.ent_type_ in ner_labels:
                     n = "@".join([node.text, node.ent_type_])
+                    print(n)
                     G.add_node(n, type=node.ent_type_, nlp=node.text)
 
-                    print("--" + node.ent_type_)
+                    # print("--" + node.ent_type_)
                     if tnode != "" and tvb != "":
                         G.add_edge(tnode, n, action=tvb)
                     tnode = n
@@ -163,13 +184,14 @@ class AttacKG_AG:
 
         return similarity_score
 
+
 # %%
 
 if __name__ == '__main__':
     ner_model = NER_With_Spacy("./new_cti.model")
     ag = AttacKG_AG()
 
-# %%
+    # %%
 
     # sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
     # sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
@@ -179,29 +201,30 @@ if __name__ == '__main__':
     # doc = ner_model.parser(sample)
     # G = ag.construct_AG_from_spacydoc(doc)
 
-# %%
+    # %%
 
     file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
     text = read_html(file)
 
     doc = ner_model.parser(text)
-    G = ag.construct_AG_from_spacydoc(doc)
+    # G = ag.construct_AG_from_spacydoc(doc)
+    ent_list = ag.extract_entity_list_from_spacydoc(doc)
 
-# %%
+    # %%
 
-    view_graph(G)
+    # view_graph(G)
 
-# %%
+    # %%
 
-    nx.write_gml(G, os.path.basename(file).split('.')[0] + '.gml')
+    # nx.write_gml(G, os.path.basename(file).split('.')[0] + '.gml')
 
-#%%
+    # %%
 
-    techniques = {
-        "Scripting": ['script@ExeFile'],
-        "Scripting": ['PowerShell@ExeFile'],
-        "Phishing E-mails": ['actors@APTFamily', 'documents@DocumentFile', 'email@NetLoc']
-    }
-
-    dot = AttacKG_AG.draw_AG(G, clusters=techniques)
-    dot.view()
+    # techniques = {
+    #     "Scripting": ['script@ExeFile'],
+    #     "Scripting": ['PowerShell@ExeFile'],
+    #     "Phishing E-mails": ['actors@APTFamily', 'documents@DocumentFile', 'email@NetLoc']
+    # }
+    #
+    # dot = AttacKG_AG.draw_AG(G, clusters=techniques)
+    # dot.view()

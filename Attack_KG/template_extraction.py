@@ -91,7 +91,21 @@ def attack_graph_to_sequence(G):
 
     return template_node_list
 
-def node_list_to_singletree(node_list):
+def nlp_node_list_to_sequence(node_list):
+    template_node_list = []
+
+    for node in node_list:
+        property_list = node.split("@")
+        type = property_list[1]
+        detail = property_list[0]
+
+        template_node = Template_node(type)
+        template_node_list.append(template_node)
+
+    return template_node_list
+
+
+def sequence_to_singletree(node_list):
     # node_list = attack_graph_to_sequence(G)
     print("---Generate singletree!---")
 
@@ -110,12 +124,12 @@ class Technique_template:
 
     root_node = Template_node()
 
-    def update_template(self, G):
+    def update_template(self, node_list):
 
-        node_list = attack_graph_to_sequence(G)  # ToDo: Sort the node_list before build template tree
+        # node_list = attack_graph_to_sequence(G)  # ToDo: Sort the node_list before build template tree
         if len(node_list) == 0:
             return
-        single_tree = node_list_to_singletree(node_list)
+        single_tree = sequence_to_singletree(node_list)
         print(single_tree)
 
         print("---Update template!---")
@@ -134,12 +148,12 @@ if __name__ == '__main__':
     # '/techniques/T1566/00[1|2|3]',
     phishing_email_example = []
 
-    # phishing_email_example += technique_example_dict[r'/techniques/T1566/001']
-    # phishing_email_example += technique_example_dict[r'/techniques/T1566/002']
-    # phishing_email_example += technique_example_dict[r'/techniques/T1566/003']
+    phishing_email_example += technique_example_dict[r'/techniques/T1566/001']
+    phishing_email_example += technique_example_dict[r'/techniques/T1566/002']
+    phishing_email_example += technique_example_dict[r'/techniques/T1566/003']
 
-    phishing_email_example += technique_example_dict[r'/techniques/T1114/001']
-    phishing_email_example += technique_example_dict[r'/techniques/T1114/002']
+    # phishing_email_example += technique_example_dict[r'/techniques/T1114/001']
+    # phishing_email_example += technique_example_dict[r'/techniques/T1114/002']
 
 #%%
 
@@ -153,9 +167,16 @@ if __name__ == '__main__':
         print(example)
 
         doc = ner_model.parser(example)
-        G = ag.construct_AG_from_spacydoc(doc)
+        # displacy.serve(doc, style="dep")
+
+        # G = ag.construct_AG_from_spacydoc(doc)
         # view_graph(G)
 
         # node_list = tt.update_template(G)
-        single_tree = tt.update_template(G)
+        # single_tree = tt.update_template(node_list)
+
+        nlp_node_list = ag.extract_entity_list_from_spacydoc(doc)
+        template_node_list = nlp_node_list_to_sequence(nlp_node_list)
+        single_tree = tt.update_template(template_node_list)
+
         print(tt.root_node)
