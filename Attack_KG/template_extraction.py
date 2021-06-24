@@ -1,6 +1,6 @@
 # %%
 
-from AttacKG import *
+from extract_attack_graph_from_nlp_tree import *
 
 import networkx as nx
 
@@ -98,6 +98,9 @@ def nlp_node_list_to_sequence(node_list):
         property_list = node.split("@")
         type = property_list[1]
         detail = property_list[0]
+
+        if type == "APTFamily":
+            continue
 
         template_node = Template_node(type)
         template_node_list.append(template_node)

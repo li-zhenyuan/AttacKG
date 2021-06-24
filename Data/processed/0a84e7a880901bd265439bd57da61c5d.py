@@ -5,7 +5,7 @@ import sys
 import graphviz
 
 
-from Attack_KG.AttacKG import *
+from Attack_KG.extract_attack_graph_from_nlp_tree import *
 
 
 # %%

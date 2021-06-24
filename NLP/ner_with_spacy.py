@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import networkx
 
 sys.path.append("..")
-from Attack_KG.AttacKG import AttacKG_AG
+from Attack_KG.extract_attack_graph_from_nlp_tree import AttacKG_AG
 
 
 # %%
