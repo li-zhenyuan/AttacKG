@@ -3,7 +3,7 @@ from py2neo import Graph, Node
 from knowledge_graph import mitre_attack_metagraph, kg_visualization
 from reports_crawler.mitre_attack import *
 from reports_crawler.reports_downloader import *
-from NLP.extract_text_from_file import *
+from NLP.reportPreprocess import *
 
 graph = Graph(host='localhost', auth=('neo4j', 'academy-neptune-book-manila-spring-2014'))
 

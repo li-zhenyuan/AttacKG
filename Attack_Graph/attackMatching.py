@@ -1,15 +1,12 @@
-# %%
-
 # Simplified technique matching
 # Attack graph are stored in NetworkX instance
 
-from extract_attack_graph_from_nlp_tree import *
-from template_extraction import *
+from attackGraph import *
+from attackTemplate import *
 
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# %%
 
 def draw_AttacKG(G: nx.MultiDiGraph):
     graph_pos = nx.spring_layout(G)
@@ -24,13 +21,16 @@ AttacKG_node_regex = {}
 AttacKG_node_details = {}
 AttacKG_node_equivalence_groups = {}
 
+
 # ToDo
 def get_regex_similarity(re_a: str, re_b: str) -> float:
     return 0.0
 
+
 # ToDo
 def get_description_similarity(description_a: str, description_b: str) -> float:
     return 0.0
+
 
 # Return a score range from 0 to 10
 def AttacKG_node_matching(node_a, node_b) -> float:
@@ -58,15 +58,15 @@ def AttacKG_node_matching(node_a, node_b) -> float:
 
     return similarity_score
 
+
 def AttacKG_matching():
     pass
 
-# %%
 
 class Technique_identifier:
     technique_variant_tree = {}
 
-    def add_technique_variant_tree(self, template:Technique_template, technique_name="UNKOWN"):
+    def add_technique_variant_tree(self, template:TechniqueTemplate, technique_name="UNKOWN"):
         self.technique_variant_tree[technique_name] = template
 
 

@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
 # %%
 
-    dot = AttacKG_AG.draw_AG(AG, clusters=technique_graphs, output_file="temp")
+    dot = AttacKG_AG.draw_attackgraph(AG, clusters=technique_graphs, output_file="temp")
     dot.view()
 
 # %%

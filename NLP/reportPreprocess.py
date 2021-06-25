@@ -8,7 +8,7 @@ import re
 import sys
 
 # sys.path.append("..")
-# from Attack_KG import AttacKG
+# from Attack_Graph import AttacKG
 
 # %%
 
@@ -40,6 +40,7 @@ def read_html(file) -> str:
 
         return cleartext
 
+
 def clear_text(text: str) -> str:
     cleartext = text.replace("\\n", "\n")
     cleartext = cleartext.replace("\\t", "\t")
@@ -54,6 +55,7 @@ def clear_text(text: str) -> str:
     return cleartext
 
 # %%
+
 
 def spacy_stentencizer(text: str, model: str = 'en_core_web_sm') -> list:
     nlp = spacy.load(model)
@@ -73,6 +75,7 @@ def spacy_stentencizer(text: str, model: str = 'en_core_web_sm') -> list:
 
 ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
 
+
 def list_entity(sentence):
     entity_list = []
 
@@ -86,6 +89,7 @@ def list_entity(sentence):
         print("=============================")
 
 # %%
+
 
 if __name__ == '__main__':
     file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"

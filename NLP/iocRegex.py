@@ -1,5 +1,6 @@
 import re
 import json
+import logging
 
 
 class IoCIdentifier:
@@ -55,8 +56,10 @@ class IoCIdentifier:
             json.dump(self.IoC_regex, json_file)
 
     def ioc_identify(self, sentence: str):
+        logging.info("---Identify IoC with Regex in sentence!---")
+
         output = {"data": sentence, "label": []}
-        print(sentence)
+        logging.debug(sentence)
         for type, regex_list in self.IoC_regex.items():
             for regex in regex_list:
                 while True:
@@ -64,12 +67,12 @@ class IoCIdentifier:
                     if match is None:
                         break
                     else:
-                        print("Type: %s - %s" % (type, match))
+                        logging.debug("Type: %s - %s" % (type, match))
                         output["label"].append([match.span()[0], match.span()[1], type])
                         sentence = re.sub(regex, type, sentence, count=1)
-        print(sentence)
+        logging.debug(sentence)
         output = json.dumps(output)
-        print(output)
+        logging.debug(output)
         return output
 
     def ioc_identify_from_file(self, in_file: str, out_file: str):

@@ -1,5 +1,3 @@
-# %%
-
 # References:
 # https://towardsdatascience.com/custom-named-entity-recognition-using-spacy-7140ebbb3718
 # https://spacy.io/usage/training#api
@@ -7,29 +5,43 @@
 import spacy
 from spacy import displacy
 from spacy.training import Example
-from spacy.pipeline import EntityRuler
-from spacy.lang.en import English
 import random
 import json
-import sys
-import matplotlib.pyplot as plt
-import networkx
+import logging
 
-sys.path.append("..")
-from Attack_KG.extract_attack_graph_from_nlp_tree import AttacKG_AG
+ner_labels = [
+    "NetLoc",
+    "APTFamily",
+    "ExeFile",
+    "ScriptsFile",
+    "DocumentFile",
+    "E-mail",
+    "Registry",
+    "Registry",
+    "File",
+    "Vulnerability",
+    "C2C",
+    "SensInfo",
+    "Service"]
 
 
-# %%
-
-ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
 # ner_labels = ["FilePath", "NetLoc", "FileName", "Vulnerability", "Registry", "Attacker", "ExeFile", "DocFIle","Service"]
 
-class NER_With_Spacy:
-    # nlp = spacy.blank("en")
-    # nlp = spacy.load("en_core_web_sm") # python -m spacy download en_core_web_sm
 
+def read_labeled_data(path: str) -> list:
+    labeled_data_path = path
+    labeled_data = []
+    with open(labeled_data_path, "r") as read_file:
+        for line in read_file:
+            data = json.loads(line)
+            labeled_data.append(data)
+
+    logging.info('---Read Labeled Data(%d)!---' % len(labeled_data))
+    return labeled_data
+
+
+class IoCNer:
     model_location = None
-    # model_location = "/home/zhenyuan/AttacKG/NLP/cti.model"
 
     nlp = None
     optimizer = None
@@ -39,24 +51,12 @@ class NER_With_Spacy:
 
         if self.model_location is None:
             self.nlp = spacy.blank('en')
-            print("---Created Blank 'en' Model!---")
+            logging.info("---Created Blank 'en' Model!---")
         else:
             self.nlp = spacy.load(self.model_location)
-            print("---Load Model: %s!---" % self.model_location)
+            logging.info("---Load Model: %s!---" % self.model_location)
 
         self.create_optimizer()
-
-    def read_labeled_data(self, path: str) -> list:
-        # labeled_data_path = r"/home/zhenyuan/AttacKG/NLP/Doccano/admin.jsonl"
-        labeled_data_path = path
-        labeled_data = []
-        with open(labeled_data_path, "r") as read_file:
-            for line in read_file:
-                data = json.loads(line)
-                labeled_data.append(data)
-
-        print('---Read Labeled Data(%d)!---' % len(labeled_data))
-        return labeled_data
 
     def convert_data_format(self, labeled_data: list) -> list:
         # Data format converting
@@ -68,7 +68,7 @@ class NER_With_Spacy:
             try:
                 spacy_data.append(Example.from_dict(self.nlp.make_doc(entry['data']), {"entities": entities}))
             except:
-                print("Wrong format: %s!" % entry['data'])
+                logging.warning("Wrong format: %s!" % entry['data'])
         return spacy_data
 
     def create_optimizer(self):
@@ -76,7 +76,7 @@ class NER_With_Spacy:
             ner = self.nlp.add_pipe("ner")
         else:
             ner = self.nlp.get_pipe("ner")
-        print("---Add Pipe 'ner'!---")
+        logging.info("---Add Pipe 'ner'!---")
 
         for label in ner_labels:
             ner.add_label(label)
@@ -85,11 +85,10 @@ class NER_With_Spacy:
             self.optimizer = self.nlp.begin_training()
         else:
             self.optimizer = ner.create_optimizer()
-        print("---Created Optimizer!---")
+        logging.info("---Created Optimizer!---")
 
     def train_model(self, spacy_data: list, new_model_location="./new_cti.model"):
-        # Start training
-        print("---Start Training!---")
+        logging.info("---Start Training!---")
         # new_model_location = "/home/zhenyuan/AttacKG/NLP/new_cti.model"
 
         # Loop
@@ -106,7 +105,7 @@ class NER_With_Spacy:
                     # print('Losses', losses)
 
         self.nlp.to_disk(new_model_location)
-        print("---Save Model to %s!---" % new_model_location)
+        logging.info("---Save Model to %s!---" % new_model_location)
 
     def test_model(self,
                    sample: str = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."):
@@ -146,6 +145,8 @@ class NER_With_Spacy:
     }
 
     def ner_with_regex(self):
+        logging.info("---Add Regex-based NER Pipe!---")
+
         ruler = self.nlp.add_pipe("entity_ruler", config=self.config, before="ner")
         ruler.add_patterns(self.patterns)
 
@@ -165,9 +166,8 @@ class NER_With_Spacy:
 if __name__ == '__main__':
     sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
 
-    ner_model = NER_With_Spacy("en_core_web_sm")
-    # ner_model = NER_With_Spacy()
-    labeled_data = ner_model.read_labeled_data(r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\admin.jsonl")
+    ner_model = IoCNer("en_core_web_sm")
+    labeled_data = read_labeled_data(r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\admin.jsonl")
     spacy_data = ner_model.convert_data_format(labeled_data)
     ner_model.train_model(spacy_data)
 
@@ -177,5 +177,3 @@ if __name__ == '__main__':
     ner_model.ner_with_regex()
     doc = ner_model.nlp(sample)
     print([(ent.text, ent.label_) for ent in doc.ents])
-    sents = [sent for sent in doc.sents]
-    pass

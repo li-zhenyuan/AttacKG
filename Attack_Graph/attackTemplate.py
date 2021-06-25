@@ -1,12 +1,10 @@
-# %%
+import logging
 
-from extract_attack_graph_from_nlp_tree import *
+from attackGraph import *
 
 import networkx as nx
 import pickle
 
-
-# %%
 
 def get_technique_example_dict():
     G = nx.read_gml(r'C:\Users\xiaowan\Documents\GitHub\AttacKG\Mitre_TTPs\Tactic_Technique_Reference_Example.gml')
@@ -27,17 +25,16 @@ def get_technique_example_dict():
 
     return technique_example_dict
 
-# %%
 
-class Template_node:
+class TemplateNode:
 
     type = ""
     details = {}
 
     follow_up_count = 0
-    possible_follow_up = [] # [leaf_node, count]
+    possible_follow_up = []  # [leaf_node, count]
 
-    def __init__(self, type = "APTFamily"):
+    def __init__(self, type="APTFamily"):
         self.type = type
         self.follow_up_count = 0
         self.possible_follow_up = []
@@ -50,8 +47,7 @@ class Template_node:
 
     def add_follow_up(self, single_tree):
         self.follow_up_count += 1
-        print("--Add {} to {}".format(single_tree.type, self.type))
-
+        logging.debug("--Add {} to {}".format(single_tree.type, self.type))
 
         for i in range(0, len(self.possible_follow_up)):
             f, count = self.possible_follow_up[i]
@@ -67,7 +63,7 @@ class Template_node:
         self.possible_follow_up.append([single_tree, 1])
 
 
-def node_similarity(n: Template_node, m: Template_node):
+def node_similarity(n: TemplateNode, m: TemplateNode):
     # ToDo: take details into consideration
     similarity = 0
 
@@ -76,21 +72,19 @@ def node_similarity(n: Template_node, m: Template_node):
 
     return similarity
 
-# %%
 
 def attack_graph_to_sequence(G):
     template_node_list = []
 
     for node in G.nodes:
-        # print(G.nodes[node]["type"])
-
         if G.nodes[node]["type"] == "APTFamily":
             continue
 
-        node = Template_node(G.nodes[node]["type"])
+        node = TemplateNode(G.nodes[node]["type"])
         template_node_list.append(node)
 
     return template_node_list
+
 
 def nlp_node_list_to_sequence(node_list):
     template_node_list = []
@@ -103,7 +97,7 @@ def nlp_node_list_to_sequence(node_list):
         if type == "APTFamily":
             continue
 
-        template_node = Template_node(type)
+        template_node = TemplateNode(type)
         template_node_list.append(template_node)
 
     return template_node_list
@@ -111,7 +105,7 @@ def nlp_node_list_to_sequence(node_list):
 
 def sequence_to_singletree(node_list):
     # node_list = attack_graph_to_sequence(G)
-    print("---Generate singletree!---")
+    logging.info("---Generate singletree!---")
 
     n = node_list[-1]
     for i in range(len(node_list)-2, -1, -1):
@@ -119,25 +113,25 @@ def sequence_to_singletree(node_list):
         n = node_list[i]
 
     for node in node_list:
-        print(node.type + ":" + str(len(node.possible_follow_up)))
+        logging.debug(node.type + ":" + str(len(node.possible_follow_up)))
 
     return n
 
 
 # ToDo: Divide template into basic block and advanced block according to node appearance frequency in reports.
-class Technique_template:
+class TechniqueTemplate:
 
-    root_node = Template_node()
+    root_node = TemplateNode()
 
     def update_template(self, node_list):
+        logging.info("---Update template!---")
 
         # node_list = attack_graph_to_sequence(G)  # ToDo: Sort the node_list before build template tree
         if len(node_list) == 0:
             return
         single_tree = sequence_to_singletree(node_list)
-        print(single_tree)
+        logging.debug(single_tree)
 
-        print("---Update template!---")
         self.root_node.add_follow_up(single_tree)
 
         return single_tree
@@ -162,14 +156,14 @@ if __name__ == '__main__':
 
 # %%
 
-    ag = AttacKG_AG()
-    ner_model = NER_With_Spacy("./new_cti.model")
+    ag = AttackGraph()
+    ner_model = IoCNer("./new_cti.model")
     # ner_model = NER_With_Spacy("en_core_web_sm")
 
-    tt = Technique_template()
+    tt = TechniqueTemplate()
 
     for example in phishing_email_example:
-        print(example)
+        logging.debug(example)
 
         doc = ner_model.parser(example)
         # displacy.serve(doc, style="dep")
@@ -184,7 +178,7 @@ if __name__ == '__main__':
         template_node_list = nlp_node_list_to_sequence(nlp_node_list)
         single_tree = tt.update_template(template_node_list)
 
-        print(tt.root_node)
+        logging.debug(tt.root_node)
 
 # %%
 
