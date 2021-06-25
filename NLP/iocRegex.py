@@ -1,11 +1,8 @@
 import re
-import configparser
 import json
-import spacy
-from spacy import Matcher
 
 
-class IoC_identifier:
+class IoCIdentifier:
     IoC_regex = {
         "NetLoc": [
             r"\b([a-z]{3,}\:\/\/[\S]{16,})\b",
@@ -21,9 +18,10 @@ class IoC_identifier:
             r"\b[A-Z]:\\[A-Za-z0-9-_\.\\]+\b",
             # r"[~]*/[A-Za-z0-9-_\./]{2,}\b"
             r"[%A-Za-z0-9]*\\[A-Za-z0-9-_\.\\%]+\b"
-        ], # %ALLUSERPROFILE%\Application Data\Microsoft\MediaPlayer\
+        ],  # %ALLUSERPROFILE%\Application Data\Microsoft\MediaPlayer\
         # "FileName": [r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|sys|htm|html|js|jar|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
-        "DocFile": [r"\b([A-Za-z0-9-_\.]+\.(sys|htm|html|js|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
+        "DocFile": [
+            r"\b([A-Za-z0-9-_\.]+\.(sys|htm|html|js|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
         "ExeFile": [r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|jar))\b"],
         "Vulnerability": [r"\b(CVE\-[0-9]{4}\-[0-9]{4,6})\b"],
         "Registry": [
@@ -49,27 +47,21 @@ class IoC_identifier:
         "Arguments": "argument"
     }
 
-    IoC_config_path = r"/Archive/NLP/ioc_pattern.json"  # r"/mnt/c/Users/xiaowan/Documents/GitHub/AttacKG/NLP/ioc_pattern.json"
+    IoC_config_path = r"/Archive/NLP/ioc_pattern.json"
 
-    # def read_IoC_config(self, path=IoC_config_path):
-    #     config = configparser.ConfigParser()
-    #     config.read(path)
-    #     for s in config.sections():
-    #         self.IoC_classes[s] = config.items(s)
-    #     return self.IoC_classes
-
-    def write_IoC_regex(self, path=IoC_config_path):
+    # Save
+    def write_ioc_regex(self, path: str = IoC_config_path):
         with open(path, 'w') as json_file:
             json.dump(self.IoC_regex, json_file)
 
-    def IoC_identify(self, sentence):
+    def ioc_identify(self, sentence: str):
         output = {"data": sentence, "label": []}
         print(sentence)
         for type, regex_list in self.IoC_regex.items():
             for regex in regex_list:
-                while(True):
+                while True:
                     match = re.search(regex, sentence)
-                    if match == None:
+                    if match is None:
                         break
                     else:
                         print("Type: %s - %s" % (type, match))
@@ -80,13 +72,13 @@ class IoC_identifier:
         print(output)
         return output
 
-    def batch_IoC_identify_from_file(self, in_file, out_file):
+    def ioc_identify_from_file(self, in_file: str, out_file: str):
         with open(in_file, "r") as read_file, open(out_file, "w") as write_file:
             for line in read_file:
                 # if re.match("[/techniques/T.*]", line) == None:
                 #     continue
                 # else:
-                output = self.IoC_identify(line)
+                output = self.ioc_identify(line)
                 write_file.write(output + "\n")
 
     # def regex_based_ner(self):
@@ -96,8 +88,11 @@ class IoC_identifier:
     #
     #     pass
 
+
 if __name__ == '__main__':
-    ii = IoC_identifier()
-    # ii.write_IoC_regex()
-    # ii.IoC_identify("APT29 has exploited CVE-2019-19781 for Citrix, CVE-2019-11510 for Pulse Secure VPNs, CVE-2018-13379 for FortiGate VPNs, and CVE-2019-9670 in Zimbra software to gain access.")
-    ii.batch_IoC_identify_from_file(r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_withoutTechniqueLabel.txt", r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_labeledWithRegex.txt")
+    ii = IoCIdentifier()
+    ii.write_ioc_regex()
+    ii.ioc_identify("APT29 has exploited CVE-2019-19781 for Citrix, CVE-2019-11510 for Pulse Secure VPNs, CVE-2018-13379 for FortiGate VPNs, and CVE-2019-9670 in Zimbra software to gain access.")
+    ii.ioc_identify_from_file(
+        r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_withoutTechniqueLabel.txt",
+        r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_labeledWithRegex.txt")

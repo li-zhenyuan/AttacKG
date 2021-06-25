@@ -3,6 +3,7 @@
 from extract_attack_graph_from_nlp_tree import *
 
 import networkx as nx
+import pickle
 
 
 # %%
@@ -123,6 +124,7 @@ def sequence_to_singletree(node_list):
     return n
 
 
+# ToDo: Divide template into basic block and advanced block according to node appearance frequency in reports.
 class Technique_template:
 
     root_node = Template_node()
@@ -146,7 +148,7 @@ class Technique_template:
 if __name__ == '__main__':
     technique_example_dict = get_technique_example_dict()
 
-#%%
+# %%
 
     # '/techniques/T1566/00[1|2|3]',
     phishing_email_example = []
@@ -158,7 +160,7 @@ if __name__ == '__main__':
     # phishing_email_example += technique_example_dict[r'/techniques/T1114/001']
     # phishing_email_example += technique_example_dict[r'/techniques/T1114/002']
 
-#%%
+# %%
 
     ag = AttacKG_AG()
     ner_model = NER_With_Spacy("./new_cti.model")
@@ -183,3 +185,8 @@ if __name__ == '__main__':
         single_tree = tt.update_template(template_node_list)
 
         print(tt.root_node)
+
+# %%
+
+    with open("phishing_email.template", 'wb') as f:
+        pickle.dump(tt, f)

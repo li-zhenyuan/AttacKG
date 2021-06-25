@@ -10,8 +10,8 @@ import sys
 import os
 
 # sys.path.append("..")
-from NLP.ner_with_spacy import *
-from NLP.extract_text_from_file import *
+from NLP.iocNer import *
+from NLP.reportPreprocess import *
 from template_extraction import *
 
 
