@@ -1,5 +1,6 @@
 # Simplified technique matching
 # Attack graph are stored in NetworkX instance
+import os.path
 
 from attackGraph import *
 from attackTemplate import *
@@ -16,10 +17,10 @@ def draw_AttacKG(G: nx.MultiDiGraph):
     plt.show()
 
 
-AttacKG_node_types = ["Attacker", "ExeFile", "DocFile", "Registry", "Service", "Vulnerability", "NetLoc"]
-AttacKG_node_regex = {}
-AttacKG_node_details = {}
-AttacKG_node_equivalence_groups = {}
+# AttacKG_node_types = ["Attacker", "ExeFile", "DocFile", "Registry", "Service", "Vulnerability", "NetLoc"]
+# AttacKG_node_regex = {}
+# AttacKG_node_details = {}
+# AttacKG_node_equivalence_groups = {}
 
 
 # ToDo
@@ -66,7 +67,7 @@ def AttacKG_matching():
 class Technique_identifier:
     technique_variant_tree = {}
 
-    def add_technique_variant_tree(self, template:TechniqueTemplate, technique_name="UNKOWN"):
+    def add_technique_variant_tree(self, template: TechniqueTemplate, technique_name="UNKOWN"):
         self.technique_variant_tree[technique_name] = template
 
 
@@ -74,7 +75,19 @@ class Technique_identifier:
 
         pass
 
-    def identify_technique_in_attackgraph(self, G):
+    def identify_technique_in_attackgraphfile(self, gml_file: str):
+        if os.path.split(gml_file) == ".gml":
+            g = nx.read_gml(gml_file)
+            return self.identify_technique_in_attackgraph(g)
+        else:
+            return None
+
+    def identify_technique_in_attackgraph(self, g: nx.DiGraph):
+
+        # Find source node
+        # Find sink node
+        # Tag propagation
+
         pass
 
 

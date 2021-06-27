@@ -8,7 +8,8 @@ import re
 from nltk import Tree
 import matplotlib.pyplot as plt
 import logging
-
+import sys
+import os
 
 
 def to_nltk_tree(node):
@@ -29,14 +30,17 @@ def to_nltk_formatted_tree(node):
         return tok_format(node)
 
 
-def view_graph(g: nx.Graph):
+def view_graph(g: nx.DiGraph, image_file: str = None):
     graph_pos = nx.spring_layout(g)
     nx.draw_networkx_nodes(g, graph_pos, node_size=10, node_color='blue', alpha=0.3)
     nx.draw_networkx_edges(g, graph_pos)
     nx.draw_networkx_labels(g, graph_pos, font_size=8, font_family='sans-serif')
     # edge_labels = nx.get_edge_attributes(G, 'action')
     # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
-    plt.show()
+    if image_file is None:
+        plt.show()
+    else:
+        plt.savefig(image_file)
 
 
 # https://graphviz.org/doc/info/shapes.html
@@ -56,7 +60,7 @@ node_shape = {
 }
 
 
-def draw_attackgraph(g: nx.Graph, clusters: dict = None, output_file: str = None) -> graphviz.Graph:
+def draw_attackgraph(g: nx.DiGraph, clusters: dict = None, output_file: str = None) -> graphviz.Graph:
     dot = graphviz.Graph('G', filename=output_file)
 
     for node in g.nodes:
@@ -97,7 +101,7 @@ def draw_attackgraph(g: nx.Graph, clusters: dict = None, output_file: str = None
 
 
 class AttackGraph:
-    AG: nx.Graph
+    AG: nx.DiGraph
 
     nodes = {}  # node representation -> confidence score
     edges = {}  # (node_a, node_b) -> confidence score
@@ -124,7 +128,10 @@ class AttackGraph:
 
     def construct_AG_from_spacydoc(self, doc, G=None):
         for sentence in doc.sents:
-            G = self.construct_AG_from_spacysent(sentence, G)
+            try:
+                G = self.construct_AG_from_spacysent(sentence, G)
+            except:
+                continue
 
         return G
 
@@ -132,20 +139,20 @@ class AttackGraph:
         logging.info("---Construct Attack Graph!---")
 
         if G == None:
-            G = nx.Graph()
+            G = nx.DiGraph()
 
         node_queue = []
         tvb = ""
         tnode = ""
 
         root = sentence.root
-        to_nltk_formatted_tree(root).pretty_print()
+        # to_nltk_formatted_tree(root).pretty_print()
 
         # FIXME: Wrong relationships
         # traverse the nltk tree
         node_queue.append(root)
         while node_queue:
-            node = node_queue.pop(0) # FIXME: First in first out
+            node = node_queue.pop(0)  # FIXME: First in first out
             # print("@".join([node.text, node.tag_, node.ent_type_]))
             if re.match("VB.*", node.tag_):
                 tvb = node.text
@@ -168,6 +175,8 @@ class AttackGraph:
 # %%
 
 if __name__ == '__main__':
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+
     ner_model = IoCNer("./new_cti.model")
     ag = AttackGraph()
 
@@ -183,12 +192,33 @@ if __name__ == '__main__':
 
     # %%
 
-    file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
-    text = read_html(file)
-
-    doc = ner_model.parser(text)
+    # file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
+    # text = read_html(file)
+    #
+    # doc = ner_model.parser(text)
     # G = ag.construct_AG_from_spacydoc(doc)
-    ent_list = ag.extract_entity_list_from_spacydoc(doc)
+    # ent_list = ag.extract_entity_list_from_spacydoc(doc)
+
+    # %%
+
+    cti_path = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html"
+    output_path = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\processed"
+
+    cti_files = os.listdir(cti_path)
+    for file in cti_files:
+        file_name = os.path.splitext(file)[0]
+        file_ext = os.path.splitext(file)[-1]
+        if file_ext == ".html":
+            logging.info("---Parsing %s!---" % file)
+
+            text = read_html(os.path.join(cti_path, file))
+            if len(text) > 1000000:
+                continue
+            doc = ner_model.parser(text)
+
+            g = ag.construct_AG_from_spacydoc(doc)
+            nx.write_gml(g, os.path.join(output_path, file_name + ".gml"))
+            view_graph(g, os.path.join(output_path, file_name + ".png"))
 
     # %%
 

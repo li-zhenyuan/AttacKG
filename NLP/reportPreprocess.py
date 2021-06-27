@@ -1,4 +1,5 @@
 # %%
+import logging
 
 import pdfplumber
 from html2text import html2text
@@ -51,7 +52,7 @@ def clear_text(text: str) -> str:
     # comp = re.compile('[^A-Z^a-z^0-9^\u4e00-\u9fa5]') #[^A-Z^a-z^0-9^\u4e00-\u9fa5]
     # cleartext = comp.sub('', text)
 
-    print(cleartext)
+    # logging.DEBUG(str(cleartext))
     return cleartext
 
 # %%

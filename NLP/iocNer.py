@@ -56,6 +56,7 @@ class IoCNer:
             self.nlp = spacy.load(self.model_location)
             logging.info("---Load Model: %s!---" % self.model_location)
 
+        # self.nlp.max_length = 3000000
         self.create_optimizer()
 
     def convert_data_format(self, labeled_data: list) -> list:
