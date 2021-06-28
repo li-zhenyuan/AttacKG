@@ -34,7 +34,7 @@ def view_graph(g: nx.DiGraph, image_file: str = None):
     graph_pos = nx.spring_layout(g)
     nx.draw_networkx_nodes(g, graph_pos, node_size=10, node_color='blue', alpha=0.3)
     nx.draw_networkx_edges(g, graph_pos)
-    nx.draw_networkx_labels(g, graph_pos, font_size=8, font_family='sans-serif')
+    # nx.draw_networkx_labels(g, graph_pos, font_size=8, font_family='sans-serif')
     # edge_labels = nx.get_edge_attributes(G, 'action')
     # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
     if image_file is None:
@@ -93,9 +93,9 @@ def draw_attackgraph(g: nx.DiGraph, clusters: dict = None, output_file: str = No
                 for tech in value:
                     t.node(tech)
 
-    # if output_file is not None:
-    #     dot.render(output_file, view=True)
-    # dot.view()
+    if output_file is not None:
+        dot.format = "png"
+        dot.render(output_file, view=False)
 
     return dot
 
@@ -218,7 +218,10 @@ if __name__ == '__main__':
 
             g = ag.construct_AG_from_spacydoc(doc)
             nx.write_gml(g, os.path.join(output_path, file_name + ".gml"))
-            view_graph(g, os.path.join(output_path, file_name + ".png"))
+            # view_graph(g)
+            # view_graph(g, os.path.join(output_path, file_name + ".png"))
+            dot = draw_attackgraph(g, output_file=os.path.join(output_path, file_name))
+            # dot.view()
 
     # %%
 
