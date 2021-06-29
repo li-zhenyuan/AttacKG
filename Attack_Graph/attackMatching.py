@@ -90,12 +90,18 @@ class Technique_identifier:
             return None
 
     def identify_technique_in_attackgraph(self, attack_graph: nx.DiGraph):
-        logging.debug("---Identify Techniques!---")
+        logging.info("---S2: Identify Techniques!---")
+
         # Find source node
+        logging.info("---S2.1: Find source node!---")
         self.find_source_node(attack_graph)
+
         # Tag propagation & Find sink node
+        logging.info("---S2.2: Tag propagation!---")
         self.tag_propagation(attack_graph)
+
         # Find technique chain in sink node's tag list
+        logging.info("---S2.3: Technique matching!---")
         self.technique_matching()
 
         pass
@@ -111,7 +117,7 @@ class Technique_identifier:
 
         return self.source_nodes
 
-    def tag_propagation(self, g:nx.DiGraph):
+    def tag_propagation(self, g: nx.DiGraph):
         for n in g.nodes():
             self.node_taglist[n] = [g.nodes[n]["type"]]
 
@@ -124,8 +130,8 @@ class Technique_identifier:
             if g.out_degree(successor) == 0:
                 self.sink_nodes.append(successor)
             else:
-                # if len(self.node_taglist[successor]) == 1:
-                self.tag_propagation_recursion(g, successor)  # FIXME: Ring and single node
+                if len(self.node_taglist[successor]) == 1:
+                    self.tag_propagation_recursion(g, successor)  # FIXME: Loop and single node
 
     def technique_matching(self):
         #
@@ -144,12 +150,14 @@ class Technique_identifier:
 
             if set_match_flag == 1:
                 logging.warning("Find email")
+            # else:
+            #     logging.warning("Don't find email")
 
 
 # %%
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     # %%
     # Attack template loading unit testing.
