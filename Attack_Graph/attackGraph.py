@@ -1,6 +1,6 @@
 from NLP.iocNer import *
 from NLP.reportPreprocess import *
-from attackTemplate import *
+# from attackTemplate import *
 
 import networkx as nx
 import graphviz
