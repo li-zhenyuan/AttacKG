@@ -1,32 +1,11 @@
-import logging
-
 from NLP.iocNer import *
 from attackGraph import *
+from Mitre_TTPs.mitre_graph_reader import *
 
 import networkx as nx
 import pptree
 import pickle
-
-
-def get_technique_example_dict(
-        gml_path: str = r'C:\Users\xiaowan\Documents\GitHub\AttacKG\Mitre_TTPs\Tactic_Technique_Reference_Example.gml'):
-    G = nx.read_gml(gml_path)
-
-    technique_list = []
-    technique_example_dict = {}
-
-    for technique in list(G.nodes()):
-        if G.nodes[technique]['types'].find('technique') != -1:
-            technique_list.append(technique)
-
-    for technique in technique_list:
-        technique_example_dict[technique] = []
-
-        for example in G.neighbors(technique):
-            if G.nodes[example]['types'].find('examples') != -1:
-                technique_example_dict[technique].append(re.sub("(\[\d+\])+", '', example))
-
-    return technique_example_dict
+import logging
 
 
 picked_techniques = {"/techniques/T1566/001",
@@ -63,7 +42,7 @@ picked_techniques = {"/techniques/T1566/001",
                      "/techniques/T1041"}
 
 
-class TemplateNode:
+class TemplateNode(AttackGraphNode):
     template = None
 
     node_type = ""
@@ -135,17 +114,17 @@ def node_similarity(n: TemplateNode, m: TemplateNode):
     return similarity
 
 
-def attack_graph_to_node_sequence(attack_graph):
-    template_node_list = []
-
-    for node in attack_graph.nodes:
-        if attack_graph.nodes[node]["type"] == "APTFamily":
-            continue
-
-        node = TemplateNode(attack_graph.nodes[node]["type"])
-        template_node_list.append(node)
-
-    return template_node_list
+# def attack_graph_to_node_sequence(attack_graph):
+#     template_node_list = []
+#
+#     for node in attack_graph.nodes:
+#         if attack_graph.nodes[node]["type"] == "APTFamily":
+#             continue
+#
+#         node = TemplateNode(attack_graph.nodes[node]["type"])
+#         template_node_list.append(node)
+#
+#     return template_node_list
 
 
 # def nlp_node_list_to_sequence(node_list):
@@ -209,9 +188,10 @@ class TechniqueTemplate:
         return template_list
 
     def template_extraction(self, technique: str) -> TemplateNode:
-        technique_example_dict = get_technique_example_dict()
+        mgr = MitreGraphReader()
+        technique_example_list = mgr.find_examples_for_technique(technique_id)
 
-        t = self.template_extraction_from_examplelist(technique_example_dict[technique])
+        t = self.template_extraction_from_examplelist(technique_example_list)
 
         return t
 
@@ -240,19 +220,15 @@ class TechniqueTemplate:
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    technique_example_dict = get_technique_example_dict()
 
     # %%
 
     # '/techniques/T1566/00[1|2|3]',
-    phishing_email_example = []
-
-    phishing_email_example += technique_example_dict[r'/techniques/T1566/001']
-    phishing_email_example += technique_example_dict[r'/techniques/T1566/002']
-    phishing_email_example += technique_example_dict[r'/techniques/T1566/003']
-
-    # phishing_email_example += technique_example_dict[r'/techniques/T1114/001']
-    # phishing_email_example += technique_example_dict[r'/techniques/T1114/002']
+    technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
+    example_list = []
+    mgr = MitreGraphReader()
+    for technique_id in technique_list:
+        example_list += mgr.find_examples_for_technique(technique_id)
 
     # %%
 

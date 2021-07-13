@@ -1,3 +1,5 @@
+from NLP.reportPreprocess import *
+
 import re
 import json
 import logging
@@ -67,6 +69,9 @@ class IoCIdentifier:
         self.text = text
         self.ioc_list = []
 
+        if text != "":
+            self.ioc_identify()
+
     def ioc_identify_from_file(self, file) -> str:
         self.text = ""
         self.ioc_list = []
@@ -120,11 +125,15 @@ class IoCIdentifier:
         output = json.dumps(output)
         return output
 
+    def display_iocs(self):
+        for ioc in self.ioc_list:
+            print("--".join([ioc.ioc_type, ioc.ioc_string]))
+
     def check_replace_result(self):
         for replaced_ioc_item in self.replaced_ioc_list:
             replaced_string = self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]
             original_string = replaced_ioc_item.ioc_string
-            print("%s-%s" % (replaced_string, original_string))
+            # print("%s-%s" % (replaced_string, original_string))
 
 
 

@@ -1,5 +1,7 @@
 from NLP.iocNer import *
+from NLP.iocRegex import *
 from NLP.reportPreprocess import *
+from Mitre_TTPs.mitre_graph_reader import *
 # from attackTemplate import *
 
 import networkx as nx
@@ -30,6 +32,7 @@ def to_nltk_formatted_tree(node):
         return tok_format(node)
 
 
+# draw attack graph with matplot
 def draw_attackgraph_plt(nx_graph: nx.DiGraph, image_file: str = None):
     graph_pos = nx.spring_layout(nx_graph)
     nx.draw_networkx_nodes(nx_graph, graph_pos, node_size=10, node_color='blue', alpha=0.3)
@@ -101,74 +104,96 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
     return dot
 
 
-def extract_entity_list_from_spacydoc(nlp_doc):
-    logging.info("---Extract Entity List!---")
-    ent_list = []
+# def extract_entity_list_from_spacydoc(nlp_doc):
+#     logging.info("---Extract Entity List!---")
+#     ent_list = []
+#
+#     for ent in nlp_doc.ents:
+#         ent = ent[0]
+#         if ent.ent_type_ in ner_labels:
+#             n = "@".join([ent.text, ent.ent_type_])
+#             logging.debug(n)
+#             ent_list.append(n)
+#
+#     return ent_list
 
-    for ent in nlp_doc.ents:
-        ent = ent[0]
-        if ent.ent_type_ in ner_labels:
-            n = "@".join([ent.text, ent.ent_type_])
-            logging.debug(n)
-            ent_list.append(n)
+class AttackGraphNode:
+    node_type = ""
+    node_ioc_representation = ""
+    node_nlp_representation = ""
 
-    return ent_list
+    def __init__(self, node_type):
+        self.node_type = node_type
 
-
-def construct_AG_from_spacysent(sentence, G=None):
-    logging.info("---Construct Attack Graph!---")
-
-    if G == None:
-        G = nx.DiGraph()
-
-    node_queue = []
-    tvb = ""
-    tnode = ""
-
-    root = sentence.root
-    # to_nltk_formatted_tree(root).pretty_print()
-
-    # FIXME: Wrong relationships
-    # traverse the nltk tree
-    node_queue.append(root)
-    while node_queue:
-        node = node_queue.pop(0)  # FIXME: First in first out
-        # print("@".join([node.text, node.tag_, node.ent_type_]))
-        if re.match("VB.*", node.tag_):
-            tvb = node.text
-        if re.match("NN.*", node.tag_):
-            # if node.ent_type_ != "":
-            if node.ent_type_ in ner_labels:
-                n = "@".join([node.text, node.ent_type_])
-                logging.debug(n)
-                G.add_node(n, type=node.ent_type_, nlp=node.text)
-
-                if tnode != "" and tvb != "":
-                    G.add_edge(tnode, n, action=tvb)
-                tnode = n
-        for child in node.children:
-            node_queue.append(child)
-
-    return G
-
-
-def construct_AG_from_spacydoc(doc, G=None):
-    for sentence in doc.sents:
-        try:
-            G = construct_AG_from_spacysent(sentence, G)
-        except:
-            continue
-
-    return G
+    def __str__(self):
+        return "#".join(self.node_type, self.node_nlp_representation, self.node_ioc_representation)
 
 
 class AttackGraph:
-    AG: nx.DiGraph
+    attackgraph_nx: nx.DiGraph
 
-    nodes = {}  # node representation -> confidence score
-    edges = {}  # (node_a, node_b) -> confidence score
+    node_list = []
+    edge_list = []
 
     techniques = {}  # technique name -> [node_list]
+
+    def __init__(self):
+        self.attackgraph_nx = None
+
+    def __init__(self, doc):
+        self.attackgraph_nx = None
+        self.construct_nxgraph_from_spacydoc(doc)
+
+    def construct_nxgraph_from_spacydoc(self, doc):
+        for sentence in doc.sents:
+            try:
+                self.attackgraph_nx = self.construct_nxgraph_from_spacysent(sentence)
+            except:
+                continue
+
+        return self.attackgraph_nx
+
+    def construct_nxgraph_from_spacysent(self, sentence):
+        logging.info("---Construct Attack Graph!---")
+
+        if self.attackgraph_nx == None:
+            self.attackgraph_nx = nx.DiGraph()
+
+        node_queue = []
+        tvb = ""
+        tnode = ""
+
+        root = sentence.root
+        # to_nltk_formatted_tree(root).pretty_print()
+
+        # FIXME: Wrong relationships
+        # traverse the nltk tree
+        node_queue.append(root)
+        while node_queue:
+            node = node_queue.pop(0)  # FIXME: First in first out
+            # print("@".join([node.text, node.tag_, node.ent_type_]))
+            if re.match("VB.*", node.tag_):
+                tvb = node.text
+            if re.match("NN.*", node.tag_):
+                # if node.ent_type_ != "":
+                if node.ent_type_ in ner_labels:
+                    n = "@".join([node.text, node.ent_type_])
+                    logging.debug(n)
+                    self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text)
+
+                    if tnode != "" and tvb != "":
+                        self.attackgraph_nx.add_edge(tnode, n, action=tvb)
+                    tnode = n
+            for child in node.children:
+                node_queue.append(child)
+
+        return self.attackgraph_nx
+
+    def parse(self):
+        pass # TODO
+
+    def to_node_sequence(self):
+        pass # TODO
 
 
 # %%
@@ -177,9 +202,9 @@ if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     ner_model = IoCNer("./new_cti.model")
-    ag = AttackGraph()
 
     # %%
+    # construct_AG_from_spacydoc() unit
 
     # sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
     # sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
@@ -190,6 +215,7 @@ if __name__ == '__main__':
     # G = ag.construct_AG_from_spacydoc(doc)
 
     # %%
+    # extract_entity_list_from_spacydoc() unit
 
     # file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
     # text = read_html(file)
@@ -199,29 +225,32 @@ if __name__ == '__main__':
     # ent_list = ag.extract_entity_list_from_spacydoc(doc)
 
     # %%
+    # class AttackGraph unit test
 
-    cti_path = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html"
-    output_path = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\processed"
-
-    cti_files = os.listdir(cti_path)
-    for file in cti_files:
-        file_name = os.path.splitext(file)[0]
-        file_ext = os.path.splitext(file)[-1]
-        if file_ext == ".html":
-            logging.info("---Parsing %s!---" % file)
-
-            text = read_html(os.path.join(cti_path, file))
-            if len(text) > 1000000: # FIXME: cannot process text file with more than 1000000 characters.
-                continue
-            doc = ner_model.parser(text)
-
-            g = construct_AG_from_spacydoc(doc)
-            nx.write_gml(g, os.path.join(output_path, file_name + ".gml"))
-
-            dot_graph = draw_attackgraph_dot(g, output_file=os.path.join(output_path, file_name))
-            # dot.view()
+    # cti_path = r".\data\cti\html"
+    # output_path = r".\data\processed"
+    #
+    # cti_files = os.listdir(cti_path)
+    # for file in cti_files:
+    #     file_name = os.path.splitext(file)[0]
+    #     file_ext = os.path.splitext(file)[-1]
+    #     if file_ext == ".html":
+    #         logging.info("---Parsing %s!---" % file)
+    #
+    #         text = read_html(os.path.join(cti_path, file))
+    #         if len(text) > 1000000:  # FIXME: cannot process text file with more than 1000000 characters.
+    #             continue
+    #         doc = ner_model.parser(text)
+    #
+    #         ag = AttackGraph(doc)
+    #
+    #         # TODO: set this two functions as member functions of class "AttackGrpah"
+    #         nx.write_gml(ag.attackgraph_nx, os.path.join(output_path, file_name + ".gml"))
+    #         dot_graph = draw_attackgraph_dot(ag.attackgraph_nx, output_file=os.path.join(output_path, file_name))
+    #         # dot.view()
 
     # %%
+    # draw_AG() unit test
 
     # techniques = {
     #     "Scripting": ['script@ExeFile'],
@@ -231,3 +260,19 @@ if __name__ == '__main__':
     #
     # dot = AttacKG_AG.draw_AG(G, clusters=techniques)
     # dot.view()
+
+    # %%
+    # AttackGraph.parse() unit test
+
+    cti_file = r".\data\cti\html\00a5d14f67e02675474f86e3bcd8fc53.html"
+    text = read_html(cti_file)
+
+    iid = IoCIdentifier(text)
+    iid.display_iocs()
+    text_without_ioc = iid.replaced_text
+
+    doc = ner_model.parser(text)
+    ag = AttackGraph(doc)
+    dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
+    dot_graph.view()
+
