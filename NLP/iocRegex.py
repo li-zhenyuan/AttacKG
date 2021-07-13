@@ -1,6 +1,7 @@
 import re
 import json
 import logging
+import sys
 
 IoC_regex = {
     "NetLoc": [
@@ -43,61 +44,101 @@ IoC_replacedWord = {
 }
 
 
-
-
-
-def ioc_identify_from_file(in_file: str, out_file: str):
-    with open(in_file, "r") as read_file, open(out_file, "w") as write_file:
-        for line in read_file:
-            # if re.match("[/techniques/T.*]", line) == None:
-            #     continue
-            # else:
-            output = ioc_identify(line)
-            write_file.write(output + "\n")
-
 class IoCItem:
     ioc_string: str
     ioc_type: str
-    ioc_location: set(int, int)
+    ioc_location: list
+
+    def __init__(self, ioc_string, ioc_type, start_pos, end_pos):
+        self.ioc_string = ioc_string
+        self.ioc_type = ioc_type
+        self.ioc_location = (start_pos, end_pos)
 
 
 class IoCIdentifier:
-    sentence: str
-    ioc_list: list(IoCItem)
+    text = ""
+    ioc_list = []
 
-    def __init__(self, sentence: str = ""):
-        self.sentence = sentence
+    deleted_character_count = 0
+    replaced_text = ""
+    replaced_ioc_list = []
 
-    def ioc_identify(self, sentence: str = None):
-        logging.info("---Identify IoC with Regex in sentence!---")
+    def __init__(self, text: str = ""):
+        self.text = text
+        self.ioc_list = []
 
-        if sentence is None:
-            sentence = self.sentence
+    def ioc_identify_from_file(self, file) -> str:
+        self.text = ""
+        self.ioc_list = []
+
+        output = ""
+        with open(file, "r") as input:
+            text = input.read()
+            output = self.ioc_identify(text)
+
+        return output
+
+    def ioc_identify(self, text: str = None) -> str:
+        logging.info("---Identify IoC with Regex in text!---")
+
+        if text is None:
+            text = self.text
         else:
-            self.sentence = sentence
+            self.text = text
+
+        self.deleted_character_count = 0
+        self.replaced_text = text
 
         for ioc_type, regex_list in IoC_regex.items():
             for regex in regex_list:
-                while True:
-                    match = re.search(regex, sentence)
-                    if match is None:
-                        break
-                    else:
-                        logging.debug("Type: %s - %s" % (ioc_type, match))
-                        output["label"].append([match.span()[0], match.span()[1], ioc_type])
-                        sentence = re.sub(regex, ioc_type, sentence, count=1)
+                matchs = re.finditer(regex, text)
+                for m in matchs:
+                    logging.debug("Find IoC matching: %s - %s" % (ioc_type, m))
+                    # output["label"].append([match.span()[0], match.span()[1], ioc_type])
+                    ioc_item = IoCItem(m.group(), ioc_type, m.span()[0], m.span()[1])
+                    self.ioc_list.append(ioc_item)
 
+                    # replace iocs with replace_word
+                    self.replaced_text = re.sub(regex, IoC_replacedWord[ioc_type], self.replaced_text, count=1)
+                    replaced_ioc_item = IoCItem(
+                        m.group(),
+                        ioc_type,
+                        m.span()[0]-self.deleted_character_count,
+                        m.span()[1]-(self.deleted_character_count + (len(str(m.group()))-len(IoC_replacedWord[ioc_type]))))
+                    self.deleted_character_count += (len(str(m.group())) - len(IoC_replacedWord[ioc_type]))
+                    self.replaced_ioc_list.append(replaced_ioc_item)
+
+
+        return self.replaced_text
 
     def to_jsonl(self) -> str:
-        output = {"data": self.sentence, "label": []}
+        iocs = []
+        for ioc_item in self.ioc_list:
+            iocs.append([ioc_item.ioc_location[0], ioc_item.ioc_location[1], ioc_item.ioc_type])
 
+        output = {"data": self.text, "label": iocs}
         output = json.dumps(output)
         return output
 
+    def check_replace_result(self):
+        for replaced_ioc_item in self.replaced_ioc_list:
+            replaced_string = self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]
+            original_string = replaced_ioc_item.ioc_string
+            print("%s-%s" % (replaced_string, original_string))
+
+
+
+            # %%
 
 if __name__ == '__main__':
-    ioc_identify(
-        "APT29 has exploited CVE-2019-19781 for Citrix, CVE-2019-11510 for Pulse Secure VPNs, CVE-2018-13379 for FortiGate VPNs, and CVE-2019-9670 in Zimbra software to gain access.")
-    ioc_identify_from_file(
-        r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_withoutTechniqueLabel.txt",
-        r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\technique_examples_labeledWithRegex.txt")
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
+    iid = IoCIdentifier()
+
+    print(iid.ioc_identify("APT29 has exploited CVE-2019-19781 for Citrix, CVE-2019-11510 for Pulse Secure VPNs, CVE-2018-13379 for FortiGate VPNs, and CVE-2019-9670 in Zimbra software to gain access."))
+    print(iid.to_jsonl())
+    iid.check_replace_result()
+
+    # print(iid.ioc_identify_from_file(
+    #     r"C:.\data\cti\html\fff44fa08300b10119f80d6ac32131f9.html"))
+    # print(iid.to_jsonl())
