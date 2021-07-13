@@ -9,6 +9,7 @@ import random
 import json
 import logging
 
+
 ner_labels = [
     "NetLoc",
     "APTFamily",
@@ -158,8 +159,8 @@ class IoCNer:
         self.nlp = spacy.load(model_location)
         self.ner_with_regex()
 
-        doc = self.nlp(text)
-        return doc
+        nlp_doc = self.nlp(text)
+        return nlp_doc
 
 
 # %%

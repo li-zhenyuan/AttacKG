@@ -223,7 +223,7 @@ class TechniqueTemplate:
 
             doc = self.ner_model.parser(e)
 
-            nlp_node_list = self.ag.extract_entity_list_from_spacydoc(doc)
+            nlp_node_list = extract_entity_list_from_spacydoc(doc)
             template_node_list = nlp_node_list_to_sequence(nlp_node_list)
             self.update_template(template_node_list)
 

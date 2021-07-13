@@ -30,13 +30,14 @@ def to_nltk_formatted_tree(node):
         return tok_format(node)
 
 
-def view_graph(g: nx.DiGraph, image_file: str = None):
-    graph_pos = nx.spring_layout(g)
-    nx.draw_networkx_nodes(g, graph_pos, node_size=10, node_color='blue', alpha=0.3)
-    nx.draw_networkx_edges(g, graph_pos)
+def draw_attackgraph_plt(nx_graph: nx.DiGraph, image_file: str = None):
+    graph_pos = nx.spring_layout(nx_graph)
+    nx.draw_networkx_nodes(nx_graph, graph_pos, node_size=10, node_color='blue', alpha=0.3)
+    nx.draw_networkx_edges(nx_graph, graph_pos)
     # nx.draw_networkx_labels(g, graph_pos, font_size=8, font_family='sans-serif')
     # edge_labels = nx.get_edge_attributes(G, 'action')
     # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
+
     if image_file is None:
         plt.show()
     else:
@@ -60,7 +61,7 @@ node_shape = {
 }
 
 
-def draw_attackgraph(g: nx.DiGraph, clusters: dict = None, output_file: str = None) -> graphviz.Graph:
+def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str = None) -> graphviz.Graph:
     dot = graphviz.Graph('G', filename=output_file)
 
     for node in g.nodes:
@@ -100,6 +101,67 @@ def draw_attackgraph(g: nx.DiGraph, clusters: dict = None, output_file: str = No
     return dot
 
 
+def extract_entity_list_from_spacydoc(nlp_doc):
+    logging.info("---Extract Entity List!---")
+    ent_list = []
+
+    for ent in nlp_doc.ents:
+        ent = ent[0]
+        if ent.ent_type_ in ner_labels:
+            n = "@".join([ent.text, ent.ent_type_])
+            logging.debug(n)
+            ent_list.append(n)
+
+    return ent_list
+
+
+def construct_AG_from_spacysent(sentence, G=None):
+    logging.info("---Construct Attack Graph!---")
+
+    if G == None:
+        G = nx.DiGraph()
+
+    node_queue = []
+    tvb = ""
+    tnode = ""
+
+    root = sentence.root
+    # to_nltk_formatted_tree(root).pretty_print()
+
+    # FIXME: Wrong relationships
+    # traverse the nltk tree
+    node_queue.append(root)
+    while node_queue:
+        node = node_queue.pop(0)  # FIXME: First in first out
+        # print("@".join([node.text, node.tag_, node.ent_type_]))
+        if re.match("VB.*", node.tag_):
+            tvb = node.text
+        if re.match("NN.*", node.tag_):
+            # if node.ent_type_ != "":
+            if node.ent_type_ in ner_labels:
+                n = "@".join([node.text, node.ent_type_])
+                logging.debug(n)
+                G.add_node(n, type=node.ent_type_, nlp=node.text)
+
+                if tnode != "" and tvb != "":
+                    G.add_edge(tnode, n, action=tvb)
+                tnode = n
+        for child in node.children:
+            node_queue.append(child)
+
+    return G
+
+
+def construct_AG_from_spacydoc(doc, G=None):
+    for sentence in doc.sents:
+        try:
+            G = construct_AG_from_spacysent(sentence, G)
+        except:
+            continue
+
+    return G
+
+
 class AttackGraph:
     AG: nx.DiGraph
 
@@ -107,69 +169,6 @@ class AttackGraph:
     edges = {}  # (node_a, node_b) -> confidence score
 
     techniques = {}  # technique name -> [node_list]
-
-    def AG_matching(m: dict, n: dict) -> float:
-        similarity = 0.0
-
-        return similarity
-
-    def extract_entity_list_from_spacydoc(self, doc):
-        logging.info("---Extract Entity List!---")
-        ent_list = []
-
-        for ent in doc.ents:
-            ent = ent[0]
-            if ent.ent_type_ in ner_labels:
-                n = "@".join([ent.text, ent.ent_type_])
-                logging.debug(n)
-                ent_list.append(n)
-
-        return ent_list
-
-    def construct_AG_from_spacydoc(self, doc, G=None):
-        for sentence in doc.sents:
-            try:
-                G = self.construct_AG_from_spacysent(sentence, G)
-            except:
-                continue
-
-        return G
-
-    def construct_AG_from_spacysent(self, sentence, G=None):
-        logging.info("---Construct Attack Graph!---")
-
-        if G == None:
-            G = nx.DiGraph()
-
-        node_queue = []
-        tvb = ""
-        tnode = ""
-
-        root = sentence.root
-        # to_nltk_formatted_tree(root).pretty_print()
-
-        # FIXME: Wrong relationships
-        # traverse the nltk tree
-        node_queue.append(root)
-        while node_queue:
-            node = node_queue.pop(0)  # FIXME: First in first out
-            # print("@".join([node.text, node.tag_, node.ent_type_]))
-            if re.match("VB.*", node.tag_):
-                tvb = node.text
-            if re.match("NN.*", node.tag_):
-                # if node.ent_type_ != "":
-                if node.ent_type_ in ner_labels:
-                    n = "@".join([node.text, node.ent_type_])
-                    logging.debug(n)
-                    G.add_node(n, type=node.ent_type_, nlp=node.text)
-
-                    if tnode != "" and tvb != "":
-                        G.add_edge(tnode, n, action=tvb)
-                    tnode = n
-            for child in node.children:
-                node_queue.append(child)
-
-        return G
 
 
 # %%
@@ -212,24 +211,15 @@ if __name__ == '__main__':
             logging.info("---Parsing %s!---" % file)
 
             text = read_html(os.path.join(cti_path, file))
-            if len(text) > 1000000:
+            if len(text) > 1000000: # FIXME: cannot process text file with more than 1000000 characters.
                 continue
             doc = ner_model.parser(text)
 
-            g = ag.construct_AG_from_spacydoc(doc)
+            g = construct_AG_from_spacydoc(doc)
             nx.write_gml(g, os.path.join(output_path, file_name + ".gml"))
-            # view_graph(g)
-            # view_graph(g, os.path.join(output_path, file_name + ".png"))
-            dot = draw_attackgraph(g, output_file=os.path.join(output_path, file_name))
+
+            dot_graph = draw_attackgraph_dot(g, output_file=os.path.join(output_path, file_name))
             # dot.view()
-
-    # %%
-
-    # view_graph(G)
-
-    # %%
-
-    # nx.write_gml(G, os.path.basename(file).split('.')[0] + '.gml')
 
     # %%
 
