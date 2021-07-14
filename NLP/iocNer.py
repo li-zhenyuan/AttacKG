@@ -10,6 +10,7 @@ import random
 import json
 import logging
 
+from spacy.pipeline import EntityRuler
 
 ner_labels = [
     "NetLoc",
@@ -68,7 +69,9 @@ class IoCNer:
             for e in entry['label']:
                 entities.append((e[0], e[1], e[2]))
             try:
-                spacy_data.append(Example.from_dict(self.nlp.make_doc(entry['data']), {"entities": entities}))
+                spacy_entry = (entry['data'], {"entities": entities})
+                spacy_data.append(spacy_entry)
+                # spacy_data.append(Example.from_dict(self.nlp.make_doc(entry['data']), {"entities": entities}))
             except:
                 logging.warning("Wrong format: %s!" % entry['data'])
         return spacy_data
@@ -94,17 +97,20 @@ class IoCNer:
         # new_model_location = "/home/zhenyuan/AttacKG/NLP/new_cti.model"
 
         # Loop
+        # http://5.9.10.113/66377634/convert-code-from-spacy2-to-spacy3-nlp-update-not-working
         other_pipes = [pipe for pipe in self.nlp.pipe_names if pipe != 'ner']
         with self.nlp.disable_pipes(*other_pipes):
             for itn in range(4):
                 random.shuffle(spacy_data)
-                losses = ()
+                losses = {}
 
                 # Batch the examples
                 for batch in spacy.util.minibatch(spacy_data, size=2):
+                    texts = [text for text, entities in batch]
+                    annotations = [entities for text, entities in batch]
                     # Update the model
-                    self.nlp.update(batch, sgd=self.optimizer)  # , drop=0.35, losses=losses
-                    # print('Losses', losses)
+                    # self.nlp.update(batch, sgd=self.optimizer)
+                    self.nlp.update(texts, annotations, sgd=self.optimizer, losses=losses, drop=0.3)
 
         self.nlp.to_disk(new_model_location)
         logging.info("---Save Model to %s!---" % new_model_location)
@@ -156,8 +162,9 @@ class IoCNer:
     def ner_with_regex(self):
         logging.info("---Add Regex-based NER Pipe!---")
 
-        ruler = self.nlp.add_pipe("entity_ruler", config=self.config, before="ner")
+        ruler = EntityRuler(self.nlp)
         ruler.add_patterns(self.patterns)
+        self.nlp.add_pipe(ruler, before="ner")
 
         # doc = self.nlp("APT3 has used PowerShell on victim systems to download and run payloads after exploitation.")
         # print([(ent.text, ent.label_) for ent in doc.ents])
@@ -192,6 +199,6 @@ if __name__ == '__main__':
     doc = ner_model.nlp(sample)
     print([(ent.text, ent.label_) for ent in doc.ents])
 
-    ner_model.ner_with_regex()
+    # ner_model.ner_with_regex()
     doc = ner_model.nlp(sample)
     print([(ent.text, ent.label_) for ent in doc.ents])
