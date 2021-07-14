@@ -30,6 +30,8 @@ def read_pdf(file):
 # https://www.shuzhiduo.com/A/8Bz8PNpXzx/
 
 def read_html(file) -> str:
+    logging.info("---S0-1: Read clear HTML text!---")
+
     with open(file, 'rb') as html_content:
         html = str(html_content.read())
 

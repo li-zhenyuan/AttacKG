@@ -1,3 +1,5 @@
+import spacy.tokens
+
 from NLP.iocNer import *
 from NLP.iocRegex import *
 from NLP.reportPreprocess import *
@@ -12,6 +14,7 @@ import matplotlib.pyplot as plt
 import logging
 import sys
 import os
+import spacy
 
 
 def to_nltk_tree(node):
@@ -131,6 +134,7 @@ class AttackGraphNode:
 
 class AttackGraph:
     attackgraph_nx: nx.DiGraph
+    nlp_doc: spacy.tokens.doc.Doc
 
     node_list = []
     edge_list = []
@@ -142,7 +146,7 @@ class AttackGraph:
 
     def __init__(self, doc):
         self.attackgraph_nx = None
-        self.construct_nxgraph_from_spacydoc(doc)
+        self.nlp_doc = doc
 
     def construct_nxgraph_from_spacydoc(self, doc):
         for sentence in doc.sents:
@@ -153,6 +157,7 @@ class AttackGraph:
 
         return self.attackgraph_nx
 
+    # construct graph with spacy tree
     def construct_nxgraph_from_spacysent(self, sentence):
         logging.info("---Construct Attack Graph!---")
 
@@ -190,7 +195,53 @@ class AttackGraph:
         return self.attackgraph_nx
 
     def parse(self):
-        pass # TODO
+        logging.info("---S1-1: Parsing NLP doc to get Attack Graph!---")
+
+        # parse node
+        self.parse_node()
+        # parse edge
+        self.parse_edge()
+        # parse coreference
+        self.parse_coreference()
+
+    def parse_node(self):
+        logging.info("---S1-1.1: Parsing NLP doc to get Attack Graph Nodes!---")
+        pass
+
+    # M1: find Shortest Dependency Path (SDP)
+    # https://towardsdatascience.com/how-to-find-shortest-dependency-path-with-spacy-and-stanfordnlp-539d45d28239
+    def parse_edge(self):
+        logging.info("---S1-1.2: Parsing NLP doc to get Attack Graph Edges!---")
+
+        edges = []
+        ioc_nodes = []
+        for token in doc:
+            if token.ent_type_ in ner_labels:
+                ioc_nodes.append(token.lower_)
+
+            for child in token.children:
+                edges.append((
+                    '{0}'.format(token.lower_),
+                    '{0}'.format(child.lower_)))
+
+        nlp_tree = nx.Graph(edges)
+
+        picked_edges = []
+        for n in ioc_nodes:
+            for m in ioc_nodes:
+                try:
+                    print(nx.shortest_path_length(nlp_tree, source=n, target=m))
+                    print(nx.shortest_path(nlp_tree, source=n, target=m))
+                    picked_edges.append((m, n))
+                except:
+                    continue
+
+        graph = nx.Graph(picked_edges)
+        draw_attackgraph_plt(graph)
+
+    def parse_coreference(self):
+        logging.info("---S1-1.3: Parsing NLP doc for co-reference!---")
+        pass
 
     def to_node_sequence(self):
         pass # TODO
@@ -273,6 +324,10 @@ if __name__ == '__main__':
 
     doc = ner_model.parser(text)
     ag = AttackGraph(doc)
-    dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
-    dot_graph.view()
+
+    ag.parse_edge()
+
+    # ag.construct_nxgraph_from_spacydoc(doc)
+    # dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
+    # dot_graph.view()
 

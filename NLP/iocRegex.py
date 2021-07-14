@@ -42,7 +42,7 @@ IoC_replacedWord = {
     "FilePath": "path",
     "Vulnerability": "exploit",
     "Registry": "registry",
-    "Arguments": "argument"
+    "Arguments": ""  # remove arguments
 }
 
 
@@ -84,7 +84,7 @@ class IoCIdentifier:
         return output
 
     def ioc_identify(self, text: str = None) -> str:
-        logging.info("---Identify IoC with Regex in text!---")
+        logging.info("---S0-2: Identify IoC with Regex in text!---")
 
         if text is None:
             text = self.text
@@ -136,8 +136,7 @@ class IoCIdentifier:
             # print("%s-%s" % (replaced_string, original_string))
 
 
-
-            # %%
+# %%
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
