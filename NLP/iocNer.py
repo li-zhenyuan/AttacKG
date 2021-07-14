@@ -4,7 +4,8 @@
 
 import spacy
 from spacy import displacy
-from spacy.training import Example
+# from spacy.training import Example
+import neuralcoref
 import random
 import json
 import logging
@@ -17,7 +18,6 @@ ner_labels = [
     "ScriptsFile",
     "DocumentFile",
     "E-mail",
-    "Registry",
     "Registry",
     "File",
     "Vulnerability",
@@ -122,21 +122,28 @@ class IoCNer:
         {"label": "APTFamily", "pattern": [{"TEXT": {"REGEX": "(T|t)eam"}}]},
         {"label": "APTFamily", "pattern": [{"TEXT": {"REGEX": "(A|a)ctor[s]*"}}]},
 
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "payload[s]*"}}]},
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "script[s]*"}}]},
+        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(P|p)ayload[s]*"}}]},
+        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(S|s)cript[s]*"}}]},
         {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(C|c)ommand[s]*"}}]},
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "malware"}}]},
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "stager"}}]},
+        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(M|m)alware"}}]},
+        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(S|s)tager"}}]},
+        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(E|e)xecutable"}}]},
 
         {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(D|d)ocument[s]*"}}]},
-        {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(|c)redential[s]*"}}]},
+        {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(C|c)redential[s]*"}}]},
         {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(A|a)ttachment[s]*"}}]},
 
+        {"label": "File", "pattern": [{"TEXT": {"REGEX": "(F|f)ile[s]*"}}]},
+        {"label": "File", "pattern": [{"TEXT": {"REGEX": "(P|p)ath"}}]},
+
         {"label": "NetLoc", "pattern": [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}]},
+        {"label": "NetLoc", "pattern": [{"TEXT": {"REGEX": "(N|n)etwork"}}]},
 
         {"label": "Service", "pattern": [{"TEXT": {"REGEX": "(T|t)ask[s]*"}}]},
 
-        {"label": "Vulnerability", "pattern": [{"TEXT": {"REGEX": "(E|e)xploit"}}]}
+        {"label": "Vulnerability", "pattern": [{"TEXT": {"REGEX": "(E|e)xploit"}}]},
+
+        {"label": "Registry", "pattern": [{"TEXT": {"REGEX": "(R|r)egistry"}}]}
     ]
 
     config = {
@@ -156,6 +163,7 @@ class IoCNer:
         # print([(ent.text, ent.label_) for ent in doc.ents])
 
     def parser(self, text: str, model_location="./new_cti.model"):
+        logging.info("---S1-1: Parse clean text to NLP doc!---")
         self.nlp = spacy.load(model_location)
         self.ner_with_regex()
 
@@ -166,12 +174,20 @@ class IoCNer:
 # %%
 
 if __name__ == '__main__':
-    sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+
+    # %%
+    # model training flow
 
     ner_model = IoCNer("en_core_web_sm")
-    labeled_data = read_labeled_data(r"C:\Users\xiaowan\Documents\GitHub\AttacKG\NLP\Doccano\admin.jsonl")
+    labeled_data = read_labeled_data(r".\NLP\Doccano\admin.jsonl")
     spacy_data = ner_model.convert_data_format(labeled_data)
     ner_model.train_model(spacy_data)
+
+
+    # %%
+    # model testing flow
+
+    sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
 
     doc = ner_model.nlp(sample)
     print([(ent.text, ent.label_) for ent in doc.ents])
