@@ -41,15 +41,22 @@ def read_html(file) -> str:
 
         cleartext = clear_text(text)
 
+        logging.info(cleartext)
         return cleartext
 
 
 def clear_text(text: str) -> str:
-    cleartext = text.replace("\\n", "\n")
+    cleartext = text
+
+    cleartext = cleartext.replace("\\n", "\n")
     cleartext = cleartext.replace("\\t", "\t")
+    cleartext = cleartext.replace("\\r", " ")
 
     multint = re.compile('[\n]+')
     cleartext = multint.sub('\n', cleartext)
+
+    hex = re.compile('(x[0-9a-f]{2})+')
+    cleartext = hex.sub(' ', cleartext)
 
     # comp = re.compile('[^A-Z^a-z^0-9^\u4e00-\u9fa5]') #[^A-Z^a-z^0-9^\u4e00-\u9fa5]
     # cleartext = comp.sub('', text)
@@ -60,47 +67,7 @@ def clear_text(text: str) -> str:
 # %%
 
 
-def spacy_stentencizer(text: str, model: str = 'en_core_web_sm') -> list:
-    nlp = spacy.load(model)
-    # boundary = re.compile('^[0-9]$')
-
-    sentences = []
-    doc = nlp(text)
-    for sentence in doc.sents:
-        sentences.append(sentence)
-        print(sentence.text)
-        print("--------------------------------")
-
-    return sentences
-
-
-# %%
-
-ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
-
-
-def list_entity(sentence):
-    entity_list = []
-
-    for entity in sentence.ents:
-        if entity.label_ in ner_labels:
-            entity_list.append((entity.text, entity.label_))
-
-    if entity_list:
-        print(sentence.text)
-        print(entity_list)
-        print("=============================")
-
-# %%
-
-
 if __name__ == '__main__':
-    file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
+    file = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
     text = read_html(file)
 
-    sentences = spacy_stentencizer(text, "./new_cti.model")
-
-# %%
-
-    for sentence in sentences:
-        list_entity(sentence)

@@ -102,7 +102,10 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
 
     if output_file is not None:
         dot.format = "png"
-        dot.render(output_file, view=False)
+        try:
+            dot.render(output_file, view=False)
+        except:
+            logging.warning("%s dot rendering error!")
 
     return dot
 
@@ -170,6 +173,7 @@ class AttackGraph:
 
         root = sentence.root
         # to_nltk_formatted_tree(root).pretty_print()
+        is_related_sentence = False
 
         # FIXME: Wrong relationships
         # traverse the nltk tree
@@ -182,6 +186,8 @@ class AttackGraph:
             if re.match("NN.*", node.tag_):
                 # if node.ent_type_ != "":
                 if node.ent_type_ in ner_labels:
+                    is_related_sentence = True
+
                     n = "@".join([node.text, node.ent_type_])
                     logging.debug(n)
                     self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text)
@@ -191,6 +197,9 @@ class AttackGraph:
                     tnode = n
             for child in node.children:
                 node_queue.append(child)
+
+        if(is_related_sentence):
+            logging.info("Related sentence: %s" % sentence.text)
 
         return self.attackgraph_nx
 
@@ -247,6 +256,38 @@ class AttackGraph:
         pass # TODO
 
 
+def parse_attackgraph_from_cti_report(cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):
+    logging.info("---Parsing %s---" % cti_file)
+
+    file_name = os.path.splitext(file)[0]
+    file_ext = os.path.splitext(file)[-1]
+    if file_ext == ".html":
+        text = read_html(cti_file)
+        if len(text) > 1000000:  # FIXME: cannot process text file with more than 1000000 characters.
+            logging.warning("---Not support too long CTI reports yet!---")
+            return
+    else:
+        logging.warning("---Not support non-html CTI reports yet!---")
+        return
+
+    iid = IoCIdentifier(text)
+    iid.display_iocs()
+    text_without_ioc = iid.replaced_text
+
+    doc = ner_model.parser(text)
+    ag = AttackGraph(doc)
+
+    # ag.parse_edge()
+
+    ag.construct_nxgraph_from_spacydoc(doc)
+    dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
+
+    if output_path == "":
+        dot_graph.view()
+    else:
+        nx.write_gml(ag.attackgraph_nx, os.path.join(output_path, file_name + ".gml"))
+        draw_attackgraph_dot(ag.attackgraph_nx, output_file=os.path.join(output_path, file_name))
+
 # %%
 
 if __name__ == '__main__':
@@ -254,51 +295,27 @@ if __name__ == '__main__':
 
     ner_model = IoCNer("./new_cti.model")
 
-    # %%
-    # construct_AG_from_spacydoc() unit
+    # parse_attackgraph_from_cti_report()
 
-    # sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
-    # sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
-    # sample = "Sandworm Team has delivered malicious Microsoft Office attachments via spearphishing."
-    # sample = "Windshift has sent spearphishing emails with attachment to harvest credentials and deliver malware."
-    #
-    # doc = ner_model.parser(sample)
-    # G = ag.construct_AG_from_spacydoc(doc)
+    cti_file = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
+    text = read_html(cti_file)
 
-    # %%
-    # extract_entity_list_from_spacydoc() unit
+    iid = IoCIdentifier(text)
+    iid.display_iocs()
+    text_without_ioc = iid.replaced_text
 
-    # file = r"C:\Users\xiaowan\Documents\GitHub\AttacKG\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
-    # text = read_html(file)
-    #
-    # doc = ner_model.parser(text)
-    # G = ag.construct_AG_from_spacydoc(doc)
-    # ent_list = ag.extract_entity_list_from_spacydoc(doc)
+    doc = ner_model.parser(text)
+    ag = AttackGraph(doc)
 
     # %%
     # class AttackGraph unit test
 
     # cti_path = r".\data\cti\html"
-    # output_path = r".\data\processed"
+    # output_path = r".\data\extracted_attackgraph"
     #
     # cti_files = os.listdir(cti_path)
     # for file in cti_files:
-    #     file_name = os.path.splitext(file)[0]
-    #     file_ext = os.path.splitext(file)[-1]
-    #     if file_ext == ".html":
-    #         logging.info("---Parsing %s!---" % file)
-    #
-    #         text = read_html(os.path.join(cti_path, file))
-    #         if len(text) > 1000000:  # FIXME: cannot process text file with more than 1000000 characters.
-    #             continue
-    #         doc = ner_model.parser(text)
-    #
-    #         ag = AttackGraph(doc)
-    #
-    #         # TODO: set this two functions as member functions of class "AttackGrpah"
-    #         nx.write_gml(ag.attackgraph_nx, os.path.join(output_path, file_name + ".gml"))
-    #         dot_graph = draw_attackgraph_dot(ag.attackgraph_nx, output_file=os.path.join(output_path, file_name))
-    #         # dot.view()
+    #     parse_attackgraph_from_cti_report(os.path.join(cti_path, file), output_path)
 
     # %%
     # draw_AG() unit test
@@ -313,21 +330,12 @@ if __name__ == '__main__':
     # dot.view()
 
     # %%
-    # AttackGraph.parse() unit test
+    # construct_AG_from_spacydoc() unit
 
-    cti_file = r".\data\cti\html\00a5d14f67e02675474f86e3bcd8fc53.html"
-    text = read_html(cti_file)
-
-    iid = IoCIdentifier(text)
-    iid.display_iocs()
-    text_without_ioc = iid.replaced_text
-
-    doc = ner_model.parser(text)
-    ag = AttackGraph(doc)
-
-    ag.parse_edge()
-
-    # ag.construct_nxgraph_from_spacydoc(doc)
-    # dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
-    # dot_graph.view()
-
+    # sample = "APT12 has sent emails with malicious Microsoft Office documents and PDFs attached."
+    # sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+    # sample = "Sandworm Team has delivered malicious Microsoft Office attachments via spearphishing."
+    # sample = "Windshift has sent spearphishing emails with attachment to harvest credentials and deliver malware."
+    #
+    # doc = ner_model.parser(sample)
+    # G = ag.construct_AG_from_spacydoc(doc)
