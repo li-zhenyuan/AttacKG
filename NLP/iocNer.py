@@ -9,6 +9,8 @@ from spacy.training import Example
 import random
 import json
 import logging
+import coreferee
+import os
 
 
 ner_labels = [
@@ -91,10 +93,14 @@ class IoCNer:
 
     def train_model(self, spacy_data: list, new_model_location="./new_cti.model"):
         logging.info("---Start Training!---")
-        # new_model_location = "/home/zhenyuan/AttacKG/NLP/new_cti.model"
 
         # Loop
-        other_pipes = [pipe for pipe in self.nlp.pipe_names if pipe != 'ner']
+        # other_pipes = ["tagger", "parser", "attribute_ruler", "lemmatizer"]
+        # other_pipes = [pipe for pipe in self.nlp.pipe_names if pipe != 'ner']
+        other_pipes = []
+
+        # https://towardsdatascience.com/how-to-fine-tune-bert-transformer-with-spacy-3-6a90bfe57647
+        # https://spacy.io/usage/training
         with self.nlp.disable_pipes(*other_pipes):
             for itn in range(4):
                 random.shuffle(spacy_data)
@@ -162,10 +168,14 @@ class IoCNer:
         # doc = self.nlp("APT3 has used PowerShell on victim systems to download and run payloads after exploitation.")
         # print([(ent.text, ent.label_) for ent in doc.ents])
 
+    def add_coreference(self):
+        self.nlp.add_pipe('coreferee')
+
     def parser(self, text: str, model_location="./new_cti.model"):
         logging.info("---S1-1: Parse clean text to NLP doc!---")
         self.nlp = spacy.load(model_location)
         self.ner_with_regex()
+        self.add_coreference()
 
         nlp_doc = self.nlp(text)
         return nlp_doc
@@ -178,13 +188,21 @@ if __name__ == '__main__':
     # %%
     # model training flow
 
-    ner_model = IoCNer("en_core_web_sm")
-    labeled_data = read_labeled_data(r".\NLP\Doccano\admin.jsonl")
-    spacy_data = ner_model.convert_data_format(labeled_data)
-    ner_model.train_model(spacy_data)
+    # ner_model = IoCNer("en_core_web_sm")
+    # # ner_model = IoCNer("en_core_web_trf")
+    #
+    # labeled_data = read_labeled_data(r".\NLP\Doccano\admin.jsonl")
+    # spacy_data = ner_model.convert_data_format(labeled_data)
+    # ner_model.train_model(spacy_data)
 
     # %%
     # model testing flow
+
+    # https://zhuanlan.zhihu.com/p/158474472
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+    ner_model = IoCNer("./new_cti.model")
+    # ner_model = IoCNer("en_core_web_trf")
 
     sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
 
@@ -194,3 +212,9 @@ if __name__ == '__main__':
     ner_model.ner_with_regex()
     doc = ner_model.nlp(sample)
     print([(ent.text, ent.label_) for ent in doc.ents])
+
+    sample = "Although he was very busy with his work, Peter had had enough of it. He and his wife decided they needed a holiday. They travelled to Spain because they loved the country very much."
+
+    ner_model.add_coreference()
+    doc = ner_model.nlp(sample)
+    doc._.coref_chains.print()

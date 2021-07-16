@@ -15,6 +15,8 @@ import logging
 import sys
 import os
 import spacy
+import itertools
+import coreferee
 
 
 def to_nltk_tree(node):
@@ -234,19 +236,25 @@ class AttackGraph:
                     '{0}'.format(child.lower_)))
 
         nlp_tree = nx.Graph(edges)
+        draw_attackgraph_plt(nlp_tree)
 
-        picked_edges = []
-        for n in ioc_nodes:
-            for m in ioc_nodes:
-                try:
-                    print(nx.shortest_path_length(nlp_tree, source=n, target=m))
-                    print(nx.shortest_path(nlp_tree, source=n, target=m))
-                    picked_edges.append((m, n))
-                except:
-                    continue
+        for nodes in range(2, nlp_tree.number_of_nodes()):
+            for SG in (nlp_tree.subgraph(selected_nodes) for selected_nodes in itertools.combinations(nlp_tree, nodes)):
+                if nx.is_connected(SG):
+                    print(SG.nodes)
 
-        graph = nx.Graph(picked_edges)
-        draw_attackgraph_plt(graph)
+        # picked_edges = []
+        # for n in ioc_nodes:
+        #     for m in ioc_nodes:
+        #         try:
+        #             print(nx.shortest_path_length(nlp_tree, source=n, target=m))
+        #             print(nx.shortest_path(nlp_tree, source=n, target=m))
+        #             picked_edges.append((m, n))
+        #         except:
+        #             continue
+        #
+        # graph = nx.Graph(picked_edges)
+        # draw_attackgraph_plt(graph)
 
     def parse_coreference(self):
         logging.info("---S1-1.3: Parsing NLP doc for co-reference!---")
@@ -259,8 +267,8 @@ class AttackGraph:
 def parse_attackgraph_from_cti_report(cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):
     logging.info("---Parsing %s---" % cti_file)
 
-    file_name = os.path.splitext(file)[0]
-    file_ext = os.path.splitext(file)[-1]
+    file_name = os.path.splitext(cti_file)[0]
+    file_ext = os.path.splitext(cti_file)[-1]
     if file_ext == ".html":
         text = read_html(cti_file)
         if len(text) > 1000000:  # FIXME: cannot process text file with more than 1000000 characters.
@@ -274,7 +282,7 @@ def parse_attackgraph_from_cti_report(cti_file: str = r".\data\cti\html\0a84e7a8
     iid.display_iocs()
     text_without_ioc = iid.replaced_text
 
-    doc = ner_model.parser(text)
+    doc = ner_model.parser(text_without_ioc)
     ag = AttackGraph(doc)
 
     # ag.parse_edge()
@@ -294,6 +302,7 @@ if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     ner_model = IoCNer("./new_cti.model")
+    ner_model.add_coreference()
 
     # parse_attackgraph_from_cti_report()
 
@@ -304,8 +313,14 @@ if __name__ == '__main__':
     iid.display_iocs()
     text_without_ioc = iid.replaced_text
 
-    doc = ner_model.parser(text)
+    doc = ner_model.parser(text_without_ioc)
     ag = AttackGraph(doc)
+    ag.parse()
+    ag.construct_nxgraph_from_spacydoc(doc)
+    dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
+
+    ag.nlp_doc._.coref_chains.print()
+    dot_graph.view()
 
     # %%
     # class AttackGraph unit test
