@@ -153,22 +153,135 @@ class AttackGraph:
         self.attackgraph_nx = None
         self.nlp_doc = doc
 
-    def construct_nxgraph_from_spacydoc(self, doc):
+    # def construct_nxgraph_from_spacydoc(self, doc):
+    #     for sentence in doc.sents:
+    #         try:
+    #             self.attackgraph_nx = self.construct_nxgraph_from_spacysent(sentence)
+    #         except:
+    #             continue
+    #
+    #     return self.attackgraph_nx
+    #
+    # # construct graph with spacy tree
+    # def construct_nxgraph_from_spacysent(self, sentence):
+    #     logging.info("---Construct Attack Graph!---")
+    #
+    #     if self.attackgraph_nx == None:
+    #         self.attackgraph_nx = nx.DiGraph()
+    #
+    #     node_queue = []
+    #     tvb = ""
+    #     tnode = ""
+    #
+    #     root = sentence.root
+    #     # to_nltk_formatted_tree(root).pretty_print()
+    #     is_related_sentence = False
+    #
+    #     # FIXME: Wrong relationships
+    #     # traverse the nltk tree
+    #     node_queue.append(root)
+    #     while node_queue:
+    #         node = node_queue.pop(0)  # FIXME: First in first out
+    #         # print("@".join([node.text, node.tag_, node.ent_type_]))
+    #         if re.match("VB.*", node.tag_):
+    #             tvb = node.text
+    #         if re.match("NN.*", node.tag_):
+    #             # if node.ent_type_ != "":
+    #             if node.ent_type_ in ner_labels:
+    #                 is_related_sentence = True
+    #
+    #                 n = "@".join([node.text, node.ent_type_])
+    #                 logging.debug(n)
+    #                 self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text)
+    #
+    #                 if tnode != "" and tvb != "":
+    #                     self.attackgraph_nx.add_edge(tnode, n, action=tvb)
+    #                 tnode = n
+    #         for child in node.children:
+    #             node_queue.append(child)
+    #
+    #     if(is_related_sentence):
+    #         logging.info("Related sentence: %s" % sentence.text)
+    #
+    #     return self.attackgraph_nx
+
+    def parse(self):
+        logging.info("---S1-1: Parsing NLP doc to get Attack Graph!---")
+
+        # parse coreference
+        self.parse_coref()
+        # parse node
+        self.parse_node()
+        # parse edge
+        self.parse_edge()
+
+    ioc_coref_list = []
+    ioc_coref_dict = {}
+
+    def parse_coref(self):
+        logging.info("---S1-1.0: Parsing NLP doc to get Coreference!---")
+
+        for coref_set in self.nlp_doc._.coref_chains:
+
+            # get ioc-related coreferences sets
+            coref_origin = 0
+            for coref_item in coref_set:
+                coref_token = self.nlp_doc[coref_item.root_index]
+                # logging.debug("%s-%s" % (coref_token, coref_token.ent_type_))
+                if coref_token.ent_type_ in ner_labels:
+                    self.ioc_coref_list.append(coref_set)
+                    coref_origin = coref_item.root_index
+                    break
+
+            # pasing the coreferences
+            if coref_origin != 0:
+                coref_token = self.nlp_doc[coref_origin]
+                logging.debug("---coref_origiin:---\n %s-%s" % (coref_token, coref_token.ent_type_))
+                for i in range(0, len(coref_set.mentions)):
+                    coref_p = coref_set.mentions[i].root_index
+                    if coref_p == coref_origin:
+                        continue
+                    coref_token = self.nlp_doc[coref_p]
+                    self.ioc_coref_dict[coref_p] = coref_origin
+                    logging.debug("%s-%s" % (coref_token, coref_token.ent_type_))
+
+    ioc_ent_list = []
+    ioc_ent_token_lower_list = []
+
+    def parse_node(self):
+        logging.info("---S1-1.1: Parsing NLP doc to get Attack Graph Nodes!---")
+
+        # parsing all ioc nodes
+        for entity in self.nlp_doc.ents:
+            ent_token = entity.root
+            ent_type = entity.label_
+            if ent_type in ner_labels:
+                self.ioc_ent_list.append(ent_token)
+                self.ioc_ent_token_lower_list.append(ent_token.lower_)
+                logging.debug("%s-%s" % (ent_token, ent_token.ent_type_))
+
+        # link coreference node to original ones
+
+
+        # parsing ioc recognized with iocRegex
+
+        pass
+
+    def parse_edge(self):
+        logging.info("---S1-1.2: Parsing NLP doc to get Attack Graph Edges!---")
+
+        if self.attackgraph_nx == None:
+            self.attackgraph_nx = nx.DiGraph()
+
         for sentence in doc.sents:
             try:
-                self.attackgraph_nx = self.construct_nxgraph_from_spacysent(sentence)
+                self.parse_edge_sentence(sentence)
             except:
                 continue
 
         return self.attackgraph_nx
 
-    # construct graph with spacy tree
-    def construct_nxgraph_from_spacysent(self, sentence):
-        logging.info("---Construct Attack Graph!---")
-
-        if self.attackgraph_nx == None:
-            self.attackgraph_nx = nx.DiGraph()
-
+    def parse_edge_sentence(self, sentence):
         node_queue = []
         tvb = ""
         tnode = ""
@@ -181,22 +294,32 @@ class AttackGraph:
         # traverse the nltk tree
         node_queue.append(root)
         while node_queue:
-            node = node_queue.pop(0)  # FIXME: First in first out
-            # print("@".join([node.text, node.tag_, node.ent_type_]))
-            if re.match("VB.*", node.tag_):
-                tvb = node.text
-            if re.match("NN.*", node.tag_):
-                # if node.ent_type_ != "":
-                if node.ent_type_ in ner_labels:
-                    is_related_sentence = True
+            node = node_queue.pop(0)
 
-                    n = "@".join([node.text, node.ent_type_])
-                    logging.debug(n)
-                    self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text)
+            if node.ent_type_ in ner_labels:
+                is_related_sentence = True
 
-                    if tnode != "" and tvb != "":
-                        self.attackgraph_nx.add_edge(tnode, n, action=tvb)
-                    tnode = n
+                n = "@".join([node.text, node.ent_type_])
+                logging.debug(n)
+                self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text)
+                # self.attackgraph_nx.add_node(node.i)
+
+                if tnode != "":
+                    self.attackgraph_nx.add_edge(tnode, n, action=tvb)
+                tnode = n
+
+            # edges with coreference nodes
+            if node.i in self.ioc_coref_dict.keys():
+                coref_node = self.nlp_doc[self.ioc_coref_dict[node.i]]
+                n = "@".join([coref_node.text, coref_node.ent_type_])
+                logging.debug(n)
+                self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=coref_node.text)
+                # self.attackgraph_nx.add_node(node.i)
+
+                if tnode != "":
+                    self.attackgraph_nx.add_edge(tnode, n, action=tvb)
+                tnode = n
+
             for child in node.children:
                 node_queue.append(child)
 
@@ -205,60 +328,26 @@ class AttackGraph:
 
         return self.attackgraph_nx
 
-    def parse(self):
-        logging.info("---S1-1: Parsing NLP doc to get Attack Graph!---")
 
-        # parse node
-        self.parse_node()
-        # parse edge
-        self.parse_edge()
-        # parse coreference
-        self.parse_coreference()
-
-    def parse_node(self):
-        logging.info("---S1-1.1: Parsing NLP doc to get Attack Graph Nodes!---")
-        pass
-
-    # M1: find Shortest Dependency Path (SDP)
-    # https://towardsdatascience.com/how-to-find-shortest-dependency-path-with-spacy-and-stanfordnlp-539d45d28239
-    def parse_edge(self):
-        logging.info("---S1-1.2: Parsing NLP doc to get Attack Graph Edges!---")
-
-        edges = []
-        ioc_nodes = []
-        for token in doc:
-            if token.ent_type_ in ner_labels:
-                ioc_nodes.append(token.lower_)
-
-            for child in token.children:
-                edges.append((
-                    '{0}'.format(token.lower_),
-                    '{0}'.format(child.lower_)))
-
-        nlp_tree = nx.Graph(edges)
-        draw_attackgraph_plt(nlp_tree)
-
-        for nodes in range(2, nlp_tree.number_of_nodes()):
-            for SG in (nlp_tree.subgraph(selected_nodes) for selected_nodes in itertools.combinations(nlp_tree, nodes)):
-                if nx.is_connected(SG):
-                    print(SG.nodes)
-
-        # picked_edges = []
-        # for n in ioc_nodes:
-        #     for m in ioc_nodes:
-        #         try:
-        #             print(nx.shortest_path_length(nlp_tree, source=n, target=m))
-        #             print(nx.shortest_path(nlp_tree, source=n, target=m))
-        #             picked_edges.append((m, n))
-        #         except:
-        #             continue
-        #
-        # graph = nx.Graph(picked_edges)
-        # draw_attackgraph_plt(graph)
-
-    def parse_coreference(self):
-        logging.info("---S1-1.3: Parsing NLP doc for co-reference!---")
-        pass
+    # def parse_edge_sentence(self, sentence):
+    #     # M1: find Shortest Dependency Path (SDP)
+    #     # https://towardsdatascience.com/how-to-find-shortest-dependency-path-with-spacy-and-stanfordnlp-539d45d28239
+    #
+    #     ioc_nodes = []
+    #     edges = []
+    #     for token in sentence:
+    #         if token.ent_type_ in ner_labels:
+    #             ioc_nodes.append(token.i)
+    #
+    #         for child in token.children:
+    #             edges.append(('{0}'.format(token.i), '{0}'.format(child.i)))
+    #
+    #     graph = nx.DiGraph(edges)
+    #     draw_attackgraph_plt(graph)
+    #
+    #     # https://www.coder.work/article/3134983
+    #     # https://stackoverflow.com/questions/61914713/removing-a-node-from-digraph-in-networkx-while-preserving-child-nodes-and-remapp
+    #     # https://en.wikipedia.org/wiki/Edge_contraction
 
     def to_node_sequence(self):
         pass # TODO
@@ -316,10 +405,10 @@ if __name__ == '__main__':
     doc = ner_model.parser(text_without_ioc)
     ag = AttackGraph(doc)
     ag.parse()
-    ag.construct_nxgraph_from_spacydoc(doc)
+    # ag.construct_nxgraph_from_spacydoc(doc)
     dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
-
-    ag.nlp_doc._.coref_chains.print()
+    #
+    # ag.nlp_doc._.coref_chains.print()
     dot_graph.view()
 
     # %%
