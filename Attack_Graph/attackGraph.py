@@ -76,17 +76,17 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
         logging.debug(node)
 
         nlp = ""
-        regex = ""
         try:
             nlp = g.nodes[node]["nlp"]
         except:
             pass
 
+        regex = ""
         try:
             regex = g.nodes[node]["regex"]
         except:
             pass
-        node_label = "\n-\n".join([nlp, regex])
+        node_label = "\n-\n".join([node, regex])
 
         dot.node(node, label=node_label, shape=node_shape[g.nodes[node]["type"]])
 
@@ -125,6 +125,7 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
 #
 #     return ent_list
 
+
 class AttackGraphNode:
     node_type = ""
     node_ioc_representation = ""
@@ -135,6 +136,12 @@ class AttackGraphNode:
 
     def __str__(self):
         return "#".join(self.node_type, self.node_nlp_representation, self.node_ioc_representation)
+
+
+# return token unique id for nx.graph
+def get_token_id(tok: spacy.tokens.token.Token) -> str:
+    return "@".join([tok.lower_, tok.ent_type_])
+    # return "##".join([tok.lower_, tok.ent_type_, str(tok.i)])
 
 
 class AttackGraph:
@@ -299,7 +306,7 @@ class AttackGraph:
             if node.ent_type_ in ner_labels:
                 is_related_sentence = True
 
-                n = "@".join([node.text, node.ent_type_])
+                n = get_token_id(node)
                 logging.debug(n)
                 self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text)
                 # self.attackgraph_nx.add_node(node.i)
@@ -311,7 +318,7 @@ class AttackGraph:
             # edges with coreference nodes
             if node.i in self.ioc_coref_dict.keys():
                 coref_node = self.nlp_doc[self.ioc_coref_dict[node.i]]
-                n = "@".join([coref_node.text, coref_node.ent_type_])
+                n = get_token_id(coref_node)
                 logging.debug(n)
                 self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=coref_node.text)
                 # self.attackgraph_nx.add_node(node.i)
@@ -374,9 +381,8 @@ def parse_attackgraph_from_cti_report(cti_file: str = r".\data\cti\html\0a84e7a8
     doc = ner_model.parser(text_without_ioc)
     ag = AttackGraph(doc)
 
-    # ag.parse_edge()
-
-    ag.construct_nxgraph_from_spacydoc(doc)
+    ag.parse_edge()
+    # ag.construct_nxgraph_from_spacydoc(doc)
     dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
 
     if output_path == "":
@@ -407,8 +413,6 @@ if __name__ == '__main__':
     ag.parse()
     # ag.construct_nxgraph_from_spacydoc(doc)
     dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
-    #
-    # ag.nlp_doc._.coref_chains.print()
     dot_graph.view()
 
     # %%
