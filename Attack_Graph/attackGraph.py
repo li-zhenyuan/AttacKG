@@ -86,7 +86,7 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
             regex = g.nodes[node]["regex"]
         except:
             pass
-        node_label = "\n-\n".join([node, regex])
+        node_label = "\n-\n".join([nlp, regex])
 
         dot.node(node, label=node_label, shape=node_shape[g.nodes[node]["type"]])
 
@@ -147,18 +147,21 @@ def get_token_id(tok: spacy.tokens.token.Token) -> str:
 class AttackGraph:
     attackgraph_nx: nx.DiGraph
     nlp_doc: spacy.tokens.doc.Doc
+    ioc_identifier: IoCIdentifier
 
     node_list = []
     edge_list = []
 
     techniques = {}  # technique name -> [node_list]
 
-    def __init__(self):
+    def __init__(self, ioc_identifier = None):
         self.attackgraph_nx = None
+        self.ioc_identifier = ioc_identifier
 
-    def __init__(self, doc):
+    def __init__(self, doc, ioc_identifier = None):
         self.attackgraph_nx = None
         self.nlp_doc = doc
+        self.ioc_identifier = ioc_identifier
 
     # def construct_nxgraph_from_spacydoc(self, doc):
     #     for sentence in doc.sents:
@@ -217,8 +220,8 @@ class AttackGraph:
 
         # parse coreference
         self.parse_coref()
-        # parse node
-        self.parse_node()
+        # # parse node
+        # self.parse_node()
         # parse edge
         self.parse_edge()
 
@@ -259,16 +262,13 @@ class AttackGraph:
         logging.info("---S1-1.1: Parsing NLP doc to get Attack Graph Nodes!---")
 
         # parsing all ioc nodes
-        for entity in self.nlp_doc.ents:
-            ent_token = entity.root
-            ent_type = entity.label_
-            if ent_type in ner_labels:
-                self.ioc_ent_list.append(ent_token)
-                self.ioc_ent_token_lower_list.append(ent_token.lower_)
-                logging.debug("%s-%s" % (ent_token, ent_token.ent_type_))
-
-        # link coreference node to original ones
-
+        # for entity in self.nlp_doc.ents:
+        #     ent_token = entity.root
+        #     ent_type = entity.label_
+        #     if ent_type in ner_labels:
+        #         self.ioc_ent_list.append(ent_token)
+        #         self.ioc_ent_token_lower_list.append(ent_token.lower_)
+        #         logging.debug("%s-%s" % (ent_token, ent_token.ent_type_))
 
         # parsing ioc recognized with iocRegex
 
@@ -280,7 +280,7 @@ class AttackGraph:
         if self.attackgraph_nx == None:
             self.attackgraph_nx = nx.DiGraph()
 
-        for sentence in doc.sents:
+        for sentence in self.nlp_doc.sents:
             try:
                 self.parse_edge_sentence(sentence)
             except:
@@ -306,10 +306,15 @@ class AttackGraph:
             if node.ent_type_ in ner_labels:
                 is_related_sentence = True
 
-                n = get_token_id(node)
+                # try getting node ioc value
+                regex = ""
+                print(node + node.idx)
+                if node.idx in self.ioc_identifier.replaced_ioc_dict.keys():
+                    regex = self.ioc_identifier.replaced_ioc_dict[node.idx]
+
+                n = get_token_id(node)  # + regex
                 logging.debug(n)
-                self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text)
-                # self.attackgraph_nx.add_node(node.i)
+                self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text, regex=regex)
 
                 if tnode != "":
                     self.attackgraph_nx.add_edge(tnode, n, action=tvb)
@@ -360,7 +365,7 @@ class AttackGraph:
         pass # TODO
 
 
-def parse_attackgraph_from_cti_report(cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):
+def parse_attackgraph_from_cti_report(ner_model, cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):
     logging.info("---Parsing %s---" % cti_file)
 
     file_name = os.path.splitext(cti_file)[0]
@@ -377,9 +382,10 @@ def parse_attackgraph_from_cti_report(cti_file: str = r".\data\cti\html\0a84e7a8
     iid = IoCIdentifier(text)
     iid.display_iocs()
     text_without_ioc = iid.replaced_text
+    iid.check_replace_result()
 
     doc = ner_model.parser(text_without_ioc)
-    ag = AttackGraph(doc)
+    ag = AttackGraph(doc, ioc_identifier=iid)
 
     ag.parse_edge()
     # ag.construct_nxgraph_from_spacydoc(doc)
@@ -391,29 +397,31 @@ def parse_attackgraph_from_cti_report(cti_file: str = r".\data\cti\html\0a84e7a8
         nx.write_gml(ag.attackgraph_nx, os.path.join(output_path, file_name + ".gml"))
         draw_attackgraph_dot(ag.attackgraph_nx, output_file=os.path.join(output_path, file_name))
 
+    return ag
+
 # %%
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+    # logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
 
-    # parse_attackgraph_from_cti_report()
+    ag = parse_attackgraph_from_cti_report(ner_model)
 
-    cti_file = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
-    text = read_html(cti_file)
-
-    iid = IoCIdentifier(text)
-    iid.display_iocs()
-    text_without_ioc = iid.replaced_text
-
-    doc = ner_model.parser(text_without_ioc)
-    ag = AttackGraph(doc)
-    ag.parse()
-    # ag.construct_nxgraph_from_spacydoc(doc)
-    dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
-    dot_graph.view()
+    # cti_file = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
+    # text = read_html(cti_file)
+    #
+    # iid = IoCIdentifier(text)
+    # iid.display_iocs()
+    # text_without_ioc = iid.replaced_text
+    #
+    # doc = ner_model.parser(text_without_ioc)
+    # ag = AttackGraph(doc)
+    # ag.parse()
+    # # ag.construct_nxgraph_from_spacydoc(doc)
+    # dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
+    # dot_graph.view()
 
     # %%
     # class AttackGraph unit test

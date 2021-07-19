@@ -42,7 +42,7 @@ IoC_replacedWord = {
     "FilePath": "path",
     "Vulnerability": "exploit",
     "Registry": "registry",
-    "Arguments": ""  # remove arguments
+    "Arguments": " "  # remove arguments
 }
 
 
@@ -64,6 +64,7 @@ class IoCIdentifier:
     deleted_character_count = 0
     replaced_text = ""
     replaced_ioc_list = []
+    replaced_ioc_dict = {}
 
     def __init__(self, text: str = ""):
         self.text = text
@@ -112,6 +113,7 @@ class IoCIdentifier:
                         m.span()[1]-(self.deleted_character_count + (len(str(m.group()))-len(IoC_replacedWord[ioc_type]))))
                     self.deleted_character_count += (len(str(m.group())) - len(IoC_replacedWord[ioc_type]))
                     self.replaced_ioc_list.append(replaced_ioc_item)
+                    # self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
 
 
         return self.replaced_text
@@ -130,10 +132,11 @@ class IoCIdentifier:
             print("--".join([ioc.ioc_type, ioc.ioc_string]))
 
     def check_replace_result(self):
+        print("---Checking IoC replace result!---")
         for replaced_ioc_item in self.replaced_ioc_list:
             replaced_string = self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]
             original_string = replaced_ioc_item.ioc_string
-            # print("%s-%s" % (replaced_string, original_string))
+            print("%d:%d:%s-%s" % (replaced_ioc_item.ioc_location[0], replaced_ioc_item.ioc_location[1], replaced_string, original_string))
 
 
 # %%
@@ -143,10 +146,10 @@ if __name__ == '__main__':
 
     iid = IoCIdentifier()
 
-    print(iid.ioc_identify("APT29 has exploited CVE-2019-19781 for Citrix, CVE-2019-11510 for Pulse Secure VPNs, CVE-2018-13379 for FortiGate VPNs, and CVE-2019-9670 in Zimbra software to gain access."))
+    # print(iid.ioc_identify("APT29 has exploited CVE-2019-19781 for Citrix, CVE-2019-11510 for Pulse Secure VPNs, CVE-2018-13379 for FortiGate VPNs, and CVE-2019-9670 in Zimbra software to gain access."))
+    # print(iid.to_jsonl())
+    # iid.check_replace_result()
+
+    iid.ioc_identify(read_html(r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"))
     print(iid.to_jsonl())
     iid.check_replace_result()
-
-    # print(iid.ioc_identify_from_file(
-    #     r"C:.\data\cti\html\fff44fa08300b10119f80d6ac32131f9.html"))
-    # print(iid.to_jsonl())

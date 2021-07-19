@@ -58,6 +58,9 @@ def clear_text(text: str) -> str:
     hex = re.compile('(x[0-9a-f]{2})+')
     cleartext = hex.sub(' ', cleartext)
 
+    cleartext = cleartext.encode("ascii", "ignore")
+    cleartext = cleartext.decode()
+
     # comp = re.compile('[^A-Z^a-z^0-9^\u4e00-\u9fa5]') #[^A-Z^a-z^0-9^\u4e00-\u9fa5]
     # cleartext = comp.sub('', text)
 
