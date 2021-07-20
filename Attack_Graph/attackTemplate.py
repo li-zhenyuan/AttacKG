@@ -55,14 +55,14 @@ class TemplateNode(AttackGraphNode):
     instance_count = 0
     followup_node_list = []
 
-    def __init__(self, template,  node_type):
+    def __init__(self, template=None,  node_type=""):
         self.template = template
         self.node_type = node_type
 
         self.instance_count = 1
         self.followup_node_list = []
 
-        logging.info("---Init TemplateNode %s for %s!---" % self, template.template_name)
+        # logging.info("---Init TemplateNode %s for %s!---" % (self, template.template_name))
 
     def __str__(self):
         return self.node_type + str(self.instance_count)
@@ -144,25 +144,25 @@ def node_similarity(n: TemplateNode, m: TemplateNode):
 #     return template_node_list
 #
 #
-# def sequence_to_singletree(node_list):
-#     # node_list = attack_graph_to_sequence(G)
-#     logging.info("---Generate singletree!---")
-#
-#     n = node_list[-1]
-#     for i in range(len(node_list) - 2, -1, -1):
-#         node_list[i].add_followup_node(n)
-#         n = node_list[i]
-#
-#     for node in node_list:
-#         logging.debug(node.node_type + ":" + str(len(node.followup_node_list)))
-#
-#     return n
+def sequence_to_singletree(node_list):
+    # node_list = attack_graph_to_sequence(G)
+    logging.info("---Generate singletree!---")
+
+    n = node_list[-1]
+    for i in range(len(node_list) - 2, -1, -1):
+        node_list[i].add_followup_node(n)
+        n = node_list[i]
+
+    for node in node_list:
+        logging.debug(node.node_type + ":" + str(len(node.followup_node_list)))
+
+    return n
 
 
 # TODO: divide template into basic block and advanced block according to node appearance frequency in reports.
 class TechniqueTemplate:
     root_node = TemplateNode()
-    ag = AttackGraph()
+    ag: AttackGraph
     ner_model = IoCNer("./new_cti.model")
 
     def update_template(self, node_list):
@@ -225,10 +225,27 @@ if __name__ == '__main__':
 
     # '/techniques/T1566/00[1|2|3]',
     technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
+    technique_list = [r'/techniques/T1053/005']
+    # technique_list = [r'/techniques/T1547/001']
     example_list = []
     mgr = MitreGraphReader()
     for technique_id in technique_list:
         example_list += mgr.find_examples_for_technique(technique_id)
+
+    for example in example_list:
+        ner_model = IoCNer("./new_cti.model")
+        ner_model.add_coreference()
+
+        iid = IoCIdentifier(example)
+        iid.display_iocs()
+        text_without_ioc = iid.replaced_text
+
+        doc = ner_model.parser(text_without_ioc)
+        ag = AttackGraph(doc, iid)
+        ag.parse()
+        # ag.construct_nxgraph_from_spacydoc(doc)
+        dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
+        dot_graph.view()
 
     # %%
 
@@ -236,8 +253,8 @@ if __name__ == '__main__':
     # ner_model = IoCNer("./new_cti.model")
     # ner_model = NER_With_Spacy("en_core_web_sm")
 
-    tt = TechniqueTemplate()
-    tt.template_extraction_from_examplelist(phishing_email_example)
+    # tt = TechniqueTemplate()
+    # tt.template_extraction_from_examplelist(phishing_email_example)
 
     # for example in phishing_email_example:
     #     logging.debug(example)

@@ -106,12 +106,16 @@ class IoCIdentifier:
 
                     # replace iocs with replace_word
                     self.replaced_text = re.sub(regex, IoC_replacedWord[ioc_type], self.replaced_text, count=1)
+                    # self.replaced_text = self.replaced_text[:m.span()[0]] + IoC_replacedWord[ioc_type] + self.replaced_text[m.span()[1]]
+                    # self.replaced_text = self.replaced_text.replace(m.group(), IoC_replacedWord[ioc_type])
+
                     replaced_ioc_item = IoCItem(
                         m.group(),
                         ioc_type,
                         m.span()[0]-self.deleted_character_count,
                         m.span()[1]-(self.deleted_character_count + (len(str(m.group()))-len(IoC_replacedWord[ioc_type]))))
                     self.deleted_character_count += (len(str(m.group())) - len(IoC_replacedWord[ioc_type]))
+                    logging.debug("Replaced with: %s - %s" % (self.text[ioc_item.ioc_location[0]: ioc_item.ioc_location[1]], self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]))
                     self.replaced_ioc_list.append(replaced_ioc_item)
                     # self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
 
@@ -151,5 +155,5 @@ if __name__ == '__main__':
     # iid.check_replace_result()
 
     iid.ioc_identify(read_html(r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"))
-    print(iid.to_jsonl())
+    # print(iid.to_jsonl())
     iid.check_replace_result()

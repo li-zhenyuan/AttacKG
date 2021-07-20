@@ -17,6 +17,7 @@ import os
 import spacy
 import itertools
 import coreferee
+from pathlib import Path
 
 
 def to_nltk_tree(node):
@@ -281,10 +282,10 @@ class AttackGraph:
             self.attackgraph_nx = nx.DiGraph()
 
         for sentence in self.nlp_doc.sents:
-            try:
-                self.parse_edge_sentence(sentence)
-            except:
-                continue
+            # try:
+            self.parse_edge_sentence(sentence)
+            # except:
+            #     continue
 
         return self.attackgraph_nx
 
@@ -303,12 +304,11 @@ class AttackGraph:
         while node_queue:
             node = node_queue.pop(0)
 
-            if node.ent_type_ in ner_labels:
+            if node.ent_type_ in ner_labels and re.match("NN.*", node.tag_):
                 is_related_sentence = True
 
                 # try getting node ioc value
                 regex = ""
-                print(node + node.idx)
                 if node.idx in self.ioc_identifier.replaced_ioc_dict.keys():
                     regex = self.ioc_identifier.replaced_ioc_dict[node.idx]
 
@@ -321,16 +321,16 @@ class AttackGraph:
                 tnode = n
 
             # edges with coreference nodes
-            if node.i in self.ioc_coref_dict.keys():
-                coref_node = self.nlp_doc[self.ioc_coref_dict[node.i]]
-                n = get_token_id(coref_node)
-                logging.debug(n)
-                self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=coref_node.text)
-                # self.attackgraph_nx.add_node(node.i)
-
-                if tnode != "":
-                    self.attackgraph_nx.add_edge(tnode, n, action=tvb)
-                tnode = n
+            # if node.i in self.ioc_coref_dict.keys():
+            #     coref_node = self.nlp_doc[self.ioc_coref_dict[node.i]]
+            #     n = get_token_id(coref_node)
+            #     logging.debug(n)
+            #     self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=coref_node.text)
+            #     # self.attackgraph_nx.add_node(node.i)
+            #
+            #     if tnode != "":
+            #         self.attackgraph_nx.add_edge(tnode, n, action=tvb)
+            #     tnode = n
 
             for child in node.children:
                 node_queue.append(child)
@@ -368,7 +368,8 @@ class AttackGraph:
 def parse_attackgraph_from_cti_report(ner_model, cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):
     logging.info("---Parsing %s---" % cti_file)
 
-    file_name = os.path.splitext(cti_file)[0]
+    # file_name = os.path.splitext(cti_file)[0]
+    file_name = Path(cti_file).stem
     file_ext = os.path.splitext(cti_file)[-1]
     if file_ext == ".html":
         text = read_html(cti_file)
@@ -382,12 +383,12 @@ def parse_attackgraph_from_cti_report(ner_model, cti_file: str = r".\data\cti\ht
     iid = IoCIdentifier(text)
     iid.display_iocs()
     text_without_ioc = iid.replaced_text
-    iid.check_replace_result()
+    # iid.check_replace_result()
 
     doc = ner_model.parser(text_without_ioc)
     ag = AttackGraph(doc, ioc_identifier=iid)
 
-    ag.parse_edge()
+    ag.parse()
     # ag.construct_nxgraph_from_spacydoc(doc)
     dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
 
@@ -402,12 +403,12 @@ def parse_attackgraph_from_cti_report(ner_model, cti_file: str = r".\data\cti\ht
 # %%
 
 if __name__ == '__main__':
-    # logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
 
-    ag = parse_attackgraph_from_cti_report(ner_model)
+    # ag = parse_attackgraph_from_cti_report(ner_model)
 
     # cti_file = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
     # text = read_html(cti_file)
@@ -417,7 +418,7 @@ if __name__ == '__main__':
     # text_without_ioc = iid.replaced_text
     #
     # doc = ner_model.parser(text_without_ioc)
-    # ag = AttackGraph(doc)
+    # ag = AttackGraph(doc, iid)
     # ag.parse()
     # # ag.construct_nxgraph_from_spacydoc(doc)
     # dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
@@ -426,12 +427,12 @@ if __name__ == '__main__':
     # %%
     # class AttackGraph unit test
 
-    # cti_path = r".\data\cti\html"
-    # output_path = r".\data\extracted_attackgraph"
-    #
-    # cti_files = os.listdir(cti_path)
-    # for file in cti_files:
-    #     parse_attackgraph_from_cti_report(os.path.join(cti_path, file), output_path)
+    cti_path = r".\data\cti\html"
+    output_path = r".\data\extracted_attackgraph_2"
+
+    cti_files = os.listdir(cti_path)
+    for file in cti_files:
+        parse_attackgraph_from_cti_report(cti_file=os.path.join(cti_path, file), output_path=output_path, ner_model=ner_model)
 
     # %%
     # draw_AG() unit test
