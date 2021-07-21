@@ -116,6 +116,7 @@ class IoCIdentifier:
         self.ioc_list.sort(key=get_iocitem_key)
 
         self.deleted_character_count = 0
+        last_ioc_end = 0
         for ioc_item in self.ioc_list:
             original_ioc_string = ioc_item.ioc_string
             replaced_word = IoC_replacedWord[ioc_item.ioc_type]
@@ -124,18 +125,31 @@ class IoCIdentifier:
             if ioc_start_pos == -1:  # avoid IoCs with overlap
                 continue
 
-            # replace iocs with replace_word
-            # self.replaced_text = re.sub(ioc_item.ioc_string, IoC_replacedWord[ioc_item.ioc_type], self.replaced_text, count=1)
-            # self.replaced_text = self.replaced_text[:m.span()[0]] + IoC_replacedWord[ioc_type] + self.replaced_text[m.span()[1]]
-            self.replaced_text = self.replaced_text.replace(original_ioc_string, replaced_word)
+            if last_ioc_end >= ioc_item.ioc_location[1]:
+                last_ioc_end = ioc_item.ioc_location[1]
+                continue
+            last_ioc_end = ioc_item.ioc_location[1]
 
             replaced_word_start = ioc_item.ioc_location[0]-self.deleted_character_count
             round_deleted_character_count = len(original_ioc_string) - len(replaced_word)
             self.deleted_character_count += round_deleted_character_count
             replaced_word_end = ioc_item.ioc_location[1]-self.deleted_character_count
             replaced_ioc_item = IoCItem(original_ioc_string, ioc_item.ioc_type, replaced_word_start, replaced_word_end)
-            logging.debug("Replaced with: %s - %s" % (self.text[ioc_item.ioc_location[0]: ioc_item.ioc_location[1]], self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]))
             self.replaced_ioc_list.append(replaced_ioc_item)
+
+            if replaced_word_start != ioc_start_pos:
+                raise Exception("IoC Regex Align Failed!")
+
+
+            # if replaced_word_start != ioc_start_pos:
+            #     raise Exception("IoC Regex Align Failed!")
+
+            # replace iocs with replace_word
+            # self.replaced_text = re.sub(ioc_item.ioc_string, IoC_replacedWord[ioc_item.ioc_type], self.replaced_text, count=1)
+            self.replaced_text = self.replaced_text[:replaced_word_start] + replaced_word + self.replaced_text[replaced_word_start+len(original_ioc_string):]
+            # self.replaced_text = self.replaced_text.replace(original_ioc_string, replaced_word)
+
+            logging.debug("Replaced with: %s - %s" % (self.text[ioc_item.ioc_location[0]: ioc_item.ioc_location[1]], self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]))
             # self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
 
         return self.replaced_text
