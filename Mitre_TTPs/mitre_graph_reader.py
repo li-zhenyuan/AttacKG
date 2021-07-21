@@ -56,8 +56,24 @@ def read_csv_as_dict(csv_file: str) -> dict:
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    technique_id = "/techniques/T1059/001"
+    # technique_id = "/techniques/T1059/001"
+    # mgr = MitreGraphReader()
+    # example_list = mgr.find_examples_for_technique(technique_id)
+
+    # %%
+
+    technique_id_list = ["/techniques/T1566/001", "/techniques/T1566/002", "/techniques/T1566/003", "/techniques/T1059/001", "/techniques/T1059/003", "/techniques/T1059/005", "/techniques/T1059/007", "/techniques/T1204/001", "/techniques/T1204/002", "/techniques/T1053/005", "/techniques/T1547/001", "/techniques/T1037/001", "/techniques/T1547/001", "/techniques/T1547/002", "/techniques/T1112", "/techniques/T1218/005", "/techniques/T1218/010", "/techniques/T1218/011", "/techniques/T1078/001", "/techniques/T1518/001", "/techniques/T1083", "/techniques/T1057", "/techniques/T1012", "/techniques/T1497/001", "/techniques/T1560/001", "/techniques/T1123", "/techniques/T1119", "/techniques/T1041"]
     mgr = MitreGraphReader()
-    example_list = mgr.find_examples_for_technique(technique_id)
-    link_file_dict = read_csv_as_dict()
-    report_file_list = mgr.find_reports_for_technique(technique_id, link_file_dict)
+
+    example_list = []
+    for technique_id in technique_id_list:
+        example_list += mgr.find_examples_for_technique(technique_id)
+
+    with open("produce_examples_picked.txt", "w+") as output:
+        for example in example_list:
+            output.write(example + "\n")
+
+    # %%
+
+    # link_file_dict = read_csv_as_dict()
+    # report_file_list = mgr.find_reports_for_technique(technique_id, link_file_dict)

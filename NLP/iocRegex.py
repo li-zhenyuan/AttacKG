@@ -46,15 +46,23 @@ IoC_replacedWord = {
 }
 
 
-class IoCItem:
-    ioc_string: str
-    ioc_type: str
-    ioc_location: list
+class IoCItem:          # original IoC item     # replaced IoC item
+    ioc_string: str     # original IoC string   # replaced IoC string
+    ioc_type: str       # IoC type
+    ioc_location: list  # original
 
     def __init__(self, ioc_string, ioc_type, start_pos, end_pos):
         self.ioc_string = ioc_string
         self.ioc_type = ioc_type
         self.ioc_location = (start_pos, end_pos)
+
+    def __str__(self):
+        return "%s - %s: %d, %d" % (self.ioc_string, self.ioc_type, self.ioc_location[0], self.ioc_location[1])
+
+
+# For list sorting
+def get_iocitem_key(item: IoCItem):
+    return item.ioc_location[0]
 
 
 class IoCIdentifier:
@@ -92,6 +100,54 @@ class IoCIdentifier:
         else:
             self.text = text
 
+        self.replaced_text = text
+
+        # Find all IoC item in the text, need sorting
+        for ioc_type, regex_list in IoC_regex.items():
+            for regex in regex_list:
+                matchs = re.finditer(regex, text)
+                for m in matchs:
+                    logging.debug("Find IoC matching: %s - %s" % (ioc_type, m))
+                    # output["label"].append([match.span()[0], match.span()[1], ioc_type])
+                    ioc_item = IoCItem(m.group(), ioc_type, m.span()[0], m.span()[1])
+                    self.ioc_list.append(ioc_item)
+
+        # Sort the IoC item list
+        self.ioc_list.sort(key=get_iocitem_key)
+
+        self.deleted_character_count = 0
+        for ioc_item in self.ioc_list:
+            original_ioc_string = ioc_item.ioc_string
+            replaced_word = IoC_replacedWord[ioc_item.ioc_type]
+
+            ioc_start_pos = self.replaced_text.find(original_ioc_string)
+            if ioc_start_pos == -1:  # avoid IoCs with overlap
+                continue
+
+            # replace iocs with replace_word
+            # self.replaced_text = re.sub(ioc_item.ioc_string, IoC_replacedWord[ioc_item.ioc_type], self.replaced_text, count=1)
+            # self.replaced_text = self.replaced_text[:m.span()[0]] + IoC_replacedWord[ioc_type] + self.replaced_text[m.span()[1]]
+            self.replaced_text = self.replaced_text.replace(original_ioc_string, replaced_word)
+
+            replaced_word_start = ioc_item.ioc_location[0]-self.deleted_character_count
+            round_deleted_character_count = len(original_ioc_string) - len(replaced_word)
+            self.deleted_character_count += round_deleted_character_count
+            replaced_word_end = ioc_item.ioc_location[1]-self.deleted_character_count
+            replaced_ioc_item = IoCItem(original_ioc_string, ioc_item.ioc_type, replaced_word_start, replaced_word_end)
+            logging.debug("Replaced with: %s - %s" % (self.text[ioc_item.ioc_location[0]: ioc_item.ioc_location[1]], self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]))
+            self.replaced_ioc_list.append(replaced_ioc_item)
+            # self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
+
+        return self.replaced_text
+
+    def ioc_identify_old(self, text: str = None) -> str:
+        logging.info("---S0-2: Identify IoC with Regex in text!---")
+
+        if text is None:
+            text = self.text
+        else:
+            self.text = text
+
         self.deleted_character_count = 0
         self.replaced_text = text
 
@@ -118,7 +174,6 @@ class IoCIdentifier:
                     logging.debug("Replaced with: %s - %s" % (self.text[ioc_item.ioc_location[0]: ioc_item.ioc_location[1]], self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]))
                     self.replaced_ioc_list.append(replaced_ioc_item)
                     # self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
-
 
         return self.replaced_text
 
