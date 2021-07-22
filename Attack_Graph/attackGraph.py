@@ -43,9 +43,9 @@ def draw_attackgraph_plt(nx_graph: nx.DiGraph, image_file: str = None):
     graph_pos = nx.spring_layout(nx_graph)
     nx.draw_networkx_nodes(nx_graph, graph_pos, node_size=10, node_color='blue', alpha=0.3)
     nx.draw_networkx_edges(nx_graph, graph_pos)
-    # nx.draw_networkx_labels(g, graph_pos, font_size=8, font_family='sans-serif')
-    # edge_labels = nx.get_edge_attributes(G, 'action')
-    # nx.draw_networkx_edge_labels(G, graph_pos, edge_labels=edge_labels)
+    nx.draw_networkx_labels(nx_graph, graph_pos, font_size=8, font_family='sans-serif')
+    edge_labels = nx.get_edge_attributes(nx_graph, 'action')
+    nx.draw_networkx_edge_labels(nx_graph, graph_pos, edge_labels=edge_labels)
 
     if image_file is None:
         plt.show()
@@ -383,6 +383,15 @@ class AttackGraph:
 
     def to_node_sequence(self):
         pass # TODO
+
+
+def parse_attackgraph_from_text(text: str) -> AttackGraph:
+    iid = IoCIdentifier(text)
+    text_without_ioc = iid.replaced_text
+    doc = ner_model.parser(text_without_ioc)
+    ag = AttackGraph(doc, ioc_identifier=iid)
+
+    return ag
 
 
 def parse_attackgraph_from_cti_report(ner_model, cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):

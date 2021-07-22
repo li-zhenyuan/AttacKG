@@ -195,21 +195,21 @@ class TechniqueTemplate:
 
         return t
 
-    def template_extraction_from_examplelist(self, example_list: list) -> TemplateNode:
-        self.root_node = TemplateNode()
-
-        for e in example_list:
-            logging.debug(e)
-
-            doc = self.ner_model.parser(e)
-
-            nlp_node_list = extract_entity_list_from_spacydoc(doc)
-            template_node_list = nlp_node_list_to_sequence(nlp_node_list)
-            self.update_template(template_node_list)
-
-            logging.debug(self.root_node)
-
-        return self.root_node
+    # def template_extraction_from_examplelist(self, example_list: list) -> TemplateNode:
+    #     self.root_node = TemplateNode()
+    #
+    #     for e in example_list:
+    #         logging.debug(e)
+    #
+    #         doc = self.ner_model.parser(e)
+    #
+    #         nlp_node_list = extract_entity_list_from_spacydoc(doc)
+    #         template_node_list = nlp_node_list_to_sequence(nlp_node_list)
+    #         self.update_template(template_node_list)
+    #
+    #         logging.debug(self.root_node)
+    #
+    #     return self.root_node
 
     def pretty_print(self):
         pptree.Node()
@@ -233,21 +233,12 @@ if __name__ == '__main__':
         example_list += mgr.find_examples_for_technique(technique_id)
 
     for example in example_list:
-        ner_model = IoCNer("./new_cti.model")
-        ner_model.add_coreference()
-
-        iid = IoCIdentifier(example)
-        iid.display_iocs()
-        text_without_ioc = iid.replaced_text
-
-        doc = ner_model.parser(text_without_ioc)
-        ag = AttackGraph(doc, iid)
-        ag.parse()
-        # ag.construct_nxgraph_from_spacydoc(doc)
-        dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
-        dot_graph.view()
+        parse_attackgraph_from_text(example)
+        dot_graph = draw_attackgraph_plt(ag.attackgraph_nx)
+        # dot_graph.view()
 
 # 'APT-C-36 has used spearphishing emails with password protected RAR attachment to avoid being detected by the email gateway.[2] '
+
     # %%
 
     # ag = AttackGraph()
