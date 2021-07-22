@@ -41,7 +41,7 @@ def read_html(file) -> str:
 
         cleartext = clear_text(text)
 
-        logging.info(cleartext)
+        # logging.info(cleartext)
         return cleartext
 
 

@@ -135,11 +135,10 @@ class IoCIdentifier:
             self.deleted_character_count += round_deleted_character_count
             replaced_word_end = ioc_item.ioc_location[1]-self.deleted_character_count
             replaced_ioc_item = IoCItem(original_ioc_string, ioc_item.ioc_type, replaced_word_start, replaced_word_end)
-            self.replaced_ioc_list.append(replaced_ioc_item)
 
             if replaced_word_start != ioc_start_pos:
-                raise Exception("IoC Regex Align Failed!")
-
+                # raise Exception("IoC Regex Align Failed!")
+                continue
 
             # if replaced_word_start != ioc_start_pos:
             #     raise Exception("IoC Regex Align Failed!")
@@ -147,49 +146,50 @@ class IoCIdentifier:
             # replace iocs with replace_word
             # self.replaced_text = re.sub(ioc_item.ioc_string, IoC_replacedWord[ioc_item.ioc_type], self.replaced_text, count=1)
             self.replaced_text = self.replaced_text[:replaced_word_start] + replaced_word + self.replaced_text[replaced_word_start+len(original_ioc_string):]
+            self.replaced_ioc_list.append(replaced_ioc_item)
             # self.replaced_text = self.replaced_text.replace(original_ioc_string, replaced_word)
 
             logging.debug("Replaced with: %s - %s" % (self.text[ioc_item.ioc_location[0]: ioc_item.ioc_location[1]], self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]))
-            # self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
+            self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
 
         return self.replaced_text
 
-    def ioc_identify_old(self, text: str = None) -> str:
-        logging.info("---S0-2: Identify IoC with Regex in text!---")
-
-        if text is None:
-            text = self.text
-        else:
-            self.text = text
-
-        self.deleted_character_count = 0
-        self.replaced_text = text
-
-        for ioc_type, regex_list in IoC_regex.items():
-            for regex in regex_list:
-                matchs = re.finditer(regex, text)
-                for m in matchs:
-                    logging.debug("Find IoC matching: %s - %s" % (ioc_type, m))
-                    # output["label"].append([match.span()[0], match.span()[1], ioc_type])
-                    ioc_item = IoCItem(m.group(), ioc_type, m.span()[0], m.span()[1])
-                    self.ioc_list.append(ioc_item)
-
-                    # replace iocs with replace_word
-                    self.replaced_text = re.sub(regex, IoC_replacedWord[ioc_type], self.replaced_text, count=1)
-                    # self.replaced_text = self.replaced_text[:m.span()[0]] + IoC_replacedWord[ioc_type] + self.replaced_text[m.span()[1]]
-                    # self.replaced_text = self.replaced_text.replace(m.group(), IoC_replacedWord[ioc_type])
-
-                    replaced_ioc_item = IoCItem(
-                        m.group(),
-                        ioc_type,
-                        m.span()[0]-self.deleted_character_count,
-                        m.span()[1]-(self.deleted_character_count + (len(str(m.group()))-len(IoC_replacedWord[ioc_type]))))
-                    self.deleted_character_count += (len(str(m.group())) - len(IoC_replacedWord[ioc_type]))
-                    logging.debug("Replaced with: %s - %s" % (self.text[ioc_item.ioc_location[0]: ioc_item.ioc_location[1]], self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]))
-                    self.replaced_ioc_list.append(replaced_ioc_item)
-                    # self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
-
-        return self.replaced_text
+    # def ioc_identify_old(self, text: str = None) -> str:
+    #     logging.info("---S0-2: Identify IoC with Regex in text!---")
+    #
+    #     if text is None:
+    #         text = self.text
+    #     else:
+    #         self.text = text
+    #
+    #     self.deleted_character_count = 0
+    #     self.replaced_text = text
+    #
+    #     for ioc_type, regex_list in IoC_regex.items():
+    #         for regex in regex_list:
+    #             matchs = re.finditer(regex, text)
+    #             for m in matchs:
+    #                 logging.debug("Find IoC matching: %s - %s" % (ioc_type, m))
+    #                 # output["label"].append([match.span()[0], match.span()[1], ioc_type])
+    #                 ioc_item = IoCItem(m.group(), ioc_type, m.span()[0], m.span()[1])
+    #                 self.ioc_list.append(ioc_item)
+    #
+    #                 # replace iocs with replace_word
+    #                 self.replaced_text = re.sub(regex, IoC_replacedWord[ioc_type], self.replaced_text, count=1)
+    #                 # self.replaced_text = self.replaced_text[:m.span()[0]] + IoC_replacedWord[ioc_type] + self.replaced_text[m.span()[1]]
+    #                 # self.replaced_text = self.replaced_text.replace(m.group(), IoC_replacedWord[ioc_type])
+    #
+    #                 replaced_ioc_item = IoCItem(
+    #                     m.group(),
+    #                     ioc_type,
+    #                     m.span()[0]-self.deleted_character_count,
+    #                     m.span()[1]-(self.deleted_character_count + (len(str(m.group()))-len(IoC_replacedWord[ioc_type]))))
+    #                 self.deleted_character_count += (len(str(m.group())) - len(IoC_replacedWord[ioc_type]))
+    #                 logging.debug("Replaced with: %s - %s" % (self.text[ioc_item.ioc_location[0]: ioc_item.ioc_location[1]], self.replaced_text[replaced_ioc_item.ioc_location[0]: replaced_ioc_item.ioc_location[1]]))
+    #                 self.replaced_ioc_list.append(replaced_ioc_item)
+    #                 # self.replaced_ioc_dict[replaced_ioc_item.ioc_location[0]] = replaced_ioc_item.ioc_string
+    #
+    #     return self.replaced_text
 
     def to_jsonl(self) -> str:
         iocs = []
@@ -223,6 +223,7 @@ if __name__ == '__main__':
     # print(iid.to_jsonl())
     # iid.check_replace_result()
 
-    iid.ioc_identify(read_html(r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"))
+    # iid.ioc_identify(read_html(r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"))
+    iid.ioc_identify(read_html(r".\data\cti\html\003495c4cb6041c52db4b9f7ead95f05.html"))
     # print(iid.to_jsonl())
     iid.check_replace_result()
