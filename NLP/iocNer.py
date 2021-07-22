@@ -13,22 +13,9 @@ import coreferee
 import os
 
 
-ner_labels = [
-    "NetLoc",
-    "APTFamily",
-    "ExeFile",
-    "ScriptsFile",
-    "DocumentFile",
-    "E-mail",
-    "Registry",
-    "File",
-    "Vulnerability",
-    "C2C",
-    "SensInfo",
-    "Service"]
-
-
+# ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
 # ner_labels = ["FilePath", "NetLoc", "FileName", "Vulnerability", "Registry", "Attacker", "ExeFile", "DocFIle","Service"]
+ner_labels = ["actor", "network", "executable", "file", "defender", "registry", "vulnerability", "system"]
 
 
 def read_labeled_data(path: str) -> list:
@@ -124,26 +111,26 @@ class IoCNer:
     # https://stackoverflow.com/questions/57667710/using-regex-for-phrase-pattern-in-entityruler
     # https://python.plainenglish.io/a-closer-look-at-entityruler-in-spacy-rule-based-matching-44d01c43fb6
     patterns = [
-        {"label": "APTFamily", "pattern": [{"TEXT": {"REGEX": "APT[A-Za-z0-9-]+"}}]},
-        {"label": "APTFamily", "pattern": [{"TEXT": {"REGEX": "(T|t)eam"}}]},
-        {"label": "APTFamily", "pattern": [{"TEXT": {"REGEX": "(A|a)ctor[s]*"}}]},
+        {"label": "actor", "pattern": [{"TEXT": {"REGEX": "APT[A-Za-z0-9-]+"}}]},
+        {"label": "actor", "pattern": [{"TEXT": {"REGEX": "(T|t)eam"}}]},
+        {"label": "actor", "pattern": [{"TEXT": {"REGEX": "(A|a)ctor[s]*"}}]},
 
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(P|p)ayload[s]*"}}]},
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(S|s)cript[s]*"}}]},
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(C|c)ommand[s]*"}}]},
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(M|m)alware"}}]},
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(S|s)tager"}}]},
-        {"label": "ExeFile", "pattern": [{"TEXT": {"REGEX": "(E|e)xecutable"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(P|p)ayload[s]*"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(S|s)cript[s]*"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(C|c)ommand[s]*"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(M|m)alware"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(S|s)tager"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(E|e)xecutable"}}]},
 
-        {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(D|d)ocument[s]*"}}]},
-        {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(C|c)redential[s]*"}}]},
-        {"label": "DocumentFile", "pattern": [{"TEXT": {"REGEX": "(A|a)ttachment[s]*"}}]},
+        {"label": "file", "pattern": [{"TEXT": {"REGEX": "(D|d)ocument[s]*"}}]},
+        {"label": "file", "pattern": [{"TEXT": {"REGEX": "(C|c)redential[s]*"}}]},
+        {"label": "file", "pattern": [{"TEXT": {"REGEX": "(A|a)ttachment[s]*"}}]},
 
-        {"label": "File", "pattern": [{"TEXT": {"REGEX": "(F|f)ile[s]*"}}]},
-        {"label": "File", "pattern": [{"TEXT": {"REGEX": "(P|p)ath"}}]},
+        {"label": "file", "pattern": [{"TEXT": {"REGEX": "(F|f)ile[s]*"}}]},
+        {"label": "file", "pattern": [{"TEXT": {"REGEX": "(P|p)ath"}}]},
 
-        {"label": "NetLoc", "pattern": [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}]},
-        {"label": "NetLoc", "pattern": [{"TEXT": {"REGEX": "(N|n)etwork"}}]},
+        {"label": "network", "pattern": [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}]},
+        {"label": "network", "pattern": [{"TEXT": {"REGEX": "(N|n)etwork"}}]},
 
         {"label": "Service", "pattern": [{"TEXT": {"REGEX": "(T|t)ask[s]*"}}]},
 
@@ -188,12 +175,12 @@ if __name__ == '__main__':
     # %%
     # model training flow
 
-    # ner_model = IoCNer("en_core_web_sm")
-    # # ner_model = IoCNer("en_core_web_trf")
-    #
-    # labeled_data = read_labeled_data(r".\NLP\Doccano\admin.jsonl")
-    # spacy_data = ner_model.convert_data_format(labeled_data)
-    # ner_model.train_model(spacy_data)
+    ner_model = IoCNer("en_core_web_sm")
+    # ner_model = IoCNer("en_core_web_trf")
+
+    labeled_data = read_labeled_data(r".\NLP\Doccano\2021722.jsonl")
+    spacy_data = ner_model.convert_data_format(labeled_data)
+    ner_model.train_model(spacy_data)
 
     # %%
     # model testing flow
@@ -201,10 +188,15 @@ if __name__ == '__main__':
     # https://zhuanlan.zhihu.com/p/158474472
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-    ner_model = IoCNer("./new_cti.model")
+    # ner_model = IoCNer("./new_cti.model")
     # ner_model = IoCNer("en_core_web_trf")
 
     sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+    sample = "Wizard Spider has used spearphishing attachments to deliver Microsoft documents containing macros or PDFs containing malicious links to download either Emotet, Bokbot, TrickBot, or Bazar."
+    sample = "Elderwood has delivered zero-day exploits and malware to victims via targeted emails containing a link to malicious content hosted on an uncommon Web server."
+    sample = "APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites."
+    sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
+    sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
 
     doc = ner_model.nlp(sample)
     print([(ent.text, ent.label_) for ent in doc.ents])

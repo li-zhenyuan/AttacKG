@@ -54,19 +54,30 @@ def draw_attackgraph_plt(nx_graph: nx.DiGraph, image_file: str = None):
 
 
 # https://graphviz.org/doc/info/shapes.html
+# node_shape = {
+#     "NetLoc": "diamond",
+#     "E-mail": "diamond",
+#     "C2C": "diamond",
+#     "APTFamily": "doublecircle",
+#     "ExeFile": "oval",
+#     "ScriptsFile": "oval",
+#     "DocumentFile": "rectangle",
+#     "File": "rectangle",
+#     "Registry": "parallelogram",
+#     "Vulnerability": "trapezium",
+#     "Service": "trapezium",
+#     "SensInfo": "invhouse"
+# }
+
 node_shape = {
-    "NetLoc": "diamond",
-    "E-mail": "diamond",
-    "C2C": "diamond",
-    "APTFamily": "doublecircle",
-    "ExeFile": "oval",
-    "ScriptsFile": "oval",
-    "DocumentFile": "rectangle",
-    "File": "rectangle",
-    "Registry": "parallelogram",
-    "Vulnerability": "trapezium",
-    "Service": "trapezium",
-    "SensInfo": "invhouse"
+    "actor": "doublecircle",
+    "network": "diamond",
+    "executable": "oval",
+    "file": "rectangle",
+    "defender": "invhouse",
+    "registry": "parallelogram",
+    "vulnerability": "trapezium",
+    "system": "trapezium"
 }
 
 
@@ -417,17 +428,17 @@ if __name__ == '__main__':
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
 
-    # ag = parse_attackgraph_from_cti_report(ner_model)
+    ag = parse_attackgraph_from_cti_report(ner_model)
 
     # %%
     # class AttackGraph unit test
 
-    cti_path = r".\data\cti\html"
-    output_path = r".\data\extracted_attackgraph_subgraphs"
-
-    cti_files = os.listdir(cti_path)
-    for file in cti_files:
-        parse_attackgraph_from_cti_report(cti_file=os.path.join(cti_path, file), output_path=output_path, ner_model=ner_model)
+    # cti_path = r".\data\cti\html"
+    # output_path = r".\data\extracted_attackgraph_subgraphs"
+    #
+    # cti_files = os.listdir(cti_path)
+    # for file in cti_files:
+    #     parse_attackgraph_from_cti_report(cti_file=os.path.join(cti_path, file), output_path=output_path, ner_model=ner_model)
 
     # %%
     # draw_AG() unit test
