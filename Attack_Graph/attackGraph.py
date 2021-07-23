@@ -141,15 +141,15 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
 
 
 class AttackGraphNode:
-    node_type = ""
-    node_ioc_representation = ""
-    node_nlp_representation = ""
+    node_type: str
+    node_ioc_representation: str
+    node_nlp_representation: str
 
     def __init__(self, node_type):
         self.node_type = node_type
 
     def __str__(self):
-        return "#".join(self.node_type, self.node_nlp_representation, self.node_ioc_representation)
+        return "##".join(self.node_type, self.node_nlp_representation, self.node_ioc_representation)
 
 
 # return token unique id for nx.graph
@@ -169,14 +169,18 @@ class AttackGraph:
     ioc_coref_list: list
     ioc_coref_dict: dict
 
+    # attack_node_list: list
+    entity_root_token_string_dict: dict
+    entity_ignore_token_list: list
+
     techniques = {}  # technique name -> [node_list]
 
-    def __init__(self, ioc_identifier = None):
-        self.attackgraph_nx = None
-        self.ioc_identifier = ioc_identifier
-
-        self.ioc_coref_list = []
-        self.ioc_coref_dict = {}
+    # def __init__(self, ioc_identifier = None):
+    #     self.attackgraph_nx = None
+    #     self.ioc_identifier = ioc_identifier
+    #
+    #     self.ioc_coref_list = []
+    #     self.ioc_coref_dict = {}
 
     def __init__(self, doc, ioc_identifier = None):
         self.attackgraph_nx = None
@@ -184,6 +188,9 @@ class AttackGraph:
 
         self.ioc_coref_list = []
         self.ioc_coref_dict = {}
+
+        self.entity_root_token_string_dict = {}
+        self.entity_ignore_token_list = []
 
         self.nlp_doc = doc
 
@@ -245,7 +252,7 @@ class AttackGraph:
         # parse coreference
         self.parse_coref()
         # # parse node
-        # self.parse_node()
+        self.parse_node()
         # parse edge
         self.parse_edge()
 
@@ -276,24 +283,20 @@ class AttackGraph:
                     self.ioc_coref_dict[coref_p] = coref_origin
                     logging.debug("%s-%s" % (coref_token, coref_token.ent_type_))
 
-    ioc_ent_list = []
-    ioc_ent_token_lower_list = []
-
     def parse_node(self):
         logging.info("---S1-1.1: Parsing NLP doc to get Attack Graph Nodes!---")
 
         # parsing all ioc nodes
-        # for entity in self.nlp_doc.ents:
-        #     ent_token = entity.root
-        #     ent_type = entity.label_
-        #     if ent_type in ner_labels:
-        #         self.ioc_ent_list.append(ent_token)
-        #         self.ioc_ent_token_lower_list.append(ent_token.lower_)
-        #         logging.debug("%s-%s" % (ent_token, ent_token.ent_type_))
+        for entity in self.nlp_doc.ents:
+            ent_root = entity.root
+            ent_root_i = ent_root.i
+            self.entity_root_token_string_dict[ent_root_i] = entity.text
+            for token in entity:
+                if token.i not in self.entity_root_token_string_dict.keys():
+                    ignore_token_i = token.i
+                    self.entity_ignore_token_list.append(ignore_token_i)
 
         # parsing ioc recognized with iocRegex
-
-        pass
 
     def parse_edge(self):
         logging.info("---S1-1.2: Parsing NLP doc to get Attack Graph Edges!---")
@@ -323,6 +326,12 @@ class AttackGraph:
         node_queue.append(root)
         while node_queue:
             node = node_queue.pop(0)
+            for child in node.children:
+                node_queue.append(child)
+
+            # process only the ioc_root
+            if node.i in self.entity_ignore_token_list:
+                continue
 
             if node.ent_type_ in ner_labels and re.match("NN.*", node.tag_):
                 is_related_sentence = True
@@ -333,9 +342,15 @@ class AttackGraph:
                     regex = self.ioc_identifier.replaced_ioc_dict[node.idx]
                     logging.debug("Recover IoC regex: %s" % regex)
 
+                nlp = ""
+                if node.i in self.entity_root_token_string_dict.keys():
+                    nlp = self.entity_root_token_string_dict[node.i]
+                else:
+                    nlp = node.text
+
                 n = get_token_id(node)  # + regex
                 logging.debug(n)
-                self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=node.text, regex=regex)
+                self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=nlp, regex=regex)
 
                 if tnode != "":
                     self.attackgraph_nx.add_edge(tnode, n, action=tvb)
@@ -344,16 +359,20 @@ class AttackGraph:
             # edges with coreference nodes
             if node.i in self.ioc_coref_dict.keys():
                 coref_node = self.nlp_doc[self.ioc_coref_dict[node.i]]
+
+                nlp = ""
+                if coref_node.i in self.entity_root_token_string_dict.keys():
+                    nlp = self.entity_root_token_string_dict[coref_node.i]
+                else:
+                    nlp = coref_node.text
+
                 n = get_token_id(coref_node)
                 logging.debug(n)
-                self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=coref_node.text)
+                self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=nlp)
 
                 if tnode != "":
                     self.attackgraph_nx.add_edge(tnode, n, action=tvb)
                 tnode = n
-
-            for child in node.children:
-                node_queue.append(child)
 
         if(is_related_sentence):
             logging.debug("Related sentence: %s" % sentence.text)
@@ -439,19 +458,19 @@ if __name__ == '__main__':
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
 
-    sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
-    sample = "Wizard Spider has used spearphishing attachments to deliver Microsoft documents containing macros or PDFs containing malicious links to download either Emotet, Bokbot, TrickBot, or Bazar."
-    sample = "Elderwood has delivered zero-day exploits and malware to victims via targeted emails containing a link to malicious content hosted on an uncommon Web server."
-    sample = "APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites."
-    sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
-    sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
-
-    ag = parse_attackgraph_from_text(sample)
-    draw_attackgraph_plt(ag.attackgraph_nx)
+    # sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+    # sample = "Wizard Spider has used spearphishing attachments to deliver Microsoft documents containing macros or PDFs containing malicious links to download either Emotet, Bokbot, TrickBot, or Bazar."
+    # sample = "Elderwood has delivered zero-day exploits and malware to victims via targeted emails containing a link to malicious content hosted on an uncommon Web server."
+    # sample = "APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites."
+    # sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
+    # sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
+    #
+    # ag = parse_attackgraph_from_text(sample)
+    # draw_attackgraph_plt(ag.attackgraph_nx)
 
     # %%
 
-    # ag = parse_attackgraph_from_cti_report(ner_model)
+    ag = parse_attackgraph_from_cti_report(ner_model)
 
     # %%
     # class AttackGraph unit test
