@@ -82,7 +82,7 @@ node_shape = {
 
 
 def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str = None) -> graphviz.Graph:
-    dot = graphviz.Graph('G', filename=output_file)
+    dot = graphviz.Digraph('G', filename=output_file)
 
     logging.warning("---Draw attack graph with dot!---")
 
