@@ -227,17 +227,17 @@ if __name__ == '__main__':
     technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
     # technique_list = [r'/techniques/T1053/005']
     # technique_list = [r'/techniques/T1547/001']
+
     example_list = []
     mgr = MitreGraphReader()
     for technique_id in technique_list:
         example_list += mgr.find_examples_for_technique(technique_id)
 
     for example in example_list:
-        parse_attackgraph_from_text(example)
-        dot_graph = draw_attackgraph_plt(ag.attackgraph_nx)
-        # dot_graph.view()
+        ag = parse_attackgraph_from_text(example)
+        draw_attackgraph_plt(ag.attackgraph_nx)
 
-# 'APT-C-36 has used spearphishing emails with password protected RAR attachment to avoid being detected by the email gateway.[2] '
+    # 'APT-C-36 has used spearphishing emails with password protected RAR attachment to avoid being detected by the email gateway.[2] '
 
     # %%
 

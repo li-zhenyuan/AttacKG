@@ -391,6 +391,8 @@ def parse_attackgraph_from_text(text: str) -> AttackGraph:
     doc = ner_model.parser(text_without_ioc)
     ag = AttackGraph(doc, ioc_identifier=iid)
 
+    ag.parse()
+
     return ag
 
 
@@ -437,7 +439,19 @@ if __name__ == '__main__':
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
 
-    ag = parse_attackgraph_from_cti_report(ner_model)
+    sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+    sample = "Wizard Spider has used spearphishing attachments to deliver Microsoft documents containing macros or PDFs containing malicious links to download either Emotet, Bokbot, TrickBot, or Bazar."
+    sample = "Elderwood has delivered zero-day exploits and malware to victims via targeted emails containing a link to malicious content hosted on an uncommon Web server."
+    sample = "APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites."
+    sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
+    sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
+
+    ag = parse_attackgraph_from_text(sample)
+    draw_attackgraph_plt(ag.attackgraph_nx)
+
+    # %%
+
+    # ag = parse_attackgraph_from_cti_report(ner_model)
 
     # %%
     # class AttackGraph unit test
