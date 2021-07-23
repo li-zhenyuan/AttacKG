@@ -8,40 +8,6 @@ import pickle
 import logging
 
 
-picked_techniques = {"/techniques/T1566/001",
-                     "/techniques/T1566/002",
-                     "/techniques/T1566/003",
-                     "/techniques/T1195/001",
-                     "/techniques/T1195/002",
-                     "/techniques/T1059/001",
-                     "/techniques/T1059/003",
-                     "/techniques/T1059/005",
-                     "/techniques/T1059/007",
-                     "/techniques/T1559/001",
-                     "/techniques/T1204/001",
-                     "/techniques/T1204/002",
-                     "/techniques/T1204/003",
-                     "/techniques/T1053/005",
-                     "/techniques/T1547/001",
-                     "/techniques/T1037/001",
-                     "/techniques/T1547/001",
-                     "/techniques/T1547/002",
-                     "/techniques/T1112",
-                     "/techniques/T1218/005",
-                     "/techniques/T1218/010",
-                     "/techniques/T1218/011",
-                     "/techniques/T1078/001",
-                     "/techniques/T1518/001",
-                     "/techniques/T1083",
-                     "/techniques/T1057",
-                     "/techniques/T1012",
-                     "/techniques/T1497/001",
-                     "/techniques/T1560/001",
-                     "/techniques/T1123",
-                     "/techniques/T1119",
-                     "/techniques/T1041"}
-
-
 class TemplateNode(AttackGraphNode):
     template = None
 
@@ -233,8 +199,11 @@ if __name__ == '__main__':
     for technique_id in technique_list:
         example_list += mgr.find_examples_for_technique(technique_id)
 
+    ner_model = IoCNer("./new_cti.model")
+    ner_model.add_coreference()
+
     for example in example_list:
-        ag = parse_attackgraph_from_text(example)
+        ag = parse_attackgraph_from_text(ner_model, example)
         draw_attackgraph_plt(ag.attackgraph_nx)
 
     # 'APT-C-36 has used spearphishing emails with password protected RAR attachment to avoid being detected by the email gateway.[2] '

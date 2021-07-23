@@ -149,13 +149,13 @@ class AttackGraphNode:
         self.node_type = node_type
 
     def __str__(self):
-        return "##".join(self.node_type, self.node_nlp_representation, self.node_ioc_representation)
+        return "#".join(self.node_type, self.node_nlp_representation, self.node_ioc_representation)
 
 
 # return token unique id for nx.graph
 def get_token_id(tok: spacy.tokens.token.Token) -> str:
     # return "@".join([tok.lower_, tok.ent_type_])
-    return "##".join([tok.lower_, tok.ent_type_, str(tok.i)])
+    return "#".join([tok.lower_, tok.ent_type_, str(tok.i)])
 
 
 class AttackGraph:
@@ -404,7 +404,7 @@ class AttackGraph:
         pass # TODO
 
 
-def parse_attackgraph_from_text(text: str) -> AttackGraph:
+def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
     iid = IoCIdentifier(text)
     text_without_ioc = iid.replaced_text
     doc = ner_model.parser(text_without_ioc)
@@ -415,7 +415,7 @@ def parse_attackgraph_from_text(text: str) -> AttackGraph:
     return ag
 
 
-def parse_attackgraph_from_cti_report(ner_model, cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):
+def parse_attackgraph_from_cti_report(ner_model: IoCNer, cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):
     logging.info("---Parsing %s---" % cti_file)
 
     # file_name = os.path.splitext(cti_file)[0]
@@ -465,7 +465,7 @@ if __name__ == '__main__':
     # sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
     # sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
     #
-    # ag = parse_attackgraph_from_text(sample)
+    # ag = parse_attackgraph_from_text(ner_model, sample)
     # draw_attackgraph_plt(ag.attackgraph_nx)
 
     # %%

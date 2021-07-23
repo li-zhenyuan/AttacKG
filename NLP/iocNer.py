@@ -161,7 +161,7 @@ class IoCNer:
     def parser(self, text: str, model_location="./new_cti.model"):
         logging.info("---S1-1: Parse clean text to NLP doc!---")
         self.nlp = spacy.load(model_location)
-        # self.ner_with_regex()
+        self.ner_with_regex()
         self.add_coreference()
 
         nlp_doc = self.nlp(text)
