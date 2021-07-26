@@ -15,3 +15,19 @@ Building a Knowledge Graph for cyber attack with information extracted from Cybe
 
 ### S1-2 Embedding-basd NER
 `NLP/iocNer.py`
+
+
+# Requirement
+
+## spacy
+
+Install pre-trained model.
+> python -m spacy download en_core_web_sm
+
+## [coreferee](https://github.com/msg-systems/coreferee)
+
+Need to be installed from source.
+> pip install -e $[DOWNLOAD_PATH]
+
+## [tensorflow](https://tensorflow.juejin.im/install/install_windows.html)
+
