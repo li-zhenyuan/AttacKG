@@ -1,6 +1,6 @@
 from NLP.iocNer import *
 from attackGraph import *
-from Mitre_TTPs.mitre_graph_reader import *
+from Mitre_TTPs.mitreGraphReader import *
 
 import networkx as nx
 import pptree

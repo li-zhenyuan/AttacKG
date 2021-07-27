@@ -3,7 +3,7 @@ import spacy.tokens
 from NLP.iocNer import *
 from NLP.iocRegex import *
 from NLP.reportPreprocess import *
-from Mitre_TTPs.mitre_graph_reader import *
+from Mitre_TTPs.mitreGraphReader import *
 # from attackTemplate import *
 
 import networkx as nx
