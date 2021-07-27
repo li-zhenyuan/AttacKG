@@ -7,6 +7,7 @@ import pptree
 import pickle
 import logging
 import re
+import Levenshtein
 
 
 class TemplateNode(AttackGraphNode):
@@ -71,14 +72,31 @@ class TemplateNode(AttackGraphNode):
         return new_node
 
 
+# ToDo
 def node_similarity(n: TemplateNode, m: TemplateNode):
     # ToDo: take details into consideration
-    similarity = 0
+    similarity = 0.0
 
-    if n.node_type == m.node_type:
+    if n.node_type != m.node_type:
+        return 0.0
+    else:
         similarity += 0.5
 
     return similarity
+
+
+def get_ioc_similarity(ioc_a: str, ioc_b: str) -> float:
+    return get_string_similarity(ioc_a, ioc_b)
+
+
+def get_nlp_similarity(nlp_a: str, nlp_b: str) -> float:
+    return get_string_similarity(nlp_a, nlp_b)
+
+
+# https://blog.csdn.net/dcrmg/article/details/79228589
+def get_string_similarity(a: str, b: str) -> float:
+    similarity_score = Levenshtein.ratio(a, b)
+    return similarity_score
 
 
 # def attack_graph_to_node_sequence(attack_graph):
@@ -109,30 +127,43 @@ def node_similarity(n: TemplateNode, m: TemplateNode):
 #         template_node_list.append(template_node)
 #
 #     return template_node_list
+
+
+# def sequence_to_singletree(node_list):
+#     # node_list = attack_graph_to_sequence(G)
+#     logging.info("---Generate singletree!---")
 #
+#     n = node_list[-1]
+#     for i in range(len(node_list) - 2, -1, -1):
+#         node_list[i].add_followup_node(n)
+#         n = node_list[i]
 #
-def sequence_to_singletree(node_list):
-    # node_list = attack_graph_to_sequence(G)
-    logging.info("---Generate singletree!---")
-
-    n = node_list[-1]
-    for i in range(len(node_list) - 2, -1, -1):
-        node_list[i].add_followup_node(n)
-        n = node_list[i]
-
-    for node in node_list:
-        logging.debug(node.node_type + ":" + str(len(node.followup_node_list)))
-
-    return n
+#     for node in node_list:
+#         logging.debug(node.node_type + ":" + str(len(node.followup_node_list)))
+#
+#     return n
 
 
 # TODO: divide template into basic block and advanced block according to node appearance frequency in reports.
 class TechniqueTemplate:
-    root_node = TemplateNode()
-    ag: AttackGraph
-    ner_model = IoCNer("./new_cti.model")
+    # root_node = TemplateNode()
+    # ag: AttackGraph
+    # ner_model = IoCNer("./new_cti.model")
 
-    def update_template(self, node_list):
+    technique_id: str  # '/techniques/T1566/001'
+    technique_node_list: dict  # [TemplateNode: Count, ...]
+    technique_edge_list: dict  # [(TN1, TN2): Count, ...]
+    technique_instance: list  # [[(n1,n2), ...]...]
+    total_instance_count: int
+
+    def __init__(self, technique_id: str):
+        self.technique_id = technique_id
+        self.technique_node_list = []
+        self.technique_edge_list = []
+        self.technique_instance = []
+        self.total_instance_count = 0
+
+    def update_template(self, technique_graph: nx.DiGraph):
         logging.info("---Update template!---")
 
         # node_list = attack_graph_to_sequence(G)  # TODO: sort the node_list before build template tree
@@ -190,7 +221,6 @@ if __name__ == '__main__':
 
     # %%
 
-    # '/techniques/T1566/00[1|2|3]',
     technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
     # technique_list = [r'/techniques/T1053/005']
     # technique_list = [r'/techniques/T1547/001']

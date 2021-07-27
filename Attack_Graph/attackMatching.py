@@ -24,16 +24,6 @@ def draw_AttacKG(G: nx.MultiDiGraph):
 # AttacKG_node_equivalence_groups = {}
 
 
-# ToDo
-def get_regex_similarity(re_a: str, re_b: str) -> float:
-    return 0.0
-
-
-# ToDo
-def get_description_similarity(description_a: str, description_b: str) -> float:
-    return 0.0
-
-
 # Return a score range from 0 to 10
 def AttacKG_node_matching(node_a, node_b) -> float:
     similarity_score = 0
@@ -45,14 +35,14 @@ def AttacKG_node_matching(node_a, node_b) -> float:
     # regex matching
     try:
         if node_a["regex"] != "" and node_b["regex"] != "":
-            similarity_score = get_regex_similarity(node_a["regex"], node_b["regex"])
+            similarity_score = get_ioc_similarity(node_a["regex"], node_b["regex"])
     except:
         print("node_a: %s\n or node_b: %s\n have no regex" % (str(node_a), str(node_b)))
 
     # description matching
     try:
         if node_a["description"] != "" and node_b["description"] != "":
-            ss = get_description_similarity(node_a["description"], node_b["description"])
+            ss = get_nlp_similarity(node_a["description"], node_b["description"])
             if ss > similarity_score:
                 similarity_score = ss
     except:
