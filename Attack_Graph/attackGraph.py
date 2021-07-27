@@ -287,14 +287,31 @@ class AttackGraph:
         logging.info("---S1-1.1: Parsing NLP doc to get Attack Graph Nodes!---")
 
         # parsing all ioc nodes
-        for entity in self.nlp_doc.ents:
-            ent_root = entity.root
-            ent_root_i = ent_root.i
-            self.entity_root_token_string_dict[ent_root_i] = entity.text
-            for token in entity:
-                if token.i not in self.entity_root_token_string_dict.keys():
-                    ignore_token_i = token.i
-                    self.entity_ignore_token_list.append(ignore_token_i)
+        # for entity in self.nlp_doc.ents:
+        #     ent_root = entity.root
+        #     ent_root_i = ent_root.i
+        #     self.entity_root_token_string_dict[ent_root_i] = entity.text
+        #     for token in entity:
+        #         if token.i not in self.entity_root_token_string_dict.keys():
+        #             ignore_token_i = token.i
+        #             self.entity_ignore_token_list.append(ignore_token_i)
+
+        last_ent_type = ''
+        ent_start_i = 0
+        # try to find entities' boundary
+        for token in self.nlp_doc:
+            ent_type = token.ent_type_
+            if ent_type in ner_labels:
+                if ent_type != last_ent_type:
+                    ent_start_i = token.i
+                else:
+                    self.entity_ignore_token_list.append(token.i-1)
+            else:
+                if last_ent_type in ner_labels:
+                    self.entity_root_token_string_dict[token.i-1] = self.nlp_doc[ent_start_i:token.i].text
+                else:
+                    ent_start_i = 0
+            last_ent_type = ent_type
 
         # parsing ioc recognized with iocRegex
 

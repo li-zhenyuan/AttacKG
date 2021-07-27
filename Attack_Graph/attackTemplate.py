@@ -6,6 +6,7 @@ import networkx as nx
 import pptree
 import pickle
 import logging
+import re
 
 
 class TemplateNode(AttackGraphNode):
@@ -203,6 +204,9 @@ if __name__ == '__main__':
     ner_model.add_coreference()
 
     for example in example_list:
+        example = re.sub("\[[0-9]+\]+", "", example)
+        print(example)
+
         ag = parse_attackgraph_from_text(ner_model, example)
         draw_attackgraph_plt(ag.attackgraph_nx)
 
