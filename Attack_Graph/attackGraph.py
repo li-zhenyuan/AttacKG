@@ -43,7 +43,7 @@ def draw_attackgraph_plt(nx_graph: nx.DiGraph, image_file: str = None):
     graph_pos = nx.spring_layout(nx_graph)
     nx.draw_networkx_nodes(nx_graph, graph_pos, node_size=10, node_color='blue', alpha=0.3)
     nx.draw_networkx_edges(nx_graph, graph_pos)
-    nx.draw_networkx_labels(nx_graph, graph_pos, font_size=8, font_family='sans-serif')
+    nx.draw_networkx_labels(nx_graph, graph_pos, font_size=8)
     edge_labels = nx.get_edge_attributes(nx_graph, 'action')
     nx.draw_networkx_edge_labels(nx_graph, graph_pos, edge_labels=edge_labels)
 

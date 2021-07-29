@@ -1,27 +1,13 @@
 # Simplified technique matching
 # Attack graph are stored in NetworkX instance
-import logging
-import os.path
 
 from attackGraph import *
 from attackTemplate import *
 
 import networkx as nx
 import matplotlib.pyplot as plt
-
-
-def draw_AttacKG(G: nx.MultiDiGraph):
-    graph_pos = nx.spring_layout(G)
-    nx.draw_networkx_nodes(G, graph_pos, node_size=10, node_color='blue', alpha=0.3)
-    nx.draw_networkx_edges(G, graph_pos)
-    nx.draw_networkx_labels(G, graph_pos, font_size=8, font_family='sans-serif')
-    plt.show()
-
-
-# AttacKG_node_types = ["Attacker", "ExeFile", "DocFile", "Registry", "Service", "Vulnerability", "NetLoc"]
-# AttacKG_node_regex = {}
-# AttacKG_node_details = {}
-# AttacKG_node_equivalence_groups = {}
+import logging
+import os.path
 
 
 # Return a score range from 0 to 10

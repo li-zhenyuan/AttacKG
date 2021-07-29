@@ -205,6 +205,19 @@ class TechniqueTemplate:
         A.layout('dot')
         A.draw(image_name)
 
+    def dump_to_dict(self):
+        data_dict = {}
+
+
+
+        return data_dict
+
+    def dump_to_file(self, file_name: str = "template"):
+        data_dict = self.dump_to_dict()
+
+        with open(file_name + ".pickle", "w+") as pickle_file:
+            pickle.dump(data_dict, pickle_file)
+
 
 # %%
 
