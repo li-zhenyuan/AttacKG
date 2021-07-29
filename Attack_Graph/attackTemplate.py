@@ -3,6 +3,7 @@ from attackGraph import *
 from Mitre_TTPs.mitreGraphReader import *
 
 import networkx as nx
+from networkx.drawing.nx_agraph import to_agraph
 import pptree
 import pickle
 import logging
@@ -13,23 +14,26 @@ import Levenshtein
 def parse_networkx_node(node: str, nx_graph: nx.DiGraph) -> set:
     node_type = nx_graph.nodes[node]["type"]
     nlp = nx_graph.nodes[node]["nlp"]
-    ioc = nx_graph.nodes[node]["regex"]
+    try:
+        ioc = nx_graph.nodes[node]["regex"]
+    except:
+        ioc = ""
 
     return (node_type, nlp, ioc)
 
 
 class TemplateNode(AttackGraphNode):
-    node_type = ""
-    node_ioc_representation = ""
-    node_nlp_representation = ""
-    node_ioc_instance = []
-    node_nlp_instance = []
-    node_properties = {}
+    node_type: str
+    node_ioc_representation: str
+    node_nlp_representation: str
+    node_ioc_instance: list
+    node_nlp_instance: list
 
-    instance_count = 0
-    followup_node_list = []
+    instance_count: int
 
     def __init__(self, node_info: set):
+        self.node_nlp_instance = []
+        self.node_ioc_instance = []
 
         self.node_type = node_info[0]
         if node_info[1] != "":
@@ -42,7 +46,7 @@ class TemplateNode(AttackGraphNode):
         logging.info("---S3: Init TemplateNode %s!---" % (self))
 
     def __str__(self):
-        return "%s-%s-%s-%s" % (self.node_type, str(self.node_ioc_instance), str(self.node_nlp_instance), str(self.instance_count))
+        return "%s-%s-%s-%s" % (self.node_type, str(self.node_nlp_instance), str(self.node_ioc_instance), str(self.instance_count))
 
     def get_similar_with(self, node_info: set):
         similarity_score = 0.0
@@ -72,9 +76,32 @@ class TemplateNode(AttackGraphNode):
 
         return similarity_score
 
+    NODE_NLP_SIMILAR_ACCEPT_THRESHOLD = 0.75
+    NODE_IOC_SIMILAR_ACCEPT_THRESHOLD = 0.75
+
     def update_with(self, node_info: set):
 
+        new_node_type = node_info[0]
+        new_node_nlp = node_info[1]
+        new_node_ioc = node_info[2]
 
+        self.instance_count += 1
+
+        max_nlp_similarity_score = 0
+        for nlp_instance in self.node_nlp_instance:
+            ss = get_nlp_similarity(new_node_nlp, nlp_instance)
+            if ss >= max_nlp_similarity_score:
+                max_nlp_similarity_score = ss
+        if max_nlp_similarity_score < self.NODE_NLP_SIMILAR_ACCEPT_THRESHOLD:
+            self.node_nlp_instance.append(new_node_ioc)
+
+        max_ioc_similarity_score = 0
+        for ioc_instance in self.node_ioc_instance:
+            ss = get_ioc_similarity(new_node_ioc, ioc_instance)
+            if ss >= max_ioc_similarity_score:
+                max_ioc_similarity_score = ss
+        if max_ioc_similarity_score < self.NODE_IOC_SIMILAR_ACCEPT_THRESHOLD:
+            self.node_ioc_instance.append(new_node_ioc)
 
         return self
 
@@ -102,6 +129,8 @@ class TechniqueTemplate:
     technique_instance: list  # [[(n1,n2), ...]...]
     total_instance_count: int
 
+    template_nx: nx.DiGraph
+
     def __init__(self, technique_id_list: list):
         self.technique_id_list = technique_id_list
         self.technique_node_list = []
@@ -109,50 +138,69 @@ class TechniqueTemplate:
         self.technique_instance = []
         self.total_instance_count = 0
 
+    # def match_template(self, technique_sample_graph: nx.DiGraph):
+    #     logging.info("---Match template!---")
+
     def update_template(self, technique_sample_graph: nx.DiGraph):
         logging.info("---Update template!---")
 
         sample_node_template_node_dict = {}
 
+        # node matching
         for node in technique_sample_graph.nodes:
             max_similartiy_score = 0
-            max_similarity_template_node = None
+            max_similarity_template_node_id = -1
 
+            node_index = 0
             for template_node in self.technique_node_list:
-                similarity_score = template_node.get_similar_with(technique_sample_graph, node)
+                similarity_score = template_node.get_similar_with(parse_networkx_node(node, technique_sample_graph))
                 if similarity_score > max_similartiy_score:
                     max_similartiy_score = similarity_score
-                    max_similarity_template_node = template_node
+                    max_similarity_template_node_id = node_index
 
-                # whether node in new sample is aligned with exist template node
+                node_index += 1
+
+            # whether node in new sample is aligned with exist template node
             if max_similartiy_score > self.NODE_SIMILAR_ACCEPT_THRESHOLD:
-                sample_node_template_node_dict[node] = template_node
-                template_node.update_with(node, technique_sample_graph)
+                sample_node_template_node_dict[node] = max_similarity_template_node_id
+                self.technique_node_list[max_similarity_template_node_id].update_with(parse_networkx_node(node, technique_sample_graph))
             else:
-                tn = TemplateNode(node, technique_sample_graph)
+                tn = TemplateNode(parse_networkx_node(node, technique_sample_graph))
+                self.technique_node_list.append(tn)
+                sample_node_template_node_dict[node] = len(self.technique_node_list) - 1
 
+        instance = []
 
-    def pretty_print(self):
-        pptree.Node()
+        for edge in technique_sample_graph.edges:
+            technique_template_edge = (sample_node_template_node_dict[edge[0]], sample_node_template_node_dict[edge[1]])
 
+            if technique_template_edge in self.technique_edge_list.keys():
+                self.technique_edge_list[technique_template_edge] += 1
+            else:
+                self.technique_edge_list[technique_template_edge] = 1
 
-def template_list_extraction(technique_list: list = picked_techniques) -> list:
-    template_list = []
+            instance.append(technique_template_edge)
 
-    for technique in technique_list:
-        t = template_extraction(technique)
-        template_list.append(t)
+        self.technique_instance.append(instance)
 
-    return template_list
+    def pretty_print(self, image_name: str = "template.png"):
+        self.template_nx = nx.DiGraph()
 
+        for node in self.technique_node_list:
+            self.template_nx.add_node(node)
 
-def template_extraction(technique: str) -> TemplateNode:
-    mgr = MitreGraphReader()
-    technique_example_list = mgr.find_examples_for_technique(technique_id)
+        for edge in self.technique_edge_list.keys():
+            count = self.technique_edge_list[edge]
+            if count <= 2:
+                continue
 
-    t = template_extraction_from_examplelist(technique_example_list)
+            source = self.technique_node_list[edge[0]]
+            sink = self.technique_node_list[edge[1]]
+            self.template_nx.add_edge(source, sink, count = str(count))
 
-    return t
+        A = to_agraph(self.template_nx)
+        A.layout('dot')
+        A.draw(image_name)
 
 
 # %%
@@ -166,8 +214,6 @@ if __name__ == '__main__':
     # technique_list = [r'/techniques/T1053/005']
     # technique_list = [r'/techniques/T1547/001']
 
-    tt = TechniqueTemplate(technique_list)
-
     example_list = []
     mgr = MitreGraphReader()
     for technique_id in technique_list:
@@ -176,10 +222,21 @@ if __name__ == '__main__':
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
 
+    technique_sample_graphs = []
+    # example_list = example_list[0:2]
     for example in example_list:
         example = re.sub("\[[0-9]+\]+", "", example)
         print(example)
 
         ag = parse_attackgraph_from_text(ner_model, example)
-        draw_attackgraph_plt(ag.attackgraph_nx)
-        tt.update_template(ag.attackgraph_nx)
+        # draw_attackgraph_plt(ag.attackgraph_nx)
+        technique_sample_graphs.append(ag.attackgraph_nx)
+
+    # %%
+
+    tt = TechniqueTemplate(technique_list)
+
+    for tsg in technique_sample_graphs:
+        tt.update_template(tsg)
+
+    tt.pretty_print()
