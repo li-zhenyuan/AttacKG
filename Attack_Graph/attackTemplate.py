@@ -76,8 +76,8 @@ class TemplateNode(AttackGraphNode):
 
         return similarity_score
 
-    NODE_NLP_SIMILAR_ACCEPT_THRESHOLD = 0.75
-    NODE_IOC_SIMILAR_ACCEPT_THRESHOLD = 0.75
+    NODE_NLP_SIMILAR_ACCEPT_THRESHOLD = 0.9
+    NODE_IOC_SIMILAR_ACCEPT_THRESHOLD = 0.9
 
     def update_with(self, node_info: set):
 
@@ -93,7 +93,7 @@ class TemplateNode(AttackGraphNode):
             if ss >= max_nlp_similarity_score:
                 max_nlp_similarity_score = ss
         if max_nlp_similarity_score < self.NODE_NLP_SIMILAR_ACCEPT_THRESHOLD:
-            self.node_nlp_instance.append(new_node_ioc)
+            self.node_nlp_instance.append(new_node_nlp)
 
         max_ioc_similarity_score = 0
         for ioc_instance in self.node_ioc_instance:
@@ -121,12 +121,12 @@ def get_string_similarity(a: str, b: str) -> float:
 
 
 class TechniqueTemplate:
-    NODE_SIMILAR_ACCEPT_THRESHOLD = 0.75
+    NODE_SIMILAR_ACCEPT_THRESHOLD = 0.5 + 0.5
 
     technique_id_list: list  # '/techniques/T1566/001'
     technique_node_list: list  # [TemplateNode, ...]
-    technique_edge_list: dict  # [(TN1, TN2): Count, ...]
-    technique_instance: list  # [[(n1,n2), ...]...]
+    technique_edge_dict: dict  # [(TN1, TN2): Count, ...]
+    technique_instance_dict: list  # [[(n1,n2), ...]...]
     total_instance_count: int
 
     template_nx: nx.DiGraph
@@ -134,8 +134,8 @@ class TechniqueTemplate:
     def __init__(self, technique_id_list: list):
         self.technique_id_list = technique_id_list
         self.technique_node_list = []
-        self.technique_edge_list = {}
-        self.technique_instance = []
+        self.technique_edge_dict = {}
+        self.technique_instance_dict = {}
         self.total_instance_count = 0
 
     # def match_template(self, technique_sample_graph: nx.DiGraph):
@@ -170,18 +170,21 @@ class TechniqueTemplate:
                 sample_node_template_node_dict[node] = len(self.technique_node_list) - 1
 
         instance = []
-
         for edge in technique_sample_graph.edges:
             technique_template_edge = (sample_node_template_node_dict[edge[0]], sample_node_template_node_dict[edge[1]])
 
-            if technique_template_edge in self.technique_edge_list.keys():
-                self.technique_edge_list[technique_template_edge] += 1
+            if technique_template_edge in self.technique_edge_dict.keys():
+                self.technique_edge_dict[technique_template_edge] += 1
             else:
-                self.technique_edge_list[technique_template_edge] = 1
+                self.technique_edge_dict[technique_template_edge] = 1
 
             instance.append(technique_template_edge)
 
-        self.technique_instance.append(instance)
+        instance = tuple(instance)
+        if instance in self.technique_instance_dict.keys():
+            self.technique_instance_dict[instance] += 1
+        else:
+            self.technique_instance_dict[instance] = 1
 
     def pretty_print(self, image_name: str = "template.png"):
         self.template_nx = nx.DiGraph()
@@ -189,8 +192,8 @@ class TechniqueTemplate:
         for node in self.technique_node_list:
             self.template_nx.add_node(node)
 
-        for edge in self.technique_edge_list.keys():
-            count = self.technique_edge_list[edge]
+        for edge in self.technique_edge_dict.keys():
+            count = self.technique_edge_dict[edge]
             if count <= 2:
                 continue
 
@@ -240,3 +243,4 @@ if __name__ == '__main__':
         tt.update_template(tsg)
 
     tt.pretty_print()
+    draw_attackgraph_plt(tt.template_nx)
