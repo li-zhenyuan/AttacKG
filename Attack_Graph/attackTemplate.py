@@ -9,6 +9,7 @@ import pickle
 import logging
 import re
 import Levenshtein
+import json
 
 
 def parse_networkx_node(node: str, nx_graph: nx.DiGraph) -> set:
@@ -30,6 +31,20 @@ class TemplateNode(AttackGraphNode):
     node_nlp_instance: list
 
     instance_count: int
+
+    def dump_to_dict(self) -> dict:
+        node_data = {}
+
+        node_data["type"] = self.node_type
+        node_data["description"] = self.node_nlp_instance
+        node_data["ioc"] = self.node_ioc_instance
+
+        return node_data
+
+    def load_from_dict(self, node_data: dict):
+        self.node_type = node_data["type"]
+        self.node_nlp_instance = node_data["description"]
+        self.node_ioc_instance = node_data["ioc"]
 
     def __init__(self, node_info: set):
         self.node_nlp_instance = []
@@ -205,18 +220,53 @@ class TechniqueTemplate:
         A.layout('dot')
         A.draw(image_name)
 
-    def dump_to_dict(self):
+    # refer to STIX
+    def dump_to_dict(self) -> dict:
         data_dict = {}
 
+        node_list = []
+        for tn in self.technique_node_list:
+            node_list.append(tn.dump_to_dict())
+        data_dict["nodes"] = node_list
 
+        data_dict["edges"] = list(self.technique_edge_dict)
+        data_dict["instances"] = list(self.technique_instance_dict)
 
         return data_dict
 
-    def dump_to_file(self, file_name: str = "template"):
+    def dump_to_json(self) -> str:
         data_dict = self.dump_to_dict()
+        data_json = json.dumps(data_dict)
+        return data_json
 
-        with open(file_name + ".pickle", "w+") as pickle_file:
-            pickle.dump(data_dict, pickle_file)
+    def dump_to_file(self, file_name: str = "template"):
+        data_json = self.dump_to_json()
+        with open(file_name + ".json", "w+") as json_file:
+            json_file.write(data_json)
+
+    def load_from_dict(self, data_dict: dict):
+        node_list = data_dict["nodes"]
+        for node_info in node_list:
+            tn = TemplateNode(("", "", ""))
+            tn.load_from_dict(node_info)
+            self.technique_node_list.append(tn)
+        edge_list = data_dict["edges"]
+
+        for edge in edge_list:
+            self.technique_edge_dict[tuple(edge)] = 1
+
+        instance_list = data_dict["instances"]
+        for instance in instance_list:
+            edge_in_instance = []
+            for edge in instance:
+                edge_in_instance.append(tuple(edge))
+            self.technique_instance_dict[tuple(edge_in_instance)] = 1
+
+        self.technique_edge_dict
+
+    def load_from_json(self, data_json: str):
+        data_dict = json.loads(data_json)
+        self.load_from_dict(data_dict)
 
 
 # %%
@@ -255,5 +305,6 @@ if __name__ == '__main__':
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
+    tt.dump_to_json()
     tt.pretty_print()
     draw_attackgraph_plt(tt.template_nx)
