@@ -268,6 +268,11 @@ class TechniqueTemplate:
         data_dict = json.loads(data_json)
         self.load_from_dict(data_dict)
 
+    def load_from_file(self, file_name: str):
+        with open(file_name, 'r') as data_file:
+            data_json = data_file.read()
+            self.load_from_json(data_json)
+
 
 # %%
 
