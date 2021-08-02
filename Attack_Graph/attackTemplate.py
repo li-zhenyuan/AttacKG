@@ -294,7 +294,7 @@ if __name__ == '__main__':
     ner_model.add_coreference()
 
     technique_sample_graphs = []
-    # example_list = example_list[0:2]
+    example_list = example_list[0:20]
     for example in example_list:
         example = re.sub("\[[0-9]+\]+", "", example)
         print(example)
@@ -310,6 +310,6 @@ if __name__ == '__main__':
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
-    tt.dump_to_json()
+    tt.dump_to_file()
     tt.pretty_print()
     draw_attackgraph_plt(tt.template_nx)
