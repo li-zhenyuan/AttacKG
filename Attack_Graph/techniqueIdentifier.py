@@ -46,6 +46,7 @@ class TechniqueIdentifier:
 
             # accept node as a match
             if node_similarity_score >= TechniqueTemplate.NODE_SIMILAR_ACCEPT_THRESHOLD:
+            # if True:
                 if self.node_match_record[index] != None and self.node_match_record[index][1] > node_similarity_score:
                     continue
                 else:
@@ -56,12 +57,16 @@ class TechniqueIdentifier:
     def get_node_alignment_score(self):
         node_alignment_score = 0.0
 
+        index = 0
         for v in self.node_match_record.values():
             if v is not None:
                 node_alignment_score += v[1]
+                logging.debug("%d-%s-%f" % (index, v[0], v[1]))
+
+            index += 1
 
         # Normalization
-        node_alignment_score /= math.sqrt(self.node_count)
+        # node_alignment_score /= math.sqrt(self.node_count)
 
         return node_alignment_score
 
@@ -84,10 +89,14 @@ class attackMatcher:
         else:
             attack_graph_nx = self.attack_graph_nx
 
-        subgraph_list = nx.strongly_connected_components(self.attack_graph_nx)
+        # subgraph_list = nx.strongly_connected_components(self.attack_graph_nx)
+        subgraph_list = nx.connected_components(self.attack_graph_nx.to_undirected())
         for subgraph in subgraph_list:
             logging.debug("---Get subgraph: %s---" % subgraph)
             matching_result = []
+
+            for technique_identifier in self.technique_identifier_list:
+                technique_identifier.init_node_match_record()
 
             for node in subgraph:
                 # Try to find a match in technique_identifier_list

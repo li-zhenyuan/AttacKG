@@ -274,17 +274,7 @@ class TechniqueTemplate:
             self.load_from_json(data_json)
 
 
-# %%
-
-if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-
-    # %%
-
-    technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
-    # technique_list = [r'/techniques/T1053/005']
-    # technique_list = [r'/techniques/T1547/001']
-
+def extract_technique_template_from_technique_list(technique_list: list):
     example_list = []
     mgr = MitreGraphReader()
     for technique_id in technique_list:
@@ -294,7 +284,7 @@ if __name__ == '__main__':
     ner_model.add_coreference()
 
     technique_sample_graphs = []
-    example_list = example_list[0:20]
+    # example_list = example_list[0:20]
     for example in example_list:
         example = re.sub("\[[0-9]+\]+", "", example)
         print(example)
@@ -303,13 +293,60 @@ if __name__ == '__main__':
         # draw_attackgraph_plt(ag.attackgraph_nx)
         technique_sample_graphs.append(ag.attackgraph_nx)
 
-    # %%
-
     tt = TechniqueTemplate(technique_list)
-
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
-    tt.dump_to_file()
-    tt.pretty_print()
-    draw_attackgraph_plt(tt.template_nx)
+    tt.dump_to_file(file_name=str(technique_list))
+    tt.pretty_print(image_name=str(technique_list))
+    # draw_attackgraph_plt(tt.template_nx)
+
+# %%
+
+if __name__ == '__main__':
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
+    technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
+    # technique_list = [r'/techniques/T1053/005']
+    # technique_list = [r'/techniques/T1547/001']
+
+    # extract_technique_template_from_technique_list(technique_list)
+
+    # %%
+
+    technique_id_list = ["/techniques/T1566/001", "/techniques/T1566/002", "/techniques/T1566/003", "/techniques/T1059/001", "/techniques/T1059/003", "/techniques/T1059/005", "/techniques/T1059/007", "/techniques/T1204/001", "/techniques/T1204/002", "/techniques/T1053/005", "/techniques/T1547/001", "/techniques/T1037/001", "/techniques/T1547/001", "/techniques/T1547/002", "/techniques/T1112", "/techniques/T1218/005", "/techniques/T1218/010", "/techniques/T1218/011", "/techniques/T1078/001", "/techniques/T1518/001", "/techniques/T1083", "/techniques/T1057", "/techniques/T1012", "/techniques/T1497/001", "/techniques/T1560/001", "/techniques/T1123", "/techniques/T1119", "/techniques/T1041"]
+
+    for technique in technique_id_list:
+        extract_technique_template_from_technique_list([technique])
+
+    # %%
+
+    #
+    # example_list = []
+    # mgr = MitreGraphReader()
+    # for technique_id in technique_list:
+    #     example_list += mgr.find_examples_for_technique(technique_id)
+    #
+    # ner_model = IoCNer("./new_cti.model")
+    # ner_model.add_coreference()
+    #
+    # technique_sample_graphs = []
+    # # example_list = example_list[0:20]
+    # for example in example_list:
+    #     example = re.sub("\[[0-9]+\]+", "", example)
+    #     print(example)
+    #
+    #     ag = parse_attackgraph_from_text(ner_model, example)
+    #     # draw_attackgraph_plt(ag.attackgraph_nx)
+    #     technique_sample_graphs.append(ag.attackgraph_nx)
+
+    # %%
+
+    # tt = TechniqueTemplate(technique_list)
+    #
+    # for tsg in technique_sample_graphs:
+    #     tt.update_template(tsg)
+    #
+    # tt.dump_to_file()
+    # tt.pretty_print()
+    # draw_attackgraph_plt(tt.template_nx)
