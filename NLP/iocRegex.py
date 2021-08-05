@@ -16,6 +16,10 @@ IoC_regex = {
         r"\b([a-f0-9]{40}|[A-F0-9]{40})\b",
         r"\b([a-f0-9]{64}|[A-F0-9]{64})\b"
     ],
+    "Registry": [
+        r"\b((KCU|HKLM|HKCU|HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|SOFTWARE).{0,1}\\[\\A-Za-z0-9-_]+)\b",
+        r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE)\\\\[\\\\A-Za-z0-9-_]+)\b"
+    ],
     "FilePath": [
         r"\b[A-Z]:\\[A-Za-z0-9-_\.\\]+\b",
         # r"[~]*/[A-Za-z0-9-_\./]{2,}\b"
@@ -26,10 +30,6 @@ IoC_regex = {
         r"\b([A-Za-z0-9-_\.]+\.(sys|htm|html|js|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
     "ExeFile": [r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|jar))\b"],
     "Vulnerability": [r"\b(CVE\-[0-9]{4}\-[0-9]{4,6})\b"],
-    "Registry": [
-        r"\b((KCU|HKLM|HKCU|HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|SOFTWARE).{0,1}\\[\\A-Za-z0-9-_]+)\b",
-        r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE)\\\\[\\\\A-Za-z0-9-_]+)\b"
-    ],
     "Arguments": [r"\s[-/\\][0-9a-zA-Z]+\s"]
 }
 
@@ -66,17 +66,22 @@ def get_iocitem_key(item: IoCItem):
 
 
 class IoCIdentifier:
-    text = ""
-    ioc_list = []
+    text: str
+    ioc_list: list
 
-    deleted_character_count = 0
-    replaced_text = ""
-    replaced_ioc_list = []
-    replaced_ioc_dict = {}
+    deleted_character_count: int
+    replaced_text: str
+    replaced_ioc_list: list
+    replaced_ioc_dict: dict
 
     def __init__(self, text: str = ""):
         self.text = text
         self.ioc_list = []
+
+        self.deleted_character_count = 0
+        self.replaced_text = ""
+        self.replaced_ioc_list = []
+        self.replaced_ioc_dict = {}
 
         if text != "":
             self.ioc_identify()
@@ -91,6 +96,14 @@ class IoCIdentifier:
             output = self.ioc_identify(text)
 
         return output
+
+    # check if the iocs have overlaps, and leave only the longest
+    def add_check_overlap_iocs(self, ioc_item: IoCItem):
+        for i in range(0, len(self.ioc_list)):
+            # no overlap
+            if not (ioc_item.ioc_location[1] <= self.ioc_list[i].ioc_location[0] or ioc_item.ioc_location[0] >= self.ioc_list[i].ioc_location[1]):
+                return
+        self.ioc_list.append(ioc_item)
 
     def ioc_identify(self, text: str = None) -> str:
         logging.info("---S0-2: Identify IoC with Regex in text!---")
@@ -110,7 +123,7 @@ class IoCIdentifier:
                     logging.debug("Find IoC matching: %s - %s" % (ioc_type, m))
                     # output["label"].append([match.span()[0], match.span()[1], ioc_type])
                     ioc_item = IoCItem(m.group(), ioc_type, m.span()[0], m.span()[1])
-                    self.ioc_list.append(ioc_item)
+                    self.add_check_overlap_iocs(ioc_item)
 
         # Sort the IoC item list
         self.ioc_list.sort(key=get_iocitem_key)
