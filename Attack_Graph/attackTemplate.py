@@ -280,12 +280,20 @@ def extract_technique_template_from_technique_list(technique_list: list):
     for technique_id in technique_list:
         example_list += mgr.find_examples_for_technique(technique_id)
 
+    technique_file_name = ".\\data\\procedure_examples\\" + str(technique_list).replace("[", "").replace("]", "").replace(",", "__").replace("/", "_")
+    with open(technique_file_name+".txt", "w+") as t_file:
+        for example in example_list:
+            t_file.write(example + "\n")
+
     ner_model = IoCNer("./new_cti.model")
+    ner_model.ner_with_regex()
     ner_model.add_coreference()
 
     technique_sample_graphs = []
     # example_list = example_list[0:20]
+    index = 0
     for example in example_list:
+        index += 1
         example = re.sub("\[[0-9]+\]+", "", example)
         print(example)
 
@@ -293,12 +301,17 @@ def extract_technique_template_from_technique_list(technique_list: list):
         # draw_attackgraph_plt(ag.attackgraph_nx)
         technique_sample_graphs.append(ag.attackgraph_nx)
 
+        procedure_example_file_name = technique_file_name + "-" + str(index)
+        draw_attackgraph_dot(ag.attackgraph_nx, output_file=procedure_example_file_name)
+        nx.write_gml(ag.attackgraph_nx, procedure_example_file_name+".gml")
+
     tt = TechniqueTemplate(technique_list)
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
-    tt.dump_to_file(file_name=str(technique_list))
-    tt.pretty_print(image_name=str(technique_list))
+    file_name = str(technique_list).replace("/", "").replace("'", "").replace("[", "").replace("]", "")
+    tt.dump_to_file(file_name=file_name)
+    tt.pretty_print(image_name=file_name + ".png")
     # draw_attackgraph_plt(tt.template_nx)
 
 # %%
@@ -314,7 +327,8 @@ if __name__ == '__main__':
 
     # %%
 
-    technique_id_list = ["/techniques/T1566/001", "/techniques/T1566/002", "/techniques/T1566/003", "/techniques/T1059/001", "/techniques/T1059/003", "/techniques/T1059/005", "/techniques/T1059/007", "/techniques/T1204/001", "/techniques/T1204/002", "/techniques/T1053/005", "/techniques/T1547/001", "/techniques/T1037/001", "/techniques/T1547/001", "/techniques/T1547/002", "/techniques/T1112", "/techniques/T1218/005", "/techniques/T1218/010", "/techniques/T1218/011", "/techniques/T1078/001", "/techniques/T1518/001", "/techniques/T1083", "/techniques/T1057", "/techniques/T1012", "/techniques/T1497/001", "/techniques/T1560/001", "/techniques/T1123", "/techniques/T1119", "/techniques/T1041"]
+    technique_id_list = picked_techniques  # from mitreGraphReader
+    technique_id_list = [r'/techniques/T1547/001']
 
     for technique in technique_id_list:
         extract_technique_template_from_technique_list([technique])

@@ -136,7 +136,7 @@ class IoCNer:
 
         {"label": "Vulnerability", "pattern": [{"TEXT": {"REGEX": "(E|e)xploit"}}]},
 
-        {"label": "Registry", "pattern": [{"TEXT": {"REGEX": "(R|r)egistry"}}]}
+        {"label": "registry", "pattern": [{"TEXT": {"REGEX": "(R|r)egistry"}}]}
     ]
 
     config = {
@@ -175,12 +175,12 @@ if __name__ == '__main__':
     # %%
     # model training flow
 
-    ner_model = IoCNer("en_core_web_sm")
-    # ner_model = IoCNer("en_core_web_trf")
-
-    labeled_data = read_labeled_data(r".\NLP\Doccano\2021722.jsonl")
-    spacy_data = ner_model.convert_data_format(labeled_data)
-    ner_model.train_model(spacy_data)
+    # ner_model = IoCNer("en_core_web_sm")
+    # # ner_model = IoCNer("en_core_web_trf")
+    #
+    # labeled_data = read_labeled_data(r".\NLP\Doccano\2021722.jsonl")
+    # spacy_data = ner_model.convert_data_format(labeled_data)
+    # ner_model.train_model(spacy_data)
 
     # %%
     # model testing flow
@@ -188,7 +188,7 @@ if __name__ == '__main__':
     # https://zhuanlan.zhihu.com/p/158474472
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-    # ner_model = IoCNer("./new_cti.model")
+    ner_model = IoCNer("./new_cti.model")
     # ner_model = IoCNer("en_core_web_trf")
 
     sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
@@ -197,6 +197,7 @@ if __name__ == '__main__':
     sample = "APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites."
     sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
     sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
+    sample = "Cardinal RAT establishes Persistence by setting the  HKCU\Software\Microsoft\Windows NT\CurrentVersion\Windows\Load Registry key to point to its executable."
 
     doc = ner_model.nlp(sample)
     print([(ent.text, ent.label_) for ent in doc.ents])

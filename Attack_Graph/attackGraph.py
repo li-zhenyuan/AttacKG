@@ -475,25 +475,26 @@ if __name__ == '__main__':
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
 
-    # sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
-    # sample = "Wizard Spider has used spearphishing attachments to deliver Microsoft documents containing macros or PDFs containing malicious links to download either Emotet, Bokbot, TrickBot, or Bazar."
-    # sample = "Elderwood has delivered zero-day exploits and malware to victims via targeted emails containing a link to malicious content hosted on an uncommon Web server."
-    # sample = "APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites."
-    # sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
-    # sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
-    #
-    # ag = parse_attackgraph_from_text(ner_model, sample)
-    # draw_attackgraph_plt(ag.attackgraph_nx)
+    sample = "APT3 has used PowerShell on victim systems to download and run payloads after exploitation."
+    sample = "Wizard Spider has used spearphishing attachments to deliver Microsoft documents containing macros or PDFs containing malicious links to download either Emotet, Bokbot, TrickBot, or Bazar."
+    sample = "Elderwood has delivered zero-day exploits and malware to victims via targeted emails containing a link to malicious content hosted on an uncommon Web server."
+    sample = "APT28 sent spearphishing emails which used a URL-shortener service to masquerade as a legitimate service and to redirect targets to credential harvesting sites."
+    sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
+    sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
+    sample = "Cardinal RAT establishes Persistence by setting the  HKCU\Software\Microsoft\Windows NT\CurrentVersion\Windows\Load Registry key to point to its executable."
+
+    ag = parse_attackgraph_from_text(ner_model, sample)
+    draw_attackgraph_dot(ag.attackgraph_nx).view()
 
     # %%
 
-    ag = parse_attackgraph_from_cti_report(ner_model)
+    # ag = parse_attackgraph_from_cti_report(ner_model)
 
     # %%
     # class AttackGraph unit test
 
     # cti_path = r".\data\cti\html"
-    # output_path = r".\data\extracted_attackgraph_subgraphs"
+    # output_path = r".\data\extracted_attackgraph_20210804"
     #
     # cti_files = os.listdir(cti_path)
     # for file in cti_files:

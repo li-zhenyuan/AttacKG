@@ -6,6 +6,7 @@ import math
 import matplotlib.pyplot as plt
 import logging
 import os.path
+import time
 
 
 # Record TechniqueTemplate Matching Record
@@ -38,7 +39,7 @@ class TechniqueIdentifier:
         pass
 
     def node_alignment(self, node: str, nx_graph: nx.DiGraph):
-        self.init_node_match_record()
+        # self.init_node_match_record()
 
         index = 0
         for technique_node in self.technique_template.technique_node_list:
@@ -115,7 +116,9 @@ class attackMatcher:
 # %%
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.DEBUG)
+    logging.info("======techniqueIdentifier.py: %s======", time.asctime(time.localtime(time.time())))
 
     # %%
 
@@ -125,7 +128,7 @@ if __name__ == '__main__':
     tt.load_from_file(tt_file)
     ti = TechniqueIdentifier(tt)
 
-    attack_graph_file = r".\data\\extracted_attackgraph_20210803\0a84e7a880901bd265439bd57da61c5d.gml"
+    attack_graph_file = r".\data\\extracted_attackgraph_20210804\0a84e7a880901bd265439bd57da61c5d.gml"
     attack_graph_nx = nx.read_gml(attack_graph_file)
     am = attackMatcher(attack_graph_nx)
 
