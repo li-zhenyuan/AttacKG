@@ -1,18 +1,15 @@
-from NLP.iocNer import *
 from attackGraph import *
 from Mitre_TTPs.mitreGraphReader import *
 
 import networkx as nx
 from networkx.drawing.nx_agraph import to_agraph
-import pptree
-import pickle
 import logging
 import re
 import Levenshtein
 import json
 
 
-def parse_networkx_node(node: str, nx_graph: nx.DiGraph) -> set:
+def parse_networkx_node(node: str, nx_graph: nx.DiGraph) -> tuple:
     node_type = nx_graph.nodes[node]["type"]
     nlp = nx_graph.nodes[node]["nlp"]
     try:
@@ -33,11 +30,11 @@ class TemplateNode(AttackGraphNode):
     instance_count: int
 
     def dump_to_dict(self) -> dict:
-        node_data = {}
-
-        node_data["type"] = self.node_type
-        node_data["description"] = self.node_nlp_instance
-        node_data["ioc"] = self.node_ioc_instance
+        node_data = {
+            "type": self.node_type,
+            "description": self.node_nlp_instance,
+            "ioc": self.node_ioc_instance,
+            "count": self.instance_count}
 
         return node_data
 
@@ -45,6 +42,7 @@ class TemplateNode(AttackGraphNode):
         self.node_type = node_data["type"]
         self.node_nlp_instance = node_data["description"]
         self.node_ioc_instance = node_data["ioc"]
+        self.instance_count = node_data["count"]
 
     def __init__(self, node_info: set):
         self.node_nlp_instance = []
@@ -61,7 +59,8 @@ class TemplateNode(AttackGraphNode):
         logging.info("---S3: Init TemplateNode %s!---" % (self))
 
     def __str__(self):
-        return "%s-%s-%s-%s" % (self.node_type, str(self.node_nlp_instance), str(self.node_ioc_instance), str(self.instance_count))
+        return "%s-%s-%s-%s" % (
+            self.node_type, str(self.node_nlp_instance), str(self.node_ioc_instance), str(self.instance_count))
 
     def get_similar_with(self, node_info: set):
         similarity_score = 0.0
@@ -178,7 +177,8 @@ class TechniqueTemplate:
             # whether node in new sample is aligned with exist template node
             if max_similartiy_score > self.NODE_SIMILAR_ACCEPT_THRESHOLD:
                 sample_node_template_node_dict[node] = max_similarity_template_node_id
-                self.technique_node_list[max_similarity_template_node_id].update_with(parse_networkx_node(node, technique_sample_graph))
+                self.technique_node_list[max_similarity_template_node_id].update_with(
+                    parse_networkx_node(node, technique_sample_graph))
             else:
                 tn = TemplateNode(parse_networkx_node(node, technique_sample_graph))
                 self.technique_node_list.append(tn)
@@ -214,7 +214,7 @@ class TechniqueTemplate:
 
             source = self.technique_node_list[edge[0]]
             sink = self.technique_node_list[edge[1]]
-            self.template_nx.add_edge(source, sink, count = str(count))
+            self.template_nx.add_edge(source, sink, count=str(count))
 
         A = to_agraph(self.template_nx)
         A.layout('dot')
@@ -280,8 +280,10 @@ def extract_technique_template_from_technique_list(technique_list: list):
     for technique_id in technique_list:
         example_list += mgr.find_examples_for_technique(technique_id)
 
-    technique_file_name = ".\\data\\procedure_examples\\" + str(technique_list).replace("[", "").replace("]", "").replace(",", "__").replace("/", "_")
-    with open(technique_file_name+".txt", "w+") as t_file:
+    technique_file_name = ".\\data\\procedure_examples\\" + str(technique_list).replace("[", "").replace("]",
+                                                                                                         "").replace(
+        ",", "__").replace("/", "_")
+    with open(technique_file_name + ".txt", "w+") as t_file:
         for example in example_list:
             t_file.write(example + "\n")
 
@@ -303,23 +305,27 @@ def extract_technique_template_from_technique_list(technique_list: list):
 
         procedure_example_file_name = technique_file_name + "-" + str(index)
         draw_attackgraph_dot(ag.attackgraph_nx, output_file=procedure_example_file_name)
-        nx.write_gml(ag.attackgraph_nx, procedure_example_file_name+".gml")
+        nx.write_gml(ag.attackgraph_nx, procedure_example_file_name + ".gml")
 
     tt = TechniqueTemplate(technique_list)
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
-    file_name = str(technique_list).replace("/", "").replace("'", "").replace("[", "").replace("]", "")
-    tt.dump_to_file(file_name=file_name)
-    tt.pretty_print(image_name=file_name + ".png")
+    template_file_name = ".\\data\\technique_template\\" + str(technique_list).replace("[", "").replace("]",
+                                                                                                        "").replace(",",
+                                                                                                                    "__").replace(
+        "/", "_")
+    tt.dump_to_file(file_name=template_file_name)
+    tt.pretty_print(image_name=template_file_name + ".png")
     # draw_attackgraph_plt(tt.template_nx)
+
 
 # %%
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
+    # technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
     # technique_list = [r'/techniques/T1053/005']
     # technique_list = [r'/techniques/T1547/001']
 
@@ -327,7 +333,7 @@ if __name__ == '__main__':
 
     # %%
 
-    technique_id_list = picked_techniques  # from mitreGraphReader
+    # technique_id_list = picked_techniques  # from mitreGraphReader
     technique_id_list = [r'/techniques/T1547/001']
 
     for technique in technique_id_list:

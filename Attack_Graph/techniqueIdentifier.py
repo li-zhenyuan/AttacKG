@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
     # %%
 
-    tt_file = "template.json"
+    tt_file = r".\data\technique_template\'_techniques_T1059_001'.json"
     technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002', r'/techniques/T1566/003']
     tt = TechniqueTemplate(technique_list)
     tt.load_from_file(tt_file)
