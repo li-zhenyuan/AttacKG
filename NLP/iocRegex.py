@@ -18,7 +18,7 @@ IoC_regex = {
     ],
     "Registry": [
         r"\b((KCU|HKLM|HKCU|HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|SOFTWARE).{0,1}\\[\\A-Za-z0-9-_]+)\b",
-        r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE)\\\\[\\\\A-Za-z0-9-_]+)\b"
+        r"\b((HKLM|HKCU|HKEY_LOCAL_MACHINE|HKU)\\\\[\\\\A-Za-z0-9-_]+)\b"
     ],
     "FilePath": [
         r"\b[A-Z]:\\[A-Za-z0-9-_\.\\]+\b",

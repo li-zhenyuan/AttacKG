@@ -182,7 +182,7 @@ class AttackGraph:
     #     self.ioc_coref_list = []
     #     self.ioc_coref_dict = {}
 
-    def __init__(self, doc, ioc_identifier = None):
+    def __init__(self, doc, ioc_identifier=None):
         self.attackgraph_nx = None
         self.ioc_identifier = ioc_identifier
 
@@ -249,6 +249,9 @@ class AttackGraph:
     def parse(self):
         logging.info("---S1-1: Parsing NLP doc to get Attack Graph!---")
 
+        if self.attackgraph_nx is None:
+            self.attackgraph_nx = nx.DiGraph()
+
         # parse coreference
         self.parse_coref()
         # # parse node
@@ -287,39 +290,36 @@ class AttackGraph:
         logging.info("---S1-1.1: Parsing NLP doc to get Attack Graph Nodes!---")
 
         # parsing all ioc nodes
-        # for entity in self.nlp_doc.ents:
-        #     ent_root = entity.root
-        #     ent_root_i = ent_root.i
-        #     self.entity_root_token_string_dict[ent_root_i] = entity.text
-        #     for token in entity:
-        #         if token.i not in self.entity_root_token_string_dict.keys():
-        #             ignore_token_i = token.i
-        #             self.entity_ignore_token_list.append(ignore_token_i)
+        for entity in self.nlp_doc.ents:
+            ent_root = entity.root
+            ent_root_i = ent_root.i
+            self.entity_root_token_string_dict[ent_root_i] = entity.text
+            for token in entity:
+                if token.i not in self.entity_root_token_string_dict.keys():
+                    ignore_token_i = token.i
+                    self.entity_ignore_token_list.append(ignore_token_i)
 
-        last_ent_type = ''
-        ent_start_i = 0
-        # try to find entities' boundary
-        for token in self.nlp_doc:
-            ent_type = token.ent_type_
-            if ent_type in ner_labels:
-                if ent_type != last_ent_type:
-                    ent_start_i = token.i
-                else:
-                    self.entity_ignore_token_list.append(token.i-1)
-            else:
-                if last_ent_type in ner_labels:
-                    self.entity_root_token_string_dict[token.i-1] = self.nlp_doc[ent_start_i:token.i].text
-                else:
-                    ent_start_i = 0
-            last_ent_type = ent_type
+        # last_ent_type = ''
+        # ent_start_i = 0
+        # # try to find entities' boundary
+        # for token in self.nlp_doc:
+        #     ent_type = token.ent_type_
+        #     if ent_type in ner_labels:
+        #         if ent_type != last_ent_type:
+        #             ent_start_i = token.i
+        #         else:
+        #             self.entity_ignore_token_list.append(token.i-1)
+        #     else:
+        #         if last_ent_type in ner_labels:
+        #             self.entity_root_token_string_dict[token.i-1] = self.nlp_doc[ent_start_i:token.i].text
+        #         else:
+        #             ent_start_i = 0
+        #     last_ent_type = ent_type
 
         # parsing ioc recognized with iocRegex
 
     def parse_edge(self):
         logging.info("---S1-1.2: Parsing NLP doc to get Attack Graph Edges!---")
-
-        if self.attackgraph_nx == None:
-            self.attackgraph_nx = nx.DiGraph()
 
         for sentence in self.nlp_doc.sents:
             # try:
@@ -338,7 +338,6 @@ class AttackGraph:
         # to_nltk_formatted_tree(root).pretty_print()
         is_related_sentence = False
 
-        # FIXME: Wrong relationships
         # traverse the nltk tree
         node_queue.append(root)
         while node_queue:
@@ -391,11 +390,10 @@ class AttackGraph:
                     self.attackgraph_nx.add_edge(tnode, n, action=tvb)
                 tnode = n
 
-        if(is_related_sentence):
+        if (is_related_sentence):
             logging.debug("Related sentence: %s" % sentence.text)
 
         return self.attackgraph_nx
-
 
     # def parse_edge_sentence(self, sentence):
     #     # M1: find Shortest Dependency Path (SDP)
@@ -418,7 +416,7 @@ class AttackGraph:
     #     # https://en.wikipedia.org/wiki/Edge_contraction
 
     def to_node_sequence(self):
-        pass # TODO
+        pass  # TODO
 
 
 def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
@@ -432,7 +430,9 @@ def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
     return ag
 
 
-def parse_attackgraph_from_cti_report(ner_model: IoCNer, cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html", output_path: str = ""):
+def parse_attackgraph_from_cti_report(ner_model: IoCNer,
+                                      cti_file: str = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html",
+                                      output_path: str = ""):
     logging.info("---Parsing %s---" % cti_file)
 
     # file_name = os.path.splitext(cti_file)[0]
@@ -466,6 +466,7 @@ def parse_attackgraph_from_cti_report(ner_model: IoCNer, cti_file: str = r".\dat
         draw_attackgraph_dot(ag.attackgraph_nx, output_file=os.path.join(output_path, file_name))
 
     return ag
+
 
 # %%
 

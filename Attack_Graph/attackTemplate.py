@@ -44,7 +44,7 @@ class TemplateNode(AttackGraphNode):
         self.node_ioc_instance = node_data["ioc"]
         self.instance_count = node_data["count"]
 
-    def __init__(self, node_info: set):
+    def __init__(self, node_info: tuple):
         self.node_nlp_instance = []
         self.node_ioc_instance = []
 
@@ -62,7 +62,7 @@ class TemplateNode(AttackGraphNode):
         return "%s-%s-%s-%s" % (
             self.node_type, str(self.node_nlp_instance), str(self.node_ioc_instance), str(self.instance_count))
 
-    def get_similar_with(self, node_info: set):
+    def get_similar_with(self, node_info: tuple):
         similarity_score = 0.0
 
         new_node_type = node_info[0]
@@ -93,7 +93,7 @@ class TemplateNode(AttackGraphNode):
     NODE_NLP_SIMILAR_ACCEPT_THRESHOLD = 0.9
     NODE_IOC_SIMILAR_ACCEPT_THRESHOLD = 0.9
 
-    def update_with(self, node_info: set):
+    def update_with(self, node_info: tuple):
 
         new_node_type = node_info[0]
         new_node_nlp = node_info[1]
@@ -137,16 +137,16 @@ def get_string_similarity(a: str, b: str) -> float:
 class TechniqueTemplate:
     NODE_SIMILAR_ACCEPT_THRESHOLD = 0.5 + 0.5
 
-    technique_id_list: list  # '/techniques/T1566/001'
+    technique_name: str  # '/techniques/T1566/001'
     technique_node_list: list  # [TemplateNode, ...]
     technique_edge_dict: dict  # [(TN1, TN2): Count, ...]
-    technique_instance_dict: list  # [[(n1,n2), ...]...]
+    technique_instance_dict: dict  # [[(n1,n2), ...]...]
     total_instance_count: int
 
     template_nx: nx.DiGraph
 
-    def __init__(self, technique_id_list: list):
-        self.technique_id_list = technique_id_list
+    def __init__(self, technique_name: str):
+        self.technique_name = technique_name
         self.technique_node_list = []
         self.technique_edge_dict = {}
         self.technique_instance_dict = {}
@@ -162,20 +162,20 @@ class TechniqueTemplate:
 
         # node matching
         for node in technique_sample_graph.nodes:
-            max_similartiy_score = 0
+            max_similarity_score = 0
             max_similarity_template_node_id = -1
 
             node_index = 0
             for template_node in self.technique_node_list:
                 similarity_score = template_node.get_similar_with(parse_networkx_node(node, technique_sample_graph))
-                if similarity_score > max_similartiy_score:
-                    max_similartiy_score = similarity_score
+                if similarity_score > max_similarity_score:
+                    max_similarity_score = similarity_score
                     max_similarity_template_node_id = node_index
 
                 node_index += 1
 
             # whether node in new sample is aligned with exist template node
-            if max_similartiy_score > self.NODE_SIMILAR_ACCEPT_THRESHOLD:
+            if max_similarity_score > self.NODE_SIMILAR_ACCEPT_THRESHOLD:
                 sample_node_template_node_dict[node] = max_similarity_template_node_id
                 self.technique_node_list[max_similarity_template_node_id].update_with(
                     parse_networkx_node(node, technique_sample_graph))
@@ -307,7 +307,7 @@ def extract_technique_template_from_technique_list(technique_list: list):
         draw_attackgraph_dot(ag.attackgraph_nx, output_file=procedure_example_file_name)
         nx.write_gml(ag.attackgraph_nx, procedure_example_file_name + ".gml")
 
-    tt = TechniqueTemplate(technique_list)
+    tt = TechniqueTemplate(str(technique_list))
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
@@ -333,8 +333,8 @@ if __name__ == '__main__':
 
     # %%
 
-    # technique_id_list = picked_techniques  # from mitreGraphReader
-    technique_id_list = [r'/techniques/T1547/001']
+    technique_id_list = picked_techniques  # from mitreGraphReader
+    # technique_id_list = [r'/techniques/T1547/001']
 
     for technique in technique_id_list:
         extract_technique_template_from_technique_list([technique])
