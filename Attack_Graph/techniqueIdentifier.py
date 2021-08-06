@@ -74,10 +74,12 @@ class TechniqueIdentifier:
 class AttackMatcher:
     attack_graph_nx: nx.DiGraph
     technique_identifier_list: list
+    technique_matching_result: dict
 
     def __init__(self, nx_graph: nx.DiGraph):
         self.attack_graph_nx = nx_graph
         self.technique_identifier_list = []
+        self.technique_matching_result = {}
 
     def add_technique_identifier(self, technique_identifier: TechniqueIdentifier):
         self.technique_identifier_list.append(technique_identifier)
@@ -106,16 +108,23 @@ class AttackMatcher:
 
             for technique_identifier in self.technique_identifier_list:
                 node_alignment_score = technique_identifier.get_node_alignment_score()
+
+                if technique_identifier.technique_template.technique_name not in self.technique_matching_result.keys():
+                    self.technique_matching_result[technique_identifier.technique_template.technique_name] = node_alignment_score
+                elif self.technique_matching_result[technique_identifier.technique_template.technique_name] < node_alignment_score:
+                    self.technique_matching_result[technique_identifier.technique_template.technique_name] = node_alignment_score
+
                 matching_result.append((technique_identifier.technique_template, node_alignment_score))
+                logging.debug("---S3.2: matching result %s - %f!---" % (technique_identifier.technique_template.technique_name, node_alignment_score))
 
-                logging.info("---S3.2: matching result %s - %f!---" % (technique_identifier.technique_template.technique_id_list, node_alignment_score))
-
+    def print_match_result(self):
+        logging.info(str(self.technique_matching_result))
 
 # %%
 
 if __name__ == '__main__':
     # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.DEBUG)
+    logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.INFO)
     logging.info("======techniqueIdentifier.py: %s======", time.asctime(time.localtime(time.time())))
 
     # %%
@@ -147,4 +156,19 @@ if __name__ == '__main__':
         ti = TechniqueIdentifier(tt)
         identifier_list.append(ti)
 
+    # %%
+    with open(r"report_picked_technique.json", "r") as output:
+        data_json = output.read()
+        report_technique_dict = json.loads(data_json)
 
+    for report, technique in report_technique_dict.items():
+        report_name, ext = os.path.splitext(report)
+        report_graph_file = r".\data\\extracted_attackgraph_20210804\%s.gml" % report_name
+        logging.info(report_graph_file)
+
+        report_graph_nx = nx.read_gml(report_graph_file)
+        am = AttackMatcher(report_graph_nx)
+        for ti in identifier_list:
+            am.add_technique_identifier(ti)
+        am.attack_matching()
+        am.print_match_result()

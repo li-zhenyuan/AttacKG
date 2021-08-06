@@ -1,5 +1,5 @@
 import os
-
+import json
 import networkx as nx
 import logging
 import sys
@@ -135,7 +135,9 @@ if __name__ == '__main__':
     url_file_name_dict = read_csv_as_dict(csv_file=r'.\data\cti\html\html_url_hash.csv')
 
     cti_path = r".\data\cti\html"
-    with open(r"report_picked_technique.txt", "w+") as output:
+    with open(r"report_picked_technique.json", "w+") as output:
+        report_technique_dict = {}
+
         for file in os.listdir(cti_path):
             print(file)
             if file not in url_file_name_dict.keys():
@@ -144,5 +146,10 @@ if __name__ == '__main__':
             report_url = url_file_name_dict[file]
             involved_technique_list = mgr.find_techniques_relatedto_reports(report_url)
             print(involved_technique_list)
-            output.write(file)
-            output.write(str(involved_technique_list))
+
+            report_technique_dict[file] = involved_technique_list
+            # output.write(file)
+            # output.write(str(involved_technique_list))
+
+        data_json = json.dumps(report_technique_dict)
+        output.write(data_json)
