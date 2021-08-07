@@ -5,7 +5,7 @@ import logging
 import time
 import math
 import os
-
+import xlsxwriter
 
 
 # Record TechniqueTemplate Matching Record
@@ -117,8 +117,34 @@ class AttackMatcher:
                 matching_result.append((technique_identifier.technique_template, node_alignment_score))
                 logging.debug("---S3.2: matching result %s - %f!---" % (technique_identifier.technique_template.technique_name, node_alignment_score))
 
-    def print_match_result(self):
+    def print_match_result(self) -> dict:
         logging.info(str(self.technique_matching_result))
+
+        return self.technique_matching_result
+
+
+class Evaluation:
+
+    def __init__(self):
+        self.book = xlsxwriter.Workbook("technique_matching_result.xlsx")
+        self.sheet = self.book.add_worksheet('report_pickTechnique')
+        self.colum_count = 1
+
+        self.match_format = self.book.add_format({'bg_color': '#FFC7CE', 'font_color': '#9C0006'})
+
+    def add_result(self, report_name: str, detection_result: dict, ground_truth: list):
+        self.sheet.write(self.colum_count, 0, report_name)
+
+        row_count = 1
+        for technique, result in detection_result.items():
+            self.sheet.write(self.colum_count, row_count, result)
+            technique_name = technique.replace("'", "").replace("_", "/")
+            if technique_name in ground_truth:
+                self.sheet.conditional_format(self.colum_count, row_count, self.colum_count, row_count, {'type': '2_color_scale'})
+            row_count += 1
+
+        self.colum_count += 1
+
 
 # %%
 
@@ -161,6 +187,8 @@ if __name__ == '__main__':
         data_json = output.read()
         report_technique_dict = json.loads(data_json)
 
+    xe = Evaluation()
+
     for report, technique in report_technique_dict.items():
         report_name, ext = os.path.splitext(report)
         report_graph_file = r".\data\\extracted_attackgraph_20210804\%s.gml" % report_name
@@ -171,4 +199,8 @@ if __name__ == '__main__':
         for ti in identifier_list:
             am.add_technique_identifier(ti)
         am.attack_matching()
-        am.print_match_result()
+        matching_result = detection_result = am.print_match_result()
+        xe.add_result(report, matching_result, technique)
+
+    # xe.book.save()
+    xe.book.close()
