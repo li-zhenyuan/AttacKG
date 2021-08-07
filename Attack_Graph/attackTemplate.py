@@ -72,7 +72,7 @@ class TemplateNode(AttackGraphNode):
         if self.node_type != new_node_type:
             return similarity_score
         else:
-            similarity_score += 0.5
+            similarity_score += 0.1
 
         max_nlp_similarity_score = 0
         for nlp_instance in self.node_nlp_instance:
@@ -86,7 +86,7 @@ class TemplateNode(AttackGraphNode):
             if ss >= max_ioc_similarity_score:
                 max_ioc_similarity_score = ss
 
-        similarity_score = similarity_score + max_ioc_similarity_score + max_nlp_similarity_score
+        similarity_score = similarity_score + max_ioc_similarity_score * 10 + max_nlp_similarity_score
 
         return similarity_score
 
@@ -311,10 +311,7 @@ def extract_technique_template_from_technique_list(technique_list: list):
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
-    template_file_name = ".\\data\\technique_template\\" + str(technique_list).replace("[", "").replace("]",
-                                                                                                        "").replace(",",
-                                                                                                                    "__").replace(
-        "/", "_")
+    template_file_name = ".\\data\\technique_template\\" + str(technique_list).replace("[", "").replace("]", "").replace(",", "__").replace("/", "_")
     tt.dump_to_file(file_name=template_file_name)
     tt.pretty_print(image_name=template_file_name + ".png")
     # draw_attackgraph_plt(tt.template_nx)

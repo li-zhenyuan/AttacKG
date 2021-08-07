@@ -58,14 +58,17 @@ class TechniqueIdentifier:
 
         index = 0
         for k, v in self.node_match_record.items():
+            if self.technique_template.technique_node_list[k].node_type == "actor":
+                continue
+
             if v is not None:
-                node_alignment_score += v[1] * math.sqrt(self.technique_template.technique_node_list[k].instance_count)
+                node_alignment_score += v[1] * (self.technique_template.technique_node_list[k].instance_count)  # math.sqrt
                 logging.debug("%d-%s-%f" % (index, v[0], node_alignment_score))
 
             index += 1
 
         # Normalization
-        # node_alignment_score /= math.sqrt(self.node_count)
+        node_alignment_score /= math.sqrt(self.node_count + 1)
 
         return node_alignment_score
 
@@ -74,12 +77,16 @@ class TechniqueIdentifier:
 class AttackMatcher:
     attack_graph_nx: nx.DiGraph
     technique_identifier_list: list
-    technique_matching_result: dict
+    technique_matching_score: dict
+    technique_matching_subgraph: dict
+    technique_matching_record: dict
 
     def __init__(self, nx_graph: nx.DiGraph):
         self.attack_graph_nx = nx_graph
         self.technique_identifier_list = []
-        self.technique_matching_result = {}
+        self.technique_matching_score = {}
+        self.technique_matching_subgraph = {}
+        self.technique_matching_record = {}
 
     def add_technique_identifier(self, technique_identifier: TechniqueIdentifier):
         self.technique_identifier_list.append(technique_identifier)
@@ -94,7 +101,7 @@ class AttackMatcher:
         subgraph_list = nx.connected_components(self.attack_graph_nx.to_undirected())
         for subgraph in subgraph_list:
             logging.debug("---Get subgraph: %s---" % subgraph)
-            matching_result = []
+            # matching_result = []
 
             for technique_identifier in self.technique_identifier_list:
                 technique_identifier.init_node_match_record()
@@ -109,18 +116,29 @@ class AttackMatcher:
             for technique_identifier in self.technique_identifier_list:
                 node_alignment_score = technique_identifier.get_node_alignment_score()
 
-                if technique_identifier.technique_template.technique_name not in self.technique_matching_result.keys():
-                    self.technique_matching_result[technique_identifier.technique_template.technique_name] = node_alignment_score
-                elif self.technique_matching_result[technique_identifier.technique_template.technique_name] < node_alignment_score:
-                    self.technique_matching_result[technique_identifier.technique_template.technique_name] = node_alignment_score
+                if technique_identifier.technique_template.technique_name not in self.technique_matching_score.keys():
+                    self.technique_matching_score[technique_identifier.technique_template.technique_name] = node_alignment_score
+                    self.technique_matching_subgraph[technique_identifier.technique_template.technique_name] = subgraph
+                    self.technique_matching_record[technique_identifier.technique_template.technique_name] = technique_identifier.node_match_record
+                elif self.technique_matching_score[technique_identifier.technique_template.technique_name] < node_alignment_score:
+                    self.technique_matching_score[technique_identifier.technique_template.technique_name] = node_alignment_score
+                    self.technique_matching_subgraph[technique_identifier.technique_template.technique_name] = subgraph
+                    self.technique_matching_record[technique_identifier.technique_template.technique_name] = technique_identifier.node_match_record
 
-                matching_result.append((technique_identifier.technique_template, node_alignment_score))
-                logging.debug("---S3.2: matching result %s - %f!---" % (technique_identifier.technique_template.technique_name, node_alignment_score))
+                # matching_result.append((technique_identifier.technique_template, node_alignment_score))
+                logging.debug("---S3.2: matching result %s\n=====\n%s - %f!---" % (technique_identifier.technique_template.technique_name, subgraph, node_alignment_score))
 
     def print_match_result(self) -> dict:
-        logging.info(str(self.technique_matching_result))
+        logging.info(str(self.technique_matching_score))
+        logging.info(str(self.technique_matching_subgraph))
+        logging.info(str(self.technique_matching_record))
 
-        return self.technique_matching_result
+        # for technique, score in self.technique_matching_score.items():
+        #     print(technique + str(score))
+        #     for result in self.technique_matching_record[technique]:
+        #
+
+        return self.technique_matching_score
 
 
 class Evaluation:
@@ -189,18 +207,23 @@ if __name__ == '__main__':
 
     xe = Evaluation()
 
+    am_list = []
     for report, technique in report_technique_dict.items():
         report_name, ext = os.path.splitext(report)
-        report_graph_file = r".\data\\extracted_attackgraph_20210804\%s.gml" % report_name
+        report_graph_file = r".\data\\picked_extracted_attackgraph_20210807\%s.gml" % report_name
         logging.info(report_graph_file)
 
-        report_graph_nx = nx.read_gml(report_graph_file)
+        try:
+            report_graph_nx = nx.read_gml(report_graph_file)
+        except:
+            continue
         am = AttackMatcher(report_graph_nx)
         for ti in identifier_list:
             am.add_technique_identifier(ti)
         am.attack_matching()
-        matching_result = detection_result = am.print_match_result()
+        matching_result = am.print_match_result()
         xe.add_result(report, matching_result, technique)
+        am_list.append(am)
 
     # xe.book.save()
     xe.book.close()

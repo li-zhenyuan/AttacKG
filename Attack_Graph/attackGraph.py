@@ -1,3 +1,5 @@
+import time
+
 import spacy.tokens
 
 from NLP.iocNer import *
@@ -92,6 +94,7 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
         nlp = ""
         try:
             nlp = g.nodes[node]["nlp"]
+            nlp = " ".join(nlp.split())
         except:
             pass
 
@@ -471,7 +474,9 @@ def parse_attackgraph_from_cti_report(ner_model: IoCNer,
 # %%
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.DEBUG)
+    logging.info("======techniqueIdentifier.py: %s======", time.asctime(time.localtime(time.time())))
 
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
@@ -483,10 +488,10 @@ if __name__ == '__main__':
     # sample = "Magic Hound sent shortened URL links over email to victims. The URLs linked to Word documents with malicious macros that execute PowerShells scripts to download Pupy."
     # sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
     # sample = "Cardinal RAT establishes Persistence by setting the  HKCU\Software\Microsoft\Windows NT\CurrentVersion\Windows\Load Registry key to point to its executable."
-    sample = "The \"SCOUT\" variant of NETEAGLE achieves persistence by adding itself to the HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run Registry key."
-
-    ag = parse_attackgraph_from_text(ner_model, sample)
-    draw_attackgraph_dot(ag.attackgraph_nx).view()
+    # sample = "The \"SCOUT\" variant of NETEAGLE achieves persistence by adding itself to the HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run Registry key."
+    #
+    # ag = parse_attackgraph_from_text(ner_model, sample)
+    # draw_attackgraph_dot(ag.attackgraph_nx).view()
 
     # %%
 
@@ -495,12 +500,12 @@ if __name__ == '__main__':
     # %%
     # class AttackGraph unit test
 
-    # cti_path = r".\data\cti\html"
-    # output_path = r".\data\extracted_attackgraph_20210804"
-    #
-    # cti_files = os.listdir(cti_path)
-    # for file in cti_files:
-    #     parse_attackgraph_from_cti_report(cti_file=os.path.join(cti_path, file), output_path=output_path, ner_model=ner_model)
+    cti_path = r".\data\cti\picked_html"
+    output_path = r".\data\picked_extracted_attackgraph_20210807"
+
+    cti_files = os.listdir(cti_path)
+    for file in cti_files:
+        parse_attackgraph_from_cti_report(cti_file=os.path.join(cti_path, file), output_path=output_path, ner_model=ner_model)
 
     # %%
     # draw_AG() unit test
