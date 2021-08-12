@@ -35,7 +35,14 @@ class TechniqueIdentifier:
         self.node_count = len(self.technique_template.technique_node_list)
 
     def init_edge_match_record(self):
-        pass
+        self.edge_match_record = {}
+
+        index = 0
+        for technique_edge in self.technique_template.technique_edge_dict.keys():
+            self.edge_match_record[technique_edge] = None
+            index += 1
+
+        self.edge_count = len(self.technique_template.technique_edge_dict.keys())
 
     def node_alignment(self, node: str, nx_graph: nx.DiGraph):
         # self.init_node_match_record()
@@ -53,25 +60,72 @@ class TechniqueIdentifier:
 
             index += 1
 
+    # def edge_alignment(self, edge: set, nx_graph: nx.DiGraph):
+    #     print(edge)
+
+    def subgraph_alignment(self, subgraph: set, nx_graph: nx.DiGraph):
+        for node in subgraph:
+            self.node_alignment(node, nx_graph)
+
+        # for source in subgraph:
+        #     for sink in subgraph:
+
+        for template_edge, instance_count in self.technique_template.technique_edge_dict.items():
+            source_index = template_edge[0]
+            sink_index = template_edge[1]
+
+            # No matched node for edge
+            if self.node_match_record[source_index] is None or self.node_match_record[sink_index] is None:
+                self.edge_match_record[template_edge] = 0.0
+                continue
+
+            source_node = self.node_match_record[source_index][0]
+            sink_node = self.node_match_record[sink_index][0]
+
+            if source_node == sink_node:
+                distance = 1
+            else:
+                try:
+                    distance = nx.shortest_path_length(nx_graph, source_node, sink_node)
+                except:
+                    self.edge_match_record[template_edge] = 0.0
+                    continue
+
+            source_node_matching_score = self.node_match_record[source_index][1]
+            sink_node_matching_score = self.node_match_record[sink_index][1]
+
+            edge_matching_score = source_node_matching_score * sink_node_matching_score * math.sqrt(instance_count) / distance
+            self.edge_match_record[template_edge] = edge_matching_score
+
+    def get_graph_alignment_score(self):
+        return self.get_node_alignment_score() + self.get_edge_alignment_score()
+
     def get_node_alignment_score(self):
         node_alignment_score = 0.0
 
         index = 0
-        for k, v in self.node_match_record.items():
-            if self.technique_template.technique_node_list[k].node_type == "actor":
+        for node_index, node_similarity in self.node_match_record.items():
+            if self.technique_template.technique_node_list[node_index].node_type == "actor":
                 continue
 
-            if v is not None:
-                node_alignment_score += v[1] * (self.technique_template.technique_node_list[k].instance_count)  # math.sqrt
-                logging.debug("%d-%s-%f" % (index, v[0], node_alignment_score))
+            if node_similarity is not None:
+                node_alignment_score += node_similarity[1] * self.technique_template.technique_node_list[node_index].instance_count  # math.sqrt
+                logging.debug("%d-%s-%f" % (index, node_similarity[0], node_alignment_score))
 
             index += 1
 
         # Normalization
-        node_alignment_score /= math.sqrt(self.node_count + 1)
-
+        node_alignment_score /= self.node_count + 1  # math.sqrt(self.node_count + 1)
         return node_alignment_score
 
+    def get_edge_alignment_score(self):
+        edge_alignment_score = 0.0
+
+        for edge, edge_similarity in self.edge_match_record.items():
+            edge_alignment_score += edge_similarity * self.technique_template.technique_edge_dict[edge]
+
+        edge_alignment_score /= self.edge_count
+        return edge_alignment_score
 
 # Matching process, involve multiple TechniqueIdentifier at one time
 class AttackMatcher:
@@ -105,16 +159,22 @@ class AttackMatcher:
 
             for technique_identifier in self.technique_identifier_list:
                 technique_identifier.init_node_match_record()
+                technique_identifier.init_edge_match_record()
 
-            for node in subgraph:
-                # Try to find a match in technique_identifier_list
-                for technique_identifier in self.technique_identifier_list:
-                    technique_identifier.node_alignment(node, nx_graph)
+                technique_identifier.subgraph_alignment(subgraph, nx_graph)
+
+            # for node in subgraph:
+            #     # Try to find a match in technique_identifier_list
+            #     for technique_identifier in self.technique_identifier_list:
+            #         technique_identifier.node_alignment(node, nx_graph)
+
             # for edge in subgraph.edges():
-            # find the most match technique
+            #     for technique_identifier in self.technique_identifier_list:
+            #         technique_identifier.edge_alignment(edge, nx_graph)
 
+            # find the most match technique
             for technique_identifier in self.technique_identifier_list:
-                node_alignment_score = technique_identifier.get_node_alignment_score()
+                node_alignment_score = technique_identifier.get_graph_alignment_score()
 
                 if technique_identifier.technique_template.technique_name not in self.technique_matching_score.keys():
                     self.technique_matching_score[technique_identifier.technique_template.technique_name] = node_alignment_score
@@ -146,22 +206,22 @@ class Evaluation:
     def __init__(self):
         self.book = xlsxwriter.Workbook("technique_matching_result.xlsx")
         self.sheet = self.book.add_worksheet('report_pickTechnique')
-        self.colum_count = 1
+        self.column_count = 1
 
         self.match_format = self.book.add_format({'bg_color': '#FFC7CE', 'font_color': '#9C0006'})
 
     def add_result(self, report_name: str, detection_result: dict, ground_truth: list):
-        self.sheet.write(self.colum_count, 0, report_name)
+        self.sheet.write(self.column_count, 0, report_name)
 
         row_count = 1
         for technique, result in detection_result.items():
-            self.sheet.write(self.colum_count, row_count, result)
+            self.sheet.write(self.column_count, row_count, result)
             technique_name = technique.replace("'", "").replace("_", "/")
             if technique_name in ground_truth:
-                self.sheet.conditional_format(self.colum_count, row_count, self.colum_count, row_count, {'type': '2_color_scale'})
+                self.sheet.conditional_format(self.column_count, row_count, self.column_count, row_count, {'type': '2_color_scale'})
             row_count += 1
 
-        self.colum_count += 1
+        self.column_count += 1
 
 
 # %%
