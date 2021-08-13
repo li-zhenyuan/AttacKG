@@ -228,10 +228,8 @@ class TechniqueTemplate:
         for tn in self.technique_node_list:
             node_list.append(tn.dump_to_dict())
         data_dict["nodes"] = node_list
-
-        data_dict["edges"] = list(self.technique_edge_dict)
+        data_dict["edges"] = list(self.technique_edge_dict.items())
         data_dict["instances"] = list(self.technique_instance_dict)
-
         return data_dict
 
     def dump_to_json(self) -> str:
@@ -250,10 +248,12 @@ class TechniqueTemplate:
             tn = TemplateNode(("", "", ""))
             tn.load_from_dict(node_info)
             self.technique_node_list.append(tn)
-        edge_list = data_dict["edges"]
 
+        edge_list = data_dict["edges"]
         for edge in edge_list:
-            self.technique_edge_dict[tuple(edge)] = 1
+            edge_info = edge[0]
+            count = edge[1]
+            self.technique_edge_dict[tuple(edge_info)] = count
 
         instance_list = data_dict["instances"]
         for instance in instance_list:
@@ -331,6 +331,7 @@ if __name__ == '__main__':
     # %%
 
     technique_id_list = picked_techniques  # from mitreGraphReader
+    print(technique_id_list)
     # technique_id_list = [r'/techniques/T1547/001']
 
     for technique in technique_id_list:

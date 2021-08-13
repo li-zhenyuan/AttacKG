@@ -18,7 +18,6 @@ picked_techniques = {"/techniques/T1566/001",
                      "/techniques/T1559/001",
                      "/techniques/T1204/001",
                      "/techniques/T1204/002",
-                     "/techniques/T1204/003",
                      "/techniques/T1053/005",
                      "/techniques/T1547/001",
                      "/techniques/T1037/001",
@@ -38,7 +37,36 @@ picked_techniques = {"/techniques/T1566/001",
                      "/techniques/T1123",
                      "/techniques/T1119",
                      "/techniques/T1041"}
-
+picked_techniques_name_dict = {"/techniques/T1566/001": "Phishing",
+                     "/techniques/T1566/002": "Phishing",
+                     "/techniques/T1566/003": "Phishing",
+                     "/techniques/T1195/001": "Supply Chain Compromise",
+                     "/techniques/T1195/002": "Supply Chain Compromise",
+                     "/techniques/T1059/001": "Command and Scripting Interpreter",
+                     "/techniques/T1059/003": "Command and Scripting Interpreter",
+                     "/techniques/T1059/005": "Command and Scripting Interpreter",
+                     "/techniques/T1059/007": "Command and Scripting Interpreter",
+                     "/techniques/T1559/001": "Inter-Process Communication",
+                     "/techniques/T1204/001": "User Execution: Malicious Link",
+                     "/techniques/T1204/002": "User Execution: Malicious File",
+                     "/techniques/T1053/005": "Scheduled Task/Job",
+                     "/techniques/T1037/001": "Boot or Logon Initialization Scripts",
+                     "/techniques/T1547/001": "Boot or Logon Autostart Execution",
+                     "/techniques/T1547/002": "Boot or Logon Autostart Execution",
+                     "/techniques/T1112": "Modify Registry",
+                     "/techniques/T1012": "Query Registry",
+                     "/techniques/T1218/005": "Signed Binary Proxy Execution: Mshta",
+                     "/techniques/T1218/010": "Signed Binary Proxy Execution: REgsvr32",
+                     "/techniques/T1218/011": "Signed Binary Proxy Execution: Rundll32",
+                     "/techniques/T1078/001": "Valid Accounts",
+                     "/techniques/T1518/001": "Software Discovery",
+                     "/techniques/T1083": "File and Directory Discovery",
+                     "/techniques/T1057": "Process Discovery",
+                     "/techniques/T1497/001": "Virtualization/Sandbox Evasion",
+                     "/techniques/T1560/001": "Archive Collected Data",
+                     "/techniques/T1123": "Audio Capture",
+                     "/techniques/T1119": "Automated Collection",
+                     "/techniques/T1041": "Exfiltration Over C2 Channel"}
 
 class MitreGraphReader:
     mitre_graph: nx.Graph
@@ -113,16 +141,17 @@ if __name__ == '__main__':
 
     # %%
 
-    # technique_id_list = ["/techniques/T1566/001", "/techniques/T1566/002", "/techniques/T1566/003", "/techniques/T1059/001", "/techniques/T1059/003", "/techniques/T1059/005", "/techniques/T1059/007", "/techniques/T1204/001", "/techniques/T1204/002", "/techniques/T1053/005", "/techniques/T1547/001", "/techniques/T1037/001", "/techniques/T1547/001", "/techniques/T1547/002", "/techniques/T1112", "/techniques/T1218/005", "/techniques/T1218/010", "/techniques/T1218/011", "/techniques/T1078/001", "/techniques/T1518/001", "/techniques/T1083", "/techniques/T1057", "/techniques/T1012", "/techniques/T1497/001", "/techniques/T1560/001", "/techniques/T1123", "/techniques/T1119", "/techniques/T1041"]
-    # mgr = MitreGraphReader()
-    #
-    # example_list = []
-    # for technique_id in technique_id_list:
-    #     example_list += mgr.find_examples_for_technique(technique_id)
-    #
-    # with open("produce_examples_picked.txt", "w+") as output:
-    #     for example in example_list:
-    #         output.write(example + "\n")
+    technique_id_list = ["/techniques/T1566/001", "/techniques/T1566/002", "/techniques/T1566/003", "/techniques/T1059/001", "/techniques/T1059/003", "/techniques/T1059/005", "/techniques/T1059/007", "/techniques/T1204/001", "/techniques/T1204/002", "/techniques/T1053/005", "/techniques/T1547/001", "/techniques/T1037/001", "/techniques/T1547/001", "/techniques/T1547/002", "/techniques/T1112", "/techniques/T1218/005", "/techniques/T1218/010", "/techniques/T1218/011", "/techniques/T1078/001", "/techniques/T1518/001", "/techniques/T1083", "/techniques/T1057", "/techniques/T1012", "/techniques/T1497/001", "/techniques/T1560/001", "/techniques/T1123", "/techniques/T1119", "/techniques/T1041"]
+    mgr = MitreGraphReader()
+
+    example_list = []
+    for technique_id in technique_id_list:
+        example_list += mgr.find_examples_for_technique(technique_id)
+        example_list.append(technique_id + "===========================")
+
+    with open("produce_examples_picked.txt", "w+") as output:
+        for example in example_list:
+            output.write(example + "\n")
 
     # %%
 
@@ -131,25 +160,25 @@ if __name__ == '__main__':
 
     #%%
 
-    mgr = MitreGraphReader()
-    url_file_name_dict = read_csv_as_dict(csv_file=r'.\data\cti\html\html_url_hash.csv')
-
-    cti_path = r".\data\cti\html"
-    with open(r"report_picked_technique.json", "w+") as output:
-        report_technique_dict = {}
-
-        for file in os.listdir(cti_path):
-            print(file)
-            if file not in url_file_name_dict.keys():
-                continue
-
-            report_url = url_file_name_dict[file]
-            involved_technique_list = mgr.find_techniques_relatedto_reports(report_url)
-            print(involved_technique_list)
-
-            report_technique_dict[file] = involved_technique_list
-            # output.write(file)
-            # output.write(str(involved_technique_list))
-
-        data_json = json.dumps(report_technique_dict)
-        output.write(data_json)
+    # mgr = MitreGraphReader()
+    # url_file_name_dict = read_csv_as_dict(csv_file=r'.\data\cti\html\html_url_hash.csv')
+    #
+    # cti_path = r".\data\cti\html"
+    # with open(r"report_picked_technique.json", "w+") as output:
+    #     report_technique_dict = {}
+    #
+    #     for file in os.listdir(cti_path):
+    #         print(file)
+    #         if file not in url_file_name_dict.keys():
+    #             continue
+    #
+    #         report_url = url_file_name_dict[file]
+    #         involved_technique_list = mgr.find_techniques_relatedto_reports(report_url)
+    #         print(involved_technique_list)
+    #
+    #         report_technique_dict[file] = involved_technique_list
+    #         # output.write(file)
+    #         # output.write(str(involved_technique_list))
+    #
+    #     data_json = json.dumps(report_technique_dict)
+    #     output.write(data_json)

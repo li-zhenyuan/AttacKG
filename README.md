@@ -31,3 +31,8 @@ Need to be installed from source.
 
 ## [tensorflow](https://tensorflow.juejin.im/install/install_windows.html)
 
+## Doccano
+`Ubuntu`
+> export PATH=/home/zhenyuan/.local/bin:$PATH
+> doccano webserver --port 8000
+> workshop doccano task
