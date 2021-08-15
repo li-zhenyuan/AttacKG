@@ -124,7 +124,7 @@ class TechniqueIdentifier:
         for edge, edge_similarity in self.edge_match_record.items():
             edge_alignment_score += edge_similarity * self.technique_template.technique_edge_dict[edge]
 
-        edge_alignment_score /= self.edge_count
+        edge_alignment_score /= self.edge_count + 1
         return edge_alignment_score
 
 # Matching process, involve multiple TechniqueIdentifier at one time
@@ -210,6 +210,12 @@ class Evaluation:
 
         self.match_format = self.book.add_format({'bg_color': '#FFC7CE', 'font_color': '#9C0006'})
 
+    def add_technique_list(self, technique_list: list):
+        row_count = 1
+        for technique in technique_list:
+            self.sheet.write(0, row_count, technique)
+            row_count += 1
+
     def add_result(self, report_name: str, detection_result: dict, ground_truth: list):
         self.sheet.write(self.column_count, 0, report_name)
 
@@ -222,6 +228,15 @@ class Evaluation:
             row_count += 1
 
         self.column_count += 1
+
+
+class EvaluationA:
+
+    def __init__(self):
+        matching_result = []
+
+    def example_matching(self, example_graph_path: str, template_path: str):
+        pass
 
 
 # %%
@@ -251,39 +266,59 @@ if __name__ == '__main__':
     tt_path = r".\data\technique_template"
     tt_file_list = os.listdir(tt_path)
     identifier_list = []
+    technique_list = []
     for tt_file in tt_file_list:
         filename, ext = os.path.splitext(tt_file)
         if ext != ".json":
             continue
         tt = TechniqueTemplate(filename)
+        technique_list.append(filename)
         tt.load_from_file(os.path.join(tt_path, tt_file))
         ti = TechniqueIdentifier(tt)
         identifier_list.append(ti)
 
-    # %%
     with open(r"report_picked_technique.json", "r") as output:
         data_json = output.read()
         report_technique_dict = json.loads(data_json)
 
     xe = Evaluation()
+    xe.add_technique_list(technique_list)
 
-    am_list = []
-    for report, technique in report_technique_dict.items():
-        report_name, ext = os.path.splitext(report)
-        report_graph_file = r".\data\\picked_extracted_attackgraph_20210807\%s.gml" % report_name
-        logging.info(report_graph_file)
+    # am_list = []
+    # for report, ground_truth in report_technique_dict.items():
+    #     report_name, ext = os.path.splitext(report)
+    #     report_graph_file = r".\data\\picked_extracted_attackgraph_20210807\%s.gml" % report_name
+    #     logging.info(report_graph_file)
+    #
+    #     try:
+    #         report_graph_nx = nx.read_gml(report_graph_file)
+    #     except:
+    #         continue
+    #     am = AttackMatcher(report_graph_nx)
+    #     for ti in identifier_list:
+    #         am.add_technique_identifier(ti)
+    #     am.attack_matching()
+    #     matching_result = am.print_match_result()
+    #
+    #     xe.add_result(report, matching_result, ground_truth)
+    #     am_list.append(am)
 
-        try:
-            report_graph_nx = nx.read_gml(report_graph_file)
-        except:
+    for file in os.listdir(r"./data/procedure_examples"):
+        file_name, ext = os.path.splitext(file)
+        if ext != ".gml":
             continue
-        am = AttackMatcher(report_graph_nx)
+
+        example_graph = nx.read_gml(r"./data/procedure_examples/" + file)
+        if len(example_graph.nodes()) <= 1:
+            continue
+
+        am = AttackMatcher(example_graph)
         for ti in identifier_list:
             am.add_technique_identifier(ti)
         am.attack_matching()
         matching_result = am.print_match_result()
-        xe.add_result(report, matching_result, technique)
-        am_list.append(am)
+
+        xe.add_result(file_name, matching_result, [])
 
     # xe.book.save()
     xe.book.close()

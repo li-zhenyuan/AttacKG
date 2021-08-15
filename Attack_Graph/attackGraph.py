@@ -1,7 +1,3 @@
-import time
-
-import spacy.tokens
-
 from NLP.iocNer import *
 from NLP.iocRegex import *
 from NLP.reportPreprocess import *
@@ -20,6 +16,8 @@ import spacy
 import itertools
 import coreferee
 from pathlib import Path
+import time
+import spacy.tokens
 
 
 def to_nltk_tree(node):

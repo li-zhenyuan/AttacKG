@@ -175,12 +175,12 @@ if __name__ == '__main__':
     # %%
     # model training flow
 
-    # ner_model = IoCNer("en_core_web_sm")
-    # # ner_model = IoCNer("en_core_web_trf")
-    #
-    # labeled_data = read_labeled_data(r".\NLP\Doccano\2021722.jsonl")
-    # spacy_data = ner_model.convert_data_format(labeled_data)
-    # ner_model.train_model(spacy_data)
+    ner_model = IoCNer("en_core_web_sm")
+    # ner_model = IoCNer("en_core_web_trf")
+
+    labeled_data = read_labeled_data(r".\NLP\Doccano\20210813.jsonl")
+    spacy_data = ner_model.convert_data_format(labeled_data)
+    ner_model.train_model(spacy_data)
 
     # %%
     # model testing flow
