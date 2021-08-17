@@ -100,6 +100,15 @@ class MitreGraphReader:
 
         return report_file_list
 
+    def get_technique_list(self) -> list:
+        technique_list = []
+
+        for n in self.mitre_graph.nodes():
+            if self.mitre_graph.nodes[n]["types"] == "technique" or self.mitre_graph.nodes[n]["types"] == "sub_technique":
+                technique_list.append(n)
+
+        return technique_list
+
     def find_techniques_relatedto_reports(self, report_url: str = r'https://arstechnica.com/information-technology/2020/08/intel-is-investigating-the-leak-of-20gb-of-its-source-code-and-private-data/') -> list:
 
         involved_technique_list = []
@@ -141,9 +150,10 @@ if __name__ == '__main__':
 
     # %%
 
-    technique_id_list = ["/techniques/T1566/001", "/techniques/T1566/002", "/techniques/T1566/003", "/techniques/T1059/001", "/techniques/T1059/003", "/techniques/T1059/005", "/techniques/T1059/007", "/techniques/T1204/001", "/techniques/T1204/002", "/techniques/T1053/005", "/techniques/T1547/001", "/techniques/T1037/001", "/techniques/T1547/001", "/techniques/T1547/002", "/techniques/T1112", "/techniques/T1218/005", "/techniques/T1218/010", "/techniques/T1218/011", "/techniques/T1078/001", "/techniques/T1518/001", "/techniques/T1083", "/techniques/T1057", "/techniques/T1012", "/techniques/T1497/001", "/techniques/T1560/001", "/techniques/T1123", "/techniques/T1119", "/techniques/T1041"]
     mgr = MitreGraphReader()
 
+    # technique_id_list = picked_techniques
+    technique_id_list = mgr.get_technique_list()
     example_list = []
     for technique_id in technique_id_list:
         example_list += mgr.find_examples_for_technique(technique_id)

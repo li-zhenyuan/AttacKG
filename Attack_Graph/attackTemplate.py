@@ -3,6 +3,7 @@ from Mitre_TTPs.mitreGraphReader import *
 
 import networkx as nx
 from networkx.drawing.nx_agraph import to_agraph
+from multiprocessing import Pool
 import logging
 import re
 import Levenshtein
@@ -330,12 +331,19 @@ if __name__ == '__main__':
 
     # %%
 
-    technique_id_list = picked_techniques  # from mitreGraphReader
+    # technique_id_list = picked_techniques  # from mitreGraphReader
+
+    mgr = MitreGraphReader()
+    technique_id_list = mgr.get_technique_list()
     print(technique_id_list)
     # technique_id_list = [r'/techniques/T1547/001']
 
+    technique_id_list_list = []
     for technique in technique_id_list:
         extract_technique_template_from_technique_list([technique])
+    #     technique_id_list_list.append([technique])
+    # with Pool(5) as p:
+    #     p.map(extract_technique_template_from_technique_list, technique_id_list_list)
 
     # %%
 
