@@ -101,7 +101,7 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
             regex = g.nodes[node]["regex"]
         except:
             pass
-        node_label = "\n".join([node, regex])
+        node_label = "##".join([node, regex])
 
         dot.node(node, label=node_label, shape=node_shape[g.nodes[node]["type"]])
 
@@ -416,8 +416,16 @@ class AttackGraph:
     #     # https://stackoverflow.com/questions/61914713/removing-a-node-from-digraph-in-networkx-while-preserving-child-nodes-and-remapp
     #     # https://en.wikipedia.org/wiki/Edge_contraction
 
-    def to_node_sequence(self):
-        pass  # TODO
+    source_node_list: list
+
+    def simplify(self):
+        self.locate_all_source_node()
+
+    def locate_all_source_node(self):
+        self.source_node_list = []
+
+        for node in self.attackgraph_nx.nodes():
+            if self.attackgraph_nx.in_degree[node] == 0:
 
 
 def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:

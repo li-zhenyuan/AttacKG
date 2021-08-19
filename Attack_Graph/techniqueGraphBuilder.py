@@ -43,7 +43,7 @@ for tt_file in tt_file_list:
     template_list.append(tt)
     tt.load_from_file(os.path.join(tt_path, tt_file))
 
-report_name = "0200158454219b7ff0cea3627342f432"
+report_name = "048101ffcef13d80831ff6185738a883"
 report_graph_file = r"./data/picked_extracted_attackgraph_20210807/%s.gml" % report_name
 report_graph_nx = nx.read_gml(report_graph_file)
 
