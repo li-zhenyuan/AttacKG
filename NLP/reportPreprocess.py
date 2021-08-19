@@ -1,5 +1,6 @@
 # %%
 import logging
+import os
 
 import pdfplumber
 from html2text import html2text
@@ -55,7 +56,7 @@ def clear_text(text: str) -> str:
     multint = re.compile('[\n]+')
     cleartext = multint.sub('\n', cleartext)
 
-    hex = re.compile('(x[0-9a-f]{2})+')
+    hex = re.compile(r'(\\*x[0-9a-f]{2}){2,}')
     cleartext = hex.sub(' ', cleartext)
 
     cleartext = cleartext.encode("ascii", "ignore")
@@ -67,10 +68,25 @@ def clear_text(text: str) -> str:
     # logging.DEBUG(str(cleartext))
     return cleartext
 
+
 # %%
 
-
 if __name__ == '__main__':
-    file = r".\data\cti\html\0a84e7a880901bd265439bd57da61c5d.html"
-    text = read_html(file)
+
+    # %%
+
+    # file = r"./data/cti/html/0a84e7a880901bd265439bd57da61c5d.html"
+    # text = read_html(file)
+
+    # %%a
+
+    cti_path = r"./data/cti/html/"
+    output_path = r"./data/cti/text/"
+
+    cti_files = os.listdir(cti_path)
+    for file in cti_files:
+        file_name, ext = os.path.splitext(file)
+        text = read_html(os.path.join(cti_path, file))
+        with open(os.path.join(output_path, file_name+".txt"), "w+") as output:
+            output.write(text)
 

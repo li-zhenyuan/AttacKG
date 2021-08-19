@@ -101,7 +101,7 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
             regex = g.nodes[node]["regex"]
         except:
             pass
-        node_label = "\n-\n".join([nlp, regex])
+        node_label = "\n".join([node, regex])
 
         dot.node(node, label=node_label, shape=node_shape[g.nodes[node]["type"]])
 
@@ -498,8 +498,8 @@ if __name__ == '__main__':
     # %%
     # class AttackGraph unit test
 
-    cti_path = r".\data\cti\picked_html"
-    output_path = r".\data\picked_extracted_attackgraph_20210807"
+    cti_path = r"./data/cti/picked_html"
+    output_path = r"./data/picked_extracted_attackgraph_20210819/"
 
     cti_files = os.listdir(cti_path)
     for file in cti_files:

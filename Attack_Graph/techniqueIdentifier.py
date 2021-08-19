@@ -263,7 +263,7 @@ if __name__ == '__main__':
 
     # %%
 
-    tt_path = r".\data\technique_template"
+    tt_path = r"./data/technique_template"
     tt_file_list = os.listdir(tt_path)
     identifier_list = []
     technique_list = []

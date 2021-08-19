@@ -281,7 +281,7 @@ def extract_technique_template_from_technique_list(technique_list: list):
     for technique_id in technique_list:
         example_list += mgr.find_examples_for_technique(technique_id)
 
-    technique_file_name = ".\\data\\procedure_examples\\" + str(technique_list).replace("[", "").replace("]",
+    technique_file_name = "./data/procedure_examples/" + str(technique_list).replace("[", "").replace("]",
                                                                                                          "").replace(
         ",", "__").replace("/", "_")
     with open(technique_file_name + ".txt", "w+") as t_file:
@@ -312,7 +312,7 @@ def extract_technique_template_from_technique_list(technique_list: list):
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
-    template_file_name = ".\\data\\technique_template\\" + str(technique_list).replace("[", "").replace("]", "").replace(",", "__").replace("/", "_")
+    template_file_name = "./data/picked_technique_template/" + str(technique_list).replace("[", "").replace("]", "").replace(",", "__").replace("/", "_")
     tt.dump_to_file(file_name=template_file_name)
     tt.pretty_print(image_name=template_file_name + ".png")
     # draw_attackgraph_plt(tt.template_nx)
@@ -331,10 +331,10 @@ if __name__ == '__main__':
 
     # %%
 
-    # technique_id_list = picked_techniques  # from mitreGraphReader
+    technique_id_list = picked_techniques  # from mitreGraphReader
 
-    mgr = MitreGraphReader()
-    technique_id_list = mgr.get_technique_list()
+    # mgr = MitreGraphReader()
+    # technique_id_list = mgr.get_technique_list()
     print(technique_id_list)
     # technique_id_list = [r'/techniques/T1547/001']
 
