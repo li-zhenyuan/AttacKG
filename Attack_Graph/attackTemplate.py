@@ -3,7 +3,7 @@ from Mitre_TTPs.mitreGraphReader import *
 
 import networkx as nx
 from networkx.drawing.nx_agraph import to_agraph
-from multiprocessing import Pool
+from multiprocessing import Pool, Process
 import logging
 import re
 import Levenshtein
@@ -281,9 +281,7 @@ def extract_technique_template_from_technique_list(technique_list: list):
     for technique_id in technique_list:
         example_list += mgr.find_examples_for_technique(technique_id)
 
-    technique_file_name = "./data/procedure_examples/" + str(technique_list).replace("[", "").replace("]",
-                                                                                                         "").replace(
-        ",", "__").replace("/", "_")
+    technique_file_name = "./data/procedure_examples/" + str(technique_list).replace("[", "").replace("]","").replace(",", "__").replace("/", "_")
     with open(technique_file_name + ".txt", "w+") as t_file:
         for example in example_list:
             t_file.write(example + "\n")
@@ -340,7 +338,9 @@ if __name__ == '__main__':
 
     technique_id_list_list = []
     for technique in technique_id_list:
-        extract_technique_template_from_technique_list([technique])
+        # extract_technique_template_from_technique_list([technique])
+        p = Process(target=extract_technique_template_from_technique_list, args=([technique],))
+        p.start()
     #     technique_id_list_list.append([technique])
     # with Pool(5) as p:
     #     p.map(extract_technique_template_from_technique_list, technique_id_list_list)

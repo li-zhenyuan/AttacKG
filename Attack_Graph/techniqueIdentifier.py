@@ -277,9 +277,9 @@ if __name__ == '__main__':
         ti = TechniqueIdentifier(tt)
         identifier_list.append(ti)
 
-    with open(r"report_picked_technique.json", "r") as output:
-        data_json = output.read()
-        report_technique_dict = json.loads(data_json)
+    # with open(r"report_picked_technique.json", "r") as output:
+    #     data_json = output.read()
+    #     report_technique_dict = json.loads(data_json)
 
     xe = Evaluation()
     xe.add_technique_list(technique_list)
@@ -309,8 +309,8 @@ if __name__ == '__main__':
             continue
 
         example_graph = nx.read_gml(r"./data/procedure_examples/" + file)
-        if len(example_graph.nodes()) <= 1:
-            continue
+        # if len(example_graph.nodes()) <= 1:
+        #     continue
 
         am = AttackMatcher(example_graph)
         for ti in identifier_list:
