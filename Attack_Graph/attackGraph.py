@@ -417,15 +417,54 @@ class AttackGraph:
     #     # https://en.wikipedia.org/wiki/Edge_contraction
 
     source_node_list: list
+    visited_node_list: list
 
     def simplify(self):
-        self.locate_all_source_node()
+        source_node_list = self.locate_all_source_node()
+        self.visited_node_list = []
+
+        for source_node in source_node_list:
+            self.simplify_foreach_subgraph(source_node)
+
+    def simplify_foreach_subgraph(self, source_node):
+        if source_node not in self.visited_node_list:
+            self.visited_node_list.append(source_node)
+        else:
+            return
+
+        source_nlp = self.attackgraph_nx.nodes[source_node]["nlp"]
+        try:
+            source_regex = self.attackgraph_nx.nodes[source_node]["regex"]
+        except KeyError:
+            source_regex = ""
+
+        neighbor_list = self.attackgraph_nx.neighbors(source_node)
+        for neighor in neighbor_list:
+            self.simplify_foreach_subgraph(neighor)
+
+            neighor_nlp = self.attackgraph_nx.nodes[neighor]["nlp"]
+            try:
+                neighor_regex = self.attackgraph_nx.nodes[neighor]["regex"]
+            except KeyError:
+                neighor_regex = ""
+
+            # check whether to merge the node or not
+            if self.attackgraph_nx.nodes[source_node]["type"] == self.attackgraph_nx.nodes[neighor]["type"] \
+            and self.attackgraph_nx.in_degree(neighor) == 1 \
+            and (source_regex == "" or neighor_regex == ""):
+                nx.contracted_nodes(self.attackgraph_nx, source_node, neighor, self_loops=False)
+
+            self.attackgraph_nx.nodes[source_node]["nlp"] = source_nlp + neighor_nlp
+            self.attackgraph_nx.nodes[source_node]["regex"] = source_regex + neighor_regex
 
     def locate_all_source_node(self):
         self.source_node_list = []
 
         for node in self.attackgraph_nx.nodes():
             if self.attackgraph_nx.in_degree[node] == 0:
+                self.source_node_list.append(node)
+
+        return self.source_node_list
 
 
 def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
@@ -465,7 +504,7 @@ def parse_attackgraph_from_cti_report(ner_model: IoCNer,
     ag = AttackGraph(doc, ioc_identifier=iid)
 
     ag.parse()
-    # ag.construct_nxgraph_from_spacydoc(doc)
+    ag.simplify()
     dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
 
     if output_path == "":
@@ -507,7 +546,7 @@ if __name__ == '__main__':
     # class AttackGraph unit test
 
     cti_path = r"./data/cti/picked_html"
-    output_path = r"./data/picked_extracted_attackgraph_20210819/"
+    output_path = r"./data/picked_extracted_attackgraph_20210820/"
 
     cti_files = os.listdir(cti_path)
     for file in cti_files:
