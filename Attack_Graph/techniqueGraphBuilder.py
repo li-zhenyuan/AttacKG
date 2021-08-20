@@ -26,7 +26,7 @@ class TechniqueGraphBuilder:
         self.technique_subgraph_dict = self.attack_match.technique_matching_subgraph
 
     def identify_technique_cluster(self):
-        pass
+
 
 
 # %%

@@ -101,7 +101,7 @@ def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str 
             regex = g.nodes[node]["regex"]
         except:
             pass
-        node_label = "##".join([node, regex])
+        node_label = "##".join([node, nlp, regex])
 
         dot.node(node, label=node_label, shape=node_shape[g.nodes[node]["type"]])
 
@@ -452,9 +452,9 @@ class AttackGraph:
             if self.attackgraph_nx.nodes[source_node]["type"] == self.attackgraph_nx.nodes[neighor]["type"] \
             and self.attackgraph_nx.in_degree(neighor) == 1 \
             and (source_regex == "" or neighor_regex == ""):
-                nx.contracted_nodes(self.attackgraph_nx, source_node, neighor, self_loops=False)
+                self.attackgraph_nx = nx.contracted_nodes(self.attackgraph_nx, source_node, neighor, self_loops=False)
 
-            self.attackgraph_nx.nodes[source_node]["nlp"] = source_nlp + neighor_nlp
+            self.attackgraph_nx.nodes[source_node]["nlp"] = source_nlp + " " + neighor_nlp
             self.attackgraph_nx.nodes[source_node]["regex"] = source_regex + neighor_regex
 
     def locate_all_source_node(self):
@@ -504,7 +504,7 @@ def parse_attackgraph_from_cti_report(ner_model: IoCNer,
     ag = AttackGraph(doc, ioc_identifier=iid)
 
     ag.parse()
-    ag.simplify()
+    # ag.simplify()
     dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
 
     if output_path == "":
