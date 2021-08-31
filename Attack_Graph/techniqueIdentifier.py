@@ -263,7 +263,7 @@ if __name__ == '__main__':
 
     # %%
 
-    tt_path = r"./data/technique_template"
+    tt_path = r"./data/picked_technique_template"
     tt_file_list = os.listdir(tt_path)
     identifier_list = []
     technique_list = []
@@ -277,48 +277,48 @@ if __name__ == '__main__':
         ti = TechniqueIdentifier(tt)
         identifier_list.append(ti)
 
-    # with open(r"report_picked_technique.json", "r") as output:
-    #     data_json = output.read()
-    #     report_technique_dict = json.loads(data_json)
+    with open(r"report_picked_technique.json", "r") as output:
+        data_json = output.read()
+        report_technique_dict = json.loads(data_json)
 
     xe = Evaluation()
     xe.add_technique_list(technique_list)
 
-    # am_list = []
-    # for report, ground_truth in report_technique_dict.items():
-    #     report_name, ext = os.path.splitext(report)
-    #     report_graph_file = r".\data\\picked_extracted_attackgraph_20210807\%s.gml" % report_name
-    #     logging.info(report_graph_file)
-    #
-    #     try:
-    #         report_graph_nx = nx.read_gml(report_graph_file)
-    #     except:
-    #         continue
-    #     am = AttackMatcher(report_graph_nx)
-    #     for ti in identifier_list:
-    #         am.add_technique_identifier(ti)
-    #     am.attack_matching()
-    #     matching_result = am.print_match_result()
-    #
-    #     xe.add_result(report, matching_result, ground_truth)
-    #     am_list.append(am)
+    am_list = []
+    for report, ground_truth in report_technique_dict.items():
+        report_name, ext = os.path.splitext(report)
+        report_graph_file = r"./data/picked_extracted_attackgraph_20210807/%s.gml" % report_name
+        logging.info(report_graph_file)
 
-    for file in os.listdir(r"./data/procedure_examples"):
-        file_name, ext = os.path.splitext(file)
-        if ext != ".gml":
+        try:
+            report_graph_nx = nx.read_gml(report_graph_file)
+        except:
             continue
-
-        example_graph = nx.read_gml(r"./data/procedure_examples/" + file)
-        # if len(example_graph.nodes()) <= 1:
-        #     continue
-
-        am = AttackMatcher(example_graph)
+        am = AttackMatcher(report_graph_nx)
         for ti in identifier_list:
             am.add_technique_identifier(ti)
         am.attack_matching()
         matching_result = am.print_match_result()
 
-        xe.add_result(file_name, matching_result, [])
+        xe.add_result(report, matching_result, ground_truth)
+        am_list.append(am)
+
+    # for file in os.listdir(r"./data/procedure_examples"):
+    #     file_name, ext = os.path.splitext(file)
+    #     if ext != ".gml":
+    #         continue
+    #
+    #     example_graph = nx.read_gml(r"./data/procedure_examples/" + file)
+    #     # if len(example_graph.nodes()) <= 1:
+    #     #     continue
+    #
+    #     am = AttackMatcher(example_graph)
+    #     for ti in identifier_list:
+    #         am.add_technique_identifier(ti)
+    #     am.attack_matching()
+    #     matching_result = am.print_match_result()
+    #
+    #     xe.add_result(file_name, matching_result, [])
 
     # xe.book.save()
     xe.book.close()

@@ -534,9 +534,12 @@ if __name__ == '__main__':
     # sample = "DarkHydrus has sent spearphishing emails with password-protected RAR archives containing malicious Excel Web Query files (.iqy). The group has also sent spearphishing emails that contained malicious Microsoft Office documents that use the 'attachedTemplate' technique to load a template from a remote server."
     # sample = "Cardinal RAT establishes Persistence by setting the  HKCU\Software\Microsoft\Windows NT\CurrentVersion\Windows\Load Registry key to point to its executable."
     # sample = "The \"SCOUT\" variant of NETEAGLE achieves persistence by adding itself to the HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run Registry key."
-    #
-    # ag = parse_attackgraph_from_text(ner_model, sample)
-    # draw_attackgraph_dot(ag.attackgraph_nx).view()
+    # sample = "Cobalt Group has sent spearphishing emails with various attachment types to corporate and personal email accounts of victim organizations. Attachment types have included .rtf, .doc, .xls, archives containing LNK files, and password protected archives containing .exe and .scr executables"
+    sample = "The threat actors sent the trojanized Microsoft Word documents, probably via email. Talos discovered a document named  MinutesofMeeting-2May19.docx, that appeared to display the national flag of Jordan. Once the victim opens the document, it fetches a remove template from the actor-controlled website, hxxp://droobox[.]online:80/luncher.doc. Once the luncher.doc was downloaded, it used CVE-2017-11882, to execute code on the victim's machine. After the exploit, the file would write a series of base64-encoded PowerShell commands that acted as a stager and set up persistence by adding it to the HKCU\Software\Microsoft\Windows\CurrentVersion\Run Registry key. That scheduled task would run a series of base64-encoded PowerShell commands that acted as a stager."
+    # sample = "The attacker ran an attack against ClearScope. The attacker found the e-mail address of the phone user, bob@bovia.com, previously from a data dump from a hacked website. The attacker sent a phishing e-mail to Bob impersonating the Bovia Company Benefits Open Enrollment group. The phishing e-mail included a link to a website hosted at www.nasa.ng, address 208.75.117.3:80. The website hosted a form asking for name, e-mail address, and password. The user unfortunately clicked on the link, entered the requested information, and submitted it. The results were sent back to www.foo1.com, address 208.75.117.2:80. The attacker now has access to Bob's e-mail account, including contact information for other Bovia company employees."
+
+    ag = parse_attackgraph_from_text(ner_model, sample)
+    draw_attackgraph_dot(ag.attackgraph_nx).view()
 
     # %%
 
@@ -545,12 +548,12 @@ if __name__ == '__main__':
     # %%
     # class AttackGraph unit test
 
-    cti_path = r"./data/cti/picked_html"
-    output_path = r"./data/picked_extracted_attackgraph_20210820/"
-
-    cti_files = os.listdir(cti_path)
-    for file in cti_files:
-        parse_attackgraph_from_cti_report(cti_file=os.path.join(cti_path, file), output_path=output_path, ner_model=ner_model)
+    # cti_path = r"./data/cti/picked_html"
+    # output_path = r"./data/picked_extracted_attackgraph_20210820/"
+    #
+    # cti_files = os.listdir(cti_path)
+    # for file in cti_files:
+    #     parse_attackgraph_from_cti_report(cti_file=os.path.join(cti_path, file), output_path=output_path, ner_model=ner_model)
 
     # %%
     # draw_AG() unit test
