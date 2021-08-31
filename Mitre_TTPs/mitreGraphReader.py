@@ -37,36 +37,36 @@ picked_techniques = {"/techniques/T1566/001",
                      "/techniques/T1123",
                      "/techniques/T1119",
                      "/techniques/T1041"}
-picked_techniques_name_dict = {"/techniques/T1566/001": "Phishing",
-                     "/techniques/T1566/002": "Phishing",
-                     "/techniques/T1566/003": "Phishing",
-                     "/techniques/T1195/001": "Supply Chain Compromise",
-                     "/techniques/T1195/002": "Supply Chain Compromise",
-                     "/techniques/T1059/001": "Command and Scripting Interpreter",
-                     "/techniques/T1059/003": "Command and Scripting Interpreter",
-                     "/techniques/T1059/005": "Command and Scripting Interpreter",
-                     "/techniques/T1059/007": "Command and Scripting Interpreter",
-                     "/techniques/T1559/001": "Inter-Process Communication",
-                     "/techniques/T1204/001": "User Execution: Malicious Link",
-                     "/techniques/T1204/002": "User Execution: Malicious File",
-                     "/techniques/T1053/005": "Scheduled Task/Job",
-                     "/techniques/T1037/001": "Boot or Logon Initialization Scripts",
-                     "/techniques/T1547/001": "Boot or Logon Autostart Execution",
-                     "/techniques/T1547/002": "Boot or Logon Autostart Execution",
-                     "/techniques/T1112": "Modify Registry",
-                     "/techniques/T1012": "Query Registry",
-                     "/techniques/T1218/005": "Signed Binary Proxy Execution: Mshta",
-                     "/techniques/T1218/010": "Signed Binary Proxy Execution: REgsvr32",
-                     "/techniques/T1218/011": "Signed Binary Proxy Execution: Rundll32",
-                     "/techniques/T1078/001": "Valid Accounts",
-                     "/techniques/T1518/001": "Software Discovery",
-                     "/techniques/T1083": "File and Directory Discovery",
-                     "/techniques/T1057": "Process Discovery",
-                     "/techniques/T1497/001": "Virtualization/Sandbox Evasion",
-                     "/techniques/T1560/001": "Archive Collected Data",
-                     "/techniques/T1123": "Audio Capture",
-                     "/techniques/T1119": "Automated Collection",
-                     "/techniques/T1041": "Exfiltration Over C2 Channel"}
+# picked_techniques_name_dict = {"/techniques/T1566/001": "Phishing",
+#                      "/techniques/T1566/002": "Phishing",
+#                      "/techniques/T1566/003": "Phishing",
+#                      "/techniques/T1195/001": "Supply Chain Compromise",
+#                      "/techniques/T1195/002": "Supply Chain Compromise",
+#                      "/techniques/T1059/001": "Command and Scripting Interpreter",
+#                      "/techniques/T1059/003": "Command and Scripting Interpreter",
+#                      "/techniques/T1059/005": "Command and Scripting Interpreter",
+#                      "/techniques/T1059/007": "Command and Scripting Interpreter",
+#                      "/techniques/T1559/001": "Inter-Process Communication",
+#                      "/techniques/T1204/001": "User Execution: Malicious Link",
+#                      "/techniques/T1204/002": "User Execution: Malicious File",
+#                      "/techniques/T1053/005": "Scheduled Task/Job",
+#                      "/techniques/T1037/001": "Boot or Logon Initialization Scripts",
+#                      "/techniques/T1547/001": "Boot or Logon Autostart Execution",
+#                      "/techniques/T1547/002": "Boot or Logon Autostart Execution",
+#                      "/techniques/T1112": "Modify Registry",
+#                      "/techniques/T1012": "Query Registry",
+#                      "/techniques/T1218/005": "Signed Binary Proxy Execution: Mshta",
+#                      "/techniques/T1218/010": "Signed Binary Proxy Execution: REgsvr32",
+#                      "/techniques/T1218/011": "Signed Binary Proxy Execution: Rundll32",
+#                      "/techniques/T1078/001": "Valid Accounts",
+#                      "/techniques/T1518/001": "Software Discovery",
+#                      "/techniques/T1083": "File and Directory Discovery",
+#                      "/techniques/T1057": "Process Discovery",
+#                      "/techniques/T1497/001": "Virtualization/Sandbox Evasion",
+#                      "/techniques/T1560/001": "Archive Collected Data",
+#                      "/techniques/T1123": "Audio Capture",
+#                      "/techniques/T1119": "Automated Collection",
+#                      "/techniques/T1041": "Exfiltration Over C2 Channel"}
 
 class MitreGraphReader:
     mitre_graph: nx.Graph
@@ -75,6 +75,34 @@ class MitreGraphReader:
     def __init__(self, gml_location: str = r"./Mitre_TTPs/Tactic_Technique_Reference_Example.gml", link_file_map_file:str = r"./data/cti/html/html_url_hash.csv"):
         self.mitre_graph = nx.read_gml(gml_location)
         self.link_file_map = read_csv_as_dict(link_file_map_file)
+
+    def get_technique_list(self) -> list:
+        technique_list = []
+
+        for n in self.mitre_graph.nodes():
+            if self.mitre_graph.nodes[n]["types"] == "technique" or self.mitre_graph.nodes[n]["types"] == "sub_technique":
+                technique_list.append(n)
+
+        return technique_list
+
+    def get_name_for_technique(self, technique_id: str) -> list:
+        return self.mitre_graph.nodes[technique_id]["name"]
+
+    def get_super_for_technique(self, technique_id: str) -> str:
+        if self.mitre_graph.nodes[technique_id]["types"] != "sub_technique":
+            return technique_id
+
+        for n in self.mitre_graph.neighbors(technique_id):
+            if self.mitre_graph.nodes[n]["types"] == "super_technique":
+                return n
+
+    def get_tactic_for_technique(self, technique_id: str) -> str:
+        if self.mitre_graph.nodes[technique_id]["types"] == "sub_technique":
+            technique_id = self.get_super_for_technique(technique_id)
+
+        for n in self.mitre_graph.neighbors(technique_id):
+            if self.mitre_graph.nodes[n]["types"] == "tactic":
+                return(n)
 
     def find_examples_for_technique(self, technique_id: str) -> list:
         example_list = []
@@ -99,15 +127,6 @@ class MitreGraphReader:
                     continue
 
         return report_file_list
-
-    def get_technique_list(self) -> list:
-        technique_list = []
-
-        for n in self.mitre_graph.nodes():
-            if self.mitre_graph.nodes[n]["types"] == "technique" or self.mitre_graph.nodes[n]["types"] == "sub_technique":
-                technique_list.append(n)
-
-        return technique_list
 
     def find_techniques_relatedto_reports(self, report_url: str = r'https://arstechnica.com/information-technology/2020/08/intel-is-investigating-the-leak-of-20gb-of-its-source-code-and-private-data/') -> list:
 
@@ -142,7 +161,7 @@ def read_csv_as_dict(csv_file: str) -> dict:
 # %%
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     # technique_id = "/techniques/T1059/001"
     # mgr = MitreGraphReader()
@@ -150,16 +169,18 @@ if __name__ == '__main__':
 
     # %%
 
+    # Get and count example for all techniques.
     mgr = MitreGraphReader()
 
     # technique_id_list = picked_techniques
     technique_id_list = mgr.get_technique_list()
     example_list = []
     for technique_id in technique_id_list:
+        print(mgr.get_tactic_for_technique(technique_id) + "#" + mgr.get_super_for_technique(technique_id) + "#" + mgr.get_name_for_technique(mgr.get_super_for_technique(technique_id)) + "#" + mgr.get_name_for_technique(technique_id) + "#" + str(len(mgr.find_examples_for_technique(technique_id))))
         example_list += mgr.find_examples_for_technique(technique_id)
         example_list.append(technique_id + "===========================")
 
-    with open("produce_examples_picked.txt", "w+") as output:
+    with open("produce_examples.txt", "w+") as output:
         for example in example_list:
             output.write(example + "\n")
 
