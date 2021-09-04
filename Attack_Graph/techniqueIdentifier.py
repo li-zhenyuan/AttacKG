@@ -122,7 +122,7 @@ class TechniqueIdentifier:
         edge_alignment_score = 0.0
 
         for edge, edge_similarity in self.edge_match_record.items():
-            edge_alignment_score += edge_similarity * self.technique_template.technique_edge_dict[edge]
+            edge_alignment_score += edge_similarity * math.sqrt(self.technique_template.technique_edge_dict[edge])
 
         edge_alignment_score /= self.edge_count + 1
         return edge_alignment_score
@@ -135,12 +135,16 @@ class AttackMatcher:
     technique_matching_subgraph: dict
     technique_matching_record: dict
 
+    normalized_factor: float
+
     def __init__(self, nx_graph: nx.DiGraph):
         self.attack_graph_nx = nx_graph
         self.technique_identifier_list = []
         self.technique_matching_score = {}
         self.technique_matching_subgraph = {}
         self.technique_matching_record = {}
+
+        self.normalized_factor = nx_graph.number_of_nodes() + nx_graph.number_of_edges()
 
     def add_technique_identifier(self, technique_identifier: TechniqueIdentifier):
         self.technique_identifier_list.append(technique_identifier)
@@ -174,7 +178,7 @@ class AttackMatcher:
 
             # find the most match technique
             for technique_identifier in self.technique_identifier_list:
-                node_alignment_score = technique_identifier.get_graph_alignment_score()
+                node_alignment_score = technique_identifier.get_graph_alignment_score() / self.normalized_factor
 
                 if technique_identifier.technique_template.technique_name not in self.technique_matching_score.keys():
                     self.technique_matching_score[technique_identifier.technique_template.technique_name] = node_alignment_score
@@ -242,8 +246,8 @@ class EvaluationA:
 # %%
 
 if __name__ == '__main__':
-    # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.INFO)
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    # logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.INFO)
     logging.info("======techniqueIdentifier.py: %s======", time.asctime(time.localtime(time.time())))
 
     # %%
@@ -263,7 +267,7 @@ if __name__ == '__main__':
 
     # %%
 
-    tt_path = r"./data/picked_technique_template"
+    tt_path = r"./data/technique_template"
     tt_file_list = os.listdir(tt_path)
     identifier_list = []
     technique_list = []
@@ -277,48 +281,50 @@ if __name__ == '__main__':
         ti = TechniqueIdentifier(tt)
         identifier_list.append(ti)
 
-    with open(r"report_picked_technique.json", "r") as output:
-        data_json = output.read()
-        report_technique_dict = json.loads(data_json)
-
     xe = Evaluation()
     xe.add_technique_list(technique_list)
 
-    am_list = []
-    for report, ground_truth in report_technique_dict.items():
-        report_name, ext = os.path.splitext(report)
-        report_graph_file = r"./data/picked_extracted_attackgraph_20210807/%s.gml" % report_name
-        logging.info(report_graph_file)
+    # ===================Technique Identification in Reports=================================================
+    # with open(r"report_picked_technique.json", "r") as output:
+    #     data_json = output.read()
+    #     report_technique_dict = json.loads(data_json)
 
-        try:
-            report_graph_nx = nx.read_gml(report_graph_file)
-        except:
-            continue
-        am = AttackMatcher(report_graph_nx)
-        for ti in identifier_list:
-            am.add_technique_identifier(ti)
-        am.attack_matching()
-        matching_result = am.print_match_result()
-
-        xe.add_result(report, matching_result, ground_truth)
-        am_list.append(am)
-
-    # for file in os.listdir(r"./data/procedure_examples"):
-    #     file_name, ext = os.path.splitext(file)
-    #     if ext != ".gml":
+    # am_list = []
+    # for report, ground_truth in report_technique_dict.items():
+    #     report_name, ext = os.path.splitext(report)
+    #     report_graph_file = r"./data/picked_extracted_attackgraph_20210807/%s.gml" % report_name
+    #     logging.info(report_graph_file)
+    #
+    #     try:
+    #         report_graph_nx = nx.read_gml(report_graph_file)
+    #     except:
     #         continue
-    #
-    #     example_graph = nx.read_gml(r"./data/procedure_examples/" + file)
-    #     # if len(example_graph.nodes()) <= 1:
-    #     #     continue
-    #
-    #     am = AttackMatcher(example_graph)
+    #     am = AttackMatcher(report_graph_nx)
     #     for ti in identifier_list:
     #         am.add_technique_identifier(ti)
     #     am.attack_matching()
     #     matching_result = am.print_match_result()
     #
-    #     xe.add_result(file_name, matching_result, [])
+    #     xe.add_result(report, matching_result, ground_truth)
+    #     am_list.append(am)
+
+    # ===================Technique Identification in Examples=================================================
+    for file in os.listdir(r"./data/procedure_examples"):
+        file_name, ext = os.path.splitext(file)
+        if ext != ".gml":
+            continue
+
+        example_graph = nx.read_gml(r"./data/procedure_examples/" + file)
+        # if len(example_graph.nodes()) <= 1:
+        #     continue
+
+        am = AttackMatcher(example_graph)
+        for ti in identifier_list:
+            am.add_technique_identifier(ti)
+        am.attack_matching()
+        matching_result = am.print_match_result()
+
+        xe.add_result(file_name, matching_result, [])
 
     # xe.book.save()
     xe.book.close()

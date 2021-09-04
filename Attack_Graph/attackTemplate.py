@@ -249,6 +249,7 @@ class TechniqueTemplate:
             tn = TemplateNode(("", "", ""))
             tn.load_from_dict(node_info)
             self.technique_node_list.append(tn)
+            
 
         edge_list = data_dict["edges"]
         for edge in edge_list:
