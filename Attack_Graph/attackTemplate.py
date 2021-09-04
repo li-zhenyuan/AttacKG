@@ -275,13 +275,13 @@ class TechniqueTemplate:
             self.load_from_json(data_json)
 
 
-def extract_technique_template_from_technique_list(technique_list: list):
+def extract_technique_template_from_technique_list(technique_name: str, technique_list: list):
     example_list = []
     mgr = MitreGraphReader()
     for technique_id in technique_list:
         example_list += mgr.find_examples_for_technique(technique_id)
 
-    technique_file_name = "./data/procedure_examples/" + str(technique_list).replace("[", "").replace("]","").replace(",", "__").replace("/", "_")
+    technique_file_name = "./data/procedure_examples/" + technique_name
     with open(technique_file_name + ".txt", "w+") as t_file:
         for example in example_list:
             t_file.write(example + "\n")
@@ -299,7 +299,6 @@ def extract_technique_template_from_technique_list(technique_list: list):
         print(example)
 
         ag = parse_attackgraph_from_text(ner_model, example)
-        # draw_attackgraph_plt(ag.attackgraph_nx)
         technique_sample_graphs.append(ag.attackgraph_nx)
 
         procedure_example_file_name = technique_file_name + "-" + str(index)
@@ -310,7 +309,7 @@ def extract_technique_template_from_technique_list(technique_list: list):
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
-    template_file_name = "./data/picked_technique_template/" + str(technique_list).replace("[", "").replace("]", "").replace(",", "__").replace("/", "_")
+    template_file_name = "./data/technique_template/" + technique_name
     tt.dump_to_file(file_name=template_file_name)
     tt.pretty_print(image_name=template_file_name + ".png")
     # draw_attackgraph_plt(tt.template_nx)
@@ -324,30 +323,27 @@ if __name__ == '__main__':
     # technique_list = [r'/techniques/T1566/001', r'/techniques/T1566/002',r'/techniques/T1566/003']
     # technique_list = [r'/techniques/T1053/005']
     # technique_list = [r'/techniques/T1547/001']
+    # technique_id_list = [r'/techniques/T1547/001']
+
+    # mgr = MitreGraphReader()
+    # technique_id_list = picked_techniques  # from mitreGraphReader
 
     # extract_technique_template_from_technique_list(technique_list)
 
     # %%
 
-    technique_id_list = picked_techniques  # from mitreGraphReader
 
-    # mgr = MitreGraphReader()
+    mgr = MitreGraphReader()
     # technique_id_list = mgr.get_technique_list()
-    print(technique_id_list)
-    # technique_id_list = [r'/techniques/T1547/001']
+    super_sub_dict = mgr.get_super_sub_technique_dict()
 
-    technique_id_list_list = []
-    for technique in technique_id_list:
-        # extract_technique_template_from_technique_list([technique])
-        p = Process(target=extract_technique_template_from_technique_list, args=([technique],))
-        p.start()
-    #     technique_id_list_list.append([technique])
-    # with Pool(5) as p:
-    #     p.map(extract_technique_template_from_technique_list, technique_id_list_list)
+    for super_technique, sub_technique_list in super_sub_dict.items():
+        extract_technique_template_from_technique_list(super_technique[12:18], sub_technique_list)
+        # p = Process(target=extract_technique_template_from_technique_list, args=(super_technique[12:18], sub_technique_list,))
+        # p.start()
 
     # %%
 
-    #
     # example_list = []
     # mgr = MitreGraphReader()
     # for technique_id in technique_list:

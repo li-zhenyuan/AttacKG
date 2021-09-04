@@ -96,6 +96,21 @@ class MitreGraphReader:
             if self.mitre_graph.nodes[n]["types"] == "super_technique":
                 return n
 
+    def get_super_sub_technique_dict(self):
+        super_sub_technique_dict = {}
+
+        for n in self.mitre_graph.nodes():
+            if self.mitre_graph.nodes[n]["types"] == "technique":
+                super_sub_technique_dict[n] = [n]
+
+            elif self.mitre_graph.nodes[n]["types"] == "super_technique":
+                super_sub_technique_dict[n] = []
+                for m in self.mitre_graph.neighbors(n):
+                    if self.mitre_graph.nodes[m]["types"] == "sub_technique":
+                        super_sub_technique_dict[n].append(m)
+
+        return super_sub_technique_dict
+
     def get_tactic_for_technique(self, technique_id: str) -> str:
         if self.mitre_graph.nodes[technique_id]["types"] == "sub_technique":
             technique_id = self.get_super_for_technique(technique_id)
@@ -163,26 +178,27 @@ def read_csv_as_dict(csv_file: str) -> dict:
 if __name__ == '__main__':
     # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    # technique_id = "/techniques/T1059/001"
-    # mgr = MitreGraphReader()
+    technique_id = "/techniques/T1059/001"
+    mgr = MitreGraphReader()
     # example_list = mgr.find_examples_for_technique(technique_id)
+    dd = mgr.get_super_sub_technique_dict()
 
     # %%
 
-    # Get and count example for all techniques.
-    mgr = MitreGraphReader()
-
-    # technique_id_list = picked_techniques
-    technique_id_list = mgr.get_technique_list()
-    example_list = []
-    for technique_id in technique_id_list:
-        print(mgr.get_tactic_for_technique(technique_id) + "#" + mgr.get_super_for_technique(technique_id) + "#" + mgr.get_name_for_technique(mgr.get_super_for_technique(technique_id)) + "#" + mgr.get_name_for_technique(technique_id) + "#" + str(len(mgr.find_examples_for_technique(technique_id))))
-        example_list += mgr.find_examples_for_technique(technique_id)
-        example_list.append(technique_id + "===========================")
-
-    with open("produce_examples.txt", "w+") as output:
-        for example in example_list:
-            output.write(example + "\n")
+    # # Get and count example for all techniques.
+    # mgr = MitreGraphReader()
+    #
+    # # technique_id_list = picked_techniques
+    # technique_id_list = mgr.get_technique_list()
+    # example_list = []
+    # for technique_id in technique_id_list:
+    #     print(mgr.get_tactic_for_technique(technique_id) + "#" + mgr.get_super_for_technique(technique_id) + "#" + mgr.get_name_for_technique(mgr.get_super_for_technique(technique_id)) + "#" + mgr.get_name_for_technique(technique_id) + "#" + str(len(mgr.find_examples_for_technique(technique_id))))
+    #     example_list += mgr.find_examples_for_technique(technique_id)
+    #     example_list.append(technique_id + "===========================")
+    #
+    # with open("produce_examples.txt", "w+") as output:
+    #     for example in example_list:
+    #         output.write(example + "\n")
 
     # %%
 
