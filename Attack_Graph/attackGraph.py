@@ -1,3 +1,7 @@
+import math
+
+import Levenshtein
+
 from NLP.iocNer import *
 from NLP.iocRegex import *
 from NLP.reportPreprocess import *
@@ -82,7 +86,7 @@ node_shape = {
 
 
 def draw_attackgraph_dot(g: nx.DiGraph, clusters: dict = None, output_file: str = None) -> graphviz.Graph:
-    dot = graphviz.Digraph('G', filename=output_file)
+    dot = graphviz.Graph('G', filename=output_file)
 
     logging.warning("---Draw attack graph with dot!---")
 
@@ -450,8 +454,8 @@ class AttackGraph:
 
             # check whether to merge the node or not
             if self.attackgraph_nx.nodes[source_node]["type"] == self.attackgraph_nx.nodes[neighor]["type"] \
-            and self.attackgraph_nx.in_degree(neighor) == 1 \
-            and (source_regex == "" or neighor_regex == ""):
+                and self.attackgraph_nx.in_degree(neighor) == 1 \
+                and (source_regex == "" or neighor_regex == ""):
                 self.attackgraph_nx = nx.contracted_nodes(self.attackgraph_nx, source_node, neighor, self_loops=False)
 
             self.attackgraph_nx.nodes[source_node]["nlp"] = source_nlp + " " + neighor_nlp
@@ -466,6 +470,41 @@ class AttackGraph:
 
         return self.source_node_list
 
+    merge_graph: nx.Graph
+
+    def node_merge(self):
+        self.merge_graph = nx.Graph()
+        node_list = list(self.attackgraph_nx.nodes())
+
+        for m in range(0, len(node_list)):
+            for n in range(m + 1, len(node_list)):
+                node_m = node_list[m]
+                node_n = node_list[n]
+
+                m_position = int(node_m.split('#')[-1])
+                n_position = int(node_n.split('#')[-1])
+
+                m_type = self.attackgraph_nx.nodes[node_m]['type']
+                n_type = self.attackgraph_nx.nodes[node_n]['type']
+                m_nlp = self.attackgraph_nx.nodes[node_m]['nlp']
+                n_nlp = self.attackgraph_nx.nodes[node_n]['nlp']
+                m_ioc = self.attackgraph_nx.nodes[node_m]['regex']
+                n_ioc = self.attackgraph_nx.nodes[node_n]['regex']
+
+                similarity = 0
+                if m_type == n_type:
+                    similarity += 0.4
+                similarity += Levenshtein.ratio(m_nlp, n_nlp) / math.log(abs(n_position-m_position)+1)
+                if similarity >= 0.5 and (m_ioc == '' or n_ioc == ''):
+                    self.merge_graph.add_edge(node_m, node_n)
+
+                    print(' '.join([node_m, node_n, str(Levenshtein.ratio(m_nlp, n_nlp)), str(similarity)]))
+
+        for subgraph in nx.connected_components(self.merge_graph):
+            subgraph_list = list(subgraph)
+            a = subgraph_list[0]
+            for b in subgraph_list[1:]:
+                self.attackgraph_nx = nx.contracted_nodes(self.attackgraph_nx, a, b, self_loops=False)
 
 def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
     iid = IoCIdentifier(text)
@@ -474,6 +513,8 @@ def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
     ag = AttackGraph(doc, ioc_identifier=iid)
 
     ag.parse()
+    ag.node_merge()
+    ag.simplify()
 
     return ag
 
@@ -495,16 +536,8 @@ def parse_attackgraph_from_cti_report(ner_model: IoCNer,
         logging.warning("---Not support non-html CTI reports yet!---")
         return
 
-    iid = IoCIdentifier(text)
-    # iid.display_iocs()
-    text_without_ioc = iid.replaced_text
-    # iid.check_replace_result()
+    ag = parse_attackgraph_from_text(ner_model, text)
 
-    doc = ner_model.parser(text_without_ioc)
-    ag = AttackGraph(doc, ioc_identifier=iid)
-
-    ag.parse()
-    # ag.simplify()
     dot_graph = draw_attackgraph_dot(ag.attackgraph_nx)
 
     if output_path == "":
@@ -520,7 +553,7 @@ def parse_attackgraph_from_cti_report(ner_model: IoCNer,
 
 if __name__ == '__main__':
     # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.DEBUG)
+    # logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.DEBUG)
     logging.info("======techniqueIdentifier.py: %s======", time.asctime(time.localtime(time.time())))
 
     ner_model = IoCNer("./new_cti.model")
@@ -541,9 +574,10 @@ if __name__ == '__main__':
     ag = parse_attackgraph_from_text(ner_model, sample)
     draw_attackgraph_dot(ag.attackgraph_nx).view()
 
+
     # %%
 
-    # ag = parse_attackgraph_from_cti_report(ner_model)
+    # ag = parse_attackgraph_from_cti_report(ner_model, r"data/picked_html_APTs/Cobalt.html")
 
     # %%
     # class AttackGraph unit test

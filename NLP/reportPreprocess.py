@@ -59,6 +59,8 @@ def clear_text(text: str) -> str:
     hex = re.compile(r'(\\*x[0-9a-f]{2}){2,}')
     cleartext = hex.sub(' ', cleartext)
 
+    cleartext = cleartext.replace("Windows NT", "WindowsNT")
+
     cleartext = cleartext.encode("ascii", "ignore")
     cleartext = cleartext.decode()
 

@@ -139,7 +139,7 @@ def get_string_similarity(a: str, b: str) -> float:
 
 
 class TechniqueTemplate:
-    NODE_SIMILAR_ACCEPT_THRESHOLD = 0.5 + 0.5
+    NODE_SIMILAR_ACCEPT_THRESHOLD = 0.5 + 0.2
 
     technique_name: str  # '/techniques/T1566/001'
     technique_node_list: list  # [TemplateNode, ...]
@@ -234,6 +234,7 @@ class TechniqueTemplate:
             self.template_nx.add_edge(source, sink, count=str(count))
 
         A = to_agraph(self.template_nx)
+        A.node_attr['shape'] = 'rectangle'
         A.layout('dot')
         A.draw(image_name)
 
@@ -365,8 +366,9 @@ if __name__ == '__main__':
     # technique_id_list = mgr.get_technique_list()
     super_sub_dict = mgr.get_super_sub_technique_dict()
 
-    for super_technique, sub_technique_list in super_sub_dict.items():
-        extract_technique_template_from_technique_list(super_technique[12:18], sub_technique_list)
+    extract_technique_template_from_technique_list("T1547", super_sub_dict["/techniques/T1547"])
+    # for super_technique, sub_technique_list in super_sub_dict.items():
+    #     extract_technique_template_from_technique_list(super_technique[12:18], sub_technique_list)
         # p = Process(target=extract_technique_template_from_technique_list, args=(super_technique[12:18], sub_technique_list,))
         # p.start()
 
