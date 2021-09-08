@@ -1,3 +1,5 @@
+import math
+
 from attackGraph import *
 from Mitre_TTPs.mitreGraphReader import *
 
@@ -73,7 +75,7 @@ class TemplateNode(AttackGraphNode):
         if self.node_type != new_node_type:
             return similarity_score
         else:
-            similarity_score += 0.1
+            similarity_score += 0.5
 
         max_nlp_similarity_score = 0
         for nlp_instance in self.node_nlp_instance:
@@ -87,12 +89,13 @@ class TemplateNode(AttackGraphNode):
             if ss >= max_ioc_similarity_score:
                 max_ioc_similarity_score = ss
 
-        similarity_score = similarity_score + max_ioc_similarity_score * 10 + max_nlp_similarity_score
+        # similarity_score = similarity_score + max_ioc_similarity_score * 1 + max_nlp_similarity_score
+        similarity_score += 0.5 * max(max_ioc_similarity_score, max_nlp_similarity_score)
 
         return similarity_score
 
-    NODE_NLP_SIMILAR_ACCEPT_THRESHOLD = 0.9
-    NODE_IOC_SIMILAR_ACCEPT_THRESHOLD = 0.9
+    NODE_NLP_SIMILAR_ACCEPT_THRESHOLD = 0.8
+    NODE_IOC_SIMILAR_ACCEPT_THRESHOLD = 0.8
 
     def update_with(self, node_info: tuple):
 
@@ -144,6 +147,9 @@ class TechniqueTemplate:
     technique_instance_dict: dict  # [[(n1,n2), ...]...]
     total_instance_count: int
 
+    node_normalization: float
+    edge_normalization: float
+
     template_nx: nx.DiGraph
 
     def __init__(self, technique_name: str):
@@ -153,12 +159,22 @@ class TechniqueTemplate:
         self.technique_instance_dict = {}
         self.total_instance_count = 0
 
+        self.node_normalization = 0
+        self.edge_normalization = 0
+
     # def match_template(self, technique_sample_graph: nx.DiGraph):
     #     logging.info("---Match template!---")
+
+    def calculate_normalization(self):
+        for node in self.technique_node_list:
+            self.node_normalization += math.sqrt(node.instance_count)
+        for edge, instance_count in self.technique_edge_dict:
+            self.edge_normalization += math.sqrt(instance_count)
 
     def update_template(self, technique_sample_graph: nx.DiGraph):
         logging.info("---Update template!---")
 
+        self.total_instance_count += 1
         sample_node_template_node_dict = {}
 
         # node matching
@@ -231,6 +247,10 @@ class TechniqueTemplate:
         data_dict["nodes"] = node_list
         data_dict["edges"] = list(self.technique_edge_dict.items())
         data_dict["instances"] = list(self.technique_instance_dict)
+        data_dict["total_count"] = self.total_instance_count
+        #
+        # data_dict["node_normalization"] = self.node_normalization
+        # data_dict["edge_normalization"] = self.edge_normalization
         return data_dict
 
     def dump_to_json(self) -> str:
@@ -244,18 +264,25 @@ class TechniqueTemplate:
             json_file.write(data_json)
 
     def load_from_dict(self, data_dict: dict):
+        self.total_instance_count = int(data_dict["total_count"])
+
         node_list = data_dict["nodes"]
         for node_info in node_list:
             tn = TemplateNode(("", "", ""))
             tn.load_from_dict(node_info)
+            if tn.instance_count <= 2:
+                tn.instance_count = 0
             self.technique_node_list.append(tn)
-            
 
         edge_list = data_dict["edges"]
         for edge in edge_list:
             edge_info = edge[0]
             count = edge[1]
+            if count <= 2:
+                count = 0
             self.technique_edge_dict[tuple(edge_info)] = count
+
+        self.calculate_normalization()
 
         instance_list = data_dict["instances"]
         for instance in instance_list:

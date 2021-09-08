@@ -94,11 +94,12 @@ class TechniqueIdentifier:
             source_node_matching_score = self.node_match_record[source_index][1]
             sink_node_matching_score = self.node_match_record[sink_index][1]
 
-            edge_matching_score = source_node_matching_score * sink_node_matching_score * math.sqrt(instance_count) / distance
+            edge_matching_score = math.sqrt(source_node_matching_score * sink_node_matching_score) / distance
             self.edge_match_record[template_edge] = edge_matching_score
 
     def get_graph_alignment_score(self):
         return self.get_node_alignment_score() + self.get_edge_alignment_score()
+        # return self.get_edge_alignment_score()
 
     def get_node_alignment_score(self):
         node_alignment_score = 0.0
@@ -109,13 +110,14 @@ class TechniqueIdentifier:
                 continue
 
             if node_similarity is not None:
-                node_alignment_score += node_similarity[1] * self.technique_template.technique_node_list[node_index].instance_count  # math.sqrt
-                logging.debug("%d-%s-%f" % (index, node_similarity[0], node_alignment_score))
+                node_alignment_score += node_similarity[1] * math.sqrt(self.technique_template.technique_node_list[node_index].instance_count) # math.sqrt
+                # logging.debug("%d-%s-%f" % (index, node_similarity[0], node_alignment_score))
 
             index += 1
 
         # Normalization
-        node_alignment_score /= self.node_count + 1  # math.sqrt(self.node_count + 1)
+        # node_alignment_score /= self.node_count + 1  # math.sqrt(self.node_count + 1)
+        node_alignment_score /= (self.technique_template.node_normalization + 1)
         return node_alignment_score
 
     def get_edge_alignment_score(self):
@@ -124,7 +126,12 @@ class TechniqueIdentifier:
         for edge, edge_similarity in self.edge_match_record.items():
             edge_alignment_score += edge_similarity * math.sqrt(self.technique_template.technique_edge_dict[edge])
 
-        edge_alignment_score /= self.edge_count + 1
+        # edge_alignment_score /= self.edge_count + 1
+        edge_alignment_score /= self.technique_template.edge_normalization
+
+        if edge_alignment_score >= 1:
+            raise Exception()
+
         return edge_alignment_score
 
 # Matching process, involve multiple TechniqueIdentifier at one time
@@ -147,6 +154,9 @@ class AttackMatcher:
         self.normalized_factor = nx_graph.number_of_nodes() + nx_graph.number_of_edges()
 
     def add_technique_identifier(self, technique_identifier: TechniqueIdentifier):
+        # if technique_identifier.edge_count == 0:
+        #     return
+
         self.technique_identifier_list.append(technique_identifier)
 
     def attack_matching(self, nx_graph: nx.DiGraph = None):
@@ -178,7 +188,7 @@ class AttackMatcher:
 
             # find the most match technique
             for technique_identifier in self.technique_identifier_list:
-                node_alignment_score = technique_identifier.get_graph_alignment_score() / self.normalized_factor
+                node_alignment_score = technique_identifier.get_graph_alignment_score() #/ self.normalized_factor
 
                 if technique_identifier.technique_template.technique_name not in self.technique_matching_score.keys():
                     self.technique_matching_score[technique_identifier.technique_template.technique_name] = node_alignment_score
@@ -276,9 +286,13 @@ if __name__ == '__main__':
         if ext != ".json":
             continue
         tt = TechniqueTemplate(filename)
-        technique_list.append(filename)
         tt.load_from_file(os.path.join(tt_path, tt_file))
         ti = TechniqueIdentifier(tt)
+
+        if ti.edge_count == 0:
+            continue
+
+        technique_list.append(filename)
         identifier_list.append(ti)
 
     xe = Evaluation()
