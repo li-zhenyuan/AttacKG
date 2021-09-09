@@ -165,6 +165,7 @@ def get_token_id(tok: spacy.tokens.token.Token) -> str:
 
 class AttackGraph:
     attackgraph_nx: nx.DiGraph
+    original_attackgraph_nx: nx.DiGraph
     nlp_doc: spacy.tokens.doc.Doc
     ioc_identifier: IoCIdentifier
 
@@ -381,6 +382,11 @@ class AttackGraph:
             if node.i in self.ioc_coref_dict.keys():
                 coref_node = self.nlp_doc[self.ioc_coref_dict[node.i]]
 
+                regex = ""
+                if node.idx in self.ioc_identifier.replaced_ioc_dict.keys():
+                    regex = self.ioc_identifier.replaced_ioc_dict[node.idx]
+                    logging.debug("Recover IoC regex: %s" % regex)
+
                 nlp = ""
                 if coref_node.i in self.entity_root_token_string_dict.keys():
                     nlp = self.entity_root_token_string_dict[coref_node.i]
@@ -389,7 +395,7 @@ class AttackGraph:
 
                 n = get_token_id(coref_node)
                 logging.debug(n)
-                self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=nlp)
+                self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=nlp, regex=regex)
 
                 if tnode != "":
                     self.attackgraph_nx.add_edge(tnode, n, action=tvb)
@@ -458,8 +464,8 @@ class AttackGraph:
                 and (source_regex == "" or neighor_regex == ""):
                 self.attackgraph_nx = nx.contracted_nodes(self.attackgraph_nx, source_node, neighor, self_loops=False)
 
-            self.attackgraph_nx.nodes[source_node]["nlp"] = source_nlp + " " + neighor_nlp
-            self.attackgraph_nx.nodes[source_node]["regex"] = source_regex + neighor_regex
+                self.attackgraph_nx.nodes[source_node]["nlp"] = source_nlp + " " + neighor_nlp
+                self.attackgraph_nx.nodes[source_node]["regex"] = source_regex + neighor_regex
 
     def locate_all_source_node(self):
         self.source_node_list = []
@@ -473,6 +479,8 @@ class AttackGraph:
     merge_graph: nx.Graph
 
     def node_merge(self):
+        self.original_attackgraph_nx = nx.DiGraph(self.attackgraph_nx)
+
         self.merge_graph = nx.Graph()
         node_list = list(self.attackgraph_nx.nodes())
 
@@ -495,16 +503,22 @@ class AttackGraph:
                 if m_type == n_type:
                     similarity += 0.4
                 similarity += Levenshtein.ratio(m_nlp, n_nlp) / math.log(abs(n_position-m_position)+1)
-                if similarity >= 0.5 and (m_ioc == '' or n_ioc == ''):
+                if (similarity >= 0.5 and ((m_ioc == '' and n_ioc == '') or m_ioc == n_ioc)):
                     self.merge_graph.add_edge(node_m, node_n)
 
                     print(' '.join([node_m, node_n, str(Levenshtein.ratio(m_nlp, n_nlp)), str(similarity)]))
 
         for subgraph in nx.connected_components(self.merge_graph):
             subgraph_list = list(subgraph)
+            print(subgraph_list)
             a = subgraph_list[0]
             for b in subgraph_list[1:]:
                 self.attackgraph_nx = nx.contracted_nodes(self.attackgraph_nx, a, b, self_loops=False)
+            # self.attackgraph_nx.nodes[a]["contraction"] = ""
+
+    def clear_contraction_info(self):
+        for nodes in self.attackgraph_nx.nodes():
+            self.attackgraph_nx.nodes[nodes]["contraction"] = ""
 
 def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
     iid = IoCIdentifier(text)
@@ -515,6 +529,7 @@ def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
     ag.parse()
     ag.node_merge()
     ag.simplify()
+    ag.clear_contraction_info()
 
     return ag
 
@@ -571,13 +586,14 @@ if __name__ == '__main__':
     sample = "The threat actors sent the trojanized Microsoft Word documents, probably via email. Talos discovered a document named  MinutesofMeeting-2May19.docx, that appeared to display the national flag of Jordan. Once the victim opens the document, it fetches a remove template from the actor-controlled website, hxxp://droobox[.]online:80/luncher.doc. Once the luncher.doc was downloaded, it used CVE-2017-11882, to execute code on the victim's machine. After the exploit, the file would write a series of base64-encoded PowerShell commands that acted as a stager and set up persistence by adding it to the HKCU\Software\Microsoft\Windows\CurrentVersion\Run Registry key. That scheduled task would run a series of base64-encoded PowerShell commands that acted as a stager."
     # sample = "The attacker ran an attack against ClearScope. The attacker found the e-mail address of the phone user, bob@bovia.com, previously from a data dump from a hacked website. The attacker sent a phishing e-mail to Bob impersonating the Bovia Company Benefits Open Enrollment group. The phishing e-mail included a link to a website hosted at www.nasa.ng, address 208.75.117.3:80. The website hosted a form asking for name, e-mail address, and password. The user unfortunately clicked on the link, entered the requested information, and submitted it. The results were sent back to www.foo1.com, address 208.75.117.2:80. The attacker now has access to Bob's e-mail account, including contact information for other Bovia company employees."
 
-    ag = parse_attackgraph_from_text(ner_model, sample)
-    draw_attackgraph_dot(ag.attackgraph_nx).view()
+    # ag = parse_attackgraph_from_text(ner_model, sample)
+    # draw_attackgraph_dot(ag.attackgraph_nx).view()
+    # nx.write_gml(ag.attackgraph_nx, "x.gml")
 
 
     # %%
 
-    # ag = parse_attackgraph_from_cti_report(ner_model, r"data/picked_html_APTs/Cobalt.html")
+    ag = parse_attackgraph_from_cti_report(ner_model, r"data/picked_html_APTs/OceanLotus.html")
 
     # %%
     # class AttackGraph unit test
