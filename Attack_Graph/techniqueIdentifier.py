@@ -244,15 +244,6 @@ class Evaluation:
         self.column_count += 1
 
 
-class EvaluationA:
-
-    def __init__(self):
-        matching_result = []
-
-    def example_matching(self, example_graph_path: str, template_path: str):
-        pass
-
-
 # %%
 
 if __name__ == '__main__':
@@ -323,22 +314,22 @@ if __name__ == '__main__':
     #     am_list.append(am)
 
     # ===================Technique Identification in Examples=================================================
-    for file in os.listdir(r"./data/procedure_examples"):
-        file_name, ext = os.path.splitext(file)
-        if ext != ".gml":
-            continue
-
-        example_graph = nx.read_gml(r"./data/procedure_examples/" + file)
-        # if len(example_graph.nodes()) <= 1:
-        #     continue
-
-        am = AttackMatcher(example_graph)
-        for ti in identifier_list:
-            am.add_technique_identifier(ti)
-        am.attack_matching()
-        matching_result = am.print_match_result()
-
-        xe.add_result(file_name, matching_result, [])
-
-    # xe.book.save()
-    xe.book.close()
+    # for file in os.listdir(r"./data/procedure_examples"):
+    #     file_name, ext = os.path.splitext(file)
+    #     if ext != ".gml":
+    #         continue
+    #
+    #     example_graph = nx.read_gml(r"./data/procedure_examples/" + file)
+    #     # if len(example_graph.nodes()) <= 1:
+    #     #     continue
+    #
+    #     am = AttackMatcher(example_graph)
+    #     for ti in identifier_list:
+    #         am.add_technique_identifier(ti)
+    #     am.attack_matching()
+    #     matching_result = am.print_match_result()
+    #
+    #     xe.add_result(file_name, matching_result, [])
+    #
+    # # xe.book.save()
+    # xe.book.close()

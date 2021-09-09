@@ -91,4 +91,3 @@ if __name__ == '__main__':
         text = read_html(os.path.join(cti_path, file))
         with open(os.path.join(output_path, file_name+".txt"), "w+") as output:
             output.write(text)
-
