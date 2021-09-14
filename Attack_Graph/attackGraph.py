@@ -355,7 +355,7 @@ class AttackGraph:
             if node.i in self.entity_ignore_token_list:
                 continue
 
-            if node.ent_type_ in ner_labels and re.match("NN.*", node.tag_):
+            if node.ent_type_ in ner_labels:# and re.match("NN.*", node.tag_):
                 is_related_sentence = True
 
                 # try getting node ioc value
@@ -567,7 +567,7 @@ def parse_attackgraph_from_cti_report(ner_model: IoCNer,
 # %%
 
 if __name__ == '__main__':
-    # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     # logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.DEBUG)
     logging.info("======techniqueIdentifier.py: %s======", time.asctime(time.localtime(time.time())))
 
@@ -585,15 +585,17 @@ if __name__ == '__main__':
     # sample = "Cobalt Group has sent spearphishing emails with various attachment types to corporate and personal email accounts of victim organizations. Attachment types have included .rtf, .doc, .xls, archives containing LNK files, and password protected archives containing .exe and .scr executables"
     sample = "The threat actors sent the trojanized Microsoft Word documents, probably via email. Talos discovered a document named  MinutesofMeeting-2May19.docx, that appeared to display the national flag of Jordan. Once the victim opens the document, it fetches a remove template from the actor-controlled website, hxxp://droobox[.]online:80/luncher.doc. Once the luncher.doc was downloaded, it used CVE-2017-11882, to execute code on the victim's machine. After the exploit, the file would write a series of base64-encoded PowerShell commands that acted as a stager and set up persistence by adding it to the HKCU\Software\Microsoft\Windows\CurrentVersion\Run Registry key. That scheduled task would run a series of base64-encoded PowerShell commands that acted as a stager."
     # sample = "The attacker ran an attack against ClearScope. The attacker found the e-mail address of the phone user, bob@bovia.com, previously from a data dump from a hacked website. The attacker sent a phishing e-mail to Bob impersonating the Bovia Company Benefits Open Enrollment group. The phishing e-mail included a link to a website hosted at www.nasa.ng, address 208.75.117.3:80. The website hosted a form asking for name, e-mail address, and password. The user unfortunately clicked on the link, entered the requested information, and submitted it. The results were sent back to www.foo1.com, address 208.75.117.2:80. The attacker now has access to Bob's e-mail account, including contact information for other Bovia company employees."
+    # sample = "The TA1 Five Directions attack consisted of the host browsing to the malicious website http://215.237.119.171/config.html where a malicious dll named dbgstat.dll is downloaded.  The delivery method of the attack is the Application Verifier which is used to inject the Drakon APT into the Firefox process.  This attack utilizes the debugging capability built into Windows used to allow developers to debug memory allocations and runtime resouces.  Once the APT DLL has been loaded into Firefox, it connects back to C2.  This remains persistent and a connection to C2 is established each time Firefox is launched. In this attack the user relaunches Firefox four times and at callback gethostname, getusername, and getprocesslist calls are made from the C2."
+    # sample = r"Tried multiple times to exploit the browser and use BITS to download and run the verifier executable.  This was done by browsing to http://215.237.119.171/config.html.  At this point, Firefox should have connected out to 68.149.51.179 to download and execute dbgstat.dll and tester.exe.  We think the files were downloaded but not executed, although we could find no instance of the files on disk where we would expect them.  Instead, we scp’ed the files to the target and ran them using an Administrator command prompt.  Tester.exe (verifier) opened dbgstat.dll (drakon.dll) and registered it as a verifier DLL for Firefox in the Windows registry.  The result is that every time a new Firefox process is started, drakon.dll is injected into it automatically and executed.  We configured the OC2 to automatically run the same script each time a new connection was received, including hostname, whoami, and ps.  We left the drakon.dll verifier enabled throughout the remaining engagement, resulting in 126 drakon instances and C2 connections."
 
-    # ag = parse_attackgraph_from_text(ner_model, sample)
-    # draw_attackgraph_dot(ag.attackgraph_nx).view()
+    ag = parse_attackgraph_from_text(ner_model, sample)
+    draw_attackgraph_dot(ag.attackgraph_nx).view()
     # nx.write_gml(ag.attackgraph_nx, "x.gml")
 
 
     # %%
 
-    ag = parse_attackgraph_from_cti_report(ner_model, r"data/picked_html_APTs/OceanLotus.html")
+    # ag = parse_attackgraph_from_cti_report(ner_model, r"data/picked_html_APTs/OceanLotus.html")
 
     # %%
     # class AttackGraph unit test
