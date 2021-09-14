@@ -366,9 +366,9 @@ if __name__ == '__main__':
     # technique_id_list = mgr.get_technique_list()
     super_sub_dict = mgr.get_super_sub_technique_dict()
 
-    extract_technique_template_from_technique_list("T1547", super_sub_dict["/techniques/T1547"])
-    # for super_technique, sub_technique_list in super_sub_dict.items():
-    #     extract_technique_template_from_technique_list(super_technique[12:18], sub_technique_list)
+    # extract_technique_template_from_technique_list("T1547", super_sub_dict["/techniques/T1547"])
+    for super_technique, sub_technique_list in super_sub_dict.items():
+        extract_technique_template_from_technique_list(super_technique[12:18], sub_technique_list)
         # p = Process(target=extract_technique_template_from_technique_list, args=(super_technique[12:18], sub_technique_list,))
         # p.start()
 

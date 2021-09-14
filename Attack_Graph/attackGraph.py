@@ -81,7 +81,8 @@ node_shape = {
     "defender": "invhouse",
     "registry": "parallelogram",
     "vulnerability": "trapezium",
-    "system": "trapezium"
+    "system": "trapezium",
+    "service": "trapezium"
 }
 
 

@@ -16,7 +16,7 @@ import os
 # ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
 # ner_labels = ["FilePath", "NetLoc", "FileName", "Vulnerability", "Registry", "Attacker", "ExeFile", "DocFIle","Service"]
 # ner_labels = ["actor", "network", "executable", "file", "defender", "registry", "vulnerability", "system"]
-ner_labels = ["network", "executable", "file", "defender", "registry", "vulnerability", "system"]
+ner_labels = ["network", "executable", "file", "defender", "registry", "vulnerability", "system", "service"]
 
 
 def read_labeled_data(path: str) -> list:
@@ -133,9 +133,9 @@ class IoCNer:
         {"label": "network", "pattern": [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}]},
         {"label": "network", "pattern": [{"TEXT": {"REGEX": "(N|n)etwork"}}]},
 
-        {"label": "Service", "pattern": [{"TEXT": {"REGEX": "(T|t)ask[s]*"}}]},
+        {"label": "service", "pattern": [{"TEXT": {"REGEX": "(T|t)ask[s]*"}}]},
 
-        {"label": "Vulnerability", "pattern": [{"TEXT": {"REGEX": "(E|e)xploit"}}]},
+        {"label": "vulnerability", "pattern": [{"TEXT": {"REGEX": "(E|e)xploit"}}]},
 
         {"label": "registry", "pattern": [{"TEXT": {"REGEX": "(R|r)egistry"}}]}
     ]

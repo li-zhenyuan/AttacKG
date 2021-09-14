@@ -127,10 +127,11 @@ class TechniqueIdentifier:
             edge_alignment_score += edge_similarity * math.sqrt(self.technique_template.technique_edge_dict[edge])
 
         # edge_alignment_score /= self.edge_count + 1
-        edge_alignment_score /= self.technique_template.edge_normalization
+        edge_alignment_score /= (self.technique_template.edge_normalization + 1)
 
         if edge_alignment_score >= 1:
-            raise Exception()
+            print(edge_alignment_score)
+            # raise Exception()
 
         return edge_alignment_score
 
@@ -154,8 +155,8 @@ class AttackMatcher:
         self.normalized_factor = nx_graph.number_of_nodes() + nx_graph.number_of_edges()
 
     def add_technique_identifier(self, technique_identifier: TechniqueIdentifier):
-        # if technique_identifier.edge_count == 0:
-        #     return
+        if technique_identifier.edge_count == 0:
+            return
 
         self.technique_identifier_list.append(technique_identifier)
 
@@ -172,6 +173,7 @@ class AttackMatcher:
             # matching_result = []
 
             for technique_identifier in self.technique_identifier_list:
+                print(technique_identifier.technique_template.technique_name)
                 technique_identifier.init_node_match_record()
                 technique_identifier.init_edge_match_record()
 
@@ -288,6 +290,25 @@ if __name__ == '__main__':
 
     xe = Evaluation()
     xe.add_technique_list(technique_list)
+
+    # %%
+
+    sample = "The threat actors sent the trojanized Microsoft Word documents, probably via email. Talos discovered a document named  MinutesofMeeting-2May19.docx, that appeared to display the national flag of Jordan. Once the victim opens the document, it fetches a remove template from the actor-controlled website, hxxp://droobox[.]online:80/luncher.doc. Once the luncher.doc was downloaded, it used CVE-2017-11882, to execute code on the victim's machine. After the exploit, the file would write a series of base64-encoded PowerShell commands that acted as a stager and set up persistence by adding it to the HKCU\Software\Microsoft\Windows\CurrentVersion\Run Registry key. That scheduled task would run a series of base64-encoded PowerShell commands that acted as a stager."
+    sample = r"Tried multiple times to exploit the browser and use BITS to download and run the verifier executable.  This was done by browsing to http://215.237.119.171/config.html.  At this point, Firefox should have connected out to 68.149.51.179 to download and execute dbgstat.dll and tester.exe.  We think the files were downloaded but not executed, although we could find no instance of the files on disk where we would expect them.  Instead, we scp’ed the files to the target and ran them using an Administrator command prompt.  Tester.exe (verifier) opened dbgstat.dll (drakon.dll) and registered it as a verifier DLL for Firefox in the Windows registry.  The result is that every time a new Firefox process is started, drakon.dll is injected into it automatically and executed.  We configured the OC2 to automatically run the same script each time a new connection was received, including hostname, whoami, and ps.  We left the drakon.dll verifier enabled throughout the remaining engagement, resulting in 126 drakon instances and C2 connections."
+
+    ner_model = IoCNer("./new_cti.model")
+    ner_model.add_coreference()
+    ag = parse_attackgraph_from_text(ner_model, sample)
+
+    am = AttackMatcher(ag.attackgraph_nx)
+    for ti in identifier_list:
+        am.add_technique_identifier(ti)
+    am.attack_matching()
+    matching_result = am.print_match_result()
+
+    draw_attackgraph_dot(ag.attackgraph_nx).view()
+
+    # %%
 
     # ===================Technique Identification in Reports=================================================
     # with open(r"report_picked_technique.json", "r") as output:
