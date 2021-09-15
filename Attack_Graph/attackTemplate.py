@@ -167,9 +167,9 @@ class TechniqueTemplate:
 
     def calculate_normalization(self):
         for node in self.technique_node_list:
-            self.node_normalization += math.sqrt(node.instance_count)
+            self.node_normalization += (node.instance_count)
         for edge, instance_count in self.technique_edge_dict:
-            self.edge_normalization += math.sqrt(instance_count)
+            self.edge_normalization += (instance_count)
 
     def update_template(self, technique_sample_graph: nx.DiGraph):
         logging.info("---Update template!---")

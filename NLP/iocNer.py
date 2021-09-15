@@ -16,7 +16,7 @@ import os
 # ner_labels = ["NetLoc", "APTFamily", "ExeFile", "ScriptsFile", "DocumentFile", "E-mail", "Registry", "File", "Vulnerability", "C2C", "SensInfo", "Service"]
 # ner_labels = ["FilePath", "NetLoc", "FileName", "Vulnerability", "Registry", "Attacker", "ExeFile", "DocFIle","Service"]
 # ner_labels = ["actor", "network", "executable", "file", "defender", "registry", "vulnerability", "system"]
-ner_labels = ["network", "executable", "file", "defender", "registry", "vulnerability", "system", "service"]
+ner_labels = ["actor", "network", "executable", "file", "defender", "registry", "vulnerability", "system", "service"]
 
 
 def read_labeled_data(path: str) -> list:
