@@ -356,7 +356,7 @@ class AttackGraph:
             if node.i in self.entity_ignore_token_list:
                 continue
 
-            if node.ent_type_ in ner_labels:# and re.match("NN.*", node.tag_):
+            if node.ent_type_ in ner_labels and re.match("NN.*", node.tag_):
                 if node.ent_type_ == "actor":
                     node.ent_type_ = "executable"
 

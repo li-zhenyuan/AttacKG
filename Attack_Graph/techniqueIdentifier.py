@@ -51,48 +51,94 @@ class TechniqueIdentifier:
         for technique_node in self.technique_template.technique_node_list:
             node_similarity_score = technique_node.get_similar_with(parse_networkx_node(node, nx_graph))
 
+            if technique_node.instance_count == 0:
+                index += 1
+                continue
+
             # accept node as a match
             if node_similarity_score >= TechniqueTemplate.NODE_SIMILAR_ACCEPT_THRESHOLD:
-                if self.node_match_record[index] is not None and self.node_match_record[index][1] > node_similarity_score:
-                    continue
-                else:
-                    self.node_match_record[index] = (node, node_similarity_score)
+                if self.node_match_record[index] is None:
+                    self.node_match_record[index] = []
+                self.node_match_record[index].append((node, node_similarity_score))
+                # if self.node_match_record[index] is not None and self.node_match_record[index][1] > node_similarity_score:
+                #     continue
+                # else:
+                #     self.node_match_record[index] = (node, node_similarity_score)
 
             index += 1
+
+
+    def to_nodematchrecord_list(self):
+        k_list = []
+        v_list = []
+        for k, v in self.node_match_record.items():
+            k_list.append(k)
+            if v is None:
+                v_list.append([''])
+            else:
+                v_list.append(v)
+
+        self.node_match_record = {}
+        for item in itertools.product(*v_list):
+            for i in range(0, len(k_list)):
+                self.node_match_record[k_list[i]] = v_list[i]
 
     def subgraph_alignment(self, subgraph: set, nx_graph: nx.DiGraph):
         for node in subgraph:
             self.node_alignment(node, nx_graph)
 
-        # for source in subgraph:
-        #     for sink in subgraph:
-
-        for template_edge, instance_count in self.technique_template.technique_edge_dict.items():
-            source_index = template_edge[0]
-            sink_index = template_edge[1]
-
-            # No matched node for edge
-            if self.node_match_record[source_index] is None or self.node_match_record[sink_index] is None:
-                self.edge_match_record[template_edge] = 0.0
-                continue
-
-            source_node = self.node_match_record[source_index][0]
-            sink_node = self.node_match_record[sink_index][0]
-
-            if source_node == sink_node:
-                distance = 1
+        k_list = []
+        v_list = []
+        for k, v in self.node_match_record.items():
+            k_list.append(k)
+            if v is None:
+                v_list.append([''])
             else:
-                try:
-                    distance = nx.shortest_path_length(nx_graph, source_node, sink_node)
-                except:
+                v_list.append(v)
+
+        self.node_match_record = {}
+        best_match_score = 0
+        best_match_record = None
+        for item in itertools.product(*v_list):
+            for i in range(0, len(k_list)):
+                if item[i] == '':
+                    self.node_match_record[k_list[i]] = None
+                else:
+                    self.node_match_record[k_list[i]] = item[i]
+
+            for template_edge, instance_count in self.technique_template.technique_edge_dict.items():
+                source_index = template_edge[0]
+                sink_index = template_edge[1]
+
+                # No matched node for edge
+                if self.node_match_record[source_index] is None or self.node_match_record[sink_index] is None:
                     self.edge_match_record[template_edge] = 0.0
                     continue
 
-            source_node_matching_score = self.node_match_record[source_index][1]
-            sink_node_matching_score = self.node_match_record[sink_index][1]
+                source_node = self.node_match_record[source_index][0]
+                sink_node = self.node_match_record[sink_index][0]
 
-            edge_matching_score = math.sqrt(source_node_matching_score * sink_node_matching_score) / distance
-            self.edge_match_record[template_edge] = edge_matching_score
+                if source_node == sink_node:
+                    distance = 1
+                else:
+                    try:
+                        distance = nx.shortest_path_length(nx_graph, source_node, sink_node)
+                    except:
+                        self.edge_match_record[template_edge] = 0.0
+                        continue
+
+                source_node_matching_score = self.node_match_record[source_index][1]
+                sink_node_matching_score = self.node_match_record[sink_index][1]
+
+                edge_matching_score = math.sqrt(source_node_matching_score * sink_node_matching_score) / distance
+                self.edge_match_record[template_edge] = edge_matching_score
+
+            match_score = self.get_graph_alignment_score()
+            if match_score > best_match_score:
+                best_match_score = match_score
+                best_match_record = self.node_match_record
+
+        self.node_match_record = best_match_record
 
     def get_graph_alignment_score(self):
         return self.get_node_alignment_score() + self.get_edge_alignment_score()
@@ -101,6 +147,8 @@ class TechniqueIdentifier:
     def get_node_alignment_score(self):
         node_alignment_score = 0.0
 
+        if self.node_match_record is None:
+            return 0
         index = 0
         for node_index, node_similarity in self.node_match_record.items():
             if self.technique_template.technique_node_list[node_index].node_type == "actor":
@@ -309,9 +357,30 @@ if __name__ == '__main__':
     # '''
 
     # Firefox DNS Drakon APT
-    sample = "The attack started by browsing to http://128.55.12.167:8641/config.html, selecting DNS, entering hostname Xx--ls8h.com, file 938527054, and clicking the Visit button.  This triggered the Firefox backdoor to connect out via DNS to XX--ls8h.com.  Drakon APT was downloaded and executed and connected to 128.55.12.167:8640 for C2.  The attacker escalated privileges using the new File System Filter Driver, which looks for processes opening specific files which don’t exist and elevates them.  Once SYSTEM, the attacker exfil’ed the host and network files as well as a passwd file in the home directory."
+    # sample = "The attack started by browsing to http://128.55.12.167:8641/config.html, selecting DNS, entering hostname Xx--ls8h.com, file 938527054, and clicking the Visit button.  This triggered the Firefox backdoor to connect out via DNS to XX--ls8h.com.  Drakon APT was downloaded and executed and connected to 128.55.12.167:8640 for C2.  The attacker escalated privileges using the new File System Filter Driver, which looks for processes opening specific files which don’t exist and elevates them.  Once SYSTEM, the attacker exfil’ed the host and network files as well as a passwd file in the home directory."
 
-    # sample = "Benign activity ran for most of the morning while the tools were being setup for the day.  The activity was modified so the hosts would open Firefox and browse to http://215.237.119.171/config.html.  The simulated host then entered URL for BITS Micro APT as http://68.149.51.179/ctfhost2.exe.   We used the exploited Firefox backdoor to initiate download of ctfhost2.exe via the Background Intelligent Transfer Service (BITS).  Our server indicated the file was successfully downloaded using the BITS protocol, and soon after Micro APT was executed on the target and connected out to 113.165.213.253:80 for C2.  The attacker tried to elevate using a few different drivers, but it failed once again due to the computer having been restarted without disabling driver signature enforcement.  BBN tried using BCDedit to permanently disable driver signing, but it did not seem to work during the engagement as the drivers failed to work unless driver signing was explicitly disabled during boot."
+    # OceanLotus (APT32) Campaign
+    # sample = '''
+    #         The Adobe_Flash_install.rar archive that was returned from the baomoivietnam.com website contained the files Flash_Adobe_Install.exe and goopdate.dll. The table below provides some basic information on all three of these files.
+    #         The file goopdate.dll has the hidden file attribute set and will not show in Windows Explorer on systems using default settings. This results in the user seeing only the Flash_Adobe_Install.exe file to execute in order to install what they believe to be an update to Flash Player. When run, it will automatically load goopdate.dll due to search order hijacking. Goopdate.dll is a highly obfuscated loader whose ultimate purpose is to load a Cobalt Strike stager into memory and then execute it. The Cobalt Strike stager will simply try to download and execute a shellcode from a remote server, in this case using the following URL: summerevent.webhop.net/QuUA
+    #         '''
+    # Firefox BITS Micro APT
+    sample = '''
+        Benign activity ran for most of the morning while the tools were being setup for the day.  The activity was modified so the hosts would open Firefox and browse to http://215.237.119.171/config.html.  The simulated host then entered URL for BITS Micro APT as http://68.149.51.179/ctfhost2.exe.   We used the exploited Firefox backdoor to initiate download of ctfhost2.exe via the Background Intelligent Transfer Service (BITS).  Our server indicated the file was successfully downloaded using the BITS protocol, and soon after Micro APT was executed on the target and connected out to 113.165.213.253:80 for C2.  The attacker tried to elevate using a few different drivers, but it failed once again due to the computer having been restarted without disabling driver signature enforcement.  BBN tried using BCDedit to permanently disable driver signing, but it did not seem to work during the engagement as the drivers failed to work unless driver signing was explicitly disabled during boot.
+    '''
+    #     '''
+
+    # Firefox Drakon APT Elevate Copykatz
+    # sample = '''
+    #     First attacked ta51-pivot-2 and deployed OC2, allowing us to run our attack from within the target network.  Exploited Firefox backdoor by again browsing to http://128.55.12.233.  Loader Drakon was executed in Firefox memory and connected out to 128.55.12.233:8000 and 128.55.12.233:443 for C2.  After the BBN reboot, driver was disabled, and we would now be able to use privilege escalation via our perfmon driver.  We loaded the copykatz module to recon data from the system.
+    # '''
+
+    # Frankenstein Campaign
+    # sample = r'''
+    #     The threat actors sent the trojanized Microsoft Word documents, probably via email. Talos discovered a document named  MinutesofMeeting-2May19.docx. Once the victim opens the document, it fetches a remove template from the actor-controlled website, hxxp://droobox[.]online:80/luncher.doc. Once the luncher.doc was downloaded, it used CVE-2017-11882, to execute code on the victim's machine. After the exploit, the file would write a series of base64-encoded PowerShell commands that acted as a stager and set up persistence by adding it to the HKCU\Software\Microsoft\Windows\CurrentVersion\Run Registry key.
+    #     Once the evasion checks were complete, the threat actors used MSbuild to execute an actor-created file named "LOCALAPPDATA\Intel\instal.xml". Based on lexical analysis, we assess with high confidence that this component of the macro script was based on an open-source project called "MSBuild-inline-task." While this technique was previously documented last year, it has rarely been observed being used in operations. Talos suspects the adversary chose MSBuild because it is a signed Microsoft binary, meaning that it can bypass application whitelisting controls on the host when being used to execute arbitrary code.
+    #     Once the "instal.xml" file began execution, it would deobfuscate the base64-encoded commands. This revealed a stager, or a small script designed to obtain an additional payload. While analyzing this stager, we noticed some similarities to the "Get-Data" function of the FruityC2 PowerShell agent. One notable difference is that this particular stager included functionality that allowed the stager to communicate with the command and control (C2) via an encrypted RC4 byte stream. In this sample, the threat actors' C2 server was the domain msdn[.]cloud.
+    #     the C2 would return a string of characters. Once the string was RC4 decrypted, it launched a PowerShell Empire agent. The PowerShell script would attempt to enumerate the host to look for certain information. Once the aforementioned information was obtained, it was sent back to the threat actor's C2.
 
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
@@ -325,7 +394,7 @@ if __name__ == '__main__':
 
     clusters = {}
     for key in am.technique_matching_score.keys():
-        if am.technique_matching_score[key] > 1.1:
+        if am.technique_matching_score[key] > 2:
             print(key)
             print(am.technique_matching_record[key])
 
