@@ -77,11 +77,13 @@ class TemplateNode(AttackGraphNode):
         else:
             similarity_score += 0.5
 
+
         max_nlp_similarity_score = 0
         for nlp_instance in self.node_nlp_instance:
             ss = get_nlp_similarity(new_node_nlp, nlp_instance)
             if ss >= max_nlp_similarity_score:
                 max_nlp_similarity_score = ss
+        # nlp_similarity_score_list = [get_nlp_similarity(new_node_nlp, nlp_instance) for nlp_instance in self.node_nlp_instance]
 
         max_ioc_similarity_score = 0
         for ioc_instance in self.node_ioc_instance:

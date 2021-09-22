@@ -115,6 +115,7 @@ class IoCNer:
         {"label": "actor", "pattern": [{"TEXT": {"REGEX": "APT[A-Za-z0-9-]+"}}]},
         {"label": "actor", "pattern": [{"TEXT": {"REGEX": "(T|t)eam"}}]},
         {"label": "actor", "pattern": [{"TEXT": {"REGEX": "(A|a)ctor[s]*"}}]},
+        {"label": "actor", "pattern": [{"TEXT": {"REGEX": "(A|a)ttacker[s]*"}}]},
 
         {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(P|p)ayload[s]*"}}]},
         {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(S|s)cript[s]*"}}]},
@@ -122,18 +123,31 @@ class IoCNer:
         {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(M|m)alware"}}]},
         {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(S|s)tager"}}]},
         {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(E|e)xecutable"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(F|f)irefox"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "(M|m)odule"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "SSH"}}]},
+        {"label": "executable", "pattern": [{"TEXT": {"REGEX": "SCP"}}]},
 
         {"label": "file", "pattern": [{"TEXT": {"REGEX": "(D|d)ocument[s]*"}}]},
         {"label": "file", "pattern": [{"TEXT": {"REGEX": "(C|c)redential[s]*"}}]},
         {"label": "file", "pattern": [{"TEXT": {"REGEX": "(A|a)ttachment[s]*"}}]},
+        {"label": "file", "pattern": [{"TEXT": {"REGEX": "(F|f)ile[s]*"}}]},
 
         {"label": "file", "pattern": [{"TEXT": {"REGEX": "(F|f)ile[s]*"}}]},
         {"label": "file", "pattern": [{"TEXT": {"REGEX": "(P|p)ath"}}]},
 
         {"label": "network", "pattern": [{"TEXT": {"REGEX": "(E|e)[-]*mail[s]*"}}]},
         {"label": "network", "pattern": [{"TEXT": {"REGEX": "(N|n)etwork"}}]},
+        {"label": "network", "pattern": [{"TEXT": {"REGEX": "DNS"}}]},
+        {"label": "network", "pattern": [{"TEXT": {"REGEX": "C2"}}]},
+        {"label": "network", "pattern": [{"TEXT": {"REGEX": "C&C"}}]},
 
-        {"label": "service", "pattern": [{"TEXT": {"REGEX": "(T|t)ask[s]*"}}]},
+        {"label": "system", "pattern": [{"TEXT": {"REGEX": "(T|t)ask[s]*"}}]},
+        {"label": "system", "pattern": [{"TEXT": {"REGEX": "(D|d)river"}}]},
+        {"label": "system", "pattern": [{"TEXT": {"REGEX": "passwd"}}]},
+        {"label": "system", "pattern": [{"TEXT": {"REGEX": "(S|s)ystem"}}]},
+        {"label": "system", "pattern": [{"TEXT": {"REGEX": "(S|s)ervice "}}]},
+        {"label": "system", "pattern": [{"TEXT": {"REGEX": "(C|c)redential[s]* "}}]},
 
         {"label": "vulnerability", "pattern": [{"TEXT": {"REGEX": "(E|e)xploit"}}]},
 

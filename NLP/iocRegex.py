@@ -25,7 +25,7 @@ IoC_regex = {
     ],
     "FilePath": [
         r"\b[A-Z]:\\[A-Za-z0-9-_\.\\]+\b",
-        # r"[~]*/[A-Za-z0-9-_\./]{2,}\b"
+        r"[~]*/[A-Za-z0-9-_\./]{2,}\b"
         r"[%A-Za-z0-9]*\\[A-Za-z0-9-_\.\\%]+\b"
     ],  # %ALLUSERPROFILE%\Application Data\Microsoft\MediaPlayer\
     # "FileName": [r"\b([A-Za-z0-9-_\.]+\.(exe|dll|bat|sys|htm|html|js|jar|jpg|png|vb|scr|pif|chm|zip|rar|cab|pdf|doc|docx|ppt|pptx|xls|xlsx|swf|gif))\b"],
