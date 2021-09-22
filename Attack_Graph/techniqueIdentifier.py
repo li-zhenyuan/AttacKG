@@ -60,9 +60,6 @@ class TechniqueIdentifier:
 
             index += 1
 
-    # def edge_alignment(self, edge: set, nx_graph: nx.DiGraph):
-    #     print(edge)
-
     def subgraph_alignment(self, subgraph: set, nx_graph: nx.DiGraph):
         for node in subgraph:
             self.node_alignment(node, nx_graph)
@@ -326,7 +323,20 @@ if __name__ == '__main__':
     am.attack_matching()
     matching_result = am.print_match_result()
 
-    draw_attackgraph_dot(ag.attackgraph_nx).view()
+    clusters = {}
+    for key in am.technique_matching_score.keys():
+        if am.technique_matching_score[key] > 1.1:
+            print(key)
+            print(am.technique_matching_record[key])
+
+            clusters_node_list = []
+            for k, v in am.technique_matching_record[key].items():
+                if v is not None:
+                    clusters_node_list.append(v[0])
+
+            clusters[key] = clusters_node_list
+
+    draw_attackgraph_dot(ag.attackgraph_nx, clusters=clusters).view()
 
     # %%
 

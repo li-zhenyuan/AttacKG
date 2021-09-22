@@ -357,6 +357,9 @@ class AttackGraph:
                 continue
 
             if node.ent_type_ in ner_labels:# and re.match("NN.*", node.tag_):
+                if node.ent_type_ == "actor":
+                    node.ent_type_ = "executable"
+
                 is_related_sentence = True
 
                 # try getting node ioc value
@@ -503,7 +506,9 @@ class AttackGraph:
                 similarity = 0
                 if m_type == n_type:
                     similarity += 0.4
-                similarity += Levenshtein.ratio(m_nlp, n_nlp) / math.log(abs(n_position-m_position)+1)
+                print(Levenshtein.ratio(m_nlp, n_nlp))
+                print(abs(n_position-m_position)+2)
+                similarity += Levenshtein.ratio(m_nlp, n_nlp) / math.log(abs(n_position-m_position)+2)
                 if (similarity >= 0.5 and ((m_ioc == '' and n_ioc == '') or m_ioc == n_ioc)):
                     self.merge_graph.add_edge(node_m, node_n)
 

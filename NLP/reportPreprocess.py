@@ -80,7 +80,7 @@ if __name__ == '__main__':
     # file = r"./data/cti/html/0a84e7a880901bd265439bd57da61c5d.html"
     # text = read_html(file)
 
-    # %%a
+    # %%
 
     cti_path = r"./data/cti/html/"
     output_path = r"./data/cti/text/"
