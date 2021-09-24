@@ -63,6 +63,7 @@ with open(r'technique_matching_result_stat.csv') as csvfile, open(r'technique_ma
     writer.writerows(data)
 
 #%%
+# find top N match for template
 
 csv_file_location = r'technique_matching_result_stat.csv'
 # csv_file_location = r'results/node/technique_matching_result_stat.csv'
@@ -94,3 +95,6 @@ with open(csv_file_location) as csvfile:
         if not find_in_top_flag:
             print(999)
             found_index_list.append(999)
+
+# %%
+
