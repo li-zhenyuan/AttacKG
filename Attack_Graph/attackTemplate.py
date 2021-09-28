@@ -93,6 +93,7 @@ class TemplateNode(AttackGraphNode):
 
         # similarity_score = similarity_score + max_ioc_similarity_score * 1 + max_nlp_similarity_score
         similarity_score += 0.5 * max(max_ioc_similarity_score, max_nlp_similarity_score)
+        # similarity_score += 0.5 * max_ioc_similarity_score
 
         return similarity_score
 
@@ -166,6 +167,23 @@ class TechniqueTemplate:
 
     # def match_template(self, technique_sample_graph: nx.DiGraph):
     #     logging.info("---Match template!---")
+
+    def statistic(self):
+        variants_count = 0
+        ioc_instance_count = 0
+
+        for k, v in self.technique_instance_dict.items():
+            if v >= (self.total_instance_count / 10):
+                variants_count += 1
+
+        for node in self.technique_node_list:
+            ioc_instance_count += len(node.node_ioc_instance)
+
+        output = ','.join([self.technique_name[14:19], str(variants_count), str(ioc_instance_count), '\n'])
+        print(output)
+
+        with open('technique_variants_count.csv', 'a+') as output_file:
+            output_file.write(output)
 
     def calculate_normalization(self):
         for node in self.technique_node_list:
@@ -340,6 +358,7 @@ def extract_technique_template_from_technique_list(technique_name: str, techniqu
     for tsg in technique_sample_graphs:
         tt.update_template(tsg)
 
+    tt.statistic()
     template_file_name = "./data/technique_template/" + technique_name
     tt.dump_to_file(file_name=template_file_name)
     tt.pretty_print(image_name=template_file_name + ".png")

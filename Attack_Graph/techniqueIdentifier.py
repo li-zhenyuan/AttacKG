@@ -142,6 +142,7 @@ class TechniqueIdentifier:
 
     def get_graph_alignment_score(self):
         return self.get_node_alignment_score() + self.get_edge_alignment_score()
+        # return self.get_node_alignment_score()
         # return self.get_edge_alignment_score()
 
     def get_node_alignment_score(self):
@@ -173,10 +174,6 @@ class TechniqueIdentifier:
 
         # edge_alignment_score /= self.edge_count + 1
         edge_alignment_score /= (self.technique_template.edge_normalization + 1)
-
-        if edge_alignment_score >= 1:
-            print(edge_alignment_score)
-            # raise Exception()
 
         return edge_alignment_score
 
@@ -260,6 +257,15 @@ class AttackMatcher:
         #
 
         return self.technique_matching_score
+
+    def print_selected_techniques(self) -> list:
+        selected_techniques_list = []
+
+        for k, v in self.technique_matching_score.items():
+            if v >= 1.9:
+                selected_techniques_list.append(k)
+
+        return selected_techniques_list
 
 
 class Evaluation:
@@ -352,9 +358,9 @@ if __name__ == '__main__':
     # '''
 
     # SSH BinFmt-Elevate
-    sample = '''
-        Copied files via SCP and connected via SSH from the ta1-pivot-2 host.  Sent files to the target included the privilege escalation driver load_helper and an elevate client.  Connected to target using SSH with stolen credentials.  Loaded the driver, and used it to gain root privileges.  As root, exfil’d /etc/passwd, /etc/shadow, and the admin’s home directory Documents files.
-    '''
+    # sample = '''
+    #     Copied files via SCP and connected via SSH from the ta1-pivot-2 host.  Sent files to the target included the privilege escalation driver load_helper and an elevate client.  Connected to target using SSH with stolen credentials.  Loaded the driver, and used it to gain root privileges.  As root, exfil’d /etc/passwd, /etc/shadow, and the admin’s home directory Documents files.
+    # '''
 
     # Nginx Drakon APT
     # sample = '''
@@ -387,31 +393,52 @@ if __name__ == '__main__':
     #     The PowerShell chain is launched from an obfuscated JScript scriptlet previously downloaded from the command and control (C2) server and launched using cmstp.exe. The first PowerShell stage is a simple downloader that downloads the next PowerShell stage and launches a child instance of powershell.exe using the downloaded, randomly named script as the argument. The downloaded PowerShell script code is obfuscated in several layers before the last layer is reached. The last layer loads shellcode into memory and creates a thread within the PowerShell interpreter process space.
     #     On the PowerShell side of the infection chain, the downloaded final payload is a Cobalt Strike beacon, which provides the attacker with rich backdoor functionality.
     # '''
+    #
+    # ner_model = IoCNer("./new_cti.model")
+    # ner_model.add_coreference()
+    # ag = parse_attackgraph_from_text(ner_model, sample)
+    #
+    # am = AttackMatcher(ag.attackgraph_nx)
+    # for ti in identifier_list:
+    #     am.add_technique_identifier(ti)
+    # am.attack_matching()
+    # matching_result = am.print_match_result()
+    #
+    # clusters = {}
+    # for key in am.technique_matching_score.keys():
+    #     if am.technique_matching_score[key] > 0.995:
+    #         print(key)
+    #         print(am.technique_matching_record[key])
+    #
+    #         clusters_node_list = []
+    #         for k, v in am.technique_matching_record[key].items():
+    #             if v is not None:
+    #                 clusters_node_list.append(v[0])
+    #
+    #         clusters[key] = clusters_node_list
 
-    ner_model = IoCNer("./new_cti.model")
-    ner_model.add_coreference()
-    ag = parse_attackgraph_from_text(ner_model, sample)
+    # draw_attackgraph_dot(ag.attackgraph_nx, clusters=clusters).view()
 
-    am = AttackMatcher(ag.attackgraph_nx)
-    for ti in identifier_list:
-        am.add_technique_identifier(ti)
-    am.attack_matching()
-    matching_result = am.print_match_result()
+    # %%
+    for file in os.listdir(r"./data/cti/html"):
+        file_name, ext = os.path.splitext(file)
+        if ext != ".html":
+            continue
 
-    clusters = {}
-    for key in am.technique_matching_score.keys():
-        if am.technique_matching_score[key] > 2:
-            print(key)
-            print(am.technique_matching_record[key])
+        ner_model = IoCNer("./new_cti.model")
+        ner_model.add_coreference()
 
-            clusters_node_list = []
-            for k, v in am.technique_matching_record[key].items():
-                if v is not None:
-                    clusters_node_list.append(v[0])
+        ag = parse_attackgraph_from_cti_report(ner_model, r"./data/cti/html/" + file, r"./data/attack_graph")
 
-            clusters[key] = clusters_node_list
+        am = AttackMatcher(ag.attackgraph_nx)
+        for ti in identifier_list:
+            am.add_technique_identifier(ti)
+        am.attack_matching()
+        matching_result = am.print_selected_techniques()
+        print(matching_result)
 
-    draw_attackgraph_dot(ag.attackgraph_nx, clusters=clusters).view()
+        with open('technique_identification_result.csv', 'a+') as output_file:
+            output_file.write(file_name + str(matching_result) + '\n')
 
     # %%
 

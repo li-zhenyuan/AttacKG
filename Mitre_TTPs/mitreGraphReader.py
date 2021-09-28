@@ -85,6 +85,33 @@ class MitreGraphReader:
 
         return technique_list
 
+    def get_tactic_list(self) -> list:
+        tactic_list = []
+
+        for n in self.mitre_graph.nodes():
+            if self.mitre_graph.nodes[n]["types"] == "tactic":
+                tactic_list.append(n)
+
+        return tactic_list
+
+    def get_technique_for_tactic(self, tactic_id: str) -> list:
+        technique_list = []
+
+        for n in self.mitre_graph.neighbors(tactic_id):
+            if self.mitre_graph.nodes[n]["types"] == "technique" or self.mitre_graph.nodes[n]["types"] == "super_technique":
+                technique_list.append(n)
+
+        return technique_list
+
+    # def get_variants_for_technique(self, technique_id: str):
+    #     try:
+    #         technique_template_path = r"/data/technique_template/" + technique_id[12:18] + ".json"
+    #         print(technique_template_path)
+    #         with open(technique_template_path) as template:
+    #
+    #     except:
+    #         return None
+
     def get_name_for_technique(self, technique_id: str) -> list:
         return self.mitre_graph.nodes[technique_id]["name"]
 

@@ -528,6 +528,9 @@ class AttackGraph:
 
 def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
     iid = IoCIdentifier(text)
+    with open('technique_ioc_identification_result.csv', 'a+') as output_file:
+        output_file.write(str([ioc_item.ioc_type for ioc_item in iid.ioc_list]) + '\n')
+
     text_without_ioc = iid.replaced_text
     doc = ner_model.parser(text_without_ioc)
     ag = AttackGraph(doc, ioc_identifier=iid)
