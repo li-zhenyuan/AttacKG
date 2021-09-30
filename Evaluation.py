@@ -132,3 +132,49 @@ for tactic in tactic_list:
     print(technique_count)
     print(variant_count)
     print(ioc_count)
+
+# %%
+
+import json
+from Mitre_TTPs.mitreGraphReader import MitreGraphReader
+
+technique_IoC_inreports_file = r"C:\Users\workshop\Desktop\technique_identification_result.txt"
+tic_dict = {}
+technique_count = {}
+tactic_ioc_count = {}
+
+with open(technique_IoC_inreports_file) as input:
+    technique_IoC_list = input.readlines()
+    for technique_ioc in technique_IoC_list:
+        ti = json.loads(technique_ioc)
+        for technique, ioc_list in ti.items():
+            if technique not in tic_dict.keys():
+                tic_dict[technique] = {}
+                technique_count[technique] = 1
+            technique_count[technique] += 1
+
+            for ioc in ioc_list:
+                ioc_type = ioc[0]
+                ioc_value = ioc[1]
+
+                if ioc_type not in tic_dict[technique].keys():
+                    tic_dict[technique][ioc_type] = set()
+
+                tic_dict[technique][ioc_type].add(ioc_value)
+
+mgr = MitreGraphReader()
+tactic_list = mgr.get_tactic_list()
+
+for tactic in tactic_list:
+    if tactic not in tactic_ioc_count.keys():
+        tactic_ioc_count[tactic] = 0
+
+    technique_list = mgr.get_technique_for_tactic(tactic)
+    for technique in technique_list:
+        technique = technique[12:19]
+
+        if technique in tic_dict.keys():
+            for ioc in tic_dict[technique].values():
+                tactic_ioc_count[tactic] += len(ioc)
+
+

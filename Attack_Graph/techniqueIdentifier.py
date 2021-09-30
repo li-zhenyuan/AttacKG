@@ -6,6 +6,7 @@ import time
 import math
 import os
 import xlsxwriter
+import eventlet
 
 
 # Record TechniqueTemplate Matching Record
@@ -258,14 +259,17 @@ class AttackMatcher:
 
         return self.technique_matching_score
 
-    def print_selected_techniques(self) -> list:
-        selected_techniques_list = []
+    def print_selected_techniques(self) -> dict:
+        selected_techniques_dict = {}
 
         for k, v in self.technique_matching_score.items():
-            if v >= 1.9:
-                selected_techniques_list.append(k)
+            if v >= 1.4:
+                selected_techniques_dict[k] = []
+                for node in self.technique_matching_subgraph[k]:
+                    if self.attack_graph_nx.nodes[node]["regex"] != "":
+                        selected_techniques_dict[k].append((self.attack_graph_nx.nodes[node]["type"], self.attack_graph_nx.nodes[node]["regex"]))
 
-        return selected_techniques_list
+        return selected_techniques_dict
 
 
 class Evaluation:
@@ -422,38 +426,46 @@ if __name__ == '__main__':
     # %%
     count = 0
 
+    eventlet.monkey_patch()
+    time_limit = 10
+
     for file in os.listdir(r"./data/cti/html"):
         file_name, ext = os.path.splitext(file)
         if ext != ".html":
             continue
 
         count += 1
-        if count <= 74:
+        if count <= 269:
             continue
 
         print(file)
         print(count)
 
-        ner_model = IoCNer("./new_cti.model")
-        ner_model.add_coreference()
+        with eventlet.Timeout(time_limit, False):
+            ner_model = IoCNer("./new_cti.model")
+            ner_model.add_coreference()
 
-        ag = parse_attackgraph_from_cti_report(ner_model, r"./data/cti/html/" + file, r"./data/attack_graph")
-        # if len(ag.attackgraph_nx.nodes()) >= 150:
-        #     continue
+            ag = parse_attackgraph_from_cti_report(ner_model, r"./data/cti/html/" + file, r"./data/attack_graph")
+            print(",".join([str(ag.attackgraph_nx.number_of_nodes()), str(ag.attackgraph_nx.number_of_edges())]))
+            if ag.attackgraph_nx.number_of_nodes() >= 50:
+                continue
+            # if len(ag.attackgraph_nx.nodes()) >= 150:
+            #     continue
 
-        am = AttackMatcher(ag.attackgraph_nx)
-        for ti in identifier_list:
-            am.add_technique_identifier(ti)
-        am.attack_matching()
-        matching_result = am.print_selected_techniques()
-        print(matching_result)
+            am = AttackMatcher(ag.attackgraph_nx)
+            for ti in identifier_list:
+                am.add_technique_identifier(ti)
+            am.attack_matching()
+            matching_result = am.print_selected_techniques()
+            print(matching_result)
 
-        with open('technique_ioc_identification_result.csv', 'a+') as output_file:
-            print(str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]))
-            output_file.write(str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]) + '\n')
+            with open('technique_ioc_identification_result.txt', 'a+') as output_file:
+                print(str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]))
+                output_file.write(",".join([str(ag.attackgraph_nx.number_of_nodes()), str(ag.attackgraph_nx.number_of_edges())]) + str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]) + '\n')
 
-        with open('technique_identification_result.csv', 'a+') as output_file:
-            output_file.write(file_name + str(matching_result) + '\n')
+            with open('technique_identification_result.txt', 'a+') as output_file:
+                output_file.write(file_name + str(matching_result) + '\n')
+
 
     # %%
 
