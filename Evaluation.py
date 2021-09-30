@@ -3,6 +3,7 @@ import random
 
 import numpy
 import csv
+from Mitre_TTPs.mitreGraphReader import MitreGraphReader
 
 # %%
 
@@ -98,3 +99,36 @@ with open(csv_file_location) as csvfile:
 
 # %%
 
+technique_variants_count_dict = {}
+
+technique_variants_csv_file_location = r"technique_variants_count.csv"
+with open(technique_variants_csv_file_location) as csvfile:
+    spamreader = csv.reader(csvfile)
+    data = list(spamreader)
+    for item in data:
+        technique_variants_count_dict[item[0]] = (int(item[1]), int(item[2]))
+
+mgr = MitreGraphReader()
+tactic_list = mgr.get_tactic_list()
+
+for tactic in tactic_list:
+    print(tactic)
+    technique_count = 0
+    variant_count = 0
+    ioc_count = 0
+
+    technique_list = mgr.get_technique_for_tactic(tactic)
+    for technique in technique_list:
+        technique = technique[12:19]
+        if technique not in technique_variants_count_dict.keys():
+            continue
+        if technique_variants_count_dict[technique][0] == 0:
+            continue
+
+        technique_count += 1
+        variant_count += technique_variants_count_dict[technique][0]
+        ioc_count += technique_variants_count_dict[technique][1]
+
+    print(technique_count)
+    print(variant_count)
+    print(ioc_count)

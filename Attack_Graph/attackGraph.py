@@ -506,17 +506,17 @@ class AttackGraph:
                 similarity = 0
                 if m_type == n_type:
                     similarity += 0.4
-                print(Levenshtein.ratio(m_nlp, n_nlp))
-                print(abs(n_position-m_position)+2)
+                # print(Levenshtein.ratio(m_nlp, n_nlp))
+                # print(abs(n_position-m_position)+2)
                 similarity += Levenshtein.ratio(m_nlp, n_nlp) / math.log(abs(n_position-m_position)+2)
                 if (similarity >= 0.5 and ((m_ioc == '' and n_ioc == '') or m_ioc == n_ioc)):
                     self.merge_graph.add_edge(node_m, node_n)
 
-                    print(' '.join([node_m, node_n, str(Levenshtein.ratio(m_nlp, n_nlp)), str(similarity)]))
+                    # print(' '.join([node_m, node_n, str(Levenshtein.ratio(m_nlp, n_nlp)), str(similarity)]))
 
         for subgraph in nx.connected_components(self.merge_graph):
             subgraph_list = list(subgraph)
-            print(subgraph_list)
+            # print(subgraph_list)
             a = subgraph_list[0]
             for b in subgraph_list[1:]:
                 self.attackgraph_nx = nx.contracted_nodes(self.attackgraph_nx, a, b, self_loops=False)
@@ -528,8 +528,6 @@ class AttackGraph:
 
 def parse_attackgraph_from_text(ner_model: IoCNer, text: str) -> AttackGraph:
     iid = IoCIdentifier(text)
-    with open('technique_ioc_identification_result.csv', 'a+') as output_file:
-        output_file.write(str([ioc_item.ioc_type for ioc_item in iid.ioc_list]) + '\n')
 
     text_without_ioc = iid.replaced_text
     doc = ner_model.parser(text_without_ioc)

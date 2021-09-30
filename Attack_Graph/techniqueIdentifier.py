@@ -215,7 +215,7 @@ class AttackMatcher:
             # matching_result = []
 
             for technique_identifier in self.technique_identifier_list:
-                print(technique_identifier.technique_template.technique_name)
+                # print(technique_identifier.technique_template.technique_name)
                 technique_identifier.init_node_match_record()
                 technique_identifier.init_edge_match_record()
 
@@ -300,8 +300,8 @@ class Evaluation:
 # %%
 
 if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    # logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.INFO)
+    # logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    logging.basicConfig(filename="running_time_log.txt", filemode='a', level=logging.INFO)
     logging.info("======techniqueIdentifier.py: %s======", time.asctime(time.localtime(time.time())))
 
     # %%
@@ -420,15 +420,26 @@ if __name__ == '__main__':
     # draw_attackgraph_dot(ag.attackgraph_nx, clusters=clusters).view()
 
     # %%
+    count = 0
+
     for file in os.listdir(r"./data/cti/html"):
         file_name, ext = os.path.splitext(file)
         if ext != ".html":
             continue
 
+        count += 1
+        if count <= 74:
+            continue
+
+        print(file)
+        print(count)
+
         ner_model = IoCNer("./new_cti.model")
         ner_model.add_coreference()
 
         ag = parse_attackgraph_from_cti_report(ner_model, r"./data/cti/html/" + file, r"./data/attack_graph")
+        # if len(ag.attackgraph_nx.nodes()) >= 150:
+        #     continue
 
         am = AttackMatcher(ag.attackgraph_nx)
         for ti in identifier_list:
@@ -436,6 +447,10 @@ if __name__ == '__main__':
         am.attack_matching()
         matching_result = am.print_selected_techniques()
         print(matching_result)
+
+        with open('technique_ioc_identification_result.csv', 'a+') as output_file:
+            print(str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]))
+            output_file.write(str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]) + '\n')
 
         with open('technique_identification_result.csv', 'a+') as output_file:
             output_file.write(file_name + str(matching_result) + '\n')
