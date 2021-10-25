@@ -388,83 +388,83 @@ if __name__ == '__main__':
     # '''
 
     # Cobalt Campaign
-    # sample = '''
-    #     All observed attacks start with an email message, containing either a malicious attachment or a URL which leads to the first stage of the attack. The text of the emails is likely taken from legitimate email, such as mailing lists that targeted organizations may be subscribed to. Below are three examples, with the first one purporting to be sent by the European Banking Federation and is using a newly registered domain for the spoofed sender email address. The attachment is a malicious PDF file that entices the user to click on a URL to download and open a weaponized RTF file containing exploits for CVE-2017-11882, CVE-2017-8570 and CVE-2018-8174. The final payload is a JScript backdoor also known as More_eggs that allows the attacker to control the affected system remotely.
-    #     Notable applications used in these attacks are cmstp and msxsl. The Microsoft Connection Manager Profile Installer (cmstp.exe) is a command-line program used to install Connection Manager service profiles. Cmstp accepts an installation information file (INF) as a parameter and installs a service profile leveraged for remote access connections. A malicious INF file can be supplied as a parameter to download and execute remote code. Cmstp may also be used to load and execute COM scriptlets (SCT files) from remote servers.
-    #     Microsoft allows developers to create COM+ objects in script code stored in an XML document, a so-called scriptlet file. Although it is common to use JScript or VBScript, as they are available in Windows by default, a scriptlet can contain COM+ objects implemented in other languages, including Perl and Python, which would be fully functional if the respective interpreters are installed.
-    #     To bypass AppLocker and launching script code within a scriptlet, the attacker includes the malicious code within an XML script tag placed within the registration tag of the scriptlet file and calls cmstp with appropriate parameters.
-    #     An earlier part of the second stage is implemented as an encrypted JScript scriptlet which eventually drops a randomly named COM server DLL binary with a .txt filename extension, for example, 9242.txt, in the user's home folder and registers the server using the regsvr32.exe utility.The dropper contains an encrypted data blob that is decrypted and written to the disk. The dropper then launches the next stage of the attack by starting PowerShell, msxsl or cmstp.exe as described above.
-    #     The PowerShell chain is launched from an obfuscated JScript scriptlet previously downloaded from the command and control (C2) server and launched using cmstp.exe. The first PowerShell stage is a simple downloader that downloads the next PowerShell stage and launches a child instance of powershell.exe using the downloaded, randomly named script as the argument. The downloaded PowerShell script code is obfuscated in several layers before the last layer is reached. The last layer loads shellcode into memory and creates a thread within the PowerShell interpreter process space.
-    #     On the PowerShell side of the infection chain, the downloaded final payload is a Cobalt Strike beacon, which provides the attacker with rich backdoor functionality.
-    # '''
+    sample = '''
+        All observed attacks start with an email message, containing either a malicious attachment or a URL which leads to the first stage of the attack. The text of the emails is likely taken from legitimate email, such as mailing lists that targeted organizations may be subscribed to. Below are three examples, with the first one purporting to be sent by the European Banking Federation and is using a newly registered domain for the spoofed sender email address. The attachment is a malicious PDF file that entices the user to click on a URL to download and open a weaponized RTF file containing exploits for CVE-2017-11882, CVE-2017-8570 and CVE-2018-8174. The final payload is a JScript backdoor also known as More_eggs that allows the attacker to control the affected system remotely.
+        Notable applications used in these attacks are cmstp and msxsl. The Microsoft Connection Manager Profile Installer (cmstp.exe) is a command-line program used to install Connection Manager service profiles. Cmstp accepts an installation information file (INF) as a parameter and installs a service profile leveraged for remote access connections. A malicious INF file can be supplied as a parameter to download and execute remote code. Cmstp may also be used to load and execute COM scriptlets (SCT files) from remote servers.
+        Microsoft allows developers to create COM+ objects in script code stored in an XML document, a so-called scriptlet file. Although it is common to use JScript or VBScript, as they are available in Windows by default, a scriptlet can contain COM+ objects implemented in other languages, including Perl and Python, which would be fully functional if the respective interpreters are installed.
+        To bypass AppLocker and launching script code within a scriptlet, the attacker includes the malicious code within an XML script tag placed within the registration tag of the scriptlet file and calls cmstp with appropriate parameters.
+        An earlier part of the second stage is implemented as an encrypted JScript scriptlet which eventually drops a randomly named COM server DLL binary with a .txt filename extension, for example, 9242.txt, in the user's home folder and registers the server using the regsvr32.exe utility.The dropper contains an encrypted data blob that is decrypted and written to the disk. The dropper then launches the next stage of the attack by starting PowerShell, msxsl or cmstp.exe as described above.
+        The PowerShell chain is launched from an obfuscated JScript scriptlet previously downloaded from the command and control (C2) server and launched using cmstp.exe. The first PowerShell stage is a simple downloader that downloads the next PowerShell stage and launches a child instance of powershell.exe using the downloaded, randomly named script as the argument. The downloaded PowerShell script code is obfuscated in several layers before the last layer is reached. The last layer loads shellcode into memory and creates a thread within the PowerShell interpreter process space.
+        On the PowerShell side of the infection chain, the downloaded final payload is a Cobalt Strike beacon, which provides the attacker with rich backdoor functionality.
+    '''
     #
-    # ner_model = IoCNer("./new_cti.model")
-    # ner_model.add_coreference()
-    # ag = parse_attackgraph_from_text(ner_model, sample)
-    #
-    # am = AttackMatcher(ag.attackgraph_nx)
-    # for ti in identifier_list:
-    #     am.add_technique_identifier(ti)
-    # am.attack_matching()
-    # matching_result = am.print_match_result()
-    #
-    # clusters = {}
-    # for key in am.technique_matching_score.keys():
-    #     if am.technique_matching_score[key] > 0.995:
-    #         print(key)
-    #         print(am.technique_matching_record[key])
-    #
-    #         clusters_node_list = []
-    #         for k, v in am.technique_matching_record[key].items():
-    #             if v is not None:
-    #                 clusters_node_list.append(v[0])
-    #
-    #         clusters[key] = clusters_node_list
+    ner_model = IoCNer("./new_cti.model")
+    ner_model.add_coreference()
+    ag = parse_attackgraph_from_text(ner_model, sample)
 
-    # draw_attackgraph_dot(ag.attackgraph_nx, clusters=clusters).view()
+    am = AttackMatcher(ag.attackgraph_nx)
+    for ti in identifier_list:
+        am.add_technique_identifier(ti)
+    am.attack_matching()
+    matching_result = am.print_match_result()
+
+    clusters = {}
+    for key in am.technique_matching_score.keys():
+        if am.technique_matching_score[key] > 1.9:
+            print(key)
+            print(am.technique_matching_record[key])
+
+            clusters_node_list = []
+            for k, v in am.technique_matching_record[key].items():
+                if v is not None:
+                    clusters_node_list.append(v[0])
+
+            clusters[key] = clusters_node_list
+
+    draw_attackgraph_dot(ag.attackgraph_nx, clusters=clusters).view()
 
     # %%
-    count = 0
-
-    eventlet.monkey_patch()
-    time_limit = 10
-
-    for file in os.listdir(r"./data/cti/html"):
-        file_name, ext = os.path.splitext(file)
-        if ext != ".html":
-            continue
-
-        count += 1
-        if count <= 269:
-            continue
-
-        print(file)
-        print(count)
-
-        with eventlet.Timeout(time_limit, False):
-            ner_model = IoCNer("./new_cti.model")
-            ner_model.add_coreference()
-
-            ag = parse_attackgraph_from_cti_report(ner_model, r"./data/cti/html/" + file, r"./data/attack_graph")
-            print(",".join([str(ag.attackgraph_nx.number_of_nodes()), str(ag.attackgraph_nx.number_of_edges())]))
-            if ag.attackgraph_nx.number_of_nodes() >= 50:
-                continue
-            # if len(ag.attackgraph_nx.nodes()) >= 150:
-            #     continue
-
-            am = AttackMatcher(ag.attackgraph_nx)
-            for ti in identifier_list:
-                am.add_technique_identifier(ti)
-            am.attack_matching()
-            matching_result = am.print_selected_techniques()
-            print(matching_result)
-
-            with open('technique_ioc_identification_result.txt', 'a+') as output_file:
-                print(str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]))
-                output_file.write(",".join([str(ag.attackgraph_nx.number_of_nodes()), str(ag.attackgraph_nx.number_of_edges())]) + str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]) + '\n')
-
-            with open('technique_identification_result.txt', 'a+') as output_file:
-                output_file.write(file_name + str(matching_result) + '\n')
+    # count = 0
+    #
+    # eventlet.monkey_patch()
+    # time_limit = 10
+    #
+    # for file in os.listdir(r"./data/cti/html"):
+    #     file_name, ext = os.path.splitext(file)
+    #     if ext != ".html":
+    #         continue
+    #
+    #     count += 1
+    #     if count <= 269:
+    #         continue
+    #
+    #     print(file)
+    #     print(count)
+    #
+    #     with eventlet.Timeout(time_limit, False):
+    #         ner_model = IoCNer("./new_cti.model")
+    #         ner_model.add_coreference()
+    #
+    #         ag = parse_attackgraph_from_cti_report(ner_model, r"./data/cti/html/" + file, r"./data/attack_graph")
+    #         print(",".join([str(ag.attackgraph_nx.number_of_nodes()), str(ag.attackgraph_nx.number_of_edges())]))
+    #         if ag.attackgraph_nx.number_of_nodes() >= 50:
+    #             continue
+    #         # if len(ag.attackgraph_nx.nodes()) >= 150:
+    #         #     continue
+    #
+    #         am = AttackMatcher(ag.attackgraph_nx)
+    #         for ti in identifier_list:
+    #             am.add_technique_identifier(ti)
+    #         am.attack_matching()
+    #         matching_result = am.print_selected_techniques()
+    #         print(matching_result)
+    #
+    #         with open('technique_ioc_identification_result.txt', 'a+') as output_file:
+    #             print(str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]))
+    #             output_file.write(",".join([str(ag.attackgraph_nx.number_of_nodes()), str(ag.attackgraph_nx.number_of_edges())]) + str([ioc_item.ioc_type for ioc_item in ag.ioc_identifier.ioc_list]) + '\n')
+    #
+    #         with open('technique_identification_result.txt', 'a+') as output_file:
+    #             output_file.write(file_name + str(matching_result) + '\n')
 
 
     # %%
