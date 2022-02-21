@@ -2,6 +2,9 @@ import math
 
 import Levenshtein
 
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+sys.path.extend(['.', './Attack_Graph'])
+
 from NLP.iocNer import *
 from NLP.iocRegex import *
 from NLP.reportPreprocess import *
