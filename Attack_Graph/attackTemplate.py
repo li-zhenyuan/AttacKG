@@ -1,11 +1,10 @@
-import math
+
 
 from attackGraph import *
 from Mitre_TTPs.mitreGraphReader import *
 
 import networkx as nx
 from networkx.drawing.nx_agraph import to_agraph
-from multiprocessing import Pool, Process
 import logging
 import re
 import Levenshtein

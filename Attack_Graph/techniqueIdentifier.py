@@ -1,3 +1,5 @@
+import itertools
+
 from attackTemplate import *
 
 import networkx as nx
@@ -398,9 +400,25 @@ if __name__ == '__main__':
         On the PowerShell side of the infection chain, the downloaded final payload is a Cobalt Strike beacon, which provides the attacker with rich backdoor functionality.
     '''
     #
+    sample = '''
+    Due to its ubiquitous use, many common infrastructure products from Microsoft, Apple, Twitter, CloudFlare and others are vulnerable to Log4Shell attacks. Recently, VMware also issued guidance that some components of its Horizon service are vulnerable to Log4j exploits, leading OverWatch to add the VMware Horizon Tomcat web server service to their processes-to-watch list, researchers said.
+    The Falcon OverWatch team noticed the Aquatic Panda intrusion when the threat actor performed multiple connectivity checks via DNS lookups for a subdomain under dns[.]1433[.]eu[.]org, executed under the Apache Tomcat service running on the VMware Horizon instance, they wrote in the post.
+    “The threat actor then executed a series of Linux commands, including attempting to execute a bash-based interactive shell with a hardcoded IP address as well as curl and wget commands in order to retrieve threat-actor tooling hosted on remote infrastructure,” researchers wrote.
+    The commands were executed on a Windows host under the Apache Tomcat service, researchers said. They triaged the initial activity and immediately sent a critical detection to the victim organization, later sharing additional details directly with their security team, they said.
+    Eventually, researchers assessed that a modified version of the Log4j exploit was likely used during the course of the threat actor’s operations, and that the infrastructure used in the attack is linked to Aquatic Panda, they said.
+    OverWatch researchers tracked the threat actor’s activity closely during the intrusion to provide continuous updates to academic institution as its security administrators scrambled to mitigate the attack, they said.
+    Aquatic Panda engaged in reconnaissance from the host, using native OS binaries to understand current privilege levels as well as system and domain details. Researchers also observed the group attempt discover and stop a third-party endpoint detection and response (EDR) service, they said.
+    The threat actors downloaded additional scripts and then executed a Base64-encoded command via PowerShell to retrieve malware from their toolkit. They also retrieved three files with VBS file extensions from remote infrastructure, which they then decoded.
+    “Based on the telemetry available, OverWatch believes these files likely constituted a reverse shell, which was loaded into memory via DLL search-order hijacking,” researchers wrote.
+    Aquatic Panda eventually made multiple attempts to harvest credentials by dumping the memory of the LSASS process using living-off-the-land binaries rdrleakdiag.exe and cdump.exe, a renamed copy of createdump.exe.
+    “The threat actor used winRAR to compress the memory dump in preparation for exfiltration before attempting to cover their tracks by deleting all executables from the ProgramData and Windows\temp\ directories,” researchers wrote.
+    The victim organization eventually patched the vulnerable application, which prevented further action from Aquatic Panda on the host and stopped the attack, researchers said.
+    '''
+
     ner_model = IoCNer("./new_cti.model")
     ner_model.add_coreference()
     ag = parse_attackgraph_from_text(ner_model, sample)
+    # ag = parse_attackgraph_from_cti_report(ner_model, r"data/picked_html_APTs/Log4Shell.html")
 
     am = AttackMatcher(ag.attackgraph_nx)
     for ti in identifier_list:

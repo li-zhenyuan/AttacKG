@@ -8,7 +8,6 @@ from Mitre_TTPs.mitreGraphReader import MitreGraphReader
 # %%
 
 # example_identification_result = numpy.genfromtxt('technique_matching_result.csv', delimiter=',')
-import numpy as np
 
 with open(r'technique_matching_result.csv') as csvfile:
     spamreader = csv.reader(csvfile)

@@ -16,9 +16,6 @@ import matplotlib.pyplot as plt
 import logging
 import sys
 import os
-import spacy
-import itertools
-import coreferee
 from pathlib import Path
 import time
 import spacy.tokens
@@ -336,6 +333,9 @@ class AttackGraph:
 
         return self.attackgraph_nx
 
+
+    edge_count = 0
+
     def parse_edge_sentence(self, sentence):
         node_queue = []
         tvb = ""
@@ -379,7 +379,8 @@ class AttackGraph:
                 self.attackgraph_nx.add_node(n, type=node.ent_type_, nlp=nlp, regex=regex)
 
                 if tnode != "":
-                    self.attackgraph_nx.add_edge(tnode, n, action=tvb)
+                    self.attackgraph_nx.add_edge(tnode, n, action=tvb, sequence=self.edge_count, nlp=sentence.text)
+                    self.edge_count += 1
                 tnode = n
 
             # edges with coreference nodes
@@ -402,7 +403,8 @@ class AttackGraph:
                 self.attackgraph_nx.add_node(n, type=coref_node.ent_type_, nlp=nlp, regex=regex)
 
                 if tnode != "":
-                    self.attackgraph_nx.add_edge(tnode, n, action=tvb)
+                    self.attackgraph_nx.add_edge(tnode, n, action=tvb, sequence=self.edge_count, nlp=sentence.text)
+                    self.edge_count += 1
                 tnode = n
 
         if (is_related_sentence):
@@ -619,15 +621,36 @@ if __name__ == '__main__':
         The PowerShell chain is launched from an obfuscated JScript scriptlet previously downloaded from the command and control (C2) server and launched using cmstp.exe. The first PowerShell stage is a simple downloader that downloads the next PowerShell stage and launches a child instance of powershell.exe using the downloaded, randomly named script as the argument. The downloaded PowerShell script code is obfuscated in several layers before the last layer is reached. The last layer loads shellcode into memory and creates a thread within the PowerShell interpreter process space.
         On the PowerShell side of the infection chain, the downloaded final payload is a Cobalt Strike beacon, which provides the attacker with rich backdoor functionality.
     '''
+    # OceanLotus Campaign
+    sample = '''
+        The Adobe_Flash_install.rar archive that was returned from the baomoivietnam.com website contained the files Flash_Adobe_Install.exe and goopdate.dll. The table below provides some basic information on all three of these files.
+        The file goopdate.dll has the hidden file attribute set and will not show in Windows Explorer on systems using default settings. This results in the user seeing only the Flash_Adobe_Install.exe file to execute in order to install what they believe to be an update to Flash Player. When run, it will automatically load goopdate.dll due to search order hijacking. Goopdate.dll is a highly obfuscated loader whose ultimate purpose is to load a Cobalt Strike stager into memory and then execute it. The Cobalt Strike stager will simply try to download and execute a shellcode from a remote server, in this case using the following URL: summerevent.webhop.net/QuUA
+    '''
+    sample = '''
+        Due to its ubiquitous use, many common infrastructure products from Microsoft, Apple, Twitter, CloudFlare and others are vulnerable to Log4Shell attacks. Recently, VMware also issued guidance that some components of its Horizon service are vulnerable to Log4j exploits, leading OverWatch to add the VMware Horizon Tomcat web server service to their processes-to-watch list, researchers said.
+        The Falcon OverWatch team noticed the Aquatic Panda intrusion when the threat actor performed multiple connectivity checks via DNS lookups for a subdomain under dns[.]1433[.]eu[.]org, executed under the Apache Tomcat service running on the VMware Horizon instance, they wrote in the post.
+        “The threat actor then executed a series of Linux commands, including attempting to execute a bash-based interactive shell with a hardcoded IP address as well as curl and wget commands in order to retrieve threat-actor tooling hosted on remote infrastructure,” researchers wrote.
+        The commands were executed on a Windows host under the Apache Tomcat service, researchers said. They triaged the initial activity and immediately sent a critical detection to the victim organization, later sharing additional details directly with their security team, they said.
+        Eventually, researchers assessed that a modified version of the Log4j exploit was likely used during the course of the threat actor’s operations, and that the infrastructure used in the attack is linked to Aquatic Panda, they said.
+        OverWatch researchers tracked the threat actor’s activity closely during the intrusion to provide continuous updates to academic institution as its security administrators scrambled to mitigate the attack, they said.
+        Aquatic Panda engaged in reconnaissance from the host, using native OS binaries to understand current privilege levels as well as system and domain details. Researchers also observed the group attempt discover and stop a third-party endpoint detection and response (EDR) service, they said.
+        The threat actors downloaded additional scripts and then executed a Base64-encoded command via PowerShell to retrieve malware from their toolkit. They also retrieved three files with VBS file extensions from remote infrastructure, which they then decoded.
+        “Based on the telemetry available, OverWatch believes these files likely constituted a reverse shell, which was loaded into memory via DLL search-order hijacking,” researchers wrote.
+        Aquatic Panda eventually made multiple attempts to harvest credentials by dumping the memory of the LSASS process using living-off-the-land binaries rdrleakdiag.exe and cdump.exe, a renamed copy of createdump.exe.
+        “The threat actor used winRAR to compress the memory dump in preparation for exfiltration before attempting to cover their tracks by deleting all executables from the ProgramData and Windows\temp\ directories,” researchers wrote.
+        The victim organization eventually patched the vulnerable application, which prevented further action from Aquatic Panda on the host and stopped the attack, researchers said.
+        '''
 
     ag = parse_attackgraph_from_text(ner_model, sample)
     draw_attackgraph_dot(ag.attackgraph_nx).view()
-    # nx.write_gml(ag.attackgraph_nx, "x.gml")
+    nx.write_gml(ag.attackgraph_nx, "x.gml")
 
 
     # %%
 
-    # ag = parse_attackgraph_from_cti_report(ner_model, r"data/picked_html_APTs/OceanLotus.html")
+    # ag = parse_attackgraph_from_cti_report(ner_model, r"data/picked_html_APTs/Log4Shell.html")
+    # draw_attackgraph_dot(ag.attackgraph_nx).view()
+    # nx.write_gml(ag.attackgraph_nx, "x.gml")
 
     # %%
     # class AttackGraph unit test
